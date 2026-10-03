@@ -32,6 +32,19 @@ a { color: var(--fast) }
 .kv b { font: 500 .88rem/1.3 var(--mono); text-align: right }
 .big { font: 700 2rem/1 var(--display); font-variant-numeric: tabular-nums }
 iframe { width: 100%; height: 640px; border: 1px solid var(--line); border-radius: 10px; margin-top: 14px; background: var(--bg) }
+.feed { font: 400 .78rem/1.45 var(--mono); max-height: 420px; overflow: auto; margin: 0; padding: 0; list-style: none }
+.feed li { display: grid; grid-template-columns: 62px 1fr; gap: 8px; padding: 3px 0; border-bottom: 1px dashed var(--line) }
+.feed .t { color: var(--muted) } .feed .w { color: var(--fast) } .feed .tool { color: var(--amber) }
+.agent { padding: 8px 0; border-bottom: 1px solid var(--line); display: grid; gap: 3px }
+.agent:last-child { border-bottom: 0 }
+.agent .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline }
+.agent .lbl { font-weight: 600 } .agent .wf { color: var(--fast); font-size: .82rem }
+.agent .now { font: 400 .8rem/1.4 var(--mono); color: var(--ink); overflow-wrap: anywhere }
+.wide { grid-column: 1 / -1 }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px }
+.gallery figure { margin: 0; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line) }
+.gallery img { display: block; width: 100%; height: 190px; object-fit: contain; background: #fff }
+.gallery figcaption { background: var(--panel); color: var(--muted); font: 400 .74rem/1.3 var(--mono); padding: 6px 8px; overflow-wrap: anywhere }
 @media (prefers-reduced-motion: reduce) { .dot.run { animation: none } }
 </style>
 </head>
@@ -40,11 +53,14 @@ iframe { width: 100%; height: 640px; border: 1px solid var(--line); border-radiu
   <header><h1>Courtside <span>Mission Control</span></h1><span class="clock" id="clock">—</span>
     <a href="index.html" target="_blank" rel="noopener">open the live scoreboard in its own tab ↗</a></header>
   <div class="grid">
+    <div class="card"><h2>Agents working now <span id="nagents" style="color:var(--amber)"></span></h2><div id="agents"></div></div>
+    <div class="card"><h2>Live activity feed</h2><ul class="feed" id="feed"></ul></div>
     <div class="card"><h2>Strategy, so far</h2><div class="kv" id="hl"></div></div>
     <div class="card"><h2>Research running now</h2><div id="wf"></div></div>
     <div class="card"><h2>Live data capture</h2><div id="rec"></div><div class="kv" style="margin-top:8px"><span>Disk free</span><b id="disk">—</b></div></div>
     <div class="card"><h2>HiPerGator queue</h2><div id="hpg"></div></div>
     <div class="card"><h2>Latest commits</h2><div id="git"></div></div>
+    <div class="card wide"><h2>Newest charts (click to enlarge)</h2><div class="gallery" id="gallery"></div></div>
   </div>
   <iframe src="index.html" title="COURTSIDE Live scoreboard"></iframe>
 </div>
@@ -61,6 +77,32 @@ function row(dotClass, label, meta) {
 async function tick() {
   let s; try { s = await (await fetch("status.json?" + Date.now())).json(); } catch (_) { $("#clock").textContent = "status daemon not running"; return; }
   $("#clock").textContent = new Date(s.t * 1000).toLocaleTimeString() + " · updates every 5 s";
+  const ag = $("#agents"); ag.innerHTML = ""; $("#nagents").textContent = `· ${(s.agents || []).length}`;
+  if (!(s.agents || []).length) ag.append(row("ok", "No agent running", "idle"));
+  for (const a of s.agents || []) {
+    const d = document.createElement("div"); d.className = "agent";
+    const top = document.createElement("div"); top.className = "top";
+    const l = document.createElement("span"); l.className = "lbl"; l.textContent = a.agent;
+    const m = document.createElement("span"); m.className = "meta"; m.textContent = `${a.tool || ""} · ${ago(a.idle_s)}`;
+    top.append(l, m);
+    const w = document.createElement("span"); w.className = "wf"; w.textContent = a.wf + (a.phase ? " · " + a.phase : "");
+    const n = document.createElement("span"); n.className = "now"; n.textContent = "▸ " + a.now;
+    d.append(top, w, n); ag.append(d);
+  }
+  const fd = $("#feed"); fd.innerHTML = "";
+  for (const e of s.feed || []) {
+    const li = document.createElement("li");
+    const t = document.createElement("span"); t.className = "t"; t.textContent = e.ts ? new Date(e.ts).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"}) : "";
+    const b = document.createElement("span");
+    const w = document.createElement("span"); w.className = "w"; w.textContent = e.agent + " ";
+    const tl = document.createElement("span"); tl.className = "tool"; tl.textContent = (e.tool === "note" ? "says" : e.tool) + " ";
+    b.append(w, tl, document.createTextNode(e.what)); li.append(t, b); fd.append(li);
+  }
+  const gal = $("#gallery"); const want = (s.figs || []).map(f => f.url).join("|");
+  if (gal.dataset.k !== want) { gal.dataset.k = want; gal.innerHTML = "";
+    for (const f of s.figs || []) { const fig = document.createElement("figure"); const a = document.createElement("a"); a.href = f.url; a.target = "_blank"; a.rel = "noopener";
+      const img = document.createElement("img"); img.src = f.url + "?" + Math.round(s.t); img.alt = f.src; img.loading = "lazy"; a.append(img);
+      const c = document.createElement("figcaption"); c.textContent = `${f.src} · ${ago(f.age_s)}`; fig.append(a, c); gal.append(fig); } }
   const hl = $("#hl"); hl.innerHTML = "";
   for (const [k, v] of Object.entries(s.headline || {})) { const a = document.createElement("span"); a.textContent = k; const b = document.createElement("b"); b.textContent = v; hl.append(a, b); }
   const wf = $("#wf"); wf.innerHTML = "";

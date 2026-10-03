@@ -8,3 +8,4 @@ research/**/*.parquet
 !results/*peeks.log
 !results/tracking/test_peeks.log
 docs/live/status.json
+docs/live/figs/
