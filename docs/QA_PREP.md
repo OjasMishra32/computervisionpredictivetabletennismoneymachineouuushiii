@@ -9,6 +9,10 @@ around 22:40 UTC. If the paper or a results file changes, the file wins. Paper, 
 Merged from five reviewer passes (Jane Street, Citadel PM, microstructure, UF faculty, organizer) and a readiness
 check, plus the organizer's two questions to us (Dom: latency under 3 s, and capital capacity).
 
+**Red-team update, about 23:45 UTC Oct 3:** Q1, Q2, Q5, Q6 and Q10 gained lines from new results, and §6 adds three
+questions (Q26–Q28) with the new numbers. Sources: `results/redteam/` (`bash run.sh redteam`), `results/e2e/summary.json`.
+The deck's backup slides Q11–Q14 carry Q4, Q5/Q6, Q1 and Q2/Q12.
+
 ---
 
 ## 0. If you only remember one thing (60 seconds, say it like this)
@@ -89,7 +93,7 @@ it; "our feed", "our camera", "we licensed", "we bought", "live ATP/WTA data"; "
 | 5 | CV at 1 s: pre-reg +$4/day OOS (−0.38¢); post hoc +$57/day; stamp-calibrated −$17/day | `latency_sweep.json::video_own120` |
 | 6 | Replay, 9 real books: −0.92¢ [−1.29, −0.57] at V = 1; 36/36 cells < 0 | `results/replay/replay.json` |
 | 7 | GPU engine: 120 fps, 0 of 102,120 frames dropped, call-ready 4.6 ms p50 / 12.2 ms p99 | `results/engine/online_vs_offline.json::headline` |
-| 8 | Live causal engine: 4 of 41 test misses called, all correct (95 % lower bound 51 %), median lead 163 ms | `online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls` |
+| 8 | Live causal engine: 4 of 41 test misses called, all correct (95 % lower bound 51 %), median lead 162.5 ms | `online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls` |
 | 9 | Capacity: v2 OOS edge holds at $23–34k of capital (1–2×), 5× loses −$25/day | `alpha.json::H_capacity`, `docs/RISK.md` R3 |
 | 10 | Costs: feed licence ASSUMPTION $1.25k / $5k / $10k a month → $42 / $167 / $332 a day with VPS; v2 OOS after central costs −$75/day | `results/financials/financials.json` |
 
@@ -113,8 +117,12 @@ every reading loses from V = 3 s, and the real bar is a call that reaches the ve
 umpire's stamp.
 *Say it plainly if asked:* nobody has run camera-to-order in one process on the GPU yet (`engine/README.md` "Known
 gaps"). The 40.7 ms WebRTC figure comes from a laptop at 10 fps, because the laptop engine manages only 9–18 fps.
-→ **[if `results/e2e/` has its JSON]** "The end-to-end proof, frame in to paper order out, measured ⟨e2e p50⟩ ms p50
-on ⟨host⟩ (`results/e2e/…`)." **[else]** "The end-to-end run is in progress; the components are measured."
+→ **[`results/e2e/summary.json` exists; at 23:15 UTC it had 24 order traces — re-read it before the talk]** "We
+measured it end to end in one process: our footage streamed over WebRTC into the vision engine, a call, a paper order
+built against a live tennis book. Video in to order ready took 54 ms p50 on a laptop. Add a simulated 1 s feed, 65 ms of
+network and the venue's 1 s hold: 2,119 ms, about 0.9 s inside the 3 s bar. The order is unsigned and never sent, and
+the calls are table tennis mapped onto a tennis market for timing only." Keys:
+`budget_with_1s_simulated_feed.{ours_capture_to_order_ready_ms,network_one_way_ms,total_ms,margin_to_requirement_ms}.p50`.
 Evidence: `results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup`;
 `results/webrtc/summary_20261003T212750Z.json::runs[slowmo10_engine].capture_to_decision_ms`;
 `results/decay/decay.json::latency_inputs`; `research/v2/feed_latency/LATENCY_SWEEP.md` §2 and §5.
@@ -125,7 +133,9 @@ makes $92/day at 1×, $34k makes $83/day at 2× with a CI that spans zero, and 5
 1 s uses $14–29k at a 100-share net cap and 10 matches a day. The binding limit is the stale depth on each
 point: a median $222 sits at the old price just before the reprice and $0 half a second later. Raising the net
 cap to 1,000 shares loses out of sample (−$51/day at V = 0).
-→ **[if `results/capacity/capacity.json`]** add its capacity in $ at the size where the OOS CI first spans zero.
+→ **[`results/capacity/capacity.json` exists (capacity workflow, still being audited)]** say the pre-registered line
+first: "At the pre-registered 2.0 s lag there is no capacity to speak of: Sharpe 0.9 held out even at the smallest
+size." Then the post hoc capacity from its `paragraph`, labelled post hoc. Re-read the file before the talk.
 Evidence: `results/alpha/alpha.json::H_capacity.rows`; `docs/RISK.md` R3; `latency_sweep.csv` (capital_usd at
 V = 1); `research/v2/latency/results.json::summary.stale_depth`; `research/v2/tier0/RESULTS.md` §3.
 
@@ -161,7 +171,9 @@ choice, and we disclose it as one more trial. Three caveats we volunteer. That P
 its results (`a5769c7`), so the ordering rests on its timestamp and the peek log (OOS grid run at 17:29 UTC,
 `results/oos_peeks.log` line 5). Both Table 2 columns use the per-tournament timing reading, a verifier revision
 made after the first P&L run (`DEVIATIONS.md` V3); it keeps the pre-registered median and lowers Sharpe, since
-per-point draws gave daily Sharpes of 30–50. And one sweep audit line was logged after its run (line 63).
+per-point draws gave daily Sharpes of 30–50. And one sweep audit line was logged after its run (line 63). The 3.14 s itself is shaky: its bootstrap 95 % CI is
+2.23–3.22 s, because the official stamp has 1 s resolution, and at 2.23 s the 1 s cell makes only about $8 a day held
+out (`results/redteam/stamp_lag.json`, `derived.json::cv.at_L_boot_lo.oos.usd`).
 Evidence: `research/v2/tier0/PREREG.md`; `research/v2/tier0/DEVIATIONS.md` V3; `results/oos_peeks.log`.
 
 **Q6. "The same inference read the other way loses. Why show only the reading that pays?"**
@@ -169,7 +181,9 @@ We show both. Applied as a constant 3.14 s lag over each tournament's points, it
 per point with the inferred 1.35 s bounce-to-reprice, it fills nothing correct at V = 1 and loses $17 a day; its
 break-even is 0.34 s IS / 0.30 s OOS. The two disagree because the constant lag puts the simulated reprice at a
 median of about 1.8 s after the bounce, later than the 1.35 s the inference itself implies. That disagreement is
-exactly why we lead with the break-even and not with a P&L.
+exactly why we lead with the break-even and not with a P&L. The per-point loss is not a fluke: read per point, the
+inference puts every reprice at most 1.78 s after the bounce, and a 1 s-feed order cannot arrive before 1.83 s even
+with a 200 ms early call, so no correct call can fill (`results/redteam/stamp_lag.json::per_point_reading_V1`).
 Evidence: `latency_sweep.json::video_own120.stamp_calibrated["1"]`, `breakeven_video_delay.stamp_calibrated`;
 `results/tier0/results.json::timing`; `research/v2/latency/results.json::summary.m1.book_vs_official_T_s` (median
 R −1.16 s).
@@ -206,10 +220,13 @@ Evidence: derived for this sheet, no new run (method in §5 below); `results/tie
 The live engine is causal; the offline evaluation was not, and our engine README documents the gap. The offline
 `hb` feature was a median over the whole labelled flight, and the offline window kept deciding after a far-side
 bounce. Streamed causally on held-out games, the engine called 4 of 41 test misses, all correct (95 % lower bound
-51 %), median lead 163 ms. The offline figure was 11 of 11 at 50 ms. The hook clip's call is 325 ms causally, not
+51 %), median lead 162.5 ms. The offline figure was 11 of 11 at 50 ms. The hook clip's call is 325 ms causally, not
 408 ms. The engine also fired 7 MISS calls on balls outside the scored set, 5 of them between rallies, and
 nothing gates on rally state yet. With no early calls at all (the pessimistic CV), the pre-registered 1 s cell
-makes $8 a day IS and loses $13 a day OOS.
+makes $8 a day IS and loses $13 a day OOS. And the look-ahead does not drive the 1 s result: rerun with the live
+engine's own call table, the 1 s cells are +$17 IS / +$3.81 held out pre-registered and +$98 / +$57.42 post hoc, against
++$15 / +$4.35 and +$94 / +$56.59 with the offline table (`results/redteam/causal_cv.json`; one logged burned-OOS read).
+At a 1 s feed the race is decided by reprice timing, not by a 50–200 ms lead.
 Evidence: `engine/README.md` ("Vision on one GPU", "Known gaps"); `results/engine/online_vs_offline.json`
 (`A_engine_calls`, `calls`, `flights_called_or_miss` test_2/2819); `latency_sweep.json::video_cv_pessimistic`.
 
@@ -334,9 +351,11 @@ Evidence: `results/oos_peeks.log`; `DEVIATIONS.md`; `docs/paper/PLAN.md` §12.13
 
 | Item | File that unlocks it | Line when present | Line when absent |
 |---|---|---|---|
-| End-to-end timing | `results/e2e/*.json` (other workflow) | "Frame in to paper order out: ⟨p50⟩ / ⟨p99⟩ ms on ⟨host⟩, plus the venue's 1 s hold." | "Components measured; one-process end-to-end run in progress." |
+| End-to-end timing | `results/e2e/summary.json` (present; other workflow) | Q1 bracket above, re-read before the talk | "Components measured; one-process end-to-end run in progress." |
 | Capacity | `results/capacity/capacity.json` | "CV at 1 s: capacity ⟨$⟩ before the OOS CI spans zero; v2 ⟨$⟩." | Q2 as written |
-| Ex-ante replay | INTEGRATION_TODO C1 output | Q4 extra line | Q4 as written |
+| Ex-ante replay | INTEGRATION_TODO C1 output (replay workflow; an exploratory selective variant was logged 23:01 UTC) | Q4 extra line, labelled post hoc unless run under a PROTOCOL amendment | Q4 as written |
+| Causal-CV cell | `results/redteam/causal_cv.json` (present) | Q10 line above | — |
+| v2-safe forward | `results/v2/forward_safe.json` (`scripts/forward_test_safe.py`, run once after the pinned runs) | "v2-safe, reported not tested: ⟨c⟩¢ [lo, hi] full window; blind sub-window from 18:00 UTC ⟨c⟩¢" | "runs after the pinned forward test" |
 | Forward test | `results/v2/forward.json` | Q23 filled | "runs once 11:30 UTC" |
 | Tier-0 v3 forward | `results/tier0_v3/forward/results.json` | "frozen v3 forward: ⟨c⟩¢ [lo, hi] over ⟨n⟩ matches" | "pending" |
 | Live session | `results/live/FINAL` | B1 fills and P&L | "settlement pending" |
@@ -359,3 +378,31 @@ Evidence: `results/oos_peeks.log`; `DEVIATIONS.md`; `docs/paper/PLAN.md` §12.13
   (Sharpe 4.5), interpolated on the 0.05 s grid. Reaction 0.10 s with a 67 ms network gives L = 2.99 s and about
   +$84 / +$45. These are existing sweep cells read through the model identity, so treat them as model
   statements, not new evidence.
+
+---
+
+## 6. Red-team additions (Oct 3, about 23:45 UTC): three more questions
+
+**Q26. "Your 3.14 s lag is a median of 49 points with a 1-second clock. How tight is it?"**
+Not tight, and we say so. Its bootstrap 95 % CI is 2.23–3.22 s, a third of resamples fall below 2.5 s, and a narrower
+print window gives 2.23 s. The official stamp has 1 s resolution, so per-point lags cluster a second apart. At 2.23 s
+the 1 s cell makes about $8 a day held out, less than the cheapest data stack. That is why the pre-registered 2.0 s
+reading leads, and why the next step is one session that times bounce against stamp.
+Evidence: `results/redteam/stamp_lag.json::bootstrap`, `windows`; `results/redteam/derived.json::cv.at_L_boot_lo.oos.usd`.
+
+**Q27. "What stops your engine trading a miss call between points?"**
+Nothing yet, and it matters. On 14 minutes of held-out video the live engine made 7 miss calls on balls outside the
+scored flights, 5 of them between rallies: about 30 an hour. Each phantom trade costs about $1.75 at 100 shares (fee
+plus half spread), so the post hoc 1 s P&L survives only about 32 a day and the pre-registered one about 2. A
+rally-state gate (a miss counts only within 2 s of a bounce call on the same match) is now in the strategy code
+(`StrategyConfig.rally_gate_s`, with tests), off by default so the committed runs reproduce, and not yet evaluated on
+the full event log. For tennis it needs a serve detector, which we have not built. No live trade happens without it.
+Evidence: `results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.calls.unmatched`;
+`results/redteam/derived.json::eng.phantom_*`; `research/compliance/INTEGRATION_TODO.md` §8 R-3.
+
+**Q28. "Does Polymarket really hold every order exactly 1 s?"**
+Not exactly, as far as we can tell. 35 % of book reprices and 65 % of the first informed prints land within 100 ms after
+a whole UTC second, against 10 % if timing were uniform. That looks like delayed orders being released on a 1 s clock.
+Our simulation treats the hold as a continuous 1.000 s. If release is batched with time priority the race is unchanged;
+if priority inside a batch is not by send time, the model is conservative for us. We have not measured which.
+Evidence: `results/redteam/stamp_lag.json::whole_second_clock`; `results/tier0/latency_sweep.json::timing_diagnostics`.

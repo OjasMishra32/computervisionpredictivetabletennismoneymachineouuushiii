@@ -1,0 +1,387 @@
+{
+ "label": "DERIVED from existing results files; no simulation, no new held-out read. SIMULATED cells are labelled in their source files (assumed licensed feed, not purchased; parameters measured).",
+ "script": "scripts/redteam_derived.py",
+ "keys": {
+  "cv.cal.lag": {
+   "value": 3.142,
+   "source": "results/tier0/results.json::timing[\"calibrated_stamp_lag_s (inference)\"]"
+  },
+  "cv.pre.lag": {
+   "value": 2.0,
+   "source": "src/tier0.py::CORRECTED.stamp_lag (pre-registered)"
+  },
+  "cv.cal.shift": {
+   "value": 0.14,
+   "source": "derived",
+   "formula": "cv.cal.lag - cv.pre.lag - 1.0 (V = 1 at L = cal == camera this many s AHEAD of the bounce at L = 2.0)"
+  },
+  "cv.pre.is.usd": {
+   "value": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament[\"1\"].IS.usd_per_day"
+  },
+  "cv.cal.is.usd": {
+   "value": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal[\"1\"].IS.usd_per_day"
+  },
+  "cv.stc.is.usd": {
+   "value": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated[\"1\"].IS.usd_per_day"
+  },
+  "cv.stn.is.usd": {
+   "value": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp[\"1\"].IS.usd_per_day"
+  },
+  "cv.pre.be.is": {
+   "value": 1.09,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be.is": {
+   "value": 2.23,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.stc.be.is": {
+   "value": 0.34,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.pess.pre.is.usd": {
+   "value": 8.18,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament[\"1\"].IS.usd_per_day"
+  },
+  "cv.pess.l3.is.usd": {
+   "value": 72.98,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament[\"0\"].IS.usd_per_day",
+   "formula": "= pessimistic CV at V = 1, L = 3.0 by the model identity"
+  },
+  "cv.pre.oos.usd": {
+   "value": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament[\"1\"].burned_OOS.usd_per_day"
+  },
+  "cv.cal.oos.usd": {
+   "value": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal[\"1\"].burned_OOS.usd_per_day"
+  },
+  "cv.stc.oos.usd": {
+   "value": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated[\"1\"].burned_OOS.usd_per_day"
+  },
+  "cv.stn.oos.usd": {
+   "value": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp[\"1\"].burned_OOS.usd_per_day"
+  },
+  "cv.pre.be.oos": {
+   "value": 1.01,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be.oos": {
+   "value": 2.14,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.stc.be.oos": {
+   "value": 0.29,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.pess.pre.oos.usd": {
+   "value": -12.6,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament[\"1\"].burned_OOS.usd_per_day"
+  },
+  "cv.pess.l3.oos.usd": {
+   "value": 32.33,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament[\"0\"].burned_OOS.usd_per_day",
+   "formula": "= pessimistic CV at V = 1, L = 3.0 by the model identity"
+  },
+  "cv.call_before_stamp": {
+   "value": 0.9,
+   "source": "derived",
+   "formula": "cv.pre.lag - cv.pre.be.is - 0.02 s inference (how far before the umpire's stamp the CV call must be made, pre-registered reading)"
+  },
+  "cv.pre.oos.c": {
+   "value": -0.383,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament[\"1\"].burned_OOS.net_c_per_share"
+  },
+  "cv.pre.oos.ci": {
+   "value": [
+    -2.083,
+    1.205
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament[\"1\"].burned_OOS.net_c_per_share_ci95"
+  },
+  "cv.cal.oos.c": {
+   "value": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal[\"1\"].burned_OOS.net_c_per_share"
+  },
+  "fin.feed.low": {
+   "value": 1250.0,
+   "source": "results/financials/financials.json::cost_assumptions.feed_licence.low (ASSUMPTION)"
+  },
+  "fin.feed.high": {
+   "value": 10000.0,
+   "source": "results/financials/financials.json::cost_assumptions.feed_licence.high (ASSUMPTION)"
+  },
+  "fin.cost.low_day": {
+   "value": 42.23,
+   "source": "results/financials/financials.json::strategies.v2.cost.daily.low"
+  },
+  "fin.cost.central_day": {
+   "value": 166.93,
+   "source": "results/financials/financials.json::strategies.v2.cost.daily.central"
+  },
+  "cv.pre.is.maxlic": {
+   "value": 372,
+   "source": "derived",
+   "formula": "cv.pre.is.usd x 30.42 - results/financials/financials.json::cost_assumptions.vps_london.central (77.42); the most the book can pay for data per month"
+  },
+  "cv.pre.is.net_low": {
+   "value": -27.45,
+   "source": "derived",
+   "formula": "cv.pre.is.usd - fin.cost.low_day"
+  },
+  "cv.pre.is.net_central": {
+   "value": -152.15,
+   "source": "derived",
+   "formula": "cv.pre.is.usd - fin.cost.central_day"
+  },
+  "cv.pre.is.annual_gross": {
+   "value": 5395,
+   "source": "derived",
+   "formula": "cv.pre.is.usd x 365"
+  },
+  "cv.pre.oos.maxlic": {
+   "value": 55,
+   "source": "derived",
+   "formula": "cv.pre.oos.usd x 30.42 - results/financials/financials.json::cost_assumptions.vps_london.central (77.42); the most the book can pay for data per month"
+  },
+  "cv.pre.oos.net_low": {
+   "value": -37.88,
+   "source": "derived",
+   "formula": "cv.pre.oos.usd - fin.cost.low_day"
+  },
+  "cv.pre.oos.net_central": {
+   "value": -162.58,
+   "source": "derived",
+   "formula": "cv.pre.oos.usd - fin.cost.central_day"
+  },
+  "cv.pre.oos.annual_gross": {
+   "value": 1588,
+   "source": "derived",
+   "formula": "cv.pre.oos.usd x 365"
+  },
+  "cv.cal.is.maxlic": {
+   "value": 2793,
+   "source": "derived",
+   "formula": "cv.cal.is.usd x 30.42 - results/financials/financials.json::cost_assumptions.vps_london.central (77.42); the most the book can pay for data per month"
+  },
+  "cv.cal.is.net_low": {
+   "value": 52.12,
+   "source": "derived",
+   "formula": "cv.cal.is.usd - fin.cost.low_day"
+  },
+  "cv.cal.is.net_central": {
+   "value": -72.58,
+   "source": "derived",
+   "formula": "cv.cal.is.usd - fin.cost.central_day"
+  },
+  "cv.cal.is.annual_gross": {
+   "value": 34438,
+   "source": "derived",
+   "formula": "cv.cal.is.usd x 365"
+  },
+  "cv.cal.oos.maxlic": {
+   "value": 1644,
+   "source": "derived",
+   "formula": "cv.cal.oos.usd x 30.42 - results/financials/financials.json::cost_assumptions.vps_london.central (77.42); the most the book can pay for data per month"
+  },
+  "cv.cal.oos.net_low": {
+   "value": 14.36,
+   "source": "derived",
+   "formula": "cv.cal.oos.usd - fin.cost.low_day"
+  },
+  "cv.cal.oos.net_central": {
+   "value": -110.34,
+   "source": "derived",
+   "formula": "cv.cal.oos.usd - fin.cost.central_day"
+  },
+  "cv.cal.oos.annual_gross": {
+   "value": 20655,
+   "source": "derived",
+   "formula": "cv.cal.oos.usd x 365"
+  },
+  "cv.L_breakeven.is": {
+   "value": 1.91,
+   "source": "derived",
+   "formula": "3.0 - V* where V* = first V with $/day < 0 on results/tier0/latency_sweep.csv (video, own120, tournament, IS, x_s <= 3)"
+  },
+  "cv.L_for_low.is": {
+   "value": 2.87,
+   "source": "derived",
+   "formula": "3.0 - V* where V* = first V with $/day < fin.cost.low_day on results/tier0/latency_sweep.csv (video, own120, tournament, IS)"
+  },
+  "cv.L_for_central.is": {
+   "value": "not covered at any L <= 3.0",
+   "source": "derived",
+   "formula": "as cv.L_for_low with fin.cost.central_day"
+  },
+  "cv.pre.is.cap": {
+   "value": 17796,
+   "source": "results/tier0/latency_sweep.csv::capital_usd (video, own120, tournament, IS, x_s = 1.0)"
+  },
+  "cv.cal.is.cap": {
+   "value": 29230,
+   "source": "results/tier0/latency_sweep.csv::capital_usd (video, own120, tournament_lagcal, IS, x_s = 1.0)"
+  },
+  "cv.L_breakeven.oos": {
+   "value": 1.99,
+   "source": "derived",
+   "formula": "3.0 - V* where V* = first V with $/day < 0 on results/tier0/latency_sweep.csv (video, own120, tournament, burned_OOS, x_s <= 3)"
+  },
+  "cv.L_for_low.oos": {
+   "value": 2.98,
+   "source": "derived",
+   "formula": "3.0 - V* where V* = first V with $/day < fin.cost.low_day on results/tier0/latency_sweep.csv (video, own120, tournament, burned_OOS)"
+  },
+  "cv.L_for_central.oos": {
+   "value": "not covered at any L <= 3.0",
+   "source": "derived",
+   "formula": "as cv.L_for_low with fin.cost.central_day"
+  },
+  "cv.pre.oos.cap": {
+   "value": 13800,
+   "source": "results/tier0/latency_sweep.csv::capital_usd (video, own120, tournament, burned_OOS, x_s = 1.0)"
+  },
+  "cv.cal.oos.cap": {
+   "value": 22576,
+   "source": "results/tier0/latency_sweep.csv::capital_usd (video, own120, tournament_lagcal, burned_OOS, x_s = 1.0)"
+  },
+  "cv.L_bot": {
+   "value": 2.847,
+   "source": "results/redteam/stamp_lag.json::machines_20ms_london.stamp_lag_median_s (react 20 ms, London 2 ms)"
+  },
+  "cv.L_boot_ci": {
+   "value": [
+    2.225,
+    3.222
+   ],
+   "source": "results/redteam/stamp_lag.json::bootstrap.median_L_ci95_s"
+  },
+  "cv.L_boot_share_below_2_5": {
+   "value": 0.328,
+   "source": "results/redteam/stamp_lag.json::bootstrap.share_of_resamples_L_below_2_5"
+  },
+  "cv.at_L_bot.is.usd": {
+   "value": 39.4,
+   "source": "derived",
+   "formula": "$/day at V = 1, L = 2.847 = lag-2.0 tournament curve at V' = 0.153 (results/tier0/latency_sweep.csv, linear interpolation on the 0.05 s grid; a model statement, not new evidence)"
+  },
+  "cv.at_L_bot.oos.usd": {
+   "value": 29.7,
+   "source": "derived",
+   "formula": "$/day at V = 1, L = 2.847 = lag-2.0 tournament curve at V' = 0.153 (results/tier0/latency_sweep.csv, linear interpolation on the 0.05 s grid; a model statement, not new evidence)"
+  },
+  "cv.at_L_boot_lo.is.usd": {
+   "value": 19.0,
+   "source": "derived",
+   "formula": "$/day at V = 1, L = 2.225 = lag-2.0 tournament curve at V' = 0.775 (results/tier0/latency_sweep.csv, linear interpolation on the 0.05 s grid; a model statement, not new evidence)"
+  },
+  "cv.at_L_boot_lo.oos.usd": {
+   "value": 8.3,
+   "source": "derived",
+   "formula": "$/day at V = 1, L = 2.225 = lag-2.0 tournament curve at V' = 0.775 (results/tier0/latency_sweep.csv, linear interpolation on the 0.05 s grid; a model statement, not new evidence)"
+  },
+  "cv.stc.max_tb": {
+   "value": 1.78,
+   "source": "results/redteam/stamp_lag.json::per_point_reading_V1"
+  },
+  "cv.stc.arrival_min_v1": {
+   "value": 1.83,
+   "source": "results/redteam/stamp_lag.json::per_point_reading_V1"
+  },
+  "venue.reprices_0_100ms_after_second": {
+   "value": 0.349,
+   "source": "results/redteam/stamp_lag.json::whole_second_clock"
+  },
+  "venue.first_prints_0_100ms_after_second": {
+   "value": 0.653,
+   "source": "results/redteam/stamp_lag.json::whole_second_clock"
+  },
+  "cv.pool482.oos.c": {
+   "value": 0.25,
+   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0)"
+  },
+  "cv.pool482.oos.ci": {
+   "value": [
+    -0.35,
+    0.86
+   ],
+   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*"
+  },
+  "cv.netcap1000.oos.usd": {
+   "value": -51,
+   "source": "results/tier0/results.json::stresses_corrected[\"net cap 1000\"].burned_OOS.mean.pnl_per_day_usd (V = 0)"
+  },
+  "eng.tp": {
+   "value": 4,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online[\"50ms\"].tp"
+  },
+  "eng.nmiss": {
+   "value": 41,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.n_miss"
+  },
+  "eng.wil_lo": {
+   "value": 51,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online[\"50ms\"].precision_wilson95[0] (x100, %)"
+  },
+  "eng.lead_med": {
+   "value": 162.5,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.median (ms)"
+  },
+  "eng.hook_lead_ms": {
+   "value": 325,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.flights_called_or_miss[video=test_2,f_net=2819].lead_engine_call_ms"
+  },
+  "eng.hook_lead_offline_ms": {
+   "value": 408,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.flights_called_or_miss[video=test_2,f_net=2819].lead_offline_ms"
+  },
+  "eng.call_ready_p50_ms": {
+   "value": 4.62,
+   "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.call_ready_ms.p50"
+  },
+  "eng.call_ready_p99_ms": {
+   "value": 12.19,
+   "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.call_ready_ms.p99"
+  },
+  "eng.frames": {
+   "value": 102120,
+   "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.frames"
+  },
+  "eng.dropped": {
+   "value": 0,
+   "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.dropped"
+  },
+  "eng.phantom_miss_per_hour": {
+   "value": 29.6,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.calls.unmatched.MISS (7) / stream.video_s (851.0) x 3600; 5 of them between rallies"
+  },
+  "eng.phantom_cost_per_call_usd": {
+   "value": 1.75,
+   "source": "derived",
+   "formula": "100 shares x (fee 5 % x 0.25 + half spread 0.5c), entry only, mark-to-mid; no move on a phantom point"
+  },
+  "eng.phantom_budget_per_day.pre": {
+   "value": 2.5,
+   "source": "derived",
+   "formula": "cv.pre.oos.usd / eng.phantom_cost_per_call_usd: phantom trades a day that erase the OOS 1 s P&L"
+  },
+  "eng.phantom_budget_per_day.cal": {
+   "value": 32.3,
+   "source": "derived",
+   "formula": "cv.cal.oos.usd / eng.phantom_cost_per_call_usd: phantom trades a day that erase the OOS 1 s P&L"
+  },
+  "v2.oos.capacity_usd": {
+   "value": [
+    22754.0,
+    33875.0
+   ],
+   "source": "results/alpha/alpha.json::headline.oos_capital_capacity_usd"
+  }
+ }
+}

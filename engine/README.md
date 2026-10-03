@@ -665,7 +665,10 @@ Live is the same with `LiveClobFeed`, `await feed.run()`, and `asyncio.create_ta
   one GPU". The frozen model was trained with the look-ahead `hb`. A causal `hb` needs a retrain, which is
   a new pre-registration and was not done.
 - **The engine also calls MISS between rallies**: 5 such calls in 14 min of test video, plus 2
-  off-population calls inside rallies. Nothing gates calls on rally state yet.
+  off-population calls inside rallies. A rally-state gate now exists in the strategy
+  (`StrategyConfig.rally_gate_s`: a MISS/OUT call trades only within that many seconds after a BOUNCE/IN call on the
+  same match; 2.0 s for any live use). It is off by default so the committed demo and e2e runs reproduce, and it has
+  not been evaluated on the full engine event log (on HiPerGator). Tennis would need a serve detector instead.
 - **120 fps needs a GPU and the speed options.** On one L4, fp16 + channels-last + folded BN +
   `torch.compile` streamed the whole test set in real time. The fp16 autocast detector as `detect.py` ran it
   manages 93-114 fps (eager or CUDA graph), and fp32 manages 62-69 fps. The laptop does ~50 fps unloaded and 11-23 fps while shared. The

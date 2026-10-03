@@ -1,0 +1,363 @@
+{
+ "label": "SIMULATED: assumed 1 s-class licensed feed (not purchased); parameters measured; CV accuracy = live causal engine (4 of 41 held-out misses called early); trade set = historical points that later moved >= 4c (selected on outcomes, not ex ante)",
+ "never_claim": "We did not buy a licensed feed or licensed video, we have no camera at any court, and no live ATP/WTA data was used. The tier-0 trader is simulated; its timing and fill inputs are our measurements.",
+ "script": "scripts/redteam_causal_cv.py",
+ "cv_system_own120_engine": {
+  "leads_ms": [
+   0,
+   25,
+   50,
+   100,
+   150,
+   200
+  ],
+  "recall": [
+   [
+    0.0976
+   ],
+   [
+    0.0976
+   ],
+   [
+    0.0976
+   ],
+   [
+    0.0488
+   ],
+   [
+    0.0488
+   ],
+   [
+    0.0488
+   ]
+  ],
+  "precision": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "bins_w": [
+   1.0
+  ],
+  "max_lead_ms": 200,
+  "t_inf": 0.02,
+  "precision_n": [
+   4,
+   4,
+   4,
+   2,
+   2,
+   2
+  ],
+  "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online"
+ },
+ "plumbing_check": {
+  "own120_tournament_V0_IS_usd_per_day": 88.79,
+  "published": 88.79,
+  "match": true
+ },
+ "cells_V1": {
+  "tournament": {
+   "IS": {
+    "usd_per_day": 17.02,
+    "usd_per_day_seed_ci95": [
+     -4.72,
+     49.06
+    ],
+    "net_c_per_share": 0.476,
+    "net_c_per_share_ci95": [
+     -0.236,
+     1.169
+    ],
+    "sharpe_ann": 2.51,
+    "fill_rate": 0.0792,
+    "n_trades": 2592.0,
+    "wrong_call_share_of_trades": 0.3342,
+    "capital_usd": 17802.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 3.81,
+    "usd_per_day_seed_ci95": [
+     -35.39,
+     60.75
+    ],
+    "net_c_per_share": -0.49,
+    "net_c_per_share_ci95": [
+     -2.229,
+     1.165
+    ],
+    "sharpe_ann": 0.31,
+    "fill_rate": 0.0789,
+    "n_trades": 945.9,
+    "wrong_call_share_of_trades": 0.468,
+    "capital_usd": 13797.0,
+    "n_seeds_with_trades": 20
+   }
+  },
+  "tournament_lagcal": {
+   "IS": {
+    "usd_per_day": 98.0,
+    "usd_per_day_seed_ci95": [
+     50.5,
+     125.86
+    ],
+    "net_c_per_share": 1.163,
+    "net_c_per_share_ci95": [
+     0.899,
+     1.429
+    ],
+    "sharpe_ann": 12.34,
+    "fill_rate": 0.2625,
+    "n_trades": 6650.4,
+    "wrong_call_share_of_trades": 0.1136,
+    "capital_usd": 29282.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 57.42,
+    "usd_per_day_seed_ci95": [
+     -5.06,
+     132.89
+    ],
+    "net_c_per_share": 0.654,
+    "net_c_per_share_ci95": [
+     0.106,
+     1.204
+    ],
+    "sharpe_ann": 8.81,
+    "fill_rate": 0.2329,
+    "n_trades": 2194.6,
+    "wrong_call_share_of_trades": 0.1525,
+    "capital_usd": 22477.0,
+    "n_seeds_with_trades": 20
+   }
+  }
+ },
+ "cells_V0": {
+  "tournament": {
+   "IS": {
+    "usd_per_day": 92.2,
+    "usd_per_day_seed_ci95": [
+     49.86,
+     119.61
+    ],
+    "net_c_per_share": 1.15,
+    "net_c_per_share_ci95": [
+     0.879,
+     1.423
+    ],
+    "sharpe_ann": 11.84,
+    "fill_rate": 0.2511,
+    "n_trades": 6399.7,
+    "wrong_call_share_of_trades": 0.1189,
+    "capital_usd": 29027.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 46.96,
+    "usd_per_day_seed_ci95": [
+     -8.96,
+     120.59
+    ],
+    "net_c_per_share": 0.566,
+    "net_c_per_share_ci95": [
+     -0.121,
+     1.218
+    ],
+    "sharpe_ann": 7.28,
+    "fill_rate": 0.2019,
+    "n_trades": 1942.0,
+    "wrong_call_share_of_trades": 0.1851,
+    "capital_usd": 21322.0,
+    "n_seeds_with_trades": 20
+   }
+  },
+  "tournament_lagcal": {
+   "IS": {
+    "usd_per_day": 203.47,
+    "usd_per_day_seed_ci95": [
+     168.92,
+     232.77
+    ],
+    "net_c_per_share": 1.374,
+    "net_c_per_share_ci95": [
+     1.213,
+     1.539
+    ],
+    "sharpe_ann": 23.33,
+    "fill_rate": 0.4613,
+    "n_trades": 11051.0,
+    "wrong_call_share_of_trades": 0.0607,
+    "capital_usd": 36211.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 130.86,
+    "usd_per_day_seed_ci95": [
+     50.14,
+     196.25
+    ],
+    "net_c_per_share": 0.979,
+    "net_c_per_share_ci95": [
+     0.681,
+     1.278
+    ],
+    "sharpe_ann": 19.57,
+    "fill_rate": 0.4225,
+    "n_trades": 3734.3,
+    "wrong_call_share_of_trades": 0.0713,
+    "capital_usd": 28434.0,
+    "n_seeds_with_trades": 20
+   }
+  }
+ },
+ "breakeven_V_s": {
+  "tournament": {
+   "IS": 1.101,
+   "burned_OOS": 1.012
+  },
+  "tournament_lagcal": {
+   "IS": 2.231,
+   "burned_OOS": 2.134
+  }
+ },
+ "pessimistic_lagcal": {
+  "V0": {
+   "IS": {
+    "usd_per_day": 188.26,
+    "usd_per_day_seed_ci95": [
+     152.73,
+     220.95
+    ],
+    "net_c_per_share": 1.28,
+    "net_c_per_share_ci95": [
+     1.119,
+     1.443
+    ],
+    "sharpe_ann": 22.01,
+    "fill_rate": 0.4523,
+    "n_trades": 10972.8,
+    "wrong_call_share_of_trades": 0.0725,
+    "capital_usd": 35896.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 117.24,
+    "usd_per_day_seed_ci95": [
+     42.06,
+     186.09
+    ],
+    "net_c_per_share": 0.883,
+    "net_c_per_share_ci95": [
+     0.589,
+     1.186
+    ],
+    "sharpe_ann": 17.89,
+    "fill_rate": 0.4136,
+    "n_trades": 3707.5,
+    "wrong_call_share_of_trades": 0.0855,
+    "capital_usd": 28412.0,
+    "n_seeds_with_trades": 20
+   }
+  },
+  "V0.5": {
+   "IS": {
+    "usd_per_day": 123.11,
+    "usd_per_day_seed_ci95": [
+     73.73,
+     161.68
+    ],
+    "net_c_per_share": 1.136,
+    "net_c_per_share_ci95": [
+     0.922,
+     1.352
+    ],
+    "sharpe_ann": 14.56,
+    "fill_rate": 0.3212,
+    "n_trades": 8072.0,
+    "wrong_call_share_of_trades": 0.1058,
+    "capital_usd": 33064.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 74.06,
+    "usd_per_day_seed_ci95": [
+     10.96,
+     145.32
+    ],
+    "net_c_per_share": 0.743,
+    "net_c_per_share_ci95": [
+     0.312,
+     1.182
+    ],
+    "sharpe_ann": 11.11,
+    "fill_rate": 0.2745,
+    "n_trades": 2575.4,
+    "wrong_call_share_of_trades": 0.1399,
+    "capital_usd": 23984.0,
+    "n_seeds_with_trades": 20
+   }
+  },
+  "V1": {
+   "IS": {
+    "usd_per_day": 87.75,
+    "usd_per_day_seed_ci95": [
+     48.23,
+     120.0
+    ],
+    "net_c_per_share": 1.04,
+    "net_c_per_share_ci95": [
+     0.772,
+     1.309
+    ],
+    "sharpe_ann": 11.29,
+    "fill_rate": 0.2574,
+    "n_trades": 6665.7,
+    "wrong_call_share_of_trades": 0.1331,
+    "capital_usd": 29236.0,
+    "n_seeds_with_trades": 20
+   },
+   "burned_OOS": {
+    "usd_per_day": 48.97,
+    "usd_per_day_seed_ci95": [
+     -9.85,
+     116.33
+    ],
+    "net_c_per_share": 0.544,
+    "net_c_per_share_ci95": [
+     -0.044,
+     1.104
+    ],
+    "sharpe_ann": 7.66,
+    "fill_rate": 0.2258,
+    "n_trades": 2183.2,
+    "wrong_call_share_of_trades": 0.18,
+    "capital_usd": 22355.0,
+    "n_seeds_with_trades": 20
+   }
+  }
+ },
+ "compare_offline_own120_V1": {
+  "tournament": {
+   "IS": 14.78,
+   "burned_OOS": 4.35
+  },
+  "tournament_lagcal": {
+   "IS": 94.35,
+   "burned_OOS": 56.59
+  }
+ },
+ "utc": "2026-10-03T23:22:03.822229+00:00",
+ "periods_run": [
+  "IS",
+  "burned_OOS"
+ ],
+ "reading_labels": {
+  "tournament": "pre-registered: stamp lag 2.0 s, R drawn per tournament (DEVIATIONS V3)",
+  "tournament_lagcal": "post hoc: stamp lag 3.14 s inferred from fast-tier prints (assumes courtside humans)"
+ }
+}

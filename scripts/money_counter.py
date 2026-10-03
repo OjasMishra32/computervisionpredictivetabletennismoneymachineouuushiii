@@ -40,6 +40,8 @@ def main(speed: float, every: int):
     title = u.set_index("cond").title.to_dict()
     oos_start = u.loc[u.oos, "start"].min().timestamp()
     oos_conds = set(u.loc[u.oos, "cond"])
+    if not Path("data/v2_trades_is_oos.parquet").exists():   # CLEAN_CLONE N3
+        sys.exit("needs bash run.sh data, then bash run.sh reproduce (writes data/v2_trades_is_oos.parquet)")
     tr = pd.read_parquet("data/v2_trades_is_oos.parquet")
     tr = tr[tr.month >= "2026-02"].sort_values("ts").reset_index(drop=True)
     tr["day"] = pd.to_datetime(tr.ts, unit="s").dt.floor("D")

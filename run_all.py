@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -96,6 +97,8 @@ def main(oos: bool):
     summary["is"]["calibration"] = cal.round(4).to_dict("records")
 
     wf, sh, by_bucket = fasttier.walk_forward(p_is)
+    if wf.empty or "net30_c" not in wf:   # CLEAN_CLONE N2: a smoke-sized crawl cannot qualify any wallet
+        sys.exit("walk-forward fast tier: not enough in-sample data; run 'bash run.sh data' (full crawl) first")
     wf.to_csv(RES / "fasttier_walkforward_is.csv", index=False)
     summary["is"]["h6_walkforward"] = wf.round(4).to_dict("records")
     summary["is"]["h6_shadow"] = shadow_stats(sh, u)

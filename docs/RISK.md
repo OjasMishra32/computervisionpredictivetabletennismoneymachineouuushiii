@@ -24,8 +24,29 @@ mean / sd × √365 on zero-filled calendar days.
 | **v2** | Frozen fast-tier book (`HYPOTHESIS_V2.md`, `src/v2.py`), priced at the fast tier's own fills | **No.** It measures the opportunity at the fast tier's speed. Copying the fast tier from a remote seat loses money (late-entry stress below: −0.89¢/share IS) | IS +1.38¢ [1.17, 1.59]; burned OOS +0.60¢ [0.09, 1.13]; blind U2-OOS +1.22¢ [−0.19, 2.65], FAIL; forward test `results/v2/forward.json` **pending** (one run, about 11:30 UTC Oct 4) |
 | **v2-safe** | v2 with the net cap at 50 shares (`research/v2/lowloss/`) | Same as v2 | Burned OOS +0.69¢ [0.24, 1.15]; blind U2-OOS FAIL |
 | **tier-0** | Counterfactual: courtside camera + own CV + licensed point feed + London gateway. Not purchased, not built | **No.** Needs a data licence and organiser consent (see R16) | A verifier refuted the pre-registered fill pricing (`research/v2/tier0/DEVIATIONS.md` V1–V10). Corrected headline (`results/tier0/results.json` `headline`, 20-seed means; `results/tier0/VERIFIED` present): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4 (IS = 1 s-delay matches only, 103 days); burned OOS +0.58¢, $46.4/day, Sharpe 7.3. Fixed costs at 10 covered matches a day are $1,153 / $4,149 / $7,215 per day (low / central / high, `research/financials/FINANCIALS.md` §4), so it is uneconomic in every cost case |
+| **CV @ 1 s** | The CV trader at a simulated 1 s licensed-feed baseline (`results/tier0/latency_sweep.json`; assumed feed latency, not purchased; parameters measured; trade set = points that later moved ≥ 4¢, selected on outcomes) | **No.** Needs a licensed sub-second video feed (sold to sportsbooks only), a rally-state gate (R7) and an ex-ante point filter | Pre-registered stamp lag 2.0 s: +$4/day burned OOS, −0.38¢ [−2.08, 1.21], break-even feed delay 1.01–1.09 s. Post hoc lag 3.14 s: +$57/day. Same inference per point: −$17/day. Replay on 9 real books (ex ante): loses in 36 of 36 cells (`results/replay/replay.json`). Most it can pay for data: $1,644/month post hoc, $55 pre-registered (`results/redteam/derived.json`) |
 | **maker v1** | Leaning maker on side markets (`research/v2/crossmarket/RESULTS.md` 5b) | **Technically yes, remotely:** public moneyline feed plus post-only quotes. Live *paper* trading only: a US person cannot open positions on polymarket.com, and the hackathon forbids funded accounts (checklist 1–2) | IS +2.73¢ [1.73, 3.70] per fill (share-weighted +2.59¢ [−0.09, 5.20]). **Blind OOS: FAILURE**, +1.87¢ [−0.14, 3.86] per fill, −$379 (−0.75¢/share share-weighted) (`results/maker/oos.json`). Live paper session `20261003T193534Z` (`results/live/summary.json`) started 19:35 UTC, passed its trade-side warm-up and began paper quoting about 20:00 UTC; 0 fills at 20:03 UTC. It books $10,000 of paper capital per book, not the 3 × peak-locked convention ($2,022–2,779), and checks plumbing only |
 | **table tennis** | Out-of-sport test (`HYPOTHESIS_TT.md`) | **No.** Polymarket TT books: 89¢ median spread, $23 at the touch (NOTE §6) | First run 19:23 UTC (`results/tt/results.json`): 27 evaluable matches; TT1 FAIL, TT2 FAIL (no fast tier detected), TT3 FAIL (no trades), both underpowered and structurally untestable on this sample (a wallet could qualify only in 2026-09; 3 OOS matches against a 30-match bar; `results/tt/corrections.json`). Not evidence against v2 carrying over to another sport |
+
+### Red-team additions (2026-10-03, about 23:30 UTC; `results/redteam/`, `bash run.sh redteam`)
+
+Computed after the integration review (`research/compliance/INTEGRATION_TODO.md`); none changes a frozen rule.
+- **Stamp lag is a two-mode estimate** (R5, R7). The post hoc 3.14 s has a bootstrap 95% CI of [2.23, 3.22] s, and
+  33% of resamples fall below 2.5 s, because the official stamp has 1 s resolution (`results/redteam/stamp_lag.json`).
+  At the low end (2.23 s) the 1 s cell makes about +$8/day held out, below the cheapest data stack ($42/day).
+  Bots instead of humans barely move it (2.85 s for a 20 ms bot in London).
+- **Per-point reading cannot win at 1 s.** Read per point, every reprice lands at most 1.78 s after the bounce, while a
+  1 s-feed order cannot arrive before 1.83 s even with a 200 ms early call: no correct call fills (the −$17/day cell).
+- **Venue clock.** 35% of reprices and 65% of the first informed prints land within 100 ms after a whole UTC second
+  (uniform: 10%), consistent with delayed orders being released on a 1 s clock. The simulation treats the hold as a
+  continuous 1.000 s; unmeasured either way.
+- **Phantom MISS calls** (R7). The live engine fired 7 MISS calls on balls outside the scored set in 851 s of video
+  (about 30 an hour; 5 between rallies). Ungated, at about $1.75 a phantom trade, the post hoc 1 s P&L survives ~32
+  phantom trades a day and the pre-registered one ~2. A rally-state gate is required before any MISS trades:
+  `engine/strategy.py` `StrategyConfig.rally_gate_s` (added in this pass, off by default; INTEGRATION_TODO §8 R-3).
+- **Causal call table** (R7). With the live causal engine's own recall and precision (4 of 41, precision 1.0), the
+  1 s cell is in `results/redteam/causal_cv.json`: the 1 s feed swamps the CV lead, so recall matters little and
+  precision a lot.
 
 ---
 
@@ -147,6 +168,10 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
     not the ~$100k of the sizing lens, which used onset labels, was IS only, and whose $102k row is the Baseline,
     not v2 (`FINANCIALS.md` §2d).
   - Table tennis: not tradable (89¢ spread, $23 at the touch).
+  - CV @ 1 s (simulated): $13.8k (pre-registered) to $22.6k (post hoc) of capital at a 100-share net cap and 10
+    matches a day (`results/tier0/latency_sweep.csv` `capital_usd`); a 1,000-share cap loses −$51/day held out even
+    with our own camera (`results/tier0/results.json` stress "net cap 1000"). The full size × cap × coverage grid is
+    `results/capacity/capacity.json` (capacity workflow).
 - **(c)** Never take more than the copied print (backtest). The engine caps size at the visible stale depth
   inside the limit (`engine/strategy.py` `cap_at_visible`) and does not re-take liquidity its own paper fills
   consumed in the last 10 s (`engine/execution/paper.py`).
@@ -248,8 +273,15 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 - **(c)** Trade only calls with confidence ≥ 0.95 (`engine/fair/value.py` default for MISS calls). The edge after
   fee must be > 0 using (c − p_w) × leverage (`engine/strategy.py`). The net cap bounds a wrong call to ≤ 100
   shares per match.
+  Live causal engine (`results/engine/online_vs_offline.json` `runs.fp16_cl_fuse_compile_b1_realtime`): the offline rows
+  above used a look-ahead feature (`hb`, a whole-flight median) and kept deciding after a far-side bounce. Streamed
+  causally on the same held-out games the engine called **4 of 41 misses** early, all correct (Wilson lower bound 51%),
+  median lead 162.5 ms, and made 7 MISS calls on balls outside the 171 scored flights (5 between rallies). The
+  rally-state gate (`rally_gate_s`) is in the code but off by default and not yet evaluated.
 - **(d)** Policy only: halt tier-0 for the day on any confirmed false call; go live only after 73 consecutive
-  audited correct calls.
+  audited correct calls. No MISS call trades unless a rally-state gate says a rally is in progress: `StrategyConfig.rally_gate_s`
+  (2.0 s for any live use; off by default so the committed demo and e2e runs reproduce; not yet evaluated on the full
+  engine event log; tennis needs a serve detector).
 
 ### R8. Data risk
 - **(a)** Wrong timestamps, missing prints or feed gaps make the backtest see things in the wrong order, or not
@@ -442,6 +474,9 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
     `vision.timing`).
   - Book-snapshot mismatch 0.02%.
   - Uptime and reconnect counts over a full session: unmeasured.
+  - Overnight host, 2026-10-03 23:10 UTC: 9 GB disk free and 12.4 of 13.3 GB swap in use, while the one-shot forward
+    run loads about 12 GB of prints. An out-of-memory kill during `scripts/forward_test.py` would cost the only blind
+    forward read. `bash run.sh preflight` checks disk, swap, power, heavy jobs and the pinned code before 11:20 UTC.
 - **(c)**
   - Keys never on disk. `PaperExecutor` raises `LiveTradingForbidden` on `live=True`, on any credential-like
     argument, when a live or key variable is set, or when a signing library is loaded. A test asserts that the
@@ -508,7 +543,10 @@ The full cost table, with every source URL and label, is `research/financials/FI
 ## What is not measured (plain list)
 
 - Our own live fill rate, queue position and slippage on real orders (we place none).
-- t_stamp − t_bounce, the lag between a ball landing and the umpire's stamp. Tier-0 depends on it most.
+- t_stamp − t_bounce, the lag between a ball landing and the umpire's stamp. Tier-0 depends on it most; the post hoc
+  inference is two-mode (bootstrap CI [2.23, 3.22] s, `results/redteam/stamp_lag.json`).
+- Whether the venue releases delayed orders on a whole-second clock, and the priority inside a release.
+- A rally-state signal for tennis (to gate MISS calls), and the phantom-call rate on tennis footage.
 - Live CV precision on real tennis footage. Our real-video numbers come from table tennis.
 - UMA dispute counts (only a close-time proxy).
 - v2 vs maker correlation out of sample; maker live results; the v2 forward test.

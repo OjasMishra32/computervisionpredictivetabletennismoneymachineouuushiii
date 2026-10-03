@@ -171,3 +171,32 @@ def test_strategy_module_has_no_order_endpoints():
         for bad in ("post_order", "create_order", "py_clob_client", "clob.polymarket.com/order", "/order\"",
                     "sign_order", "private_key ="):
             assert bad not in src, (mod.__name__, bad)
+
+
+def bounce(frame=90):
+    return VisionCall(call="BOUNCE", frame=frame, t_frame=0.0, t_emit=0.0, p_miss=0.01, lead_ms=0.0, direction=+1)
+
+
+def test_rally_gate_skips_a_miss_with_no_rally_in_progress():
+    d, ex, _ = run_with_call(miss(+1), left=1, cfg=StrategyConfig(rally_gate_s=2.0))
+    assert d.action == "SKIP" and d.reason == "no_rally_in_progress" and not ex.orders
+
+
+def test_rally_gate_passes_a_miss_shortly_after_a_bounce():
+    feed, ex, rk, st, state = setup(book_msgs(), cfg=StrategyConfig(rally_gate_s=2.0))
+    out = {}
+
+    def hook(ts):
+        if "d" not in out and ts + 67 > 2500:
+            st.add_match("m", A, B, state=state, tour="wta", left_player=1, now_ms=1900)
+            st.on_call("m", bounce(), t_ms=1900)                 # BOUNCE 0.6 s before the MISS
+            out["d"] = st.on_call("m", miss(+1), t_ms=2500)
+    feed.on_clock(hook)
+    feed.run_sync()
+    assert out["d"].reason != "no_rally_in_progress" and out["d"].action == "SEND"
+
+
+def test_rally_gate_off_by_default_keeps_old_behaviour():
+    assert StrategyConfig().rally_gate_s is None
+    d, _, _ = run_with_call(miss(+1), left=1)
+    assert d.action == "SEND"

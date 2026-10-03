@@ -8,8 +8,9 @@ Rebuild from the repo root:
 What it writes
 --------------
 * docs/deck/courtside.pptx: 16:9. Ten main slides for a 4:45 talk (timed script in every slide's notes),
-  ten Q&A backup slides (the ten hardest questions in research/compliance/JUDGE.md, each with its honest
-  answer and the evidence), then hidden manifest slides.
+  fourteen Q&A backup slides (the ten hardest questions in research/compliance/JUDGE.md plus four from
+  docs/QA_PREP.md, two of them the organizers' own: latency under 3 s and capital capacity), each with its
+  honest answer and the evidence, then hidden manifest slides.
 * docs/deck/courtside_manifest.json: every number on every slide, with the results file and key it was
   read from. The same list is on the hidden slides at the end of the deck.
 * docs/deck/courtside.pdf: only when LibreOffice (soffice) is on PATH.
@@ -133,12 +134,22 @@ F_LIVE = "results/live/summary.json"
 F_PEEKS = "results/oos_peeks.log"
 F_T0V3 = "results/tier0_v3/blind.json"
 F_HYP2 = "HYPOTHESIS_V2.md"
+F_SWEEP = "results/tier0/latency_sweep.json"
+F_OVO = "results/engine/online_vs_offline.json"
+F_RT = "results/redteam/derived.json"
+F_REPLAY = "results/replay/replay.json"
+F_E2E = "results/e2e/summary.json"
+F_CAP = "results/capacity/capacity.json"
+F_ALPHA = "results/alpha/alpha.json"
+OVO_RUN = "fp16_cl_fuse_compile_b1_realtime"
 NOTE = "docs/NOTE.md"
 README = "README.md"
 
-# The tier-0 CV-edge result always carries this label, verbatim, wherever it appears.
-TIER0_LABEL = ("COUNTERFACTUAL: assumes a licensed live feed + courtside camera (not purchased); "
-               "parameters measured")
+# The CV trader at the 1 s licensed-feed baseline always carries this label, verbatim, wherever it appears.
+TIER0_LABEL = ("SIMULATED: assumed 1 s licensed feed (not purchased); parameters measured; trade set = points "
+               "that later moved ≥ 4¢ (selected on outcomes, not ex ante)")
+# The older courtside-camera reading (V = 0) is only shown as a counterfactual row.
+CAMERA_LABEL = "camera counterfactual: courtside camera at V = 0, not feasible (no camera at any court)"
 
 # Keys into results/v2/causal.json (the frozen v2 book, causal window).
 IS0, IS5, IS10 = (f"causal/is_eval/slip{s}" for s in ("0.0", "0.005", "0.01"))
@@ -512,6 +523,14 @@ def run_checks() -> None:
     lab = opt(F_T0, "label")
     if lab is not None and "COUNTERFACTUAL" not in lab.upper():
         fail(f"{F_T0} label lost the COUNTERFACTUAL marker: {lab!r}")
+    if not ("SIMULATED" in TIER0_LABEL and "not ex ante" in TIER0_LABEL and "not purchased" in TIER0_LABEL):
+        fail(f"TIER0_LABEL lost a marker (SIMULATED / not ex ante / not purchased): {TIER0_LABEL!r}")
+    lab = opt(F_SWEEP, "label")
+    if lab is not None and "assumed" not in lab.lower():
+        fail(f"{F_SWEEP} label lost the 'assumed' marker: {lab!r}")
+    rt = opt(F_RT, "keys", "cv.pre.oos.usd", "value")
+    if rt is not None and not _agree(rt, raw(F_SWEEP, "video_own120", "tournament", "1", "burned_OOS", "usd_per_day"), tol=0.01):
+        fail(f"{F_RT} cv.pre.oos.usd {rt} != {F_SWEEP} video_own120.tournament['1'].burned_OOS.usd_per_day")
     lab = opt(F_T0V3, "label")
     if lab is not None and "COUNTERFACTUAL" not in lab.upper():
         fail(f"{F_T0V3} label lost the COUNTERFACTUAL marker: {lab!r}")
@@ -1158,7 +1177,8 @@ def s02_tiers(prs, n):
     vis = D(lambda: ms0(next(r for r in raw(F_ENG_DEMO, "latency_budget") if r["stage"].startswith("vision"))["ms"]),
             f"{F_ENG_DEMO} :: latency_budget > [stage 'vision…'] > ms  [processing only; laptop benchmark]")
     book = V(F_T0, "timing", "median_t_reprice_minus_t_stamp_s", f=sec2)
-    lag = V(F_T0, "timing", "calibrated_stamp_lag_s (inference)", f=lambda x: f"≈{x:.1f} s")
+    lag = V(F_T0, "timing", "calibrated_stamp_lag_s (inference)", f=lambda x: f"≈{x:.1f} s",
+            how="post hoc inference; assumes courtside humans")
     espn = V(F_DECAY, "latency_inputs", "espn_behind_book_s", f=lambda x: f"+{x:.1f} s")
     h4_share = V(F_SUM, "h4", "share_book_first", f=frac_pct0)
     h4_n = V(F_SUM, "h4", "n", f=intc)
@@ -1170,7 +1190,8 @@ def s02_tiers(prs, n):
         ("TIER 1", "Chair umpire", "", "at the bounce", "", INK, WHITE, MUTED_DK),
         ("TIER 2", "Market makers", "the book reprices", book, "vs the official stamp (median)", BLUE, WHITE,
          "C9D9EA"),
-        ("TIER 3", "Official feed", "umpire-entered point stamp", "reference", f"{lag} after the bounce (inferred)",
+        ("TIER 3", "Official feed", "umpire-entered point stamp", "reference",
+         f"1–3 s after the bounce, unmeasured (post hoc inference {lag})",
          "3F6E9C", WHITE, "C9D9EA"),
         ("TIER 4", "TV and public scores", f"book first on {h4_share} of {h4_n} points, median {h4_med}", espn,
          "ESPN behind the book", "C9D5E1", INK, MUTED),
@@ -1191,7 +1212,8 @@ def s02_tiers(prs, n):
         text(s, x + w - 3.0, y + 0.02, 2.82, rh - 0.04, wp, anchor="m", name=f"Ladder when {i}")
     text(s, M, 6.25, right - M, 0.7, P(R(
         "Tier 0: physics simulation of Hawk-Eye-class tracking. Tiers 2–4: live books vs the WTA's public "
-        "point log, read after the fact (stamp-to-bounce lag is inferred, not measured). Streams: assumption.",
+        "point log, read after the fact (stamp-to-bounce lag is unmeasured; the post hoc inference assumes "
+        "courtside humans). Streams: assumption.",
         10.5, MUTED)), name="Ladder source")
 
     cx, cw = 9.05, SW - M - 9.05
@@ -1226,7 +1248,7 @@ Ball tracking knows where the ball lands before it bounces. The umpire knows at 
 Over a match a one-dollar share's fair value travels {travel} in total, about {move} per point. Whoever trades on an older tier sells to someone faster. The venue admits it: it holds every marketable order {delay} so makers can reprice, and charges takers {fee} times p(1−p).
 
 [If asked how ESPN's lag was measured: we bought no official ATP/WTA data feed and no trading result uses one; the free WTA website and ESPN scoreboard were recorded on 2026-10-03 only to time their lag (research/v2/latency/RESULTS.md).]
-[If asked about the clocks: the WTA stamp is the public point log, 1 s resolution, read after the fact; its lag to the bounce ({lag}) is an inference from fast-tier prints, not a measurement. ATP has no public official point clock.]
+[If asked about the clocks: the WTA stamp is the public point log, 1 s resolution, read after the fact; its lag to the bounce is unmeasured. The post hoc inference from fast-tier prints ({lag}) assumes courtside humans with a 0.25 s reaction; it is not a measurement. ATP has no public official point clock.]
 [Sources: {F_T0} timing; {F_DECAY} latency_inputs; {F_SUM} h4 and tracking_tennis_physics; {F_LEVER} atp; {F_RISK} regime.]
 """)
 
@@ -1384,30 +1406,49 @@ def s04_cv(prs, n):
         return D(fn, f"{F_ENG_DEMO} :: latency_budget > [stage 'vision…'] > {field}")
     lat50, lat90 = vis_lat("ms"), vis_lat("p90")
     fps = V(F_ENG_BENCH, "summary", 0, "fps_sustained", f=lambda x: f"{x:.0f} fps")
+    # The deployable numbers are the LIVE CAUSAL engine's (results/engine/online_vs_offline.json); the offline
+    # evaluation above used a look-ahead feature (engine/README.md, Known gaps) and is shown only as such.
+    A = ("runs", OVO_RUN, "A_engine_calls")
+    e_tp = V(F_OVO, *A, "online", "50ms", "tp", f=intc)
+    e_calls = D(lambda: f"{raw(F_OVO, *A, 'online', '50ms', 'tp')}/"
+                        f"{raw(F_OVO, *A, 'online', '50ms', 'tp') + raw(F_OVO, *A, 'online', '50ms', 'fp')}",
+                key_str(F_OVO, *A, "online", "50ms") + "  [tp/(tp+fp), live causal engine]")
+    e_nmiss = V(F_OVO, *A, "miss_first_call_lead_ms", "n_miss", f=intc)
+    e_lead = V(F_OVO, *A, "miss_first_call_lead_ms", "median", f=lambda x: f"{x:g} ms")
+    e_lb = V(F_OVO, *A, "online", "50ms", "precision_wilson95", f=lambda p: frac_pct0(p[0]))
+    hook = D(lambda: ms0(next(f_ for f_ in raw(F_OVO, "runs", OVO_RUN, "flights_called_or_miss")
+                              if f_["video"] == "test_2" and f_["f_net"] == 2819)["lead_engine_call_ms"]),
+             key_str(F_OVO, "runs", OVO_RUN, "flights_called_or_miss") + "  [video=test_2, f_net=2819] > lead_engine_call_ms")
+    H = ("headline", OVO_RUN, "stream")
+    g50 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p50", f=lambda x: f"{x:.1f} ms")
+    g99 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p99", f=lambda x: f"{x:.1f} ms")
+    gfr = V(F_OVO, *H, "frames", f=intc)
+    gdr = V(F_OVO, *H, "dropped", f=intc)
     cx = M + vw + 0.45
     cw = SW - M - cx
-    stat(s, cx, 1.55, cw, calls, f"miss calls correct 50 ms before contact on held-out games. Called {tp_t} "
-                                 f"of {n_miss} misses (recall {recall}); 95% lower bound {lb}",
-         col=RED, big_size=48, big_h=0.85, cap_h=0.95, name="Calls")
-    stat(s, cx, 3.4, cw, det5, f"of {det_n} labelled held-out test frames within 5 px (ball found in {det_rec})",
-         big_size=48, big_h=0.85, cap_h=0.55, name="Tracking")
-    stat(s, cx, 4.85, cw, lat50, f"vision processing per call, median (p90 {lat90}). The laptop sustains {fps}, "
-                                 "below 120: a venue box needs a GPU", col=INK, big_size=48, big_h=0.85, cap_h=0.75,
-         name="Latency")
+    stat(s, cx, 1.5, cw, e_calls, f"live causal engine on held-out games: every miss call it made was right. It called "
+                                  f"{e_tp} of {e_nmiss} misses before contact (median lead {e_lead}); 95% lower bound "
+                                  f"{e_lb}. The offline {calls} used a look-ahead feature (engine/README.md)",
+         col=RED, big_size=48, big_h=0.8, cap_h=1.15, name="Calls")
+    stat(s, cx, 3.55, cw, det5, f"of {det_n} labelled held-out test frames within 5 px (ball found in {det_rec})",
+         big_size=44, big_h=0.78, cap_h=0.55, name="Tracking")
+    stat(s, cx, 4.95, cw, g50, f"GPU call-ready, median (p99 {g99}), 120 fps on one L4; {gdr} of {gfr} frames "
+                               f"dropped. Laptop: {fps}",
+         col=INK, big_size=44, big_h=0.78, cap_h=0.85, name="Latency")
     footer(s, n)
     notes(s, f"""
 {window(3)}  INNOVATION: CALLING THE POINT BEFORE IT LANDS
 
 Can anyone reach tier zero? This is real 120-frame-per-second table-tennis footage, OpenTTGames, a public labelled high-speed set; table tennis itself is not tradable on a liquid book, tennis video at this frame rate is not public.
 
-Our tracker finds the ball within five pixels on {det5} of labelled held-out frames. The frozen call model, scored once on held-out games, made {calls} correct miss calls fifty milliseconds before contact. It is conservative: it called {tp_t} of {n_miss} misses, recall {recall}, and with that sample the lower bound on precision is {lb}.
+Our tracker finds the ball within five pixels on {det5} of labelled held-out frames. Run live and causally on one GPU, at 120 frames a second with {gdr} frames dropped, the engine is call-ready in {g50}. On held-out games it called {e_tp} of {e_nmiss} misses before contact, a median {e_lead} early, and every call was right; with four calls the lower bound on precision is {e_lb}. It is cautious.
 
-The engine runs it as a stream: about {lat50} per call on a laptop. The lead comes from frame rate and cameras, so it lives in the venue.
+The offline evaluation said {calls} at fifty milliseconds, but it used a feature that looked ahead over the whole flight. The live engine is the deployable number, and our engine README documents the gap. The lead comes from frame rate and cameras, so it lives in the venue.
 
 [If asked about the laptop: it sustains {fps}, not 120, under load; HiPerGator GPU timing is in hpg/engine_vision.sbatch. Footage credit: OpenTTGames, adapted (overlays added), CC BY-NC-SA 4.0 (non-commercial; credited on the slide).]
-[If asked about the video's {lead_max} call: it is the longest call on held-out games; the online rule's median lead is {lead_med}.]
+[If asked about the offline numbers ({calls} at 50 ms, recall {recall}, lower bound {lb}; the {lead_max} clip): offline, with a look-ahead feature. The live causal engine's call on that clip came {hook} early (online_vs_offline.json flights_called_or_miss test_2/2819). Laptop vision processing: {lat50} per call (p90 {lat90}).]
 [Reproducing the calls needs models/vision/frozen_call_model.pkl, which is not in git; hpg/engine_vision.sbatch rebuilds it.]
-[Sources: {F_TRACK} early_call; {F_ENG_DEMO} vision + latency_budget; {F_ENG_BENCH} summary.]
+[Sources: {F_OVO} runs.{OVO_RUN}.A_engine_calls and headline; {F_TRACK} early_call (offline); {F_ENG_DEMO} vision + latency_budget; {F_ENG_BENCH} summary.]
 """)
 
 
@@ -1674,141 +1715,142 @@ The one clean test left is the forward run, planned for {D(fwd_when, FWD_WHEN_SR
 
 
 def s07_tier0(prs, n):
-    slide_ctx(f"{n} Tier-0 counterfactual")
+    slide_ctx(f"{n} The 1 s baseline")
     s = new_slide(prs)
-    eyebrow(s, "06  ·  WHAT THE CV EDGE COULD BUY (COUNTERFACTUAL)")
-    set_title(s, "Tier 0, priced: positive if the book reprices late")
-    box(s, M, 1.66, CW, 0.42, fill=RED, radius=0.06, name="Counterfactual banner")
-    text(s, M + 0.2, 1.66, CW - 0.4, 0.42, P(R(TIER0_LABEL, 13, WHITE, bold=True)), anchor="m",
-         name="Counterfactual label")
-    _record("COUNTERFACTUAL label", F_T0 + " :: label  [must contain COUNTERFACTUAL; checked at build]")
+    eyebrow(s, "06  ·  WHAT SPEED IS WORTH (SIMULATED)")
+    set_title(s, "The 1 s baseline: break-even, and one unmeasured number")
+    box(s, M, 1.62, CW, 0.5, fill=RED, radius=0.06, name="Simulated banner")
+    text(s, M + 0.2, 1.62, CW - 0.4, 0.5, P(R(TIER0_LABEL, 11.5, WHITE, bold=True)), anchor="m",
+         name="Simulated label")
+    _record("SIMULATED label", "build_deck.py TIER0_LABEL  [must contain SIMULATED, not ex ante, not purchased; "
+                               "checked at build]")
+    vo = ("video_own120",)
+    day = lambda x: ("+" if x >= 0 else MINUS) + f"${abs(x):.0f}"  # noqa: E731
+    RT = lambda k, f=None: V(F_RT, "keys", k, "value", f=f)  # noqa: E731
+    su = lambda x: f"{x:.2f} s" if isinstance(x, (int, float)) else str(x)  # noqa: E731
 
-    h = ("headline",)
-    cards = []
-    for per, title in (("IS", "IN SAMPLE (1 s-delay matches)"), ("burned_OOS", "BURNED OOS (non-blind)")):
-        ps = V(F_T0, *h, per, "mean", "per_share_c", f=cents)
-        lo = V(F_T0, *h, per, "mean", "per_share_ci95_c_lo", f=num)
-        hi = V(F_T0, *h, per, "mean", "per_share_ci95_c_hi", f=num)
-        shp = V(F_T0, *h, per, "mean", "sharpe_ann", f=sh1)
-        sds = V(F_T0, *h, per, "sd", "sharpe_ann", f=sh1)
-        day = V(F_T0, *h, per, "mean", "pnl_per_day_usd", f=usd1)
-        seeds = V(F_T0, *h, per, "n_seeds", f=intc)
-        days = V(F_T0, *h, per, "mean", "days", f=intc)
-        cards.append((title, ps, f"[{lo}, {hi}]", shp, sds, day, seeds, days))
-    for i, (title, ps, cis, shp, sds, day, seeds, days) in enumerate(cards):
-        y = 2.22 + i * 1.62
-        box(s, M, y, 4.3, 1.5, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"T0 card {i}")
-        text(s, M + 0.22, y + 0.06, 3.9, 1.38, [
-            P(R(title, 10.5, BLUE, bold=True, spc=1.1)),
-            P(R(ps, 34, RED if i else BLUE, bold=True, font=HEAD), R("  " + cis, 12, MUTED), before=2),
-            P(R(f"Sharpe {shp} ± {sds}  ·  {day}/day", 13, INK)),
-            P(R(f"{seeds}-seed mean, {days} days", 10.5, MUTED)),
-        ], anchor="m", name=f"T0 text {i}")
+    def cell(rd, per, k, f):
+        return V(F_SWEEP, *vo, rd, "1", per, k, f=f)
+    pre_is, pre_os = cell("tournament", "IS", "usd_per_day", day), cell("tournament", "burned_OOS", "usd_per_day", day)
+    pre_c = cell("tournament", "burned_OOS", "net_c_per_share", cents)
+    pre_ci = cell("tournament", "burned_OOS", "net_c_per_share_ci95", ci)
+    be = ("breakeven_video_delay",)
+    pre_be_is = V(F_SWEEP, *be, "tournament", "IS", "breakeven_V_s_seed_mean_curve", f=su)
+    pre_be_os = V(F_SWEEP, *be, "tournament", "burned_OOS", "breakeven_V_s_seed_mean_curve", f=su)
+    cal_is, cal_os = cell("tournament_lagcal", "IS", "usd_per_day", day), cell("tournament_lagcal", "burned_OOS", "usd_per_day", day)
+    lag = V(F_T0, "timing", "calibrated_stamp_lag_s (inference)", f=lambda x: f"{x:.2f} s")
+    lag_ci = RT("cv.L_boot_ci", f=lambda p: f"[{p[0]:.2f}, {p[1]:.2f}] s")
+    stc_is, stc_os = cell("stamp_calibrated", "IS", "usd_per_day", day), cell("stamp_calibrated", "burned_OOS", "usd_per_day", day)
+    stc_be_is = V(F_SWEEP, *be, "stamp_calibrated", "IS", "breakeven_V_s_seed_mean_curve", f=su)
+    stc_be_os = V(F_SWEEP, *be, "stamp_calibrated", "burned_OOS", "breakeven_V_s_seed_mean_curve", f=su)
+    hv = ("headline_by_V", "V1", "all")
+    rp_c = V(F_REPLAY, *hv, "per_share_mark_c", f=cents)
+    rp_ci = V(F_REPLAY, *hv, "per_share_mark_ci95_c", f=ci)
+    rp_neg = D(lambda: f"{sum(c['all']['per_share_mark_c'] < 0 for c in raw(F_REPLAY, 'cells').values())}/"
+                       f"{len(raw(F_REPLAY, 'cells'))}", key_str(F_REPLAY, "cells") + "  [cells with per_share_mark_c < 0]")
+    cards = [
+        ("1  PRE-REGISTERED · STAMP LAG 2.0 s", f"{pre_os}/day", "held out", BLUE,
+         f"{pre_c} a share {pre_ci}; {pre_is}/day in sample. Break-even feed delay {pre_be_os}–{pre_be_is}"),
+        (f"2  POST HOC · LAG {lag}, ASSUMES COURTSIDE HUMANS", f"{cal_os}/day", "held out", "3F6E9C",
+         f"{cal_is}/day in sample. The lag's own bootstrap CI: {lag_ci}"),
+        ("3  SAME INFERENCE, READ PER POINT", f"{stc_os}/day", "held out", RED,
+         f"{stc_is}/day in sample. Break-even feed delay {stc_be_os}–{stc_be_is}"),
+        ("4  REPLAY · 9 REAL BOOKS · EVERY POINT, EX ANTE", f"{rp_c}", "a share", RED,
+         f"{rp_ci} at V = 1 s, lag 2 s; {rp_neg} delay × lag cells lose"),
+    ]
+    for i, (title, big, unit, col, cap) in enumerate(cards):
+        y = 2.27 + i * 1.18
+        box(s, M, y, 4.55, 1.12, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"Reading card {i}")
+        text(s, M + 0.2, y + 0.05, 4.2, 1.02, [
+            P(R(title, 9.5, col if col != RED else MUTED, bold=True, spc=1.0)),
+            P(R(big, 22, col, bold=True, font=HEAD), R("  " + unit, 11, INK), before=0, line=0.95),
+            P(R(cap, 10, MUTED), before=1),
+        ], anchor="m", name=f"Reading text {i}")
 
-    cx = M + 4.6
+    cx = M + 4.85
     cw = SW - M - cx
-    label(s, cx, 2.22, cw, f"NET ¢/SHARE VS SECONDS FROM BOUNCE TO BOOK REPRICE ({cards[0][6]}-SEED MEANS)")
-    curve = opt(F_T0, "pnl_vs_t_reprice_minus_t_bounce")
-    if curve:
-        cd = XyChartData()
-        spec = [("In sample, tournament timing", "IS", "tournament"),
-                ("Burned OOS, tournament timing", "burned_OOS", "tournament"),
-                ("Burned OOS, stamp timing", "burned_OOS", "stamp")]
-        ys = []
-        for name, per, rd in spec:
-            ser = cd.add_series(name)
-            for b, row in sorted(curve[per][rd].items(), key=lambda kv: float(kv[0])):
-                ser.add_data_point(float(b), row["per_share_c"])
-                ys.append(row["per_share_c"])
-                _record(cents(row["per_share_c"]), key_str(F_T0, "pnl_vs_t_reprice_minus_t_bounce", per, rd, b,
-                                                           "per_share_c"))
-        lo_y, hi_y = math.floor(min(ys)), math.ceil(max(ys))
-        marks = []
-        for key, nm in (("pre_registered_primary_median_t_reprice_minus_t_bounce_s", "pre-registered"),
-                        ("calibrated_t_reprice_minus_t_bounce_s (inference)", "inferred")):
-            x = opt(F_T0, "timing", key)
-            if x is not None:
-                marks.append((nm, x))
-                ser = cd.add_series(f"{nm}: {x:.2f} s")
-                ser.add_data_point(x, lo_y)
-                ser.add_data_point(x, hi_y)
-                _record(f"{x:.2f} s", key_str(F_T0, "timing", key))
-        gf = s.shapes.add_chart(XL_CHART_TYPE.XY_SCATTER_LINES, Inches(cx - 0.05), Inches(2.5), Inches(cw + 0.05),
-                                Inches(3.3), cd)
-        gf.name = "Chart: P&L vs reprice timing"
+    label(s, cx, 2.27, cw, "$/DAY HELD OUT (BURNED OOS) VS ASSUMED FEED DELAY V, 20-SEED MEANS")
+    cd = XyChartData()
+    spec = [("Pre-registered (lag 2.0 s)", "tournament"), ("Post hoc (lag 3.14 s)", "tournament_lagcal"),
+            ("Same inference, per point", "stamp_calibrated")]
+    ys, n_ser = [], 0
+    for name_, rd in spec:
+        cur = opt(F_SWEEP, *vo, rd)
+        if not cur:
+            continue
+        ser = cd.add_series(name_)
+        n_ser += 1
+        for vk, row in sorted(cur.items(), key=lambda kv: float(kv[0])):
+            if float(vk) <= 3.0 and row.get("burned_OOS", {}).get("usd_per_day") is not None:
+                y_ = row["burned_OOS"]["usd_per_day"]
+                ser.add_data_point(float(vk), y_)
+                ys.append(y_)
+                _record(day(y_), key_str(F_SWEEP, *vo, rd, vk, "burned_OOS", "usd_per_day"))
+    if ys:
+        lo_y, hi_y = 20 * math.floor(min(ys) / 20), 20 * math.ceil(max(ys) / 20)
+        ser = cd.add_series("assumed licensed feed: V = 1 s")
+        ser.add_data_point(1.0, lo_y)
+        ser.add_data_point(1.0, hi_y)
+        zs = cd.add_series("zero")
+        zs.add_data_point(0.0, 0.0)
+        zs.add_data_point(3.0, 0.0)
+        gf = s.shapes.add_chart(XL_CHART_TYPE.XY_SCATTER_LINES, Inches(cx - 0.05), Inches(2.52), Inches(cw + 0.05),
+                                Inches(2.95), cd)
+        gf.name = "Chart: $/day vs feed delay"
         ch = gf.chart
         style_chart(ch)
         ch.legend.font.size = Pt(10)
-        cols = [BLUE, RED, "7D8FA3", MUTED, MUTED]
+        cols = [BLUE, "3F6E9C", RED, MUTED, "B8C4D0"]
         for i, ser in enumerate(ch.plots[0].series):
             ser.smooth = False
             ln = ser.format.line
             ln.color.rgb = rgb(cols[i])
-            ln.width = Pt(2.25 if i < 3 else 1.0)
-            if i >= 2:
+            ln.width = Pt(2.25 if i < n_ser else 1.0)
+            if i == 1 or i >= n_ser:
                 ln.dash_style = MSO_LINE.DASH
-            ser.marker.style = XL_MARKER_STYLE.CIRCLE if i < 3 else XL_MARKER_STYLE.NONE
-            if i < 3:
-                ser.marker.size = 5
-                ser.marker.format.fill.solid()
-                ser.marker.format.fill.fore_color.rgb = rgb(cols[i])
-                ser.marker.format.line.fill.background()
+            ser.marker.style = XL_MARKER_STYLE.NONE
         va = ch.value_axis
         va.minimum_scale, va.maximum_scale = lo_y, hi_y
-        va.tick_labels.number_format = '0"¢"'
+        va.tick_labels.number_format = '"$"0'
         va.tick_labels.number_format_is_linked = False
         xa = ch.category_axis
+        xa.minimum_scale, xa.maximum_scale = 0.0, 3.0
         xa.tick_labels.number_format = '0.0" s"'
         xa.tick_labels.number_format_is_linked = False
     else:
-        text(s, cx, 3.0, cw, 1.0, P(R("Timing curve: pending", 20, MUTED)), name="Chart pending")
-    be = V(F_T0, "pnl_vs_t_reprice_minus_t_bounce", "burned_OOS", "stamp_breakeven_B_s", f=lambda x: f"{x:.1f} s")
-    pre = V(F_T0, "timing", "pre_registered_primary_median_t_reprice_minus_t_bounce_s", f=lambda x: f"{x:.2f} s")
-    pre_in = (opt(F_T0, "timing", "pre_registered_primary_median_t_reprice_minus_t_bounce_s", default=9e9) <
-              opt(F_T0, "pnl_vs_t_reprice_minus_t_bounce", "burned_OOS", "stamp_breakeven_B_s", default=-9e9))
-    fixed_lo = FIN("Tier-0", "IS", "fixed_cost_usd_per_day", "low", f=usd0)
-    # the frozen v3 blind tests (counterfactual): shown wherever tier-0 is shown
+        text(s, cx, 3.0, cw, 1.0, P(R("Latency sweep: pending", 20, MUTED)), name="Chart pending")
+    L_be = RT("cv.L_breakeven.oos", f=su)
+    L_low = RT("cv.L_for_low.oos", f=su)
+    mx_cal = RT("cv.cal.oos.maxlic", f=usd0)
+    mx_pre = RT("cv.pre.oos.maxlic", f=usd0)
+    lic_lo = V(F_FIN, "cost_assumptions", "feed_licence", "low", f=usd0)
+    lic_hi = V(F_FIN, "cost_assumptions", "feed_licence", "high", f=usd0)
     v3_u2is = V(F_T0V3, "sets", "u2_is", "primary", "per_share_c", f=cents)
     v3_u2os = V(F_T0V3, "sets", "u2_oos", "primary", "per_share_c", f=cents)
-    v3_bo = V(F_T0V3, "sets", "burned_oos", "primary", "per_share_c", f=cents)
-    v3_bo_lo = V(F_T0V3, "sets", "burned_oos", "primary", "per_share_ci95_c_lo", f=num)
-    v3_bo_hi = V(F_T0V3, "sets", "burned_oos", "primary", "per_share_ci95_c_hi", f=num)
     v3_all = V(F_T0V3, "verdicts", "U2 (primary, test b)", "overall", f=lambda v: v.split(" ")[0])
-    v3_bv = V(F_T0V3, "sets", "burned_oos", "reading", "verdict")
-    y3 = 2.22 + 2 * 1.62
-    box(s, M, y3, 4.3, 1.28, fill=RED_TINT, radius=0.08, name="T0 v3 card")
-    text(s, M + 0.22, y3 + 0.06, 3.9, 1.16, [
-        P(R("THEN: FROZEN v3, BLIND TESTS", 10.5, RED, bold=True, spc=1.1)),
-        P(R(f"Unseen markets {v3_u2is} (IS period), {v3_u2os} (OOS period): {v3_all}", 12, INK, bold=True), before=2),
-        P(R(f"Burned OOS {v3_bo} [{v3_bo_lo}, {v3_bo_hi}]: {v3_bv}, the interval includes 0", 12, INK)),
-        P(R(F_T0V3, 9.5, MUTED, font=MONO)),
-    ], anchor="m", name="T0 v3 text")
-    trade_is = FIN("Tier-0", "IS", "net_trading_usd_per_day", f=usd1)
-    cov = V(F_T0, "headline_scenario", "coverage", f=intc)
-    text(s, cx, 5.85, cw, 1.1, [
-        P(R("The sign hinges on one unmeasured number: ", 12.5, INK, bold=True),
-          R(f"how long after the bounce the book reprices. Under the stamp reading the edge is negative below "
-            f"{be}" + (f"; our pre-registered estimate, {pre}, falls in that zone." if pre_in else
-                       f"; our pre-registered estimate is {pre}."), 12.5, INK)),
-        P(R(f"And it does not pay its way: {trade_is}/day of trading vs at least {fixed_lo}/day of fixed costs "
-            f"(feed licence, camera, operator) at {cov} covered matches a day.", 12, RED), before=3),
-    ], name="T0 reading")
+    text(s, cx, 5.55, cw, 1.4, [
+        P(R("The sign turns on the unmeasured stamp lag L: ", 12, INK, bold=True),
+          R(f"at 1 s the book breaks even only if L ≥ {L_be}, and covers the cheapest data quote only if "
+            f"L ≥ {L_low}. It can pay at most {mx_cal}/month for data (post hoc) or {mx_pre} (pre-registered); "
+            f"quotes run {lic_lo}–{lic_hi}/month (ASSUMPTION).", 12, INK)),
+        P(R(f"A frozen tier-0 v3 rule failed its blind tests on unseen markets ({v3_u2is}, {v3_u2os}: {v3_all}).",
+            11, RED), before=3),
+    ], name="Reading")
     footer(s, n)
     notes(s, f"""
-{window(6)}  THE CV EDGE, AS A LABELLED COUNTERFACTUAL
+{window(6)}  WHAT SPEED IS WORTH: THE 1 s BASELINE (SIMULATED)
 
-What would calling the point first buy? We cannot buy a licensed live feed or put a camera courtside, so this slide carries the label {TIER0_LABEL}. We bought no official ATP/WTA data feed and no result here uses one.
+We don't own a fast feed. We assume a one-second licensed feed and ask what it is worth. This slide carries the label {TIER0_LABEL}. We bought no official ATP/WTA data feed and no result here uses one.
 
-We simulate a trader with our measured CV call rate and latency, a London gateway, and live-book fill prices. In sample: {cards[0][1]} a share, Sharpe {cards[0][3]} plus or minus {cards[0][4]}. Out of sample: {cards[1][1]}, Sharpe {cards[1][3]}, and its interval touches zero.
+Pre-registered first: it breaks even, {pre_os} a day held out, {pre_c} a share, and the break-even feed delay is {pre_be_os} to {pre_be_is}. So the call has to beat the umpire's stamp by about nine-tenths of a second.
 
-The chart is the honest part: profit depends on how long after the bounce the book reprices, which nobody publishes. Under one reading of the clocks, below {be} it is negative, and our pre-registered estimate, {pre}, {"falls in that zone" if pre_in else "is above it"}.
+A post hoc reading of the umpire's lag ({lag}, which assumes the fast traders are courtside humans) gives {cal_os} a day; its own bootstrap interval for the lag is {lag_ci}. Read the same clocks point by point and it loses: {stc_os} a day. A replay on nine real recorded books, calling every point ex ante, gives {rp_c} a share and {rp_neg} cells lose.
 
-Then we froze a third version and tested it blind: on unseen markets it earned {v3_u2is} and {v3_u2os} a share ({v3_all}), and on the burned window {v3_bo} with an interval that includes zero ({v3_bv}). A frozen version failed its blind tests.
+The simulated trader only trades points that later moved four cents or more, so every number here is an upper bound. One second is the decision point for buying a feed. It is not a profit claim.
 
-And at today's costs it does not pay for the feed licence and the camera. The value of the CV is the time budget it measures, not a P&L we can bank.
-
-[The headline here is results/tier0/results.json "headline", marked VERIFIED; the frozen v3 blind tests are {F_T0V3} (research/v2/tier0_v3/TEST_RESULTS.md).]
-[Sources: {F_T0} headline, timing, pnl_vs_t_reprice_minus_t_bounce; {F_T0V3} sets, verdicts; {F_FIN} Tier-0 rows.]
+[If asked "isn't 1 s at L = 3.14 s just the camera counterfactual?": in the model, yes; only bounce-to-reprice time enters, so V = 1 at L = 3.14 equals a camera 0.14 s ahead of the bounce at L = 2.0 (QA_PREP Q8).]
+[If asked about machines instead of humans: a 20 ms bot in London still gives L of about 2.85 s, because the 1 s venue hold dominates the inference (results/redteam/stamp_lag.json; QA_PREP Q9).]
+[Sources: {F_SWEEP} video_own120 and breakeven_video_delay; {F_REPLAY} headline_by_V and cells; {F_RT} keys; {F_FIN} cost_assumptions; {F_T0V3}.]
 """)
 
 
@@ -1840,9 +1882,6 @@ def s08_engine(prs, n):
     for a, b in rows:
         trs.append([[P(R(a, 11.5, INK))], [P(R(b, 11.5, INK, bold=True), align="r")]])
     table(s, M, 2.05, [lw - 1.75, 1.75], [0.38] + [0.42] * len(rows), trs, "Table: live engine")
-    text(s, M, 5.48, lw, 1.4, P(R("Engine: streaming vision → fair value → strategy → risk → paper executor. "
-                                  "The executor refuses to start if a live-trading flag or wallet key is present.",
-                                  11, MUTED)), name="Engine note")
 
     mx = M + lw + 0.3
     mw = 3.6
@@ -1852,7 +1891,7 @@ def s08_engine(prs, n):
         ls_ = None
     label(s, mx, 1.72, mw, "LIVE PAPER SESSION" + (f" ({ls_['since'][:10]})" if ls_ and ls_["since"] else ""))
     live = opt(F_LIVE)
-    box(s, mx, 2.05, mw, 4.85, fill=INK, radius=0.1, name="Session card")
+    box(s, mx, 2.05, mw, 3.75, fill=INK, radius=0.1, name="Session card")
     if live and ls_:
         lab = V(F_LIVE, "label")
         st = _record(ls_["state"].upper(), LIVE_STATE_SRC)
@@ -1890,14 +1929,56 @@ def s08_engine(prs, n):
         st = PENDING
         b1f = b1p = PENDING
         paras = [P(R("Live paper session: pending", 18, WHITE, bold=True))]
-    text(s, mx + 0.22, 2.15, mw - 0.44, 4.65, paras, anchor="t", name="Session text")
+    text(s, mx + 0.22, 2.12, mw - 0.44, 3.62, paras, anchor="t", name="Session text")
 
     fx = mx + mw + 0.3
     fw_ = SW - M - fx
-    figure(s, "results/engine/demo_timeline.png", fx, 1.72, fw_, 5.18,
-           caption="Illustrative pairing: held-out table-tennis calls mapped onto a real recorded WTA book. "
-                   "Shows mechanics and timing only; not a backtest, not evidence of edge.",
-           name="Engine demo timeline", cap_h=0.75)
+    figure(s, "results/engine/demo_timeline.png", fx, 1.72, fw_, 4.08,
+           caption="Illustrative: table-tennis calls on a recorded WTA book. Timing only.",
+           name="Engine demo timeline", cap_h=0.5)
+
+    # Organizer question 1: can the pipeline trade inside 3 s? Frame -> executable order, measured (e2e run).
+    bg = ("budget_with_1s_simulated_feed",)
+    e_feed = opt(F_E2E, *bg, "feed_simulated_ms")
+    e_ours = opt(F_E2E, *bg, "ours_capture_to_order_ready_ms", "p50")
+    e_net = opt(F_E2E, *bg, "network_one_way_ms", "p50")
+    e_ven = opt(F_E2E, *bg, "venue_delay_ms", "p50")
+    e_tot = opt(F_E2E, *bg, "total_ms", "p50")
+    e_req = opt(F_E2E, *bg, "requirement_ms", default=3000.0)
+    e_n = opt(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n")
+    g50_ = V(F_OVO, "headline", OVO_RUN, "stream", "after_startup", "call_ready_ms", "p50", f=lambda x: f"{x:.1f} ms")
+    ys_ = 6.2
+    if None not in (e_feed, e_ours, e_net, e_ven, e_tot):
+        for k_, v_ in (("feed_simulated_ms", e_feed), ("ours_capture_to_order_ready_ms > p50", e_ours),
+                       ("network_one_way_ms > p50", e_net), ("venue_delay_ms > p50", e_ven), ("total_ms > p50", e_tot)):
+            _record(f"{v_:,.0f} ms", key_str(F_E2E, *bg) + " > " + k_)
+        n_tr = _record(f"{e_n}", key_str(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n"))
+        label(s, M, 5.88, CW, f"CAN WE TRADE INSIDE 3 s? FRAME → EXECUTABLE PAPER ORDER, MEASURED END TO END "
+                              f"({n_tr} ORDER TRACES; ORDER NOT SENT)")
+        scale = CW / max(e_req, e_tot)
+        segs = [(e_feed, "simulated 1 s licensed feed", "B8C4D0", INK), (e_ours, "", BLUE, WHITE),
+                (e_net, "", "3F6E9C", WHITE), (e_ven, "venue holds every order 1 s", RED, WHITE)]
+        x_ = M
+        for i, (ms, lab_, fill_, fg_) in enumerate(segs):
+            w_ = max(ms * scale, 0.04)
+            box(s, x_, ys_, w_, 0.42, fill=fill_, radius=0.0, name=f"Latency seg {i}")
+            if lab_:
+                text(s, x_ + 0.08, ys_, w_ - 0.16, 0.42, P(R(f"{lab_}: {ms:,.0f} ms", 11, fg_, bold=True)),
+                     anchor="m", name=f"Latency seg label {i}")
+            x_ += w_
+        box(s, x_, ys_, M + e_req * scale - x_, 0.42, fill=WHITE, line=LINE, radius=0.0, name="Latency margin")
+        text(s, x_ + 0.08, ys_, M + e_req * scale - x_ - 0.16, 0.42,
+             P(R(f"margin to 3 s: {e_req - e_tot:,.0f} ms", 11, BLUE, bold=True)), anchor="m", name="Latency margin label")
+        text(s, M, ys_ + 0.44, CW, 0.38, P(
+            R(f"Ours, video in → paper order ready: {e_ours:,.0f} ms (laptop) · network to the venue {e_net:,.0f} ms · "
+              f"total {e_tot:,.0f} ms. On a GPU the vision call is ready in {g50_}. The real bar is tighter: the call "
+              "must beat the umpire's stamp by ~0.9 s (slide 7).", 10.5, MUTED)), name="Latency caption")
+    else:
+        label(s, M, 5.88, CW, "CAN WE TRADE INSIDE 3 s? FRAME → EXECUTABLE PAPER ORDER")
+        _record(PENDING, F_E2E + "  [end-to-end timing proof]")
+        text(s, M, ys_, CW, 0.8, P(R(f"End-to-end run: pending. Measured parts: GPU vision call-ready {g50_}; the "
+                                     "venue holds every order 1 s; a simulated 1 s feed.", 12, INK)),
+             name="Latency pending")
     footer(s, n)
     notes(s, f"""
 {window(7)}  THE ENGINE RUNS END TO END, PAPER ONLY
@@ -1906,10 +1987,14 @@ This is not just a backtest. The market-data and paper-trading legs run on live 
 
 On the right, the full chain runs on a real recorded WTA book: vision call, paper order, the one-second venue delay, the fill, then the reprice. It is an illustrative pairing of table-tennis calls with a tennis book, so it shows timing, not edge.
 
+The strip at the bottom answers the organizers' first question, whether we can trade inside three seconds. It is measured end to end in one process: our own footage streamed over WebRTC into the vision engine, a call, a paper order built against a live tennis book, the measured network time to the venue, and the venue's one-second hold, plus a simulated one-second feed. Our own part is tens of milliseconds; the feed and the venue hold dominate. Three seconds is not the real bar, though: the call has to beat the umpire's stamp by about nine-tenths of a second.
+
+[Engine: streaming vision → fair value → strategy → risk → paper executor. The executor refuses to start if a live-trading flag or wallet key is present. The e2e run maps table-tennis calls onto a live tennis market for timing only (different sport); the order payload is unsigned and never sent ({F_E2E}).]
+
 The live paper session (our pre-registered maker plus a taker control) was {st.lower()} at build time. Status: {status}. Primary book: {b1f} fills, P&L {b1p}. It is a plumbing check; that strategy already failed its blind test.
 
 [Paper only: TERMS 5.3 forbids funded accounts; the executor raises LiveTradingForbidden if keys or live flags exist. If the session summary updates before the talk, rebuild the deck and re-render the video together: both read it at build time.]
-[Sources: {F_ENG_LIVE}; {F_LIVE}; results/engine/demo_timeline.png from {F_ENG_DEMO}.]
+[Sources: {F_ENG_LIVE}; {F_LIVE}; results/engine/demo_timeline.png from {F_ENG_DEMO}; {F_E2E} budget_with_1s_simulated_feed; {F_OVO} headline.]
 """)
 
 
@@ -1940,7 +2025,7 @@ def s09_risk(prs, n):
 
     mx = M + lw + 0.3
     mw = 3.45
-    label(s, mx, 1.72, mw, "LIQUIDITY & CAPITAL (v2, IN SAMPLE)")
+    label(s, mx, 1.72, mw, "LIQUIDITY & CAPITAL")
     lc = ("liquidity_capital", "is_eval")
     med = V(F_RISK, *lc, "usd_per_trade_quantiles", "0.5", f=lambda x: f"${x:.2f}")
     cap = V(F_CAUSAL, IS0, "capital_usd", f=usd_k)
@@ -1950,13 +2035,17 @@ def s09_risk(prs, n):
               key_str(F_RISK, "liquidity_capital", "v2_share_of_fast_tier_usd_is_pct") + "  [max over months]")
     ceil_ = V(F_FIN, "strategies", "v2", "ceiling", "IS", "fast_tier_qualified_print_usd_per_day", f=usd_k)
     top1 = V(F_RISK, "concentration", "is_eval", "wallet", "top1_share_of_net_pct", f=pct1)
-    items = [(med, "median trade"), (f"{per_day}/day", f"notional on {cap} capital (3× peak locked {peak})"),
+    v2cap = V(F_ALPHA, "headline", "oos_capital_capacity_usd", f=lambda p: f"{usd_k(p[0])}–{usd_k(p[1])}")
+    cvcap = D(lambda: f"{usd_k(raw(F_RT, 'keys', 'cv.pre.oos.cap', 'value'))}–{usd_k(raw(F_RT, 'keys', 'cv.cal.oos.cap', 'value'))}",
+              key_str(F_RT, "keys", "cv.pre.oos.cap / cv.cal.oos.cap") + "  [latency_sweep.csv capital_usd at V = 1]")
+    items = [(med, "median v2 trade"), (f"{per_day}/day", f"v2 notional on {cap} capital (3× peak locked {peak})"),
              (f"≤ {share}", "of the fast tier's own 0–3 s volume in any month"),
-             (f"{ceil_}/day", "outer ceiling: every qualifying fast-tier print"),
+             (v2cap, "capital where v2's held-out edge still holds (1–2× its frozen size); 5× loses"),
+             (cvcap, "capital the CV book uses at 1 s (100-share cap, 10 matches a day; results/capacity has the grid)"),
              (top1, "of in-sample P&L from the top wallet: concentration risk")]
     paras = []
     for big, cap_ in items:
-        paras.append(P(R(big + "  ", 18, BLUE, bold=True, font=HEAD), R(cap_, 11.5, INK), after=7))
+        paras.append(P(R(big + "  ", 17, BLUE, bold=True, font=HEAD), R(cap_, 11, INK), after=5))
     text(s, mx, 2.05, mw, 4.4, paras, name="Liquidity list")
 
     fx = mx + mw + 0.3
@@ -1971,19 +2060,35 @@ def s09_risk(prs, n):
         return [[P(R(lab_, 11, INK))], [P(R(tr, 11.5, INK), align="r")], [P(R(fx_, 11.5, MUTED), align="r")],
                 [P(R(net, 12, col, bold=True), align="r")]]
 
+    def cv_row():
+        rk = lambda k: raw(F_RT, "keys", k, "value")  # noqa: E731
+        sg = lambda x: ("+" if x >= 0 else MINUS) + f"{abs(x):.0f}"  # noqa: E731
+        tr = D(lambda: f"{sg(rk('cv.pre.oos.usd'))} / {sg(rk('cv.cal.oos.usd'))}",
+               key_str(F_RT, "keys", "cv.pre.oos.usd / cv.cal.oos.usd"))
+        fx_ = D(lambda: usd0(rk("fin.cost.central_day")), key_str(F_RT, "keys", "fin.cost.central_day"))
+        net = D(lambda: f"{sg(rk('cv.pre.oos.net_central'))} / {sg(rk('cv.cal.oos.net_central'))}",
+                key_str(F_RT, "keys", "cv.pre.oos.net_central / cv.cal.oos.net_central"))
+        return [[P(R("CV @ 1 s, OOS: pre-reg / post hoc", 10, INK))], [P(R(tr, 10.5, INK), align="r")],
+                [P(R(fx_, 11, MUTED), align="r")], [P(R(net, 11, RED, bold=True), align="r")]]
+
     trs = [[[P(R("Book", 11, WHITE, bold=True))], [P(R("Trading", 11, WHITE, bold=True), align="r")],
             [P(R("Fixed", 11, WHITE, bold=True), align="r")], [P(R("Net", 11, WHITE, bold=True), align="r")]],
            frow("v2 (", "IS", "v2, IS"),
            frow("v2 (", "IS, current 1 s / 5% regime only", "v2, IS, today's fees"),
            frow("v2 (", "OOS (burned, non-blind)", "v2, burned OOS"),
            frow("Maker", "OOS (blind)", "Maker, blind OOS"),
-           frow("Tier-0", "IS", "Tier-0 (counterfactual)")]
+           cv_row()]
     table(s, fx, 2.05, [fw_ - 2.55, 0.85, 0.75, 0.95], [0.38] + [0.5] * 5, trs, "Table: financials")
     lic = V(F_FIN, "cost_assumptions", "feed_licence", "central", f=usd0)
-    text(s, fx, 5.0, fw_, 1.35, [
-        P(R("Tier-0: " + TIER0_LABEL + ".", 10.5, RED, bold=True)),
-        P(R(f"Fixed costs include an official point-feed licence, an ASSUMPTION ({lic}/month central; no public "
-            "price). Fees are the binding variable.", 10.5, MUTED), before=4),
+    mx_cal = V(F_RT, "keys", "cv.cal.oos.maxlic", "value", f=usd0)
+    mx_pre = V(F_RT, "keys", "cv.pre.oos.maxlic", "value", f=usd0)
+    lic_lo = V(F_FIN, "cost_assumptions", "feed_licence", "low", f=usd0)
+    lic_hi = V(F_FIN, "cost_assumptions", "feed_licence", "high", f=usd0)
+    text(s, fx, 5.0, fw_, 1.4, [
+        P(R(f"The CV book at 1 s can pay at most {mx_cal}/month for data (post hoc) or {mx_pre} (pre-registered), "
+            f"against quotes of {lic_lo}–{lic_hi}/month (ASSUMPTION; {lic} central). It prices speed; it is not yet "
+            "a business.", 10.5, INK, bold=True)),
+        P(R("CV @ 1 s: " + TIER0_LABEL + ".", 9.5, RED), before=3),
     ], name="Financials note")
     box(s, M, 6.42, CW, 0.52, fill=INK, radius=0.08, name="Risk strip")
     text(s, M + 0.25, 6.42, CW - 0.5, 0.52, P(
@@ -1998,10 +2103,12 @@ Small by design. Every order goes through hard limits: {tiles[0][0]} per order, 
 
 Liquidity: the median trade is {med}; at most {share} of the fast tier's own volume in any month; capital is three times peak locked, {cap}.
 
-Financials, honestly: before fixed costs v2 makes money. After a data licence and a London server, it is about break-even in sample and negative on the burned out-of-sample. The CV counterfactual is far below its fixed costs. So this is a measured opportunity, not a business yet.
+Capacity, the organizers' second question: v2's held-out edge holds only up to about {v2cap} of capital, one to two times its frozen size, and five times the size loses. The CV book at one second uses {cvcap}; the binding limit is the stale depth on each point, not our capital.
+
+Financials, honestly: before fixed costs v2 makes money. After a data licence and a London server, it is about break-even in sample and negative on the burned out-of-sample. The CV book at one second can pay at most {mx_cal} a month for data under the post hoc reading and {mx_pre} pre-registered, against quotes of {lic_lo} to {lic_hi}. So this prices speed; it is not a business yet.
 
 [Biggest risk is the venue: one fee or delay change moves the edge more than any parameter (R11). Wallet concentration: top wallet {top1} of IS P&L (R2).]
-[Sources: {F_ENG_DEMO} risk_config; {F_RISK} liquidity_capital, concentration; {F_CAUSAL}; {F_FIN} headline rows and cost_assumptions; docs/RISK.md.]
+[Sources: {F_ENG_DEMO} risk_config; {F_RISK} liquidity_capital, concentration; {F_CAUSAL}; {F_FIN} headline rows and cost_assumptions; {F_ALPHA} headline.oos_capital_capacity_usd; {F_RT} keys (derived by scripts/redteam_derived.py); results/capacity/capacity.json (capacity grid); docs/RISK.md.]
 """)
 
 
@@ -2037,8 +2144,11 @@ def s10_close(prs, n):
     except Missing:
         live_status = _record(PENDING, F_LIVE)
     pend_fin = D(lambda: "; ".join(raw(F_FIN, "pending")) or "none", key_str(F_FIN, "pending"))
-    text(s, M, 5.1, SW - 2 * M, 1.6, [
-        P(R("STILL OPEN AT BUILD TIME", 12, MUTED_DK, bold=True, spc=1.4)),
+    text(s, M, 5.0, SW - 2 * M, 1.8, [
+        P(R("NEXT: ", 13, "F07A66", bold=True),
+          R("one licensed-feed session to measure the stamp lag; an ex-ante point filter; then decide whether to buy "
+            "a feed.", 13, WHITE)),
+        P(R("STILL OPEN AT BUILD TIME", 12, MUTED_DK, bold=True, spc=1.4), before=6),
         P(R(f"Blind forward test (run once, planned {when}): ", 14, WHITE, bold=True),
           R(fwd, 14, "F07A66", bold=True), before=4),
         P(R("Live paper session: ", 14, WHITE, bold=True), R(live_status, 14, MUTED_DK)),
@@ -2046,12 +2156,14 @@ def s10_close(prs, n):
     ], name="Pending")
     text(s, M, 6.86, SW - 2 * M, 0.5, P(R("No real money was traded. We bought no official ATP/WTA data feed and no "
                                           "trading result uses one; free public score pages were recorded only to "
-                                          "time their lag. Tier 0 is a labelled counterfactual.", 11, MUTED_DK)),
+                                          "time their lag. The CV trader is simulated (assumed 1 s licensed feed, not purchased).", 11, MUTED_DK)),
          anchor="m", name="Disclaimer")
     notes(s, f"""
 {window(9)}  CLOSE
 
-The code is public and the failures are in it. bash run.sh replay reruns the paper engine on recorded books in seconds; bash run.sh data, then bash run.sh reproduce, rebuilds every table and figure from public data in one to two hours. The blind forward test runs once, planned for {when}. Thank you.
+The code is public and the failures are in it. bash run.sh replay reruns the paper engine on recorded books in seconds; bash run.sh data, then bash run.sh reproduce, rebuilds every table and figure from public data in one to two hours; bash run.sh redteam reruns the checks we ran against ourselves. The blind forward test runs once, planned for {when}.
+
+Next: one session with a licensed feed measures the stamp lag. If the umpire lags about three seconds and data costs less than the book can pay, it pays; if not, the speed belongs to someone else. Thank you.
 
 [Status at build time: forward test {fwd}; live session {live_status}.]
 [If asked about reproducing the CV calls: the frozen call model (models/vision/frozen_call_model.pkl) is not in git; hpg/engine_vision.sbatch rebuilds it on HiPerGator.]
@@ -2063,10 +2175,13 @@ The code is public and the failures are in it. bash run.sh replay reruns the pap
 # --------------------------------------------------------------------------------------------
 
 
-def slide_q(prs, n, q, short, full, bullets, evidence, sources):
+N_BACKUP = 14
+
+
+def slide_q(prs, n, q, short, full, bullets, evidence, sources, ref="research/compliance/JUDGE.md"):
     slide_ctx(f"{n} Q{q}")
     s = new_slide(prs)
-    eyebrow(s, f"Q&A BACKUP  ·  Q{q} OF 10  ·  research/compliance/JUDGE.md")
+    eyebrow(s, f"Q&A BACKUP  ·  Q{q} OF {N_BACKUP}  ·  {ref}")
     set_title(s, short, size=30)
     text(s, M, 1.68, 7.6, 0.75, P(R(f"“{full}”", 13, MUTED, italic=True)), name="Question")
     paras = []
@@ -2344,37 +2459,150 @@ def appendix(prs, n0):
              (wci, "burned-OOS ¢/share, wallet-clustered CI")],
             [F_NM, F_CAUSAL, F_RISK, F_FIN, F_PMC])
 
-    # Q10
+    # Q10 (live causal engine first; the offline evaluation only with its look-ahead caveat)
     n += 1
     slide_ctx(f"{n} Q10")
     ec = ("early_call", "precision_recall_test_snapshot", "50ms")
     calls = D(lambda: f"{raw(F_TRACK, *ec, 'tp')}/{raw(F_TRACK, *ec, 'tp') + raw(F_TRACK, *ec, 'fp')}",
-              key_str(F_TRACK, *ec) + "  [tp/(tp+fp)]")
-    rec = V(F_TRACK, *ec, "recall", f=frac_pct0)
-    lbq = V(F_TRACK, *ec, "precision_wilson95", f=lambda p: frac_pct0(p[0]))
-
-    def bc():
-        v = [x for k, x in raw(F_TENNIS, "headline", "labels", "median_landing_err_cm", "learned").items()
-             if 33 <= int(k) <= 300]
-        return f"{min(v) / 100:.1f}–{max(v) / 100:.1f} m"
-    bcast = D(bc, key_str(F_TENNIS, "headline", "labels", "median_landing_err_cm", "learned") + "  [33–300 ms]")
-    beq = V(F_T0, "pnl_vs_t_reprice_minus_t_bounce", "burned_OOS", "stamp_breakeven_B_s", f=lambda x: f"{x:.1f} s")
-    latq = D(lambda: ms0(next(r for r in raw(F_ENG_DEMO, "latency_budget") if r["stage"].startswith("vision"))["ms"]),
-             f"{F_ENG_DEMO} :: latency_budget > [stage 'vision…'] > ms")
+              key_str(F_TRACK, *ec) + "  [tp/(tp+fp), OFFLINE, look-ahead feature]")
+    A = ("runs", OVO_RUN, "A_engine_calls")
+    e_tp = V(F_OVO, *A, "online", "50ms", "tp", f=intc)
+    e_nmiss = V(F_OVO, *A, "miss_first_call_lead_ms", "n_miss", f=intc)
+    e_lead = V(F_OVO, *A, "miss_first_call_lead_ms", "median", f=lambda x: f"{x:g} ms")
+    e_lb = V(F_OVO, *A, "online", "50ms", "precision_wilson95", f=lambda p: frac_pct0(p[0]))
+    e_calls = D(lambda: f"{raw(F_OVO, *A, 'online', '50ms', 'tp')}/"
+                        f"{raw(F_OVO, *A, 'online', '50ms', 'tp') + raw(F_OVO, *A, 'online', '50ms', 'fp')}",
+                key_str(F_OVO, *A, "online", "50ms") + "  [tp/(tp+fp), live causal engine]")
+    F_CCV = "results/redteam/causal_cv.json"
+    usd = lambda x: ("+" if x >= 0 else MINUS) + f"${abs(x):.0f}"  # noqa: E731
+    c_is = V(F_CCV, "cells_V1", "tournament", "IS", "usd_per_day", f=usd)
+    c_os = V(F_CCV, "cells_V1", "tournament", "burned_OOS", "usd_per_day", f=usd)
+    p_is = V(F_SWEEP, "video_cv_pessimistic", "tournament", "1", "IS", "usd_per_day", f=usd)
+    p_os = V(F_SWEEP, "video_cv_pessimistic", "tournament", "1", "burned_OOS", "usd_per_day", f=usd)
+    ph = V(F_RT, "keys", "eng.phantom_miss_per_hour", "value", f=lambda x: f"{x:.0f}")
+    ph_b = V(F_RT, "keys", "eng.phantom_budget_per_day.cal", "value", f=lambda x: f"{x:.0f}")
     slide_q(prs, n, 10, "What does the computer vision actually add?",
-            "What does the computer vision add? Your own counterfactual says the camera barely matters.",
-            [[B("It measures what tier 0 can know: "), f"real 120 fps video called {calls} misses correctly 50 ms "
-              f"before contact (recall {rec}, lower bound {lbq}); 25 fps broadcast is off by {bcast}: useless."],
-             [B("Against a 1 s order delay those leads are small. "), "In the counterfactual (assumed feed, not "
-              f"bought) the unmeasured bounce-to-reprice time dominates: under the stamp reading it is negative "
-              f"below {beq}."],
-             [B("The contribution is the time budget: "), f"where a lead comes from (frame rate, cameras, being in "
-              f"the venue) and what it costs in latency (~{latq} per call on a laptop)."],
-             [B("Not shown: "), "a tier-0 order reaching a stale quote end to end live. We have no camera at a "
-              "tennis venue and no licensed feed."]],
-            [(calls, f"miss calls correct at 50 ms (recall {rec})"), (bcast, "broadcast-video landing error"),
-             (beq, "stamp-reading break-even, bounce to reprice. Tier-0: " + TIER0_LABEL)],
-            [F_TRACK, F_TENNIS, F_T0, F_ENG_DEMO])
+            "Your call model was scored with a look-ahead feature. Causally, how good is it, and what does it add?",
+            [[B("The live engine is causal; the offline evaluation was not. "), f"Streamed at 120 fps on one GPU, it "
+              f"called {e_tp} of {e_nmiss} held-out misses before contact, all correct (lower bound {e_lb}), median "
+              f"lead {e_lead}. The offline {calls} at 50 ms used a look-ahead feature."],
+             [B("At a 1 s feed the lead barely matters: "), f"with the live engine's own call table the pre-registered "
+              f"1 s cell is {c_is}/day in sample and {c_os} held out; with no early calls at all, {p_is} and {p_os}."],
+             [B("It also fires between rallies: "), f"about {ph} MISS calls an hour on balls outside the scored set; "
+              f"the post hoc 1 s P&L survives only ~{ph_b} phantom trades a day. A rally-state gate is now in "
+              "the strategy (off by default, not yet evaluated on the event log); it comes before any live trade."],
+             [B("The contribution is the time budget: "), "where a lead comes from (frame rate, cameras, being in the "
+              "venue), and proof that the call fits easily inside the venue's 1 s hold."]],
+            [(e_calls, f"live causal engine, held-out misses called correctly ({e_tp} of {e_nmiss})"),
+             (c_os, "pre-registered 1 s cell, held out, engine call table"),
+             (ph, "phantom MISS calls per hour, ungated")],
+            [F_OVO, F_CCV, F_SWEEP, F_RT], ref="docs/QA_PREP.md Q10")
+
+    # Q11-Q14 (docs/QA_PREP.md): the attacks that can cap Performance, and the organizers' two questions
+    usd2 = lambda x: ("+" if x >= 0 else MINUS) + f"${abs(x):.0f}"  # noqa: E731
+    vo = ("video_own120",)
+    pre_os = V(F_SWEEP, *vo, "tournament", "1", "burned_OOS", "usd_per_day", f=usd2)
+    pre_c = V(F_SWEEP, *vo, "tournament", "1", "burned_OOS", "net_c_per_share", f=cents)
+    cal_os = V(F_SWEEP, *vo, "tournament_lagcal", "1", "burned_OOS", "usd_per_day", f=usd2)
+    stc_os = V(F_SWEEP, *vo, "stamp_calibrated", "1", "burned_OOS", "usd_per_day", f=usd2)
+    RTv = lambda k, f=None: V(F_RT, "keys", k, "value", f=f)  # noqa: E731
+    lag_ci = RTv("cv.L_boot_ci", f=lambda p_: f"[{p_[0]:.2f}, {p_[1]:.2f}] s")
+    below = RTv("cv.L_boot_share_below_2_5", f=frac_pct0)
+    max_tb = RTv("cv.stc.max_tb", f=lambda x: f"{x:.2f} s")
+    arr = RTv("cv.stc.arrival_min_v1", f=lambda x: f"{x:.2f} s")
+    hv = ("headline_by_V", "V1", "all")
+    rp_c = V(F_REPLAY, *hv, "per_share_mark_c", f=cents)
+    rp_ci = V(F_REPLAY, *hv, "per_share_mark_ci95_c", f=ci)
+    rp_neg = D(lambda: f"{sum(c['all']['per_share_mark_c'] < 0 for c in raw(F_REPLAY, 'cells').values())} of "
+                       f"{len(raw(F_REPLAY, 'cells'))}", key_str(F_REPLAY, "cells") + "  [per_share_mark_c < 0]")
+    p482 = RTv("cv.pool482.oos.c", f=cents)
+    p482ci = RTv("cv.pool482.oos.ci", f=ci)
+
+    n += 1
+    slide_ctx(f"{n} Q11")
+    slide_q(prs, n, 11, "Isn't the CV trade set chosen on outcomes?",
+            "Your simulated CV trader only trades points the market later moved by 4¢ or more. How would a live "
+            "trader know which points those are? Isn't that lookahead?",
+            [[B("Yes, and we label it: "), "the sweep trades only points the market later repriced by ≥ 4¢, so it "
+              "prices speed given a point worth trading. It is not yet a deployable rule, and every number from it is "
+              "an upper bound."],
+             [B("Our ex-ante test is the replay: "), f"on nine books recorded live, calling every point, {rp_neg} "
+              f"delay × lag cells lose; {rp_c} a share {rp_ci} at V = 1 s."],
+             [B("Widening the pool to all 482 live points "), f"roughly halves the edge: {p482} {p482ci} held out, "
+              "even with our own camera (V = 0)."],
+             "Next: an ex-ante filter from the Markov point leverage, its threshold fixed at the detector's 4¢, run "
+             "once on the replay with a logged look."],
+            [(rp_neg, "replay cells that lose (every point called ex ante)"), (rp_c, f"replay at V = 1 s {rp_ci}"),
+             (p482, "all-482-point pool, held out, V = 0")],
+            [F_REPLAY, F_RT, "research/v2/tier0/RESULTS.md §8"], ref="docs/QA_PREP.md Q4")
+
+    n += 1
+    slide_ctx(f"{n} Q12")
+    slide_q(prs, n, 12, "Why headline a post hoc lag? The same inference loses",
+            "The 3.14 s stamp lag was inferred after the pre-registered 2.0 s gave a held-out Sharpe of 0.3, and read "
+            "point by point the same inference loses. Isn't that tuning on the out-of-sample period?",
+            [[B("We lead with the pre-registered reading: "), f"at 1 s it breaks even, {pre_os}/day held out, "
+              f"{pre_c} a share."],
+             [B("The 3.14 s lag is post hoc: "), f"inferred from fast-tier prints assuming courtside humans; "
+              f"{cal_os}/day held out. Its bootstrap CI is {lag_ci}, and {below} of resamples fall below 2.5 s."],
+             [B("Read per point, the same inference loses "), f"{stc_os}/day: every reprice lands at most {max_tb} "
+              f"after the bounce, before a 1 s order can arrive ({arr})."],
+             "Both readings use the per-tournament timing adopted after the first P&L run (DEVIATIONS V3); the "
+             "headline lag and the 1 s baseline were chosen after looking, and we count them as post hoc trials."],
+            [(pre_os, "pre-registered, held out, $/day"), (cal_os, "post hoc lag, held out, $/day"),
+             (stc_os, "same inference per point, held out, $/day")],
+            [F_SWEEP, F_RT, "results/redteam/stamp_lag.json", "DEVIATIONS.md V3"], ref="docs/QA_PREP.md Q5, Q6")
+
+    n += 1
+    slide_ctx(f"{n} Q13")
+    bg = ("budget_with_1s_simulated_feed",)
+    e_ours = V(F_E2E, *bg, "ours_capture_to_order_ready_ms", "p50", f=lambda x: f"{x:,.0f} ms")
+    e_net = V(F_E2E, *bg, "network_one_way_ms", "p50", f=lambda x: f"{x:,.0f} ms")
+    e_tot = V(F_E2E, *bg, "total_ms", "p50", f=lambda x: f"{x:,.0f} ms")
+    e_n = V(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n", f=intc)
+    H = ("headline", OVO_RUN, "stream")
+    g50 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p50", f=lambda x: f"{x:.1f} ms")
+    g99 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p99", f=lambda x: f"{x:.1f} ms")
+    gdr = V(F_OVO, *H, "dropped", f=intc)
+    cbs = RTv("cv.call_before_stamp", f=lambda x: f"{x:.1f} s")
+    slide_q(prs, n, 13, "Prove you can trade inside 3 s",
+            "You need sub-3-second data. Prove the pipeline can actually trade that fast, frame to order.",
+            [[B("Measured end to end, in one process: "), f"our footage over WebRTC into the vision engine, a call, a "
+              f"paper order on a live tennis book. Video in → order ready: {e_ours} on a laptop ({e_n} traces). With "
+              f"a simulated 1 s feed, the network ({e_net}) and the venue's 1 s hold: {e_tot}, under 3,000 ms."],
+             [B("On a GPU the vision call is ready in "), f"{g50} (p99 {g99}) at 120 fps, {gdr} frames dropped."],
+             [B("3 s is not the real bar: "), f"the call must beat the umpire's stamp by about {cbs}; from a 3 s "
+              "feed delay every reading loses."],
+             "Paper only: the order payload is unsigned and never sent; table-tennis calls are mapped onto a tennis "
+             "market for timing only (different sport)."],
+            [(e_tot, "frame → executable order, p50, incl. simulated 1 s feed and 1 s venue hold"),
+             (e_ours, "our part: video in → paper order ready"), (g50, "GPU vision call-ready, p50")],
+            [F_E2E, F_OVO, F_RT], ref="organizer question 1 · docs/QA_PREP.md Q1")
+
+    n += 1
+    slide_ctx(f"{n} Q14")
+    v2cap = V(F_ALPHA, "headline", "oos_capital_capacity_usd", f=lambda p_: f"{usd_k(p_[0])}–{usd_k(p_[1])}")
+    cvcap = D(lambda: f"{usd_k(raw(F_RT, 'keys', 'cv.pre.oos.cap', 'value'))}–{usd_k(raw(F_RT, 'keys', 'cv.cal.oos.cap', 'value'))}",
+              key_str(F_RT, "keys", "cv.pre.oos.cap / cv.cal.oos.cap"))
+    mx_cal = RTv("cv.cal.oos.maxlic", f=usd0)
+    mx_pre = RTv("cv.pre.oos.maxlic", f=usd0)
+    lic_lo = V(F_FIN, "cost_assumptions", "feed_licence", "low", f=usd0)
+    lic_hi = V(F_FIN, "cost_assumptions", "feed_licence", "high", f=usd0)
+    netc = RTv("cv.cal.oos.net_central", f=usd2)
+    nc1000 = RTv("cv.netcap1000.oos.usd", f=usd2)
+    slide_q(prs, n, 14, "How much capital, and what's left after data?",
+            "How much capital can this run, and after paying for the data, what do you make?",
+            [[B("Capital: small. "), f"v2's held-out edge holds up to about {v2cap} of capital (1–2× its frozen "
+              "size); five times the size loses."],
+             [B("The CV book at 1 s "), f"uses {cvcap} at a 100-share net cap; the limit is the stale depth on each "
+              f"point, and a 1,000-share cap loses held out ({nc1000}/day even at V = 0). The full grid is in "
+              "results/capacity/capacity.json."],
+             [B("Data: "), f"the 1 s book can pay at most {mx_cal}/month (post hoc) or {mx_pre} (pre-registered); "
+              f"quotes run {lic_lo}–{lic_hi}/month (ASSUMPTION). Net of the central stack it is {netc}/day post hoc."],
+             "At today's 5% fee COURTSIDE prices speed. It is not yet a business, and the paper says so."],
+            [(v2cap, "capital where v2's held-out edge still holds"), (mx_cal, "most the 1 s book can pay for data a "
+              "month (post hoc)"), (mx_pre, "same, pre-registered")],
+            [F_ALPHA, F_RT, F_FIN, F_CAP], ref="organizer question 2 · docs/QA_PREP.md Q2, Q12")
     return n
 
 

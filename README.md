@@ -6,6 +6,7 @@
 > | `bash run.sh replay` | 10 min of recorded live Polymarket books (`tests/fixtures/live_sample.jsonl.gz`, public market data) through the paper trader and the engine's order books; no network | ~15 s |
 > | `bash run.sh tests` | unit tests (vision tests too after `bash run.sh setup --full`) | ~2-7 min |
 > | `bash run.sh data && bash run.sh reproduce` | public Polymarket crawl (no keys, resumable), then every number and figure in `docs/NOTE.pdf` | ~1-2 h + ~15 min |
+> | `bash run.sh redteam` | the checks we ran against ourselves: stamp-lag robustness, every derived Q&A number from its results file, claim checks on the public text (`results/redteam/`); no network, no held-out read | ~10 s |
 >
 > - A fresh clone has no market data: run `bash run.sh data` before `reproduce` or `money`. The full crawl-then-reproduce
 >   chain was last run end to end on the authors' machine, not on a clean clone (`research/compliance/CLEAN_CLONE.md`).
@@ -31,13 +32,15 @@ tracking can know a point is over.
 |---|---|
 | Chasing the move after a point (H1) | loses 1.5–2.1¢/share in and out of sample |
 | Live prices | calibrated within ~1¢ (H2: no slow-money edge) |
-| **Fast tier** (wallets trading ≤3 s after a point) | beat the market in **11/11 months** (8 in sample, 3 out of sample), walk-forward; everyone else loses ~1¢ |
+| **Fast tier** (wallets trading ≤3 s after a point) | positive in **9/9 in-sample and 3/3 out-of-sample months** (11 calendar months; August in both), walk-forward; everyone else loses ~1¢; copying the same trades 3 s later loses (`results/alpha/alpha.json`) |
 | v1 (copy the fast tier, $ sizing) | +1.16¢/share in sample; **lost $36k** on the held-out window (opened once, blind) |
 | **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample** +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months, +0.38¢ at +1 tick. **Burned OOS (non-blind, v2 was designed after v1's result):** +0.60¢ [0.09, 1.13], Sharpe 6.7; ≈0 at +½ tick; **negative with costs doubled** (fees ×2: −0.34¢; all costs ×2: −0.84¢) |
 | Blind test of frozen v2 on 11,307 unseen markets | in-sample period +2.02¢ (pass); out-of-sample period +1.22¢ [−0.19, 2.65] (**fail**) |
 | Blind forward test of v2 | pre-registered (`HYPOTHESIS_V2.md`); runs once on Oct 4 → `results/v2/forward.json` (not yet created) |
-| Ball tracking | Hawk-Eye-class physics (assumed 340 fps): ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11 of 11 calls correct (recall 27%) |
-| Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind |
+| Ball tracking | Hawk-Eye-class physics (assumed 340 fps): ±2.4 cm landing call 100 ms before the bounce. Real 120 fps table-tennis video, **live causal engine** on held-out games: 4 of 41 misses called before contact, all 4 correct (95% lower bound 51%), median lead 162.5 ms; GPU call-ready 4.6 ms p50 at 120 fps, 0 of 102,120 frames dropped (`results/engine/online_vs_offline.json`). The offline evaluation's 11 of 11 used a look-ahead feature (`engine/README.md`, Known gaps). Calls need the undistributed frozen model (judge box) |
+| **CV trader at a simulated 1 s licensed feed** (assumed latency; no feed purchased; parameters measured) | **pre-registered: break-even**, +$4/day held out, −0.38¢/share [−2.08, 1.21]; break-even feed delay 1.01–1.09 s, i.e. the call must reach the venue ~0.9 s before the umpire's stamp. Post hoc stamp-lag inference (3.14 s, assumes courtside humans): +$57/day held out; the same inference read per point: −$17/day. A replay on 9 real recorded books, calling every point ex ante, loses in all 36 delay × lag cells (`results/replay/replay.json`). The sweep trades only points that later moved ≥4¢ (selected on outcomes, not ex ante), so it is an upper bound (`results/tier0/latency_sweep.json`, `docs/QA_PREP.md` §1) |
+| Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind. Our own pipeline (video in, CV call, paper order built) is measured stage by stage in `results/e2e/summary.json` against the organizers' 3 s bar; the venue then holds every order 1 s |
+| Capacity | v2's held-out edge holds at about $23–34k of capital (1–2× its frozen size); 5× loses (`results/alpha/alpha.json::H_capacity`). The CV book's capacity at 1 s is in `results/capacity/capacity.json` |
 
 Rules checklist, item by item against the track page: [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md).
 Integrity trail: `HYPOTHESIS.md` (pre-registered, commit `7232986`) → `DEVIATIONS.md` (every change,
@@ -48,11 +51,14 @@ including failed hypotheses) → `HYPOTHESIS_V2.md` (v2 frozen before its forwar
 ## Reproduce
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # Python 3.14
-.venv/bin/python scripts/fetch_polymarket.py   # public Polymarket APIs, no keys; ~1-2 h, cached in data/
-bash reproduce.sh                               # every number and figure in the note -> results/, docs/NOTE.pdf
-.venv/bin/pytest tests                          # unit tests
+bash run.sh setup        # .venv + requirements.txt (Python 3.12+)
+bash run.sh data         # public Polymarket APIs, no keys; ~1-2 h, resumable, cached in data/
+bash run.sh reproduce    # bash reproduce.sh: every number and figure in the note -> results/, docs/NOTE.pdf
+bash run.sh tests        # unit tests
+bash run.sh redteam      # red-team checks: stamp-lag robustness, derived numbers, claim/acceptance checks (~10 s)
 ```
+
+The CV point-end calls need `models/vision/frozen_call_model.pkl` (12 MB, not in git; see the judge box).
 
 `reproduce.sh` runs, in order:
 

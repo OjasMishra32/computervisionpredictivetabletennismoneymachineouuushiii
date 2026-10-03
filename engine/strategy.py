@@ -99,6 +99,11 @@ class StrategyConfig:
     max_call_latency_ms: float | None = 1000.0   # skip calls older than this (frame -> decision): the
                                                  # stale depth is gone ~0.5 s after the reprice
     fee_rate: float = FEE_RATE
+    rally_gate_s: float | None = None  # rally-state gate: a MISS/OUT call is traded only if a BOUNCE/IN call on
+    #                                    the same match came at most this long before it (2.0 s for any live use;
+    #                                    off by default so the committed demo and e2e runs reproduce). The live
+    #                                    engine made 7 MISS calls on balls outside the scored flights in 851 s of
+    #                                    held-out video, 5 between rallies (results/engine/online_vs_offline.json).
 
 
 @dataclass
@@ -169,6 +174,7 @@ class CourtsideStrategy:
         self._clock = clock
         self.matches: dict[str, MatchCtx] = {}
         self.decisions: list[StrategyDecision] = []
+        self._last_bounce_ms: dict[str, int] = {}   # rally-state gate: last BOUNCE/IN call per match
 
     # ------------------------------------------------------------------------------ setup
     def now_ms(self) -> int:
@@ -243,6 +249,10 @@ class CourtsideStrategy:
         lat = call.get("latency_ms") if isinstance(call, dict) else getattr(call, "latency_ms", None)
         if lat is not None and cfg.max_call_latency_ms is not None and lat > cfg.max_call_latency_ms:
             return self._done(d, t0, "stale_call")
+        if cfg.rally_gate_s is not None and kind.upper() not in ("BOUNCE", "IN"):
+            lb = self._last_bounce_ms.get(match_id)
+            if lb is None or not (0 <= now - lb <= cfg.rally_gate_s * 1000.0):
+                return self._done(d, t0, "no_rally_in_progress")
         mf = ctx.fair
         if mf.state is None:
             return self._done(d, t0, "match_over")
@@ -309,6 +319,7 @@ class CourtsideStrategy:
         now = self.now_ms() if t_ms is None else int(t_ms)
         if self.risk is not None:
             self.risk.vision_heartbeat(now)   # a call is proof that the vision engine is alive
+        self.note_call(match_id, call, now)
         d = self.evaluate(match_id, call, now, hitter)
         if d.action == "SEND" and self.ex is not None:
             assert_paper_only()
@@ -325,6 +336,13 @@ class CourtsideStrategy:
         d.total_us = (time.perf_counter() - t0) * 1e6
         self.decisions.append(d)
         return d
+
+    def note_call(self, match_id: str, call, t_ms: int) -> None:
+        """Rally state for the gate: remember the time of the last BOUNCE/IN call on this match."""
+        kind = str(getattr(call, "call", None) or getattr(call, "kind", None) or
+                   (call.get("call") or call.get("kind") if isinstance(call, dict) else "") or "")
+        if kind.upper() in ("BOUNCE", "IN"):
+            self._last_bounce_ms[match_id] = int(t_ms)
 
     @staticmethod
     def _done(d: StrategyDecision, t0: float, reason: str) -> StrategyDecision:

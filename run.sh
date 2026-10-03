@@ -39,6 +39,12 @@ bash run.sh <command> [args]                                  (times: laptop, af
   dashboard [port]    status daemon + read-only dashboard at http://localhost:8765 (Ctrl-C stops both)
   money [args]        terminal replay of the v2 in-sample backtest with a running paper-money counter
                       (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
+  redteam             the checks we ran against ourselves (results/redteam/): stamp-lag robustness, every
+                      derived Q&A number from its results file, claim/acceptance checks on the public text.
+                      No network, no held-out read, nothing re-simulated                            ~10 s
+  preflight           read-only readiness check before the one-shot forward runs (owner use, macOS):
+                      clock, disk, swap, power, live session, heavy jobs, pinned forward code unmodified,
+                      forward outputs, v2-safe plan, untracked results, local commits not yet pushed
 EOF
 }
 
@@ -230,6 +236,44 @@ EOF
       exit 1
     fi
     "$PY" scripts/money_counter.py "$@"
+    ;;
+
+  redteam)
+    need_venv
+    "$PY" scripts/redteam_stamp_lag.py >/dev/null && echo "wrote results/redteam/stamp_lag.json"
+    "$PY" scripts/redteam_derived.py >/dev/null && echo "wrote results/redteam/derived.json"
+    "$PY" scripts/redteam_acceptance.py "$@"
+    ;;
+
+  preflight)
+    need_venv
+    ok() { printf '  ok    %s\n' "$1"; }
+    bad() { printf '  CHECK %s\n' "$1"; }
+    now=$(date -u +%H:%M); echo "preflight at $now UTC (forward runs: 11:30 UTC; hard stop 15:00 UTC)"
+    free_g=$(df -g . | awk 'NR==2 {print $4}')
+    [ "${free_g:-0}" -ge 15 ] && ok "disk: ${free_g} GB free" || bad "disk: ${free_g} GB free (< 15 GB; the forward run loads ~12 GB of prints; gzip data/live/*.jsonl first)"
+    if command -v sysctl >/dev/null && sysctl -n vm.swapusage >/dev/null 2>&1; then
+      echo "  info  swap: $(sysctl -n vm.swapusage)"
+    fi
+    if command -v pmset >/dev/null; then
+      pmset -g batt | grep -q "AC Power" && ok "power: on AC" || bad "power: on battery (plug in; keep the lid open)"
+      pgrep -x caffeinate >/dev/null && ok "caffeinate running" || bad "no caffeinate (nohup caffeinate -dims -w <live_paper pid> &)"
+    fi
+    lp=$(pgrep -f "scripts/live_paper.py" | head -1 || true)
+    [ -n "$lp" ] && ok "live paper session running (pid $lp)" || bad "live paper session not running"
+    pgrep -f "src.live_recorder" >/dev/null && ok "live recorder running" || echo "  info  live recorder not running"
+    heavy=$(pgrep -fl "make_video|e2e_run|engine.webrtc|capacity_study|cv_showcase|ffmpeg|latexmk|tier0_latency_sweep" | cut -c1-90 || true)
+    [ -z "$heavy" ] && ok "no heavy jobs running" || { bad "heavy jobs running (stop them 11:25-11:50 UTC):"; echo "$heavy" | sed 's/^/          /'; }
+    pinned="scripts/forward_test.py scripts/tier0_v3_forward.py src/v2.py src/tiers.py src/fasttier.py src/tape.py src/polymarket.py research/v2/sizing/engine.py"
+    # shellcheck disable=SC2086
+    [ -z "$(git status --porcelain -- $pinned)" ] && ok "pinned forward pipeline unmodified vs HEAD" || bad "pinned forward files modified: $(git status --porcelain -- $pinned | tr '\n' ' ')"
+    [ -f results/v2/forward.json ] && echo "  info  results/v2/forward.json exists (forward test already ran)" || ok "results/v2/forward.json absent (forward test not run yet)"
+    [ -f results/tier0_v3/forward/results.json ] && echo "  info  tier-0 v3 forward result exists" || ok "tier-0 v3 forward result absent (not run yet)"
+    "$PY" scripts/forward_test_safe.py --plan | "$PY" -c "import json,sys; d=json.load(sys.stdin); print('  info  v2-safe (C9) ready for its one run:', d['real_run_ready'], '|', '; '.join(d['problems']) or 'no problems')"
+    unt=$(git status --porcelain --untracked-files=all -- results/live results/e2e results/capacity results/redteam results/v2 2>/dev/null | wc -l | tr -d ' ')
+    echo "  info  $unt uncommitted file(s) under results/{live,e2e,capacity,redteam,v2} (commit when their owners finish; never data/ or models/)"
+    ahead=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo "?")
+    echo "  info  local commits not on origin/main (last fetched): $ahead (push before 15:00 UTC; CLEAN_CLONE N13)"
     ;;
 
   help|-h|--help) usage ;;

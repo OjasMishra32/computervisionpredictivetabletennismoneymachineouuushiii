@@ -17,9 +17,9 @@ second later, and streams tens of seconds later. That makes it a natural lab for
 - Measures, on **13,084 resolved ATP/WTA matches ($2.84B traded)**, who makes and who loses money in
   each second after a point, from Polymarket's public trade tapes. Every print is classified by side
   and every fee is the match's own.
-- Finds a **persistent fast tier**: wallets that trade within 3 s of a point and beat the market in
-  **11 of 11 months** (8 in sample, 3 out of sample), selected walk-forward. Everyone else loses
-  ~1¢/share, and copying the fast tier 3 s later loses too.
+- Finds a **persistent fast tier**: wallets that trade within 3 s of a point and are positive in
+  **9/9 in-sample and 3/3 out-of-sample months** (11 calendar months; August in both), selected
+  walk-forward. Everyone else loses ~1¢/share, and copying the fast tier 3 s later loses too.
 - Turns that edge into a strategy (**v2**: risk-parity sizing, fee-aware wallet filter, 100-share net
   cap, hold to resolution). In sample it earns **+1.38¢/share, Sharpe 14.5, max drawdown −2.0%, 7/7
   months**, and stays positive in every month at a full tick of slippage. On the held-out window, which
@@ -30,8 +30,17 @@ second later, and streams tens of seconds later. That makes it a natural lab for
 - Measures latency live: the book reprices **1.2 s before the official point timestamp**. ESPN,
   Polymarket's own score feed and the WTA API are 27–43 s behind, and Kalshi leads Polymarket by ~2 s.
 - Shows how early ball tracking can call the point. A Hawk-Eye-class physics model (assumed 340 fps)
-  gives a ±2.4 cm landing call 100 ms before the bounce. Real 120 fps footage, run on HiPerGator, called
-  misses 50 ms before contact, 11/11 correct (recall 27%), and there are demo clips.
+  gives a ±2.4 cm landing call 100 ms before the bounce. On real 120 fps table-tennis footage our live,
+  causal vision engine runs at 120 fps on one GPU (call-ready 4.6 ms p50, 0 frames dropped) and called
+  4 of 41 held-out misses before contact, all correct (median lead 162.5 ms). The offline evaluation's
+  11 of 11 used a look-ahead feature; the repo documents the gap (`engine/README.md`).
+- Prices the speed a computer-vision trader would need, in simulation (the feed latency is assumed; we
+  bought no feed). Pre-registered, it **breaks even at a 1 s licensed-feed baseline** (+$4/day held out,
+  −0.38¢/share): the call must reach the venue about 0.9 s before the umpire logs the point. A post hoc
+  reading of the umpire's lag gives +$57/day, the same reading applied point by point loses $17/day, and
+  a replay on nine real recorded books, calling every point ex ante, loses at every delay. The simulated
+  trade set is points that later moved ≥4¢ (selected on outcomes), so it is an upper bound. We claim a
+  price on each second of speed, not a bankable CV P&L.
 
 ## How we built it
 Python on public Polymarket and Kalshi APIs (no keys); an exact point-level tennis Markov model; a
@@ -61,7 +70,10 @@ In today's regime (1 s order delay, 5% fee, ~130 competing wallets) the edge is 
 one price tick, and it does not survive doubled costs out of sample. It pays only whoever is first to
 the stale quote. You cannot get there remotely: public data is the slow tier. In-venue, high-frame-rate
 tracking plus a gateway co-located with the matching engine (measured: Cloudflare's Miami edge, with an
-origin consistent with London) is what moves you up the ladder.
+origin consistent with London) is what moves you up the ladder. Our own pipeline is not the bottleneck:
+video in to paper order takes tens of milliseconds, and the venue then holds every order for a second. The
+binding constraints are a licensed sub-second feed, the unmeasured lag from bounce to umpire stamp, and
+capital capacity, which is small: v2's held-out edge holds at about $23–34k and five times that loses.
 
 ## Integrity
 `HYPOTHESIS.md` was committed before any result. The out-of-sample period was opened once, blind, for

@@ -1,0 +1,237 @@
+{
+ "label": "DESCRIPTIVE (live-day snapshot 2026-10-03, pre-forward-window); INFERENCE robustness, not a measurement of the stamp lag",
+ "script": "scripts/redteam_stamp_lag.py",
+ "inputs": [
+  "research/v2/latency/out/trades_around_reprice.csv",
+  "research/v2/latency/out/m1_points.csv"
+ ],
+ "base": {
+  "n_points": 49,
+  "share_usd_with_move": 0.977,
+  "stamp_lag_median_s": 3.142,
+  "t_reprice_minus_t_bounce_median_s": 1.349,
+  "published": {
+   "n_points": 49,
+   "stamp_lag_s": 3.142
+  },
+  "reproduces_published": true
+ },
+ "bootstrap": {
+  "median_L_ci95_s": [
+   2.225,
+   3.222
+  ],
+  "share_of_resamples_L_below_3_0": 0.328,
+  "share_of_resamples_L_below_2_5": 0.328,
+  "per_point_L_quantiles_s": {
+   "0.1": -0.175,
+   "0.25": 2.201,
+   "0.5": 3.142,
+   "0.75": 3.225,
+   "0.9": 4.201
+  },
+  "note": "per-point L is bimodal because the official stamp has 1 s resolution (T_ms mod 1000 = 0 on every point): book_vs_T_s carries up to 1 s of rounding, so the median is the robust summary"
+ },
+ "windows": {
+  "[-0.5,0) base": {
+   "n_points": 49,
+   "share_usd_with_move": 0.977,
+   "stamp_lag_median_s": 3.142,
+   "t_reprice_minus_t_bounce_median_s": 1.349
+  },
+  "[-0.25,0)": {
+   "n_points": 41,
+   "share_usd_with_move": 0.973,
+   "stamp_lag_median_s": 2.23,
+   "t_reprice_minus_t_bounce_median_s": 1.338
+  },
+  "[-1,0)": {
+   "n_points": 76,
+   "share_usd_with_move": 0.722,
+   "stamp_lag_median_s": 3.204,
+   "t_reprice_minus_t_bounce_median_s": 1.511
+  },
+  "[-0.5,-0.1) exclude last 100 ms": {
+   "n_points": 13,
+   "share_usd_with_move": 0.99,
+   "stamp_lag_median_s": 3.191,
+   "t_reprice_minus_t_bounce_median_s": 1.573
+  },
+  "[-1,-0.1) exclude last 100 ms": {
+   "n_points": 41,
+   "share_usd_with_move": 0.654,
+   "stamp_lag_median_s": 3.222,
+   "t_reprice_minus_t_bounce_median_s": 2.168
+  }
+ },
+ "reaction_time": [
+  {
+   "react_s": 0.02,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 2.847
+  },
+  {
+   "react_s": 0.02,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 2.855
+  },
+  {
+   "react_s": 0.02,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 2.912
+  },
+  {
+   "react_s": 0.02,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 2.995
+  },
+  {
+   "react_s": 0.05,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 2.877
+  },
+  {
+   "react_s": 0.05,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 2.885
+  },
+  {
+   "react_s": 0.05,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 2.942
+  },
+  {
+   "react_s": 0.05,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.025
+  },
+  {
+   "react_s": 0.1,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 2.927
+  },
+  {
+   "react_s": 0.1,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 2.935
+  },
+  {
+   "react_s": 0.1,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 2.992
+  },
+  {
+   "react_s": 0.1,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.075
+  },
+  {
+   "react_s": 0.15,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 2.977
+  },
+  {
+   "react_s": 0.15,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 2.985
+  },
+  {
+   "react_s": 0.15,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 3.042
+  },
+  {
+   "react_s": 0.15,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.125
+  },
+  {
+   "react_s": 0.2,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 3.027
+  },
+  {
+   "react_s": 0.2,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 3.035
+  },
+  {
+   "react_s": 0.2,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 3.092
+  },
+  {
+   "react_s": 0.2,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.175
+  },
+  {
+   "react_s": 0.25,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 3.077
+  },
+  {
+   "react_s": 0.25,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 3.085
+  },
+  {
+   "react_s": 0.25,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 3.142
+  },
+  {
+   "react_s": 0.25,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.225
+  },
+  {
+   "react_s": 0.3,
+   "net_s": 0.002,
+   "stamp_lag_median_s": 3.127
+  },
+  {
+   "react_s": 0.3,
+   "net_s": 0.01,
+   "stamp_lag_median_s": 3.135
+  },
+  {
+   "react_s": 0.3,
+   "net_s": 0.067,
+   "stamp_lag_median_s": 3.192
+  },
+  {
+   "react_s": 0.3,
+   "net_s": 0.15,
+   "stamp_lag_median_s": 3.275
+  }
+ ],
+ "machines_20ms_london": {
+  "react_s": 0.02,
+  "net_s": 0.002,
+  "stamp_lag_median_s": 2.847
+ },
+ "whole_second_clock": {
+  "reprices_n": 482,
+  "reprices_share_0_100ms_after_second": 0.349,
+  "reprices_share_50_100ms_after_second": 0.326,
+  "first_prints_n": 49,
+  "first_prints_share_0_100ms_after_second": 0.653,
+  "uniform_share_per_100ms": 0.1,
+  "official_stamps_whole_second_share": 1.0,
+  "reading": "Reprices and the prints that cause them cluster just after whole UTC seconds, consistent with the venue releasing delayed orders on a 1 s clock (not verified). The simulation treats the hold as a continuous 1.000 s per order. If release is batched with time priority inside a batch, the race is unchanged; if priority inside a batch is not by send time, a later order can still fill and the model is conservative for us; neither was measured."
+ },
+ "per_point_reading_V1": {
+  "t_reprice_minus_t_bounce_s": {
+   "min": 1.319,
+   "median": 1.349,
+   "max": 1.776
+  },
+  "earliest_arrival_after_bounce_at_V1_s": 1.832,
+  "assumptions": "call 200 ms before the bounce (longest lead in any call table), 20 ms inference, 10 ms network (Europe, the closest region), 2 ms gateway, 1 s venue hold",
+  "correct_calls_that_can_fill_at_V1": 0,
+  "largest_V_where_any_point_can_fill_s": 0.944,
+  "statement": "Read per point, the inference itself puts every reprice at most 1.78 s after the bounce. A 1 s-feed order cannot land before 1.83 s even with a 200 ms early call, so at V = 1 no correct call fills on any of the 49 points; only wrong calls fill, which is why the stamp-calibrated cell loses about $17/day (latency_sweep.json::video_own120.stamp_calibrated[\"1\"]). Same data, same inference: the constant-lag reading moves the median reprice to about 1.8 s after the bounce, the per-point reading keeps it at 1.35 s."
+ },
+ "bottom_line": "Median stamp lag 3.142 s (n = 49), but the bootstrap 95 % CI is [2.225, 3.222] s and 33% of resamples fall below 2.5 s: per-point lags are bimodal because the official stamp has 1 s resolution. Across the five print windows the median runs 2.23-3.222 s. Bots instead of humans: 2.847 s. So the post hoc 3.14 s is one mode of a two-mode estimate, not a tight number. It also rests on the untested premise that the first informed prints react to the bounce. Read per point, the same inference cannot fill a correct call at V = 1."
+}
