@@ -21,6 +21,23 @@ skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertain
 | 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
 | 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
+**DESIGN: Apple keynote / product-film style. Very clean. No AI slop.** (overrides earlier style notes)
+- Canvas: pure black (#000) for most scenes, occasional pure white for data scenes; generous margins (>= 8% of width);
+  a strict 12-column grid; one idea per frame.
+- Type: Inter (OFL; download from Google Fonts' GitHub into results/viz/v60_assets/fonts/) - Display weights 600-700 for
+  hero numbers (very large, tight tracking), 400-500 for labels; white on black, #1d1d1f on white; at most two sizes per
+  frame plus the hero number. Do NOT use SF Pro (licence).
+- Colour: monochrome + ONE accent (Courtside orange #FF6B1A) used only for our strategy, the call stamp and the dotted 1 s
+  line; greys (#86868b) for everything else; red only for losses. No gradients except a subtle vignette on footage.
+- Motion: slow, confident easing (cubic in-out, 400-700 ms), fades and gentle scale (0.96 -> 1.0), numbers counting up
+  with tabular figures, charts drawing in left to right; match cuts on the ball; no spins, wipes, glitches, shakes.
+- Data viz: thin 2 px lines, no gridlines or chart junk, direct labels at line ends, a single axis label line, the dotted
+  1 s baseline as the only dashed element.
+- Footage: full-bleed, clean overlays only (thin trail, small P(miss) bar, one call label) - no busy sci-fi HUD,
+  no particle effects, no neon, no lens flares, no stock imagery, no emoji, no fake UI chrome, no AI-generated images.
+- Sound: minimal, warm electronic bed; soft ticks on number reveals; one clean hit per call; Liam clear and upfront.
+- Captions: small, clean, bottom-centre, two lines max, fade in/out.
+
 **Stats everywhere (team request): it should read like a paper summary.** A persistent, clean STATS RAIL on the right
 third of the frame (or lower band on full-bleed shots) that updates per segment with the key numbers, animated count-ups,
 each from the manifest:
