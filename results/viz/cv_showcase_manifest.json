@@ -5,86 +5,86 @@
   1920,
   1080
  ],
- "frames": 1933,
- "duration_s": 64.43,
+ "frames": 2394,
+ "duration_s": 79.8,
  "segments": [
   {
    "name": "title",
    "start_s": 0.0,
-   "dur_s": 3.5,
-   "frames": 105
+   "dur_s": 4.0,
+   "frames": 120
   },
   {
    "name": "slate:Real match footage",
-   "start_s": 3.5,
-   "dur_s": 1.2,
-   "frames": 36
+   "start_s": 4.0,
+   "dur_s": 1.6,
+   "frames": 48
   },
   {
    "name": "featured",
-   "start_s": 4.7,
+   "start_s": 5.6,
    "dur_s": 6.033,
    "frames": 181
   },
   {
    "name": "quick:test_4_5750",
-   "start_s": 10.733,
-   "dur_s": 3.267,
-   "frames": 98
-  },
-  {
-   "name": "quick:test_6_1484",
-   "start_s": 14.0,
-   "dur_s": 3.267,
-   "frames": 98
-  },
-  {
-   "name": "bounce:test_6_1299",
-   "start_s": 17.267,
-   "dur_s": 2.933,
-   "frames": 88
-  },
-  {
-   "name": "stats",
-   "start_s": 20.2,
+   "start_s": 11.633,
    "dur_s": 4.0,
    "frames": 120
   },
   {
+   "name": "quick:test_6_1484",
+   "start_s": 15.633,
+   "dur_s": 4.0,
+   "frames": 120
+  },
+  {
+   "name": "bounce:test_6_1299",
+   "start_s": 19.633,
+   "dur_s": 4.133,
+   "frames": 124
+  },
+  {
+   "name": "stats",
+   "start_s": 23.767,
+   "dur_s": 6.5,
+   "frames": 195
+  },
+  {
    "name": "slate:¼× replay",
-   "start_s": 24.2,
-   "dur_s": 1.2,
-   "frames": 36
+   "start_s": 30.267,
+   "dur_s": 1.6,
+   "frames": 48
   },
   {
    "name": "slowmo",
-   "start_s": 25.4,
+   "start_s": 31.867,
    "dur_s": 7.1,
    "frames": 213
   },
   {
    "name": "slate:Tennis, simulated",
-   "start_s": 32.5,
-   "dur_s": 1.2,
-   "frames": 36
+   "start_s": 38.967,
+   "dur_s": 1.6,
+   "frames": 48
   },
   {
    "name": "tennis",
-   "start_s": 33.7,
-   "dur_s": 20.233,
-   "frames": 607
+   "start_s": 40.567,
+   "dur_s": 22.233,
+   "frames": 667
   },
   {
    "name": "speed",
-   "start_s": 53.933,
-   "dur_s": 6.0,
-   "frames": 180
+   "start_s": 62.8,
+   "dur_s": 9.0,
+   "frames": 270
   },
   {
    "name": "end",
-   "start_s": 59.933,
-   "dur_s": 4.5,
-   "frames": 135
+   "start_s": 71.8,
+   "dur_s": 8.0,
+   "frames": 240
   }
  ],
  "labels": {

@@ -79,6 +79,10 @@ ACCENT = (58, 148, 255)
 CORAL = (255, 104, 88)
 BALL_T = (226, 240, 96)       # tennis ball (scene object, not UI)
 
+# table-tennis HUD band and its four columns (x of each column's text)
+HUD_Y0, HUD_Y1 = 852, 1004
+COL2, COL3, COL4 = 528, 920, 1380
+
 FONT_DIR = "/Library/Fonts"
 F_FILES = {w: os.path.join(FONT_DIR, f"SF-Pro-Display-{w}.otf") for w in
            ("Light", "Regular", "Medium", "Semibold", "Bold")}
@@ -135,6 +139,11 @@ def mix(c1, c2, t):
 
 def fmt_int(x):
     return f"{int(round(x)):,}"
+
+
+def signed(v, spec="+.0f"):
+    """Number with a typographic minus (U+2212), as on every other on-screen negative."""
+    return format(v, spec).replace("-", "−")
 
 
 # ------------------------------------------------------------------------------------------ canvas
@@ -245,43 +254,52 @@ class Canvas:
 
 # ------------------------------------------------------------------------------- shared chrome
 def chrome(cv, section, label, mode=None, mode_col=WHITE, a=1.0):
-    """Wordmark + section (top left), honesty label (bottom left), mode tag (bottom right)."""
+    """Wordmark + section (top left), honesty label (bottom left), mode tag (bottom right). Every text is
+    >= 18 px and sits on its own backing so it reads over footage and court lines on a projector."""
+    sw = cv.textlen(section, 18, "Medium", tracking=1.2)
+    xw = 70 + cv.textlen("COURTSIDE", 20, "Semibold", tracking=3.0) + 14
+    cv.rrect((34, 30, xw + 15 + sw + 16, 68), 9, NAVY0, 0.72 * a)
     cv.rect((48, 44, 58, 54), ACCENT, a)
     cv.text((70, 49), "COURTSIDE", 20, "Semibold", WHITE, a, "lm", tracking=3.0)
-    x = 70 + cv.textlen("COURTSIDE", 20, "Semibold", tracking=3.0) + 14
+    x = xw
     cv.rect((x, 39, x + 1, 59), MUTED, 0.5 * a)
-    cv.text((x + 15, 49), section, 17, "Medium", MUTED, a, "lm", tracking=1.2)
+    cv.text((x + 15, 49), section, 18, "Medium", (196, 206, 226), a, "lm", tracking=1.2)
     # honesty / credit label
-    tw = cv.textlen(label, 15, "Regular")
-    cv.rrect((40, 1026, 40 + tw + 28, 1058), 8, NAVY0, 0.72 * a)
-    cv.text((54, 1042), label, 15, "Regular", (225, 232, 245), a, "lm")
+    tw = cv.textlen(label, 19, "Regular")
+    cv.rrect((40, 1018, 40 + tw + 30, 1058), 9, NAVY0, 0.80 * a)
+    cv.text((55, 1038), label, 19, "Regular", (232, 238, 250), a, "lm")
     if mode:
-        mw = cv.textlen(mode, 14, "Semibold", tracking=1.6)
-        cv.rrect((W - 40 - mw - 30, 1026, W - 40, 1058), 8, NAVY0, 0.72 * a)
-        cv.circle((W - 40 - mw - 16, 1042), 4, mode_col, a)
-        cv.text((W - 40 - mw - 6, 1042), mode, 14, "Semibold", WHITE, a, "lm", tracking=1.6)
+        mw = cv.textlen(mode, 17, "Semibold", tracking=1.6)
+        cv.rrect((W - 40 - mw - 34, 1018, W - 40, 1058), 9, NAVY0, 0.80 * a)
+        cv.circle((W - 40 - mw - 18, 1038), 5, mode_col, a)
+        cv.text((W - 40 - mw - 6, 1038), mode, 17, "Semibold", WHITE, a, "lm", tracking=1.6)
 
 
-def callout(cv, y, text, sub=None, t=1.0, col=CORAL):
-    """Big broadcast slab, wiped in from the left (t in 0..1)."""
+def callout(cv, y, text, sub=None, t=1.0, col=CORAL, align="c"):
+    """Big broadcast slab, wiped in from the left (t in 0..1). align 'l' / 'r' pins it to that side (40 px
+    margin) so it stays clear of the table end the ball is flying towards."""
     if t <= 0:
         return
     size = 54
     tw = cv.textlen(text, size, "Bold", tracking=1.0)
     w = tw + 96
-    x0 = (W - w) / 2
+    sw = cv.textlen(sub, 20, "Regular") + 36 if sub else 0
+    x0 = {"c": (W - w) / 2, "l": 40.0, "r": W - 40 - w}[align]
+    xm = x0 + w / 2
     e = ease_out(t)
     x1 = x0 + w * e
     cv.rrect((x0, y, x1, y + 88), 6, col, 0.96)
     cv.rect((x0, y + 88, x0 + (x1 - x0) * min(1.0, e * 1.15), y + 92), WHITE, 0.9)
-    if e > 0.55:
-        ta = ease((e - 0.55) / 0.45)
-        cv.text((W / 2, y + 45), text, size, "Bold", WHITE, ta, "mm", tracking=1.0)
-    if sub and e > 0.8:
-        sa = ease((e - 0.8) / 0.2)
-        sw = cv.textlen(sub, 16, "Regular")
-        cv.rrect(((W - sw) / 2 - 16, y + 100, (W + sw) / 2 + 16, y + 128), 6, NAVY0, 0.78 * sa)
-        cv.text((W / 2, y + 114), sub, 16, "Regular", (230, 236, 248), sa, "mm")
+    # the text fades in only once the wipe has uncovered all of it (it used to spill past the slab mid-wipe)
+    e_need = (xm + tw / 2 + 8 - x0) / w
+    if e >= e_need:
+        ta = ease((e - e_need) / max(1.0 - e_need, 1e-6)) if e < 1.0 else 1.0
+        cv.text((xm, y + 45), text, size, "Bold", WHITE, ta, "mm", tracking=1.0)
+    if sub and e >= e_need:
+        sa = ease((e - e_need) / max(1.0 - e_need, 1e-6)) if e < 1.0 else 1.0
+        xs = min(max(xm, 40 + sw / 2), W - 40 - sw / 2)
+        cv.rrect((xs - sw / 2, y + 100, xs + sw / 2, y + 136), 7, NAVY0, 0.86 * sa)
+        cv.text((xs, y + 118), sub, 20, "Regular", (232, 238, 250), sa, "mm")
 
 
 def bar(cv, x, y, w, h, v, col, track=(255, 255, 255), ta=0.14, tick=None):
@@ -349,8 +367,10 @@ class ClipReader:
             if self.cur >= f - 1:
                 img = fr.to_ndarray(format="rgb24")
                 self.cache[self.cur] = img
-        while len(self.cache) > 6:
-            self.cache.pop(min(self.cache))
+        # evict the frames farthest from f (evicting the smallest key dropped f itself after a backward seek,
+        # e.g. the stills pass re-reading the call frame after the video pass)
+        for k in sorted(self.cache, key=lambda k: abs(k - f), reverse=True)[:max(len(self.cache) - 6, 0)]:
+            self.cache.pop(k)
         return self.cache[f]
 
 
@@ -598,9 +618,13 @@ class TT:
         if end_hi > 0:
             cv.glow_line(e, (255, 255, 255), 5, 0.55 * end_hi)
             cv.line([tuple(e[0]), tuple(e[1])], WHITE, 3.0, 0.95 * end_hi)
-            mid = (e[0] + e[1]) / 2
+            near = e[0] if e[0][1] > e[1][1] else e[1]          # corner nearer the camera
             off = 1 if self.dir > 0 else -1
-            cv.text((mid[0] + 26 * off, mid[1] + 6), "END LINE", 12, "Semibold", WHITE, 0.9 * end_hi,
+            tw = cv.textlen("END LINE", 16, "Semibold", tracking=1.4)
+            xa, ya = near[0] + 18 * off, near[1] + 22
+            bx = (xa - 8, ya - 14, xa + tw + 8, ya + 14) if off > 0 else (xa - tw - 8, ya - 14, xa + 8, ya + 14)
+            cv.rrect(bx, 6, NAVY0, 0.7 * end_hi)
+            cv.text((xa, ya), "END LINE", 16, "Semibold", WHITE, 0.95 * end_hi,
                     "lm" if off > 0 else "rm", tracking=1.4)
 
     def draw_trail(self, cv, f, n=30, col=WHITE, head=True):
@@ -655,143 +679,149 @@ class TT:
             cv.line([(lu[0] - 7, lu[1]), (lu[0] + 7, lu[1])], WHITE, 1.6, a)
             cv.line([(lu[0], lu[1] - 7), (lu[0], lu[1] + 7)], WHITE, 1.6, a)
             if np.isfinite(r["x_land"]):
-                tag = (f"LONG +{r['x_land']*100:.0f} cm" if r["x_land"] > 0 else f"IN {r['x_land']*100:.0f} cm")
+                tag = (f"LONG +{r['x_land']*100:.0f} cm" if r["x_land"] > 0 else f"IN {signed(r['x_land']*100)} cm")
                 sd = f"±{1.96*r['x_land_sd']*100:.0f} cm (95%)" if np.isfinite(r["x_land_sd"]) else ""
-                x = lu[0] + 26
-                y = lu[1] - 64
-                tw = max(cv.textlen(tag, 17, "Semibold"), cv.textlen(sd, 13, "Regular")) + 24
-                cv.rrect((x, y, x + tw, y + 48), 7, NAVY0, 0.82 * a)
-                cv.rect((x, y, x + 3, y + 48), ec, a)
-                cv.text((x + 13, y + 15), tag, 17, "Semibold", WHITE, a, "lm")
-                cv.text((x + 13, y + 35), sd, 13, "Regular", MUTED, a, "lm")
-                cv.line([(x, y + 48), (lu[0] + 6, lu[1] - 6)], WHITE, 1.0, 0.6 * a)
+                tw = max(cv.textlen(tag, 21, "Semibold"), cv.textlen(sd, 17, "Regular")) + 26
+                x = min(lu[0] + 26, W - 24 - tw)
+                y = lu[1] - 76
+                cv.rrect((x, y, x + tw, y + 60), 7, NAVY0, 0.86 * a)
+                cv.rect((x, y, x + 3, y + 60), ec, a)
+                cv.text((x + 14, y + 19), tag, 21, "Semibold", WHITE, a, "lm")
+                cv.text((x + 14, y + 44), sd, 17, "Regular", (200, 210, 230), a, "lm")
+                cv.line([(x + 8, y + 60), (lu[0] + 6, lu[1] - 6)], WHITE, 1.0, 0.6 * a)
 
     # ---------------------------------------------------------------------------------- HUD band
     def hud(self, cv, f, a=1.0, physics=True, phase=0.0):
-        y0, y1 = 892, 1012
-        cv.rrect((40, y0, W - 40, y1), 14, NAVY0, 0.80 * a, outline=WHITE, oa=0.10 * a)
+        """Bottom band. Type floor: 15 px for caps headers, 16 px for everything else (projector)."""
+        y0, y1 = HUD_Y0, HUD_Y1
+        cv.rrect((40, y0, W - 40, y1), 14, NAVY0, 0.84 * a, outline=WHITE, oa=0.10 * a)
         called = self.call is not None and f >= self.call
         done = f >= self.t_ref
         is_miss = self.label == "MISS"
+        dec = self.t_ref - 6                       # snapshot decision frame (50 ms before the bounce)
+        HDR = (176, 188, 214)
         # M1: call status + frozen P(MISS)
         x = 64
-        cv.text((x, y0 + 22), "CALL · FROZEN TIER-0 MODEL", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
+        cv.text((x, y0 + 24), "CALL · FROZEN TIER-0 MODEL", 15, "Semibold", HDR, a, "lm", tracking=1.3)
         if is_miss and called:
             st, fill = "MISS CALLED", CORAL
-        elif not is_miss and f >= self.t_ref - 6:
+        elif not is_miss and f >= dec:
             st, fill = ("TABLE BOUNCE · IN" if done else "NO CALL"), None
         else:
             st, fill = "TRACKING", None
-        sw = cv.textlen(st, 22, "Bold", tracking=1.0) + 30
+        sw = cv.textlen(st, 24, "Bold", tracking=1.0) + 30
         if fill:
-            cv.rrect((x, y0 + 38, x + sw, y0 + 74), 8, fill, a)
+            cv.rrect((x, y0 + 42, x + sw, y0 + 82), 8, fill, a)
         else:
-            cv.rrect((x, y0 + 38, x + sw, y0 + 74), 8, None, outline=WHITE, oa=0.7 * a, width=1.6)
-        cv.text((x + 15, y0 + 56), st, 22, "Bold", WHITE, a, "lm", tracking=1.0)
+            cv.rrect((x, y0 + 42, x + sw, y0 + 82), 8, None, outline=WHITE, oa=0.7 * a, width=1.6)
+        cv.text((x + 15, y0 + 62), st, 24, "Bold", WHITE, a, "lm", tracking=1.0)
         sc = None
         known = [t for t in self.score if t <= f]
         if known:
             tl = max(known)
             sc = None if self.gated.get(tl, False) else self.score[tl]
-        cv.text((x, y0 + 94), "P(MISS)", 13, "Semibold", WHITE, a, "lm", tracking=0.8)
-        bx, bw = x + 70, 250
+        yb = y0 + 110
+        cv.text((x, yb), "P(MISS)", 16, "Semibold", WHITE, a, "lm", tracking=0.8)
+        bx, bw = x + 84, 210
         if sc is None:
-            bar(cv, bx, y0 + 90, bw, 8, None, CORAL, tick=self.tau)
-            txt = "gate closed" if known else "waiting"
-            cv.text((bx + bw + 12, y0 + 94), txt, 13, "Regular", MUTED, a, "lm")
+            bar(cv, bx, yb - 4, bw, 8, None, CORAL, tick=self.tau)
+            txt = "no score (gated)" if known else "waiting"
+            cv.text((bx + bw + 14, yb), txt, 16, "Regular", MUTED, a, "lm")
         else:
-            bar(cv, bx, y0 + 90, bw, 8, sc, CORAL if sc >= self.tau else WHITE, tick=self.tau)
-            cv.text((bx + bw + 12, y0 + 94), f"{sc:.3f}", 15, "Semibold", WHITE, a, "lm", mono=True)
-        cv.text((bx + bw * self.tau, y0 + 106), "τ", 11, "Regular", MUTED, a, "mm")
+            bar(cv, bx, yb - 4, bw, 8, sc, CORAL if sc >= self.tau else WHITE, tick=self.tau)
+            cv.text((bx + bw + 14, yb), f"{sc:.3f}", 19, "Semibold", WHITE, a, "lm", mono=True)
+        cv.text((bx + bw * self.tau, yb + 24), f"τ {self.tau:.2f}", 15, "Regular", MUTED, a, "mm")
         # divider
-        cv.rect((468, y0 + 16, 469, y1 - 16), WHITE, 0.12 * a)
+        cv.rect((COL2 - 24, y0 + 16, COL2 - 23, y1 - 16), WHITE, 0.12 * a)
         if physics and self.fit_ts:
             tf = self.fit_at(min(f, self.t_ref))
             r = self.fits.get(tf) if tf is not None else None
             # M2: P(in/long/net/wide)
-            x = 492
-            cv.text((x, y0 + 22), "PHYSICS FIT · DISPLAY ONLY", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
+            x = COL2
+            cv.text((x, y0 + 24), "PHYSICS FIT · DISPLAY ONLY", 15, "Semibold", HDR, a, "lm", tracking=1.3)
             rows = [("IN", "p_in", ACCENT), ("LONG", "p_long", CORAL), ("NET", "p_net", CORAL), ("WIDE", "p_wide", CORAL)]
             for j, (nm, key, col) in enumerate(rows):
-                yy = y0 + 44 + j * 18
+                yy = y0 + 54 + j * 24
                 v = None if r is None else r[key]
-                cv.text((x, yy), nm, 12, "Semibold", WHITE, a, "lm", tracking=0.8)
-                bar(cv, x + 52, yy - 3, 250, 6, v, col)
-                cv.text((x + 366, yy), "—" if v is None else f"{100*v:.0f}%", 13, "Medium", WHITE, a, "rm", mono=True)
-            cv.rect((898, y0 + 16, 899, y1 - 16), WHITE, 0.12 * a)
+                cv.text((x, yy), nm, 15, "Semibold", WHITE, a, "lm", tracking=0.8)
+                bar(cv, x + 62, yy - 4, 220, 8, v, col)
+                cv.text((x + 352, yy), "—" if v is None else f"{100*v:.0f}%", 17, "Medium", WHITE, a, "rm", mono=True)
+            cv.rect((COL3 - 24, y0 + 16, COL3 - 23, y1 - 16), WHITE, 0.12 * a)
             # M3: spin
-            x = 922
-            cv.text((x, y0 + 22), "SPIN · FIT ±1σ", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
+            x = COL3
+            cv.text((x, y0 + 24), "SPIN · PHYSICS FIT ±1σ", 15, "Semibold", HDR, a, "lm", tracking=1.3)
             if r is not None:
-                spin_glyph(cv, (x + 36, y0 + 72), 22, r["top_rpm"], r["side_rpm"], self.dir, phase, a)
+                spin_glyph(cv, (x + 36, y0 + 84), 24, r["top_rpm"], r["side_rpm"], self.dir, phase, a)
                 kind = "TOPSPIN" if r["top_rpm"] >= 0 else "BACKSPIN"
-                cv.text((x + 90, y0 + 54), kind, 12, "Semibold", MUTED, a, "lm", tracking=1.2)
-                cv.text((x + 90, y0 + 76), f"{r['top_rpm']:+,.0f}", 24, "Semibold", WHITE, a, "lm", mono=True)
-                cv.text((x + 90 + cv.textlen(f"{r['top_rpm']:+,.0f}", 24, "Semibold", mono=True) + 6, y0 + 79),
-                        f"rpm ±{r['top_sd_rpm']:,.0f}", 13, "Regular", MUTED, a, "lm")
-                cv.text((x + 90, y0 + 99), f"SIDESPIN  {r['side_rpm']:+,.0f} rpm ±{r['side_sd_rpm']:,.0f}", 13,
+                cv.text((x + 92, y0 + 56), kind, 15, "Semibold", HDR, a, "lm", tracking=1.2)
+                big = signed(r["top_rpm"], "+,.0f")
+                cv.text((x + 92, y0 + 86), big, 28, "Semibold", WHITE, a, "lm", mono=True)
+                cv.text((x + 92 + cv.textlen(big, 28, "Semibold", mono=True) + 8, y0 + 89),
+                        f"rpm ±{r['top_sd_rpm']:,.0f}", 17, "Regular", MUTED, a, "lm")
+                cv.text((x + 92, y0 + 120), f"sidespin {signed(r['side_rpm'], '+,.0f')} rpm ±{r['side_sd_rpm']:,.0f}", 17,
                         "Regular", WHITE, a, "lm")
             else:
-                cv.text((x + 90, y0 + 70), "fitting…", 16, "Regular", MUTED, a, "lm")
-            xd = 1340
+                cv.text((x + 4, y0 + 80), "fitting…", 20, "Regular", MUTED, a, "lm")
         else:
-            x = 492
-            cv.text((x, y0 + 22), "FLIGHT", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
-            res = ("ball goes out: no table bounce" if is_miss else "ball lands on the far half")
-            cv.text((x, y0 + 56), f"{self.video} · flight {self.f_net}", 22, "Semibold", WHITE, a, "lm")
-            cv.text((x, y0 + 86), (f"outcome (label): {res}" if done else "outcome: not yet known"), 15,
+            x = COL2
+            cv.text((x, y0 + 24), "FLIGHT", 15, "Semibold", HDR, a, "lm", tracking=1.3)
+            res = ("ball goes out, no table bounce" if is_miss else "ball lands on the far half")
+            cv.text((x, y0 + 62), f"{self.video} · flight {self.f_net}", 26, "Semibold", WHITE, a, "lm")
+            cv.text((x, y0 + 98), (f"outcome (label): {res}" if done else "outcome: not yet known"), 18,
                     "Regular", MUTED if not done else WHITE, a, "lm")
-            if not is_miss and self.p50 is not None:
-                cv.text((x, y0 + 106), f"P(MISS) at 50 ms before the bounce: {self.p50:.2f} (no call)", 13,
-                        "Regular", MUTED, a, "lm")
-            xd = 1340
+            if not is_miss and self.p50 is not None and f >= dec:
+                cv.text((x, y0 + 124), f"P(MISS) 50 ms before the bounce: {self.p50:.2f}, below τ {self.tau:.2f}: no call",
+                        17, "Regular", MUTED, a, "lm")
+        xd = COL4 - 24
         cv.rect((xd, y0 + 16, xd + 1, y1 - 16), WHITE, 0.12 * a)
         # M4: time to contact / result
-        x = xd + 24
+        x = COL4
         if not done:
             ms = (self.t_ref - f) / SRC_FPS * 1000
-            cv.text((x, y0 + 22), "TIME TO CONTACT", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
-            cv.text((x, y0 + 64), f"{ms:4.0f}", 46, "Semibold", WHITE, a, "lm", mono=True)
-            cv.text((x + cv.textlen(f"{ms:4.0f}", 46, "Semibold", mono=True) + 8, y0 + 72), "ms", 18, "Medium",
+            cv.text((x, y0 + 24), "TIME TO CONTACT", 15, "Semibold", HDR, a, "lm", tracking=1.3)
+            cv.text((x, y0 + 72), f"{ms:4.0f}", 50, "Semibold", WHITE, a, "lm", mono=True)
+            cv.text((x + cv.textlen(f"{ms:4.0f}", 50, "Semibold", mono=True) + 10, y0 + 80), "ms", 20, "Medium",
                     MUTED, a, "lm")
-            cv.text((x, y0 + 100), "contact = ball reaches the table end" if is_miss else "contact = table bounce",
-                    12, "Regular", MUTED, a, "lm")
+            cv.text((x, y0 + 120), "contact = ball reaches the table end" if is_miss else "contact = table bounce",
+                    17, "Regular", MUTED, a, "lm")
         else:
-            cv.text((x, y0 + 22), "RESULT (LABEL)", 12, "Semibold", MUTED, a, "lm", tracking=1.4)
+            cv.text((x, y0 + 24), "RESULT (LABEL)", 15, "Semibold", HDR, a, "lm", tracking=1.3)
             res = "OUT" if is_miss else "IN"
             col = CORAL if is_miss else ACCENT
-            cv.rrect((x, y0 + 40, x + 96, y0 + 84), 8, col, a)
-            cv.text((x + 48, y0 + 62), res, 26, "Bold", WHITE, a, "mm", tracking=1.0)
+            cv.rrect((x, y0 + 46, x + 104, y0 + 96), 8, col, a)
+            cv.text((x + 52, y0 + 71), res, 28, "Bold", WHITE, a, "mm", tracking=1.0)
             if is_miss and self.lead_ms is not None:
-                cv.text((x + 112, y0 + 54), "call was right", 15, "Semibold", WHITE, a, "lm")
-                cv.text((x + 112, y0 + 74), f"made {self.lead_ms:.0f} ms early", 15, "Regular", MUTED, a, "lm")
+                cv.text((x + 122, y0 + 58), "call was right", 20, "Semibold", WHITE, a, "lm")
+                cv.text((x + 122, y0 + 86), f"made {self.lead_ms:.0f} ms early", 18, "Regular", MUTED, a, "lm")
             elif not is_miss:
-                cv.text((x + 112, y0 + 54), "no call made", 15, "Semibold", WHITE, a, "lm")
-                cv.text((x + 112, y0 + 74), "correct pass", 15, "Regular", MUTED, a, "lm")
+                cv.text((x + 122, y0 + 58), "no call made", 20, "Semibold", WHITE, a, "lm")
+                cv.text((x + 122, y0 + 86), "correct pass", 18, "Regular", MUTED, a, "lm")
 
     def clock(self, cv, f, a=1.0, notes=True):
         s = f"{self.video}  ·  frame {f}  ·  120 fps source"
-        tw = cv.textlen(s, 14, "Medium", mono=True)
-        cv.rrect((W - 40 - tw - 28, 34, W - 40, 64), 8, NAVY0, 0.72 * a)
-        cv.text((W - 54, 49), s, 14, "Medium", WHITE, 0.9 * a, "rm", mono=True)
-        l1 = "Calls: frozen tier-0 model (online rule, P(MISS) ≥ τ for 3 frames)."
+        tw = cv.textlen(s, 17, "Medium", mono=True)
+        cv.rrect((W - 40 - tw - 30, 30, W - 40, 68), 9, NAVY0, 0.80 * a)
+        cv.text((W - 55, 49), s, 17, "Medium", WHITE, 0.95 * a, "rm", mono=True)
+        l1 = ("Calls: frozen tier-0 model (online rule: P(MISS) ≥ τ on 3 frames)." if self.label == "MISS" else
+              "Frozen tier-0 model, snapshot rule: call MISS if P(MISS) ≥ τ 50 ms before the bounce.")
         l2 = ("Arc, cone, P(in/long/net/wide), spin: physics fit, display only. "
               "The spin-aware model failed its test and makes no call.")
         lines = [l1, l2] if notes else [l1]
-        tw = max(cv.textlen(x, 13, "Regular") for x in lines)
-        cv.rrect((W - 40 - tw - 28, 72, W - 40, 86 + 18 * len(lines)), 8, NAVY0, 0.62 * a)
+        tw = max(cv.textlen(x, 17, "Regular") for x in lines)
+        cv.rrect((W - 40 - tw - 30, 76, W - 40, 88 + 24 * len(lines)), 9, NAVY0, 0.80 * a)
         for j, x in enumerate(lines):
-            cv.text((W - 54, 88 + 18 * j), x, 13, "Regular", (220, 228, 244), a, "rm")
+            cv.text((W - 55, 99 + 24 * j), x, 17, "Regular", (226, 233, 247), a, "rm")
 
 
 # ----------------------------------------------------------------------- landing chart (slow-mo)
-def landing_chart(cv, tt, f, box=(1352, 140, 1872, 360), a=1.0):
+def landing_chart(cv, tt, f, box=(1360, 148, 1880, 384), a=1.0):
     x0, y0, x1, y1 = box
-    cv.rrect((x0, y0, x1, y1), 12, NAVY0, 0.80 * a, outline=WHITE, oa=0.1 * a)
-    cv.text((x0 + 18, y0 + 22), "PREDICTED CROSSING PAST THE END LINE", 12, "Semibold", MUTED, a, "lm", tracking=1.2)
-    cv.text((x0 + 18, y0 + 40), "physics fit at each decision frame · 95% band · display only", 12, "Regular", DIM,
+    cv.rrect((x0, y0, x1, y1), 12, NAVY0, 0.92 * a, outline=WHITE, oa=0.1 * a)
+    cv.text((x0 + 20, y0 + 26), "PREDICTED CROSSING PAST THE END LINE", 15, "Semibold", (176, 188, 214), a, "lm",
+            tracking=1.2)
+    cv.text((x0 + 20, y0 + 50), "physics fit at each decision frame · 95% band · display only", 16, "Regular", MUTED,
             a, "lm")
-    px0, px1, py0, py1 = x0 + 56, x1 - 18, y0 + 58, y1 - 34
+    px0, px1, py0, py1 = x0 + 70, x1 - 22, y0 + 88, y1 - 40
     ymin, ymax = -0.2, 1.4
     lead0 = (tt.t_ref - tt.fit_ts[0]) / SRC_FPS * 1000
 
@@ -804,26 +834,44 @@ def landing_chart(cv, tt, f, box=(1352, 140, 1872, 360), a=1.0):
 
     for v in (0.0, 0.5, 1.0):
         cv.rect((px0, Y(v), px1, Y(v) + 1), WHITE, (0.35 if v == 0 else 0.08) * a)
-        cv.text((px0 - 8, Y(v)), f"{v:+.1f} m" if v else "0", 11, "Regular", MUTED, a, "rm")
-    cv.text((px1, Y(0.0) + 12), "END LINE", 10, "Semibold", WHITE, 0.7 * a, "rm", tracking=1.2)
+        cv.text((px0 - 10, Y(v)), f"{v:+.1f} m" if v else "0", 15, "Regular", MUTED, a, "rm")
+    cv.text((px1, Y(0.0) + 14), "END LINE", 15, "Semibold", WHITE, 0.75 * a, "rm", tracking=1.2)
     for lead in (500, 400, 300, 200, 100, 0):
         xx = px0 + (px1 - px0) * (1 - lead / lead0)
-        cv.text((xx, py1 + 14), f"-{lead}" if lead else "0 ms", 10, "Regular", MUTED, a, "mm")
+        cv.text((xx, py1 + 22), f"−{lead}" if lead else "0 ms", 15, "Regular", MUTED, a, "mm")
     ts = [t for t in tt.fit_ts if t <= f and np.isfinite(tt.fits[t]["x_land"])]
+    clipped = False
     if len(ts) >= 2:
         up = [(X(t), Y(tt.fits[t]["x_land"] + 1.96 * tt.fits[t]["x_land_sd"])) for t in ts]
         lo = [(X(t), Y(tt.fits[t]["x_land"] - 1.96 * tt.fits[t]["x_land_sd"])) for t in ts]
+        clipped = any(tt.fits[t]["x_land"] + 1.96 * tt.fits[t]["x_land_sd"] > ymax for t in ts)
         cv.poly(up + lo[::-1], CORAL, 0.20 * a)
         cv.line([(X(t), Y(tt.fits[t]["x_land"])) for t in ts], CORAL, 2.4, a)
         xe, ye = X(ts[-1]), Y(tt.fits[ts[-1]]["x_land"])
         cv.circle((xe, ye), 4.5, WHITE, a)
         r = tt.fits[ts[-1]]
-        cv.text((xe - 8, ye - 14), f"+{r['x_land']*100:.0f} ± {1.96*r['x_land_sd']*100:.0f} cm", 12, "Semibold",
-                WHITE, a, "rm")
+        v, h = r["x_land"], 1.96 * r["x_land_sd"]
+        lab = (f"{signed(v, '+.1f')} ± {h:.1f} m" if max(abs(v), h) >= 1.0 else
+               f"{signed(v * 100)} ± {h * 100:.0f} cm")
+        if v > ymax:
+            lab += " (off scale)"
+        tw_ = cv.textlen(lab, 17, "Semibold")
+        # beside the dot, never on it: left of it when there is room, else right; below it when it is pinned
+        # to the top of the plot
+        ly = ye + 20 if ye - 16 < py0 + 10 else ye - 16
+        if xe - 12 - tw_ >= px0:
+            cv.rrect((xe - 12 - tw_ - 6, ly - 12, xe - 8, ly + 12), 5, NAVY0, 0.85 * a)
+            cv.text((xe - 12, ly), lab, 17, "Semibold", WHITE, a, "rm")
+        else:
+            cv.rrect((xe + 8, ly - 12, xe + 12 + tw_ + 6, ly + 12), 5, NAVY0, 0.85 * a)
+            cv.text((xe + 12, ly), lab, 17, "Semibold", WHITE, a, "lm")
+        cv.circle((xe, ye), 4.5, WHITE, a)
+    if clipped:
+        cv.text((px0 + 4, py0 - 14), "▲ band above +1.4 m clipped", 15, "Regular", MUTED, a, "lm")
     if tt.call is not None and f >= tt.call:
         xc = X(tt.call)
         cv.rect((xc, py0, xc + 1.5, py1), CORAL, 0.9 * a)
-        cv.text((xc + 5, py0 + 6), "CALL", 10, "Semibold", CORAL, a, "lm", tracking=1.2)
+        cv.text((xc + 6, py1 - 12), "CALL", 15, "Semibold", CORAL, a, "lm", tracking=1.2)
 
 
 # ===================================================================================== SEGMENTS
@@ -871,7 +919,7 @@ def grid(cv, t, a=1.0, step=80):
         cv.rect((0, yy + off * 0.5, W, yy + off * 0.5 + 1), WHITE, 0.025 * a)
 
 
-def slate(num, title, sub, label, n=36):
+def slate(num, title, sub, label, n=48):
     def fn(i):
         cv = Canvas(bg())
         t = i / FPS
@@ -883,14 +931,14 @@ def slate(num, title, sub, label, n=36):
         cv.rect((x - 18, 380 + dy, x - 16, 470 + dy), WHITE, 0.25 * e)
         cv.text((x + 30 * (1 - e), 422 + dy), title, 54, "Bold", WHITE, e, "ls", tracking=1.0)
         cv.text((x + 30 * (1 - e), 462 + dy), sub, 22, "Regular", MUTED, e, "ls")
-        tw = cv.textlen(label, 18, "Medium")
-        cv.rrect((x, 498 + dy, x + tw + 30, 534 + dy), 8, NAVY0, 0.8 * e, outline=ACCENT, oa=0.6 * e)
-        cv.text((x + 15, 516 + dy), label, 18, "Medium", WHITE, e, "lm")
+        tw = cv.textlen(label, 21, "Medium")
+        cv.rrect((x, 496 + dy, x + tw + 32, 538 + dy), 9, NAVY0, 0.8 * e, outline=ACCENT, oa=0.6 * e)
+        cv.text((x + 16, 517 + dy), label, 21, "Medium", WHITE, e, "lm")
         return cv.finish()
     return Seg("slate:" + title, n, fn, 6, 6)
 
 
-def title_card(N, n=105):
+def title_card(N, n=120):
     def fn(i):
         cv = Canvas(bg())
         t = i / FPS
@@ -898,39 +946,41 @@ def title_card(N, n=105):
         # stylised flight arc sweeping across
         xs = np.linspace(1000, 1840, 160)
         ys = 900 - 560 * np.sin(np.pi * (xs - 1000) / 900) ** 1.1
-        k = int(len(xs) * ease(i / 50))
+        k = int(len(xs) * ease(i / 45))
         if k > 2:
             pts = list(zip(xs[:k], ys[:k]))
             cv.glow_line(pts, ACCENT, 5, 0.6)
             cv.line(pts, ACCENT, 2.4, 0.9)
             cv.circle(pts[-1], 7, WHITE, 1.0)
-        e1, e2, e3 = ease_out((i - 8) / 18), ease_out((i - 18) / 18), ease_out((i - 30) / 18)
+        # everything is fully in by ~1.6 s, leaving ~2.1 s to read before the fade
+        e1, e2, e3 = ease_out((i - 4) / 14), ease_out((i - 12) / 14), ease_out((i - 20) / 14)
         cv.rect((160, 336, 172, 348), ACCENT, e1)
         cv.text((186, 342), "COURTSIDE", 24, "Semibold", WHITE, e1, "lm", tracking=4.0)
         cv.text((160 + 40 * (1 - e1), 456), "Calling the ball", 92, "Bold", WHITE, e1, "ls")
         cv.text((160 + 40 * (1 - e2), 556), "before it lands.", 92, "Bold", WHITE, e2, "ls")
-        cv.text((160, 618), "Computer-vision early calls: table tennis on real match footage,", 26, "Regular",
-                MUTED, e3, "ls")
-        cv.text((160, 654), "tennis in a simulated Hawk-Eye-class camera model.", 26, "Regular", MUTED, e3, "ls")
+        cv.text((160, 618), "Computer-vision early calls: table tennis on real match footage,", 28, "Regular",
+                (176, 188, 214), e3, "ls")
+        cv.text((160, 656), "tennis in a simulated Hawk-Eye-class camera model.", 28, "Regular", (176, 188, 214), e3, "ls")
         for j, (lab, col) in enumerate(((LBL_REAL, ACCENT), (LBL_SIM, MUTED))):
-            ee = ease_out((i - 44 - 6 * j) / 16)
-            y = 760 + 44 * j
-            tw = cv.textlen(lab, 17, "Medium")
-            cv.rrect((160, y, 160 + tw + 30, y + 34), 8, NAVY0, 0.85 * ee, outline=col, oa=0.7 * ee)
-            cv.text((175, y + 17), lab, 17, "Medium", WHITE, ee, "lm")
+            ee = ease_out((i - 30 - 5 * j) / 14)
+            y = 750 + 52 * j
+            tw = cv.textlen(lab, 21, "Medium")
+            cv.rrect((160, y, 160 + tw + 32, y + 40), 9, NAVY0, 0.85 * ee, outline=col, oa=0.7 * ee)
+            cv.text((176, y + 20), lab, 21, "Medium", WHITE, ee, "lm")
         return cv.finish()
     return Seg("title", n, fn, 0, 8)
 
 
-def end_card(N, n=135):
+def end_card(N, n=240):
     def fn(i):
         cv = Canvas(bg())
         grid(cv, i / FPS)
-        e = [ease_out((i - 6 * j) / 16) for j in range(8)]
-        cv.text((160, 250), "What the reel shows", 48, "Bold", WHITE, e[0], "ls")
+        e = [ease_out((i - 5 * j) / 14) for j in range(8)]
+        cv.text((160, 220), "What the reel shows", 52, "Bold", WHITE, e[0], "ls")
         lines = [
-            (f"Real footage: {N['snap50_tp']}/{N['snap50_calls']} MISS calls correct at 50 ms on held-out games "
-             f"(precision 95% CI {N['snap50_ci'][0]:.2f}–{N['snap50_ci'][1]:.2f}; recall {100*N['snap50_recall']:.0f}%)."),
+            (f"Table tennis, real footage: {N['snap50_tp']}/{N['snap50_calls']} MISS calls correct at 50 ms on held-out "
+             f"games (precision 95% CI {N['snap50_ci'][0]:.2f}–{N['snap50_ci'][1]:.2f}; recall "
+             f"{100*N['snap50_recall']:.0f}%)."),
             (f"Online rule: {N['online_calls']} of {N['n_miss']} test misses called, {N['online_fp']} false calls, "
              f"median lead {N['lead_median']:.0f} ms, best 408 ms."),
             (f"Spin-aware table-tennis model: {N['spin50_tp']}/{N['spin50_calls']} at 50 ms on test. It did not pass; "
@@ -940,16 +990,20 @@ def end_card(N, n=135):
             "The edge needs the call inside the venue's 1 s order delay; the stamp lag is not yet measured.",
         ]
         for j, s in enumerate(lines):
-            y = 320 + 58 * j
-            cv.rect((160, y - 9, 166, y + 9), ACCENT if j != 2 else CORAL, e[j + 1])
-            cv.text((186, y), s, 24, "Regular", WHITE, e[j + 1], "lm")
+            y = 300 + 62 * j
+            cv.rect((160, y - 10, 166, y + 10), ACCENT if j != 2 else CORAL, e[j + 1])
+            cv.text((186, y), s, 26, "Regular", WHITE, e[j + 1], "lm")
+        # credits: the three honesty labels verbatim, bottom left like every other segment's label
         cr = [
-            "Footage: OpenTTGames (OSAI), held-out test games, CC BY-NC-SA 4.0. Ball detector: BlurBall (MIT).",
-            "Tennis segment: simulated physics: Hawk-Eye-class camera model (not real footage).",
-            "Market timing: live Polymarket books vs the official WTA point log (2026-10-03). No Polymarket match video.",
+            f"Table tennis: {LBL_REAL}. Ball detector: BlurBall (MIT).",
+            f"Tennis: {LBL_SIM}.",
+            f"Speed card: {LBL_MKT}.",
         ]
+        tw = max(cv.textlen(s, 20, "Regular") for s in cr)
+        cv.rrect((140, 846, 140 + tw + 44, 1004), 12, NAVY0, 0.8 * e[6], outline=WHITE, oa=0.10 * e[6])
+        cv.text((162, 876), "SOURCES AND LABELS", 15, "Semibold", (176, 188, 214), e[6], "lm", tracking=1.4)
         for j, s in enumerate(cr):
-            cv.text((160, 700 + 34 * j), s, 18, "Regular", MUTED, e[6], "lm")
+            cv.text((162, 912 + 32 * j), s, 20, "Regular", (220, 228, 244), e[6], "lm")
         return cv.finish()
     return Seg("end", n, fn, 8, 0)
 
@@ -968,18 +1022,18 @@ def seg_featured(tt, N, mode_slow=False):
 
 def seg_quick(tt, N):
     plan = [(tt.call - 4 * (20 - j), "rt") for j in range(20)]
-    plan += [(tt.call, "freeze")] * 50
+    plan += [(tt.call, "freeze")] * 60
     plan += [(tt.call + 4 * j, "rt") for j in range(1, 11)]
-    plan += [(tt.call + 40, "hold")] * 18
+    plan += [(tt.call + 40, "hold")] * 30
     return _tt_seg(f"quick:{tt.video}_{tt.f_net}", tt, plan, N, physics=False)
 
 
 def seg_bounce(tt, N):
     dec = tt.t_ref - 6                     # snapshot decision frame, 50 ms before the bounce
     plan = [(dec - 4 * (24 - j), "rt") for j in range(24)]
-    plan += [(dec, "freeze")] * 30
+    plan += [(dec, "freeze")] * 60
     plan += [(dec + 4 * j, "rt") for j in range(1, 11)]
-    plan += [(dec + 40, "hold")] * 24
+    plan += [(dec + 40, "hold")] * 30
     return _tt_seg(f"bounce:{tt.video}_{tt.f_net}", tt, plan, N, physics=False)
 
 
@@ -1031,12 +1085,12 @@ def _tt_seg(name, tt, plan, N, physics, slow=False):
             text = f"MISS CALLED · {tt.lead_ms:.0f} ms BEFORE CONTACT"
             sub = (f"frozen tier-0 model · P(MISS) ≥ {tt.tau:.2f} on 3 frames · "
                    "contact = ball reaches the table end")
-            callout(cv, 740, text, sub, t=min(1.0, k / 12) if k >= 0 else 1.0)
+            callout(cv, 700, text, sub, t=min(1.0, k / 12) if k >= 0 else 1.0, align="l" if tt.dir > 0 else "r")
         elif not is_miss and f >= tt.t_ref - 6 and first_freeze is not None:
             k = i - first_freeze
             text = f"NO MISS CALL · P(MISS) {tt.p50:.2f}" if f < tt.t_ref else "TABLE BOUNCE · IN"
             sub = f"frozen tier-0 model · snapshot 50 ms before the bounce · a MISS call needs P(MISS) ≥ {tt.tau:.2f}"
-            callout(cv, 740, text, sub, t=min(1.0, k / 12), col=ACCENT)
+            callout(cv, 700, text, sub, t=min(1.0, k / 12), col=ACCENT, align="l" if tt.dir > 0 else "r")
         mode_txt = {"rt": "REAL TIME", "freeze": "FREEZE · CALL FRAME" if is_miss else "FREEZE · DECISION FRAME",
                     "hold": "REAL TIME", "slow": "¼× SLOW MOTION"}[mode]
         if slow and mode in ("freeze", "hold"):
@@ -1047,7 +1101,7 @@ def _tt_seg(name, tt, plan, N, physics, slow=False):
     return Seg(name, len(plan), fn, 6, 6)
 
 
-def seg_stats(last_img_fn, N, n=120):
+def seg_stats(last_img_fn, N, n=195):
     import cv2
     cache = {}
 
@@ -1058,10 +1112,10 @@ def seg_stats(last_img_fn, N, n=120):
             cache["bg"] = (b.astype(np.float32) * 0.35 + np.array(NAVY0, np.float32) * 0.65).astype(np.uint8)
         cv = Canvas(cache["bg"].copy())
         e = [ease_out((i - 5 * j) / 16) for j in range(6)]
-        cv.text((160, 214), "HELD-OUT TEST GAMES  ·  test_1–7", 18, "Semibold", MUTED, e[0], "ls", tracking=2.0)
+        cv.text((160, 214), "HELD-OUT TEST GAMES  ·  test_1–7", 18, "Semibold", (176, 188, 214), e[0], "ls", tracking=2.0)
         nt = N["n_test"]
         cv.text((160, 252), f"{nt['BOUNCE'] + nt['MISS']} flights: {nt['BOUNCE']} table bounces, {nt['MISS']} misses."
-                " Model and τ frozen on game_1–5; test evaluated once.", 22, "Regular", WHITE, e[0], "ls")
+                " Models and τ fixed on game_1–5; each model scored once on test.", 22, "Regular", WHITE, e[0], "ls")
         # big stat
         cv.text((160, 470), f"{N['snap50_tp']}/{N['snap50_calls']}", 190, "Bold", WHITE, e[1], "ls")
         cv.text((700, 368), "MISS calls correct", 40, "Semibold", WHITE, e[1], "ls")
@@ -1072,16 +1126,17 @@ def seg_stats(last_img_fn, N, n=120):
             ("ONLINE RULE", f"{N['online_calls']} of {N['n_miss']}", f"misses called, {N['online_fp']} wrong · "
              f"median lead {N['lead_median']:.0f} ms, best 408 ms", ACCENT),
             ("SPIN-AWARE MODEL", f"{N['spin50_tp']}/{N['spin50_calls']}",
-             f"at 50 ms on test ({N['spin50_prec']:.2f}): did not pass the 0.95 bar, so it makes no call here", CORAL),
+             f"calls correct at 50 ms on test (precision {N['spin50_prec']:.2f}): below the 0.95 bar, so it makes "
+             "no call here", CORAL),
         ]
         for j, (h, big, s, col) in enumerate(cols):
             x = 160 + 820 * j
             ee = e[2 + j]
-            cv.rect((x, 560, x + 4, 700), col, ee)
-            cv.text((x + 24, 584), h, 16, "Semibold", MUTED, ee, "ls", tracking=1.8)
+            cv.rect((x, 560, x + 4, 764), col, ee)
+            cv.text((x + 24, 584), h, 17, "Semibold", (176, 188, 214), ee, "ls", tracking=1.8)
             cv.text((x + 24, 652), big, 58, "Bold", WHITE, ee, "ls")
-            for k_, part in enumerate(_wrap(cv, s, 20, 680)):
-                cv.text((x + 24, 690 + 28 * k_), part, 20, "Regular", MUTED, ee, "ls")
+            for k_, part in enumerate(_wrap(cv, s, 22, 680)):
+                cv.text((x + 24, 692 + 30 * k_), part, 22, "Regular", (190, 202, 226), ee, "ls")
         chrome(cv, "01  REAL MATCH FOOTAGE · TEST RESULTS", LBL_REAL, "RESULTS", ACCENT, e[0])
         return cv.finish()
     return Seg("stats", n, fn, 8, 8)
@@ -1227,7 +1282,7 @@ def seg_tennis(T, N):
     k_call = T["k_call"]
     t_call_seg = INTRO + st[k_call] * SLOW
     FREEZE = 1.6
-    POST, CARD = 3.2, 4.0
+    POST, CARD = 3.2, 6.0
     total = INTRO + t_fly + FREEZE + POST + CARD
     n = int(round(total * FPS))
     xl, yl = T["land"][0], T["land"][1]
@@ -1298,13 +1353,20 @@ def seg_tennis(T, N):
         ns = ns[np.isfinite(ns[:, 0])]
         nsp = [cam.seg(ns[a], ns[a + 1]) for a in range(0, len(ns) - 1, 3)]
         pts = [q for s_ in nsp for q in s_]
+        ns_label = None
         if len(pts) > 1 and mode != "intro":
             cv.line(pts, MUTED, 1.6, 0.55)
-            jl = int(np.argmin(np.abs(ns[:, 1] - (BL - 3.0))))
-            pe, ze = cam.project(ns[jl])
-            if ze > 0.3 and 20 < pe[0] < W - 560 and 120 < pe[1] < H - 120:
-                cv.text((pe[0] + 12, pe[1] - 12), f"same launch without spin: lands {ns[-1][1] - BL:+.1f} m past the baseline",
-                        14, "Regular", MUTED, 0.9, "lm")
+            # label at the no-spin apex (clear of the ball and the net), drawn last on its own backing; it must
+            # stay left of the readout column and above the callout band
+            txt = f"same launch, no spin: lands {signed(ns[-1][1] - BL, '+.1f')} m past the baseline"
+            tw = cv.textlen(txt, 17, "Regular")
+            for jl in (int(np.argmax(ns[:, 2])), int(np.argmin(np.abs(ns[:, 1] - (BL - 3.0))))):
+                pe, ze = cam.project(ns[jl])
+                lx = min(max(pe[0] - tw / 2, 24), W - 560 - tw)
+                ly = pe[1] - 26
+                if ze > 0.3 and 0 < pe[0] < W - 520 and 110 < ly < 740:
+                    ns_label = (lx, ly, txt, tw)
+                    break
         # true path so far (white trail)
         ku = min(k, kland)
         if ku >= 1:
@@ -1342,7 +1404,7 @@ def seg_tennis(T, N):
             bl = cam.seg(np.array([xl - 1.6, BL, 0.0]), np.array([xl + 1.6, BL, 0.0]), n=4)
             if len(bl) >= 2 and mode == "post":
                 q = bl[0] if bl[0][0] < bl[-1][0] else bl[-1]
-                cv.text((q[0] + 10, q[1] + 22), "BASELINE", 12, "Semibold", WHITE, 0.8, "lm", tracking=1.4)
+                cv.text((q[0] + 10, q[1] + 24), "BASELINE", 16, "Semibold", WHITE, 0.9, "lm", tracking=1.4)
         # ball + shadow + spin vector
         if u < tl:
             sh, zs = cam.project(np.array([p[0], p[1], 0.0]))
@@ -1362,13 +1424,19 @@ def seg_tennis(T, N):
                     wn = w / max(np.linalg.norm(w), 1e-9)
                     tip, zt = cam.project(p + 0.9 * wn)
                     if zt > 0.2:
-                        cv.line([tuple(pb), tuple(tip)], ACCENT, 3.0, 1.0)
+                        # screen length capped so the arrow never runs into the readout column near the bounce
                         dvec = np.array(tip) - np.array(pb)
-                        dn = dvec / max(np.linalg.norm(dvec), 1e-9)
+                        dl = np.linalg.norm(dvec)
+                        dn = dvec / max(dl, 1e-9)
+                        tip = np.array(pb) + dn * min(dl, 150.0)
+                        cv.line([tuple(pb), tuple(tip)], ACCENT, 3.0, 1.0)
                         nn = np.array([-dn[1], dn[0]])
                         cv.poly([tuple(tip + dn * 10), tuple(tip - dn * 4 + nn * 7), tuple(tip - dn * 4 - nn * 7)],
                                 ACCENT, 1.0)
-                        cv.text((tip[0] + 10, tip[1] - 6), "spin axis", 13, "Medium", ACCENT, 1.0, "lm")
+                        lw_ = cv.textlen("spin axis", 17, "Semibold")
+                        lx_ = tip[0] + 16 if tip[0] + 16 + lw_ < W - 540 else tip[0] - 16 - lw_
+                        cv.rrect((lx_ - 6, tip[1] - 30, lx_ + lw_ + 6, tip[1] - 4), 6, NAVY0, 0.75)
+                        cv.text((lx_, tip[1] - 17), "spin axis", 17, "Semibold", (140, 190, 255), 1.0, "lm")
                     # rotation ring in the plane of travel
                     v = T["v0"] / np.linalg.norm(T["v0"])
                     e1 = np.array([v[0], v[1], 0.0])
@@ -1380,32 +1448,39 @@ def seg_tennis(T, N):
                     Rp, Rz = cam.project(np.array(ring))
                     if (Rz > 0.2).all():
                         cv.line([tuple(q) for q in Rp], ACCENT, 2.0, 0.85)
-        # ------------------------------------------------------------------ HUD panel
+        if ns_label is not None:
+            lx, ly, txt, tw = ns_label
+            cv.rrect((lx - 8, ly - 14, lx + tw + 8, ly + 14), 6, NAVY0, 0.72)
+            cv.text((lx, ly), txt, 17, "Regular", (206, 214, 232), 1.0, "lm")
+        # ------------------------------------------------------------------ HUD panel (opaque: court lines
+        # must not show through the readouts)
+        HDR = (176, 188, 214)
         x0, y0 = W - 40 - 470, 92
-        cv.rrect((x0, y0, W - 40, y0 + 330), 14, NAVY0, 0.82, outline=WHITE, oa=0.1)
-        cv.text((x0 + 22, y0 + 26), "SPIN-AWARE PHYSICS FIT (BLS)", 12, "Semibold", MUTED, 1, "lm", tracking=1.4)
+        cv.rrect((x0, y0, W - 40, y0 + 352), 14, NAVY0, 0.95, outline=WHITE, oa=0.12)
+        cv.text((x0 + 22, y0 + 28), "SPIN-AWARE PHYSICS FIT (BLS)", 15, "Semibold", HDR, 1, "lm", tracking=1.3)
         if j is None:
-            cv.text((x0 + 22, y0 + 74), "acquiring track…", 26, "Medium", WHITE, 1, "lm")
-            cv.text((x0 + 22, y0 + 106), "fit starts 150 ms after contact", 15, "Regular", MUTED, 1, "lm")
+            cv.text((x0 + 22, y0 + 80), "acquiring track…", 28, "Medium", WHITE, 1, "lm")
+            cv.text((x0 + 22, y0 + 116), f"fit starts {1000 * T['stimes'][T['ks'][0]]:.0f} ms after contact", 18, "Regular",
+                    MUTED, 1, "lm")
         else:
             po = float(T["p_out"][j])
-            cv.text((x0 + 22, y0 + 60), "P(OUT)", 14, "Semibold", WHITE, 1, "lm", tracking=1.0)
-            cv.text((W - 62, y0 + 70), f"{po:.3f}", 44, "Semibold", CORAL if po >= 0.95 else WHITE, 1, "rm", mono=True)
-            bar(cv, x0 + 22, y0 + 100, 426, 8, po, CORAL if po >= 0.95 else ACCENT, tick=0.95)
-            cv.text((x0 + 22 + 426 * 0.95, y0 + 120), "0.95", 11, "Regular", MUTED, 1, "mm")
+            cv.text((x0 + 22, y0 + 66), "P(OUT)", 17, "Semibold", WHITE, 1, "lm", tracking=1.0)
+            cv.text((W - 62, y0 + 72), f"{po:.3f}", 46, "Semibold", CORAL if po >= 0.95 else WHITE, 1, "rm", mono=True)
+            bar(cv, x0 + 22, y0 + 104, 426, 8, po, CORAL if po >= 0.95 else ACCENT, tick=0.95)
+            cv.text((x0 + 22 + 426 * 0.95, y0 + 128), "0.95", 15, "Regular", MUTED, 1, "mm")
             dh = T["d_hat"][j] * 100
             sd95 = 1.96 * T["sd_d"][j] * 100
-            cv.text((x0 + 22, y0 + 152), "LANDING vs BASELINE", 12, "Semibold", MUTED, 1, "lm", tracking=1.2)
-            cv.text((x0 + 22, y0 + 182), f"{dh:+.1f} cm", 30, "Semibold", WHITE, 1, "lm", mono=True)
-            cv.text((x0 + 200, y0 + 184), f"± {sd95:.1f} cm (95%)", 18, "Regular", MUTED, 1, "lm")
+            cv.text((x0 + 22, y0 + 160), "LANDING vs BASELINE", 15, "Semibold", HDR, 1, "lm", tracking=1.2)
+            cv.text((x0 + 22, y0 + 192), f"{signed(dh, '+.1f')} cm", 32, "Semibold", WHITE, 1, "lm", mono=True)
+            cv.text((x0 + 214, y0 + 194), f"± {sd95:.1f} cm (95%)", 20, "Regular", MUTED, 1, "lm")
             lead = (tl - u) * 1000
-            cv.text((x0 + 22, y0 + 222), "BOUNCE IN", 12, "Semibold", MUTED, 1, "lm", tracking=1.2)
-            cv.text((x0 + 22, y0 + 252), f"{max(lead, 0):.0f} ms", 30, "Semibold", WHITE, 1, "lm", mono=True)
+            cv.text((x0 + 22, y0 + 234), "BOUNCE IN", 15, "Semibold", HDR, 1, "lm", tracking=1.2)
+            cv.text((x0 + 22, y0 + 266), f"{max(lead, 0):.0f} ms", 32, "Semibold", WHITE, 1, "lm", mono=True)
             rpm = np.linalg.norm(T["spin_hat"][j]) * 60 / (2 * np.pi)
-            cv.text((x0 + 240, y0 + 222), "SPIN (FIT · TRUTH)", 12, "Semibold", MUTED, 1, "lm", tracking=1.2)
-            cv.text((x0 + 240, y0 + 252), f"{rpm:,.0f} rpm", 30, "Semibold", WHITE, 1, "lm", mono=True)
-            cv.text((x0 + 240, y0 + 284), f"truth {T['rpm_true']:,.0f} rpm topspin", 14, "Regular", MUTED, 1, "lm")
-            cv.text((x0 + 22, y0 + 284), "simulated 340 fps · 3.6 mm noise", 14, "Regular", MUTED, 1, "lm")
+            cv.text((x0 + 240, y0 + 234), "SPIN (FIT · TRUTH)", 15, "Semibold", HDR, 1, "lm", tracking=1.2)
+            cv.text((x0 + 240, y0 + 266), f"{rpm:,.0f} rpm", 32, "Semibold", WHITE, 1, "lm", mono=True)
+            cv.text((x0 + 240, y0 + 298), f"truth {T['rpm_true']:,.0f} rpm topspin", 17, "Regular", MUTED, 1, "lm")
+            cv.text((x0 + 22, y0 + 330), "simulated 340 fps camera · 3.6 mm noise", 17, "Regular", MUTED, 1, "lm")
         # inset: landing zone, top view
         inset(cv, T, j, u >= tl, called)
         # callout
@@ -1418,10 +1493,12 @@ def seg_tennis(T, N):
                 callout(cv, 780, text, sub, t=min(1.0, kk / 12))
         if mode == "intro":
             e = ease_out(i / 12) * (1 - ease((ts - INTRO + 0.4) / 0.4))
-            cv.text((70, 150), f"Topspin drive · {np.linalg.norm(T['v0']):.0f} m/s · {T['rpm_true']:,.0f} rpm", 34,
-                    "Semibold", WHITE, e, "ls")
-            cv.text((70, 188), f"lands {T['d_true']*100:.1f} cm past the baseline (simulated truth)", 22, "Regular",
-                    MUTED, e, "ls")
+            t1_ = f"Topspin drive · {np.linalg.norm(T['v0']):.0f} m/s · {T['rpm_true']:,.0f} rpm"
+            t2_ = f"lands {T['d_true']*100:.1f} cm past the baseline (simulated truth)"
+            bw_ = max(cv.textlen(t1_, 34, "Semibold"), cv.textlen(t2_, 22, "Regular")) + 52
+            cv.rrect((40, 96, 40 + bw_, 210), 12, NAVY0, 0.88 * e, outline=WHITE, oa=0.1 * e)
+            cv.text((66, 146), t1_, 34, "Semibold", WHITE, e, "ls")
+            cv.text((66, 186), t2_, 22, "Regular", (196, 206, 226), e, "ls")
         if ts >= INTRO + t_fly + FREEZE + POST:
             kc = (ts - (INTRO + t_fly + FREEZE + POST)) * FPS
             cv.rect((0, 0, W, H), NAVY0, 0.6 * ease_out(kc / 14))
@@ -1435,11 +1512,11 @@ def seg_tennis(T, N):
 
 
 def inset(cv, T, j, landed, called):
-    x0, y0, x1, y1 = W - 40 - 470, 440, W - 40, 760
-    cv.rrect((x0, y0, x1, y1), 14, NAVY0, 0.86, outline=WHITE, oa=0.1)
-    cv.text((x0 + 20, y0 + 24), "LANDING ZONE · TOP VIEW", 12, "Semibold", MUTED, 1, "lm", tracking=1.4)
-    cv.text((x0 + 20, y0 + 44), "95% ellipse of the fit · 1 square = 5 cm", 12, "Regular", DIM, 1, "lm")
-    px0, py0, px1, py1 = x0 + 20, y0 + 62, x1 - 20, y1 - 20
+    x0, y0, x1, y1 = W - 40 - 470, 458, W - 40, 762
+    cv.rrect((x0, y0, x1, y1), 14, NAVY0, 0.95, outline=WHITE, oa=0.12)
+    cv.text((x0 + 20, y0 + 26), "LANDING ZONE · TOP VIEW", 15, "Semibold", (176, 188, 214), 1, "lm", tracking=1.3)
+    cv.text((x0 + 20, y0 + 50), "95% ellipse of the fit · 1 square = 5 cm", 17, "Regular", MUTED, 1, "lm")
+    px0, py0, px1, py1 = x0 + 20, y0 + 70, x1 - 20, y1 - 18
     cx = T["land"][0]
     scale = (px1 - px0) / 0.60                                 # 60 cm wide
     yc = BL                                                    # baseline outer edge at the middle
@@ -1450,8 +1527,8 @@ def inset(cv, T, j, landed, called):
     cv.rect((px0, py0, px1, py1), (24, 62, 128), 1.0)
     yb = P(cx, BL)[1]
     cv.rect((px0, py0, px1, yb), (12, 30, 66), 1.0)
-    cv.text((px1 - 10, py0 + 16), "OUT", 13, "Semibold", CORAL, 0.9, "rm", tracking=1.4)
-    cv.text((px1 - 10, py1 - 14), "IN", 13, "Semibold", ACCENT, 0.9, "rm", tracking=1.4)
+    cv.text((px1 - 10, py0 + 18), "OUT", 17, "Semibold", CORAL, 1.0, "rm", tracking=1.4)
+    cv.text((px1 - 10, py1 - 16), "IN", 17, "Semibold", (120, 180, 255), 1.0, "rm", tracking=1.4)
     for g in np.arange(-0.30, 0.31, 0.05):
         xx = P(cx + g, 0)[0]
         cv.rect((xx, py0, xx + 1, py1), WHITE, 0.06)
@@ -1464,8 +1541,7 @@ def inset(cv, T, j, landed, called):
     if j is not None:
         col = CORAL if called else ACCENT
         E = ellipse_world(T["land_hat"][j], T["land_cov"][j])
-        pts = [P(q[0], q[1]) for q in E]
-        pts = [(min(max(a, px0), px1), min(max(b, py0), py1)) for a, b in pts]
+        pts = clip_rect([P(q[0], q[1]) for q in E], px0, py0, px1, py1)    # true clip, not a clamp
         cv.poly(pts, col, 0.35, outline=col, oa=1.0, width=2.0)
         c = P(T["land_hat"][j][0], T["land_hat"][j][1])
         if px0 < c[0] < px1 and py0 < c[1] < py1:
@@ -1474,17 +1550,50 @@ def inset(cv, T, j, landed, called):
         M = ellipse_world(T["land"], np.diag([0.034 ** 2, 0.034 ** 2]), k=1.0, n=48)
         cv.poly([P(q[0], q[1]) for q in M], (240, 244, 252), 0.55, outline=WHITE, oa=0.9, width=1.4)
         c = P(T["land"][0], T["land"][1])
-        cv.text((c[0] + 46, c[1] - 30), f"ball centre {T['d_true']*100:.1f} cm out (truth)", 13, "Semibold", WHITE, 1,
-                "lm")
+        lab = f"ball centre {T['d_true']*100:.1f} cm out (truth)"
+        tw = cv.textlen(lab, 17, "Semibold")
+        lx = c[0] + 40 if c[0] + 40 + tw < px1 - 8 else max(px0 + 8, px1 - 8 - tw)
+        ly = c[1] - 44
+        cv.rrect((lx - 6, ly - 13, lx + tw + 6, ly + 13), 5, NAVY0, 0.8)
+        cv.text((lx, ly), lab, 17, "Semibold", WHITE, 1, "lm")
+
+
+def clip_rect(pts, x0, y0, x1, y1):
+    """Sutherland-Hodgman clip of a closed polygon to an axis-aligned box."""
+    def clip(P, inside, cross):
+        out = []
+        for j in range(len(P)):
+            a, b = P[j - 1], P[j]
+            if inside(b):
+                if not inside(a):
+                    out.append(cross(a, b))
+                out.append(b)
+            elif inside(a):
+                out.append(cross(a, b))
+        return out
+
+    def xcut(xc):
+        return lambda a, b: (xc, a[1] + (b[1] - a[1]) * (xc - a[0]) / (b[0] - a[0]))
+
+    def ycut(yc):
+        return lambda a, b: (a[0] + (b[0] - a[0]) * (yc - a[1]) / (b[1] - a[1]), yc)
+
+    P = list(pts)
+    for inside, cross in ((lambda q: q[0] >= x0, xcut(x0)), (lambda q: q[0] <= x1, xcut(x1)),
+                          (lambda q: q[1] >= y0, ycut(y0)), (lambda q: q[1] <= y1, ycut(y1))):
+        if not P:
+            break
+        P = clip(P, inside, cross)
+    return P
 
 
 def pop_card(cv, T, N, k):
     e = ease_out(k / 14)
     x0, y0, x1, y1 = 160, 250, 1240, 700
-    cv.rrect((x0, y0, x1, y1), 18, NAVY0, 0.92 * e, outline=WHITE, oa=0.12 * e)
-    cv.text((x0 + 44, y0 + 56), "ALL SIMULATED NEAR-LINE SHOTS", 16, "Semibold", MUTED, e, "ls", tracking=2.0)
+    cv.rrect((x0, y0, x1, y1), 18, NAVY0, 0.97 * e, outline=WHITE, oa=0.12 * e)
+    cv.text((x0 + 44, y0 + 56), "ALL SIMULATED NEAR-LINE SHOTS", 17, "Semibold", (176, 188, 214), e, "ls", tracking=2.0)
     cv.text((x0 + 44, y0 + 92), f"{T['pop_n']:,} groundstrokes · 340 fps · 3.6 mm noise · results/spin/tennis",
-            18, "Regular", DIM, e, "ls")
+            20, "Regular", MUTED, e, "ls")
     cv.text((x0 + 44, y0 + 200), f"±{N['ten_margin95_200']:.2f} cm", 96, "Bold", WHITE, e, "ls")
     cv.text((x0 + 520, y0 + 160), "95% landing margin, 200 ms", 26, "Semibold", WHITE, e, "ls")
     cv.text((x0 + 520, y0 + 194), "before the bounce (spin-aware fit)", 26, "Semibold", WHITE, e, "ls")
@@ -1498,19 +1607,20 @@ def pop_card(cv, T, N, k):
         cv.rect((x0 + 44, y - 12, x0 + 48, y + 12), ACCENT if j == 0 else MUTED, e)
         cv.text((x0 + 64, y), a_, 22, "Semibold", WHITE, e, "lm")
         cv.text((x0 + 600, y), b_, 22, "Regular", MUTED, e, "lm")
-    cv.text((x0 + 44, y1 - 34), "Model study on simulated physics, not measured Hawk-Eye data.", 16, "Regular", MUTED, e,
-            "ls")
+    cv.text((x0 + 44, y1 - 34), "Model study on simulated physics, not measured Hawk-Eye data.", 20, "Regular",
+            (196, 206, 226), e, "ls")
 
 
 # ===================================================================================== SPEED CARD
-def seg_speed(N, n=180):
+def seg_speed(N, n=270):
     S = SPEED
     best = 0.408
     med = N["lead_median"] / 1000
     t_stamp = S["stamp_lag_s"]
     t_book = t_stamp + S["book_vs_stamp_s"]
-    xa, xb = 300, 1700
+    xa, xb = 580, 1740
     tmin, tmax = -0.6, 2.3
+    HDR = (176, 188, 214)
 
     def X(t):
         return xa + (xb - xa) * (t - tmin) / (tmax - tmin)
@@ -1519,64 +1629,74 @@ def seg_speed(N, n=180):
         cv = Canvas(bg())
         grid(cv, i / FPS, 0.6)
         e0 = ease_out(i / 14)
-        cv.text((160, 186), "SPEED", 18, "Semibold", ACCENT, e0, "ls", tracking=3.0)
-        cv.text((160, 246), "Where a CV call sits against the market clock", 46, "Bold", WHITE, e0, "ls")
-        cv.text((160, 288), "seconds relative to the bounce (contact).  Positive = after.", 22, "Regular", MUTED, e0, "ls")
-        yax = 600
+        cv.text((160, 176), "SPEED", 18, "Semibold", ACCENT, e0, "ls", tracking=3.0)
+        cv.text((160, 236), "Where a CV call sits against the market clock", 46, "Bold", WHITE, e0, "ls")
+        cv.text((160, 278), "seconds relative to the bounce (contact).  Positive = after.", 24, "Regular", HDR, e0, "ls")
+        yax = 640
         prog = ease((i - 10) / 70)
         cv.rect((xa, yax, xa + (xb - xa) * prog, yax + 2), WHITE, 0.5)
         for t in np.arange(-0.5, 2.31, 0.5):
             if X(t) <= xa + (xb - xa) * prog:
                 cv.rect((X(t), yax - 6, X(t) + 1, yax + 8), WHITE, 0.5)
-                cv.text((X(t), yax + 24), f"{t:+.1f} s" if t else "0", 15, "Medium", MUTED, 1, "mm", mono=True)
+                cv.text((X(t), yax + 28), f"{signed(t, '+.1f')} s" if t else "0", 18, "Medium", HDR, 1, "mm", mono=True)
         # bounce
         eb = ease_out((i - 14) / 12)
-        cv.rect((X(0) - 1, 360, X(0) + 1, yax), WHITE, 0.8 * eb)
-        cv.text((X(0), 346), "BOUNCE / CONTACT", 14, "Semibold", WHITE, eb, "mm", tracking=1.4)
+        cv.rect((X(0) - 1, 384, X(0) + 1, yax), WHITE, 0.8 * eb)
+        cv.text((X(0), 366), "BOUNCE / CONTACT", 16, "Semibold", WHITE, eb, "mm", tracking=1.4)
         # book reprice (needs the assumed stamp lag to sit on this axis)
         ek = ease_out((i - 58) / 14)
         if ek > 0:
-            cv.rect((X(t_book) - 1.5, 400, X(t_book) + 1.5, yax), ACCENT, ek)
+            cv.rect((X(t_book) - 1.5, 420, X(t_book) + 1.5, yax), ACCENT, ek)
             cv.circle((X(t_book), yax), 9, ACCENT, ek)
-            cv.text((X(t_book) + 14, 330), f"book reprices ≈ {t_book:+.1f} s", 18, "Semibold", ACCENT, ek, "lm")
-            cv.text((X(t_book) + 14, 354), f"median {abs(S['book_vs_stamp_s']):.1f} s before the official stamp "
-                    f"(live, {S['book_n_points']} WTA points, {S['book_n_matches']} matches)", 14, "Regular", MUTED,
+            cv.text((X(t_book) + 16, 330), f"book reprices ≈ {signed(t_book, '+.1f')} s", 21, "Semibold", (120, 180, 255),
                     ek, "lm")
-            cv.text((X(t_book) + 14, 374), f"placed here with the assumed {t_stamp:.1f} s stamp lag", 14, "Regular",
-                    MUTED, ek, "lm")
+            cv.text((X(t_book) + 16, 358), f"median {abs(S['book_vs_stamp_s']):.1f} s before the official stamp",
+                    18, "Regular", HDR, ek, "lm")
+            cv.text((X(t_book) + 16, 382), f"(live, {S['book_n_points']} WTA points, {S['book_n_matches']} matches);",
+                    18, "Regular", HDR, ek, "lm")
+            cv.text((X(t_book) + 16, 406), f"placed with the assumed {t_stamp:.1f} s stamp lag", 18, "Regular",
+                    HDR, ek, "lm")
         es = ease_out((i - 74) / 14)
         if es > 0:
-            cv.rect((X(t_stamp) - 1, 380, X(t_stamp) + 1, yax), MUTED, es)
+            cv.rect((X(t_stamp) - 1, 446, X(t_stamp) + 1, yax), MUTED, es)
             cv.circle((X(t_stamp), yax), 8, MUTED, es)
-            cv.text((X(t_stamp) + 14, 410), f"official umpire stamp {t_stamp:+.1f} s", 16, "Semibold", WHITE, es, "lm")
-            cv.text((X(t_stamp) + 14, 432), "assumed stamp lag:", 14, "Regular", MUTED, es, "lm")
-            cv.text((X(t_stamp) + 14, 450), "not measured", 14, "Regular", MUTED, es, "lm")
-        # CV calls and the orders they send (drawn on top of the market markers)
-        rows = [("best real call", -best, 450), ("median call lead", -med, 530)]
+            cv.text((X(t_stamp) - 14, 450), f"official stamp {signed(t_stamp, '+.1f')} s", 19, "Semibold", WHITE, es, "rm")
+            cv.text((X(t_stamp) - 14, 476), "assumed lag, not measured", 17, "Regular", HDR, es, "rm")
+        # CV calls (real table-tennis calls) and the orders they send, drawn on top of the market markers
+        rows = [("best real table-tennis call", -best, 500), ("median real table-tennis call", -med, 580)]
         for j, (lab, tc, y) in enumerate(rows):
             ee = ease_out((i - 26 - 10 * j) / 14)
             if ee <= 0:
                 continue
             live = tc + S["inference_s"] + S["venue_delay_s"]
             xe = X(tc) + (X(live) - X(tc)) * ee
-            cv.rrect((X(tc), y - 15, xe, y + 15), 7, (60, 24, 28), 0.85 * ee, outline=CORAL, oa=0.9 * ee, width=1.4)
-            cv.circle((X(tc), y), 8, CORAL, ee)
-            cv.text((X(tc) - 16, y), f"CV call {tc*1000:+.0f} ms ({lab})", 15, "Semibold", WHITE, ee, "rm")
+            cv.rrect((X(tc), y - 17, xe, y + 17), 8, (60, 24, 28), 0.88 * ee, outline=CORAL, oa=0.9 * ee, width=1.4)
+            cv.circle((X(tc), y), 9, CORAL, ee)
+            cv.text((X(tc) - 18, y - 11), f"CV call {signed(tc * 1000)} ms", 20, "Semibold", WHITE, ee, "rm")
+            cv.text((X(tc) - 18, y + 14), lab, 17, "Regular", HDR, ee, "rm")
             if ee > 0.9:
                 cv.circle((xe, y), 5, WHITE, ee)
-                cv.text((xe - 14, y), f"order live ≈ {live:+.2f} s", 14, "Semibold", WHITE, ee, "rm")
+                ol = f"order live ≈ {signed(live, '+.2f')} s"
+                tw = cv.textlen(ol, 18, "Semibold")
+                xb_ = X(t_book)
+                if xe - 16 - tw - 6 < xb_ + 4 and xe - 10 > xb_ - 4:      # would sit on the book line: put it outside
+                    cv.text((xe + 16, y), ol, 18, "Semibold", WHITE, ee, "lm")
+                else:
+                    cv.text((xe - 16, y), ol, 18, "Semibold", WHITE, ee, "rm")
         el = ease_out((i - 40) / 14)
         if el > 0:
-            cv.text((300, 690), "order live = CV call + 20 ms inference + 1 s Polymarket venue order delay "
-                    "(network 10–140 ms not drawn)", 15, "Regular", MUTED, el, "lm")
+            cv.text((160, 716), "order live = CV call + 20 ms inference + 1 s Polymarket venue order delay "
+                    "(network 10–140 ms not drawn)", 19, "Regular", HDR, el, "lm")
+            cv.text((160, 744), "CV call times are real table-tennis calls on OpenTTGames footage (held-out games); "
+                    "no tennis or Polymarket match video is used.", 19, "Regular", HDR, el, "lm")
         et = ease_out((i - 96) / 16)
         if et > 0:
-            cv.rrect((160, 780, W - 160, 900), 14, NAVY0, 0.85 * et, outline=ACCENT, oa=0.5 * et)
-            cv.text((196, 822), f"The edge exists only while the CV call lands ≥ ~{S['breakeven_before_stamp_s']:.1f} s "
-                    "before the official stamp.", 24, "Semibold", WHITE, et, "lm")
-            cv.text((196, 862), (f"Break-even video delay at a {t_stamp:.1f} s stamp lag: "
+            cv.rrect((160, 800, W - 160, 940), 14, NAVY0, 0.88 * et, outline=ACCENT, oa=0.5 * et)
+            cv.text((196, 844), f"The edge exists only while the CV call lands ≥ ~{S['breakeven_before_stamp_s']:.1f} s "
+                    "before the official stamp.", 28, "Semibold", WHITE, et, "lm")
+            cv.text((196, 892), (f"Break-even video delay at a {t_stamp:.1f} s stamp lag: "
                                  f"{S['breakeven_video_delay'][0]:.2f} s in sample, {S['breakeven_video_delay'][1]:.2f} s "
-                                 "burned OOS (research/v2/feed_latency/LATENCY_SWEEP.md)."), 18, "Regular", MUTED, et, "lm")
+                                 "burned OOS (research/v2/feed_latency/LATENCY_SWEEP.md)."), 21, "Regular", HDR, et, "lm")
         chrome(cv, "04  SPEED", LBL_MKT, "TIMING CARD", ACCENT, e0)
         return cv.finish()
     return Seg("speed", n, fn, 8, 8)
