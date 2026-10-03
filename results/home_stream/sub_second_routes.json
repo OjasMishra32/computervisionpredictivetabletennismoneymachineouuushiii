@@ -1,0 +1,1234 @@
+{
+ "generated": "2026-10-03",
+ "companion_doc": "research/home_stream/SUB_SECOND_ROUTES.md",
+ "method": "merge of five read-only web sweeps (webrtc-platforms, betting-video, tt-leagues, public-ll, venue-legal) plus spot re-fetches; no accounts, purchases or forms",
+ "goal": "live video of Polymarket-listed tennis/table-tennis matches with glass-to-glass <= 1 s",
+ "bands": {
+  "le_1s": "reaches <= 1 s (measured or claimed)",
+  "le_1s_unverified": "<= 1 s only by unverified claim",
+  "excluded": "physically <= 1 s but not allowed",
+  "1_to_3s": "best at 1-3 s",
+  "unknown": "latency unpublished",
+  "not_video": "data feed, not video",
+  "gt_3s_reference": "slower public routes for scale"
+ },
+ "bottom_line": {
+  "le_1s_tonight_from_home_polymarket_match": false,
+  "le_1s_tonight_from_home_own_footage": true,
+  "why_not_match": "measured: the fastest public feed of a Polymarket-listed match found (Setka Cup's own WebRTC/WHEP stream) is a median 12.2 s behind the burned-in arena clock (preliminary; LL-HLS 13.0 s, HLS 19.4 s, YouTube 20.2 s); other public streams claim YouTube ULL <5 s, Twitch LL 2-4 s; sub-second match video is sold only to licensed sportsbooks or needs a venue camera, which ATP/WTA/ITF/WTT terms ban for betting/prediction-market use and private TT leagues allow only with consent; Polymarket US in-app ATP stream needs KYC and its latency is unpublished",
+  "cheapest_legal_le_1s_demo": "A1 self-hosted WebRTC on own camera, $0, tonight",
+  "cheapest_legal_le_1s_real_match": "A8 written consent from a private TT rights holder (TT Elite Series, Czech Liga Pro, TT Cup) for raw feed or camera; price: no public source",
+  "even_le_1s_is_breakeven": "break-even video delay 1.09 s IS / 1.01 s OOS (headline reading); 0.34 / 0.30 s (calibrated reading); negative at all V (stamp-noise reading)"
+ },
+ "correction_to_sweeps": "webrtc-platforms reported WebRTC 0.58/0.69/2.34 s as a protocol baseline; S5 re-fetch shows that is one vendor (with TURN); the other WebRTC vendor measured 1.07/1.30/2.20 s; three-network averages 1.25-1.30 s",
+ "routes": [
+  {
+   "rank": "A1",
+   "id": "selfhost_webrtc_own_camera",
+   "band": "le_1s",
+   "route": "Self-hosted WebRTC on own camera (OBS>=30 WHIP -> MediaMTX/Broadcast Box -> WHEP viewer/CV)",
+   "what_we_get": "own footage only",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 0.042,
+     "hi": 0.74
+    },
+    "measured_note": "42 ms local OBS->Broadcast Box [S1]; 130 ms local / 170 ms remote [S4]; MediaMTX p50 180 ms LAN (p95 240), 310-740 ms p50 other deployments [S3]; ~0.4 s via public Broadcast Box [S2]",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "$0 (open source; licences not checked: assumption)",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "own footage",
+   "usable_tonight": "yes",
+   "path_to_obtain": "install OBS + MediaMTX; measure with ms counter + 240 fps phone (SUB_SECOND_ROUTES.md 4.4)",
+   "sources": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S6"
+   ]
+  },
+  {
+   "rank": "A1b",
+   "id": "camera_direct_to_cv",
+   "band": "le_1s",
+   "route": "Camera straight into the CV process (no streaming hop)",
+   "what_we_get": "own footage only",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 0.008,
+     "hi": 0.1
+    },
+    "measured_note": "~100 ms of the 130 ms local total is camera+USB [S4]; 8.3 ms frame interval at 120 fps (I decay.json)",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "$0",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "own footage",
+   "usable_tonight": "yes",
+   "path_to_obtain": "already how engine/vision runs",
+   "sources": [
+    "S4",
+    "I_decay"
+   ]
+  },
+  {
+   "rank": "A2",
+   "id": "cloudflare_stream_webrtc",
+   "band": "le_1s",
+   "route": "Cloudflare Stream WebRTC (WHIP/WHEP, GA)",
+   "what_we_get": "own footage via CDN",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "'less than 500 milliseconds of latency' [S7]",
+    "span": "glass_to_glass"
+   },
+   "cost": "$1 per 1,000 min delivered; billing starts 2026-10-15 (free tonight: inference)",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "Cloudflare account (not a betting account)",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user creates account; WHIP from OBS",
+   "sources": [
+    "S7"
+   ]
+  },
+  {
+   "rank": "A3",
+   "id": "amazon_ivs_realtime",
+   "band": "le_1s",
+   "route": "Amazon IVS Real-Time",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "under 300 ms [S8b]",
+    "span": "glass_to_glass"
+   },
+   "cost": "$0.072/participant-hour NA/EU; 20 free participant-hours/month for 12 months (new accounts)",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "AWS account",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user creates account",
+   "sources": [
+    "S8",
+    "S8b"
+   ]
+  },
+  {
+   "rank": "A4",
+   "id": "red5_cloud",
+   "band": "le_1s",
+   "route": "Red5 Cloud",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "under 250 ms [S9]",
+    "span": "glass_to_glass"
+   },
+   "cost": "50 GB/month free, no card (vendor)",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "account",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user creates account",
+   "sources": [
+    "S9"
+   ]
+  },
+  {
+   "rank": "A5",
+   "id": "phenix",
+   "band": "le_1s",
+   "route": "Phenix (customers include betting-video suppliers SIS, RMG)",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "'< 1/2 second of latency' [S10]",
+    "span": "glass_to_glass"
+   },
+   "cost": "free trial (terms not shown)",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "own content",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user requests trial",
+   "sources": [
+    "S10"
+   ]
+  },
+  {
+   "rank": "A6",
+   "id": "agora_ils_premium",
+   "band": "le_1s",
+   "route": "Agora Interactive Live Streaming (Premium)",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": {
+     "lo": 0.4,
+     "hi": 0.8
+    },
+    "claimed_note": "400-800 ms Premium, 1.5-2 s Standard (docs-legacy snippet; page 404)",
+    "span": "glass_to_glass"
+   },
+   "cost": "first 10,000 min/month free, then from $0.59/1,000 min",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "account",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user creates account",
+   "sources": [
+    "S11"
+   ]
+  },
+  {
+   "rank": "A7",
+   "id": "nanocosmos",
+   "band": "le_1s",
+   "route": "nanocosmos nanoStream (H5Live / MoQ)",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "under 1 s camera to viewer [S12]",
+    "span": "glass_to_glass"
+   },
+   "cost": "free start; rates unknown",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "account",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "user creates account",
+   "sources": [
+    "S12"
+   ]
+  },
+  {
+   "rank": "A8",
+   "id": "organiser_consented_tt_feed",
+   "band": "le_1s",
+   "route": "Organiser-consented venue camera or raw contribution feed (TT Elite Series, Czech Liga Pro, TT Cup)",
+   "what_we_get": "real Polymarket-listed match",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 0.15,
+     "hi": 0.5
+    },
+    "measured_note": "inference from A1 physics [S3,S4] + venue->London 14-50 ms one-way [S4]; SRT default buffer 120 ms [S16]",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "no public source",
+   "legal": "conditional",
+   "eligible_for_us": "unknown",
+   "legal_note": "legal only with written rights-holder consent; TT Elite names Sportradar as technology partner (exclusivity possible: assumption); Setka excluded ('Only three people can be present in a room')",
+   "usable_tonight": "no",
+   "path_to_obtain": "email organiser for research access to raw feed (SRT/WebRTC) or a camera position; only legal <=1 s route to a real match found",
+   "sources": [
+    "S3",
+    "S4",
+    "S16",
+    "S23",
+    "S24"
+   ]
+  },
+  {
+   "rank": "A9",
+   "id": "b2b_betting_video",
+   "band": "le_1s_unverified",
+   "route": "B2B betting video to licensed sportsbooks (Sportradar/Betradar incl. ex-IMG Arena; Stats Perform via Sports Content Co.; BETER for Setka)",
+   "what_we_get": "real ATP/Challenger/WTA/Slam/table-tennis video",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "no absolute g2g published; Sportradar 'eight seconds faster than any TV signal' (relative); Stats Perform WTA page gives no video latency; a 'sub-second video' claim reported by the betting-video sweep lost its URL (unverified)",
+    "span": "relative_to_tv"
+   },
+   "cost": "third-party estimate '$10,000+/month'; no public price",
+   "legal": "yes_for_licensees",
+   "eligible_for_us": "no",
+   "legal_note": "video for 'licensed sportsbooks' only; no research licence published",
+   "usable_tonight": "no",
+   "path_to_obtain": "operator contract only",
+   "sources": [
+    "S30",
+    "S31",
+    "S32",
+    "S34"
+   ]
+  },
+  {
+   "rank": "A10",
+   "id": "spectator_camera_at_event",
+   "band": "excluded",
+   "route": "Spectator's own camera at ATP/Challenger/WTA/ITF/WTT event",
+   "what_we_get": "real match",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 0.11,
+     "hi": 0.17
+    },
+    "measured_note": "physics only [S4]",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "ticket",
+   "legal": "no",
+   "eligible_for_us": "no",
+   "legal_note": "ticket terms (US Open: betting or prediction markets activity), ITF regs XI.B, WTT ticket policy 6.2/6.3/9.1; 2016 US Open 20 spectators caught; fails hackathon ToS rule",
+   "usable_tonight": "no",
+   "path_to_obtain": "none (excluded)",
+   "sources": [
+    "S4",
+    "S36",
+    "S37",
+    "S38",
+    "S39",
+    "S40"
+   ]
+  },
+  {
+   "rank": "A11",
+   "id": "media_accreditation",
+   "band": "excluded",
+   "route": "Student media accreditation (tennis)",
+   "what_we_get": "press access, no feed rights",
+   "covers_polymarket_match": true,
+   "is_video": false,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "n/a"
+   },
+   "cost": "n/a",
+   "legal": "no",
+   "eligible_for_us": "no",
+   "legal_note": "Monte-Carlo charter bans betting; accredited media are Covered Persons",
+   "usable_tonight": "no",
+   "path_to_obtain": "none (excluded)",
+   "sources": [
+    "S37",
+    "S41"
+   ]
+  },
+  {
+   "rank": "B1",
+   "id": "managed_cdn_real_networks",
+   "band": "1_to_3s",
+   "route": "Managed WebRTC / WebSocket / HESP CDNs under real networks (Streaming Media, Oct 2023)",
+   "what_we_get": "own footage",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 0.58,
+     "hi": 2.34
+    },
+    "measured_note": "normal network: WebRTC 0.58 / 1.07 s (two vendors), WebSockets 0.97 / 1.17 s, HESP 1.12 s; 5G 0.69-1.63 s; 4G 1.78-2.34 s; LL-HLS 18.91 s [S5]",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "varies",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "own content",
+   "usable_tonight": "yes_after_signup",
+   "path_to_obtain": "uplink (not protocol) decides <1 s",
+   "sources": [
+    "S5",
+    "S13"
+   ]
+  },
+  {
+   "rank": "B2",
+   "id": "polymarket_us_inapp_atp_stream",
+   "band": "unknown",
+   "route": "Polymarket US in-app ATP/Challenger stream (TDI)",
+   "what_we_get": "real ATP/Challenger video (no WTA/ITF/TT)",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": "no public source",
+    "claimed_s": null,
+    "claimed_note": "no public source",
+    "span": "unknown"
+   },
+   "cost": "assumption: free to registered users",
+   "legal": "conditional",
+   "eligible_for_us": "unknown",
+   "legal_note": "US only, CFTC-regulated app; KYC (US address, ID, SSN per third-party guide); unfunded viewing: no public source; screen capture into CV: no public source",
+   "usable_tonight": "maybe",
+   "path_to_obtain": "check Polymarket US terms; only if a member already has an unfunded account; then measure vs book",
+   "sources": [
+    "S29",
+    "S29c"
+   ]
+  },
+  {
+   "rank": "B3",
+   "id": "twitch_low_latency",
+   "band": "1_to_3s",
+   "route": "Twitch Low Latency (e.g. Challenger_Series; not confirmed as the Polymarket TT Challenger)",
+   "what_we_get": "free public video",
+   "covers_polymarket_match": "unknown",
+   "is_video": true,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": {
+     "lo": 1.5,
+     "hi": 4.0
+    },
+    "claimed_note": "'about 2-4 seconds' (third party); Twitch 'down to 3 seconds', '1.5 seconds in certain cases' (Korea; search-result quote)",
+    "span": "encoder_to_player"
+   },
+   "cost": "free",
+   "legal": "viewing_yes_capture_tos_risk",
+   "eligible_for_us": "yes",
+   "legal_note": "personal use only; automated capture is a ToS risk",
+   "usable_tonight": "only_if_live",
+   "path_to_obtain": "player shows 'Latency to Broadcaster'",
+   "sources": [
+    "S21",
+    "S21b",
+    "S22"
+   ]
+  },
+  {
+   "rank": "B4",
+   "id": "youtube_ull_tt_channels",
+   "band": "1_to_3s",
+   "route": "YouTube Ultra-low latency: Setka Cup Live, TT Elite Series, WTT China Smash",
+   "what_we_get": "free public video of Polymarket-listed table tennis",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 3.0,
+     "hi": 4.0
+    },
+    "measured_note": "3-4 s by ear on one blogger's own stream [S19]; not measured on these channels",
+    "claimed_s": {
+     "lo": 2.0,
+     "hi": 5.0
+    },
+    "claimed_note": "ULL 'latency less than 5 seconds', Low 'less than 10 seconds' [S17]; 2-5 s third-party [S18]; whether channels use ULL unknown",
+    "span": "encoder_to_player"
+   },
+   "cost": "free",
+   "legal": "viewing_yes_capture_tos_violation",
+   "eligible_for_us": "yes",
+   "legal_note": "'personal, non-commercial use'; ToS bans 'any automated means'; WTT may be geo-blocked in US (no VPN)",
+   "usable_tonight": "yes",
+   "path_to_obtain": "watch only; no automated capture",
+   "sources": [
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S25",
+    "S26"
+   ]
+  },
+  {
+   "rank": "B5",
+   "id": "fast_scout_data",
+   "band": "not_video",
+   "route": "Fast scout data: Stats Perform RunningBall, Sportradar/TDI umpire-chair data",
+   "what_we_get": "point events, not video",
+   "covers_polymarket_match": true,
+   "is_video": false,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": {
+     "lo": 0.0,
+     "hi": 4.0
+    },
+    "claimed_note": "RunningBall '32% of points more than 1 second faster' than umpire feed; Sportradar 'Low' = '~0-<4 seconds'",
+    "span": "data_vs_umpire"
+   },
+   "cost": "no public price",
+   "legal": "yes_for_licensees",
+   "eligible_for_us": "no",
+   "legal_note": "operators only",
+   "usable_tonight": "no",
+   "path_to_obtain": "operator contract",
+   "sources": [
+    "S33",
+    "S34",
+    "S35"
+   ]
+  },
+  {
+   "rank": "C1",
+   "id": "setka_flussonic_public",
+   "band": "gt_3s_reference",
+   "route": "Setka Cup's own public Flussonic server: WebRTC/WHEP (used by its embed player), LL-HLS, classic HLS; plus same arena on YouTube",
+   "what_we_get": "free public video of Polymarket-listed Setka matches",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 12.23,
+     "hi": 20.19
+    },
+    "measured_note": "PRELIMINARY in-repo probe (research/home_stream/probe_latency.py), arena 'granite', 25-30 s runs 2026-10-03 20:30-20:40 UTC, burned-in arena clock: WebRTC/WHEP median 12.23 s (p5-p95 12.15-12.42, n=22); LL-HLS 12.97 s (n=26); classic HLS 19.41 s (n=40); YouTube 20.19 s (n=19, via yt-dlp: ToS flag). Transport moves it <1 s; ~12 s is upstream of the CDN (production chain, deliberate public-feed delay [assumption], or arena-clock offset; not yet separated). Output not committed",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "glass_to_glass"
+   },
+   "cost": "free",
+   "legal": "unknown",
+   "eligible_for_us": "yes",
+   "legal_note": "Setka terms on automated access not checked; YouTube run used yt-dlp (automated access, ToS risk)",
+   "usable_tonight": "yes",
+   "path_to_obtain": "full probe run pending; separate clock offset from upstream delay using Setka score timestamps or Polymarket book reprices",
+   "sources": [
+    "I_probe",
+    "S20"
+   ]
+  },
+  {
+   "rank": "C2",
+   "id": "generic_ll_hls_dash",
+   "band": "gt_3s_reference",
+   "route": "LL-HLS / LL-DASH generic",
+   "what_we_get": "n/a",
+   "covers_polymarket_match": false,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 5.11,
+     "hi": 18.91
+    },
+    "measured_note": "LL-HLS 18.91 s normal network [S5]; LL-DASH 5.11 s tuned / 7.27 s default [S15]",
+    "claimed_s": {
+     "lo": 2.0,
+     "hi": 3.0
+    },
+    "claimed_note": "Wowza LL-HLS 2-3 s [S14]",
+    "span": "glass_to_glass"
+   },
+   "cost": "n/a",
+   "legal": "n/a",
+   "eligible_for_us": "n/a",
+   "legal_note": "",
+   "usable_tonight": "n/a",
+   "path_to_obtain": "",
+   "sources": [
+    "S5",
+    "S14",
+    "S15"
+   ]
+  },
+  {
+   "rank": "C3",
+   "id": "fanduel_tv",
+   "band": "gt_3s_reference",
+   "route": "FanDuel TV / TV+ (WTT US rights holder)",
+   "what_we_get": "free video",
+   "covers_polymarket_match": true,
+   "is_video": true,
+   "latency": {
+    "measured_s": {
+     "lo": 26.0,
+     "hi": 78.0
+    },
+    "measured_note": "no public source for FanDuel; OTT apps at Super Bowl LIX ran 26-78 s behind (Phenix, vendor)",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "unknown"
+   },
+   "cost": "free",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "free FAST channel needs no funded account (assumption)",
+   "usable_tonight": "maybe",
+   "path_to_obtain": "schedule not verified",
+   "sources": [
+    "S28"
+   ]
+  },
+  {
+   "rank": "C4",
+   "id": "public_score_data",
+   "band": "gt_3s_reference",
+   "route": "Public score data (ESPN, Polymarket sports ws, WTA API)",
+   "what_we_get": "scores, not video",
+   "covers_polymarket_match": true,
+   "is_video": false,
+   "latency": {
+    "measured_s": {
+     "lo": 27.5,
+     "hi": 43.3
+    },
+    "measured_note": "after official stamp: ESPN +27.5 s, PM sports ws +29.1 s, WTA API point +43.3 s; 0/295 led book by >1.3 s (I latency RESULTS)",
+    "claimed_s": null,
+    "claimed_note": null,
+    "span": "after_official_stamp"
+   },
+   "cost": "free",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "",
+   "usable_tonight": "yes",
+   "path_to_obtain": "",
+   "sources": [
+    "I_latency"
+   ]
+  },
+  {
+   "rank": "C5",
+   "id": "wtt_official_live_scores",
+   "band": "not_video",
+   "route": "WTT official live scores (Confluent pipeline)",
+   "what_we_get": "official umpire scores",
+   "covers_polymarket_match": true,
+   "is_video": false,
+   "latency": {
+    "measured_s": null,
+    "measured_note": null,
+    "claimed_s": null,
+    "claimed_note": "goal 'within the milliseconds' (interview, not a measurement)",
+    "span": "after_umpire_entry"
+   },
+   "cost": "free",
+   "legal": "yes",
+   "eligible_for_us": "yes",
+   "legal_note": "scraping may breach WTT terms (assumption)",
+   "usable_tonight": "yes",
+   "path_to_obtain": "",
+   "sources": [
+    "S27"
+   ]
+  }
+ ],
+ "latency_budget_best_route": {
+  "route": "A8 organiser-consented 120 fps venue camera -> WebRTC -> London CV box -> London gateway -> Polymarket (eu-west-2)",
+  "legs_s": [
+   {
+    "leg": "bounce -> frame captured",
+    "lo": 0.0,
+    "hi": 0.1,
+    "type": "measured",
+    "src": "I_decay camera_s 0.0083 (120 fps); S4 camera+USB ~0.100"
+   },
+   {
+    "leg": "encode",
+    "lo": 0.01,
+    "hi": 0.01,
+    "type": "measured",
+    "src": "S4"
+   },
+   {
+    "leg": "venue -> London network",
+    "lo": 0.01,
+    "hi": 0.1,
+    "type": "assumption/measured",
+    "src": "tier0 RESULTS s8 item 9; S4 14-50 ms"
+   },
+   {
+    "leg": "jitter buffer + decode",
+    "lo": 0.01,
+    "hi": 0.01,
+    "type": "measured",
+    "src": "S4"
+   },
+   {
+    "leg": "video subtotal g2g",
+    "lo": 0.13,
+    "hi": 0.52,
+    "type": "measured",
+    "src": "S4 130-170 ms; S3 p50 180 ms LAN, 520 ms cross-region"
+   },
+   {
+    "leg": "CV inference",
+    "lo": 0.02,
+    "hi": 0.127,
+    "type": "assumed 0.020 / measured p50 0.084 p90 0.127",
+    "src": "I_decay cv_measured_s (laptop M4, stand-in classifier)"
+   },
+   {
+    "leg": "order -> matching engine",
+    "lo": 0.002,
+    "hi": 0.067,
+    "type": "measured",
+    "src": "I_decay net_london_s / net_florida_s"
+   },
+   {
+    "leg": "venue delay (marketable orders)",
+    "lo": 1.0,
+    "hi": 1.0,
+    "type": "tapes; docs give no duration",
+    "src": "S43; tier0"
+   }
+  ],
+  "order_matchable_after_bounce_s": {
+   "lo": 1.15,
+   "hi": 1.7
+  },
+  "book_reprice_after_bounce_s": {
+   "stamp_noise_reading": 0.68,
+   "calibrated_inference": 1.35,
+   "R_vs_stamp_median": -1.16,
+   "stale_depth_gone_after_reprice_s": 0.5,
+   "status": "unmeasured; inference"
+  },
+  "scenario_matchable_at_s": {
+   "A_venue_cam_webrtc_g2g_0.18": 1.27,
+   "B_feed_0.5s": 1.59,
+   "C_feed_1.0s": 2.09,
+   "D_youtube_ull_3_to_5s": ">=4.1",
+   "E_setka_public_webrtc_12.2s_prelim": 13.3
+  },
+  "note": "a third of reprices land 50-100 ms after a whole UTC second (consistent with a 1 s release clock; not verified): latency_sweep.json timing_diagnostics"
+ },
+ "backtest_at_video_delay": {
+  "label": "COUNTERFACTUAL WITH ASSUMED DATA: licensed feed/video not purchased; parameters measured",
+  "never_claim": "We did not buy a licensed feed or licensed video, we have no camera at any court, and no live ATP/WTA data was used. The tier-0 trader is simulated; its timing and fill inputs are our measurements.",
+  "source": "results/tier0/latency_sweep.json (uncommitted at time of writing; regenerated 2026-10-03 16:39 EDT); model scripts/tier0_latency_sweep.py",
+  "definition_V": "call = bounce - CV lead + V + 20 ms inference; + venue->London network + 2 ms gateway + the venue's order delay (1 s). V = 0 is the revised primary.",
+  "oos_note": "burned OOS, not blind",
+  "headline_reading_own120": {
+   "0": {
+    "IS": {
+     "c_per_share": 1.098,
+     "c_per_share_ci95": [
+      0.824,
+      1.377
+     ],
+     "usd_per_day": 88.79,
+     "usd_per_day_sd": 21.32
+    },
+    "burned_OOS": {
+     "c_per_share": 0.576,
+     "c_per_share_ci95": [
+      -0.076,
+      1.21
+     ],
+     "usd_per_day": 46.43,
+     "usd_per_day_sd": 38.97
+    }
+   },
+   "0.5": {
+    "IS": {
+     "c_per_share": 0.613,
+     "c_per_share_ci95": [
+      0.077,
+      1.138
+     ],
+     "usd_per_day": 28.43,
+     "usd_per_day_sd": 18.98
+    },
+    "burned_OOS": {
+     "c_per_share": -0.018,
+     "c_per_share_ci95": [
+      -1.221,
+      1.086
+     ],
+     "usd_per_day": 15.16,
+     "usd_per_day_sd": 35.96
+    }
+   },
+   "1.0": {
+    "IS": {
+     "c_per_share": 0.401,
+     "c_per_share_ci95": [
+      -0.324,
+      1.078
+     ],
+     "usd_per_day": 14.78,
+     "usd_per_day_sd": 14.72
+    },
+    "burned_OOS": {
+     "c_per_share": -0.383,
+     "c_per_share_ci95": [
+      -2.083,
+      1.205
+     ],
+     "usd_per_day": 4.35,
+     "usd_per_day_sd": 29.65
+    }
+   }
+  },
+  "pessimistic_cv": {
+   "0.5": {
+    "IS": {
+     "c_per_share": 0.547,
+     "c_per_share_ci95": [
+      0.008,
+      1.072
+     ],
+     "usd_per_day": 25.96,
+     "usd_per_day_sd": 20.29
+    },
+    "burned_OOS": {
+     "c_per_share": -0.156,
+     "c_per_share_ci95": [
+      -1.31,
+      0.913
+     ],
+     "usd_per_day": 10.14,
+     "usd_per_day_sd": 33.72
+    }
+   },
+   "1.0": {
+    "IS": {
+     "c_per_share": 0.147,
+     "c_per_share_ci95": [
+      -0.677,
+      0.923
+     ],
+     "usd_per_day": 8.18,
+     "usd_per_day_sd": 17.38
+    },
+    "burned_OOS": {
+     "c_per_share": -1.183,
+     "c_per_share_ci95": [
+      -3.263,
+      0.697
+     ],
+     "usd_per_day": -12.6,
+     "usd_per_day_sd": 27.41
+    }
+   }
+  },
+  "stamp_noise_reading_own120": {
+   "0": {
+    "IS": {
+     "c_per_share": -3.249,
+     "c_per_share_ci95": [
+      -5.276,
+      -1.262
+     ],
+     "usd_per_day": -30.18,
+     "usd_per_day_sd": 7.29
+    },
+    "burned_OOS": {
+     "c_per_share": -2.97,
+     "c_per_share_ci95": [
+      -6.417,
+      0.34
+     ],
+     "usd_per_day": -25.93,
+     "usd_per_day_sd": 12.41
+    }
+   },
+   "0.5": {
+    "IS": {
+     "c_per_share": -1.852,
+     "c_per_share_ci95": [
+      -3.88,
+      0.131
+     ],
+     "usd_per_day": -17.25,
+     "usd_per_day_sd": 7.14
+    },
+    "burned_OOS": {
+     "c_per_share": -1.921,
+     "c_per_share_ci95": [
+      -5.375,
+      1.381
+     ],
+     "usd_per_day": -16.84,
+     "usd_per_day_sd": 12.32
+    }
+   },
+   "1.0": {
+    "IS": {
+     "c_per_share": -1.852,
+     "c_per_share_ci95": [
+      -3.88,
+      0.131
+     ],
+     "usd_per_day": -17.25,
+     "usd_per_day_sd": 7.14
+    },
+    "burned_OOS": {
+     "c_per_share": -1.921,
+     "c_per_share_ci95": [
+      -5.375,
+      1.381
+     ],
+     "usd_per_day": -16.84,
+     "usd_per_day_sd": 12.32
+    }
+   }
+  },
+  "stamp_calibrated_reading_own120": {
+   "0.25": {
+    "IS": {
+     "c_per_share": 1.224,
+     "c_per_share_ci95": [
+      1.065,
+      1.38
+     ],
+     "usd_per_day": 188.41,
+     "usd_per_day_sd": 11.05
+    },
+    "burned_OOS": {
+     "c_per_share": 0.691,
+     "c_per_share_ci95": [
+      0.37,
+      1.015
+     ],
+     "usd_per_day": 78.39,
+     "usd_per_day_sd": 19.24
+    }
+   },
+   "0.5": {
+    "IS": {
+     "c_per_share": -4.879,
+     "c_per_share_ci95": [
+      -6.905,
+      -2.886
+     ],
+     "usd_per_day": -45.17,
+     "usd_per_day_sd": 7.46
+    },
+    "burned_OOS": {
+     "c_per_share": -4.578,
+     "c_per_share_ci95": [
+      -8.041,
+      -1.257
+     ],
+     "usd_per_day": -39.81,
+     "usd_per_day_sd": 12.6
+    }
+   },
+   "1.0": {
+    "IS": {
+     "c_per_share": -1.852,
+     "c_per_share_ci95": [
+      -3.88,
+      0.131
+     ],
+     "usd_per_day": -17.25,
+     "usd_per_day_sd": 7.14
+    },
+    "burned_OOS": {
+     "c_per_share": -1.921,
+     "c_per_share_ci95": [
+      -5.375,
+      1.381
+     ],
+     "usd_per_day": -16.84,
+     "usd_per_day_sd": 12.32
+    }
+   }
+  },
+  "breakeven_V_s": {
+   "headline_IS": 1.089,
+   "headline_OOS": 1.014,
+   "headline_IS_ci_positive_below_V_s": 0.651,
+   "calibrated_IS": 0.338,
+   "calibrated_OOS": 0.295,
+   "stamp_noise": "none: negative at every V including 0"
+  }
+ },
+ "compliance_flags": [
+  "probe_latency.py --source youtube uses yt-dlp (automated access; YouTube ToS bans 'any automated means'); a preliminary run was already made - re-measure by watching or drop before citing",
+  "Setka Flussonic probe (HLS, LL-HLS, WebRTC/WHEP) decodes a public endpoint automatically; Setka terms not checked"
+ ],
+ "gaps": "sweeps hit the 200-search cap; truncated tails (betting-video after Stats Perform, tt-leagues after WTT live scores, public-ll after FanDuel, venue-legal after route 3) are not represented",
+ "sources": {
+  "S1": {
+   "url": "https://webrtchacks.com/webrtc-cracks-the-whip-on-obs/",
+   "quote_or_note": "glass-to-glass latency was only 42 ms",
+   "rechecked_2026_10_03": true
+  },
+  "S2": {
+   "url": "https://gigazine.net/gsc_news/en/20260117-broadcast-box-webrtc/",
+   "quote_or_note": "paraphrase: about 0.4 s via public Broadcast Box server",
+   "rechecked_2026_10_03": false
+  },
+  "S3": {
+   "url": "https://www.adaptnxt.com/blogs/mediamtx-whip-whep-latency-benchmarks-4-deployments",
+   "quote_or_note": "240 fps phone camera (method); p50/p95 180/240 ms LAN",
+   "rechecked_2026_10_03": true
+  },
+  "S4": {
+   "url": "https://transitiverobotics.com/blog/webrtc-latency-breakdown/",
+   "quote_or_note": "local 130 ms, remote 170 ms; camera+USB ~100 ms",
+   "rechecked_2026_10_03": true
+  },
+  "S5": {
+   "url": "https://www.streamingmedia.com/Producer/Articles/Editorial/Featured-Articles/Glass-to-Glass-Report-Comparing-Low-Latency-Streaming-Providers-161238.aspx",
+   "quote_or_note": "a burnt-in wall clock in the top right corner",
+   "rechecked_2026_10_03": true
+  },
+  "S6": {
+   "url": "https://www.rfc-editor.org/rfc/rfc9725.html",
+   "quote_or_note": "paraphrase: WHIP is RFC 9725 (March 2025)",
+   "rechecked_2026_10_03": false
+  },
+  "S7": {
+   "url": "https://developers.cloudflare.com/stream/webrtc-beta/",
+   "quote_or_note": "less than 500 milliseconds of latency",
+   "rechecked_2026_10_03": true
+  },
+  "S8": {
+   "url": "https://aws.amazon.com/ivs/pricing/",
+   "quote_or_note": "20 participant hours per month",
+   "rechecked_2026_10_03": true
+  },
+  "S8b": {
+   "url": "https://ivs.rocks/real-time/",
+   "quote_or_note": "paraphrase: can be under 300 ms",
+   "rechecked_2026_10_03": false
+  },
+  "S9": {
+   "url": "https://www.red5.net/webrtc-server/",
+   "quote_or_note": "paraphrase: under 250 ms; 50 GB free",
+   "rechecked_2026_10_03": false
+  },
+  "S10": {
+   "url": "https://phenixrts.com/",
+   "quote_or_note": "< 1/2 second of latency",
+   "rechecked_2026_10_03": true
+  },
+  "S11": {
+   "url": "https://www.agora.io/en/pricing/",
+   "quote_or_note": "paraphrase: 10,000 free min; latency from 404'd docs-legacy snippet",
+   "rechecked_2026_10_03": false
+  },
+  "S12": {
+   "url": "https://www.nanocosmos.net/ultra-low-latency/",
+   "quote_or_note": "paraphrase: under 1 s camera to viewer",
+   "rechecked_2026_10_03": false
+  },
+  "S13": {
+   "url": "https://optiview.dolby.com/docs/theolive/",
+   "quote_or_note": "paraphrase: HESP suits 1-5 s",
+   "rechecked_2026_10_03": false
+  },
+  "S14": {
+   "url": "https://www.wowza.com/blog/hls-latency-sucks-but-heres-how-to-fix-it",
+   "quote_or_note": "paraphrase: LL-HLS 2-3 s",
+   "rechecked_2026_10_03": false
+  },
+  "S15": {
+   "url": "https://arxiv.org/pdf/2310.03256",
+   "quote_or_note": "paraphrase: LL-DASH 5.11 s tuned, 7.27 s default",
+   "rechecked_2026_10_03": false
+  },
+  "S16": {
+   "url": "https://doc.haivision.com/SRT/1.5.3/Haivision/srt",
+   "quote_or_note": "paraphrase: default receive buffer 120 ms",
+   "rechecked_2026_10_03": false
+  },
+  "S17": {
+   "url": "https://support.google.com/youtube/answer/7444635",
+   "quote_or_note": "latency less than 5 seconds",
+   "rechecked_2026_10_03": true
+  },
+  "S18": {
+   "url": "https://datavideo.com/global/faq/360058612633",
+   "quote_or_note": "delay of 2 to 5 seconds",
+   "rechecked_2026_10_03": false
+  },
+  "S19": {
+   "url": "https://yanaga.io/blog/youtube-ultra-low-latency-obs-mac",
+   "quote_or_note": "between 3s to 4s",
+   "rechecked_2026_10_03": false
+  },
+  "S20": {
+   "url": "https://www.youtube.com/static?template=terms",
+   "quote_or_note": "using any automated means (such as robots, botnets or scrapers)",
+   "rechecked_2026_10_03": false
+  },
+  "S21": {
+   "url": "https://stream-rise.com/blog/twitch-low-latency-video",
+   "quote_or_note": "about 2-4 seconds",
+   "rechecked_2026_10_03": false
+  },
+  "S21b": {
+   "url": "help.twitch.tv (did not load; search-result quote)",
+   "quote_or_note": "1.5 seconds in certain cases",
+   "rechecked_2026_10_03": false
+  },
+  "S22": {
+   "url": "https://www.twitch.tv/challenger_series/schedule",
+   "quote_or_note": "search snippet only",
+   "rechecked_2026_10_03": false
+  },
+  "S23": {
+   "url": "https://www.tt-series.com/wp-content/uploads/2026/07/TT-ELITE-SERIES-integrity-2.pdf",
+   "quote_or_note": "technology partner – Sportradar",
+   "rechecked_2026_10_03": false
+  },
+  "S24": {
+   "url": "https://beter.co/setka-cup-opens-new-location-in-ukraine/",
+   "quote_or_note": "Only three people can be present in a room during the game",
+   "rechecked_2026_10_03": false
+  },
+  "S25": {
+   "url": "https://tabletennis.setkacup.com",
+   "quote_or_note": "live 24/7",
+   "rechecked_2026_10_03": false
+  },
+  "S26": {
+   "url": "https://en.wikipedia.org/wiki/China_Smash_2026",
+   "quote_or_note": "1–11 October",
+   "rechecked_2026_10_03": false
+  },
+  "S27": {
+   "url": "https://developer.confluent.io/learn-more/podcasts/streaming-real-time-sporting-analytics-for-world-table-tennis/",
+   "quote_or_note": "within the milliseconds",
+   "rechecked_2026_10_03": false
+  },
+  "S28": {
+   "url": "https://www.sportsvideo.org/2025/02/10/super-bowl-lix-tubi-leads-all-streaming-platforms-in-least-lag-time-according-to-phenix-report/",
+   "quote_or_note": "paraphrase: OTT apps 26-78 s behind",
+   "rechecked_2026_10_03": false
+  },
+  "S29": {
+   "url": "https://www.prnewswire.com/news-releases/polymarket-secures-exclusive-atp-tour-streaming-rights-for-prediction-markets-302841534.html",
+   "quote_or_note": "Registered Polymarket users in the U.S. can watch live ATP matches",
+   "rechecked_2026_10_03": false
+  },
+  "S29c": {
+   "url": "https://www.newspoly.net/blog/polymarket-kyc-verification",
+   "quote_or_note": "US address, US-issued ID, and US Social Security Number (third party)",
+   "rechecked_2026_10_03": false
+  },
+  "S30": {
+   "url": "https://sportradar.com/betting-gaming/products/live-streams/",
+   "quote_or_note": "eight seconds faster than any TV signal",
+   "rechecked_2026_10_03": false
+  },
+  "S31": {
+   "url": "https://www.openbet.com/news/sportradar-announces-close-of-acquisition-of-img-arena-and-its-strategic-portfolio-of-global-sports-betting-rights",
+   "quote_or_note": "paraphrase: closed 2025-11-03",
+   "rechecked_2026_10_03": false
+  },
+  "S32": {
+   "url": "https://sharpapi.io/compare/sportradar-alternative",
+   "quote_or_note": "enterprise contracts starting at $10,000+/month",
+   "rechecked_2026_10_03": false
+  },
+  "S33": {
+   "url": "https://docs.sportradar.com/live-data/latency-indicator-beta",
+   "quote_or_note": "~0–<4 seconds",
+   "rechecked_2026_10_03": false
+  },
+  "S34": {
+   "url": "https://www.statsperform.com/products/official-wta-data-streaming/",
+   "quote_or_note": "32% of points more than 1 second faster",
+   "rechecked_2026_10_03": true
+  },
+  "S35": {
+   "url": "https://regensports.substack.com/p/i-attended-sportradars-game-set-tech",
+   "quote_or_note": "TDI's true real-time system compresses that gap",
+   "rechecked_2026_10_03": false
+  },
+  "S36": {
+   "url": "https://www.itia.tennis/media/3tihxdff/tennis-anti-corruption-program-2026.pdf",
+   "quote_or_note": "No Covered Person shall, while on site at an Event, make transmissions of",
+   "rechecked_2026_10_03": false
+  },
+  "S37": {
+   "url": "https://www.itftennis.com/media/15546/2026-wtt-regulations.pdf",
+   "quote_or_note": "shall not allow or authorise the collection, creation, dissemination, transmission",
+   "rechecked_2026_10_03": false
+  },
+  "S38": {
+   "url": "https://www.usopen.org/pdf/Stars-of-the-Open-Ticket-Terms-and-Conditions.pdf",
+   "quote_or_note": "including betting or gambling or prediction markets activity (search snippet)",
+   "rechecked_2026_10_03": false
+  },
+  "S39": {
+   "url": "https://wttwebcmsprod.blob.core.windows.net/imagedocuments/2025%2005%2020%20WTT%20EU%20Smash%20-%20Event%20Ticket%20Policy_v1%20clean%20.pdf_1748403514039",
+   "quote_or_note": "6.2/6.3/9.1 recording and Court-siding bans (paraphrase)",
+   "rechecked_2026_10_03": false
+  },
+  "S40": {
+   "url": "https://en.wikipedia.org/wiki/Courtsiding",
+   "quote_or_note": "20 spectators were caught courtsiding",
+   "rechecked_2026_10_03": false
+  },
+  "S41": {
+   "url": "https://montecarlotennismasters.com/en/medias-en/charte-accreditation/",
+   "quote_or_note": "any form of gambling or betting activity whatsoever",
+   "rechecked_2026_10_03": false
+  },
+  "S42": {
+   "url": "https://docs.polymarket.com/api-reference/geoblock",
+   "quote_or_note": "Primary Servers: eu-west-2",
+   "rechecked_2026_10_03": false
+  },
+  "S43": {
+   "url": "https://docs.polymarket.com/concepts/order-lifecycle",
+   "quote_or_note": "waits for the market's configured delay window before matching",
+   "rechecked_2026_10_03": true
+  },
+  "I_latency": {
+   "url": "research/v2/latency/RESULTS.md",
+   "quote_or_note": "internal measurement",
+   "rechecked_2026_10_03": null
+  },
+  "I_decay": {
+   "url": "results/decay/decay.json latency_inputs",
+   "quote_or_note": "internal measurement",
+   "rechecked_2026_10_03": null
+  },
+  "I_probe": {
+   "url": "research/home_stream/probe_latency.py (preliminary 25-30 s runs of HLS, LL-HLS, WebRTC/WHEP, YouTube; arena granite; 2026-10-03 20:30-20:40 UTC; output not committed)",
+   "quote_or_note": "internal measurement",
+   "rechecked_2026_10_03": null
+  },
+  "I_sweep": {
+   "url": "results/tier0/latency_sweep.json (uncommitted at time of writing)",
+   "quote_or_note": "internal simulation",
+   "rechecked_2026_10_03": null
+  }
+ }
+}
