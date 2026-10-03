@@ -1,0 +1,918 @@
+{
+  "prereg": "research/v2/expand/PREREG.md @ 337bf7c",
+  "run_started_utc": "2026-10-03T17:31:29.130682+00:00",
+  "git_head": "342d51565bf6cbf6f8921e780b0565b638490d76",
+  "inputs_sha256_16": {
+    "data/is_prints.parquet": "ea229a43ef8a0ce3",
+    "data/locked/oos_prints.parquet": "f79372f267465081",
+    "data/expand_prints.parquet": "71e7b241d0708cad",
+    "data/expand_universe.parquet": "199287226f7253d2"
+  },
+  "universe": {
+    "u2_markets": 11307,
+    "u2_series": {
+      "itf": 10855,
+      "atp": 292,
+      "wta": 160
+    },
+    "u2_is_markets": 7743,
+    "u2_oos_markets": 3564
+  },
+  "prints": {
+    "rows": {
+      "u1_is": 8303352,
+      "u1_oos": 1253202,
+      "u2": 970812
+    },
+    "matches_with_prints": {
+      "u1": 11926,
+      "u2": 7793,
+      "u2_is": 5401,
+      "u2_oos": 2392
+    },
+    "first_month": "2025-10"
+  },
+  "books": {
+    "u2_is": {
+      "slip0.0": {
+        "n_trades": 10764,
+        "n_matches": 3244,
+        "per_share_c": 2.0248787790863743,
+        "per_share_ci_c": [
+          1.140615945330067,
+          2.926860089785939
+        ],
+        "per_print_c": 2.031906556946166,
+        "per_usd_c": 3.9544608939244554,
+        "total_pnl_usd": 7436.986777073058,
+        "total_pnl_ci_usd": [
+          4103.501410579915,
+          10678.255717656912
+        ],
+        "usd_traded": 188065.75603008433,
+        "sharpe_ann": 5.190971389000454,
+        "peak_locked_usd": 3897.2072105385314,
+        "capital_usd": 11691.621631615595,
+        "return_on_capital_pct": 63.60954033068025,
+        "max_dd_usd": -663.9100383075856,
+        "max_dd_pct": -5.678511152912189,
+        "worst_day_usd": -351.6725471352916,
+        "worst_day_pct": -3.007902224481208,
+        "months_positive": 4,
+        "months_total": 5,
+        "worst_month_usd": -15.16926000014817,
+        "days": 201
+      },
+      "slip0.005": {
+        "n_trades": 10764,
+        "n_matches": 3244,
+        "per_share_c": 1.5248787790863743,
+        "per_share_ci_c": [
+          0.6406159453300667,
+          2.4268600897859387
+        ],
+        "per_print_c": 1.5319065569461654,
+        "per_usd_c": 2.9779923431234265,
+        "total_pnl_usd": 5600.5838146130955,
+        "total_pnl_ci_usd": [
+          2304.6831561069466,
+          8807.477567239297
+        ],
+        "usd_traded": 188065.75603008433,
+        "sharpe_ann": 4.122423111882143,
+        "peak_locked_usd": 3897.2072105385314,
+        "capital_usd": 11691.621631615595,
+        "return_on_capital_pct": 47.90254073454124,
+        "max_dd_usd": -760.3901457257132,
+        "max_dd_pct": -6.503718386417193,
+        "worst_day_usd": -385.06882954663666,
+        "worst_day_pct": -3.293545084501903,
+        "months_positive": 4,
+        "months_total": 5,
+        "worst_month_usd": -16.687963680148172,
+        "days": 201
+      },
+      "slip0.01": {
+        "n_trades": 10764,
+        "n_matches": 3244,
+        "per_share_c": 1.024878779086374,
+        "per_share_ci_c": [
+          0.14061594533006644,
+          1.9268600897859385
+        ],
+        "per_print_c": 1.0319065569461652,
+        "per_usd_c": 2.0015237923223976,
+        "total_pnl_usd": 3764.180852153132,
+        "total_pnl_ci_usd": [
+          505.86490163397855,
+          6936.6994168216825
+        ],
+        "usd_traded": 188065.75603008433,
+        "sharpe_ann": 2.893438458230912,
+        "peak_locked_usd": 3897.2072105385314,
+        "capital_usd": 11691.621631615595,
+        "return_on_capital_pct": 32.19554113840222,
+        "max_dd_usd": -856.8702531438412,
+        "max_dd_pct": -7.3289256199222,
+        "worst_day_usd": -418.4651119579817,
+        "worst_day_pct": -3.5791879445225985,
+        "months_positive": 4,
+        "months_total": 5,
+        "worst_month_usd": -18.20666736014818,
+        "days": 201
+      }
+    },
+    "u2_oos": {
+      "slip0.0": {
+        "n_trades": 4616,
+        "n_matches": 1549,
+        "per_share_c": 1.2237506660945057,
+        "per_share_ci_c": [
+          -0.18634258245445473,
+          2.647924922039621
+        ],
+        "per_print_c": 0.5724296409459034,
+        "per_usd_c": 2.381040516133068,
+        "total_pnl_usd": 2117.16745513788,
+        "total_pnl_ci_usd": [
+          -320.46339875436036,
+          4599.090631852033
+        ],
+        "usd_traded": 88917.74166767515,
+        "sharpe_ann": 5.300997763635398,
+        "peak_locked_usd": 2477.1740261331784,
+        "capital_usd": 7431.5220783995355,
+        "return_on_capital_pct": 28.489015208494635,
+        "max_dd_usd": -804.6016227742803,
+        "max_dd_pct": -10.826875225371873,
+        "worst_day_usd": -332.71634560691484,
+        "worst_day_pct": -4.477095567999298,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -354.45437346447244,
+        "days": 40
+      },
+      "slip0.005": {
+        "n_trades": 4616,
+        "n_matches": 1549,
+        "per_share_c": 0.7237506660945059,
+        "per_share_ci_c": [
+          -0.6863425824544552,
+          2.1479249220396195
+        ],
+        "per_print_c": 0.07242964094590316,
+        "per_usd_c": 1.4081950737963735,
+        "total_pnl_usd": 1252.135257895187,
+        "total_pnl_ci_usd": [
+          -1179.434961908634,
+          3738.6481101479867
+        ],
+        "usd_traded": 88917.74166767515,
+        "sharpe_ann": 3.2148138846717327,
+        "peak_locked_usd": 2477.1740261331784,
+        "capital_usd": 7431.5220783995355,
+        "return_on_capital_pct": 16.848974472331093,
+        "max_dd_usd": -1077.639601863123,
+        "max_dd_pct": -14.500927138403998,
+        "worst_day_usd": -351.8767307148379,
+        "worst_day_pct": -4.734921419901354,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -390.5223565083639,
+        "days": 40
+      },
+      "slip0.01": {
+        "n_trades": 4616,
+        "n_matches": 1549,
+        "per_share_c": 0.22375066609450545,
+        "per_share_ci_c": [
+          -1.1863425824544556,
+          1.6479249220396195
+        ],
+        "per_print_c": -0.4275703590540969,
+        "per_usd_c": 0.43534963145967825,
+        "total_pnl_usd": 387.10306065249256,
+        "total_pnl_ci_usd": [
+          -2049.044947739018,
+          2876.547396549454
+        ],
+        "usd_traded": 88917.74166767515,
+        "sharpe_ann": 1.0139301210992915,
+        "peak_locked_usd": 2477.1740261331784,
+        "capital_usd": 7431.5220783995355,
+        "return_on_capital_pct": 5.20893373616754,
+        "max_dd_usd": -1350.6775809519663,
+        "max_dd_pct": -18.17497905143613,
+        "worst_day_usd": -371.0371158227609,
+        "worst_day_pct": -4.99274727180341,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -426.5903395522554,
+        "days": 40
+      }
+    },
+    "combined_is": {
+      "slip0.0": {
+        "n_trades": 67079,
+        "n_matches": 10890,
+        "per_share_c": 1.4197962127578068,
+        "per_share_ci_c": [
+          1.2056843868221514,
+          1.65278463376699
+        ],
+        "per_print_c": 1.47673301913336,
+        "per_usd_c": 2.8043814988813063,
+        "total_pnl_usd": 47156.62575955621,
+        "total_pnl_ci_usd": [
+          39950.207493735776,
+          54737.88497912264
+        ],
+        "usd_traded": 1681533.90608116,
+        "sharpe_ann": 15.147472557344573,
+        "peak_locked_usd": 10916.838328363483,
+        "capital_usd": 32750.51498509045,
+        "return_on_capital_pct": 143.98743281143547,
+        "max_dd_usd": -559.1858271701749,
+        "max_dd_pct": -1.707410791631039,
+        "worst_day_usd": -508.39336761082143,
+        "worst_day_pct": -1.5523217507946536,
+        "months_positive": 7,
+        "months_total": 7,
+        "worst_month_usd": 2542.5647262976495,
+        "days": 207
+      },
+      "slip0.005": {
+        "n_trades": 67079,
+        "n_matches": 10890,
+        "per_share_c": 0.9197962127578063,
+        "per_share_ci_c": [
+          0.7056843868221511,
+          1.1527846337669896
+        ],
+        "per_print_c": 0.9767330191333597,
+        "per_usd_c": 1.816781492034518,
+        "total_pnl_usd": 30549.796787967607,
+        "total_pnl_ci_usd": [
+          23261.852746022527,
+          38331.418080172836
+        ],
+        "usd_traded": 1681533.90608116,
+        "sharpe_ann": 10.457084236641938,
+        "peak_locked_usd": 10916.838328363483,
+        "capital_usd": 32750.51498509045,
+        "return_on_capital_pct": 93.28035544441146,
+        "max_dd_usd": -940.2918749541968,
+        "max_dd_pct": -2.8710750819712647,
+        "worst_day_usd": -628.3270393835311,
+        "worst_day_pct": -1.9185256771369081,
+        "months_positive": 7,
+        "months_total": 7,
+        "worst_month_usd": 1924.8709478342023,
+        "days": 207
+      },
+      "slip0.01": {
+        "n_trades": 67079,
+        "n_matches": 10890,
+        "per_share_c": 0.419796212757806,
+        "per_share_ci_c": [
+          0.20568438682215073,
+          0.6527846337669894
+        ],
+        "per_print_c": 0.4767330191333593,
+        "per_usd_c": 0.8291814851877294,
+        "total_pnl_usd": 13942.967816379003,
+        "total_pnl_ci_usd": [
+          6807.095144648185,
+          21754.6794489663
+        ],
+        "usd_traded": 1681533.90608116,
+        "sharpe_ann": 4.92976261025226,
+        "peak_locked_usd": 10916.838328363483,
+        "capital_usd": 32750.51498509045,
+        "return_on_capital_pct": 42.57327807738745,
+        "max_dd_usd": -1460.7609128990116,
+        "max_dd_pct": -4.460268528797235,
+        "worst_day_usd": -749.8524777387336,
+        "worst_day_pct": -2.2895898830296293,
+        "months_positive": 7,
+        "months_total": 7,
+        "worst_month_usd": 904.4669384612898,
+        "days": 207
+      }
+    },
+    "combined_oos": {
+      "slip0.0": {
+        "n_trades": 15650,
+        "n_matches": 3595,
+        "per_share_c": 0.6733044690429858,
+        "per_share_ci_c": [
+          0.1810440046788667,
+          1.2135202682521586
+        ],
+        "per_print_c": 0.7210037337828973,
+        "per_usd_c": 1.2925276658738172,
+        "total_pnl_usd": 5506.101879969005,
+        "total_pnl_ci_usd": [
+          1471.488774413421,
+          9808.321714620824
+        ],
+        "usd_traded": 425994.89553259104,
+        "sharpe_ann": 7.346432370749024,
+        "peak_locked_usd": 8797.137551126025,
+        "capital_usd": 26391.412653378073,
+        "return_on_capital_pct": 20.86323287156146,
+        "max_dd_usd": -721.3347884850336,
+        "max_dd_pct": -2.7332178006496504,
+        "worst_day_usd": -573.3162582180654,
+        "worst_day_pct": -2.1723591144890135,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -670.3519100345078,
+        "days": 40
+      },
+      "slip0.005": {
+        "n_trades": 15650,
+        "n_matches": 3595,
+        "per_share_c": 0.1733044690429852,
+        "per_share_ci_c": [
+          -0.31895599532113383,
+          0.7135202682521583
+        ],
+        "per_print_c": 0.22100373378289678,
+        "per_usd_c": 0.3326887480429452,
+        "total_pnl_usd": 1417.2370846742292,
+        "total_pnl_ci_usd": [
+          -2605.4500421669813,
+          5758.088846571564
+        ],
+        "usd_traded": 425994.89553259104,
+        "sharpe_ann": 1.900093822466371,
+        "peak_locked_usd": 8797.137551126025,
+        "capital_usd": 26391.412653378073,
+        "return_on_capital_pct": 5.370069057265202,
+        "max_dd_usd": -1800.8709408022476,
+        "max_dd_pct": -6.823700437921568,
+        "worst_day_usd": -699.0627540062321,
+        "worst_day_pct": -2.6488265830542908,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -914.7535101132478,
+        "days": 40
+      },
+      "slip0.01": {
+        "n_trades": 15650,
+        "n_matches": 3595,
+        "per_share_c": -0.3266955309570152,
+        "per_share_ci_c": [
+          -0.8189559953211341,
+          0.2135202682521581
+        ],
+        "per_print_c": -0.27899626621710344,
+        "per_usd_c": -0.6271501697879265,
+        "total_pnl_usd": -2671.627710620545,
+        "total_pnl_ci_usd": [
+          -6737.358344568868,
+          1719.9869091857945
+        ],
+        "usd_traded": 425994.89553259104,
+        "sharpe_ann": -3.5487853837009102,
+        "peak_locked_usd": 8797.137551126025,
+        "capital_usd": 26391.412653378073,
+        "return_on_capital_pct": -10.12309475703105,
+        "max_dd_usd": -3158.295167583442,
+        "max_dd_pct": -11.967131919250194,
+        "worst_day_usd": -824.8092497943987,
+        "worst_day_pct": -3.1252940516195675,
+        "months_positive": 0,
+        "months_total": 3,
+        "worst_month_usd": -1237.6688116461805,
+        "days": 40
+      }
+    },
+    "u1_is_context": {
+      "slip0.0": {
+        "n_trades": 56315,
+        "n_matches": 7646,
+        "per_share_c": 1.344566465379369,
+        "per_share_ci_c": [
+          1.111157229152791,
+          1.5635416955810697
+        ],
+        "per_print_c": 1.3706176331612916,
+        "per_usd_c": 2.6595571509927924,
+        "total_pnl_usd": 39719.63898248316,
+        "total_pnl_ci_usd": [
+          32946.39174745986,
+          46028.193382436366
+        ],
+        "usd_traded": 1493468.150051076,
+        "sharpe_ann": 14.554606301944379,
+        "peak_locked_usd": 9793.629165144504,
+        "capital_usd": 29380.88749543351,
+        "return_on_capital_pct": 135.1886970352973,
+        "max_dd_usd": -537.5276785671231,
+        "max_dd_pct": -1.829514777763836,
+        "worst_day_usd": -537.527678567122,
+        "worst_day_pct": -1.8295147777638325,
+        "months_positive": 7,
+        "months_total": 7,
+        "worst_month_usd": 2542.5647262976495,
+        "days": 206
+      },
+      "slip0.005": {
+        "n_trades": 56315,
+        "n_matches": 7646,
+        "per_share_c": 0.8445664653793684,
+        "per_share_ci_c": [
+          0.6111572291527906,
+          1.0635416955810693
+        ],
+        "per_print_c": 0.870617633161291,
+        "per_usd_c": 1.6705554097354711,
+        "total_pnl_usd": 24949.212973354515,
+        "total_pnl_ci_usd": [
+          18225.32519763723,
+          31215.08844159019
+        ],
+        "usd_traded": 1493468.150051076,
+        "sharpe_ann": 9.656142105436462,
+        "peak_locked_usd": 9793.629165144504,
+        "capital_usd": 29380.88749543351,
+        "return_on_capital_pct": 84.91647155734222,
+        "max_dd_usd": -1067.6568889876762,
+        "max_dd_pct": -3.6338483279431752,
+        "worst_day_usd": -629.3114010346269,
+        "worst_day_pct": -2.141907391777859,
+        "months_positive": 7,
+        "months_total": 7,
+        "worst_month_usd": 1694.1417742116485,
+        "days": 206
+      },
+      "slip0.01": {
+        "n_trades": 56315,
+        "n_matches": 7646,
+        "per_share_c": 0.3445664653793679,
+        "per_share_ci_c": [
+          0.11115722915279025,
+          0.5635416955810689
+        ],
+        "per_print_c": 0.37061763316129087,
+        "per_usd_c": 0.68155366847815,
+        "total_pnl_usd": 10178.78696422587,
+        "total_pnl_ci_usd": [
+          3306.5050183281414,
+          16558.90439117166
+        ],
+        "usd_traded": 1493468.150051076,
+        "sharpe_ann": 4.035661157065506,
+        "peak_locked_usd": 9793.629165144504,
+        "capital_usd": 29380.88749543351,
+        "return_on_capital_pct": 34.64424607938714,
+        "max_dd_usd": -1955.5515336669287,
+        "max_dd_pct": -6.655862706566873,
+        "worst_day_usd": -721.0951235021316,
+        "worst_day_pct": -2.4543000057918842,
+        "months_positive": 5,
+        "months_total": 7,
+        "worst_month_usd": -350.99291564703344,
+        "days": 206
+      }
+    },
+    "u1_oos_context": {
+      "slip0.0": {
+        "n_trades": 11034,
+        "n_matches": 2046,
+        "per_share_c": 0.5256064516003102,
+        "per_share_ci_c": [
+          0.05157181166832881,
+          1.035027609485286
+        ],
+        "per_print_c": 0.783158710449162,
+        "per_usd_c": 1.005388346843952,
+        "total_pnl_usd": 3388.9344248311227,
+        "total_pnl_ci_usd": [
+          338.7702296730412,
+          6625.828631468475
+        ],
+        "usd_traded": 337077.15386491595,
+        "sharpe_ann": 6.118596969429569,
+        "peak_locked_usd": 7705.6235109886065,
+        "capital_usd": 23116.87053296582,
+        "return_on_capital_pct": 14.660005211338326,
+        "max_dd_usd": -653.9848748736242,
+        "max_dd_pct": -2.8290372346940686,
+        "worst_day_usd": -513.1847273551771,
+        "worst_day_pct": -2.219957613308211,
+        "months_positive": 2,
+        "months_total": 3,
+        "worst_month_usd": -315.89753657003536,
+        "days": 40
+      },
+      "slip0.005": {
+        "n_trades": 11034,
+        "n_matches": 2046,
+        "per_share_c": 0.025606451600309613,
+        "per_share_ci_c": [
+          -0.44842818833167153,
+          0.5350276094852857
+        ],
+        "per_print_c": 0.2831587104491613,
+        "per_usd_c": 0.04898042625730919,
+        "total_pnl_usd": 165.1018267790418,
+        "total_pnl_ci_usd": [
+          -2872.547966009174,
+          3445.011292655349
+        ],
+        "usd_traded": 337077.15386491595,
+        "sharpe_ann": 0.2994625924972485,
+        "peak_locked_usd": 7705.6235109886065,
+        "capital_usd": 23116.87053296582,
+        "return_on_capital_pct": 0.7142049203571837,
+        "max_dd_usd": -1420.1441286968334,
+        "max_dd_pct": -6.14332345146648,
+        "worst_day_usd": -634.2501473728153,
+        "worst_day_pct": -2.7436678613930146,
+        "months_positive": 1,
+        "months_total": 3,
+        "worst_month_usd": -524.231153604884,
+        "days": 40
+      },
+      "slip0.01": {
+        "n_trades": 11034,
+        "n_matches": 2046,
+        "per_share_c": -0.4743935483996906,
+        "per_share_ci_c": [
+          -0.9484281883316719,
+          0.03502760948528545
+        ],
+        "per_print_c": -0.2168412895508389,
+        "per_usd_c": -0.9074274943293329,
+        "total_pnl_usd": -3058.7307712730367,
+        "total_pnl_ci_usd": [
+          -6092.811427774746,
+          226.50213746883048
+        ],
+        "usd_traded": 337077.15386491595,
+        "sharpe_ann": -5.468030868057279,
+        "peak_locked_usd": 7705.6235109886065,
+        "capital_usd": 23116.87053296582,
+        "return_on_capital_pct": -13.231595370623946,
+        "max_dd_usd": -2957.0152580112604,
+        "max_dd_pct": -12.791589820924973,
+        "worst_day_usd": -755.3155673904535,
+        "worst_day_pct": -3.2673781094778183,
+        "months_positive": 0,
+        "months_total": 3,
+        "worst_month_usd": -1403.3670765629502,
+        "days": 40
+      }
+    }
+  },
+  "markout30": {
+    "u2_is": {
+      "m30_per_share_c": 1.2392820094053763,
+      "ci_c": [
+        1.0073559278529947,
+        1.4894978649908452
+      ],
+      "n_trades": 10756,
+      "n_matches": 3239
+    },
+    "u2_oos": {
+      "m30_per_share_c": 0.5929102573880574,
+      "ci_c": [
+        0.13110631403841638,
+        1.0333676678502668
+      ],
+      "n_trades": 4606,
+      "n_matches": 1545
+    },
+    "combined_is": {
+      "m30_per_share_c": 0.9865023048378829,
+      "ci_c": [
+        0.9257434582139561,
+        1.0453068055403751
+      ],
+      "n_trades": 67038,
+      "n_matches": 10885
+    },
+    "combined_oos": {
+      "m30_per_share_c": 0.7113068195446288,
+      "ci_c": [
+        0.578952816265117,
+        0.8495362736988551
+      ],
+      "n_trades": 15624,
+      "n_matches": 3591
+    }
+  },
+  "fast_minus_others_u2": {
+    "qualified_wallets_by_month": {
+      "2026-02": 10,
+      "2026-04": 17,
+      "2026-05": 25,
+      "2026-06": 55,
+      "2026-07": 76,
+      "2026-08": 97,
+      "2026-09": 119,
+      "2026-10": 132
+    },
+    "u2_is": {
+      "fast_minus_others_c": 3.086854916286007,
+      "ci_c": [
+        2.8879461721128847,
+        3.278104369465202
+      ],
+      "fast_net30_c": 1.670771615549011,
+      "others_net30_c": -1.416083300736995,
+      "n_prints_fast": 14232,
+      "n_prints_others": 48933,
+      "n_matches": 5325,
+      "n_matches_with_fast": 3339
+    },
+    "u2_oos": {
+      "fast_minus_others_c": 2.15951922248168,
+      "ci_c": [
+        1.7918111561611012,
+        2.532643728567625
+      ],
+      "fast_net30_c": 0.798479337272087,
+      "others_net30_c": -1.3610398852095933,
+      "n_prints_fast": 7344,
+      "n_prints_others": 14655,
+      "n_matches": 2387,
+      "n_matches_with_fast": 1642
+    }
+  },
+  "primary": {
+    "u2_is": {
+      "per_share_c": 2.0248787790863743,
+      "per_share_ci_c": [
+        1.140615945330067,
+        2.926860089785939
+      ],
+      "n_matches_with_trades": 3244,
+      "pass": true,
+      "underpowered": false,
+      "label": "PASS"
+    },
+    "u2_oos": {
+      "per_share_c": 1.2237506660945057,
+      "per_share_ci_c": [
+        -0.18634258245445473,
+        2.647924922039621
+      ],
+      "n_matches_with_trades": 1549,
+      "pass": false,
+      "underpowered": false,
+      "label": "FAILURE"
+    },
+    "verdict": "FAIL"
+  },
+  "exploratory_not_preregistered": {
+    "series": {
+      "is/atp": {
+        "n_trades": 42.0,
+        "n_matches": 19.0,
+        "pnl_usd": 35.552862350995056,
+        "per_share_c": 4.657425232214093
+      },
+      "is/itf": {
+        "n_trades": 10722.0,
+        "n_matches": 3225.0,
+        "pnl_usd": 7401.4339147220635,
+        "per_share_c": 2.019395879113221
+      },
+      "oos/atp": {
+        "n_trades": 12.0,
+        "n_matches": 5.0,
+        "pnl_usd": 9.085662144444973,
+        "per_share_c": 3.3198589625801316
+      },
+      "oos/itf": {
+        "n_trades": 4604.0,
+        "n_matches": 1544.0,
+        "pnl_usd": 2108.0817929934356,
+        "per_share_c": 1.2204296120312064
+      }
+    },
+    "regime": {
+      "is/1s/3%": {
+        "n_trades": 4328.0,
+        "n_matches": 1274.0,
+        "pnl_usd": 2109.5779078475784,
+        "per_share_c": 1.8542080629815074
+      },
+      "is/1s/5%": {
+        "n_trades": 6416.0,
+        "n_matches": 1959.0,
+        "pnl_usd": 5256.540556383406,
+        "per_share_c": 2.0776447390534645
+      },
+      "is/3s/0%": {
+        "n_trades": 10.0,
+        "n_matches": 7.0,
+        "pnl_usd": -15.16926000014817,
+        "per_share_c": -4.994147377106564
+      },
+      "is/3s/3%": {
+        "n_trades": 10.0,
+        "n_matches": 4.0,
+        "pnl_usd": 86.03757284222277,
+        "per_share_c": 43.1004816600788
+      },
+      "oos/1s/5%": {
+        "n_trades": 4616.0,
+        "n_matches": 1549.0,
+        "pnl_usd": 2117.1674551378806,
+        "per_share_c": 1.223750666094506
+      }
+    },
+    "vol_band": {
+      "is/1-2k": {
+        "n_trades": 543.0,
+        "n_matches": 288.0,
+        "pnl_usd": 486.04396228127007,
+        "per_share_c": 4.147248018523371
+      },
+      "is/10-100k": {
+        "n_trades": 6331.0,
+        "n_matches": 1433.0,
+        "pnl_usd": 3224.558276993276,
+        "per_share_c": 1.3501124015861101
+      },
+      "is/2-5k": {
+        "n_trades": 1611.0,
+        "n_matches": 753.0,
+        "pnl_usd": 1755.9430577884384,
+        "per_share_c": 3.948902977622782
+      },
+      "is/5-10k": {
+        "n_trades": 2105.0,
+        "n_matches": 733.0,
+        "pnl_usd": 2226.8848915789677,
+        "per_share_c": 3.434169291634759
+      },
+      "is/>100k": {
+        "n_trades": 174.0,
+        "n_matches": 37.0,
+        "pnl_usd": -256.44341156889334,
+        "per_share_c": -3.459330121237282
+      },
+      "oos/1-2k": {
+        "n_trades": 289.0,
+        "n_matches": 160.0,
+        "pnl_usd": 833.4375104589218,
+        "per_share_c": 9.875737547838963
+      },
+      "oos/10-100k": {
+        "n_trades": 2329.0,
+        "n_matches": 595.0,
+        "pnl_usd": 864.4826963043491,
+        "per_share_c": 0.9476452871505291
+      },
+      "oos/2-5k": {
+        "n_trades": 903.0,
+        "n_matches": 424.0,
+        "pnl_usd": 114.62818865901687,
+        "per_share_c": 0.3546615101890823
+      },
+      "oos/5-10k": {
+        "n_trades": 1031.0,
+        "n_matches": 359.0,
+        "pnl_usd": 433.291901840105,
+        "per_share_c": 1.1562636788632574
+      },
+      "oos/>100k": {
+        "n_trades": 64.0,
+        "n_matches": 11.0,
+        "pnl_usd": -128.6728421245123,
+        "per_share_c": -3.625602027286992
+      }
+    }
+  },
+  "walk_forward_months": [
+    {
+      "month": "2025-12",
+      "n_wallets": 4,
+      "n_prints": 76,
+      "n_matches": 14,
+      "usd_k": 15.231459469009687,
+      "net30_c": 1.1339697135526323,
+      "net_res_c": 9.550819816052632,
+      "follow_res_c": 6.952700097039473,
+      "others_net30_c": -1.4920519436621629
+    },
+    {
+      "month": "2026-01",
+      "n_wallets": 4,
+      "n_prints": 4296,
+      "n_matches": 642,
+      "usd_k": 360.8419505355268,
+      "net30_c": 2.288575734569529,
+      "net_res_c": 1.6619228198603353,
+      "follow_res_c": -1.3871211587811703,
+      "others_net30_c": -0.7288479405140439
+    },
+    {
+      "month": "2026-02",
+      "n_wallets": 10,
+      "n_prints": 8448,
+      "n_matches": 934,
+      "usd_k": 1330.0086120806532,
+      "net30_c": 1.0248514358625194,
+      "net_res_c": 2.002399469391428,
+      "follow_res_c": 0.12369806317470637,
+      "others_net30_c": -0.7344835139019645
+    },
+    {
+      "month": "2026-03",
+      "n_wallets": 12,
+      "n_prints": 3080,
+      "n_matches": 405,
+      "usd_k": 574.5136899722876,
+      "net30_c": 1.9254289883174582,
+      "net_res_c": -0.1326160349028737,
+      "follow_res_c": -3.033342292292214,
+      "others_net30_c": -0.6106845153950629
+    },
+    {
+      "month": "2026-04",
+      "n_wallets": 17,
+      "n_prints": 14016,
+      "n_matches": 1343,
+      "usd_k": 2077.3138575659023,
+      "net30_c": 1.1352386489509914,
+      "net_res_c": 1.1056284894718416,
+      "follow_res_c": -1.6325307845699375,
+      "others_net30_c": -0.5494949591767094
+    },
+    {
+      "month": "2026-05",
+      "n_wallets": 25,
+      "n_prints": 18207,
+      "n_matches": 1431,
+      "usd_k": 2444.7929601393666,
+      "net30_c": 1.4311356623609548,
+      "net_res_c": 1.6254226321595966,
+      "follow_res_c": -1.1076714934266974,
+      "others_net30_c": -1.498770042302425
+    },
+    {
+      "month": "2026-06",
+      "n_wallets": 55,
+      "n_prints": 19841,
+      "n_matches": 2072,
+      "usd_k": 3204.87759903762,
+      "net30_c": 1.1984296350690555,
+      "net_res_c": 1.445401422290566,
+      "follow_res_c": -0.9014999206164354,
+      "others_net30_c": -0.9081215983083363
+    },
+    {
+      "month": "2026-07",
+      "n_wallets": 76,
+      "n_prints": 27668,
+      "n_matches": 2861,
+      "usd_k": 5271.641446554111,
+      "net30_c": 1.0668371562372994,
+      "net_res_c": 1.476376512696912,
+      "follow_res_c": -1.1466082757455363,
+      "others_net30_c": -1.306183418152527
+    },
+    {
+      "month": "2026-08",
+      "n_wallets": 97,
+      "n_prints": 28161,
+      "n_matches": 2672,
+      "usd_k": 4600.17698366413,
+      "net30_c": 0.6439283856512094,
+      "net_res_c": 0.3472039028318437,
+      "follow_res_c": -1.937036721025711,
+      "others_net30_c": -1.2652315153548608
+    },
+    {
+      "month": "2026-09",
+      "n_wallets": 119,
+      "n_prints": 30946,
+      "n_matches": 2994,
+      "usd_k": 4142.8727948080095,
+      "net30_c": 0.47995341029813554,
+      "net_res_c": -0.022569525690791677,
+      "follow_res_c": -2.2116561477607646,
+      "others_net30_c": -1.3328482556860883
+    },
+    {
+      "month": "2026-10",
+      "n_wallets": 132,
+      "n_prints": 2455,
+      "n_matches": 213,
+      "usd_k": 445.5934572454737,
+      "net30_c": 0.1547668972793991,
+      "net_res_c": -2.4145235067320527,
+      "follow_res_c": -4.097934912394362,
+      "others_net30_c": -1.6979002950056488
+    }
+  ],
+  "runtime_s": 103.1
+}
