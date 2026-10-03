@@ -1,0 +1,172 @@
+1
+00:00:00,300 --> 00:00:04,075
+This is a real table tennis rally, from a game our model never saw in training.
+
+2
+00:00:04,095 --> 00:00:07,716
+It calls this shot a miss 408 milliseconds before the ball gets there.
+
+3
+00:00:07,736 --> 00:00:11,923
+Courtside asks what that head start is worth on a prediction market, and what we can prove.
+
+4
+00:00:12,423 --> 00:00:14,688
+When a point ends, the news spreads in tiers.
+
+5
+00:00:14,708 --> 00:00:18,511
+A courtside camera with our vision model would know in about 95 milliseconds.
+
+6
+00:00:18,531 --> 00:00:23,977
+ESPN's live score trails the order book by about 28 seconds, the public scoreboard by 45.
+
+7
+00:00:23,997 --> 00:00:29,580
+Slower tiers trade against stale prices. The gap persists because speed costs money, and capacity is small.
+
+8
+00:00:30,080 --> 00:00:33,423
+A small group of wallets trades in the first three seconds after a point.
+
+9
+00:00:33,443 --> 00:00:38,725
+Thirty seconds later, net of fees, they are up in 9 of 9 months. Everyone else is down in 9.
+
+10
+00:00:38,745 --> 00:00:43,121
+Copying them three seconds later loses in 9 of 9. The edge goes to whoever is first.
+
+11
+00:00:43,621 --> 00:00:45,240
+So we built our own fast tier.
+
+12
+00:00:45,260 --> 00:00:48,909
+On held-out games, it tracks the ball and calls misses before contact.
+
+13
+00:00:48,929 --> 00:00:55,851
+Fifty milliseconds out, it made 11 calls, all correct. The 95% lower bound on precision is 74 percent.
+
+14
+00:00:55,871 --> 00:00:59,562
+It catches 27 percent of misses that early, and leaves the rest alone.
+
+15
+00:01:00,062 --> 00:01:03,877
+We have no licensed tennis footage, so this replay is simulated physics.
+
+16
+00:01:03,897 --> 00:01:10,037
+A 340 frame per second tracker calls it out 200 milliseconds before the bounce, and reads the spin from the flight.
+
+17
+00:01:10,057 --> 00:01:14,547
+On the right is a real Polymarket tape: fast-tier wallets traded within seconds of the point.
+
+18
+00:01:15,047 --> 00:01:18,841
+Version two trades only at the fast tier's own fill prices, after fees.
+
+19
+00:01:18,861 --> 00:01:26,189
+In sample, February to August: 1.38 cents a share, Sharpe 14.5, worst drawdown 2.0 percent.
+
+20
+00:01:26,209 --> 00:01:31,779
+Out of sample, a window we had already seen: 0.60 cents, Sharpe 6.7.
+
+21
+00:01:31,799 --> 00:01:36,222
+Double the fees, and out of sample turns negative: −0.34 cents.
+
+22
+00:01:36,722 --> 00:01:40,393
+We tried thousands of configurations, so we deflate the Sharpe ratio.
+
+23
+00:01:40,413 --> 00:01:45,950
+In sample it stays above 0.99, even counting all 3,386 trials.
+
+24
+00:01:45,970 --> 00:01:50,692
+The 40-day out-of-sample window does not survive that. It falls to 0.07.
+
+25
+00:01:50,712 --> 00:01:54,879
+Probability of backtest overfitting on the 24-variant grid: 15 percent.
+
+26
+00:01:55,379 --> 00:02:00,966
+Unseen markets passed in sample, then failed out of sample. The market-making variant failed its blind test.
+
+27
+00:02:00,986 --> 00:02:03,399
+Table tennis markets had no fast tier at all.
+
+28
+00:02:03,419 --> 00:02:08,566
+The blind forward test is still pending. Every look at out-of-sample data is logged: 51 entries.
+
+29
+00:02:09,066 --> 00:02:11,857
+What does vision buy? This part is a counterfactual.
+
+30
+00:02:11,877 --> 00:02:16,424
+It assumes a licensed feed and a courtside camera we did not buy, with parameters we measured.
+
+31
+00:02:16,444 --> 00:02:24,270
+In sample, 1.10 cents a share, Sharpe 11.4. Out of sample, 0.58 cents, Sharpe 7.3.
+
+32
+00:02:24,290 --> 00:02:28,719
+The sign hinges on how fast the market reprices after the bounce, which we have not measured.
+
+33
+00:02:28,739 --> 00:02:33,084
+Under the stamp reading, if that takes less than 1.1 seconds, the edge is gone.
+
+34
+00:02:33,584 --> 00:02:37,221
+The engine runs end to end on live Polymarket order books, paper only.
+
+35
+00:02:37,241 --> 00:02:42,684
+In a 60 second check it read 7,785 book messages across 27 markets,
+
+36
+00:02:42,704 --> 00:02:47,806
+at a median feed latency of 65 milliseconds, with zero mismatches and zero orders sent.
+
+37
+00:02:47,826 --> 00:02:49,920
+Tonight's live paper session is running now.
+
+38
+00:02:50,420 --> 00:02:56,768
+In sample, a gross edge of 282 dollars a day loses 86 to taker fees, leaving 196.
+
+39
+00:02:56,788 --> 00:03:04,486
+Central fixed costs, mostly a data licence, are 167 a day. That leaves 29 in sample, and a loss out of sample.
+
+40
+00:03:04,506 --> 00:03:09,145
+Out of sample, the edge stays positive only up to about 34 thousand dollars of capital.
+
+41
+00:03:09,165 --> 00:03:13,079
+Kill switches stop trading on a drawdown, a stale feed, or a fee change.
+
+42
+00:03:13,579 --> 00:03:19,403
+Everything here is paper trading. No real money was traded, and no live ATP or WTA data was used.
+
+43
+00:03:19,423 --> 00:03:24,378
+The code and every result file are in the public repository. One command rebuilds the backtest tables.
+

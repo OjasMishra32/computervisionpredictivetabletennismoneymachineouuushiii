@@ -1,0 +1,1894 @@
+{
+ "video": "results/viz/courtside_video.mp4",
+ "srt": "results/viz/courtside_video.srt",
+ "script": "docs/video_script.md",
+ "duration_s": 204.58,
+ "voice": "Samantha",
+ "rate_wpm": 215,
+ "scenes": [
+  {
+   "id": "S01",
+   "key": "hook",
+   "title": "Call the point before the ball lands",
+   "start_s": 0.0,
+   "dur_s": 12.12
+  },
+  {
+   "id": "S02",
+   "key": "economics",
+   "title": "Information arrives in tiers",
+   "start_s": 12.12,
+   "dur_s": 17.66
+  },
+  {
+   "id": "S03",
+   "key": "evidence",
+   "title": "The fast tier wins every month",
+   "start_s": 29.78,
+   "dur_s": 13.54
+  },
+  {
+   "id": "S04",
+   "key": "vision",
+   "title": "Calling the point before contact",
+   "start_s": 43.32,
+   "dur_s": 16.44
+  },
+  {
+   "id": "S05",
+   "key": "tennis",
+   "title": "Tennis replay (simulated physics)",
+   "start_s": 59.76,
+   "dur_s": 14.99
+  },
+  {
+   "id": "S06",
+   "key": "backtest",
+   "title": "The backtest, in sample and out",
+   "start_s": 74.75,
+   "dur_s": 21.67
+  },
+  {
+   "id": "S07",
+   "key": "overfitting",
+   "title": "Deflated Sharpe and overfitting",
+   "start_s": 96.42,
+   "dur_s": 18.66
+  },
+  {
+   "id": "S08",
+   "key": "scoreboard",
+   "title": "Blind tests and failures",
+   "start_s": 115.08,
+   "dur_s": 13.69
+  },
+  {
+   "id": "S09",
+   "key": "tier0",
+   "title": "What vision buys (counterfactual)",
+   "start_s": 128.77,
+   "dur_s": 24.52
+  },
+  {
+   "id": "S10",
+   "key": "live",
+   "title": "Live books, paper only",
+   "start_s": 153.28,
+   "dur_s": 16.84
+  },
+  {
+   "id": "S11",
+   "key": "risk",
+   "title": "Costs, capacity and kill switches",
+   "start_s": 170.12,
+   "dur_s": 23.16
+  },
+  {
+   "id": "S12",
+   "key": "close",
+   "title": "Reproduce it",
+   "start_s": 193.28,
+   "dur_s": 11.3
+  }
+ ],
+ "captions": [
+  {
+   "start_s": 0.3,
+   "end_s": 3.97,
+   "text": "This is a real table tennis rally, from a game our model never saw in training."
+  },
+  {
+   "start_s": 4.09,
+   "end_s": 7.62,
+   "text": "It calls this shot a miss 408 milliseconds before the ball gets there."
+  },
+  {
+   "start_s": 7.74,
+   "end_s": 11.82,
+   "text": "Courtside asks what that head start is worth on a prediction market, and what we can prove."
+  },
+  {
+   "start_s": 12.42,
+   "end_s": 14.59,
+   "text": "When a point ends, the news spreads in tiers."
+  },
+  {
+   "start_s": 14.71,
+   "end_s": 18.41,
+   "text": "A courtside camera with our vision model would know in about 95 milliseconds."
+  },
+  {
+   "start_s": 18.53,
+   "end_s": 23.88,
+   "text": "ESPN's live score trails the order book by about 28 seconds, the public scoreboard by 45."
+  },
+  {
+   "start_s": 24.0,
+   "end_s": 29.48,
+   "text": "Slower tiers trade against stale prices. The gap persists because speed costs money, and capacity is small."
+  },
+  {
+   "start_s": 30.08,
+   "end_s": 33.32,
+   "text": "A small group of wallets trades in the first three seconds after a point."
+  },
+  {
+   "start_s": 33.44,
+   "end_s": 38.62,
+   "text": "Thirty seconds later, net of fees, they are up in 9 of 9 months. Everyone else is down in 9."
+  },
+  {
+   "start_s": 38.75,
+   "end_s": 43.02,
+   "text": "Copying them three seconds later loses in 9 of 9. The edge goes to whoever is first."
+  },
+  {
+   "start_s": 43.62,
+   "end_s": 45.14,
+   "text": "So we built our own fast tier."
+  },
+  {
+   "start_s": 45.26,
+   "end_s": 48.81,
+   "text": "On held-out games, it tracks the ball and calls misses before contact."
+  },
+  {
+   "start_s": 48.93,
+   "end_s": 55.75,
+   "text": "Fifty milliseconds out, it made 11 calls, all correct. The 95% lower bound on precision is 74 percent."
+  },
+  {
+   "start_s": 55.87,
+   "end_s": 59.46,
+   "text": "It catches 27 percent of misses that early, and leaves the rest alone."
+  },
+  {
+   "start_s": 60.06,
+   "end_s": 63.78,
+   "text": "We have no licensed tennis footage, so this replay is simulated physics."
+  },
+  {
+   "start_s": 63.9,
+   "end_s": 69.94,
+   "text": "A 340 frame per second tracker calls it out 200 milliseconds before the bounce, and reads the spin from the flight."
+  },
+  {
+   "start_s": 70.06,
+   "end_s": 74.45,
+   "text": "On the right is a real Polymarket tape: fast-tier wallets traded within seconds of the point."
+  },
+  {
+   "start_s": 75.05,
+   "end_s": 78.74,
+   "text": "Version two trades only at the fast tier's own fill prices, after fees."
+  },
+  {
+   "start_s": 78.86,
+   "end_s": 86.09,
+   "text": "In sample, February to August: 1.38 cents a share, Sharpe 14.5, worst drawdown 2.0 percent."
+  },
+  {
+   "start_s": 86.21,
+   "end_s": 91.68,
+   "text": "Out of sample, a window we had already seen: 0.60 cents, Sharpe 6.7."
+  },
+  {
+   "start_s": 91.8,
+   "end_s": 96.12,
+   "text": "Double the fees, and out of sample turns negative: \u22120.34 cents."
+  },
+  {
+   "start_s": 96.72,
+   "end_s": 100.29,
+   "text": "We tried thousands of configurations, so we deflate the Sharpe ratio."
+  },
+  {
+   "start_s": 100.41,
+   "end_s": 105.85,
+   "text": "In sample it stays above 0.99, even counting all 3,386 trials."
+  },
+  {
+   "start_s": 105.97,
+   "end_s": 110.59,
+   "text": "The 40-day out-of-sample window does not survive that. It falls to 0.07."
+  },
+  {
+   "start_s": 110.71,
+   "end_s": 114.78,
+   "text": "Probability of backtest overfitting on the 24-variant grid: 15 percent."
+  },
+  {
+   "start_s": 115.38,
+   "end_s": 120.87,
+   "text": "Unseen markets passed in sample, then failed out of sample. The market-making variant failed its blind test."
+  },
+  {
+   "start_s": 120.99,
+   "end_s": 123.3,
+   "text": "Table tennis markets had no fast tier at all."
+  },
+  {
+   "start_s": 123.42,
+   "end_s": 128.47,
+   "text": "The blind forward test is still pending. Every look at out-of-sample data is logged: 51 entries."
+  },
+  {
+   "start_s": 129.07,
+   "end_s": 131.76,
+   "text": "What does vision buy? This part is a counterfactual."
+  },
+  {
+   "start_s": 131.88,
+   "end_s": 136.32,
+   "text": "It assumes a licensed feed and a courtside camera we did not buy, with parameters we measured."
+  },
+  {
+   "start_s": 136.44,
+   "end_s": 144.17,
+   "text": "In sample, 1.10 cents a share, Sharpe 11.4. Out of sample, 0.58 cents, Sharpe 7.3."
+  },
+  {
+   "start_s": 144.29,
+   "end_s": 148.62,
+   "text": "The sign hinges on how fast the market reprices after the bounce, which we have not measured."
+  },
+  {
+   "start_s": 148.74,
+   "end_s": 152.98,
+   "text": "Under the stamp reading, if that takes less than 1.1 seconds, the edge is gone."
+  },
+  {
+   "start_s": 153.58,
+   "end_s": 157.12,
+   "text": "The engine runs end to end on live Polymarket order books, paper only."
+  },
+  {
+   "start_s": 157.24,
+   "end_s": 162.58,
+   "text": "In a 60 second check it read 7,785 book messages across 27 markets,"
+  },
+  {
+   "start_s": 162.7,
+   "end_s": 167.71,
+   "text": "at a median feed latency of 65 milliseconds, with zero mismatches and zero orders sent."
+  },
+  {
+   "start_s": 167.83,
+   "end_s": 169.82,
+   "text": "Tonight's live paper session is running now."
+  },
+  {
+   "start_s": 170.42,
+   "end_s": 176.67,
+   "text": "In sample, a gross edge of 282 dollars a day loses 86 to taker fees, leaving 196."
+  },
+  {
+   "start_s": 176.79,
+   "end_s": 184.39,
+   "text": "Central fixed costs, mostly a data licence, are 167 a day. That leaves 29 in sample, and a loss out of sample."
+  },
+  {
+   "start_s": 184.51,
+   "end_s": 189.04,
+   "text": "Out of sample, the edge stays positive only up to about 34 thousand dollars of capital."
+  },
+  {
+   "start_s": 189.16,
+   "end_s": 192.98,
+   "text": "Kill switches stop trading on a drawdown, a stale feed, or a fee change."
+  },
+  {
+   "start_s": 193.58,
+   "end_s": 199.3,
+   "text": "Everything here is paper trading. No real money was traded, and no live ATP or WTA data was used."
+  },
+  {
+   "start_s": 199.42,
+   "end_s": 204.28,
+   "text": "The code and every result file are in the public repository. One command rebuilds the backtest tables."
+  }
+ ],
+ "values": {
+  "clip0_lead_ms": {
+   "value": 408.3,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[0].call_lead_ms",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ],
+   "note": "embedded in 01_miss_test_2_f2819_lead408ms.mp4 overlay"
+  },
+  "clip0_pmiss": {
+   "value": 0.9977,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[0].p_miss_at_50ms",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ],
+   "note": "embedded in 01_miss_test_2_f2819_lead408ms.mp4 overlay"
+  },
+  "clip1_lead_ms": {
+   "value": 83.3,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[1].call_lead_ms",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ],
+   "note": "embedded in 02_miss_test_4_f5750_lead83ms.mp4 overlay"
+  },
+  "clip1_pmiss": {
+   "value": 0.9896,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[1].p_miss_at_50ms",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ],
+   "note": "embedded in 02_miss_test_4_f5750_lead83ms.mp4 overlay"
+  },
+  "clip2_lead_ms": {
+   "value": 25.0,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[2].call_lead_ms",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ],
+   "note": "embedded in 03_miss_test_6_f1484_lead25ms.mp4 overlay"
+  },
+  "clip2_pmiss": {
+   "value": 0.9726,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[2].p_miss_at_50ms",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ],
+   "note": "embedded in 03_miss_test_6_f1484_lead25ms.mp4 overlay"
+  },
+  "clip3_lead_ms": {
+   "value": 50.0,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[3].call_lead_ms",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ],
+   "note": "embedded in 04_bounce_test_6_f1299_at50ms.mp4 overlay"
+  },
+  "clip3_pmiss": {
+   "value": 0.018,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[3].p_miss_at_50ms",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ],
+   "note": "embedded in 04_bounce_test_6_f1299_at50ms.mp4 overlay"
+  },
+  "tt_lead_ms": {
+   "value": 408.3,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[0].call_lead_ms",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ]
+  },
+  "tp50": {
+   "value": 11,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.tp",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "fp50": {
+   "value": 0,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.fp",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "calls50_phrase": {
+   "value": "it made 11 calls, all correct",
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.tp, .fp",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "prec50": {
+   "value": 1.0,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.precision",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "wil50": {
+   "value": 74.11999999999999,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.precision_wilson95[0]",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "recall50": {
+   "value": 26.83,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.recall",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "verdict_h3": {
+   "value": "PASS",
+   "file": "results/tracking/summary.json",
+   "key": "verdict",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "n_test_miss": {
+   "value": 41,
+   "file": "results/tracking/summary.json",
+   "key": "n_flights.test.MISS",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "n_test_bounce": {
+   "value": 130,
+   "file": "results/tracking/summary.json",
+   "key": "n_flights.test.BOUNCE",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "det_recall": {
+   "value": 96.71,
+   "file": "results/tracking/summary.json",
+   "key": "detection_accuracy_pooled[split=test,source=tracked].recall",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "det_prec": {
+   "value": 98.04,
+   "file": "results/tracking/summary.json",
+   "key": "detection_accuracy_pooled[split=test,source=tracked].precision@10px",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "ldn_ms": {
+   "value": 94.7,
+   "file": "results/decay/decay.json",
+   "key": "stacks[name=LDN-meas].l_s x 1000",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "cv_ms": {
+   "value": 84.33,
+   "file": "results/decay/decay.json",
+   "key": "latency_inputs.cv_measured_s.p50 x 1000",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "espn_s": {
+   "value": 28.2,
+   "file": "results/decay/decay.json",
+   "key": "latency_inputs.espn_behind_book_s",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "h4_s": {
+   "value": 44.52,
+   "file": "results/decay/decay.json",
+   "key": "latency_inputs.h4_book_leads_public_score_s.median",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "stream_lo": {
+   "value": 5.0,
+   "file": "results/decay/decay.json",
+   "key": "latency_inputs.stream_delay_s_assumed[0]",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "ASSUMPTION"
+  },
+  "stream_hi": {
+   "value": 30.0,
+   "file": "results/decay/decay.json",
+   "key": "latency_inputs.stream_delay_s_assumed[1]",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "ASSUMPTION"
+  },
+  "feed_month": {
+   "value": 5000.0,
+   "file": "results/financials/financials.json",
+   "key": "cost_assumptions.feed_licence.central",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "ASSUMPTION (no public price)"
+  },
+  "vps_month": {
+   "value": 77.4165,
+   "file": "results/financials/financials.json",
+   "key": "cost_assumptions.vps_london.central",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "notional_day": {
+   "value": 7182.350074785291,
+   "file": "results/v2/note_metrics.json",
+   "key": "is.usd_traded_per_day",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "ft_rows": {
+   "value": "<series: 9 items>",
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "month, net30_c, others_net30_c, follow_res_c (all rows)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "ft_n": {
+   "value": 9,
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "count(rows)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "ft_pos": {
+   "value": 9,
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "count(net30_c > 0)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "oth_neg": {
+   "value": 9,
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "count(others_net30_c < 0)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "fol_neg": {
+   "value": 9,
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "count(follow_res_c < 0)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "ft_wallets_last": {
+   "value": 101,
+   "file": "results/fasttier_walkforward_is.csv",
+   "key": "n_wallets (last row)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "tennis_lead_ms": {
+   "value": 200,
+   "file": "results/viz/viz_data.json",
+   "key": "shot.preds: largest lead_ms with p_out >= 0.95 at every shorter lead",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "tennis_out_cm": {
+   "value": 13.665510353688148,
+   "file": "results/viz/viz_data.json",
+   "key": "shot.out_cm",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ],
+   "note": "embedded in courtside_replay.mp4"
+  },
+  "tennis_fps": {
+   "value": 340.0,
+   "file": "results/viz/viz_data.json",
+   "key": "shot.fps",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "tape_title": {
+   "value": "Cincinnati Open: Brandon Nakashima vs Daniil Medvedev",
+   "file": "results/viz/viz_data.json",
+   "key": "tape.title",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "tape_date": {
+   "value": "2026-08-18",
+   "file": "results/viz/viz_data.json",
+   "key": "tape.date",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "spin_bls_rpm": {
+   "value": 4.912981068862791,
+   "file": "results/spin/tennis/metrics_v2.csv",
+   "key": "cond=nominal,method=bls,lead_ms=100: rpm_err_med_abs",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "spin_base_rpm": {
+   "value": 758.5930729448404,
+   "file": "results/spin/tennis/metrics_v2.csv",
+   "key": "cond=nominal,method=baseline,lead_ms=100: rpm_err_med_abs",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "spin_bls_axis": {
+   "value": 0.5405638802571326,
+   "file": "results/spin/tennis/metrics_v2.csv",
+   "key": "cond=nominal,method=bls,lead_ms=100: axis_err_med_deg",
+   "pending": false,
+   "shown_in": [
+    "S05"
+   ]
+  },
+  "is_c": {
+   "value": 1.3814511010237975,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "is_lo": {
+   "value": 1.167847083750991,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.per_share_ci_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "is_hi": {
+   "value": 1.5935130267793969,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.per_share_ci_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "is_sh": {
+   "value": 14.483153541485253,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.sharpe_ann",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_dd": {
+   "value": -2.0120402719953496,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.max_dd_pct",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_cap": {
+   "value": 28302.367701375268,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.capital_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_pnl": {
+   "value": 40425.71919167921,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.total_pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_days": {
+   "value": 206,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.days",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_trades": {
+   "value": 55662,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.n_trades",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_mpos": {
+   "value": 7,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.months_positive",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_mtot": {
+   "value": 7,
+   "file": "results/v2/causal.json",
+   "key": "causal/is_eval/slip0.0.months_total",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_win": {
+   "value": 53.585929359347496,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.unit_economics.trade_win_rate",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_win_lo": {
+   "value": 53.20130834390746,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.unit_economics.trade_win_rate_ci95_match_clustered[0]",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_win_hi": {
+   "value": 53.94803139722079,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.unit_economics.trade_win_rate_ci95_match_clustered[1]",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_c": {
+   "value": 0.598736335564979,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_lo": {
+   "value": 0.08724550818301618,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.per_share_ci_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_hi": {
+   "value": 1.1271958683912837,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.per_share_ci_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_sh": {
+   "value": 6.667551867200974,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.sharpe_ann",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_dd": {
+   "value": -2.0630607174176805,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.max_dd_pct",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_cap": {
+   "value": 22754.046251146858,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.capital_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_pnl": {
+   "value": 3687.5359201936667,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.total_pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_days": {
+   "value": 40,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_oos].T",
+   "pending": false,
+   "shown_in": [
+    "S07",
+    "S06"
+   ]
+  },
+  "oos_trades": {
+   "value": 10412,
+   "file": "results/v2/causal.json",
+   "key": "causal/burned_oos/slip0.0.n_trades",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_win": {
+   "value": 55.58009988474837,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.unit_economics.trade_win_rate",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_win_lo": {
+   "value": 54.76740604054755,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.unit_economics.trade_win_rate_ci95_match_clustered[0]",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_win_hi": {
+   "value": 56.36045461736266,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.unit_economics.trade_win_rate_ci95_match_clustered[1]",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "is_fee2_c": {
+   "value": 0.7749402339026797,
+   "file": "results/v2/cost_stress.json",
+   "key": "is_eval/fee_x2.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "oos_fee2_c": {
+   "value": -0.3386410487769019,
+   "file": "results/v2/cost_stress.json",
+   "key": "burned_oos/fee_x2.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_fee2_lo": {
+   "value": -0.8573447664816245,
+   "file": "results/v2/cost_stress.json",
+   "key": "burned_oos/fee_x2.per_share_ci_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_fee2_hi": {
+   "value": 0.19138938435173888,
+   "file": "results/v2/cost_stress.json",
+   "key": "burned_oos/fee_x2.per_share_ci_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "oos_cost2_c": {
+   "value": -0.8386410487769022,
+   "file": "results/v2/cost_stress.json",
+   "key": "burned_oos/costs_x2.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06",
+    "S08"
+   ]
+  },
+  "is_cost2_c": {
+   "value": 0.27494023390267935,
+   "file": "results/v2/cost_stress.json",
+   "key": "is_eval/costs_x2.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "eq_is": {
+   "value": "<series: 206 items>",
+   "file": "results/lowloss/daily.csv",
+   "key": "run=a,policy=v2,book=u1_is: date,pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "eq_oos": {
+   "value": "<series: 40 items>",
+   "file": "results/lowloss/daily.csv",
+   "key": "run=a,policy=v2,book=u1_oos: date,pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S06"
+   ]
+  },
+  "dsr_v2_is_N44": {
+   "value": 0.9999999933474896,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_is].dsr_min_N44",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_v2_is_N3386": {
+   "value": 0.9969107512828559,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3386",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_v2_oos_N44": {
+   "value": 0.4806531504916803,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N44",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_v2_oos_N3386": {
+   "value": 0.07488192490720423,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3386",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_v2_u2oos_blind_N44": {
+   "value": 0.29311636826609344,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_u2oos_blind].dsr_min_N44",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_v2_u2oos_blind_N3386": {
+   "value": 0.020537491634348235,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_u2oos_blind].dsr_min_N3386",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_is": {
+   "value": 0.9969107512828559,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3386",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "dsr_oos": {
+   "value": 0.07488192490720423,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3386",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "n_trials": {
+   "value": 3386,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.N.all_NOTE_s8",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "n_trials_small": {
+   "value": 44,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.N.H1_H6",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "pbo24": {
+   "value": 15.423465423465425,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_sharpe.pbo",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "pbo24_n": {
+   "value": 24,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_sharpe.N_variants",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "pbo55": {
+   "value": 0.0,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.sizing_55_res_actual_sharpe.pbo",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "pbo55_n": {
+   "value": 55,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.sizing_55_res_actual_sharpe.N_variants",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "boot_oos_p": {
+   "value": 0.0023,
+   "file": "results/rigor/rigor.json",
+   "key": "bootstrap.v2_oos.p_sharpe_le_0",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "boot_is_p": {
+   "value": 0.0,
+   "file": "results/rigor/rigor.json",
+   "key": "bootstrap.v2_is.p_sharpe_le_0",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "u2_is_c": {
+   "value": 2.0248787790863743,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_is.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_is_lo": {
+   "value": 1.140615945330067,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_is.per_share_ci_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_is_hi": {
+   "value": 2.926860089785939,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_is.per_share_ci_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_is_label": {
+   "value": "PASS",
+   "file": "results/expand/results.json",
+   "key": "primary.u2_is.label",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_oos_c": {
+   "value": 1.2237506660945057,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_oos.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_oos_lo": {
+   "value": -0.18634258245445473,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_oos.per_share_ci_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_oos_hi": {
+   "value": 2.647924922039621,
+   "file": "results/expand/results.json",
+   "key": "primary.u2_oos.per_share_ci_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "u2_oos_label": {
+   "value": "FAILURE",
+   "file": "results/expand/results.json",
+   "key": "primary.u2_oos.label",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "mk_c": {
+   "value": 1.8654493548710172,
+   "file": "results/maker/oos.json",
+   "key": "primary.value_c",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "mk_lo": {
+   "value": -0.1397399233597994,
+   "file": "results/maker/oos.json",
+   "key": "primary.ci95_c[0]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "mk_hi": {
+   "value": 3.8600603441293164,
+   "file": "results/maker/oos.json",
+   "key": "primary.ci95_c[1]",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "mk_verdict": {
+   "value": "FAILURE",
+   "file": "results/maker/oos.json",
+   "key": "primary.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "mk_usd": {
+   "value": -379.03157735159306,
+   "file": "results/maker/oos.json",
+   "key": "headline.total_pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "tt2_verdict": {
+   "value": "FAIL (no fast tier detected)",
+   "file": "results/tt/results.json",
+   "key": "TT2.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "tt3_verdict": {
+   "value": "FAIL (no trades)",
+   "file": "results/tt/results.json",
+   "key": "TT3.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "fwd_verdict": {
+   "value": null,
+   "file": "results/v2/forward.json",
+   "key": "verdict | primary.verdict",
+   "pending": true,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "forward_sentence": {
+   "value": "The blind forward test is still pending.",
+   "file": "results/v2/forward.json",
+   "key": "derived from verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "peeks": {
+   "value": 51,
+   "file": "results/oos_peeks.log",
+   "key": "count(non-empty lines)",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "t0_is_c": {
+   "value": 1.0978,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.mean.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_is_lo": {
+   "value": 0.8238,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.mean.per_share_ci95_c_lo",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_is_hi": {
+   "value": 1.3769,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.mean.per_share_ci95_c_hi",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_is_sh": {
+   "value": 11.4207,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.mean.sharpe_ann",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_is_day": {
+   "value": 88.7936,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.mean.pnl_per_day_usd",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_is_seeds": {
+   "value": 20,
+   "file": "results/tier0/results.json",
+   "key": "headline.IS.n_seeds",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_c": {
+   "value": 0.5755,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.mean.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_lo": {
+   "value": -0.0764,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.mean.per_share_ci95_c_lo",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_hi": {
+   "value": 1.2097,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.mean.per_share_ci95_c_hi",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_sh": {
+   "value": 7.3199,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.mean.sharpe_ann",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_day": {
+   "value": 46.4258,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.mean.pnl_per_day_usd",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_oos_seeds": {
+   "value": 20,
+   "file": "results/tier0/results.json",
+   "key": "headline.burned_OOS.n_seeds",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_be": {
+   "value": 1.1,
+   "file": "results/tier0/results.json",
+   "key": "pnl_vs_t_reprice_minus_t_bounce.IS.stamp_breakeven_B_s",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_calB": {
+   "value": 1.349,
+   "file": "results/tier0/results.json",
+   "key": "timing.calibrated_t_reprice_minus_t_bounce_s (inference)",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_preB": {
+   "value": 0.68,
+   "file": "results/tier0/results.json",
+   "key": "timing.pre_registered_primary_median_t_reprice_minus_t_bounce_s",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_curves": {
+   "value": "<series: 2 items>",
+   "file": "results/tier0/results.json",
+   "key": "pnl_vs_t_reprice_minus_t_bounce.{IS,burned_OOS}.{stamp,tournament,point}[B].per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t0_mode": {
+   "value": "tournament",
+   "file": "results/tier0/results.json",
+   "key": "headline_scenario.r_mode",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "live_secs": {
+   "value": 60.0,
+   "file": "results/engine/live_market_run.json",
+   "key": "seconds",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_msgs": {
+   "value": 7785,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.msgs",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_mkts": {
+   "value": 27,
+   "file": "results/engine/live_market_run.json",
+   "key": "markets_discovered",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_p50": {
+   "value": 65.0,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.latency.p50_ms",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_p95": {
+   "value": 84.0,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.latency.p95_ms",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_p99": {
+   "value": 123.0,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.latency.p99_ms",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_mismatch": {
+   "value": 0,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.snapshots_mismatched",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_snap": {
+   "value": 8,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.snapshots_checked",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_gaps": {
+   "value": 0,
+   "file": "results/engine/live_market_run.json",
+   "key": "feed.gaps",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_orders": {
+   "value": 0,
+   "file": "results/engine/live_market_run.json",
+   "key": "orders_sent",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_paper": {
+   "value": true,
+   "file": "results/engine/live_market_run.json",
+   "key": "paper_only",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_when": {
+   "value": "2026-10-03 15:04:30 EDT",
+   "file": "results/engine/live_market_run.json",
+   "key": "when",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_status": {
+   "value": "QUOTING (paper)",
+   "file": "results/live/summary.json",
+   "key": "status",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_label": {
+   "value": "PAPER TRADING - LIVE MARKET DATA (public Polymarket feeds; no orders sent)",
+   "file": "results/live/summary.json",
+   "key": "label",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_strategy": {
+   "value": "maker v1 (frozen, research/v2/maker/PREREG.md) + taker control",
+   "file": "results/live/summary.json",
+   "key": "strategy",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_fills": {
+   "value": 0,
+   "file": "results/live/summary.json",
+   "key": "books.B1.fills",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_pnl": {
+   "value": 0.0,
+   "file": "results/live/summary.json",
+   "key": "books.B1.pnl",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_state": {
+   "value": "running",
+   "file": "results/live/summary.json",
+   "key": "derived from status",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "live_sentence": {
+   "value": "Tonight's live paper session is running now.",
+   "file": "results/live/summary.json",
+   "key": "derived from status, books.B1.fills",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "engine_video": {
+   "value": null,
+   "file": "results/engine/engine_live_demo.mp4",
+   "key": "file exists",
+   "pending": true,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "is_gross_edge_day": {
+   "value": 282.39895760575865,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.gross_edge",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "is_taker_fees_day": {
+   "value": -86.157602306345,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.taker_fees",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "is_net_trading_day": {
+   "value": 196.24135529941364,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.net_trading",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "is_fixed_day": {
+   "value": 166.92876164383563,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.fixed_costs.central.fixed_cost_usd_per_day",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "is_after_day": {
+   "value": 29.312593655578013,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.fixed_costs.central.net_after_costs_usd_per_day",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "oos_gross_edge_day": {
+   "value": 236.51790375782667,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.waterfall.usd_per_day.gross_edge",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "oos_taker_fees_day": {
+   "value": -144.32950575298497,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.waterfall.usd_per_day.taker_fees",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "oos_net_trading_day": {
+   "value": 92.18839800484167,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.waterfall.usd_per_day.net_trading",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "oos_fixed_day": {
+   "value": 166.92876164383563,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.fixed_costs.central.fixed_cost_usd_per_day",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "oos_after_day": {
+   "value": -74.74036363899395,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.OOS.fixed_costs.central.net_after_costs_usd_per_day",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "gross_day": {
+   "value": 282.39895760575865,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.gross_edge (absolute value)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "fees_day": {
+   "value": 86.157602306345,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.taker_fees (absolute value)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "net_day": {
+   "value": 196.24135529941364,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.waterfall.usd_per_day.net_trading (absolute value)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "fixed_day": {
+   "value": 166.92876164383563,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.fixed_costs.central.fixed_cost_usd_per_day (absolute value)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "after_day": {
+   "value": 29.312593655578013,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.periods.IS.fixed_costs.central.net_after_costs_usd_per_day (absolute value)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "scaling": {
+   "value": {
+    "0.5x": {
+     "oos_day": 62.099981115752676,
+     "oos_cap": 13355.258359676249,
+     "is_day": 109.64614378884049
+    },
+    "1x": {
+     "oos_day": 92.18839800484167,
+     "oos_cap": 22754.046251146858,
+     "is_day": 196.24135529941364
+    },
+    "2x": {
+     "oos_day": 82.53780190025725,
+     "oos_cap": 33875.475597215365,
+     "is_day": 316.19264266923363
+    },
+    "5x": {
+     "oos_day": -24.54955702034862,
+     "oos_cap": 53815.56864412705,
+     "is_day": 529.3485520030839
+    }
+   },
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.scaling.{0.5x,1x,2x,5x}.{IS,OOS}.{pnl_usd_per_day,capital_usd}",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "cap_k": {
+   "value": 33.87547559721536,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.scaling.2x.OOS.capital_usd / 1000 (largest size with OOS P&L > 0)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
+  "kills": {
+   "value": [
+    [
+     "Day P&L below \u2212$1,000",
+     "Latch to the next UTC day"
+    ],
+    [
+     "No market data for > 2 s",
+     "Risk-reducing only until data returns"
+    ],
+    [
+     "Drawdown from equity peak > 5% of capital",
+     "Stop"
+    ],
+    [
+     "Any market's fee rate or order delay differs from the frozen backtest",
+     "No new risk until the cost stress is re-run at the new values"
+    ]
+   ],
+   "file": "docs/RISK.md",
+   "key": "## Daily kill-switch rules (summary): Trigger, Action (first clause)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  }
+ },
+ "pending": [
+  "engine_video",
+  "fwd_verdict"
+ ],
+ "embedded_in_assets": [
+  {
+   "asset": "results/tracking/demo/0[1-4]_*.mp4",
+   "text": "MISS CALLED -<lead> ms, P(miss), frame, t",
+   "source": "results/tracking/demo/manifest.json clips[i] (call_lead_ms, p_miss_at_50ms); rendered by src/tracking/render_demo.py from the frozen model"
+  },
+  {
+   "asset": "results/viz/courtside_replay.mp4",
+   "text": "CALLED 200 MS EARLY; OUT 13.7 cm; P(out) 100%",
+   "source": "results/viz/viz_data.json shot.preds / shot.out_cm (simulated physics)"
+  },
+  {
+   "asset": "results/viz/courtside_replay.mp4",
+   "text": "everyone else pays ~1\u00a2 a share",
+   "source": "hard-coded caption in scripts/render_hawkeye_video.py; compare results/fasttier_walkforward_is.csv others_net30_c (all months negative)"
+  },
+  {
+   "asset": "results/viz/courtside_replay.mp4",
+   "text": "real tape prices and wallet dots",
+   "source": "results/viz/viz_data.json tape.prints"
+  }
+ ]
+}
