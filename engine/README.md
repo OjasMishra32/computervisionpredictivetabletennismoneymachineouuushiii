@@ -122,7 +122,7 @@ Skip reasons: `no_point_decision`, `unknown_winner`, `stale_call`, `no_book`, `o
 | vision at a true 120 fps feed on this laptop | p50 5,281 and growing | `vision_bench.json`: ~50 fps sustained unloaded, so a 120 fps feed backs up without bound |
 | vision on one NVIDIA L4, 120 fps feed, frame to decision done | p50 4.6, p90 6.9, p99 12.2, max 30 | `online_vs_offline.json`: all 102,120 test frames paced at 120 fps, 0 dropped, fp16 + channels-last + folded BN + `torch.compile`, batch 1. The first 4 s of the run (a start-up transient, up to 1.27 s) are excluded from these numbers |
 | vision on one L4, emitted CallEvents | p50 6.9, p90 8.5, p99 15.8, max 22 | same run, 169 calls after the first 4 s |
-| vision on one L4, detector as the offline run used it (fp16 autocast, eager) | p50 11.4, p90 18.1 at 74 fps arrivals | `vision_bench_gpu.json`: 93-100 fps at most, so it cannot keep up with 120 fps. fp32: 63-65 fps at most, p50 14.8 at 50 fps arrivals |
+| vision on one L4, detector as the offline run used it (fp16 autocast, eager) | p50 11.4, p90 18.1 at 74 fps arrivals | `vision_bench_gpu.json`: 93-100 fps at most, so it cannot keep up with 120 fps. fp32: 62-69 fps at most, p50 14.8 at 50 fps arrivals |
 | strategy rule (fair jump + rule; no risk, no submit) | 0.085 (p90 0.20) | demo run, all 88 calls (`compute_us`) |
 | strategy `on_call` for a SEND (rule + guard + risk + paper submit) | 0.56 (max 4.3) | demo run, 11 SENDs, laptop at load ~15 (`total_us`); 0.30 (max 0.73) in the L4-variant replay |
 | fair-value refresh (calibration, off the hot path) | 665-2,840 | demo run; 100-500 unloaded |
@@ -193,11 +193,20 @@ timing, not an edge.
     host.
 - `engine_live_demo.mp4` (1280x720, 40 s) shows the clip at 0.25x with:
   - the engine's ball track and its live P(miss) trace;
-  - each call with its lead (from the labels) and its measured latency;
+  - each call with its lead (from the labels) and its processing latency, which is the latency the
+    scenario used. For MISS calls it also shows the laptop's as-run latency (41.7 and 44.3 s, queued);
+  - for each BOUNCE, when its fair-value refresh was installed. On this point that is 2.35-2.46 s after
+    the call (laptop calibration time), so the last four land after the point end and after both MISS
+    decisions;
   - the paper orders, fills and book of the figure's point (point 58), as `demo_run.json` logged them.
 
   `engine/vision/render_demo_video.py` renders it from `demo_run.json`, `demo_vision_trace.json` and the
-  clip. Nothing in it is simulated.
+  clip. Nothing in it is simulated. The 17:26 render said "fair value refreshed" at each BOUNCE and gave
+  only the processing latency, labelled "(laptop)". It was re-rendered at 17:48 with the logged install
+  times and with both latencies.
+- `demo_run_L4.json` `mapping.players` was copied from `run.py` and named frame 2759, the replayed-decision
+  run's wrong MISS. It now names f2766, as `demo_run.json` does (`--l4-variant` applies the same rewrite).
+  Only that sentence changed; the numbers did not.
 - What it teaches: the 1 s venue delay decides everything. A correct call 325 ms early is still too late on
   most points, and the only calls early enough to fill were the less reliable ones. That is adverse
   selection by timing. Cutting vision latency from ~160 ms to ~7 ms moves each order 165-185 ms earlier and
@@ -252,7 +261,7 @@ up are measured at 80% of their max fps.
 | same + CUDA graph (`torch-cuda-cl-fuse-compile-graph`) | 194.2 | 1 | yes, q99 11.6 ms | 3.4 | 6.2 / 13.2 |
 | two compiled copies pipelined on one GPU | 124.5 | n/a | no, q99 114 ms | n/a | 14.2 / 22.9 at 99 fps |
 | fp32, strict with TF32 off (`torch-cuda-fp32`) | 63.2 | 1 | no | 14.2 | 14.8 / 16.8 at 50 fps |
-| fp32 + CUDA graph, or + BN folded + compile (with or without graph or channels-last) | 62.5-64.5 | 1 | no | 13.8-14.6 | 14.1-16.3 / 16.3-21.0 at 49-51 fps |
+| fp32 + CUDA graph, or + BN folded + compile (with or without graph or channels-last) | 62.5-64.5 (68.1-69.3 for the compiled ones in job 44606460, replaced by the re-measure in 44608026) | 1 | no | 13.8-14.6 | 14.1-16.3 / 16.3-21.0 at 49-51 fps |
 
 Other stages, p50 per frame in every config: decode 0.04 ms (PyAV frame threads; mean 0.9), resize to 512x288
 0.6 ms, normalise and upload 0.1 ms, blobs about 0.4 ms (included in detect), tracker 0.04 ms. Per scored
@@ -265,6 +274,27 @@ frames. The one exception is the compiled detector, where batch 2 gives the most
 still has the lower latency. fp32 cannot reach 120 fps on an L4 in any config. The batch-1 max fps over
 1000 frames includes the reader's seek and a start-up transient, so the long runs below measure sustained
 speed better. One B8 row per fp32 config dips: the stream's last short batch, 6 windows, is autotuned once.
+The clip-only real-time rows log 112.8-113.6 fps. Their wall clock includes opening the file and seeking
+to frame 2000 (about 0.5 s over 1000 frames), so "keeps up" is judged from dropped frames and queue wait,
+not from that fps. The whole-test-set stream below sustained 119.9 fps.
+
+SLURM record (`sacct` and `logs/` on HPG, read back 2026-10-03 17:35 EDT):
+
+| job | what | node, GPU | elapsed | state |
+|---|---|---|---|---|
+| 44603438 | export_frozen.py | c0709a-s10 (hpg-milan, CPU) | 37 s | COMPLETED |
+| 44606460 | bench, all specs | c0605a-s13, L4 | 20:34 | COMPLETED |
+| 44608026 | bench, compile specs re-measured | c1105a-s8, L4 | 14:13 | COMPLETED |
+| 44607191 | eval, `torch-cuda-cl-fuse-compile` B1 | c0607a-s12, L4 | 14:43 | COMPLETED |
+| 44605927 | eval, `torch-cuda-graph` | c0610a-s23, L4 | 15:07 | COMPLETED |
+
+Two earlier bench jobs, 44604940 and 44605707, are not in any committed result. The benchmark fps and
+latencies quoted here appear as lines in these jobs' logs, and `vision_bench_gpu.json` keeps the runs it
+replaced under `jobs.<id>.replaced_runs`. 44607191 logs 7 videos, 0 dropped, 851.9 s wall and 172 calls,
+with overall call-ready p50 4.63 and p99 13.54 ms. The after-start-up percentiles (call-ready p50 4.62,
+p90 6.94, p99 12.19, max 30.1 ms; emitted calls p50 6.92, p90 8.54, p99 15.8, max 22.4 ms over 169) are
+not in the log. They were recomputed from the job's raw per-frame output on HPG
+(`results/engine/online_vs_offline_raw_compile.pkl`) and match.
 
 **Held-out test set through the streaming engine** (`results/engine/online_vs_offline.json`). All of
 test_1..test_7 was streamed: every frame from first to last, gaps between rallies included, 102,120 frames
@@ -295,7 +325,8 @@ the speed options and fp16 rounding change no call. The gap comes from two diffe
    the prefix. Rescoring the offline samples with a prefix-only `hb` (the "causal" row) reproduces the
    engine's scores bit for bit on 95.7-98.1% of decision frames, depending on the run, and p99 |diff| is at
    most 0.02. The rest comes from the offline tracks being stored to 0.01 px. Without the look-ahead the snapshot rule at 50 ms falls from 11 to 9
-   test misses, and the online rule keeps 8 calls but at different leads.
+   test misses. The online rule still makes 8 calls, but not on the same flights: test_6 1484 drops out,
+   test_4 9839 comes in, and three leads change (table below).
 2. **The engine stops deciding once the track shows a bounce past the net.** Offline, a flight's decision
    window runs from the hit to the labelled T_ref even when the ball bounced on the far half in between.
    Online, `flights.flight_start` finds that bounce, the flight then starts past the net, and the engine
@@ -307,6 +338,30 @@ the speed options and fp16 rounding change no call. The gap comes from two diffe
 
 With the audited labels (21 misses), the engine's own calls score 1.0 / 0.19 (4) at 0-50 ms. The snapshot
 rule on the engine's scores scores 6 at 50 ms, against 8 offline.
+
+Every labelled flight where the engine's MISS CallEvent and the offline online rule (`test_flights.csv`
+`first_call_lead_ms`) differ. The list is the same in all three runs (job 44607191, job 44605927, and the
+offline detections replayed). The other 161 flights agree. The "why" column was checked on the engine's own
+per-frame trace and track (`online_vs_offline_raw_compile.pkl` on HPG): replaying the engine's gating on that
+track stops at exactly the last decision frame the engine logged. "u" is the ball's position along the
+table from the hitter's end line, where 0.5 is the net.
+
+| flight (test video, f_net) | label (audit) | offline first call | causal-hb offline | engine MISS CallEvent | why they differ |
+|---|---|---|---|---|---|
+| test_1 2448 | MISS (`unannotated_bounce`) | 25 ms | 25 ms | none | The track bounces at f2469, past the net (u 0.81). The engine's flight restarts there, and it stops deciding after f2472 (T_ref 2484). Offline, P >= tau only on f2479-2482 |
+| test_3 5552 | MISS (`unannotated_bounce`) | 16.7 ms | 16.7 ms | none | Bounce at f5567 (u 0.77). Last engine decision f5570 (T_ref 5581); offline P >= tau on f5577-5581 |
+| test_6 3070 | MISS (`unannotated_bounce`) | 16.7 ms | 16.7 ms | none | Bounce at f3095 (u 0.78). Last decision f3098 (T_ref 3126); offline P >= tau on f3122-3126 |
+| test_6 4955 | MISS (not flagged) | 16.7 ms | 0 ms | none | Bounce at f4975 (u 0.70); the offline track has the same bounce. Last decision f4978 (T_ref 5010) |
+| test_6 1484 | MISS | 25 ms | none | none | Look-ahead `hb`: offline P >= tau on f1497-1502; with the prefix-only `hb` the engine reaches tau only on f1503, after T_ref |
+| test_2 2760 | MISS (`rally_continues`) | 125 ms (f2759) | 66.7 ms | 66.7 ms (f2766) | `hb`: the engine's P drops under tau on f2760 and f2763 |
+| test_2 2819 | MISS | 408.3 ms (f2809) | 325 ms | 325 ms (f2819) | `hb`: the engine first reaches tau on f2817 |
+| test_4 5750 | MISS | 83.3 ms | 91.7 ms | 91.7 ms (f5751) | `hb`: the engine's run starts one frame earlier |
+| test_4 9839 | MISS | none | 233.3 ms | 233.3 ms (f9837) | `hb`: the engine is >= tau on f9835-9840, while offline never reaches tau. This is a correct call the offline rule did not make |
+| test_5 5528 | MISS | none | none | f5544, 58 ms after T_ref (not scored) | The offline window ends at T_ref 5537 with one frame >= tau (f5531). The engine keeps deciding on the same flight and reaches 3 frames on f5542-5544 |
+
+So the engine lost five offline calls: four to the far-side bounce stop and one to `hb`. It gained one
+(test_4 9839), and three leads changed. Precision stays 1.0. Off the labelled population it also made 7
+MISS calls (below).
 
 The engine emitted 172 CallEvents over the 14 min: 12 MISS and 160 BOUNCE.
 - MISS: 5 on labelled MISS flights (one of them 58 ms after T_ref), 0 on BOUNCE flights, and 7 on balls
@@ -339,6 +394,20 @@ Since the 17:12 EDT rerun, every demo call comes from the live frozen H3 classif
 online first-call leads exactly. It loads with the laptop's sklearn 1.9.1, the same version as on HPG.
 `models/` is gitignored, so copy the pickle back from HPG. `demo_run.json` records
 `vision.call_source = "frozen_model_live"` and a `p_miss` on every event.
+
+Checked again at 17:40 EDT by an adversarial review:
+
+- The pickle is byte-identical on the laptop and on HPG (MD5 `7dfb7b48fa800cca8a132c4290a9639d`). Loaded
+  locally, the HGB reproduces the stored test scores to 5.6e-17. Through `early_call`'s gate and online
+  rule it gives `test_flights.csv`'s P(miss) at 50 ms on 170 flights (max |diff| 1.1e-16) and all 8
+  online first-call leads exactly.
+- The demo's vision was re-run on the clip in a fresh process: `VisionCallEngine` with the frozen pickle,
+  CoreML, unpaced. It gave the same 11 CallEvents (call, frame, direction) with identical `p_miss`.
+  `demo_vision_trace.json` matched on all 428 decision frames to 5e-6 (the trace stores 5 decimals) and on
+  all 701 track points to 0.007 px.
+- The same run gave the same result with `test_scores`, `test_tracks`, `test_flights`, `check_*` and
+  `train_*` deleted from the loaded pickle. So no stored offline decision, track or label reaches a call. The
+  engine uses only the fitted model, the taus/gate and the table geometry.
 
 On a host without the pickle, `engine.run --mode demo` still streams every frame through the real engine
 but replays the frozen model's offline decisions from `test_flights.csv`: MISS at the online rule's first
@@ -572,7 +641,7 @@ Live is the same with `LiveClobFeed`, `await feed.run()`, and `asyncio.create_ta
   off-population calls inside rallies. Nothing gates calls on rally state yet.
 - **120 fps needs a GPU and the speed options.** On one L4, fp16 + channels-last + folded BN +
   `torch.compile` streamed the whole test set in real time. The fp16 autocast detector as `detect.py` ran it
-  manages 93-114 fps (eager or CUDA graph), and fp32 manages 63-65 fps. The laptop does ~50 fps unloaded and 11-23 fps while shared. The
+  manages 93-114 fps (eager or CUDA graph), and fp32 manages 62-69 fps. The laptop does ~50 fps unloaded and 11-23 fps while shared. The
   numbers come from an L4 only; no A100 or H100 was measured.
 - **The laptop cannot run the demo's vision in real time.** At load ~15 it sustained 10.9 fps against 30 fps
   arrivals, so as run every call was 15-44 s late and stale. The primary scenario uses its processing-only

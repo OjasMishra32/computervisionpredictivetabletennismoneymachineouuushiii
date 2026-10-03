@@ -20,9 +20,13 @@ def _demo():
     orders = [dict(id="o1", t_arrive_rel_s=-0.527, t_exec_rel_s=0.473, status="filled", reason=None),
               dict(id="o2", t_arrive_rel_s=-0.066, t_exec_rel_s=0.934, status="missed", reason="no_liquidity_in_limit")]
     fills = [dict(order_id="o1", shares=100.0, vwap=0.5, fee=1.25, t_exec_rel_s=0.473, token="A")]
-    events = [dict(call="MISS", frame=2766, label="MISS", audit="rally_continues", actual_lead_ms=66.7, flight_f_net=2760),
-              dict(call="MISS", frame=2819, label="MISS", audit=None, actual_lead_ms=325.0, flight_f_net=2819)]
-    an = dict(winner=1, primary=dict(calls=calls, orders=orders, fills=fills))
+    events = [dict(call="MISS", frame=2766, label="MISS", audit="rally_continues", actual_lead_ms=66.7, flight_f_net=2760,
+                   latency_ms=41702.3),
+              dict(call="MISS", frame=2819, label="MISS", audit=None, actual_lead_ms=325.0, flight_f_net=2819,
+                   latency_ms=150.0)]
+    # the BOUNCE at -4.5 s starts a refresh that takes 2460 ms: it is installed at -2.04 s, not at the call
+    refresh = [dict(t_rel_s=-4.5 + 2.46, mid_a=0.29, compute_ms=2460.0, leverage=0.05)]
+    an = dict(winner=1, primary=dict(calls=calls, orders=orders, fills=fills, bounce_refreshes=refresh))
     return dict(anchors=[an], vision=dict(events=events))
 
 
@@ -35,6 +39,26 @@ def test_side_panel_is_the_logged_sequence():
     assert "WRONG" in text and "right" in text                 # f2766 names the loser of the WTA point
     assert "FILLED 100 @ 0.500" in text and "no liquidity in limit" in text
     assert "67 ms after the call" in text and "325 ms after the call" in text
+    # the refresh is shown when it was installed (logged), and the latency used is labelled processing-only,
+    # with the laptop's as-run (queued) latency next to it when that was larger
+    assert "fair-value refresh lands -2.04 s" in text and "fair value refreshed" not in text
+    assert "vision 150 ms processing" in text and "as run on this laptop: 41.7 s" in text
+    assert text.count("as run on this laptop") == 1
+
+
+def test_committed_demo_outputs_name_their_own_calls():
+    """mapping.players of each committed demo output names only MISS calls that run actually made."""
+    import re
+    from pathlib import Path
+    out = Path(demo_live.OUT)
+    for name in ("demo_run.json", "demo_run_L4.json"):
+        p = out / name
+        if not p.exists():
+            continue
+        d = json.loads(p.read_text())
+        misses = {e["frame"] for e in d["vision"]["events"] if e["call"] == "MISS"}
+        named = {int(x) for x in re.findall(r"frame-(\d+) MISS", d["mapping"]["players"])}
+        assert named <= misses, (name, named, misses)
 
 
 def test_money_text_is_not_mathtext():

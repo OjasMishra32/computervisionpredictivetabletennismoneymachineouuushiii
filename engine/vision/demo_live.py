@@ -159,6 +159,7 @@ def l4_variant(argv: list[str]) -> Path:
                       "(online_events_L4.jsonl, job 44607191), market side replayed exactly as in demo_run.json. "
                       f"Same calls as the laptop run: {W['same_calls_as_laptop_run']}.")
     dst.write_text(json.dumps(out, indent=1, default=str))
+    amend_players_text(dst)     # run.py's sentence names frame 2759; the L4 run's wrong MISS is f2766 too
     print(f"wrote {dst}", flush=True)
     return dst
 

@@ -7,7 +7,8 @@ Everything drawn comes from files the demo wrote; nothing is simulated here:
   ball track        demo_vision_trace.json `frames` (the engine's online tracker, this run)
   P(miss) strip     demo_vision_trace.json `decisions` (the live frozen classifier, gated, this run)
   calls             demo_run.json anchors[K].primary.calls (CallEvents as the strategy received them, with the
-                    measured vision latency), labels / audit from demo_run.json vision.events
+                    measured vision latency), labels / audit / as-run latency from demo_run.json vision.events
+  fair-value refresh demo_run.json anchors[K].primary.bounce_refreshes (when each BOUNCE's refresh was installed)
   orders, fills     demo_run.json anchors[K].primary.orders / fills (paper executor against the recorded book)
   book              demo_run.json figure_series (best bid / ask of both tokens of the recorded WTA market)
 
@@ -92,14 +93,22 @@ def build_log(D, k):
     ev_by_frame = {e["frame"]: e for e in D["vision"]["events"]}
     orders = {o["id"]: o for o in res["orders"]}
     fills = {f["order_id"]: f for f in res["fills"]}
+    # each BOUNCE starts a fair-value refresh that is installed only after its measured compute time
+    # (run.py: install at t_call + ceil(compute_ms)); show when it landed, as logged, not at the call
+    refresh = list(res.get("bounce_refreshes") or [])
     sur = lambda n: n.split()[-1]
     out = []
     for c in res["calls"]:
         d = c["decision"]
         e = ev_by_frame.get(c["frame"], {})
         if c["call"] != "MISS":
+            r = next((r for r in refresh if abs(r["t_rel_s"] - r["compute_ms"] / 1000.0 - c["t_dec_rel_s"]) < 0.005),
+                     None)
+            if r is not None:
+                refresh.remove(r)
             out.append((c["t_dec_rel_s"], "bounce",
-                        [f"BOUNCE f{c['frame']}: rally on, no trade, fair value refreshed"], MUTED))
+                        [f"BOUNCE f{c['frame']}: no trade; fair-value refresh lands {r['t_rel_s']:+.2f} s"
+                         if r is not None else f"BOUNCE f{c['frame']}: no trade; no fair-value refresh"], MUTED))
             continue
         right = d.get("winner") == w
         col = BLUE if right else ORANGE
@@ -108,7 +117,10 @@ def build_log(D, k):
                  f"   label {e.get('label')}" + (f"; audit: {e['audit'].replace('_', ' ')}" if e.get("audit") else "")]
         if lead is not None:
             lines.append(f"   ball reached its line {lead:.0f} ms after the call")
-        lines.append(f"   vision latency {c['latency_ms']:.0f} ms; decision {c['t_dec_rel_s']:+.3f} s")
+        lines.append(f"   vision {c['latency_ms']:.0f} ms processing, decision {c['t_dec_rel_s']:+.3f} s")
+        as_run = e.get("latency_ms")     # frame -> CallEvent as the laptop actually ran (queue included)
+        if as_run is not None and as_run > c["latency_ms"] + 1:
+            lines.append(f"   (as run on this laptop: {as_run / 1000:.1f} s, queued)")
         if d["action"] == "SEND":
             lines.append(f"   BUY {d['shares']:.0f} {sur(d['winner_name'])} <= {d['limit']:.2f} (ask {d['ask']:.2f}), "
                          f"edge {100 * d['edge']:+.1f}c: sent")
@@ -359,7 +371,7 @@ def render(D, T, k, out_path, intro_s=3.0, outro_s=6.0, max_s=40.0, crf=20, prev
                 lead = e.get("actual_lead_ms")
                 banner.set_text(f"MISS at frame {c['frame']}"
                                 + (f"  ·  {lead:.0f} ms before the ball reached its line" if lead is not None else "")
-                                + f"\nvision {c['latency_ms']:.0f} ms (laptop)  ·  WTA mapping: "
+                                + f"\nvision {c['latency_ms']:.0f} ms processing (laptop)  ·  WTA mapping: "
                                   f"{sur(c['decision']['winner_name'])} wins ({'right' if right else 'wrong'})")
                 banner.get_bbox_patch().set_edgecolor(BLUE if right else ORANGE)
                 banner.set_visible(True)

@@ -17,10 +17,11 @@
    "dir": 1,
    "offline_first_call_lead_ms": 408.3333333333333
   },
-  "players": "The clip's anchor shot is hit by the player at the image's left when it travels left->right; that hitter stands in for the WTA point's loser, so the anchor call is right by construction (it was right on the table-tennis labels). Every other call follows from the same fixed mapping and can be wrong (the frame-2759 MISS was flagged 'rally_continues' by the label audit).",
+  "players": "The clip's anchor shot is hit by the player at the image's left when it travels left->right; that hitter stands in for the WTA point's loser, so the anchor call is right by construction (it was right on the table-tennis labels). Every other call follows from the same fixed mapping and can be wrong (in this run, the frame-2766 MISS was flagged 'rally_continues' by the label audit).",
   "anchor_rule": "8 points spread evenly over the match (early and late) among those with a >= 3c covered reprice and a reprice lead inside the measured IQR [-1.93, -0.68] s; chosen before any fill was seen",
   "stamp_lag_note": "t_stamp - t_bounce is not measured: 2.0 s is the tier-0 primary; 3.142 s is inferred from fast-tier prints (results/tier0)",
-  "camera_ms": 0.0
+  "camera_ms": 0.0,
+  "players_amended_by": "engine/vision/demo_live.py: run.py's sentence named the replayed-decision run's frame 2759; rewritten from this run's events"
  },
  "vision": {
   "call_source": "frozen_model_live",
