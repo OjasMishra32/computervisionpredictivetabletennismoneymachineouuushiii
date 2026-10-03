@@ -32,6 +32,12 @@ Readings of the reprice timing (as RESULTS.md section 2): `tournament` (R drawn 
 `stamp` (R's spread = umpire-stamp noise, t_reprice - t_bounce = median R + 2.0 s = 0.68 s), and, labelled as a
 supplement, `stamp_calibrated` (t_reprice - t_bounce = 1.35 s, the fast-tier-print inference).
 
+STAMP-LAG SENSITIVITY (video). Under the tournament reading t_reprice - t_bounce = R + stamp lag, and the stamp
+lag is NOT measured (RESULTS.md grid 1 / 2 / 3 s, inference 3.14 s). The video curve therefore moves 1:1 with it:
+video(V, lag L) == video(V - (L - 2), lag 2), so the break-even video delay is (stamp lag - ~0.9 s), not a fixed
+number. `tournament_lag1` / `tournament_lag3` / `tournament_lagcal` re-run the headline reading at lag 1.0 / 3.0 /
+3.14 s (the last an inference). The official feed does not move (its lag cancels).
+
 Nothing is fitted or chosen here: every parameter is the revised primary's. 20 seeds per cell (the backtest's
 seeds, so V = 0 is the published headline draw for draw).
 """
@@ -73,10 +79,17 @@ V_ALL = sorted(set(V_MAIN + V_CHECK + V_EXT + V_DENSE))
 LAGS = [1.0, 2.0, 3.0]                                             # official stamp lag, s
 FAST_D = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]                         # fast feed's lead over the stamp, s (lag 2.0)
 READINGS = ["tournament", "stamp", "stamp_calibrated"]
+# headline reading at the other stamp lags of the revised primary's grid (video only; None = calibrated, inference)
+LAG_SENS = {"tournament_lag1": 1.0, "tournament_lag3": 3.0, "tournament_lagcal": None}
+READINGS_ALL = READINGS + list(LAG_SENS)
 TRIM_POOL = "D>=3c_R<=3s"
-READ_LABEL = {"tournament": "R drawn per tournament (headline reading)",
+DOC = "research/v2/feed_latency/LATENCY_SWEEP.md"   # not under research/v2/tier0* (another workflow owns it)
+READ_LABEL = {"tournament": "R drawn per tournament (headline reading), stamp lag 2.0 s",
               "stamp": "R spread = umpire-stamp noise (t_reprice - t_bounce = 0.68 s)",
-              "stamp_calibrated": "stamp-noise reading at the calibrated t_reprice - t_bounce = 1.35 s (inference)"}
+              "stamp_calibrated": "stamp-noise reading at the calibrated t_reprice - t_bounce = 1.35 s (inference)",
+              "tournament_lag1": "R drawn per tournament, stamp lag 1.0 s (grid low end)",
+              "tournament_lag3": "R drawn per tournament, stamp lag 3.0 s (grid high end)",
+              "tournament_lagcal": "R drawn per tournament, calibrated stamp lag 3.14 s (inference)"}
 
 # Latency bands of realistic sources (s). Figures are vendor claims or third-party measurements, cited; where a
 # band edge is ours, it says so.
@@ -93,32 +106,40 @@ SOURCES = [
               "the line call and audio cue, which adds delay before the data reaches operators (Sportradar/TDI "
               "talk, 2026). The WTA's licensed fast feed beats the umpire feed on 80 % of points and by > 1 s on "
               "32 % (Stats Perform). In this model the stamp lag cancels; what matters is that the book reprices a "
-              "median 1.32 s BEFORE the official stamp (measured, research/v2/latency).",
+              "median 1.32 s BEFORE the official stamp on the 265 live points with a >= 3c move (1.16 s on all 482; "
+              "measured, research/v2/latency/out). Delivery of the feed after the stamp is not modelled (generous).",
      "cites": ["https://regensports.substack.com/p/i-attended-sportradars-game-set-tech",
                "https://www.statsperform.com/products/official-wta-data-streaming/"]},
     {"key": "betting_video", "name": "licensed betting video", "band_s": [0.5, 8.0], "source": "video",
      "read_at_s": [0.5, 1.0, 2.0, 5.0, 8.0],
      "basis": "Low end 0.5 s: Stats Perform 'Realtime Streaming', '0.5 seconds glass-to-glass latency' (vendor "
-              "claim, unverified). High end 8 s: Genius Sports BetVision, venue camera to device 'four to eight "
-              "seconds'. Sportradar: trading streams 'up to eight seconds faster than any TV signal' (no absolute "
-              "figure). IMG Arena: no public figure found. Genius: its live data is 'always 3-4 seconds ahead of "
-              "video', i.e. betting video is kept behind the official data on purpose.",
+              "claim, unverified; the product page cites horse racing and NFL, and Stats Perform's WTA betting-"
+              "stream page gives no latency figure, so it is not shown to apply to tennis). High end 8 s: Genius "
+              "Sports BetVision, 'from the venue camera to a user's mobile device', 'four to eight seconds' (not "
+              "stated for tennis). Sportradar: trading streams 'up to eight seconds faster than any TV signal' (no "
+              "absolute figure). IMG Arena: no public figure found. Genius: its live data is 'always 3-4 seconds "
+              "ahead of video' (Ably case study; no reason given).",
      "cites": ["https://www.statsperform.com/industries/sportsbooks/",
                "https://www.statsperform.com/products/realtime-streaming/",
+               "https://www.statsperform.com/betting-fantasy/exclusive-official-wta-data-for-sportsbooks/",
                "https://next.io/news/betting/matt-fleckenstein-raising-bar-in-play-betting/",
                "https://sportradar.com/betting-gaming/products/live-streams/",
                "https://ably.com/case-studies/genius-sports"]},
-    {"key": "tv", "name": "TV broadcast", "band_s": [3.0, 20.0], "source": "video", "read_at_s": [3.0, 5.0, 10.0, 20.0],
-     "basis": "Cable/satellite roughly 5 s behind live (GL Systemhaus 2018; Uswitch table via ISPreview 2021: "
-              "satellite 0.9-2.2 s, cable ~5 s, relative to the fastest feed). US Super Bowl LX, spotters in the "
-              "stadium: over-the-air 19 s, cable 38 s (Stats Perform / Phenix, Feb 2026). Band 3-20 s: the "
-              "task's 3-10 s widened to the measured over-the-air figure; cable can be later.",
+    {"key": "tv", "name": "TV broadcast", "band_s": [0.9, 20.0], "source": "video",
+     "read_at_s": [0.9, 2.2, 5.0, 10.0, 19.0],
+     "basis": "Uswitch table 'Delay compared to live action' (via ISPreview 2021): satellite 0.9-2.2 s, digital "
+              "terrestrial > 1 s, cable about 5 s (UK consumer comparison; method not published). Wowza, quoted by "
+              "GL Systemhaus (2018): cable and satellite about 5 s behind the live event. US Super Bowl LX, "
+              "spotters in the stadium: over-the-air 19 s, cable 38 s (Stats Perform / Phenix, Feb 2026). Band "
+              "0.9-20 s: the task's 3-10 s widened to both cited ends; cable can be later. The 0.9 s end is a "
+              "single consumer-survey figure for UK football, not a tennis world feed.",
      "cites": ["https://www.gl-systemhaus.de/en/blog/who-cheers-first-about-latencies-in-sports-livestreaming",
                "https://www.ispreview.co.uk/index.php/2021/06/broadcast-lag-in-live-online-tv-sport-streaming-frustrates-fans.html",
                "https://thedesk.net/2026/02/stats-perform-phenix-latency-super-bowl-lx/"]},
     {"key": "stream", "name": "public online stream", "band_s": [10.0, 60.0], "source": "video",
      "read_at_s": [10.0, 20.0, 40.0, 60.0],
-     "basis": "Streaming 10-45 s behind live (Uswitch via ISPreview 2021); HLS defaults ~30 s (GL Systemhaus); "
+     "basis": "Streaming 10-45 s behind live (Uswitch via ISPreview 2021); HLS defaults to ~30 s (Wowza, quoted "
+              "by GL Systemhaus 2018); "
               "Super Bowl LX streams 48-60 s (Stats Perform / Phenix). Ours: the Polymarket book leads the ESPN "
               "score by a median 44.5 s (results/summary.json h4, n = 75) and every public score source is 28-44 s "
               "behind the book (research/v2/latency/RESULTS.md).",
@@ -144,6 +165,9 @@ def reading_params(reading: str, c: dict) -> dict:
     if reading == "stamp_calibrated":
         b_cal = c["calib"]["central"]["t_reprice_minus_t_bounce_s"]
         return {"r_mode": "stamp", "stamp_lag": round(b_cal - med_r, 6)}
+    if reading in LAG_SENS:
+        lag = LAG_SENS[reading]
+        return {"r_mode": "tournament", "stamp_lag": c["calib"]["central"]["stamp_lag_s"] if lag is None else lag}
     raise ValueError(reading)
 
 
@@ -193,7 +217,18 @@ def _job(j):
     J = P["J"]
     dr = T.draws(len(J), P["seed"] + seed, max(c["n_tour"], 1))
     calls = T.simulate(J, P["M"], sc, dr, c["pools"], cvs, c["mix"])
-    m = B.flat(T.metrics(calls, T.period_days(J, sc.regime)))
+    days = T.period_days(J, sc.regime)
+    m = B.flat(T.metrics(calls, days))
+    if m.get("n_trades", 0) == 0 and len(calls):
+        # T.metrics returns a short dict when nothing fills: the call-timing shares are still defined (they used
+        # to come back NaN, and the seed mean then skipped those seeds, overstating "calls before reprice" for the
+        # official / fast feed); P&L-side totals are 0; per-share c, its CI and Sharpe stay undefined (NaN)
+        tau = calls.tau.to_numpy(float)
+        m.update({"calls_share_before_reprice": float((tau >= 0).mean()),
+                  "calls_share_in_decay_window": float(((tau < 0) & (tau >= -T.DECAY_S)).mean()),
+                  "calls_share_too_late": float((tau < -T.DECAY_S).mean()), "calls_median_tau_s": float(np.median(tau)),
+                  "pnl_correct_usd": 0.0, "pnl_wrong_usd": 0.0, "max_dd_usd": 0.0, "worst_day_usd": 0.0,
+                  "capital_usd": 0.0, "days": float(len(days))})
     return {"source": source, "reading": reading, "x_s": x, "cv": cv, "period": period, "seed": seed,
             **{k: m.get(k, np.nan) for k in KEEP}}
 
@@ -207,6 +242,9 @@ def jobs(seeds: int) -> list[tuple]:
                     out.append(("video", rd, v, "own120", p, s))
                 for v in V_CHECK + V_MAIN + V_EXT:
                     out.append(("video", rd, v, "own120_pess", p, s))
+            for rd in LAG_SENS:                       # stamp-lag sensitivity of the headline reading (video)
+                for v in V_ALL:
+                    out.append(("video", rd, v, "own120", p, s))
             for rd in ("tournament", "stamp"):
                 for lag in LAGS:
                     out.append(("official", rd, lag, "point_feed", p, s))
@@ -218,9 +256,11 @@ def jobs(seeds: int) -> list[tuple]:
     return out
 
 
-def grid_tag(source: str, x: float, cv: str) -> str:
+def grid_tag(source: str, x: float, cv: str, reading: str = "") -> str:
     if source.endswith("_trimR"):
         return "robustness_pool_without_R_gt_3s"
+    if reading in LAG_SENS:
+        return "sensitivity_stamp_lag"
     if source != "video":
         return "main" if source == "official" else "extension"
     if cv != "own120":
@@ -249,7 +289,7 @@ def summarise(S: pd.DataFrame) -> pd.DataFrame:
     out["sharpe_ann_sd"] = g.sharpe_ann.std(ddof=0)
     out = out.reset_index()
     out.insert(0, "label", LABEL)
-    out["grid"] = [grid_tag(s, x, c) for s, x, c in zip(out.source, out.x_s, out.cv)]
+    out["grid"] = [grid_tag(s, x, c, rd) for s, x, c, rd in zip(out.source, out.x_s, out.cv, out.reading)]
     out["x_kind"] = out.source.str.replace("_trimR", "").map({"video": "video delay V (s)", "official": "stamp lag (s)",
                                     "fastfeed": "feed lead over the umpire stamp D (s), stamp lag 2.0"})
     return out
@@ -286,7 +326,7 @@ def breakeven(S: pd.DataFrame, Sm: pd.DataFrame, n_boot: int = 2000) -> dict:
     Also the V range where the per-share match-bootstrap CI (seed means) still contains 0."""
     out = {}
     rng = np.random.default_rng(0)
-    for rd in READINGS:
+    for rd in READINGS_ALL:
         out[rd] = {}
         for p in PERIODS:
             s = S[(S.source == "video") & (S.cv == "own120") & (S.reading == rd) & (S.period == p)]
@@ -372,9 +412,9 @@ def source_readoff(Sm: pd.DataFrame) -> list[dict]:
     for src in SOURCES:
         rec = {k: src[k] for k in ("key", "name", "band_s", "basis", "cites")}
         rec["pnl"] = {}
-        for rd in READINGS:
-            if src["source"] == "official" and rd == "stamp_calibrated":
-                continue
+        for rd in READINGS_ALL:
+            if src["source"] == "official" and rd not in ("tournament", "stamp"):
+                continue                         # the official feed's lag cancels: lag readings are identical
             rec["pnl"][rd] = {}
             for p in PERIODS:
                 if src["source"] == "video":
@@ -411,6 +451,9 @@ def md_tables(Sm: pd.DataFrame) -> str:
         ci = (f"[{r.per_share_ci95_lo_c:+.2f}, {r.per_share_ci95_hi_c:+.2f}]"
               if np.isfinite(r.per_share_ci95_lo_c) else "")
         sh = "n/a" if not np.isfinite(r.sharpe_ann) else f"{r.sharpe_ann:.1f}"
+        if r.n_seeds_with_trades < r.n_seeds:      # per-share c, CI and Sharpe: mean over the seeds that traded
+            ci += f" ({int(r.n_seeds_with_trades)}/{int(r.n_seeds)} seeds trade)"
+            sh += "†"
         return (f"{_c(r.per_share_c)} {ci} | {_usd(r.pnl_per_day_usd)} ± {r.pnl_per_day_usd_sd:,.0f} | {sh} | "
                 f"{r.fill_rate * 100:.1f} % | {r.calls_share_before_reprice * 100:.1f} %")
 
@@ -427,6 +470,18 @@ def md_tables(Sm: pd.DataFrame) -> str:
                 tag = ((" (own camera: revised primary)" if (cv, rd) == ("own120", "tournament") else " (own camera)")
                        if x == 0 else (" (ext.)" if x in V_EXT else ""))
                 lines.append(f"| {x:g}{tag} | {row_cells(ri)} | {row_cells(ro)} |")
+    lines.append("\n### STAMP-LAG SENSITIVITY, video + CV (own120), R per tournament: $/day (20-seed mean)\n\n"
+                 "| V (s) | IS lag 1.0 | IS lag 2.0 (headline) | IS lag 3.0 | IS lag 3.14 (inference) | "
+                 "OOS lag 1.0 | OOS lag 2.0 (headline) | OOS lag 3.0 | OOS lag 3.14 (inference) |\n"
+                 "|---|---|---|---|---|---|---|---|---|")
+    lag_rds = ["tournament_lag1", "tournament", "tournament_lag3", "tournament_lagcal"]
+    for x in V_CHECK + V_MAIN + V_EXT:
+        cells = []
+        for p in PERIODS:
+            for rd in lag_rds:
+                a = Sm[(Sm.source == "video") & (Sm.cv == "own120") & (Sm.reading == rd) & (Sm.x_s == x) & (Sm.period == p)]
+                cells.append(_usd(a.pnl_per_day_usd.iloc[0]) if len(a) else "n/a")
+        lines.append(f"| {x:g} | " + " | ".join(cells) + " |")
     lines.append(f"\n### ROBUSTNESS video + CV (own120), pool without R > 3 s, reading: {READ_LABEL['tournament']}\n\n{hdr}")
     for x in V_CHECK + V_MAIN + V_EXT:
         a = Sm[(Sm.source == "video_trimR") & (Sm.x_s == x)]
@@ -444,6 +499,9 @@ def md_tables(Sm: pd.DataFrame) -> str:
 
 
 # ------------------------------------------------------------------------------------------- figure
+YMAX = 100.0                     # figure y cap ($/day); the stamp-lag-3 curve exceeds it at small V
+
+
 def figure(Sm: pd.DataFrame, be: dict, path: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -485,7 +543,15 @@ def figure(Sm: pd.DataFrame, be: dict, path: Path) -> None:
         ax.plot(m.x_s, m.pnl_per_day_usd, color=col[p], lw=2.1)
         ms = sel("stamp", p)
         ax.plot(ms.x_s, ms.pnl_per_day_usd, color=col[p], lw=1.1, ls=(0, (4, 3)))
-        mo = Sm[(Sm.source == "official") & (Sm.reading == "tournament") & (Sm.period == p)].sort_values("x_s")
+        # stamp-lag sensitivity of the headline reading: the curve shifts 1:1 with the unmeasured stamp lag
+        for rd in ("tournament_lag1", "tournament_lag3"):
+            ml = sel(rd, p)
+            if len(ml):
+                ax.plot(ml.x_s, ml.pnl_per_day_usd, color=col[p], lw=1.0, ls=":", alpha=0.9)   # runs off the top
+        # official feed: same $/day at any stamp lag; drawn at the curves' stamp lag (2.0 s), the only x at
+        # which it is comparable with the video curves
+        mo = Sm[(Sm.source == "official") & (Sm.reading == "tournament") & (Sm.period == p)
+                & (Sm.x_s == T.CORRECTED.stamp_lag)]
         ax.plot(mo.x_s, mo.pnl_per_day_usd, ls="none", marker="D", ms=6.5, mfc=col[p], mec=surf, mew=1.5, zorder=4)
         b = be["tournament"][p]
         v = b["breakeven_V_s_seed_mean_curve"]
@@ -493,12 +559,18 @@ def figure(Sm: pd.DataFrame, be: dict, path: Path) -> None:
             ci = b.get("breakeven_V_s_seed_bootstrap_ci95", [v, v])
             ax.errorbar([v], [0], xerr=[[max(v - ci[0], 0)], [max(ci[1] - v, 0)]], fmt="o", ms=7, color=col[p],
                         mec=surf, mew=1.5, capsize=3, lw=1.6, zorder=5)
-            ax.annotate(f"{name[p]}: break-even {v:.2f} s\n(95 % CI over seeds {ci[0]:.2f}–{ci[1]:.2f} s)",
-                        (v, 0), xytext=(1.7, 46 if p == "IS" else 29), textcoords="data", fontsize=8.4,
+            l1 = be.get("tournament_lag1", {}).get(p, {}).get("breakeven_V_s_seed_mean_curve")
+            l3 = be.get("tournament_lag3", {}).get(p, {}).get("breakeven_V_s_seed_mean_curve")
+            alt = (f"\nstamp lag 1.0 / 3.0 s (dotted): {l1:.2f} / {l3:.2f} s"
+                   if isinstance(l1, float) and isinstance(l3, float) else "")
+            ax.annotate(f"{name[p]}: break-even {v:.2f} s at stamp lag 2.0 s\n(95 % CI over seeds "
+                        f"{ci[0]:.2f}–{ci[1]:.2f} s){alt}",
+                        (v, 0), xytext=(3.4, 43 if p == "IS" else 22), textcoords="data", fontsize=8.0,
                         color=ink, ha="left", va="center",
                         arrowprops=dict(arrowstyle="-", color=col[p], lw=0.8, shrinkA=2, shrinkB=5))
     ax.axhline(0, color=ink2, lw=0.9, zorder=1)
     ax.axvspan(xlo, 0.05, color="#d9d8d3", alpha=0.5, lw=0, zorder=0)
+    ax.set_ylim(-42, YMAX + 4)
     ax.set_xscale("log")
     ax.set_xlim(xlo, xhi)
     ticks = [0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 20, 40, 60]
@@ -512,14 +584,18 @@ def figure(Sm: pd.DataFrame, be: dict, path: Path) -> None:
     handles = [Line2D([], [], color=col["IS"], lw=2.1, label="in sample"),
                Line2D([], [], color=col["burned_OOS"], lw=2.1, label="burned OOS (not blind)"),
                Line2D([], [], color=ink2, lw=2.1, label="reprice timing per tournament (headline); band ±1 SD"),
+               Line2D([], [], color=ink2, lw=1.0, ls=":", label="headline reading at stamp lag 1.0 s (lower) / 3.0 s "
+                                                                "(upper, runs off the top)"),
                Line2D([], [], color=ink2, lw=1.1, ls=(0, (4, 3)), label="timing spread = stamp noise (loses at every V)"),
-               Line2D([], [], color=ink2, ls="none", marker="D", ms=6, label="official point feed, no CV (x = stamp lag)")]
-    ax.legend(handles=handles, frameon=False, fontsize=8, loc="upper right")
+               Line2D([], [], color=ink2, ls="none", marker="D", ms=6,
+                      label="official point feed, no CV (same at any stamp lag; drawn at 2.0 s)")]
+    ax.legend(handles=handles, frameon=False, fontsize=7.6, loc="upper right", borderaxespad=0.2, labelspacing=0.35)
     fig.text(0.01, 0.012, LABEL + ".\nCall = bounce − CV lead + V + 20 ms inference + venue→London network + 1 s "
-             "venue order delay; fills priced from the measured live book. Own 120 fps CV model,\nstamp lag 2.0 s, "
-             "φ 0.5, 10 matches/day, p_event 0.95, net cap 100. Source bands: cited vendor claims and measurements "
-             "(research/v2/tier0/LATENCY_SWEEP.md).", color=ink2, fontsize=7.6, ha="left")
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.95, bottom=0.17)
+             "venue order delay; fills priced from the measured live book. Own 120 fps CV model, φ 0.5,\n10 "
+             "matches/day, p_event 0.95, net cap 100. Solid curves: stamp lag 2.0 s; the stamp lag is unmeasured and "
+             "moves the curves 1:1 (dotted: 1.0 / 3.0 s).\nSource bands: cited vendor claims and measurements, "
+             f"none purchased or verified by us ({DOC}).", color=ink2, fontsize=7.4, ha="left")
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.95, bottom=0.185)
     fig.savefig(path, dpi=160)
     plt.close(fig)
 
@@ -561,7 +637,10 @@ def write_outputs(S: pd.DataFrame, meta: dict) -> dict:
                 "sharpe_ann": round(r.sharpe_ann, 2) if np.isfinite(r.sharpe_ann) else None,
                 "fill_rate": round(r.fill_rate, 4), "share_calls_before_reprice": round(r.calls_share_before_reprice, 4),
                 "n_trades": round(r.n_trades, 1), "wrong_call_share_of_trades": round(r.wrong_call_share_of_trades, 4)
-                if np.isfinite(r.wrong_call_share_of_trades) else None}
+                if np.isfinite(r.wrong_call_share_of_trades) else None,
+                "n_seeds_with_trades": int(r.n_seeds_with_trades),
+                "note": None if r.n_seeds_with_trades == r.n_seeds else
+                "net_c_per_share, its CI and sharpe_ann are means over the seeds with trades only"}
 
     def table(source, cv, rd, xs):
         out = {}
@@ -576,7 +655,9 @@ def write_outputs(S: pd.DataFrame, meta: dict) -> dict:
                 "by realistic information sources: video + our CV delayed by V, or the official point feed with no "
                 "CV. Nothing fitted or chosen; burned OOS is not blind.",
         "model": {"video": "call = bounce - CV lead + V + 20 ms inference; + venue->London network + 2 ms gateway "
-                           "+ the venue's order delay (1 s). V = 0 is the revised primary.",
+                           "+ the venue's order delay (1 s). V = 0 is the revised primary. Under the tournament "
+                           "reading t_reprice - t_bounce = R + stamp lag (unmeasured), so the curve shifts 1:1 "
+                           "with the stamp lag: video(V, lag L) = video(V - (L - 2), lag 2).",
                   "official": "call at t_stamp = bounce + stamp lag, no CV, precision 1; tau = R - transit, R per "
                               "tournament (tournament reading) or per point (stamp reading); stamp lag cancels.",
                   "fastfeed": "official with the call D s before the stamp (extension; precision 1 is generous).",
@@ -584,11 +665,13 @@ def write_outputs(S: pd.DataFrame, meta: dict) -> dict:
                                                                for k, v in asdict(T.CORRECTED).items()}},
         "grids": {"V_main_s": V_MAIN, "V_check_s": V_CHECK, "V_extension_s": V_EXT, "V_dense_s": "0-3 s step 0.05",
                   "stamp_lag_s": LAGS, "fastfeed_D_s": FAST_D, "seeds": SEEDS,
+                  "video_stamp_lag_sensitivity": {k: ("calibrated 3.14 s (inference)" if v is None else v)
+                                                  for k, v in LAG_SENS.items()},
                   "cv_sensitivity": "own120_pess (no early calls, 50 ms inference): betting video is 25-50 fps, "
                                     "not 120 fps"},
         "check_V0_equals_published_headline": headline_check(Sm),
         "breakeven_video_delay": be,
-        "video_own120": {rd: table("video", "own120", rd, V_CHECK + V_MAIN + V_EXT) for rd in READINGS},
+        "video_own120": {rd: table("video", "own120", rd, V_CHECK + V_MAIN + V_EXT) for rd in READINGS_ALL},
         "video_cv_pessimistic": {rd: table("video", "own120_pess", rd, V_CHECK + V_MAIN + V_EXT) for rd in READINGS},
         "official_feed_no_cv": {rd: table("official", "point_feed", rd, LAGS) for rd in ("tournament", "stamp")},
         "fast_feed_extension": {rd: table("fastfeed", "point_feed", rd, FAST_D) for rd in ("tournament", "stamp")},
@@ -600,7 +683,7 @@ def write_outputs(S: pd.DataFrame, meta: dict) -> dict:
         "sources": source_readoff(Sm),
         "timing_diagnostics": timing_diagnostics(ctx()),
         "files": {"summary_csv": "results/tier0/latency_sweep.csv", "per_seed_csv": "results/tier0/latency_sweep_seeds.csv",
-                  "figure": "results/tier0/fig_pnl_vs_feed_latency.png", "doc": "research/v2/tier0/LATENCY_SWEEP.md",
+                  "figure": "results/tier0/fig_pnl_vs_feed_latency.png", "doc": DOC,
                   "script": "scripts/tier0_latency_sweep.py"},
         "run": meta,
     }
