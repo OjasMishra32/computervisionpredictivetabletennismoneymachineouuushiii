@@ -1,10 +1,10 @@
-> **Judges: start here.** Four commands from the repo root (Python 3.12+; times on a laptop).
+> **Judges: start here.** Four commands from the repo root (tested on Python 3.12 Linux and 3.14 macOS).
 >
 > | Command | What it does | Time |
 > |---|---|---|
 > | `bash run.sh setup` | makes `.venv`, installs `requirements.txt` | ~1-3 min |
 > | `bash run.sh replay` | 10 min of recorded live Polymarket books (`tests/fixtures/live_sample.jsonl.gz`, public market data) through the paper trader and the engine's order books; no network | ~15 s |
-> | `bash run.sh tests` | unit tests | ~1-2 min |
+> | `bash run.sh tests` | unit tests (vision tests too after `bash run.sh setup --full`) | ~2-6 min |
 > | `bash run.sh data && bash run.sh reproduce` | public Polymarket crawl (no keys, resumable), then every number and figure in `docs/NOTE.pdf` | ~1-2 h + ~15 min |
 >
 > Paper only: nothing here signs or sends an order. `bash run.sh help` lists the rest (live paper session, engine, vision, dashboard).

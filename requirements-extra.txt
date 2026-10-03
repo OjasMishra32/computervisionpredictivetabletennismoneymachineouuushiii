@@ -9,3 +9,4 @@ av==19.0.1
 python-pptx==1.0.2
 onnx==1.23.1            # scripts/get_models.sh exports BlurBall to ONNX
 onnxruntime==1.30.0     # engine/vision ONNX backends (bash run.sh cv)
+omegaconf==2.3.1        # BlurBall model configs (scripts/get_models.sh -> engine.vision.export_onnx)

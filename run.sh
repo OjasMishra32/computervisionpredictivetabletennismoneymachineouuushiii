@@ -18,11 +18,12 @@ bash run.sh <command> [args]                                  (times: laptop, af
   replay              10 min of recorded live Polymarket books (tests/fixtures/live_sample.jsonl.gz)
                       through the live paper trader and the engine's order books  ~15 s, no network
   live [args]         live paper session on live public Polymarket data, read-only, until Ctrl-C
-                      (scripts/live_paper.py --test; e.g. bash run.sh live --minutes 10)
+                      (scripts/live_paper.py --test). Quoting starts after a warm-up of 50 public trades (the
+                      pre-registered trade-side check), so on a quiet tape it can quote nothing for a while
   data [--smoke DAY] [--parallel]
                       public Polymarket crawl into data/ (scripts/fetch_polymarket.py), no keys.
                       ETA ~1-2 h for ~13k tapes; resumable: every read is cached in data/raw, rerun to continue.
-                      --smoke DAY: one day of tapes only (e.g. 2025-11-15), ~5-15 min (event list + 1 day)
+                      --smoke DAY: event list + tapes of the matches starting on DAY (default 2026-01-15, 38 in-sample matches), ~1-3 min
   reproduce           bash reproduce.sh: every number and figure in docs/NOTE.pdf (needs `data` first)
   engine [demo|books|live]
                       COURTSIDE engine, paper only. demo: vision calls -> paper decisions on a recorded book
@@ -33,7 +34,7 @@ bash run.sh <command> [args]                                  (times: laptop, af
                       fetches BlurBall weights via scripts/get_models.sh and the clip with ffmpeg)
   dashboard [port]    status daemon + read-only dashboard at http://localhost:8765 (Ctrl-C stops both)
   money [args]        terminal replay of the v2 in-sample backtest with a running paper-money counter
-                      (needs `data`; scripts/money_counter.py)
+                      (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
 EOF
 }
 
@@ -55,7 +56,12 @@ case "$cmd" in
 
   tests)
     need_venv
-    "$PY" -m pytest -q tests engine/vision/tests "$@"
+    if "$PY" -c "import cv2, sklearn" 2>/dev/null; then
+      "$PY" -m pytest -q tests engine/vision/tests "$@"
+    else
+      echo "(engine/vision/tests need opencv + scikit-learn: bash run.sh setup --full; running tests/ only)"
+      "$PY" -m pytest -q tests "$@"
+    fi
     ;;
 
   replay)
@@ -78,25 +84,24 @@ case "$cmd" in
     smoke="" parallel=""
     while [ $# -gt 0 ]; do
       case "$1" in
-        --smoke) smoke=${2:-2025-11-15}; shift; [ $# -gt 0 ] && shift ;;
+        --smoke) smoke=${2:-2026-01-15}; shift; [ $# -gt 0 ] && shift ;;
         --parallel) parallel=1; shift ;;
         *) echo "unknown data arg $1"; exit 2 ;;
       esac
     done
     if [ -n "$smoke" ]; then
-      echo "smoke fetch: closed tennis events created on $smoke and their trade tapes (cached in data/raw)"
+      echo "smoke fetch: the full event list (~30 s, cached) and the trade tapes of singles starting on $smoke"
       "$PY" - "$smoke" <<'EOF'
-import datetime as dt, sys, time
+import sys, time
 sys.path.insert(0, ".")
 from src import polymarket as pm
-from scripts.fetch_polymarket import MIN_VOL
-d0 = sys.argv[1]
-d1 = (dt.date.fromisoformat(d0) + dt.timedelta(days=1)).isoformat()
+from src.tape import universe
 t = time.time()
-ev = pm.enumerate_events("tennis", d0, d1)
-s = ev[ev.series.isin(["atp", "wta", "challenger"]) & (ev.volume >= MIN_VOL)]
-print(f"{len(ev)} tennis moneylines, {len(s)} singles >= ${MIN_VOL:,}; fetching their tapes", flush=True)
-pm.fetch_many_trades(s.cond.tolist())
+u = universe()                       # the same cached event list as the full crawl (data/raw/events_tennis_*)
+day = u[u.start.dt.strftime("%Y-%m-%d") == sys.argv[1]]
+print(f"{len(u)} singles >= $5k in the universe; {len(day)} start on {sys.argv[1]} "
+      f"({'includes out-of-sample' if day.oos.any() else 'in-sample'}); fetching their tapes", flush=True)
+pm.fetch_many_trades(day.cond.tolist())
 print(f"smoke fetch done in {time.time() - t:.0f} s")
 EOF
       exit 0
@@ -130,8 +135,12 @@ EOF
       "$PY" scripts/fetch_middle.py & R2=$!
       "$PY" scripts/fetch_polymarket.py
       wait $R1 $R2
-    else
-      "$PY" scripts/fetch_polymarket.py
+    else   # Gamma rate-limits long crawls ("RuntimeError: GET failed"); every finished read stays cached
+      for attempt in 1 2 3 4; do
+        "$PY" scripts/fetch_polymarket.py && break
+        [ "$attempt" = 4 ] && { echo "data: fetch failed 4 times; rerun 'bash run.sh data' to resume"; exit 1; }
+        echo "data: fetch stopped (attempt $attempt); resuming from the cache in 60 s"; sleep 60
+      done
     fi
     echo "data done: $(ls data/raw/trades | wc -l) tapes in data/raw/trades"
     ;;
@@ -171,9 +180,21 @@ EOF
       command -v ffmpeg >/dev/null || { echo "cv needs ffmpeg to cut the held-out clip"; exit 1; }
       mkdir -p data/vision
       # OpenTTGames (Voeikov et al., CC BY-NC-SA 4.0): test_2 frames 2000-2999, held out from all training
-      ffmpeg -loglevel error -ss 16.666667 -i https://lab.osai.ai/datasets/openttgames/data/test_2.mp4 \
-             -frames:v 1000 -c copy -an -copyts data/vision/test_2_copyts.mp4
+      src=https://lab.osai.ai/datasets/openttgames/data/test_2.mp4
+      if ! ffmpeg -hide_banner -protocols 2>/dev/null | grep -qw https; then   # ffmpeg built without TLS
+        echo "ffmpeg has no https: downloading test_2.mp4 (225 MB) with curl first"
+        curl -fL -C - -o data/vision/test_2.mp4 "$src"
+        src=data/vision/test_2.mp4
+      fi
+      ffmpeg -loglevel error -ss 16.666667 -i "$src" -frames:v 1000 -c copy -an -copyts data/vision/test_2_copyts.mp4
     fi
+    if ! ls data/openttgames/markup/test_2/segmentation_masks/*.png >/dev/null 2>&1; then
+      echo "fetching the OpenTTGames test_2 markup (0.9 MB: ball labels, events, table masks)"
+      mkdir -p data/openttgames/markup/test_2
+      curl -fsSL -o data/openttgames/test_2.zip https://lab.osai.ai/datasets/openttgames/data/test_2.zip
+      "$PY" -m zipfile -e data/openttgames/test_2.zip data/openttgames/markup/test_2
+    fi
+    export OTTG_ROOT="${OTTG_ROOT:-$HERE/data/openttgames}"
     if [ "$(uname)" = Darwin ]; then backend=onnx-coreml-gpu16; else backend=onnx-cpu; fi
     "$PY" -m engine.vision.run_demo --backend "${CV_BACKEND:-$backend}" --modes realtime --host "judge-$(uname -m)" \
           --out "${CV_OUT:-/tmp/courtside_vision_bench.json}" \
