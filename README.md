@@ -13,7 +13,7 @@ tracking can know a point is over.
 | Chasing the move after a point (H1) | loses 1.5–2.1¢/share in and out of sample |
 | Live prices | calibrated within ~1¢ (H2: no slow-money edge) |
 | **Fast tier** (wallets trading ≤3 s after a point) | beat the market in **11/11 months**, walk-forward; everyone else loses ~1¢ |
-| **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months** (still +0.38¢ at +1 tick slippage); burned OOS +0.60¢ [0.09, 1.13], Sharpe 6.7, but ≈0 at +½ tick: profitable only at the front of the queue. Blind forward test: `results/v2/forward.json` |
+| **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months** (still +0.38¢ at +1 tick slippage); burned OOS +0.60¢ [0.09, 1.13] (match-clustered; wallet-clustered CI includes 0), Sharpe 6.7, ≈0 at +½ tick: profitable only at the front of the queue. Blind test on 11,307 unseen markets: +2.02¢ in-sample period (pass), +1.22¢ out-of-sample period (CI includes 0: fail). Blind forward test: `results/v2/forward.json` |
 | Ball tracking | Hawk-Eye-class physics: ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11 of 11 calls correct (recall 27%) |
 | Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind; Kalshi leads Polymarket ~2 s |
 

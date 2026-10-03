@@ -85,7 +85,7 @@ labelling put 81% of the first v2 draft's OOS P&L on trades made before detectio
 | | In sample, Feb–Aug 2026 | Burned OOS, Aug 25–Oct 3 (non-blind) | Forward, from Oct 3 14:00 UTC (blind) |
 |---|---|---|---|
 | Trades | 55,662 | 10,412 | `[FWD_N]` |
-| **Net per share, at fast-tier fills** | **+1.38¢ [1.17, 1.59]** | **+0.60¢ [0.09, 1.13]** | `[FWD_RES]` |
+| **Net per share, at fast-tier fills** | **+1.38¢ [1.17, 1.59]** | **+0.60¢ [0.09, 1.13]†** | `[FWD_RES]` |
 | … with +½ tick (0.5¢) worse entry | +0.88¢ [0.67, 1.09] | +0.10¢ [−0.41, 0.63] | |
 | … with +1 tick (1¢) worse entry | +0.38¢ [0.17, 0.59] | −0.40¢ [−0.91, 0.13] | |
 | P&L / capital (4 h lock per position) | +$40.4k / $28.3k | +$3.7k / $22.8k | `[FWD_PNL]` |
@@ -93,6 +93,16 @@ labelling put 81% of the first v2 draft's OOS P&L on trades made before detectio
 | Months positive | 7/7 (7/7 even at +1 tick) | 2/3 (Oct = 3 days) | |
 | Forward primary A: fast tier − others, 30 s net | | | `[FWD_A]` |
 | Forward primary B: v2 book, 30 s net per share | | | `[FWD_B]` |
+
+† Match-clustered CI. Clustering by copied wallet instead gives [−0.60, 2.11] (joint run), because out of
+sample a handful of the fastest wallets carry the profit.
+
+**Blind test on 11,307 never-examined markets** (mostly ITF; pre-registered, `research/v2/expand/`). Frozen
+v2 earned +2.02¢/share [1.14, 2.93] in the in-sample period (pass; +1.44¢ even without the five largest
+wallets) and +1.22¢ [−0.19, 2.65] in the OOS period: positive, but a **fail** by our rule. On these unseen
+matches the fast tier still beat everyone else by +3.1¢ (IS) and +2.2¢ (OOS) per print. Out of sample
+the top five copied wallets carry 98% of the profit. **Out of sample, v2 is positive but not proven, and
+it rides on the very fastest traders.**
 
 ![](../results/figures/fig6_v2.png)
 *Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&L by month (\*Aug includes IS days).*

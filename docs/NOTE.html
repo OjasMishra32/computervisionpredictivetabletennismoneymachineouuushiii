@@ -143,7 +143,7 @@ labelling put 81% of the first v2 draft's OOS P&amp;L on trades made before dete
 <tr>
 <td><strong>Net per share, at fast-tier fills</strong></td>
 <td><strong>+1.38¢ [1.17, 1.59]</strong></td>
-<td><strong>+0.60¢ [0.09, 1.13]</strong></td>
+<td><strong>+0.60¢ [0.09, 1.13]†</strong></td>
 <td><code>[FWD_RES]</code></td>
 </tr>
 <tr>
@@ -190,6 +190,14 @@ labelling put 81% of the first v2 draft's OOS P&amp;L on trades made before dete
 </tr>
 </tbody>
 </table>
+<p>† Match-clustered CI. Clustering by copied wallet instead gives [−0.60, 2.11] (joint run), because out of
+sample a handful of the fastest wallets carry the profit.</p>
+<p><strong>Blind test on 11,307 never-examined markets</strong> (mostly ITF; pre-registered, <code>research/v2/expand/</code>). Frozen
+v2 earned +2.02¢/share [1.14, 2.93] in the in-sample period (pass; +1.44¢ even without the five largest
+wallets) and +1.22¢ [−0.19, 2.65] in the OOS period: positive, but a <strong>fail</strong> by our rule. On these unseen
+matches the fast tier still beat everyone else by +3.1¢ (IS) and +2.2¢ (OOS) per print. Out of sample
+the top five copied wallets carry 98% of the profit. <strong>Out of sample, v2 is positive but not proven, and
+it rides on the very fastest traders.</strong></p>
 <p><img alt="" src="../results/figures/fig6_v2.png" />
 <em>Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&amp;L by month (*Aug includes IS days).</em></p>
 <p><strong>Not a factor bet.</strong> Regressing v2's daily returns on Fama–French market, size, value and momentum
