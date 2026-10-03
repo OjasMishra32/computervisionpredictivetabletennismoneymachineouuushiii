@@ -22,7 +22,7 @@ GitHub tree (pushed state):
 | command | result | time |
 |---|---|---|
 | `git clone`, `python3 -m venv .venv`, `pip install -r requirements.txt` | ok on Python 3.12.5 (README says 3.14) | 3 s + 32 s |
-| `bash run.sh help` | **FAIL** (F1) | - |
+| `bash run.sh help` | **FAIL** (F1); ok on the later push `8e3c92f` | - |
 | `pytest tests engine/vision/tests` | **FAIL**, collection error (F2) | 2 s |
 | `pytest tests` (the README's command) | 70 passed, 1 skipped | 161 s |
 | `python -m engine.run --mode backtest` | ok (prints the stored tier-0 counterfactual, labelled as such) | 1 s |
@@ -50,10 +50,13 @@ Local tree (committed `run.sh`, then the fixes listed under each failure):
 
 ## Failures, exact errors, and what was done
 
-**F1. GitHub does not have the judge path (blocker).** `bash run.sh help` -> `bash: run.sh: No such file or
-directory`. `run.sh`, `tests/fixtures/live_sample.jsonl.gz`, `scripts/replay_sample.py` and `scripts/live_paper.py`
-exist only in local commits: `origin/main` is `3d46204`, local `main` is ahead by 11+ commits. Not fixed here
-(this workflow does not push). **Push before judging**, then re-run this test on the pushed state.
+**F1. GitHub did not have the judge path at test time (blocker then; partly resolved).** On `3d46204`,
+`bash run.sh help` -> `bash: run.sh: No such file or directory`: `run.sh`, `tests/fixtures/live_sample.jsonl.gz`,
+`scripts/replay_sample.py` and `scripts/live_paper.py` existed only in local commits. Another workflow then pushed
+`8e3c92f`, which contains `2a8c5e4`. Recheck on a fresh clone of `8e3c92f` (20:45 UTC,
+`/blue/ai-workshop/ojasvamishra/cleanclone_20261003_204533`): setup ok (45 s), `run.sh help` ok,
+`run.sh replay --no-dashboard` ok (7 s, same output), but `run.sh tests` still fails with F2 because the fixes in
+this commit are not pushed yet. **Push again before judging.**
 
 **F2. `pytest tests engine/vision/tests` fails on a core install.**
 `ModuleNotFoundError: No module named 'cv2'` (`src/tracking/detect.py:24`, imported by
