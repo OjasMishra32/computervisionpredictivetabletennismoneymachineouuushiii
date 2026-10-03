@@ -1,0 +1,8 @@
+{
+ "download (job 44542698, wget -c resume)": "5.6 min wall (most of the 34 GB was already fetched by an earlier run)",
+ "setup (job 44544112: venv, BlurBall clone, weights)": "0.9 min",
+ "detection (arrays 44544680/44545925/44546034: 29 chunks, 273k rally frames, <= 3 L4 GPUs)": "42 min wall (06:07-06:49 EDT), 99 GPU-min; 31 fps per GPU with BlurBall+WASB, 55 fps per GPU BlurBall only",
+ "dev analysis (job 44549099: tracks, flights, train accuracy, LOGO model selection, spot check)": "2.0 min",
+ "final test evaluation (job 44549820, run once)": "1.0 min",
+ "post-hoc label audit (srun 44550735)": "about 1 min"
+}

@@ -39,8 +39,8 @@ def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path, tau_on=None):
     ax.set_ylim(0, 1.02)
     ax.set_xlabel("lead before contact / table end (ms)")
     ax.set_ylabel("recall of MISS flights")
-    ax.set_title(f"Recall at the frozen thresholds (snapshot {tau:.3f}"
-                 + (f", online {tau_on:.3f})" if tau_on is not None else ")"))
+    ax.set_title(f"Recall at frozen tau (snapshot {tau:.3f}"
+                 + (f", online {tau_on:.3f})" if tau_on is not None else ")"), fontsize=11)
     ax.legend(fontsize=8, loc="upper right", frameon=False)
     for a in axes:
         a.spines[["top", "right"]].set_visible(False)
@@ -127,3 +127,18 @@ def plot_examples(fl, objs, model, name, geo, path, lead_ms=50):
     fig.tight_layout()
     fig.savefig(path, dpi=110)
     plt.close(fig)
+
+
+if __name__ == "__main__":
+    # re-draw precision_vs_lead.png from the saved curves (no model, no labels)
+    import json
+    import pandas as pd
+    REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    RES = os.environ.get("TRACK_RESULTS", os.path.join(REPO, "results", "tracking"))
+    fin = json.load(open(os.path.join(WORK, "early_call_final.json")))
+    plot_precision_vs_lead(pd.read_csv(os.path.join(RES, "test_precision_vs_lead_snapshot.csv")),
+                           pd.read_csv(os.path.join(RES, "test_precision_vs_lead_online.csv")),
+                           pd.read_csv(os.path.join(WORK, "train_oof_precision_vs_lead_snapshot.csv")),
+                           fin["tau_snapshot"], os.path.join(RES, "precision_vs_lead.png"),
+                           tau_on=fin["tau_online"])
+    print("redrawn precision_vs_lead.png")

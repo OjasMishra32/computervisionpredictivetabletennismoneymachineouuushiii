@@ -1,0 +1,467 @@
+<title>COURTSIDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a broadcast replay truck. Replay screen + market tape up top, a timeline of who knows when, then the evidence. */
+:root {
+  --bg: #f2f5f8; --surface: #ffffff; --ink: #0c1a28; --muted: #4f5f70; --line: #d6dee6;
+  --accent: #1f5fa8; --fast: #2a78d6; --others: #eb6834; --oos: #4a3aa7; --out: #d1432f; --good: #1d8a5b;
+  --screen: #0b1622; --screen-ink: #e6eef6; --screen-muted: #8fa2b5;
+  --display: "Saira Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0a121b; --surface: #101b27; --ink: #e8eef4; --muted: #95a6b7; --line: #1f2e3d;
+  --accent: #5aa0e6; --fast: #3987e5; --others: #d95926; --oos: #9085e9; --out: #f06a52; --good: #3fb67f;
+  --screen: #060d15; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0a121b; --surface: #101b27; --ink: #e8eef4; --muted: #95a6b7; --line: #1f2e3d;
+  --accent: #5aa0e6; --fast: #3987e5; --others: #d95926; --oos: #9085e9; --out: #f06a52; --good: #3fb67f;
+  --screen: #060d15; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); margin: 0 }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: .01em }
+h1 { font-size: clamp(2.6rem, 6vw, 4.4rem); font-weight: 700; line-height: .95; text-transform: uppercase }
+h2 { font-size: 1.7rem; font-weight: 600; line-height: 1.1 }
+.eyebrow { font: 500 .72rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.lede { max-width: 66ch; color: var(--muted); font-size: 1.02rem; margin: 10px 0 0 }
+header { display: grid; gap: 14px; margin-bottom: 22px }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 8px }
+.stat { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; min-width: 0 }
+.stat b { font: 600 1.55rem/1.1 var(--display); font-variant-numeric: tabular-nums }
+.stat span { color: var(--muted); font-size: .8rem; line-height: 1.3 }
+
+/* replay */
+.replay { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; margin-top: 18px }
+@media (max-width: 900px) { .replay { grid-template-columns: 1fr } }
+.screen { background: var(--screen); color: var(--screen-ink); border-radius: 12px; position: relative; overflow: hidden; min-width: 0 }
+.screen canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10 }
+.hud { position: absolute; left: 14px; top: 12px; display: grid; gap: 6px; font: 500 .78rem/1.2 var(--mono); pointer-events: none }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; font: 600 .72rem/1 var(--mono);
+  letter-spacing: .08em; text-transform: uppercase; width: max-content }
+.chip.track { background: rgba(242, 179, 61, .16); color: #f2b33d; border: 1px solid rgba(242, 179, 61, .5) }
+.chip.called { background: rgba(229, 72, 59, .18); color: #ff8a7a; border: 1px solid rgba(229, 72, 59, .65) }
+.chip.down { background: rgba(255, 255, 255, .08); color: var(--screen-ink); border: 1px solid rgba(255, 255, 255, .25) }
+.readouts { display: grid; grid-template-columns: auto auto; gap: 2px 12px; color: var(--screen-muted) }
+.readouts strong { color: var(--screen-ink); font-weight: 500; font-variant-numeric: tabular-nums }
+.cap { font-size: .78rem; color: var(--muted); margin-top: 6px; line-height: 1.4 }
+.screen .cap { color: var(--screen-muted); padding: 0 14px 12px; margin: 0 }
+.tape { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 12px 8px; min-width: 0; display: grid; align-content: start }
+.tape h3 { font-size: 1.05rem; font-weight: 600 }
+.tape svg { width: 100%; height: auto; display: block }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .78rem; color: var(--muted); margin: 6px 0 2px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px }
+.legend i.sq { border-radius: 2px }
+
+.controls { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; margin-top: 14px }
+button.play { font: 600 .82rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; background: var(--ink); color: var(--bg);
+  border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer }
+button.play:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+input[type=range] { width: 100%; accent-color: var(--accent) }
+.tclock { font: 500 .9rem/1 var(--mono); font-variant-numeric: tabular-nums; min-width: 9.5ch; text-align: right }
+
+ol.tiers { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; counter-reset: t }
+@media (max-width: 1000px) { ol.tiers { grid-template-columns: repeat(3, 1fr) } }
+@media (max-width: 560px) { ol.tiers { grid-template-columns: 1fr 1fr } }
+ol.tiers li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; display: grid; gap: 4px;
+  align-content: start; opacity: .5; transition: opacity .25s, border-color .25s; min-width: 0 }
+ol.tiers li.on { opacity: 1; border-color: var(--accent) }
+ol.tiers li .when { font: 500 .75rem/1 var(--mono); color: var(--accent); font-variant-numeric: tabular-nums }
+ol.tiers li b { font: 600 1.02rem/1.15 var(--display) }
+ol.tiers li span { font-size: .78rem; color: var(--muted); line-height: 1.35 }
+.src { font: 500 .62rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 4px; padding: 3px 5px; width: max-content }
+.src.meas { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent) }
+
+section.ev { margin-top: 48px; display: grid; gap: 12px }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px }
+@media (max-width: 900px) { .grid2 { grid-template-columns: 1fr } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0 }
+.card h3 { font-size: 1.15rem; font-weight: 600 }
+.card p { margin: 6px 0 0; color: var(--muted); font-size: .88rem; max-width: 70ch }
+.card svg { width: 100%; height: auto; display: block; margin-top: 8px }
+.axis text, .lbl { font: 400 11px var(--mono); fill: var(--muted) }
+.axis line, .grid line { stroke: var(--line) }
+.zero { stroke: var(--muted); stroke-width: 1 }
+.scroll { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; min-width: 620px }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums }
+th { font: 500 .7rem/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted) }
+.verdict { font: 600 .68rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 5px; white-space: nowrap }
+.v-fail { color: var(--out); background: color-mix(in srgb, var(--out) 12%, transparent) }
+.v-hold { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent) }
+.v-weak { color: var(--muted); background: color-mix(in srgb, var(--muted) 14%, transparent) }
+#tip { position: fixed; pointer-events: none; z-index: 9; background: var(--ink); color: var(--bg); font: 500 .76rem/1.35 var(--mono);
+  padding: 7px 9px; border-radius: 6px; max-width: 260px; opacity: 0; transition: opacity .1s }
+footer { margin-top: 48px; color: var(--muted); font-size: .8rem; display: grid; gap: 6px; max-width: 80ch }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Gator Quant Hacks 2026 · Systematic Trading</div>
+    <h1>Courtside</h1>
+    <p class="lede">Every tennis point moves a prediction market. Ball tracking knows the result while the ball is still in the air;
+      the market finds out seconds later; the public score feed, close to a minute later. We measured who gets paid in between,
+      on every Polymarket ATP and WTA match for a year.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="replay">
+    <div class="screen">
+      <canvas id="court" width="960" height="600" aria-label="Hawk-Eye style replay of a groundstroke landing out"></canvas>
+      <div class="hud">
+        <span class="chip track" id="chip">Tracking</span>
+        <div class="readouts">
+          <span>to bounce</span><strong id="r-t">—</strong>
+          <span>P(out)</span><strong id="r-p">—</strong>
+          <span>landing ±2σ</span><strong id="r-s">—</strong>
+        </div>
+      </div>
+      <p class="cap">Physics replay: drag + topspin, tracked at 340 fps with ±3.6 mm noise. The ellipse is where the tracker thinks the ball will land.</p>
+    </div>
+    <div class="tape">
+      <h3 id="tape-title">Real tape</h3>
+      <div class="legend"><span><i style="background:var(--fast)"></i>Fast-tier wallet</span><span><i style="background:var(--others)"></i>Everyone else</span><span><i class="sq" style="background:color-mix(in srgb,var(--fast) 18%,transparent)"></i>First 3 s</span></div>
+      <svg id="tape" viewBox="0 0 460 330" role="img" aria-label="Trade prints around a price jump"></svg>
+      <p class="cap" id="tape-cap"></p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="play" id="play" type="button">Replay the point</button>
+    <input type="range" id="scrub" min="0" max="1000" step="1" value="600" aria-label="Time around the point">
+    <span class="tclock" id="clock">+0.0 s</span>
+  </div>
+  <ol class="tiers" id="tiers"></ol>
+
+  <section class="ev">
+    <div class="eyebrow">Evidence · 10,467 in-sample matches</div>
+    <h2>Who gets paid after a point</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Fast tier versus everyone else</h3>
+        <p>30-second markout per share, net of fee, by seconds since the score event. Fast-tier wallets are picked each month using earlier months only.</p>
+        <div class="legend"><span><i class="sq" style="background:var(--fast)"></i>Fast tier</span><span><i class="sq" style="background:var(--others)"></i>Everyone else</span></div>
+        <svg id="c-tiers" viewBox="0 0 520 280"></svg>
+      </div>
+      <div class="card">
+        <h3>It holds month after month, including out of sample</h3>
+        <p>Fast tier's net markout by month. Copying them three seconds later loses every month: the edge is speed, not a signal anyone can follow.</p>
+        <div class="legend"><span><i class="sq" style="background:var(--fast)"></i>Fast tier, in sample</span><span><i class="sq" style="background:var(--oos)"></i>Fast tier, out of sample</span><span><i style="background:var(--others)"></i>Everyone else</span><span><i style="background:var(--muted)"></i>Copycats +3 s</span></div>
+        <svg id="c-wf" viewBox="0 0 520 280"></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="ev">
+    <div class="eyebrow">Latency · live, 3 Oct 2026</div>
+    <h2>How early can anyone know?</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Ball tracking calls it hundreds of milliseconds early</h3>
+        <p>Smallest distance out that can be called with 95% confidence, by time left before the bounce.</p>
+        <svg id="c-phys" viewBox="0 0 520 260"></svg>
+      </div>
+      <div class="card">
+        <h3>The book beats the public score feed by about a minute</h3>
+        <p id="h4-p">How far the order book's move led Polymarket's own score feed, per score change.</p>
+        <svg id="c-h4" viewBox="0 0 520 260"></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="ev">
+    <div class="eyebrow">Liquidity</div>
+    <h2>Where there is money to take</h2>
+    <div class="card scroll">
+      <table id="t-books"></table>
+      <p>Table tennis prices on Polymarket swing on every point, but those are midpoints of nearly empty books. Tennis is where the stale quotes have size.</p>
+    </div>
+  </section>
+
+  <section class="ev">
+    <div class="eyebrow">Scorecard · pre-registered, out of sample evaluated once</div>
+    <h2>What worked and what did not</h2>
+    <div class="card scroll"><table id="t-score"></table></div>
+  </section>
+
+  <footer>
+    <span>Data: Polymarket public APIs (13,084 resolved ATP/WTA singles moneylines, Oct 2025–Oct 2026, $2.84B traded), a live order-book and score-feed recording, and a physics model of Hawk-Eye-class tracking. Out of sample = matches from 25 Aug 2026, locked until every rule was frozen.</span>
+    <span>The replay pairs a simulated shot with a real tape for illustration; they are not the same point. Read-only research: no orders were placed.</span>
+  </footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const D = /*__DATA__*/null;
+const $ = s => document.querySelector(s);
+const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const fmtC = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "¢";
+const tip = $("#tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.style.opacity = 1; const x = Math.min(ev.clientX + 14, innerWidth - 270); tip.style.left = x + "px"; tip.style.top = (ev.clientY + 14) + "px"; }
+function hideTip() { tip.style.opacity = 0; }
+function hover(node, html) { node.addEventListener("pointermove", e => showTip(e, html)); node.addEventListener("pointerleave", hideTip); node.style.cursor = "default"; }
+
+/* ---------------- header stats ---------------- */
+const U = D.universe, T6 = D.tests.h6, WF = D.walkforward;
+const posMonths = WF.filter(r => r.net30_c > 0).length;
+[["13,084", "resolved ATP & WTA matches"], ["$" + (U.volume_usd / 1e9).toFixed(2) + "B", "traded on them"],
+ [posMonths + " / " + WF.length, "months the fast tier won, walk-forward"],
+ [Math.round(D.h4.median) + " s", "book leads Polymarket's public score feed"],
+ ["±2.4 cm", "landing call 100 ms before the bounce"]]
+  .forEach(([b, s]) => { const d = document.createElement("div"); d.className = "stat"; d.innerHTML = `<b>${b}</b><span>${s}</span>`; $("#stats").appendChild(d); });
+
+/* ---------------- timeline ---------------- */
+const TB = D.shot.t_bounce, SPLIT = 420, SMAX = 1000, TAU = 150;
+const sToT = s => s <= SPLIT ? (s / SPLIT) * TB - TB : TAU * ((s - SPLIT) / (SMAX - SPLIT)) ** 2;
+const tToS = t => t <= 0 ? (t + TB) / TB * SPLIT : SPLIT + Math.sqrt(Math.min(t, TAU) / TAU) * (SMAX - SPLIT);
+const callLead = Math.max(...D.shot.preds.filter(p => p.p_out >= 0.95).map(p => p.lead_ms));
+const TIERS = [
+  { t: -callLead / 1000, when: `−${callLead} ms`, b: "Ball tracking calls it out", s: "Trajectory fit says the ball lands past the baseline.", src: "model" },
+  { t: 0, when: "0 s", b: "Ball lands, umpire calls", s: "People in the stadium know.", src: "model" },
+  { t: 0.3, when: "0–3 s", b: "Fast tier trades", s: `Stale quotes picked off: ${fmtC(D.tiers[0].fast)} a share net.`, src: "measured" },
+  { t: 1.0, when: "≤1 s", b: "Market makers reprice", s: "Official feed reaches the book inside the 1 s order delay.", src: "measured" },
+  { t: 3, when: "3 s → minutes", b: "Everyone else trades", s: `Chasers and stream watchers: ${fmtC(D.tiers[1].others)} a share.`, src: "measured" },
+  { t: D.h4.median, when: `+${Math.round(D.h4.median)} s`, b: "Public score feed updates", s: "Polymarket's own sports feed, median lag.", src: "measured" },
+];
+const tl = $("#tiers");
+TIERS.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="when">${x.when}</span><b>${x.b}</b><span>${x.s}</span><span class="src ${x.src === "measured" ? "meas" : ""}">${x.src}</span>`; tl.appendChild(li); x.li = li; });
+
+/* ---------------- court (canvas) ---------------- */
+const cv = $("#court"), cx = cv.getContext("2d");
+const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const norm = a => { const n = Math.hypot(...a); return a.map(v => v / n); };
+const CAM = [2.4, -14.5, 11.5], TGT = [-0.9, 14.2, 0];
+const F = norm(sub(TGT, CAM)), R = norm(cross(F, [0, 0, 1])), UP = cross(R, F);
+const raw = p => { const d = sub(p, CAM), z = dot(d, F); return [dot(d, R) / z, dot(d, UP) / z, z]; };
+let W = 960, H = 600, S = 1, OX = 0, OY = 0;
+function fit() {
+  const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+  W = Math.max(320, r.width); H = W * 10 / 16; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const pts = [[-5.485, 0, 0], [5.485, 0, 0], [-5.485, 23.77, 0], [5.485, 23.77, 0], [0, 12, 2.6], [0, -1.5, 0], [0, 25.2, 0]].map(raw);
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const mx = Math.min(...xs), Mx = Math.max(...xs), my = Math.min(...ys), My = Math.max(...ys);
+  S = Math.min((W * 0.92) / (Mx - mx), (H * 0.9) / (My - my));
+  OX = W / 2 - S * (mx + Mx) / 2; OY = H / 2 + S * (my + My) / 2;
+}
+const P = p => { const [x, y, z] = raw(p); return [OX + x * S, OY - y * S, z]; };
+function poly(pts, fill, stroke, lw) { cx.beginPath(); pts.forEach((p, i) => { const q = P(p); i ? cx.lineTo(q[0], q[1]) : cx.moveTo(q[0], q[1]); }); cx.closePath(); if (fill) { cx.fillStyle = fill; cx.fill(); } if (stroke) { cx.strokeStyle = stroke; cx.lineWidth = lw || 1; cx.stroke(); } }
+function seg(a, b, w) { const p = P(a), q = P(b); cx.lineWidth = Math.max(1, S * w / ((p[2] + q[2]) / 2)); cx.beginPath(); cx.moveTo(p[0], p[1]); cx.lineTo(q[0], q[1]); cx.stroke(); }
+function ellipse(xc, yc, rx, ry, fill, stroke) { const pts = []; for (let k = 0; k < 48; k++) { const a = k / 48 * Math.PI * 2; pts.push([xc + rx * Math.cos(a), yc + ry * Math.sin(a), 0]); } poly(pts, fill, stroke, 1.5); }
+function ballAt(tf) {
+  const tr = D.shot.traj; if (tf <= tr[0][0]) return tr[0].slice(1);
+  for (let i = 1; i < tr.length; i++) if (tr[i][0] >= tf) { const a = tr[i - 1], b = tr[i], u = (tf - a[0]) / (b[0] - a[0]); return [1, 2, 3].map(k => a[k] + u * (b[k] - a[k])); }
+  return tr[tr.length - 1].slice(1);
+}
+function predAt(leadMs) { if (leadMs < 0 || leadMs > 400) return null; let best = null; for (const p of D.shot.preds) if (p.lead_ms >= leadMs && (!best || p.lead_ms < best.lead_ms)) best = p; return best; }
+const LAND = D.shot.land, BL = 23.77;
+function drawCourt(T) {
+  cx.clearRect(0, 0, W, H);
+  const g = cx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#0a1a2a"); g.addColorStop(1, "#0e2236"); cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+  poly([[-9.6, -6.4, 0], [9.6, -6.4, 0], [9.6, 30.2, 0], [-9.6, 30.2, 0]], "#2d5a49");
+  poly([[-5.485, 0, 0], [5.485, 0, 0], [5.485, BL, 0], [-5.485, BL, 0]], "#27598b");
+  cx.strokeStyle = "rgba(244,247,250,.92)";
+  const L = [[[-5.485, 0], [5.485, 0]], [[-5.485, BL], [5.485, BL]], [[-5.485, 0], [-5.485, BL]], [[5.485, 0], [5.485, BL]], [[-4.115, 0], [-4.115, BL]], [[4.115, 0], [4.115, BL]],
+    [[-4.115, 5.485], [4.115, 5.485]], [[-4.115, 18.285], [4.115, 18.285]], [[0, 5.485], [0, 18.285]], [[0, 0], [0, 0.15]], [[0, BL - 0.15], [0, BL]]];
+  L.forEach(([a, b]) => seg([a[0], a[1], 0], [b[0], b[1], 0], 0.05));
+  const tf = T + TB, flying = T < 0;
+  const b = flying ? ballAt(tf) : [LAND[0], LAND[1], 0.034];
+  const ballBeyondNet = b[1] > 11.885;
+  const drawNet = () => { poly([[-6.4, 11.885, 0], [6.4, 11.885, 0], [6.4, 11.885, 1.07], [0, 11.885, 0.914], [-6.4, 11.885, 1.07]], "rgba(10,18,28,.55)");
+    cx.strokeStyle = "#f4f7fa"; seg([-6.4, 11.885, 1.07], [0, 11.885, 0.914], 0.05); seg([0, 11.885, 0.914], [6.4, 11.885, 1.07], 0.05);
+    cx.strokeStyle = "#9aa7b4"; seg([-6.4, 11.885, 0], [-6.4, 11.885, 1.07], 0.08); seg([6.4, 11.885, 0], [6.4, 11.885, 1.07], 0.08); };
+  if (!ballBeyondNet) drawNet();
+  // prediction ellipse
+  const pr = flying ? predAt(-T * 1000) : null;
+  if (pr) { const called = pr.p_out >= 0.95; ellipse(pr.x, pr.y, 2 * pr.sx, 2 * pr.sy, called ? "rgba(229,72,59,.30)" : "rgba(242,179,61,.22)", called ? "#ff7563" : "#f2b33d"); }
+  if (!flying) { ellipse(LAND[0], LAND[1] - 0.04, 0.035, 0.09, "rgba(255,255,255,.88)", "#ffffff"); }
+  // trail, shadow, ball
+  if (flying && tf > 0) {
+    const tr = D.shot.traj.filter(r => r[0] <= tf && r[0] >= tf - 0.28);
+    for (let i = 1; i < tr.length; i++) { const a = P(tr[i - 1].slice(1)), c = P(tr[i].slice(1)); cx.strokeStyle = `rgba(217,242,75,${(i / tr.length) * .7})`; cx.lineWidth = Math.max(1.2, S * 0.05 / c[2]); cx.beginPath(); cx.moveTo(a[0], a[1]); cx.lineTo(c[0], c[1]); cx.stroke(); }
+    const sh = P([b[0], b[1], 0]); cx.fillStyle = "rgba(0,0,0,.35)"; cx.beginPath(); cx.ellipse(sh[0], sh[1], Math.max(2, S * 0.09 / sh[2]), Math.max(1, S * 0.04 / sh[2]), 0, 0, Math.PI * 2); cx.fill();
+    const q = P(b); cx.fillStyle = "#d9f24b"; cx.beginPath(); cx.arc(q[0], q[1], Math.max(2.6, S * 0.1 / q[2]), 0, Math.PI * 2); cx.fill();
+  }
+  if (ballBeyondNet) drawNet();
+  drawInset(pr, flying);
+  return pr;
+}
+function drawInset(pr, flying) {
+  const sz = Math.min(170, W * 0.24), x0 = W - sz - 14, y0 = 14, half = 0.45, cxw = LAND[0], cyw = BL + 0.05;
+  const mx = x => x0 + (x - (cxw - half)) / (2 * half) * sz, my = y => y0 + ((cyw + half) - y) / (2 * half) * sz;
+  cx.save(); cx.beginPath(); cx.rect(x0, y0, sz, sz); cx.clip();
+  cx.fillStyle = "#2d5a49"; cx.fillRect(x0, y0, sz, sz);
+  cx.fillStyle = "#27598b"; cx.fillRect(x0, my(BL), sz, y0 + sz - my(BL));
+  cx.fillStyle = "#f4f7fa"; cx.fillRect(x0, my(BL), sz, my(BL - 0.05) - my(BL));
+  const pxm = sz / (2 * half);
+  if (pr) { const called = pr.p_out >= 0.95; cx.beginPath(); cx.ellipse(mx(pr.x), my(pr.y), Math.max(1.5, 2 * pr.sx * pxm), Math.max(1.5, 2 * pr.sy * pxm), 0, 0, Math.PI * 2);
+    cx.fillStyle = called ? "rgba(229,72,59,.32)" : "rgba(242,179,61,.25)"; cx.fill(); cx.strokeStyle = called ? "#ff7563" : "#f2b33d"; cx.lineWidth = 1.5; cx.stroke(); }
+  if (!flying) { cx.beginPath(); cx.arc(mx(LAND[0]), my(LAND[1]), 0.0335 * pxm, 0, Math.PI * 2); cx.fillStyle = "rgba(255,255,255,.92)"; cx.fill();
+    cx.strokeStyle = "#ff7563"; cx.setLineDash([3, 3]); cx.beginPath(); cx.moveTo(mx(LAND[0]) + 10, my(BL)); cx.lineTo(mx(LAND[0]) + 10, my(LAND[1] + 0.0335)); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = "#ffd2cb"; cx.font = "500 11px IBM Plex Mono, monospace"; cx.fillText(`OUT ${D.shot.out_cm.toFixed(1)} cm`, mx(LAND[0]) + 14, my(LAND[1]) + 4); }
+  cx.restore(); cx.strokeStyle = "rgba(255,255,255,.4)"; cx.lineWidth = 1; cx.strokeRect(x0 + .5, y0 + .5, sz - 1, sz - 1);
+  cx.fillStyle = "rgba(230,238,246,.8)"; cx.font = "500 10px IBM Plex Mono, monospace"; cx.fillText("ZOOM · BASELINE · 90 cm", x0 + 6, y0 + sz - 7);
+}
+
+/* ---------------- tape (svg) ---------------- */
+const TP = D.tape, tsvg = $("#tape"), TW = 460, TH = 330, tm = { l: 40, r: 10, t: 14, b: 40 };
+$("#tape-title").textContent = `${TP.title.split(":")[0]} · ${TP.out0.split(" ").slice(-1)} vs ${TP.out1.split(" ").slice(-1)}`;
+$("#tape-cap").textContent = `Real Polymarket prints, ${TP.date}, ${TP.out0} to win ($${(TP.volume / 1e6).toFixed(2)}M traded). A ${Math.abs(TP.jump * 100).toFixed(1)}¢ jump; aligned to the bounce for illustration.`;
+const g10 = t => Math.sign(t) * Math.log10(1 + Math.abs(t)), XD = [-60, 150];
+const xT = t => tm.l + (g10(Math.max(XD[0], Math.min(XD[1], t))) - g10(XD[0])) / (g10(XD[1]) - g10(XD[0])) * (TW - tm.l - tm.r);
+const win = TP.prints.filter(p => p.t >= XD[0] && p.t <= XD[1]);
+const ps = win.map(p => p.p * 100).sort((a, b) => a - b), q = f => ps[Math.floor(f * (ps.length - 1))];
+const YD = [Math.floor(q(0.03) - 1), Math.ceil(q(0.99) + 1)];
+const yP = c => tm.t + (YD[1] - c) / (YD[1] - YD[0]) * (TH - tm.t - tm.b);
+el("rect", { x: xT(0), y: tm.t, width: xT(3) - xT(0), height: TH - tm.t - tm.b, fill: tok("--fast"), "fill-opacity": .14 }, tsvg);
+const gy = el("g", { class: "axis" }, tsvg);
+const ystep = (YD[1] - YD[0]) > 12 ? 5 : 2;
+for (let c = Math.ceil(YD[0] / ystep) * ystep; c <= YD[1]; c += ystep) { el("line", { x1: tm.l, x2: TW - tm.r, y1: yP(c), y2: yP(c) }, gy); el("text", { x: tm.l - 6, y: yP(c) + 4, "text-anchor": "end" }, gy).textContent = c + "¢"; }
+[-60, -10, 0, 3, 10, 30, 60, 150].forEach(t => { el("line", { x1: xT(t), x2: xT(t), y1: TH - tm.b, y2: TH - tm.b + 4 }, gy); el("text", { x: xT(t), y: TH - tm.b + 16, "text-anchor": "middle" }, gy).textContent = (t > 0 ? "+" : "") + t; });
+el("text", { x: (tm.l + TW - tm.r) / 2, y: TH - 6, "text-anchor": "middle", class: "lbl" }, tsvg).textContent = "seconds from the point (log scale)";
+const now = el("line", { y1: tm.t, y2: TH - tm.b, stroke: tok("--ink"), "stroke-width": 1, "stroke-dasharray": "3 3" }, tsvg);
+const dotsG = el("g", {}, tsvg);
+const dotEls = win.sort((a, b) => a.fast - b.fast).map(p => {
+  const c = el("circle", { cx: xT(p.t), cy: yP(p.p * 100), r: p.fast ? 5.5 : 3.6, fill: tok(p.fast ? "--fast" : "--others"), stroke: tok("--surface"), "stroke-width": p.fast ? 2 : 1 }, dotsG);
+  hover(c, `${p.t >= 0 ? "+" : ""}${p.t} s · ${(p.p * 100).toFixed(1)}¢<br>${p.ask ? "lifted the ask" : "hit the bid"} · $${p.usd.toLocaleString()}<br>${p.fast ? "fast-tier wallet" : "other taker"}`);
+  return [p, c];
+});
+function drawTape(T) {
+  const tt = Math.max(XD[0], Math.min(XD[1], T)); now.setAttribute("x1", xT(tt)); now.setAttribute("x2", xT(tt));
+  dotEls.forEach(([p, c]) => c.setAttribute("opacity", p.t <= T + 1e-9 ? 1 : 0.08));
+}
+
+/* ---------------- frame ---------------- */
+const scrub = $("#scrub");
+function frame() {
+  const T = sToT(+scrub.value), pr = drawCourt(T);
+  drawTape(T);
+  const chip = $("#chip");
+  if (T < 0) {
+    const lead = Math.round(-T * 1000); $("#r-t").textContent = `${lead} ms`;
+    if (pr) { $("#r-p").textContent = Math.round(pr.p_out * 100) + "%"; $("#r-s").textContent = `${(2 * pr.sy * 100).toFixed(1)} cm`; }
+    else { $("#r-p").textContent = "—"; $("#r-s").textContent = "fitting…"; }
+    const called = pr && pr.p_out >= 0.95; chip.className = "chip " + (called ? "called" : "track"); chip.textContent = called ? "Out called" : "Tracking";
+  } else {
+    $("#r-t").textContent = "landed"; $("#r-p").textContent = "100%"; $("#r-s").textContent = `out ${D.shot.out_cm.toFixed(1)} cm`;
+    chip.className = "chip down"; chip.textContent = `Called ${callLead} ms early`;
+  }
+  $("#clock").textContent = T < 0 ? `−${Math.round(-T * 1000)} ms` : `+${T < 10 ? T.toFixed(1) : Math.round(T)} s`;
+  TIERS.forEach(x => x.li.classList.toggle("on", T >= x.t - 1e-9));
+}
+scrub.addEventListener("input", frame);
+let anim = null;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+$("#play").addEventListener("click", () => {
+  if (anim) cancelAnimationFrame(anim);
+  if (reduce) { scrub.value = tToS(-callLead / 1000); frame(); return; }
+  const t0 = performance.now(), A = 3800, B = 6500;
+  const step = now2 => { const e = now2 - t0; let s;
+    if (e < A) s = (e / A) * SPLIT; else if (e < A + B) s = SPLIT + ((e - A) / B) * (SMAX - SPLIT); else { anim = null; return; }
+    scrub.value = s; frame(); anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+});
+new ResizeObserver(() => { fit(); frame(); }).observe(cv);
+scrub.value = tToS(2.0); fit(); frame();
+
+/* ---------------- charts ---------------- */
+function frameChart(svg, w, h, m, yd, ylab, ticks) {
+  const y = v => m.t + (yd[1] - v) / (yd[1] - yd[0]) * (h - m.t - m.b);
+  const g = el("g", { class: "axis" }, svg);
+  ticks.forEach(v => { el("line", { x1: m.l, x2: w - m.r, y1: y(v), y2: y(v) }, g); el("text", { x: m.l - 6, y: y(v) + 4, "text-anchor": "end" }, g).textContent = ylab(v); });
+  return y;
+}
+// fast tier vs others
+(() => {
+  const svg = $("#c-tiers"), w = 520, h = 280, m = { l: 44, r: 8, t: 10, b: 34 };
+  const y = frameChart(svg, w, h, m, [-1.4, 1.2], v => (v > 0 ? "+" : "") + v.toFixed(1) + "¢", [-1.2, -0.8, -0.4, 0, 0.4, 0.8]);
+  const n = D.tiers.length, band = (w - m.l - m.r) / n, bw = Math.min(26, band * 0.34);
+  D.tiers.forEach((r, i) => {
+    const c = m.l + band * (i + .5);
+    [["fast", -1], ["others", 1]].forEach(([k, side]) => {
+      const v = r[k], x = c + side * (bw / 2 + 1) - bw / 2, y0 = y(0), y1 = y(v);
+      const path = v >= 0 ? `M${x},${y0}V${y1 + 4}q0,-4 4,-4h${bw - 8}q4,0 4,4V${y0}Z` : `M${x},${y0}V${y1 - 4}q0,4 4,4h${bw - 8}q4,0 4,-4V${y0}Z`;
+      const p = el("path", { d: path, fill: tok(k === "fast" ? "--fast" : "--others") }, svg);
+      hover(p, `${r.bucket} after the point<br>${k === "fast" ? "Fast tier" : "Everyone else"}: ${fmtC(v)} / share`);
+    });
+    el("text", { x: c, y: h - m.b + 16, "text-anchor": "middle", class: "lbl" }, svg).textContent = r.bucket;
+  });
+  el("line", { x1: m.l, x2: w - m.r, y1: y(0), y2: y(0), class: "zero" }, svg);
+})();
+// walk-forward
+(() => {
+  const svg = $("#c-wf"), w = 520, h = 280, m = { l: 44, r: 8, t: 10, b: 46 };
+  const y = frameChart(svg, w, h, m, [-2.8, 2.8], v => (v > 0 ? "+" : "") + v.toFixed(0) + "¢", [-2, -1, 0, 1, 2]);
+  const n = WF.length, band = (w - m.l - m.r) / n, bw = Math.min(22, band * 0.6);
+  const oosFrom = "2026-08";
+  WF.forEach((r, i) => {
+    const c = m.l + band * (i + .5), x = c - bw / 2, v = r.net30_c, y0 = y(0), y1 = y(v), oos = r.month >= oosFrom;
+    const p = el("path", { d: `M${x},${y0}V${y1 + 4}q0,-4 4,-4h${bw - 8}q4,0 4,4V${y0}Z`, fill: tok(oos ? "--oos" : "--fast") }, svg);
+    hover(p, `${r.month}${oos ? " · out of sample" : ""}<br>Fast tier: ${fmtC(v)}<br>Everyone else: ${fmtC(r.others_net30_c)}<br>Copycats: ${fmtC(r.follow_res_c)}<br>${r.n_wallets} qualifying wallets`);
+    [["others_net30_c", "--others"], ["follow_res_c", "--muted"]].forEach(([k, col]) => {
+      const d = el("circle", { cx: c, cy: y(Math.max(-2.7, r[k])), r: 4, fill: tok(col), stroke: tok("--surface"), "stroke-width": 1.5 }, svg);
+      hover(d, `${r.month}<br>${k === "others_net30_c" ? "Everyone else" : "Copycats +3 s"}: ${fmtC(r[k])}`);
+    });
+    el("text", { x: c, y: h - m.b + 14, "text-anchor": "middle", class: "lbl" }, svg).textContent = r.month.slice(2).replace("-", "/");
+    el("text", { x: c, y: h - m.b + 28, "text-anchor": "middle", class: "lbl", "font-size": 9 }, svg).textContent = r.n_wallets;
+  });
+  el("text", { x: m.l, y: h - 4, class: "lbl" }, svg).textContent = "month · wallets qualifying";
+  el("line", { x1: m.l, x2: w - m.r, y1: y(0), y2: y(0), class: "zero" }, svg);
+})();
+// physics
+(() => {
+  const svg = $("#c-phys"), w = 520, h = 260, m = { l: 44, r: 14, t: 12, b: 36 };
+  const pts = D.physics.filter(p => p.lead_ms > 0).map(p => ({ x: p.lead_ms, y: 1.645 * p.pred_err_sd_cm }));
+  const ymax = Math.ceil(Math.max(...pts.map(p => p.y)) / 5) * 5;
+  const y = frameChart(svg, w, h, m, [0, ymax], v => v + " cm", Array.from({ length: ymax / 5 + 1 }, (_, i) => i * 5));
+  const x = v => m.l + v / 400 * (w - m.l - m.r);
+  [0, 100, 200, 300, 400].forEach(v => el("text", { x: x(v), y: h - m.b + 16, "text-anchor": "middle", class: "lbl" }, svg).textContent = v);
+  el("text", { x: (m.l + w - m.r) / 2, y: h - 4, "text-anchor": "middle", class: "lbl" }, svg).textContent = "ms before the bounce";
+  const d = pts.map((p, i) => (i ? "L" : "M") + x(p.x) + "," + y(p.y)).join("");
+  el("path", { d: d + `L${x(pts[pts.length - 1].x)},${y(0)}L${x(pts[0].x)},${y(0)}Z`, fill: tok("--fast"), "fill-opacity": .12 }, svg);
+  el("path", { d, fill: "none", stroke: tok("--fast"), "stroke-width": 2 }, svg);
+  pts.forEach(p => { const c = el("circle", { cx: x(p.x), cy: y(p.y), r: 4.5, fill: tok("--fast"), stroke: tok("--surface"), "stroke-width": 2 }, svg);
+    hover(c, `${p.x} ms before the bounce<br>calls anything ≥ ${p.y.toFixed(1)} cm out at 95%`); });
+})();
+// H4
+(() => {
+  const svg = $("#c-h4"), w = 520, h = 260, m = { l: 36, r: 10, t: 12, b: 36 };
+  const L = D.h4.leads, bins = []; for (let a = -20; a < 90; a += 10) bins.push({ a, n: L.filter(v => v >= a && v < a + 10).length });
+  const ymax = Math.max(4, Math.ceil(Math.max(...bins.map(b => b.n)) / 2) * 2);
+  const y = frameChart(svg, w, h, m, [0, ymax], v => v, Array.from({ length: ymax / 2 + 1 }, (_, i) => i * 2));
+  const x = v => m.l + (v + 20) / 110 * (w - m.l - m.r), bw = x(10) - x(0) - 2;
+  bins.forEach(b => { if (!b.n) return; const p = el("path", { d: `M${x(b.a) + 1},${y(0)}V${y(b.n) + 3}q0,-3 3,-3h${bw - 6}q3,0 3,3V${y(0)}Z`, fill: tok(b.a < 0 ? "--others" : "--fast") }, svg);
+    hover(p, `book led by ${b.a} to ${b.a + 10} s<br>${b.n} score changes`); });
+  [-20, 0, 20, 40, 60, 80].forEach(v => el("text", { x: x(v), y: h - m.b + 16, "text-anchor": "middle", class: "lbl" }, svg).textContent = v);
+  el("line", { x1: x(0), x2: x(0), y1: m.t, y2: y(0), class: "zero", "stroke-dasharray": "3 3" }, svg);
+  el("text", { x: (m.l + w - m.r) / 2, y: h - 4, "text-anchor": "middle", class: "lbl" }, svg).textContent = "seconds the book moved before the feed";
+  $("#h4-p").textContent = `Book moved first on ${Math.round(D.h4.book_first * 100)}% of ${L.length} score changes; median lead ${Math.round(D.h4.median)} s.`;
+})();
+// tables
+(() => {
+  const b = D.books, t = $("#t-books");
+  t.innerHTML = `<thead><tr><th>Live order book, median</th><th>Tennis (ATP/WTA)</th><th>Table tennis (Setka Cup)</th></tr></thead><tbody>
+  <tr><td>Bid–ask spread</td><td>${b.tennis.spread_c}¢</td><td>${b.table_tennis.spread_c}¢</td></tr>
+  <tr><td>Dollars at the best bid and ask</td><td>$${b.tennis.top_usd.toLocaleString()}</td><td>$${b.table_tennis.top_usd}</td></tr>
+  <tr><td>Dollars within 2¢ of the touch</td><td>$${b.tennis.depth2c_usd.toLocaleString()}</td><td>$${b.table_tennis.depth2c_usd}</td></tr>
+  <tr><td>Books with no quotes</td><td>${Math.round(b.tennis.empty * 100)}%</td><td>${Math.round(b.table_tennis.empty * 100)}%</td></tr></tbody>`;
+  const T = D.tests, ci = s => s && s.ci95_pnl_per_share_c ? `${fmtC(s.mean_pnl_per_share_c)} <span style="color:var(--muted)">[${s.ci95_pnl_per_share_c[0].toFixed(2)}, ${s.ci95_pnl_per_share_c[1].toFixed(2)}]</span>` : "—";
+  const rows = [
+    ["Follow the jump after the order delay", ci(T.h1.is), ci(T.h1.oos), "fail", "Fails"],
+    ["Buy favourites entering 85–97¢", ci(T.h2.is), ci(T.h2.oos), "fail", "No edge"],
+    ["Quote as a maker right after jumps", ci(T.h5.is), ci(T.h5.oos), "weak", "Inconclusive"],
+    ["Fast tier, 30 s markout, by month", `${WF.filter(r => r.month < "2026-08").filter(r => r.net30_c > 0).length}/${WF.filter(r => r.month < "2026-08").length} months > 0`, `${WF.filter(r => r.month >= "2026-08").filter(r => r.net30_c > 0).length}/${WF.filter(r => r.month >= "2026-08").length} months > 0`, "hold", "Holds"],
+    ["Fast-tier shadow book, held to resolution", ci(T.h6.is), ci(T.h6.oos), "weak", "Fee-bound"],
+  ];
+  $("#t-score").innerHTML = `<thead><tr><th>Test</th><th>In sample (¢/share, 95% CI)</th><th>Out of sample</th><th>Verdict</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><span class="verdict v-${r[3]}">${r[4]}</span></td></tr>`).join("") + "</tbody>";
+})();
+</script>

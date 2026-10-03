@@ -111,6 +111,17 @@ class Camera:
         return float(np.sqrt(np.mean(np.sum((self.project(g) - apply_h(H, COURT_KPS)) ** 2, 1))))
 
 
+def ground_xy(H: np.ndarray, cam: "Camera", uv: np.ndarray, z: float = BALL_R) -> np.ndarray:
+    """(n,2) pixels -> (n,2) court point under a ball centre at height z. The ground-plane
+    homography H (exact on the court, ~0.1 px keypoint rms) does the mapping; the camera only
+    supplies the small shift between the z = 0 and z = BALL_R intersections (a few cm), so the
+    camera's own reprojection error (up to a few px on some clips) does not leak in."""
+    uv = np.atleast_2d(uv)
+    p0 = apply_h(np.linalg.inv(H), uv)
+    corr = cam.backproject_to_z(uv, z)[:, :2] - cam.backproject_to_z(uv, 0.0)[:, :2]
+    return p0 + corr
+
+
 def signed_out_distance(xy: np.ndarray, serve: np.ndarray, srv_x_sign: np.ndarray,
                         srv_y_sign: np.ndarray) -> np.ndarray:
     """Positive = out (m beyond the nearest line it crossed), negative = in (distance inside).

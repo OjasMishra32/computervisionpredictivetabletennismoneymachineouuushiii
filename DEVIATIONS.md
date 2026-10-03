@@ -77,3 +77,76 @@ their 0–3 s post-jump prints in month m, and in the locked OOS period.
   pick or re-fit anything.
 - Figure fix after OOS: the walk-forward figure now plots the same capped shadow book the stats use
   (it plotted the uncapped one) and colours OOS months. Numbers are unchanged.
+
+## H3 — ball tracking / early call (all decided on game_1..5 before test_1..7 was evaluated)
+Test videos were run through the detector and tracker, which use no labels. Their labels were read once,
+by `early_call.py --final` (logged in `results/tracking/test_peeks.log`).
+
+- **H3-D1. What "net" means in OpenTTGames.** The `net` event marks the frame where the ball reaches the net
+  plane, on every shot. It is not only a net touch. Evidence: game_1..5 have 1,232 `net` and 1,537 `bounce`
+  events, and 92% of `net` events are followed by a far-side bounce 8–50 frames later. So "miss (out / net)"
+  is not labelled and has to be inferred. One flight = one shot reaching the net plane, anchored at its `net`
+  frame. **BOUNCE** = a far-side `bounce` follows within 0.5 s. **MISS** = it does not (the next event is at
+  least 80 frames later, i.e. the next rally, or the ball came back). MISS/net = the ball stops at the net:
+  it never gets 25 px past the crossing, or its along-table speed drops below 40%. MISS/out = everything else.
+  Shots that never reach the net plane (mis-hits into the ceiling or the floor) and the serve's own-side bounce
+  are not in the sample. The rule was checked visually on all 14 game_1 misses and on a random sample of 9 training misses; all were
+  consistent (`results/tracking/miss_spotcheck.png`).
+- **H3-D2. Which call is scored.** "Precision" means the precision of **MISS** calls, which are the
+  point-ending, tradeable calls. About 90% of shots land, so a BOUNCE call is trivially more than 90%
+  precise and says nothing.
+- **H3-D3. Reference time for misses.** For a net miss, T_ref = the net frame. For an out ball, T_ref = the
+  first frame the tracked ball passes the table end line (mean x of the two end corners), drops below the near
+  edge, or is lost. This comes before the ball reaches table-plane height, so the measured leads are
+  conservative (shorter).
+- **H3-D4. Call rules.** The verdict uses the literal "precision at a 50 ms lead". The decision is made at
+  frame T_ref − 6 (the **snapshot rule**), using only track points up to that frame minus 2 frames, because
+  the detector's 3-frame window looks 2 frames ahead. We also report an **online first-call rule**: a call
+  counts once the score has stayed ≥ τ for 3 consecutive frames, and the trading half's "tier-0 lead" is
+  taken from this rule. Calls are only allowed when the ball is predicted to reach the net or the end line
+  within GATE_H. Longer single-camera extrapolations produced most of the early false alarms in the training
+  games. GATE_H was chosen by leave-one-game-out CV on game_1..5 from {∞, 0.25, 0.15, 0.10} s.
+- **H3-D5. Model and threshold (frozen before the test run).** Three candidates × four gates were compared
+  by leave-one-game-out (LOGO) CV on game_1..5 (1,059 BOUNCE / 110 MISS flights): a physics logistic regression
+  (8 features: landing position relative to the end line at the far, mid and near table level; arc height at
+  the net and at the end line; time to the end line; net passed; no landing predicted), a logistic regression
+  on all 23 features, and sklearn gradient boosting (HGB) on all 23 features. τ is the smallest threshold at
+  which the out-of-fold train precision at the 50 ms lead is ≥ 95% and stays ≥ 95% for every higher threshold
+  with ≥ 5 calls. It is set separately for the snapshot rule (verdict) and the online rule (first-call leads).
+  Selection criterion: the largest sum of snapshot and online recall at 50 ms, among candidates with both
+  precisions ≥ 95%. We fixed this criterion after seeing the train CV table, because the best snapshot model
+  (physics LR) has almost no online recall. The winner is **HGB with GATE_H = 0.10 s**: OOF snapshot@50 ms
+  precision 0.952, recall 0.545 (60/63 calls); OOF online@50 ms precision 0.971, recall 0.30 (33/34). Physics
+  LR without a gate had snapshot recall 0.555 at precision 0.953 but online recall 0.05–0.06. All of these
+  numbers are from `work/tracking/dev_report.json` on HiPerGator (copied to
+  `results/tracking/dev_report.json`). The HPG and laptop runs agree to within a few calls (sklearn versions
+  differ).
+- **H3-D6. Detector.** At the user's direction we reused the pretrained BlurBall table-tennis detector (MIT
+  licence, built on WASB-SBDT) zero-shot instead of training a tracker. BlurBall beat the WASB weights on
+  game_1/game_2 labels and was the only detector run on all videos. Frames are processed only inside annotated
+  rallies, from 1.5 s before the first event to 2.5 s after the last: 273k of 644k frames.
+- **H3-D7. Units.** There is one camera, so speeds (m/s) and "how far out" (m) are image estimates scaled by
+  the table length (2.74 m). Depth across the table is not observable, and the true bounce level lies between
+  the far- and near-edge lines. This ambiguity (about 0.1 table length of image height) is the main physical
+  limit on early calls.
+- **H3-D8. Which annotations the test pipeline reads.** For each test video the pipeline reads three
+  annotation sources. (a) The table quadrilateral comes from its segmentation masks; a deployed system would
+  get the same thing from a one-off camera calibration. (b) The frames processed are the annotated rallies.
+  (c) The shots evaluated are anchored at their `net` events, and their outcome is labelled from the events
+  (rules in H3-D1). The prediction itself uses only the tracked ball positions. The flight start (racket hit
+  or bounce) is found in the track without labels.
+- **H3-D9. Scope.** The tennis Monte Carlo version of H3 is not part of this analysis.
+- **H3-D10. POST-HOC, after the single test evaluation (2026-10-03 10:57 UTC): the test labels are incomplete.**
+  The pre-specified run gave test precision 11/11 at 50 ms → PASS. We then visually audited those 11 calls
+  (`results/tracking/test_called_audit.png`) and found that some test flights labelled MISS actually bounce on
+  the far half of the table. The test markup has no `bounce` event for them, and the rally goes on.
+  In the test set, 18 of 41 MISS flights are followed by another annotated event within 80 frames. The training
+  games have 2 of 110. `src/tracking/audit_labels.py` finds such bounces from the track: a local maximum of
+  image y inside the table quadrilateral, grown by one ball radius + 5 px, beyond the net. A first version used
+  a 5 px margin and missed a far-edge bounce. The detector reports the ball centre, so the margin was changed
+  to one ball radius. Both versions are post-hoc. The audit relabels 20 of 41 test MISS flights as BOUNCE and
+  0 of 110 in training. Re-scoring the **frozen** model (no refit, same τ) on the corrected labels gives
+  precision 8/8 at 50 ms (recall 0.38). If the 5 unresolved "rally continues" flights are also dropped, it gives
+  7/7. The verdict is the same under every labelling, but with 7–11 calls the 95% Wilson lower bound is only
+  0.68–0.74. `results/tracking/label_audit.json` has the numbers. The pre-specified result is still the one of
+  record.

@@ -104,6 +104,26 @@ def signed_out_distance(land: np.ndarray, serve: np.ndarray) -> np.ndarray:
     return np.maximum(d_long, d_side)
 
 
+def predict_landing(win: np.ndarray) -> np.ndarray:
+    """Tracker's mid-flight landing estimate from the last W samples (n, W, 3).
+
+    Local quadratic fit -> position, velocity, acceleration; the part of the acceleration
+    not explained by gravity and drag is the spin (Magnus) term; integrate forward."""
+    W = win.shape[1]
+    tt = np.arange(-W + 1, 1) / FPS
+    X = np.stack([np.ones_like(tt), tt, 0.5 * tt**2], 1)
+    coef = np.einsum("jw,nwc->njc", np.linalg.pinv(X), win)
+    p_now, v_now, a_now = coef[:, 0], coef[:, 1], coef[:, 2]
+    sp = np.linalg.norm(v_now, axis=1, keepdims=True)
+    a_mag = a_now - G + KD * sp * v_now
+    a_perp = a_mag - (np.sum(a_mag * v_now, 1, keepdims=True) / sp**2) * v_now
+    w_est = np.cross(v_now, a_perp)
+    w_est /= np.maximum(np.linalg.norm(w_est, axis=1, keepdims=True), 1e-9)
+    cmag = np.linalg.norm(a_perp, axis=1) / np.maximum(sp[:, 0] ** 2, 1e-9)
+    land_hat, _, _ = _integrate(p_now, v_now, lambda v, a: _accel_pred(v, w_est[a], cmag[a]))
+    return land_hat
+
+
 def simulate(n: int = 20000, seed: int = 7, leads_ms=(0, 25, 50, 100, 150, 200, 300, 400)):
     rng = np.random.default_rng(seed)
     s = sample_shots(n, rng)
@@ -133,21 +153,8 @@ def simulate(n: int = 20000, seed: int = 7, leads_ms=(0, 25, 50, 100, 150, 200, 
         good = k_dec >= W
         kk = k_dec[good]
         m = meas[good]
-        # local quadratic fit over the window ending at the decision sample
-        tt = (np.arange(-W + 1, 1) / FPS)
-        X = np.stack([np.ones_like(tt), tt, 0.5 * tt**2], 1)
-        pinv = np.linalg.pinv(X)
         win = np.stack([m[i, k - W + 1:k + 1] for i, k in enumerate(kk)])  # (n, W, 3)
-        coef = np.einsum("jw,nwc->njc", pinv, win)
-        p_now, v_now, a_now = coef[:, 0], coef[:, 1], coef[:, 2]
-        sp = np.linalg.norm(v_now, axis=1, keepdims=True)
-        a_mag = a_now - G + KD * sp * v_now
-        a_perp = a_mag - (np.sum(a_mag * v_now, 1, keepdims=True) / sp**2) * v_now
-        w_est = np.cross(v_now, a_perp)
-        w_est /= np.maximum(np.linalg.norm(w_est, axis=1, keepdims=True), 1e-9)
-        cmag = np.linalg.norm(a_perp, axis=1) / np.maximum(sp[:, 0] ** 2, 1e-9)
-        acc_p = lambda v, a: _accel_pred(v, w_est[a], cmag[a])
-        land_hat, _, _ = _integrate(p_now, v_now, acc_p)
+        land_hat = predict_landing(win)
         d_hat = signed_out_distance(land_hat, serve[good])
         rows.append({"lead_ms": L, "d": d[good], "d_hat": d_hat, "serve": serve[good]})
     return rows

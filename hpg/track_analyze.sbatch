@@ -8,7 +8,7 @@
 #SBATCH --output=logs/%x_%j.log
 # H3 analysis after track_detect.sbatch has finished (CPU only).
 #   STAGE=dev   sbatch track_analyze.sbatch   # tracks, flights, train detection accuracy, LOGO model selection
-#   STAGE=final MODEL=<physics|logreg|hgb> sbatch track_analyze.sbatch   # ONE test evaluation + summary
+#   STAGE=final sbatch track_analyze.sbatch   # ONE test evaluation + summary (MODEL=hgb, GATE_H=0.10 frozen)
 set -euo pipefail
 ROOT=${ROOT:-/blue/ai-workshop/$USER/courtside}
 STAGE=${STAGE:-dev}
@@ -27,6 +27,8 @@ if [ "$STAGE" = dev ]; then
   python spotcheck.py
 else
   python eval_detection.py --videos $TRAIN $TEST --out "$TRACK_RESULTS/detection_accuracy.csv"
-  python early_call.py --final --model "${MODEL:-logreg}"
+  # frozen from the dev stage (DEVIATIONS.md H3-D5): HGB, gate 0.10 s
+  GATE_H=${GATE_H:-0.10} python early_call.py --final --model "${MODEL:-hgb}"
+  cp "$ROOT/work/tracking/dev_report.json" "$TRACK_RESULTS/dev_report.json"
   python summarize.py
 fi

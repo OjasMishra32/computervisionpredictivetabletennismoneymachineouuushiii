@@ -1,0 +1,228 @@
+{
+ "tau_snapshot_frozen": 0.8854,
+ "gate_h_s": 0.1,
+ "test_original_labels": {
+  "n_bounce": 130,
+  "n_miss": 41,
+  "snapshot": {
+   "0ms": {
+    "precision": 1.0,
+    "recall": 0.5854,
+    "tp": 24,
+    "fp": 0,
+    "fn": 17,
+    "precision_wilson95": [
+     0.862,
+     1.0
+    ]
+   },
+   "25ms": {
+    "precision": 1.0,
+    "recall": 0.4634,
+    "tp": 19,
+    "fp": 0,
+    "fn": 22,
+    "precision_wilson95": [
+     0.8318,
+     1.0
+    ]
+   },
+   "50ms": {
+    "precision": 1.0,
+    "recall": 0.2683,
+    "tp": 11,
+    "fp": 0,
+    "fn": 30,
+    "precision_wilson95": [
+     0.7412,
+     1.0
+    ]
+   },
+   "100ms": {
+    "precision": 1.0,
+    "recall": 0.1463,
+    "tp": 6,
+    "fp": 0,
+    "fn": 35,
+    "precision_wilson95": [
+     0.6097,
+     1.0
+    ]
+   },
+   "150ms": {
+    "precision": 0.75,
+    "recall": 0.0732,
+    "tp": 3,
+    "fp": 1,
+    "fn": 38,
+    "precision_wilson95": [
+     0.3006,
+     0.9544
+    ]
+   },
+   "200ms": {
+    "precision": 1.0,
+    "recall": 0.0488,
+    "tp": 2,
+    "fp": 0,
+    "fn": 39,
+    "precision_wilson95": [
+     0.3424,
+     1.0
+    ]
+   }
+  }
+ },
+ "test_audited_relabelled": {
+  "n_bounce": 150,
+  "n_miss": 21,
+  "snapshot": {
+   "0ms": {
+    "precision": 1.0,
+    "recall": 0.5714,
+    "tp": 12,
+    "fp": 0,
+    "fn": 9,
+    "precision_wilson95": [
+     0.7575,
+     1.0
+    ]
+   },
+   "25ms": {
+    "precision": 1.0,
+    "recall": 0.5714,
+    "tp": 12,
+    "fp": 0,
+    "fn": 9,
+    "precision_wilson95": [
+     0.7575,
+     1.0
+    ]
+   },
+   "50ms": {
+    "precision": 1.0,
+    "recall": 0.381,
+    "tp": 8,
+    "fp": 0,
+    "fn": 13,
+    "precision_wilson95": [
+     0.6756,
+     1.0
+    ]
+   },
+   "100ms": {
+    "precision": 1.0,
+    "recall": 0.2857,
+    "tp": 6,
+    "fp": 0,
+    "fn": 15,
+    "precision_wilson95": [
+     0.6097,
+     1.0
+    ]
+   },
+   "150ms": {
+    "precision": 0.75,
+    "recall": 0.1429,
+    "tp": 3,
+    "fp": 1,
+    "fn": 18,
+    "precision_wilson95": [
+     0.3006,
+     0.9544
+    ]
+   },
+   "200ms": {
+    "precision": 1.0,
+    "recall": 0.0476,
+    "tp": 1,
+    "fp": 0,
+    "fn": 20,
+    "precision_wilson95": [
+     0.2065,
+     1.0
+    ]
+   }
+  }
+ },
+ "test_audited_drop_rally_continues": {
+  "n_bounce": 150,
+  "n_miss": 16,
+  "snapshot": {
+   "0ms": {
+    "precision": 1.0,
+    "recall": 0.625,
+    "tp": 10,
+    "fp": 0,
+    "fn": 6,
+    "precision_wilson95": [
+     0.7225,
+     1.0
+    ]
+   },
+   "25ms": {
+    "precision": 1.0,
+    "recall": 0.625,
+    "tp": 10,
+    "fp": 0,
+    "fn": 6,
+    "precision_wilson95": [
+     0.7225,
+     1.0
+    ]
+   },
+   "50ms": {
+    "precision": 1.0,
+    "recall": 0.4375,
+    "tp": 7,
+    "fp": 0,
+    "fn": 9,
+    "precision_wilson95": [
+     0.6457,
+     1.0
+    ]
+   },
+   "100ms": {
+    "precision": 1.0,
+    "recall": 0.3125,
+    "tp": 5,
+    "fp": 0,
+    "fn": 11,
+    "precision_wilson95": [
+     0.5655,
+     1.0
+    ]
+   },
+   "150ms": {
+    "precision": 0.6667,
+    "recall": 0.125,
+    "tp": 2,
+    "fp": 1,
+    "fn": 14,
+    "precision_wilson95": [
+     0.2077,
+     0.9385
+    ]
+   },
+   "200ms": {
+    "precision": 1.0,
+    "recall": 0.0625,
+    "tp": 1,
+    "fp": 0,
+    "fn": 15,
+    "precision_wilson95": [
+     0.2065,
+     1.0
+    ]
+   }
+  }
+ },
+ "n_relabelled": {
+  "train": 0,
+  "test": 20
+ },
+ "n_rally_continues_unresolved": {
+  "train": 2,
+  "test": 5
+ }
+}

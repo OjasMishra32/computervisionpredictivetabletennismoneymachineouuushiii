@@ -23,7 +23,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from geometry import BALL_R, Camera, fit_homography, signed_out_distance
+from geometry import BALL_R, Camera, fit_homography, ground_xy, signed_out_distance
 
 FPS = 30.0
 TRAIN_GAMES = list(range(1, 8))
@@ -100,12 +100,13 @@ def build_flights(labels: dict, cams: dict) -> pd.DataFrame:
     for (g, c), L in labels.items():
         if (g, c) not in cams or cams[(g, c)] is None:
             continue
-        cam = cams[(g, c)]["cam"]
+        cam, H = cams[(g, c)]["cam"], cams[(g, c)]["H"]
         ev = merge_runs(L["status"])
         hits = [k for k, s in ev if s == 1]
         if not hits:
             continue
         first_hit = hits[0]
+        ev_frames = [k for k, _ in ev]
         for i, (k, s) in enumerate(ev):
             if s != 1 or i + 1 >= len(ev) or ev[i + 1][1] != 2:
                 continue
@@ -117,11 +118,19 @@ def build_flights(labels: dict, cams: dict) -> pd.DataFrame:
             tb, uvb, how = gt_bounce(L["uv"], b)
             if not np.isfinite(tb):
                 continue
-            xyz = cam.backproject_to_z(uvb[None], BALL_R)[0]
-            serve = k == first_hit
+            xyz = np.r_[ground_xy(H, cam, uvb[None])[0], BALL_R]
             # server side from the ball at the serve contact (approx. 2.7 m above the ground)
             uvh = L["uv"][k] if np.isfinite(L["uv"][k, 0]) else L["uv"][max(k - 1, 0)]
             hxyz = cam.backproject_to_z(uvh[None], 2.7)[0] if np.isfinite(uvh[0]) else np.full(3, np.nan)
+            # Serve = first hit of the clip (or a hit after >= 1 s without any labelled event), made
+            # from behind a baseline (contact ~2.7 m high maps to 9 < |y| < 13.5 m) and reaching its
+            # bounce within 0.7 s. Several clips do not start at the serve: their first labelled hit is
+            # a rally shot (1-2 s flight, contact far behind the baseline), so "first hit" alone is wrong.
+            prev_ev = [e for e in ev_frames if e < k]
+            quiet = (not prev_ev) or (k - prev_ev[-1]) >= FPS
+            behind = np.isfinite(hxyz[1]) and 9.0 < abs(hxyz[1]) < 13.5
+            fast = (tb - k_end) <= 17.5                          # frames: <= 0.7 s at 25 fps, 0.58 s at 30
+            serve = bool((k == first_hit or quiet) and behind and fast)
             sx = np.sign(hxyz[0]) if np.isfinite(hxyz[0]) else 1.0
             sy = np.sign(hxyz[1]) if np.isfinite(hxyz[1]) else -np.sign(xyz[1])
             d = float(signed_out_distance(xyz[None, :2], np.array([serve]), np.array([sx]),

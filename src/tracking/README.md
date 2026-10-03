@@ -31,8 +31,11 @@ cd $ROOT/src/tracking && python3 make_chunks.py 12000 && cd $ROOT/hpg
                                               # 2. rally frame ranges -> 29 chunks (pure python, seconds)
 sbatch --array=1-29%3 track_detect.sbatch     # 3. detector on 273k rally frames, 3 L4 GPUs at a time
 STAGE=dev sbatch track_analyze.sbatch         # 4. tracks, flights, train accuracy, LOGO model selection, spot check
-STAGE=final MODEL=<chosen> sbatch track_analyze.sbatch
-                                              # 5. ONE test evaluation -> results/tracking/*
+STAGE=final sbatch track_analyze.sbatch      # 5. ONE test evaluation (HGB, gate 0.10 s, frozen) -> results/tracking/*
+cd $ROOT/src/tracking                         # 6. POST-HOC (after step 5), CPU, ~1 min each, via srun:
+python spotcheck.py --audit-test              #    picture of the test flights called MISS at 50 ms
+python audit_labels.py                        #    unannotated-bounce audit, frozen model re-scored
+python summarize.py && python plots.py        #    summary.json; redraw precision_vs_lead.png from saved curves
 ```
 
 Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. It was run once.
@@ -49,6 +52,7 @@ Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. I
 | `flights.py` | one flight per shot (anchored at its `net` event); label BOUNCE / MISS(out, net); reference time T_ref; flight start t0 |
 | `early_call.py` | prefix features (robust quadratic arc in table-normalised image coordinates, extrapolated to the table levels, net and end line), models, LOGO CV, threshold, test evaluation |
 | `plots.py`, `spotcheck.py`, `extract_frames.py` | figures |
+| `audit_labels.py` | post-hoc: finds test flights labelled MISS whose bounce is missing from the markup, and re-scores the frozen model on corrected labels |
 | `summarize.py` | writes `results/tracking/summary.json` |
 
 ## Definitions used in the test
@@ -63,4 +67,18 @@ Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. I
 - **Online call (primary):** a MISS is called by lead L if P(miss) ≥ τ at some decision frame ≤ T_ref − L.
   τ is frozen from leave-one-game-out predictions on game_1..5. It is the smallest threshold whose train
   precision at 50 ms is ≥ 95% and stays ≥ 95% for every higher threshold that still makes at least 5 calls.
-- **H3 verdict:** PASS iff the test precision of MISS calls at the 50 ms lead is ≥ 0.95.
+- **H3 verdict:** PASS iff the test precision of MISS calls at the 50 ms lead is ≥ 0.95 under the snapshot rule.
+  The decision is made at exactly T_ref − 50 ms. Model and gate were selected by leave-one-game-out CV on
+  game_1..5 (DEVIATIONS.md H3-D5).
+
+## Results (test_1..7, evaluated once)
+
+- Detection, tracked, pooled over labelled frames: train recall 0.960, 94.1% within 5 px, 95.5% within
+  10 px; test recall 0.967, 94.0% within 5 px, 96.0% within 10 px. Precision@10 px is 0.98 on both.
+- Flights: train 1,059 BOUNCE / 110 MISS; test 130 / 41 as labelled (150 / 21 after the post-hoc audit).
+- MISS-call precision at the 50 ms lead (snapshot): **11/11 = 1.00** (Wilson 95% CI 0.74–1.00), recall 0.27.
+  **H3: PASS by the pre-registered rule**, on thin evidence. Audit-corrected labels give 8/8, recall 0.38.
+- Online first call, i.e. what a trader acting on the first call gets: precision 1.0, but it rarely fires
+  early. Test recall at 50 ms is 7%. The median lead on the 8 called test misses is 25 ms (p10 17 ms,
+  p90 210 ms). Train OOF: recall 30% at 50 ms, median lead 83 ms.
+- The lead grows with how far out the ball lands. It does not grow with ball speed. See `summary.json`.

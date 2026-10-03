@@ -20,7 +20,7 @@ module load pytorch/2.7
 [ -d "$ROOT/venv" ] || python -m venv --system-site-packages "$ROOT/venv"
 source "$ROOT/venv/bin/activate"
 pip install -q --upgrade pip
-pip install -q gdown opencv-python-headless scipy pandas matplotlib tqdm
+pip install -q gdown opencv-python-headless scipy pandas matplotlib tqdm numba scikit-learn
 cd "$ROOT/ext"
 clone() { [ -d "$1" ] || git clone -q "https://github.com/yastrebksv/$1.git"; (cd "$1" && git checkout -q "$2"); }
 clone TrackNet 730ea17a324321c553c480179caa8ff13e4cf553

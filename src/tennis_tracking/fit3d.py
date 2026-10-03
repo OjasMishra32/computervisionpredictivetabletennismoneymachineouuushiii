@@ -136,11 +136,13 @@ def linear_init(frames, uv, P, fps):
 
 class Fitter:
     def __init__(self, sigma_px=2.0, c_mu=0.004, c_sd=0.006, z_rally=(1.0, 0.6),
-                 z_serve=(2.7, 0.3), drag=True, loss="soft_l1", max_frames=None, hit_sigma=None):
+                 z_serve=(2.7, 0.3), drag=True, loss="soft_l1", max_frames=None, hit_sigma=None,
+                 kd_mult=1.0, fps_mult=1.0):
         self.sig = sigma_px
         self.c_mu, self.c_sd = c_mu, c_sd
         self.z_rally, self.z_serve = z_rally, z_serve
-        self.kd = KD if drag else 0.0
+        self.kd = KD * kd_mult if drag else 0.0     # kd_mult: drag-coefficient multiplier (tuned on train)
+        self.fps_mult = fps_mult                      # multiplies the per-game effective frame rate
         self.loss = loss
         self.max_frames = max_frames
         self.hit_sigma = hit_sigma          # px; include the hit-frame position (offset 0) if set
@@ -168,6 +170,7 @@ class Fitter:
     def fit(self, cam, frames, uv, serve, fps, uv_hit=None):
         """frames: int offsets (>0) from the hit frame; uv: (n,2) pixels; uv_hit: ball at the hit
         frame (offset 0) or None. -> dict or None."""
+        fps = fps * self.fps_mult
         frames = np.asarray(frames, np.int64)
         uv = np.asarray(uv, np.float64)
         if self.max_frames is not None and len(frames) > self.max_frames:
