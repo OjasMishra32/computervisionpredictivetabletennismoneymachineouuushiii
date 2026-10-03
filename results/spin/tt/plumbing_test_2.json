@@ -1,0 +1,157 @@
+{
+ "note": "plumbing only: no labels read, no metric computed",
+ "video": "data/vision/test_2_copyts.mp4",
+ "frames": [
+  0,
+  480
+ ],
+ "detector": "onnx-cpu",
+ "detector_ms_per_frame": 287.3,
+ "tracked_frames": 294,
+ "camera": {
+  "edge_rms_px": {
+   "far": 2.2,
+   "near": 2.18,
+   "left": 0.68,
+   "right": 0.58
+  },
+  "f": 1384.3,
+  "corners": [
+   [
+    549.19,
+    517.4
+   ],
+   [
+    1341.23,
+    531.7
+   ],
+   [
+    1494.63,
+    663.7
+   ],
+   [
+    344.82,
+    639.76
+   ]
+  ],
+  "camera_centre_m": [
+   0.205,
+   -3.922,
+   0.952
+  ],
+  "elevation_deg": 13.62
+ },
+ "runs": [
+  [
+   190,
+   211,
+   22
+  ],
+  [
+   212,
+   259,
+   48
+  ],
+  [
+   260,
+   275,
+   16
+  ],
+  [
+   276,
+   310,
+   35
+  ],
+  [
+   311,
+   336,
+   26
+  ],
+  [
+   338,
+   369,
+   32
+  ],
+  [
+   370,
+   381,
+   12
+  ],
+  [
+   382,
+   415,
+   34
+  ],
+  [
+   416,
+   436,
+   21
+  ],
+  [
+   439,
+   469,
+   31
+  ]
+ ],
+ "pseudo_flight": {
+  "t0": 212,
+  "t_end": 259,
+  "dir": -1.0,
+  "n_points": 48
+ },
+ "anchor": {
+  "anchor": "bounce",
+  "b": 211
+ },
+ "n_decision_frames": 42,
+ "n_with_features": 42,
+ "n_fit_ok": 42,
+ "n_nospin_ok": 42,
+ "missing_feature_columns": [],
+ "core_features_finite": true,
+ "ms_per_decision_frame_spin": 19.1,
+ "ms_per_decision_frame_nospin": 11.1,
+ "features_at_last_decision_frame": {
+  "ph_ok": 1.0,
+  "ph_rms_px": 0.585,
+  "ph_out_frac": 0.0,
+  "ph_npts": 46.0,
+  "ph_nfev": 7.0,
+  "ph_x": 1.009,
+  "ph_y": -0.103,
+  "ph_z": 0.035,
+  "ph_vx": 4.241,
+  "ph_vy": -1.132,
+  "ph_vz": -2.18,
+  "ph_speed": 4.901,
+  "ph_y_sd": 0.056,
+  "ph_z_sd": 0.045,
+  "ph_x_land": -0.332,
+  "ph_y_land": -0.652,
+  "ph_t_land": 0.007,
+  "ph_x_land_sd": 0.076,
+  "ph_y_land_sd": 0.1,
+  "ph_z_net": 0.073,
+  "ph_z_net_sd": 0.011,
+  "ph_net_past": 1.0,
+  "ph_z_end": -0.5,
+  "ph_tau_end": NaN,
+  "ph_p_in": 1.0,
+  "ph_p_long": 0.0,
+  "ph_p_net": 0.0,
+  "ph_p_wide": 0.0,
+  "ph_p_unknown": 0.0,
+  "ph_in_mean": 1.0,
+  "ph_top": 49.337,
+  "ph_side": 18.575,
+  "ph_top_sd": 25.406,
+  "ph_side_sd": 23.812,
+  "ph_top_z": 1.942,
+  "ph_mag_z": -2.054,
+  "ph_mag_lat": 1.326,
+  "ph_x_land_nospin": -0.332,
+  "ph_spin_shift": -0.0,
+  "ph_in_nospin": 1.0
+ },
+ "result": "PASS"
+}

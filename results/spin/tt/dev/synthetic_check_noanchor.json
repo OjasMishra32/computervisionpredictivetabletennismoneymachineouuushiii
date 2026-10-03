@@ -1,0 +1,50 @@
+{
+ "ms_per_decision_frame_both_fits": 88.5,
+ "n_flights": 150,
+ "lead_50ms": {
+  "n": 150,
+  "topspin_corr": 0.938,
+  "topspin_sign_acc_|true|>=20rps": 1.0,
+  "topspin_mae_rps": 7.5,
+  "sidespin_corr": 0.667,
+  "x_land_mae_m_spin": 0.041,
+  "x_land_mae_m_nospin_fit": 0.166,
+  "auc_out_vs_in_1-p_in_spin": 0.919,
+  "auc_out_vs_in_1-p_in_nospin_fit": 0.661,
+  "call_flips_spin_vs_nospin(in_mean)": 41,
+  "flip_correct": 34,
+  "x_land_sd_median": 0.162,
+  "x_land_z_score_sd": 0.81
+ },
+ "lead_100ms": {
+  "n": 150,
+  "topspin_corr": 0.926,
+  "topspin_sign_acc_|true|>=20rps": 1.0,
+  "topspin_mae_rps": 8.2,
+  "sidespin_corr": 0.472,
+  "x_land_mae_m_spin": 0.06,
+  "x_land_mae_m_nospin_fit": 0.163,
+  "auc_out_vs_in_1-p_in_spin": 0.921,
+  "auc_out_vs_in_1-p_in_nospin_fit": 0.649,
+  "call_flips_spin_vs_nospin(in_mean)": 43,
+  "flip_correct": 38,
+  "x_land_sd_median": 0.225,
+  "x_land_z_score_sd": 0.51
+ },
+ "lead_200ms": {
+  "n": 132,
+  "topspin_corr": 0.82,
+  "topspin_sign_acc_|true|>=20rps": 0.955,
+  "topspin_mae_rps": 11.2,
+  "sidespin_corr": 0.307,
+  "x_land_mae_m_spin": 0.078,
+  "x_land_mae_m_nospin_fit": 0.169,
+  "auc_out_vs_in_1-p_in_spin": 0.877,
+  "auc_out_vs_in_1-p_in_nospin_fit": 0.684,
+  "call_flips_spin_vs_nospin(in_mean)": 36,
+  "flip_correct": 24,
+  "x_land_sd_median": 0.342,
+  "x_land_z_score_sd": 0.51
+ },
+ "anchor_mode": "none"
+}

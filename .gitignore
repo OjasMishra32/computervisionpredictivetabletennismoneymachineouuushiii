@@ -11,3 +11,5 @@ docs/live/status.json
 docs/live/figs/
 models/
 ext/
+results/spin/tennis/raw/
+results/spin/**/logs/

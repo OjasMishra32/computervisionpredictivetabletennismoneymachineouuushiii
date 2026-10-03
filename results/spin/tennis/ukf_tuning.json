@@ -1,0 +1,7 @@
+{
+ "q_a": 1e-05,
+ "q_w": 300.0,
+ "q_c": 1e-06,
+ "geomean_rmse_cm": 1.2542858612973338,
+ "objective": "mean log RMSE, leads 100/200/300, worlds nominal+dev, seed 11"
+}
