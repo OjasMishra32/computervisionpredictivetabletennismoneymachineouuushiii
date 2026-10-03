@@ -1,1 +1,2 @@
 2026-10-03T10:57:29.950149Z final evaluation on test_1..7 model=hgb
+2026-10-03T21:36:58.718087Z final evaluation on test_1..7 model=hgb_spin (SECOND model evaluated on test: spin-aware physics features + frozen HGB family, src/spin/tt_early_call.py, tau=0.9304/0.9879, gate=inf) [spin_tt]

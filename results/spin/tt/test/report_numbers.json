@@ -1,0 +1,673 @@
+{
+ "n_test_flights": {
+  "BOUNCE": 130,
+  "MISS": 41
+ },
+ "gate_h_s": Infinity,
+ "frozen_gate_h_s": 0.1,
+ "tau_spin": [
+  0.9304,
+  0.9879
+ ],
+ "frozen_reproduction_check": {
+  "n": 170,
+  "max_abs_diff_p50": 1.1102230246251565e-16
+ },
+ "snapshot_spin": {
+  "0ms": {
+   "tp": 19,
+   "fp": 2,
+   "fn": 22,
+   "calls": 21,
+   "precision": 0.9048,
+   "precision_wilson95": [
+    0.7109,
+    0.9735
+   ],
+   "recall": 0.4634,
+   "recall_wilson95": [
+    0.3206,
+    0.6125
+   ]
+  },
+  "25ms": {
+   "tp": 12,
+   "fp": 2,
+   "fn": 29,
+   "calls": 14,
+   "precision": 0.8571,
+   "precision_wilson95": [
+    0.6006,
+    0.9599
+   ],
+   "recall": 0.2927,
+   "recall_wilson95": [
+    0.1761,
+    0.4448
+   ]
+  },
+  "50ms": {
+   "tp": 10,
+   "fp": 2,
+   "fn": 31,
+   "calls": 12,
+   "precision": 0.8333,
+   "precision_wilson95": [
+    0.552,
+    0.953
+   ],
+   "recall": 0.2439,
+   "recall_wilson95": [
+    0.1382,
+    0.3934
+   ]
+  },
+  "100ms": {
+   "tp": 8,
+   "fp": 3,
+   "fn": 33,
+   "calls": 11,
+   "precision": 0.7273,
+   "precision_wilson95": [
+    0.4343,
+    0.9025
+   ],
+   "recall": 0.1951,
+   "recall_wilson95": [
+    0.1023,
+    0.3401
+   ]
+  },
+  "150ms": {
+   "tp": 7,
+   "fp": 1,
+   "fn": 34,
+   "calls": 8,
+   "precision": 0.875,
+   "precision_wilson95": [
+    0.5291,
+    0.9776
+   ],
+   "recall": 0.1707,
+   "recall_wilson95": [
+    0.0853,
+    0.3126
+   ]
+  },
+  "200ms": {
+   "tp": 3,
+   "fp": 1,
+   "fn": 38,
+   "calls": 4,
+   "precision": 0.75,
+   "precision_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "recall": 0.0732,
+   "recall_wilson95": [
+    0.0252,
+    0.1943
+   ]
+  }
+ },
+ "snapshot_frozen": {
+  "0ms": {
+   "tp": 24,
+   "fp": 0,
+   "fn": 17,
+   "calls": 24,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.862,
+    1.0
+   ],
+   "recall": 0.5854,
+   "recall_wilson95": [
+    0.4337,
+    0.7224
+   ]
+  },
+  "25ms": {
+   "tp": 19,
+   "fp": 0,
+   "fn": 22,
+   "calls": 19,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.8318,
+    1.0
+   ],
+   "recall": 0.4634,
+   "recall_wilson95": [
+    0.3206,
+    0.6125
+   ]
+  },
+  "50ms": {
+   "tp": 11,
+   "fp": 0,
+   "fn": 30,
+   "calls": 11,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.7412,
+    1.0
+   ],
+   "recall": 0.2683,
+   "recall_wilson95": [
+    0.1569,
+    0.4193
+   ]
+  },
+  "100ms": {
+   "tp": 6,
+   "fp": 0,
+   "fn": 35,
+   "calls": 6,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.6097,
+    1.0
+   ],
+   "recall": 0.1463,
+   "recall_wilson95": [
+    0.0688,
+    0.2844
+   ]
+  },
+  "150ms": {
+   "tp": 3,
+   "fp": 1,
+   "fn": 38,
+   "calls": 4,
+   "precision": 0.75,
+   "precision_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "recall": 0.0732,
+   "recall_wilson95": [
+    0.0252,
+    0.1943
+   ]
+  },
+  "200ms": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 39,
+   "calls": 2,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.3424,
+    1.0
+   ],
+   "recall": 0.0488,
+   "recall_wilson95": [
+    0.0135,
+    0.1614
+   ]
+  }
+ },
+ "online_spin": {
+  "0ms": {
+   "tp": 7,
+   "fp": 1,
+   "fn": 34,
+   "calls": 8,
+   "precision": 0.875,
+   "precision_wilson95": [
+    0.5291,
+    0.9776
+   ],
+   "recall": 0.1707,
+   "recall_wilson95": [
+    0.0853,
+    0.3126
+   ]
+  },
+  "25ms": {
+   "tp": 6,
+   "fp": 1,
+   "fn": 35,
+   "calls": 7,
+   "precision": 0.8571,
+   "precision_wilson95": [
+    0.4869,
+    0.9743
+   ],
+   "recall": 0.1463,
+   "recall_wilson95": [
+    0.0688,
+    0.2844
+   ]
+  },
+  "50ms": {
+   "tp": 6,
+   "fp": 1,
+   "fn": 35,
+   "calls": 7,
+   "precision": 0.8571,
+   "precision_wilson95": [
+    0.4869,
+    0.9743
+   ],
+   "recall": 0.1463,
+   "recall_wilson95": [
+    0.0688,
+    0.2844
+   ]
+  },
+  "100ms": {
+   "tp": 1,
+   "fp": 1,
+   "fn": 40,
+   "calls": 2,
+   "precision": 0.5,
+   "precision_wilson95": [
+    0.0945,
+    0.9055
+   ],
+   "recall": 0.0244,
+   "recall_wilson95": [
+    0.0043,
+    0.126
+   ]
+  },
+  "150ms": {
+   "tp": 1,
+   "fp": 1,
+   "fn": 40,
+   "calls": 2,
+   "precision": 0.5,
+   "precision_wilson95": [
+    0.0945,
+    0.9055
+   ],
+   "recall": 0.0244,
+   "recall_wilson95": [
+    0.0043,
+    0.126
+   ]
+  },
+  "200ms": {
+   "tp": 0,
+   "fp": 1,
+   "fn": 41,
+   "calls": 1,
+   "precision": 0.0,
+   "precision_wilson95": [
+    0.0,
+    0.7935
+   ],
+   "recall": 0.0,
+   "recall_wilson95": [
+    0.0,
+    0.0857
+   ]
+  }
+ },
+ "online_frozen": {
+  "0ms": {
+   "tp": 8,
+   "fp": 0,
+   "fn": 33,
+   "calls": 8,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.6756,
+    1.0
+   ],
+   "recall": 0.1951,
+   "recall_wilson95": [
+    0.1023,
+    0.3401
+   ]
+  },
+  "25ms": {
+   "tp": 5,
+   "fp": 0,
+   "fn": 36,
+   "calls": 5,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.5655,
+    1.0
+   ],
+   "recall": 0.122,
+   "recall_wilson95": [
+    0.0532,
+    0.2554
+   ]
+  },
+  "50ms": {
+   "tp": 3,
+   "fp": 0,
+   "fn": 38,
+   "calls": 3,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.4385,
+    1.0
+   ],
+   "recall": 0.0732,
+   "recall_wilson95": [
+    0.0252,
+    0.1943
+   ]
+  },
+  "100ms": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 39,
+   "calls": 2,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.3424,
+    1.0
+   ],
+   "recall": 0.0488,
+   "recall_wilson95": [
+    0.0135,
+    0.1614
+   ]
+  },
+  "150ms": {
+   "tp": 1,
+   "fp": 0,
+   "fn": 40,
+   "calls": 1,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.2065,
+    1.0
+   ],
+   "recall": 0.0244,
+   "recall_wilson95": [
+    0.0043,
+    0.126
+   ]
+  },
+  "200ms": {
+   "tp": 1,
+   "fp": 0,
+   "fn": 40,
+   "calls": 1,
+   "precision": 1.0,
+   "precision_wilson95": [
+    0.2065,
+    1.0
+   ],
+   "recall": 0.0244,
+   "recall_wilson95": [
+    0.0043,
+    0.126
+   ]
+  }
+ },
+ "first_call_spin": {
+  "n_miss": 41,
+  "n_miss_called": 7,
+  "median_lead_ms": 75.0,
+  "p10_lead_ms": 30.0,
+  "p90_lead_ms": 115.0,
+  "n_bounce_called_any_lead": 1,
+  "online_precision_any_lead": 0.875
+ },
+ "first_call_frozen": {
+  "n_miss": 41,
+  "n_miss_called": 8,
+  "median_lead_ms": 25.0,
+  "p10_lead_ms": 16.7,
+  "p90_lead_ms": 210.0,
+  "n_bounce_called_any_lead": 0,
+  "online_precision_any_lead": 1.0
+ },
+ "flips_spin_vs_frozen": {
+  "snap_call_50ms": {
+   "spin_only_true_miss": 1,
+   "spin_only_true_bounce": 2,
+   "frozen_only_true_miss": 2,
+   "frozen_only_true_bounce": 0,
+   "both": 9,
+   "n_flights": 171,
+   "flip_rate": 0.0292
+  },
+  "online_call_by_50ms": {
+   "spin_only_true_miss": 3,
+   "spin_only_true_bounce": 1,
+   "frozen_only_true_miss": 0,
+   "frozen_only_true_bounce": 0,
+   "both": 3,
+   "n_flights": 171,
+   "flip_rate": 0.0234
+  },
+  "online_call_any": {
+   "spin_only_true_miss": 3,
+   "spin_only_true_bounce": 1,
+   "frozen_only_true_miss": 4,
+   "frozen_only_true_bounce": 0,
+   "both": 4,
+   "n_flights": 171,
+   "flip_rate": 0.0468
+  }
+ },
+ "miss_first_call": {
+  "n_miss": 41,
+  "called_spin": 7,
+  "called_frozen": 8,
+  "called_both": 4,
+  "called_spin_only": 3,
+  "called_frozen_only": 4,
+  "lead_gain_both_ms": {
+   "median": -25.0,
+   "mean": -81.2,
+   "n_earlier": 1,
+   "n_same": 0,
+   "n_later": 3
+  },
+  "spin_only_leads_ms": [
+   0.0,
+   50.0,
+   150.0
+  ],
+  "median_lead_spin_ms": 75.0,
+  "median_lead_frozen_ms": 25.0,
+  "mean_lead_all_miss_spin_ms": 12.4,
+  "mean_lead_all_miss_frozen_ms": 17.5,
+  "bounce_called_spin": 1,
+  "bounce_called_frozen": 0
+ },
+ "spin_readout_test": {
+  "note": "last decision frame of each test flight (the fit uses the whole flight up to t_ref - 2 frames); rps; rpm = 60 x rps; top > 0 topspin, < 0 backspin",
+  "n_flights_with_fit": 170,
+  "top_rps_all": {
+   "p5": -64.2,
+   "p25": 11.0,
+   "p50": 51.0,
+   "p75": 86.8,
+   "p95": 139.2,
+   "n": 170,
+   "mean": 42.4
+  },
+  "side_rps_all": {
+   "p5": -12.9,
+   "p25": 11.4,
+   "p50": 26.7,
+   "p75": 44.3,
+   "p95": 99.1,
+   "n": 170,
+   "mean": 32.0
+  },
+  "top_sd_rps": {
+   "p5": 3.3,
+   "p25": 10.2,
+   "p50": 18.2,
+   "p75": 30.8,
+   "p95": 54.0,
+   "n": 170,
+   "mean": 32.2
+  },
+  "side_sd_rps": {
+   "p5": 6.0,
+   "p25": 14.6,
+   "p50": 24.2,
+   "p75": 30.9,
+   "p95": 55.2,
+   "n": 170,
+   "mean": 27.9
+  },
+  "top_rpm_all": {
+   "p5": -3852.1,
+   "p25": 657.6,
+   "p50": 3060.7,
+   "p75": 5209.9,
+   "p95": 8352.1,
+   "n": 170,
+   "mean": 2546.2
+  },
+  "side_rpm_all": {
+   "p5": -775.6,
+   "p25": 686.7,
+   "p50": 1599.8,
+   "p75": 2659.1,
+   "p95": 5945.2,
+   "n": 170,
+   "mean": 1917.1
+  },
+  "share_topspin_z_gt_2": 0.641,
+  "share_backspin_z_lt_minus2": 0.076,
+  "n_confident_top_sd_le_20rps": 86,
+  "top_rps_confident": {
+   "p5": -26.4,
+   "p25": -1.3,
+   "p50": 20.5,
+   "p75": 46.0,
+   "p95": 82.4,
+   "n": 86,
+   "mean": 23.7
+  },
+  "side_rps_confident": {
+   "p5": -12.7,
+   "p25": 7.7,
+   "p50": 18.8,
+   "p75": 35.7,
+   "p95": 69.9,
+   "n": 86,
+   "mean": 22.6
+  },
+  "by_label": {
+   "BOUNCE": {
+    "top_rps": {
+     "p5": -21.1,
+     "p25": 19.6,
+     "p50": 53.1,
+     "p75": 86.8,
+     "p95": 139.2,
+     "n": 130,
+     "mean": 53.8
+    },
+    "side_rps": {
+     "p5": -12.0,
+     "p25": 13.7,
+     "p50": 27.4,
+     "p75": 43.1,
+     "p95": 73.9,
+     "n": 130,
+     "mean": 30.3
+    },
+    "speed_mps": {
+     "p5": 3.9,
+     "p25": 5.5,
+     "p50": 7.3,
+     "p75": 9.4,
+     "p95": 12.1,
+     "n": 130,
+     "mean": 7.5
+    }
+   },
+   "MISS": {
+    "top_rps": {
+     "p5": -230.7,
+     "p25": -12.8,
+     "p50": 26.0,
+     "p75": 83.4,
+     "p95": 125.1,
+     "n": 40,
+     "mean": 5.6
+    },
+    "side_rps": {
+     "p5": -13.5,
+     "p25": 7.5,
+     "p50": 25.8,
+     "p75": 51.8,
+     "p95": 122.8,
+     "n": 40,
+     "mean": 37.4
+    },
+    "speed_mps": {
+     "p5": 5.0,
+     "p25": 6.2,
+     "p50": 7.9,
+     "p75": 10.4,
+     "p95": 12.7,
+     "n": 40,
+     "mean": 8.4
+    }
+   }
+  },
+  "share_abs_top_le_150rps": 0.929,
+  "share_abs_side_le_150rps": 0.988,
+  "top_rps_at_50ms_lead": {
+   "p5": -30.7,
+   "p25": 16.6,
+   "p50": 49.3,
+   "p75": 73.5,
+   "p95": 113.1,
+   "n": 170,
+   "mean": 40.8
+  },
+  "top_sd_rps_at_50ms_lead": {
+   "p5": 5.2,
+   "p25": 12.2,
+   "p50": 21.9,
+   "p75": 31.0,
+   "p95": 47.9,
+   "n": 170,
+   "mean": 27.3
+  },
+  "spin_diagnostics_from_run": {
+   "n_flights_with_fit_at_50ms": 170,
+   "n_flights": 171,
+   "BOUNCE": {
+    "median_top_rps": 45.685,
+    "median_side_rps": 18.452,
+    "median_top_sd_rps": 21.631,
+    "median_mag_z_mps2": -4.282,
+    "median_rms_px": 0.809,
+    "median_speed_mps": 7.592,
+    "median_x_land_m": -0.484,
+    "median_p_in": 0.941,
+    "share_topspin_z>2": 0.569,
+    "share_backspin_z<-2": 0.023
+   },
+   "MISS": {
+    "median_top_rps": 54.589,
+    "median_side_rps": 27.579,
+    "median_top_sd_rps": 22.449,
+    "median_mag_z_mps2": -4.043,
+    "median_rms_px": 1.283,
+    "median_speed_mps": 8.29,
+    "median_x_land_m": -0.206,
+    "median_p_in": 0.559,
+    "share_topspin_z>2": 0.75,
+    "share_backspin_z<-2": 0.025
+   },
+   "anchor_share": {
+    "2.0": 0.741,
+    "1.0": 0.153,
+    "0.0": 0.106
+   }
+  }
+ }
+}

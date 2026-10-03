@@ -1,0 +1,78 @@
+{
+ "footage": "real match footage (OpenTTGames, held-out games; CC BY-NC-SA 4.0)",
+ "note": "post-hoc display selection; no metric computed",
+ "flights": [
+  {
+   "file": "test_5_902.json",
+   "video": "test_5",
+   "f_net": 902,
+   "label": "MISS",
+   "spin_lead_ms": 150.0,
+   "frozen_lead_ms": null,
+   "top_rpm_t_ref": 444.0,
+   "side_rpm_t_ref": 962.0,
+   "top_rpm_50ms": 364.0,
+   "reproduction_max_abs_dev": 0.0
+  },
+  {
+   "file": "test_2_2819.json",
+   "video": "test_2",
+   "f_net": 2819,
+   "label": "MISS",
+   "spin_lead_ms": 91.66666666666669,
+   "frozen_lead_ms": 408.3333333333333,
+   "top_rpm_t_ref": 3736.0,
+   "side_rpm_t_ref": 1491.0,
+   "top_rpm_50ms": 3303.0,
+   "reproduction_max_abs_dev": 0.0
+  },
+  {
+   "file": "test_6_1484.json",
+   "video": "test_6",
+   "f_net": 1484,
+   "label": "MISS",
+   "spin_lead_ms": null,
+   "frozen_lead_ms": 25.0,
+   "top_rpm_t_ref": 8737.0,
+   "side_rpm_t_ref": 4305.0,
+   "top_rpm_50ms": 6403.0,
+   "reproduction_max_abs_dev": 0.0
+  },
+  {
+   "file": "test_6_3381.json",
+   "video": "test_6",
+   "f_net": 3381,
+   "label": "BOUNCE",
+   "spin_lead_ms": null,
+   "frozen_lead_ms": null,
+   "top_rpm_t_ref": 2694.0,
+   "side_rpm_t_ref": 524.0,
+   "top_rpm_50ms": 2717.0,
+   "reproduction_max_abs_dev": 0.0
+  },
+  {
+   "file": "test_4_30262.json",
+   "video": "test_4",
+   "f_net": 30262,
+   "label": "BOUNCE",
+   "spin_lead_ms": null,
+   "frozen_lead_ms": null,
+   "top_rpm_t_ref": -1266.0,
+   "side_rpm_t_ref": 1661.0,
+   "top_rpm_50ms": -1117.0,
+   "reproduction_max_abs_dev": 0.0
+  },
+  {
+   "file": "test_7_9699.json",
+   "video": "test_7",
+   "f_net": 9699,
+   "label": "MISS",
+   "spin_lead_ms": null,
+   "frozen_lead_ms": null,
+   "top_rpm_t_ref": -5845.0,
+   "side_rpm_t_ref": 1203.0,
+   "top_rpm_50ms": -5846.0,
+   "reproduction_max_abs_dev": 0.0
+  }
+ ]
+}
