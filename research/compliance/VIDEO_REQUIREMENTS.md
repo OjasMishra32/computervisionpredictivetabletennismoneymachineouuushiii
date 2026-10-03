@@ -5,12 +5,15 @@ the full argument, the IC questions, the pipeline diagram and the latency analys
 the test, and the profit, in a really cool way.** Voice: ElevenLabs "Liam", energetic, few words (about 110-140 spoken words
 total). Fast, punchy editing; music bed with hits on the calls.
 
+Purpose: convince a SKEPTIC in about 60 s that the model actually works, with Liam explaining (ElevenLabs).
+
 | time | content |
 |---|---|
 | 0:00-0:04 | Cold open: one real MISS call in slow motion, "Called 408 ms before contact", title COURTSIDE |
-| 0:04-0:30 | **The model working on multiple table-tennis games**: a fast montage / 2x2 split-screen across several held-out real games (OpenTTGames test_1..test_7, credited), each with the ball comet trail, predicted arc, live P(miss) gauge rising and "MISS - n ms early" / "IN" call stamps as they happen; counters: "frames tracked", "calls made", "precision" from the logged evaluation (results/engine/online_vs_offline.json, results/tracking/summary.json, spin results). Only calls actually made by the model at those frames (results/engine/online_events_L4.jsonl, cv_showcase logs); examples are examples - the counters carry the honest totals. |
-| 0:30-0:45 | **The test**: GPU 120 fps / 4.6 ms; the returns-vs-latency curve flashing in with the dotted 1 s line; today's real Polymarket match replay (order book racing, orders filling) labelled "backtest replay, assumed 1 s licensed feed" |
-| 0:45-0:57 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $ and Sharpe, both readings shown compactly), equity curve drawing in |
+| 0:04-0:24 | **Proof it works, multiple games**: 2x2 split-screen / fast montage across several held-out real table-tennis games (OpenTTGames test_1..test_7, credited): ball comet trail, predicted arc, live P(miss) gauge, "MISS - n ms early" / "IN" stamps exactly when the model made them (results/engine/online_events_L4.jsonl, cv_showcase logs); live counters with the honest totals (frames tracked, detection accuracy, calls, precision; results/engine/online_vs_offline.json, results/tracking/summary.json) |
+| 0:24-0:34 | **The pipeline**: animated boxes feed -> WebRTC -> GPU CV -> fair value -> risk -> order -> network -> Polymarket 1 s delay -> fill, each with measured ms (results/e2e, results/engine/vision_bench_gpu.json: 120 fps, 4.6 ms; results/webrtc) and the total vs the < 3 s requirement |
+| 0:34-0:46 | **The latency graphs**: returns vs feed latency (log axis, dotted 1 s baseline, source bands, break-even), then the edge-decay panel (edge vs seconds after the move: fast tier vs everyone else) |
+| 0:46-0:57 | **The test and the profit**: today's real Polymarket match replay (orders racing the book; "backtest replay, assumed 1 s licensed feed") then money counters at the simulated 1 s baseline (IS / OOS $/day and Sharpe, both readings compact) with the equity curve drawing in |
 | 0:57-1:00 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
 The material below (presentation structure, IC framing) now applies to the DECK and PAPER, not the video.
