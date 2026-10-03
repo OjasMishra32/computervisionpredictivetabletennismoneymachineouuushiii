@@ -148,6 +148,10 @@ trip, and that decides queue order behind the 1 s delay.
   size if the trailing-month net edge falls below 0.3¢ and stop at ≤ 0.
 - **Crowding.** Qualifying wallets grew 4 → 131. Edge per share fell from ~2.4¢ to ~0.8¢ but stayed
   positive every month.
+- **Risk dial, tested blind.** v2-safe halves the net cap to 50 shares (chosen on in-sample data only,
+  pre-registered). Burned OOS: worst day −$224 vs −$469, Sharpe 9.3 vs 6.7, 67.5% profitable days. On the
+  unseen-match OOS it still fails (60% profitable days). Caps shrink losing days but do not make them rarer;
+  only a larger edge per trade does.
 - **Position limits.** Net |exposure| ≤ 100 shares per match; ≤ $1k per order; capital = 3× peak
   locked. The worst historical match lost $206 (v1: $3,098); the worst day was −1.9% in sample and −2.1% out.
 - **Wrong calls and outages.** Trade only calls with P ≥ 0.95. Kill switch on any feed or tracking
