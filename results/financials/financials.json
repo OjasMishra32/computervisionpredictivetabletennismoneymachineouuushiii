@@ -1,0 +1,3328 @@
+{
+ "generated_utc": "2026-10-03T18:57:24Z",
+ "script": "scripts/financials.py",
+ "runtime_s": 55.5,
+ "conventions": {
+  "daily": "calendar-day zero-filled P&L from first to last trade day (research/v2/sizing/engine.py daily_series)",
+  "sharpe_sortino": "x sqrt(365); Sortino denominator = RMS of negative days (scripts/lowloss_test.py)",
+  "capital": "3 x peak dollars locked",
+  "annualised": "simple x 365/days",
+  "return_ci": "iid day bootstrap, 10000 draws, seed 20261003",
+  "win_rate_ci": "match-clustered bootstrap, 2000 draws",
+  "per_share_ci": "match-clustered bootstrap, 1000 draws (engine metrics)",
+  "max_dd": "equity path starting at 0, so a loss on day 1 counts",
+  "days_per_month": 30.416666666666668
+ },
+ "cost_assumptions": {
+  "feed_licence": {
+   "name": "Official live ATP/WTA point-data feed licence",
+   "label": "ASSUMPTION (no public price exists)",
+   "unit": "$/month",
+   "low": 1250.0,
+   "central": 5000.0,
+   "high": 10000.0,
+   "basis": "No public price exists for an official low-latency ATP/WTA point feed (Sportradar / Tennis Data Innovations for ATP and Challenger, Stats Perform RunningBall for WTA): access is by sales quote. The range is anchored to reported figures: Sportradar API 'from $1,250/month' (LSports guide, low); 'starter contracts typically $5,000 to $10,000/month' and '$10,000+/month' for enterprise (SharpAPI, a competitor's unverified claim; central and high). Stats Perform says its WTA feed is faster than the umpire feed on 80% of points; it lists no price.",
+   "sources": [
+    "https://www.lsports.eu/blog/sports-data-cost/",
+    "https://sharpapi.io/compare/sportradar-alternative",
+    "https://www.statsperform.com/products/official-wta-data-streaming/"
+   ]
+  },
+  "vps_london": {
+   "name": "London gateway VPS (AWS eu-west-2, on-demand Linux)",
+   "label": "ESTIMATE (public list price)",
+   "unit": "$/month",
+   "low": 34.455999999999996,
+   "central": 77.4165,
+   "high": 98.112,
+   "basis": "t3.medium $0.0472/h (low), c7i.large $0.10605/h (central), c6in.large $0.1344/h (network-optimised, high), x 730 h/month; AWS public price list for EU (London), published 2026-09-25. Hetzner has no London location (Germany, Finland, US, Singapore); its CX23 (2 vCPU, 4 GB) lists at EUR 5.49 / $6.49 a month, a non-co-located reference only.",
+   "sources": [
+    "https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/ec2/USD/current/ec2-ondemand-without-sec-sel/EU%20(London)/Linux/index.json",
+    "https://www.hetzner.com/cloud/",
+    "https://costgoat.com/pricing/hetzner"
+   ]
+  },
+  "polymarket_api": {
+   "name": "Polymarket CLOB / data API",
+   "label": "ESTIMATE (public documentation)",
+   "unit": "$/month",
+   "low": 0.0,
+   "central": 0.0,
+   "high": 0.0,
+   "basis": "No subscription, key or paid tier is documented; limits are IP-based Cloudflare throttling. Trading fees are not infrastructure: they are in the waterfall (taker fee C x feeRate x p(1-p), sports feeRate 0.05, 15% maker rebate).",
+   "sources": [
+    "https://docs.polymarket.com/quickstart/introduction/rate-limits",
+    "https://docs.polymarket.com/polymarket-learn/trading/fees"
+   ]
+  },
+  "hipergator": {
+   "name": "HiPerGator (training, backtests)",
+   "label": "STATE: university allocation",
+   "unit": "$/month",
+   "low": 0.0,
+   "central": 0.0,
+   "high": 0.0,
+   "basis": "$0 marginal cost to the team (UF allocation). List-price equivalent if bought: $620 per GPU (NGU) per year and $44 per CPU core (NCU) per year (UF Research Computing service rates), about $52 per GPU-month.",
+   "sources": [
+    "https://it.ufl.edu/rc/get-started/price-list"
+   ]
+  },
+  "camera_operator": {
+   "name": "Courtside camera operator (tier-0 only)",
+   "label": "ESTIMATE",
+   "unit": "$/hour",
+   "low": 36.1,
+   "central": 36.1,
+   "high": 36.1,
+   "basis": "US median wage, camera operators (television, video and film), May 2025: $74,990/yr, $36.10/h (BLS).",
+   "sources": [
+    "https://www.bls.gov/ooh/media-and-communication/film-and-video-editors-and-camera-operators.htm"
+   ]
+  },
+  "gpu_inference": {
+   "name": "Cloud GPU for CV inference, per covered event hour (tier-0 only)",
+   "label": "ESTIMATE (public list price)",
+   "unit": "$/hour",
+   "low": 0.615,
+   "central": 0.615,
+   "high": 1.0216,
+   "basis": "AWS EU (London) on demand: g4dn.xlarge (1x T4) $0.615/h; g6.xlarge (1x L4) $1.0216/h (high). On-venue inference on our own hardware would replace this; HiPerGator is not a live venue.",
+   "sources": [
+    "https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/ec2/USD/current/ec2-ondemand-without-sec-sel/EU%20(London)/Linux/index.json"
+   ]
+  },
+  "event_hours": {
+   "name": "Operator + GPU hours per covered match (tier-0 only)",
+   "label": "ASSUMPTION",
+   "unit": "hours/event",
+   "low": 3.0,
+   "central": 4.0,
+   "high": 5.0,
+   "basis": "A best-of-3 match plus set-up. Central = the repo's 4 h ex-ante capital lock per position (src/v2.py LOCK_S).",
+   "sources": []
+  },
+  "venue_access": {
+   "name": "Camera position / venue access fee per event (tier-0 only)",
+   "label": "ASSUMPTION (no public price exists)",
+   "unit": "$/event",
+   "low": 0.0,
+   "central": 250.0,
+   "high": 500.0,
+   "basis": "A legal tier-0 needs the organiser's permission for a camera (courtsiding breaches ticket terms, docs/NOTE.md section 6). No public price exists for that right. Range is ours; low = $0.",
+   "sources": []
+  },
+  "camera_kit": {
+   "name": "120 fps camera kit, amortised over 24 months (tier-0 only)",
+   "label": "ASSUMPTION",
+   "unit": "$/kit",
+   "low": 500.0,
+   "central": 1000.0,
+   "high": 2000.0,
+   "basis": "Hardware per covered court (camera, lens, mount, edge box). No quote obtained; range is ours.",
+   "sources": []
+  }
+ },
+ "cost_of_capital": {
+  "rate": 0.04,
+  "label": "ESTIMATE",
+  "what": "3-month US Treasury bill, secondary market, discount basis, 2026-10-01 (FRED DTB3)",
+  "url": "https://fred.stlouisfed.org/series/DTB3",
+  "retrieved": "2026-10-03"
+ },
+ "stacks": {
+  "v2": {
+   "monthly": [
+    "feed_licence",
+    "vps_london",
+    "polymarket_api",
+    "hipergator"
+   ],
+   "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 7); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound."
+  },
+  "v2_safe": {
+   "monthly": [
+    "feed_licence",
+    "vps_london",
+    "polymarket_api",
+    "hipergator"
+   ],
+   "note": "Same infrastructure as v2."
+  },
+  "tier0": {
+   "monthly": [
+    "feed_licence",
+    "vps_london",
+    "polymarket_api",
+    "hipergator"
+   ],
+   "per_event": true,
+   "note": "Feed licence + London gateway + one camera, operator and GPU per covered match (coverage from the scenario)."
+  },
+  "maker": {
+   "monthly": [
+    "vps_london",
+    "polymarket_api",
+    "hipergator"
+   ],
+   "note": "Public moneyline websocket + quoting in side markets: no licensed data, no camera."
+  },
+  "tt": {
+   "monthly": [
+    "vps_london",
+    "polymarket_api",
+    "hipergator"
+   ],
+   "note": "Same remote stack as the maker."
+  }
+ },
+ "headline": [
+  {
+   "strategy": "v2 (frozen fast-tier book)",
+   "period": "IS",
+   "status": "ok",
+   "trades": 55662,
+   "net_c_per_share": 1.3814511010237975,
+   "net_c_per_share_ci95": [
+    1.167847083750991,
+    1.5935130267793969
+   ],
+   "net_trading_usd_per_day": 196.24135529941364,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 154.01266488845474,
+    "central": 29.312593655578013,
+    "high": -135.75136798825756
+   },
+   "capital_usd": 28302.367701375268,
+   "return_on_capital_ann_pct": 253.0816341588461,
+   "sharpe_ann": 14.483153541485253,
+   "max_dd_pct": -2.0120402719953496,
+   "notional_usd_per_day": 7182.350074785291,
+   "breakeven_notional_usd_per_day_central": 6109.521623753285
+  },
+  {
+   "strategy": "v2 (frozen fast-tier book)",
+   "period": "OOS (burned, non-blind)",
+   "status": "ok",
+   "trades": 10412,
+   "net_c_per_share": 0.598736335564979,
+   "net_c_per_share_ci95": [
+    0.08724550818301618,
+    1.1271958683912837
+   ],
+   "net_trading_usd_per_day": 92.18839800484167,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 49.959707593882776,
+    "central": -74.74036363899395,
+    "high": -239.80432528282952
+   },
+   "capital_usd": 22754.046251146858,
+   "return_on_capital_ann_pct": 147.88035894965816,
+   "sharpe_ann": 6.667551867200974,
+   "max_dd_pct": -2.0630607174176805,
+   "notional_usd_per_day": 8062.2581058811575,
+   "breakeven_notional_usd_per_day_central": 14598.613174697271
+  },
+  {
+   "strategy": "v2 (frozen fast-tier book)",
+   "period": "U2 unseen markets, OOS period (blind)",
+   "status": "ok",
+   "trades": 4616,
+   "net_c_per_share": 1.2237506660945057,
+   "net_c_per_share_ci95": [
+    -0.18634258245445473,
+    2.647924922039621
+   ],
+   "net_trading_usd_per_day": 52.929186378447,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 10.700495967488102,
+    "central": -113.99957526538863,
+    "high": -279.0635369092242
+   },
+   "capital_usd": 7431.5220783995355,
+   "return_on_capital_ann_pct": 259.96226377751356,
+   "sharpe_ann": 5.300997763635398,
+   "max_dd_pct": -10.826875225371873,
+   "notional_usd_per_day": 2222.9435416918786,
+   "breakeven_notional_usd_per_day_central": 7010.748473736034
+  },
+  {
+   "strategy": "v2 (frozen fast-tier book)",
+   "period": "Forward (blind)",
+   "status": "pending"
+  },
+  {
+   "strategy": "v2-safe (net cap 50)",
+   "period": "IS",
+   "status": "ok",
+   "trades": 50950,
+   "net_c_per_share": 1.3328961476025758,
+   "net_c_per_share_ci95": [
+    1.155146199387172,
+    1.5176686335632352
+   ],
+   "net_trading_usd_per_day": 115.84428167689832,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 73.61559126593943,
+    "central": -51.08447996693731,
+    "high": -216.14844161077286
+   },
+   "capital_usd": 17680.604395182603,
+   "return_on_capital_ann_pct": 239.1499853002123,
+   "sharpe_ann": 15.695873058769765,
+   "max_dd_pct": -1.6071751019680214,
+   "notional_usd_per_day": 4383.29617683147,
+   "breakeven_notional_usd_per_day_central": 6316.222019118893
+  },
+  {
+   "strategy": "v2-safe (net cap 50)",
+   "period": "OOS (burned, non-blind)",
+   "status": "ok",
+   "trades": 9487,
+   "net_c_per_share": 0.6860339640787971,
+   "net_c_per_share_ci95": [
+    0.24261209337899814,
+    1.1528888996078328
+   ],
+   "net_trading_usd_per_day": 63.336994483277955,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 21.108304072319058,
+    "central": -103.59176716055768,
+    "high": -268.6557288043932
+   },
+   "capital_usd": 13584.425972042536,
+   "return_on_capital_ann_pct": 170.18019777924013,
+   "sharpe_ann": 9.272747859573085,
+   "max_dd_pct": -1.8600391019565652,
+   "notional_usd_per_day": 4803.997352926812,
+   "breakeven_notional_usd_per_day_central": 12661.246963274507
+  },
+  {
+   "strategy": "v2-safe (net cap 50)",
+   "period": "U2 unseen markets, OOS period (blind)",
+   "status": "ok",
+   "trades": 4196,
+   "net_c_per_share": 1.2057787207785529,
+   "net_c_per_share_ci95": [
+    -0.024487393891254337,
+    2.428511478231625
+   ],
+   "net_trading_usd_per_day": 33.524553051710065,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": -8.704137359248833,
+    "central": -133.40420859212557,
+    "high": -298.4681702359611
+   },
+   "capital_usd": 4523.885487725593,
+   "return_on_capital_ann_pct": 270.4856676207806,
+   "sharpe_ann": 5.524164336636546,
+   "max_dd_pct": -8.90962735777224,
+   "notional_usd_per_day": 1428.8259861584313,
+   "breakeven_notional_usd_per_day_central": 7114.551299343655
+  },
+  {
+   "strategy": "Tier-0 CV edge (COUNTERFACTUAL)",
+   "period": "IS",
+   "status": "pending"
+  },
+  {
+   "strategy": "Tier-0 CV edge (COUNTERFACTUAL)",
+   "period": "OOS (burned, non-blind)",
+   "status": "pending"
+  },
+  {
+   "strategy": "Maker v1, side markets",
+   "period": "IS",
+   "status": "ok",
+   "trades": 8905,
+   "net_c_per_share": 2.593740005037715,
+   "net_c_per_share_ci95": [
+    -0.09137831514037778,
+    5.1994244890791395
+   ],
+   "net_trading_usd_per_day": 20.201545088551505,
+   "fixed_cost_usd_per_day": {
+    "low": 1.1327999999999998,
+    "central": 2.5452,
+    "high": 3.2255999999999996
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 19.068745088551506,
+    "central": 17.656345088551504,
+    "high": 16.975945088551505
+   },
+   "capital_usd": 2779.310963325458,
+   "return_on_capital_ann_pct": 265.30186994616815,
+   "sharpe_ann": 2.4908627097407927,
+   "max_dd_pct": -59.16545354297222,
+   "notional_usd_per_day": 424.69146147279037,
+   "breakeven_notional_usd_per_day_central": 53.50703141776621
+  },
+  {
+   "strategy": "Maker v1, side markets",
+   "period": "IS, current 1 s / 5% regime only",
+   "status": "ok",
+   "trades": 4159,
+   "net_c_per_share": 3.353803976076433,
+   "net_c_per_share_ci95": [
+    -0.414764755592212,
+    6.875031741464981
+   ],
+   "net_trading_usd_per_day": 71.0632133376297,
+   "fixed_cost_usd_per_day": {
+    "low": 1.1327999999999998,
+    "central": 2.5452,
+    "high": 3.2255999999999996
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 69.9304133376297,
+    "central": 68.51801333762971,
+    "high": 67.8376133376297
+   },
+   "capital_usd": 2779.3109633254558,
+   "return_on_capital_ann_pct": 933.2555158635378,
+   "sharpe_ann": 4.829085557673454,
+   "max_dd_pct": -57.86796054862887,
+   "notional_usd_per_day": 1180.9709266046752,
+   "breakeven_notional_usd_per_day_central": 42.29765389461457
+  },
+  {
+   "strategy": "Maker v1, side markets",
+   "period": "OOS (blind)",
+   "status": "ok",
+   "trades": 2207,
+   "net_c_per_share": -0.7515756876079489,
+   "net_c_per_share_ci95": [
+    -4.972760619376541,
+    3.3346406712343173
+   ],
+   "net_trading_usd_per_day": -9.475786655700007,
+   "fixed_cost_usd_per_day": {
+    "low": 1.1327999999999998,
+    "central": 2.5452,
+    "high": 3.2255999999999996
+   },
+   "net_after_costs_usd_per_day": {
+    "low": -10.608586655700007,
+    "central": -12.020986655700007,
+    "high": -12.701386655700007
+   },
+   "capital_usd": 2021.693133563061,
+   "return_on_capital_ann_pct": -171.07750290643304,
+   "sharpe_ann": -1.4226706180503594,
+   "max_dd_pct": -57.1857932198857,
+   "notional_usd_per_day": 720.092927325,
+   "breakeven_notional_usd_per_day_central": null
+  },
+  {
+   "strategy": "Maker v1, side markets",
+   "period": "Live paper session",
+   "status": "pending"
+  },
+  {
+   "strategy": "Table tennis (out-of-sport test)",
+   "period": "Results",
+   "status": "pending"
+  }
+ ],
+ "reading": [
+  "v2 nets $196/day IS and $92/day in the burned OOS before fixed costs. Taker fees take 0.61\u00a2 of a 1.99\u00a2 gross edge per share IS and 0.94\u00a2 of 1.54\u00a2 OOS.",
+  "With a feed licence (ASSUMPTION, central $5,000/month) plus a London VPS, v2's fixed costs are $167/day (range $42\u2013$332). That leaves $29/day IS and \u2212$75/day OOS at central costs.",
+  "The maker is the only remote-executable book. It nets $20.2/day IS ($71.1/day in the current 1 s / 5% regime) against $2.55/day of VPS. Its pre-registered blind OOS verdict is FAILURE: per fill +1.87\u00a2 [\u22120.14, +3.86]; in dollars it made \u2212$9.5/day (\u2212$379 over 40 days). The per-fill mean is positive while the share-weighted mean is \u22120.75\u00a2, so the larger fills did worse.",
+  "Tier-0 is pending: the verifier-corrected headline has not been written yet. Its fixed costs are already known: $4,149/day central ($1,151\u2013$7,215) for 10 covered matches a day.",
+  "v2 (frozen fast-tier book): covers central fixed costs in IS: yes, from 1x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 2d).",
+  "v2-safe (net cap 50): covers central fixed costs in IS: yes, from 2x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 3d).",
+  "Pending: v2 (frozen fast-tier book) Forward (blind); Tier-0 CV edge (COUNTERFACTUAL) IS; Tier-0 CV edge (COUNTERFACTUAL) OOS (burned, non-blind); Maker v1, side markets Live paper session; Table tennis (out-of-sport test) Results."
+ ],
+ "checks": [
+  {
+   "what": "v2 IS net P&L $ vs results/v2/causal.json",
+   "ours": 40425.7192,
+   "repo": 40425.7192,
+   "ok": true
+  },
+  {
+   "what": "v2 IS Sharpe vs results/v2/causal.json",
+   "ours": 14.4832,
+   "repo": 14.4832,
+   "ok": true
+  },
+  {
+   "what": "v2 IS capital $ vs results/v2/causal.json",
+   "ours": 28302.3677,
+   "repo": 28302.3677,
+   "ok": true
+  },
+  {
+   "what": "v2 OOS net P&L $ vs results/v2/causal.json",
+   "ours": 3687.5359,
+   "repo": 3687.5359,
+   "ok": true
+  },
+  {
+   "what": "v2 OOS Sharpe vs results/v2/causal.json",
+   "ours": 6.6676,
+   "repo": 6.6676,
+   "ok": true
+  },
+  {
+   "what": "v2 OOS capital $ vs results/v2/causal.json",
+   "ours": 22754.0463,
+   "repo": 22754.0463,
+   "ok": true
+  },
+  {
+   "what": "v2 U2_IS_blind net P&L $ vs results/expand/results.json",
+   "ours": 7436.9868,
+   "repo": 7436.9868,
+   "ok": true
+  },
+  {
+   "what": "v2 U2_IS_blind Sharpe vs results/expand/results.json",
+   "ours": 5.191,
+   "repo": 5.191,
+   "ok": true
+  },
+  {
+   "what": "v2 U2_OOS_blind net P&L $ vs results/expand/results.json",
+   "ours": 2117.1675,
+   "repo": 2117.1675,
+   "ok": true
+  },
+  {
+   "what": "v2 U2_OOS_blind Sharpe vs results/expand/results.json",
+   "ours": 5.301,
+   "repo": 5.301,
+   "ok": true
+  },
+  {
+   "what": "v2-safe IS net P&L $ vs results/lowloss/results.json",
+   "ours": 23863.922,
+   "repo": 23863.922,
+   "ok": true
+  },
+  {
+   "what": "v2-safe IS capital $ vs results/lowloss/results.json",
+   "ours": 17680.6044,
+   "repo": 17680.6044,
+   "ok": true
+  },
+  {
+   "what": "v2-safe OOS net P&L $ vs results/lowloss/results.json",
+   "ours": 2533.4798,
+   "repo": 2533.4798,
+   "ok": true
+  },
+  {
+   "what": "v2-safe OOS capital $ vs results/lowloss/results.json",
+   "ours": 13584.426,
+   "repo": 13584.426,
+   "ok": true
+  },
+  {
+   "what": "v2-safe U2_OOS_blind net P&L $ vs results/lowloss/results.json",
+   "ours": 1340.9821,
+   "repo": 1340.9821,
+   "ok": true
+  },
+  {
+   "what": "v2-safe U2_OOS_blind capital $ vs results/lowloss/results.json",
+   "ours": 4523.8855,
+   "repo": 4523.8855,
+   "ok": true
+  },
+  {
+   "what": "v2-safe U2_IS_blind net P&L $ vs results/lowloss/results.json",
+   "ours": 5090.6381,
+   "repo": 5090.6381,
+   "ok": true
+  },
+  {
+   "what": "v2-safe U2_IS_blind capital $ vs results/lowloss/results.json",
+   "ours": 6578.4926,
+   "repo": 6578.4926,
+   "ok": true
+  },
+  {
+   "what": "maker IS net P&L $ vs crossmarket verify_realism.json",
+   "ours": 4161.5183,
+   "repo": 4161.5183,
+   "ok": true
+  },
+  {
+   "what": "maker IS per-fill mean \u00a2 vs verify_realism.json",
+   "ours": 2.7252,
+   "repo": 2.7252,
+   "ok": true
+  },
+  {
+   "what": "maker IS capital $ vs verify_realism.json (3 \u00d7 peak locked)",
+   "ours": 2779.311,
+   "repo": 2779.311,
+   "ok": true
+  },
+  {
+   "what": "maker OOS net P&L $ vs results/maker/oos.json",
+   "ours": -379.0315,
+   "repo": -379.0316,
+   "ok": true
+  },
+  {
+   "what": "maker OOS per-fill mean \u00a2 vs results/maker/oos.json",
+   "ours": 1.8655,
+   "repo": 1.8654,
+   "ok": true
+  },
+  {
+   "what": "maker OOS Sharpe vs results/maker/oos.json",
+   "ours": -1.4227,
+   "repo": -1.4227,
+   "ok": true
+  }
+ ],
+ "pending": [
+  "v2 (frozen fast-tier book) Forward (blind)",
+  "Tier-0 CV edge (COUNTERFACTUAL) IS",
+  "Tier-0 CV edge (COUNTERFACTUAL) OOS (burned, non-blind)",
+  "Maker v1, side markets Live paper session",
+  "Table tennis (out-of-sport test) Results"
+ ],
+ "strategies": {
+  "v2": {
+   "name": "v2 (frozen fast-tier book)",
+   "about": "The frozen v2 rule: copy qualifying fast-tier prints 0\u20133 s after a detected jump, risk-parity size, wallet filter, 0.05\u20130.95 zone, |net| \u2264 100 shares per match, hold to resolution. It fills at the fast tier's own print price, so it is the prize for fast-tier speed, not a remotely executable strategy (docs/NOTE.md section 5).",
+   "cost": {
+    "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 7); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound.",
+    "items": {
+     "feed_licence": {
+      "low": 1250.0,
+      "central": 5000.0,
+      "high": 10000.0
+     },
+     "vps_london": {
+      "low": 34.455999999999996,
+      "central": 77.4165,
+      "high": 98.112
+     },
+     "polymarket_api": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "hipergator": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     }
+    },
+    "monthly": {
+     "low": 1284.456,
+     "central": 5077.4165,
+     "high": 10098.112
+    },
+    "daily": {
+     "low": 42.2286904109589,
+     "central": 166.92876164383563,
+     "high": 331.9927232876712
+    }
+   },
+   "periods": {
+    "IS": {
+     "status": "ok",
+     "label": "v2 (frozen fast-tier book) IS",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-02-01",
+      "2026-08-25"
+     ],
+     "per_share_c": 1.3814511010237975,
+     "per_share_ci95_c_match_clustered": [
+      1.167847083750991,
+      1.5935130267793969
+     ],
+     "per_fill_mean_c": 1.3723297597722453,
+     "per_fill_mean_ci95_c_match_clustered": [
+      1.0450519223394046,
+      1.6942251208423753
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.9879619681449154,
+       "taker_fees": -0.6065108671211181,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.3814511010237975
+      },
+      "usd_period": {
+       "gross_edge": 58174.18526678628,
+       "taker_fees": -17748.46607510707,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 40425.71919167921
+      },
+      "usd_per_day": {
+       "gross_edge": 282.39895760575865,
+       "taker_fees": -86.157602306345,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 196.24135529941364
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 25794.104955851537,
+       "net_per_share_c": 0.8814511010237974,
+       "net_usd_per_day": 125.21410172743465
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 8699.110224657534,
+       "net_after_costs_usd_per_day": 154.01266488845474,
+       "net_after_costs_usd_period": 31726.608967021675,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1545.5520946055237,
+       "breakeven_notional_multiple_of_now": 0.2151875191981263,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 150.91103555131772
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 34387.32489863014,
+       "net_after_costs_usd_per_day": 29.312593655578013,
+       "net_after_costs_usd_period": 6038.394293049067,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 6109.521623753285,
+       "breakeven_notional_multiple_of_now": 0.8506298857809326,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 26.210964318440997
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 68390.50099726027,
+       "net_after_costs_usd_per_day": -135.75136798825756,
+       "net_after_costs_usd_period": -27964.781805581064,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 12150.792361249569,
+       "breakeven_notional_multiple_of_now": 1.6917571873733548,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -138.85299732539457
+      }
+     },
+     "unit_economics": {
+      "n_trades": 55662,
+      "n_matches": 7639,
+      "calendar_days": 206,
+      "active_days": 199,
+      "per_trade_usd": 0.7262714094297583,
+      "per_trade_median_usd": 0.8297201401894707,
+      "per_match_usd": 5.292017173933658,
+      "match_win_rate": 0.57730069380809,
+      "per_day_usd": 196.24135529941367,
+      "per_day_median_usd": 164.58824863451355,
+      "profitable_days_share": 0.7961165048543689,
+      "profitable_active_days_share": 0.8241206030150754,
+      "trade_win_rate": 0.535859293593475,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5320130834390746,
+       0.5394803139722079
+      ],
+      "trade_loss_rate": 0.4641407064065251,
+      "avg_win_usd": 19.846641669449287,
+      "avg_loss_usd": -21.348560552854057,
+      "win_loss_ratio": 0.9296477680691225,
+      "profit_factor": 1.0732960703773067,
+      "expectancy_usd_per_trade": 0.7262714094297583,
+      "expectancy_c_per_share": 1.3814511010237975,
+      "net_c_per_usd_notional": 2.7322722125220285,
+      "turnover_x_per_year": 92.62680087253777,
+      "hold_hours_to_resolution": {
+       "median": 1.2537320830424628,
+       "p90": 4.303055555555556,
+       "mean": 3.371810068911299
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 638.9356434502253,
+       "on_reserved_capital_usd_per_day": 3.1016293371370156,
+       "on_dollars_actually_locked_usd_period": 17.344097331941548,
+       "share_of_net_trading_pnl": 0.015805176907817062
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 28302.367701375268,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 9434.122567125089,
+      "pnl_usd": 40425.71919167921,
+      "pnl_ci95_usd_match_clustered": [
+       34262.26432858429,
+       46589.37612202772
+      ],
+      "return_on_capital_pct": 142.83511407321177,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       116.81714458950776,
+       169.3079799780958
+      ],
+      "return_on_capital_ann_pct": 253.0816341588461,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       206.98183386005016,
+       299.9874402524513
+      ],
+      "sharpe_ann": 14.483153541485253,
+      "sortino_ann": 46.41097469545944,
+      "calmar": 125.78358280466418,
+      "max_dd_usd": -569.4550360798748,
+      "max_dd_pct": -2.0120402719953496,
+      "max_dd_dates": {
+       "peak_date": "2026-06-15",
+       "trough_date": "2026-06-17",
+       "recovery_date": "2026-06-22"
+      },
+      "days_trough_to_recovery": 5,
+      "days_peak_to_recovery": 7,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -550.764300067122,
+      "worst_day_pct": -1.9460007935673853,
+      "worst_week_usd": -383.0259617975781,
+      "worst_week_pct": -1.3533354023203017,
+      "worst_month_usd": 2542.5647262976495,
+      "worst_month_pct": 8.98357604962535,
+      "months_positive": 7,
+      "months_total": 7,
+      "skew_daily": 0.5345103599734671,
+      "kurtosis_daily_pearson": 4.295491038665969
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 7182.350074785291,
+      "shares_per_day_now": 14205.450714395794,
+      "notional_usd_period": 1479564.11540577
+     }
+    },
+    "OOS": {
+     "status": "ok",
+     "label": "v2 (frozen fast-tier book) OOS",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-08-25",
+      "2026-10-03"
+     ],
+     "per_share_c": 0.598736335564979,
+     "per_share_ci95_c_match_clustered": [
+      0.08724550818301618,
+      1.1271958683912837
+     ],
+     "per_fill_mean_c": 0.9259541349406295,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.23124088690455072,
+      1.6399173935673823
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.5361137199068604,
+       "taker_fees": -0.9373773843418811,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 0.598736335564979
+      },
+      "usd_period": {
+       "gross_edge": 9460.716150313066,
+       "taker_fees": -5773.180230119398,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 3687.5359201936667
+      },
+      "usd_per_day": {
+       "gross_edge": 236.51790375782667,
+       "taker_fees": -144.32950575298497,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 92.18839800484167
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 608.1037050817863,
+       "net_per_share_c": 0.09873633556497897,
+       "net_usd_per_day": 15.202592627044657
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1689.147616438356,
+       "net_after_costs_usd_per_day": 49.959707593882776,
+       "net_after_costs_usd_period": 1998.3883037553107,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 3693.0742797875564,
+       "breakeven_notional_multiple_of_now": 0.4580694677950806,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 47.466113484168055
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 6677.150465753425,
+       "net_after_costs_usd_per_day": -74.74036363899395,
+       "net_after_costs_usd_period": -2989.6145455597584,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 14598.613174697271,
+       "breakeven_notional_multiple_of_now": 1.8107350301831757,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -77.23395774870868
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 13279.708931506848,
+       "net_after_costs_usd_per_day": -239.80432528282952,
+       "net_after_costs_usd_period": -9592.173011313182,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 29034.141848077383,
+       "breakeven_notional_multiple_of_now": 3.601241918427036,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -242.29791939254426
+      }
+     },
+     "unit_economics": {
+      "n_trades": 10412,
+      "n_matches": 2003,
+      "calendar_days": 40,
+      "active_days": 40,
+      "per_trade_usd": 0.3541621129652004,
+      "per_trade_median_usd": 1.091132113122172,
+      "per_match_usd": 1.8410064504212025,
+      "match_win_rate": 0.5561657513729406,
+      "per_day_usd": 92.18839800484172,
+      "per_day_median_usd": 32.94206020904167,
+      "profitable_days_share": 0.6,
+      "profitable_active_days_share": 0.6,
+      "trade_win_rate": 0.5558009988474837,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5476740604054755,
+       0.5636045461736267
+      ],
+      "trade_loss_rate": 0.4441990011525163,
+      "avg_win_usd": 20.421212464705672,
+      "avg_loss_usd": -24.754599051472013,
+      "win_loss_ratio": 0.8249462018045225,
+      "profit_factor": 1.0322083610470858,
+      "expectancy_usd_per_trade": 0.3541621129652004,
+      "expectancy_c_per_share": 0.598736335564979,
+      "net_c_per_usd_notional": 1.1434562971581523,
+      "turnover_x_per_year": 129.32751283733995,
+      "hold_hours_to_resolution": {
+       "median": 0.8317988976505069,
+       "p90": 1.9940241092575917,
+       "mean": 1.0290936225114773
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 99.74376438858896,
+       "on_reserved_capital_usd_per_day": 2.493594109714724,
+       "on_dollars_actually_locked_usd_period": 1.43381078167746,
+       "share_of_net_trading_pnl": 0.027048892959217734
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 22754.046251146858,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 7584.682083715619,
+      "pnl_usd": 3687.5359201936667,
+      "pnl_ci95_usd_match_clustered": [
+       539.5728022129647,
+       6889.925663653515
+      ],
+      "return_on_capital_pct": 16.206066734209113,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       2.01944934243497,
+       30.441520255375536
+      ],
+      "return_on_capital_ann_pct": 147.88035894965816,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       18.4274752497191,
+       277.7788723303018
+      ],
+      "sharpe_ann": 6.667551867200974,
+      "sortino_ann": 14.018509091853916,
+      "calmar": 71.68008081447017,
+      "max_dd_usd": -469.4297898304612,
+      "max_dd_pct": -2.0630607174176805,
+      "max_dd_dates": {
+       "peak_date": "2026-09-06",
+       "trough_date": "2026-09-07",
+       "recovery_date": "2026-09-08"
+      },
+      "days_trough_to_recovery": 1,
+      "days_peak_to_recovery": 2,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -469.4297898304612,
+      "worst_day_pct": -2.0630607174176805,
+      "worst_week_usd": -29.128813354311518,
+      "worst_week_pct": -0.12801597145757473,
+      "worst_month_usd": -434.15306795796744,
+      "worst_month_pct": -1.9080257777716572,
+      "months_positive": 2,
+      "months_total": 3,
+      "skew_daily": 0.3256376673081488,
+      "kurtosis_daily_pearson": 3.259698998705011
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 8062.2581058811575,
+      "shares_per_day_now": 15397.161075559401,
+      "notional_usd_period": 322490.3242352463
+     }
+    },
+    "U2_IS_blind": {
+     "status": "ok",
+     "label": "v2 (frozen fast-tier book) U2_IS_blind",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-02-07",
+      "2026-08-26"
+     ],
+     "per_share_c": 2.0248787790863743,
+     "per_share_ci95_c_match_clustered": [
+      1.140615945330067,
+      2.926860089785939
+     ],
+     "per_fill_mean_c": 2.031906556946166,
+     "per_fill_mean_ci95_c_match_clustered": [
+      1.2116219766462843,
+      2.892289275518935
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 2.8809616035806416,
+       "taker_fees": -0.8560828244942666,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 2.0248787790863743
+      },
+      "usd_period": {
+       "gross_edge": 10581.212847097786,
+       "taker_fees": -3144.226070024726,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 7436.986777073058
+      },
+      "usd_per_day": {
+       "gross_edge": 52.64284998556112,
+       "taker_fees": -15.642915771267294,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 36.99993421429382
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 5600.5838146130955,
+       "net_per_share_c": 1.5248787790863743,
+       "net_usd_per_day": 27.863601067726844
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 8487.966772602738,
+       "net_after_costs_usd_per_day": -5.228756196665074,
+       "net_after_costs_usd_period": -1050.9799955296803,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1067.8747759482994,
+       "breakeven_notional_multiple_of_now": 1.1413179863072596,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -6.5100298001297965
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 33552.68109041096,
+       "net_after_costs_usd_per_day": -129.9288274295418,
+       "net_after_costs_usd_period": -26115.694313337903,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 4221.2773402387475,
+       "breakeven_notional_multiple_of_now": 4.511596174118269,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -131.2101010330065
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 66730.53738082192,
+       "net_after_costs_usd_per_day": -294.99278907337737,
+       "net_after_costs_usd_period": -59293.55060374886,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 8395.397810046305,
+       "breakeven_notional_multiple_of_now": 8.972792258625578,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -296.2740626768421
+      }
+     },
+     "unit_economics": {
+      "n_trades": 10764,
+      "n_matches": 3244,
+      "calendar_days": 201,
+      "active_days": 104,
+      "per_trade_usd": 0.6909129298655758,
+      "per_trade_median_usd": 0.9329280000000009,
+      "per_match_usd": 2.2925359978646913,
+      "match_win_rate": 0.5613440197287299,
+      "per_day_usd": 36.99993421429383,
+      "per_day_median_usd": 0.0,
+      "profitable_days_share": 0.3333333333333333,
+      "profitable_active_days_share": 0.6442307692307693,
+      "trade_win_rate": 0.5614083983649201,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5521880268876711,
+       0.5700979246072729
+      ],
+      "trade_loss_rate": 0.4385916016350799,
+      "avg_win_usd": 12.255916525772088,
+      "avg_loss_usd": -14.112585636129564,
+      "win_loss_ratio": 0.8684387710212205,
+      "profit_factor": 1.1116237011822145,
+      "expectancy_usd_per_trade": 0.6909129298655758,
+      "expectancy_c_per_share": 2.0248787790863743,
+      "net_c_per_usd_notional": 3.9544608939244554,
+      "turnover_x_per_year": 29.21001494084455,
+      "hold_hours_to_resolution": {
+       "median": 1.6425,
+       "p90": 4.48677777777778,
+       "mean": 2.3820194002637898
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 257.5359942964093,
+       "on_reserved_capital_usd_per_day": 1.2812736034647227,
+       "on_dollars_actually_locked_usd_period": 1.9422271838273109,
+       "share_of_net_trading_pnl": 0.03462907788008285
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 11691.621631615595,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 3897.2072105385314,
+      "pnl_usd": 7436.986777073058,
+      "pnl_ci95_usd_match_clustered": [
+       4103.501410579915,
+       10678.255717656912
+      ],
+      "return_on_capital_pct": 63.60954033068025,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       32.251967608365035,
+       96.19129547586846
+      ],
+      "return_on_capital_ann_pct": 115.50986179451886,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       58.56700585598625,
+       174.67573556563178
+      ],
+      "sharpe_ann": 5.190971389000454,
+      "sortino_ann": 12.395951668909285,
+      "calmar": 20.341575227034703,
+      "max_dd_usd": -663.9100383075856,
+      "max_dd_pct": -5.678511152912189,
+      "max_dd_dates": {
+       "peak_date": "2026-06-25",
+       "trough_date": "2026-07-05",
+       "recovery_date": "2026-07-09"
+      },
+      "days_trough_to_recovery": 4,
+      "days_peak_to_recovery": 14,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -351.6725471352916,
+      "worst_day_pct": -3.007902224481208,
+      "worst_week_usd": -360.264440030081,
+      "worst_week_pct": -3.0813898309528023,
+      "worst_month_usd": -15.16926000014817,
+      "worst_month_pct": -0.1297447050384235,
+      "months_positive": 4,
+      "months_total": 7,
+      "skew_daily": 1.6091528448894312,
+      "kurtosis_daily_pearson": 8.842881027525845
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 935.6505275128574,
+      "shares_per_day_now": 1827.266629313395,
+      "notional_usd_period": 188065.75603008433
+     }
+    },
+    "U2_OOS_blind": {
+     "status": "ok",
+     "label": "v2 (frozen fast-tier book) U2_OOS_blind",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-08-25",
+      "2026-10-03"
+     ],
+     "per_share_c": 1.2237506660945057,
+     "per_share_ci95_c_match_clustered": [
+      -0.18634258245445473,
+      2.647924922039621
+     ],
+     "per_fill_mean_c": 0.5724296409459034,
+     "per_fill_mean_ci95_c_match_clustered": [
+      -1.1634670253857484,
+      2.1600122026688235
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 2.22830308083153,
+       "taker_fees": -1.0045524147370237,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.2237506660945057
+      },
+      "usd_period": {
+       "gross_edge": 3855.107820268723,
+       "taker_fees": -1737.9403651308423,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 2117.16745513788
+      },
+      "usd_per_day": {
+       "gross_edge": 96.37769550671808,
+       "taker_fees": -43.448509128271056,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 52.929186378447
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 1252.1352578951864,
+       "net_per_share_c": 0.7237506660945057,
+       "net_usd_per_day": 31.30338144737966
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1689.147616438356,
+       "net_after_costs_usd_per_day": 10.700495967488102,
+       "net_after_costs_usd_period": 428.01983869952414,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1773.539346551753,
+       "breakeven_notional_multiple_of_now": 0.7978337340956105,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 9.886082589033359
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 6677.150465753425,
+       "net_after_costs_usd_per_day": -113.99957526538863,
+       "net_after_costs_usd_period": -4559.983010615545,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 7010.748473736034,
+       "breakeven_notional_multiple_of_now": 3.153813105122843,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -114.81398864384337
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 13279.708931506848,
+       "net_after_costs_usd_per_day": -279.0635369092242,
+       "net_after_costs_usd_period": -11162.541476368968,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 13943.178246577863,
+       "breakeven_notional_multiple_of_now": 6.2723942309239815,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -279.8779502876789
+      }
+     },
+     "unit_economics": {
+      "n_trades": 4616,
+      "n_matches": 1549,
+      "calendar_days": 40,
+      "active_days": 40,
+      "per_trade_usd": 0.4586584608184316,
+      "per_trade_median_usd": 0.9390156749999998,
+      "per_match_usd": 1.3667962912445966,
+      "match_win_rate": 0.5442220787604907,
+      "per_day_usd": 52.92918637844703,
+      "per_day_median_usd": 23.192672917682287,
+      "profitable_days_share": 0.6,
+      "profitable_active_days_share": 0.6,
+      "trade_win_rate": 0.5509098786828422,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5328902273410554,
+       0.5687305771434698
+      ],
+      "trade_loss_rate": 0.4490901213171577,
+      "avg_win_usd": 14.3461647791283,
+      "avg_loss_usd": -16.577486530721362,
+      "win_loss_ratio": 0.865400478687889,
+      "profit_factor": 1.0616080160652686,
+      "expectancy_usd_per_trade": 0.4586584608184316,
+      "expectancy_c_per_share": 1.2237506660945057,
+      "net_c_per_usd_notional": 2.381040516133068,
+      "turnover_x_per_year": 109.18010929091858,
+      "hold_hours_to_resolution": {
+       "median": 1.6933333333333334,
+       "p90": 3.7293055555555554,
+       "mean": 2.5140265659837278
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 32.57653513818975,
+       "on_reserved_capital_usd_per_day": 0.8144133784547437,
+       "on_dollars_actually_locked_usd_period": 1.1772828079203828,
+       "share_of_net_trading_pnl": 0.015386848621319001
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 7431.5220783995355,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 2477.1740261331784,
+      "pnl_usd": 2117.16745513788,
+      "pnl_ci95_usd_match_clustered": [
+       -320.46339875436036,
+       4599.090631852033
+      ],
+      "return_on_capital_pct": 28.489015208494635,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       -1.877837501671109,
+       61.10041044883583
+      ],
+      "return_on_capital_ann_pct": 259.96226377751356,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       -17.13526720274887,
+       557.541245345627
+      ],
+      "sharpe_ann": 5.300997763635398,
+      "sortino_ann": 11.298751422923921,
+      "calmar": 24.010830305711274,
+      "max_dd_usd": -804.6016227742803,
+      "max_dd_pct": -10.826875225371873,
+      "max_dd_dates": {
+       "peak_date": "2026-09-18",
+       "trough_date": "2026-10-03",
+       "recovery_date": null
+      },
+      "days_trough_to_recovery": null,
+      "days_peak_to_recovery": null,
+      "days_since_trough_unrecovered": 0,
+      "worst_day_usd": -332.71634560691484,
+      "worst_day_pct": -4.477095567999298,
+      "worst_week_usd": -742.2822150698313,
+      "worst_week_pct": -9.988293208834689,
+      "worst_month_usd": -354.45437346447244,
+      "worst_month_pct": -4.76960667983117,
+      "months_positive": 2,
+      "months_total": 3,
+      "skew_daily": 0.9244966731357283,
+      "kurtosis_daily_pearson": 5.187276248175613
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 2222.9435416918786,
+      "shares_per_day_now": 4325.160986213467,
+      "notional_usd_period": 88917.74166767515
+     }
+    },
+    "forward": {
+     "status": "pending",
+     "expected_file": "results/v2/forward.json",
+     "why": "blind forward window; scripts/forward_test.py runs once ~11:30 UTC Oct 4"
+    }
+   },
+   "waterfall_note": "Slippage as modelled is zero: v2 fills at the fast tier's own print price (they already crossed the spread). Repo stresses: +\u00bd tick in the table above; doubled fees in `results/v2/cost_stress.json` (OOS does not survive doubled fees).",
+   "cost_stress_repo": {
+    "is_eval/base": {
+     "per_share_c": 1.3814511010237975,
+     "total_pnl_usd": 40425.71919167921,
+     "sharpe_ann": 14.483153541485253
+    },
+    "is_eval/fee_x2": {
+     "per_share_c": 0.7749402339026797,
+     "total_pnl_usd": 22677.253116572145,
+     "sharpe_ann": 8.352369449157218
+    },
+    "is_eval/fee5_x2": {
+     "per_share_c": 0.028249258293369786,
+     "total_pnl_usd": 826.6644995936845,
+     "sharpe_ann": 0.327133863261722
+    },
+    "is_eval/costs_x2": {
+     "per_share_c": 0.27494023390267935,
+     "total_pnl_usd": 8045.6388807444655,
+     "sharpe_ann": 2.9935076476264633
+    },
+    "is_eval/costs_x2_1c": {
+     "per_share_c": -0.22505976609732084,
+     "total_pnl_usd": -6585.97535508321,
+     "sharpe_ann": -2.4015305670962452
+    },
+    "burned_oos/base": {
+     "per_share_c": 0.598736335564979,
+     "total_pnl_usd": 3687.5359201936667,
+     "sharpe_ann": 6.667551867200974
+    },
+    "burned_oos/fee_x2": {
+     "per_share_c": -0.3386410487769019,
+     "total_pnl_usd": -2085.6443099257303,
+     "sharpe_ann": -3.7565981798944224
+    },
+    "burned_oos/fee5_x2": {
+     "per_share_c": -0.33864104877690193,
+     "total_pnl_usd": -2085.644309925731,
+     "sharpe_ann": -3.756598179894426
+    },
+    "burned_oos/costs_x2": {
+     "per_share_c": -0.8386410487769022,
+     "total_pnl_usd": -5165.076525037613,
+     "sharpe_ann": -9.046534166184372
+    },
+    "burned_oos/costs_x2_1c": {
+     "per_share_c": -1.3386410487769023,
+     "total_pnl_usd": -8244.508740149493,
+     "sharpe_ann": -13.834524432712774
+    }
+   },
+   "scaling": {
+    "0.5x": {
+     "IS": {
+      "n_trades": 54628,
+      "per_share_c": 1.309334506118391,
+      "per_share_ci95_c": [
+       1.1273789694798995,
+       1.4881801412518976
+      ],
+      "pnl_usd": 22587.10562050114,
+      "pnl_usd_per_day": 109.64614378884049,
+      "notional_usd_per_day": 4229.898958071561,
+      "sharpe_ann": 15.461015757999563,
+      "capital_usd": 17464.605073401894,
+      "return_on_capital_ann_pct": 229.15400786174894,
+      "max_dd_usd": -282.7260848016813,
+      "max_dd_pct": -1.6188518641756477,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 10021,
+      "per_share_c": 0.680126215287063,
+      "per_share_ci95_c": [
+       0.23237721336431238,
+       1.1477194342282897
+      ],
+      "pnl_usd": 2483.999244630107,
+      "pnl_usd_per_day": 62.099981115752676,
+      "notional_usd_per_day": 4754.990322581626,
+      "sharpe_ann": 9.243285173533465,
+      "capital_usd": 13355.258359676249,
+      "return_on_capital_ann_pct": 169.71961527668415,
+      "max_dd_usd": -235.9199818948215,
+      "max_dd_pct": -1.7664950803732749,
+      "days": 40
+     }
+    },
+    "1x": {
+     "IS": {
+      "n_trades": 55662,
+      "per_share_c": 1.3814511010237975,
+      "per_share_ci95_c": [
+       1.167847083750991,
+       1.5935130267793969
+      ],
+      "pnl_usd": 40425.71919167921,
+      "pnl_usd_per_day": 196.24135529941364,
+      "notional_usd_per_day": 7182.350074785291,
+      "sharpe_ann": 14.483153541485253,
+      "capital_usd": 28302.367701375268,
+      "return_on_capital_ann_pct": 253.0816341588461,
+      "max_dd_usd": -569.4550360798748,
+      "max_dd_pct": -2.0120402719953496,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 10412,
+      "per_share_c": 0.598736335564979,
+      "per_share_ci95_c": [
+       0.08724550818301618,
+       1.1271958683912837
+      ],
+      "pnl_usd": 3687.5359201936667,
+      "pnl_usd_per_day": 92.18839800484167,
+      "notional_usd_per_day": 8062.2581058811575,
+      "sharpe_ann": 6.667551867200974,
+      "capital_usd": 22754.046251146858,
+      "return_on_capital_ann_pct": 147.88035894965816,
+      "max_dd_usd": -469.4297898304612,
+      "max_dd_pct": -2.0630607174176805,
+      "days": 40
+     }
+    },
+    "2x": {
+     "IS": {
+      "n_trades": 60788,
+      "per_share_c": 1.4108635174698407,
+      "per_share_ci95_c": [
+       1.1546401240990236,
+       1.669499151241912
+      ],
+      "pnl_usd": 65135.68438986213,
+      "pnl_usd_per_day": 316.19264266923363,
+      "notional_usd_per_day": 11366.475501993,
+      "sharpe_ann": 12.819740629675763,
+      "capital_usd": 45392.37937678425,
+      "return_on_capital_ann_pct": 254.25041859184063,
+      "max_dd_usd": -1858.9147283781203,
+      "max_dd_pct": -4.095213236010393,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 11525,
+      "per_share_c": 0.33623778047325664,
+      "per_share_ci95_c": [
+       -0.29971178569686335,
+       0.965786185455425
+      ],
+      "pnl_usd": 3301.51207601029,
+      "pnl_usd_per_day": 82.53780190025725,
+      "notional_usd_per_day": 12934.569742042382,
+      "sharpe_ann": 3.243494846378239,
+      "capital_usd": 33875.475597215365,
+      "return_on_capital_ann_pct": 88.93247153722719,
+      "max_dd_usd": -1659.914752255588,
+      "max_dd_pct": -4.900048554276347,
+      "days": 40
+     }
+    },
+    "5x": {
+     "IS": {
+      "n_trades": 67694,
+      "per_share_c": 1.3931771223534029,
+      "per_share_ci95_c": [
+       1.0405934627431341,
+       1.7666290000507572
+      ],
+      "pnl_usd": 109045.8017126353,
+      "pnl_usd_per_day": 529.3485520030839,
+      "notional_usd_per_day": 19336.05763903444,
+      "sharpe_ann": 10.39702203724376,
+      "capital_usd": 80252.57423109186,
+      "return_on_capital_ann_pct": 240.75516995225607,
+      "max_dd_usd": -4369.600036658274,
+      "max_dd_pct": -5.444809812674372,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 13191,
+      "per_share_c": -0.06017806299441552,
+      "per_share_ci95_c": [
+       -0.9086371838240634,
+       0.7353953295941449
+      ],
+      "pnl_usd": -981.9822808139447,
+      "pnl_usd_per_day": -24.54955702034862,
+      "notional_usd_per_day": 21524.799761097074,
+      "sharpe_ann": -0.48414668731318516,
+      "capital_usd": 53815.56864412705,
+      "return_on_capital_ann_pct": -16.650550274181903,
+      "max_dd_usd": -6137.222725659658,
+      "max_dd_pct": -11.404177044460942,
+      "days": 40
+     }
+    },
+    "all prints": {
+     "IS": {
+      "n_trades": 82274,
+      "per_share_c": 0.3659727858357431,
+      "per_share_ci95_c": [
+       -0.8284828599534553,
+       1.6238916304643445
+      ],
+      "pnl_usd": 101197.24962817838,
+      "pnl_usd_per_day": 491.2487846028077,
+      "notional_usd_per_day": 67441.6077099156,
+      "sharpe_ann": 0.821728252735113,
+      "capital_usd": 534206.8665152368,
+      "return_on_capital_ann_pct": 33.564863654726274,
+      "max_dd_usd": -170104.2917580513,
+      "max_dd_pct": -31.842400841397556,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 16362,
+      "per_share_c": -0.9568149020137369,
+      "per_share_ci95_c": [
+       -3.5812156251129323,
+       1.5229879450837143
+      ],
+      "pnl_usd": -51261.85847219865,
+      "pnl_usd_per_day": -1281.5464618049662,
+      "notional_usd_per_day": 67053.49780809828,
+      "sharpe_ann": -2.1478234199722435,
+      "capital_usd": 303724.34983278945,
+      "return_on_capital_ann_pct": -154.00953490108148,
+      "max_dd_usd": -78119.3999927748,
+      "max_dd_pct": -25.72049295217264,
+      "days": 40
+     }
+    }
+   },
+   "ceiling": {
+    "IS": {
+     "fast_tier_qualified_print_usd_per_day": 82324.54243294417,
+     "days": 206,
+     "rows": 98948
+    },
+    "OOS": {
+     "fast_tier_qualified_print_usd_per_day": 105489.68496252266,
+     "days": 40,
+     "rows": 25264
+    }
+   },
+   "coverage": {
+    "IS": "yes, from 1x (central cost $167/day)",
+    "OOS": "no: not even with every qualifying print (central cost $167/day)"
+   },
+   "capacity_md": "**Now:** $7,182 notional/day IS, $8,062 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $109.6 | +1.31 | $4,230 | 15.5 | $17,465 | \u22121.6% | $62.1 | +0.68 | $4,755 | 9.2 | $13,355 | \u22121.8% |\n| 1x | $196.2 | +1.38 | $7,182 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 2x | $316.2 | +1.41 | $11,366 | 12.8 | $45,392 | \u22124.1% | $82.5 | +0.34 | $12,935 | 3.2 | $33,875 | \u22124.9% |\n| 5x | $529.3 | +1.39 | $19,336 | 10.4 | $80,253 | \u22125.4% | \u2212$24.5 | \u22120.06 | $21,525 | \u22120.5 | $53,816 | \u221211.4% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |",
+   "caveats": [
+    "IS is in-sample for the rule's selection; the OOS is burned (looked at before v2-safe was designed).",
+    "Per-share P&L moves with size because a bigger book takes a different mix of trades (more same-direction stacking within a match once the net cap loosens; at 'all prints', every print at its full size instead of risk-parity sizing). None of it is modelled price impact, which the engine does not have; real impact would make the larger rows worse.",
+    "U2 has few markets before May 2026 (research/v2/expand/RESULTS.md, coverage facts), so U2-IS per-day figures are spread over a mostly empty 201-day calendar."
+   ]
+  },
+  "v2_safe": {
+   "name": "v2-safe (net cap 50)",
+   "about": "v2 with the per-match net cap halved to 50 shares (pre-registered risk dial, research/v2/lowloss).",
+   "cost": {
+    "note": "Same infrastructure as v2.",
+    "items": {
+     "feed_licence": {
+      "low": 1250.0,
+      "central": 5000.0,
+      "high": 10000.0
+     },
+     "vps_london": {
+      "low": 34.455999999999996,
+      "central": 77.4165,
+      "high": 98.112
+     },
+     "polymarket_api": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "hipergator": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     }
+    },
+    "monthly": {
+     "low": 1284.456,
+     "central": 5077.4165,
+     "high": 10098.112
+    },
+    "daily": {
+     "low": 42.2286904109589,
+     "central": 166.92876164383563,
+     "high": 331.9927232876712
+    }
+   },
+   "periods": {
+    "IS": {
+     "status": "ok",
+     "label": "v2-safe (net cap 50) IS",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-02-01",
+      "2026-08-25"
+     ],
+     "per_share_c": 1.3328961476025758,
+     "per_share_ci95_c_match_clustered": [
+      1.155146199387172,
+      1.5176686335632352
+     ],
+     "per_fill_mean_c": 1.2997044487415061,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.9913373660324317,
+      1.596887132013104
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.938970616141424,
+       "taker_fees": -0.6060744685388484,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.3328961476025758
+      },
+      "usd_period": {
+       "gross_edge": 34714.965360539776,
+       "taker_fees": -10851.04333509873,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 23863.922025441054
+      },
+      "usd_per_day": {
+       "gross_edge": 168.5192493230086,
+       "taker_fees": -52.67496764611034,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 115.84428167689832
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 14912.016031728008,
+       "net_per_share_c": 0.8328961476025758,
+       "net_usd_per_day": 72.38842733848547
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 8699.110224657534,
+       "net_after_costs_usd_per_day": 73.61559126593943,
+       "net_after_costs_usd_period": 15164.81180078352,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1597.8419871187195,
+       "breakeven_notional_multiple_of_now": 0.3645297791110577,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 71.67799078427558
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 34387.32489863014,
+       "net_after_costs_usd_per_day": -51.08447996693731,
+       "net_after_costs_usd_period": -10523.402873189087,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 6316.222019118893,
+       "breakeven_notional_multiple_of_now": 1.440975413093045,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -53.02208044860116
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 68390.50099726027,
+       "net_after_costs_usd_per_day": -216.14844161077286,
+       "net_after_costs_usd_period": -44526.57897181922,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 12561.884053815302,
+       "breakeven_notional_multiple_of_now": 2.865853354882317,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -218.0860420924367
+      }
+     },
+     "unit_economics": {
+      "n_trades": 50950,
+      "n_matches": 7639,
+      "calendar_days": 206,
+      "active_days": 199,
+      "per_trade_usd": 0.468379235043004,
+      "per_trade_median_usd": 0.7664000000000002,
+      "per_match_usd": 3.1239588984737603,
+      "match_win_rate": 0.5820133525330541,
+      "per_day_usd": 115.84428167689832,
+      "per_day_median_usd": 106.18603677771205,
+      "profitable_days_share": 0.8155339805825242,
+      "profitable_active_days_share": 0.8442211055276382,
+      "trade_win_rate": 0.5340529931305201,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5306714939675363,
+       0.5375815145496795
+      ],
+      "trade_loss_rate": 0.4659470068694799,
+      "avg_win_usd": 13.346764138085248,
+      "avg_loss_usd": -14.292398069581239,
+      "win_loss_ratio": 0.9338365803350663,
+      "profit_factor": 1.0703324916140335,
+      "expectancy_usd_per_trade": 0.468379235043004,
+      "expectancy_c_per_share": 1.3328961476025758,
+      "net_c_per_usd_notional": 2.6428577263204254,
+      "turnover_x_per_year": 90.48916364982458,
+      "hold_hours_to_resolution": {
+       "median": 1.2630961319473055,
+       "p90": 4.3167222222222215,
+       "mean": 3.431326014748246
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 399.1456992227525,
+       "on_reserved_capital_usd_per_day": 1.9376004816638472,
+       "on_dollars_actually_locked_usd_period": 11.200263512002278,
+       "share_of_net_trading_pnl": 0.016725905272286252
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 17680.604395182603,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 5893.534798394201,
+      "pnl_usd": 23863.922025441054,
+      "pnl_ci95_usd_match_clustered": [
+       20637.83653320673,
+       27014.4720519217
+      ],
+      "return_on_capital_pct": 134.97232047080476,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       112.53626923014819,
+       157.83523968943177
+      ],
+      "return_on_capital_ann_pct": 239.1499853002123,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       199.3967877136121,
+       279.6595266341874
+      ],
+      "sharpe_ann": 15.695873058769765,
+      "sortino_ann": 58.20025083652984,
+      "calmar": 148.80144982794212,
+      "max_dd_usd": -284.1582717168385,
+      "max_dd_pct": -1.6071751019680214,
+      "max_dd_dates": {
+       "peak_date": "2026-07-17",
+       "trough_date": "2026-07-18",
+       "recovery_date": "2026-07-21"
+      },
+      "days_trough_to_recovery": 3,
+      "days_peak_to_recovery": 4,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -284.1582717168387,
+      "worst_day_pct": -1.607175101968023,
+      "worst_week_usd": -176.31579073274378,
+      "worst_week_pct": -0.9972271693426056,
+      "worst_month_usd": 1499.1338324668723,
+      "worst_month_pct": 8.478973902472124,
+      "months_positive": 7,
+      "months_total": 7,
+      "skew_daily": 0.6086410964208812,
+      "kurtosis_daily_pearson": 3.9433565566545163
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 4383.29617683147,
+      "shares_per_day_now": 8691.170867682567,
+      "notional_usd_period": 902959.0124272828
+     }
+    },
+    "OOS": {
+     "status": "ok",
+     "label": "v2-safe (net cap 50) OOS",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-08-25",
+      "2026-10-03"
+     ],
+     "per_share_c": 0.6860339640787971,
+     "per_share_ci95_c_match_clustered": [
+      0.24261209337899814,
+      1.1528888996078328
+     ],
+     "per_fill_mean_c": 0.9787209855686955,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.32201687354515135,
+      1.657820460104149
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.6292098275136668,
+       "taker_fees": -0.9431758634348694,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 0.6860339640787971
+      },
+      "usd_period": {
+       "gross_edge": 6016.568231918216,
+       "taker_fees": -3483.088452587097,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 2533.479779331118
+      },
+      "usd_per_day": {
+       "gross_edge": 150.4142057979554,
+       "taker_fees": -87.07721131467743,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 63.336994483277955
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 687.0115926334947,
+       "net_per_share_c": 0.18603396407879713,
+       "net_usd_per_day": 17.175289815837367
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1689.147616438356,
+       "net_after_costs_usd_per_day": 21.108304072319058,
+       "net_after_costs_usd_period": 844.3321628927622,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 3202.970374689513,
+       "breakeven_notional_multiple_of_now": 0.6667302538662139,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 19.619599856204808
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 6677.150465753425,
+       "net_after_costs_usd_per_day": -103.59176716055768,
+       "net_after_costs_usd_period": -4143.670686422307,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 12661.246963274507,
+       "breakeven_notional_multiple_of_now": 2.63556493334883,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -105.08047137667194
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 13279.708931506848,
+       "net_after_costs_usd_per_day": -268.6557288043932,
+       "net_after_costs_usd_period": -10746.229152175729,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 25181.052193533036,
+       "breakeven_notional_multiple_of_now": 5.241687358173002,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -270.14443302050745
+      }
+     },
+     "unit_economics": {
+      "n_trades": 9487,
+      "n_matches": 2003,
+      "calendar_days": 40,
+      "active_days": 40,
+      "per_trade_usd": 0.26704751547708633,
+      "per_trade_median_usd": 1.008525,
+      "per_match_usd": 1.264842625726969,
+      "match_win_rate": 0.5621567648527209,
+      "per_day_usd": 63.336994483277955,
+      "per_day_median_usd": 52.50938860662667,
+      "profitable_days_share": 0.675,
+      "profitable_active_days_share": 0.675,
+      "trade_win_rate": 0.5537050700959207,
+      "trade_win_rate_ci95_match_clustered": [
+       0.546222223298213,
+       0.561159693433173
+      ],
+      "trade_loss_rate": 0.44629492990407926,
+      "avg_win_usd": 13.6459365943961,
+      "avg_loss_usd": -16.331748972846384,
+      "win_loss_ratio": 0.8355465551842739,
+      "profit_factor": 1.0366381800621138,
+      "expectancy_usd_per_trade": 0.26704751547708633,
+      "expectancy_c_per_share": 0.6860339640787971,
+      "net_c_per_usd_notional": 1.3184227598437412,
+      "turnover_x_per_year": 129.07862558395897,
+      "hold_hours_to_resolution": {
+       "median": 0.8490448183483548,
+       "p90": 2.0182093560563192,
+       "mean": 1.039093841939263
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 59.54816864457002,
+       "on_reserved_capital_usd_per_day": 1.4887042161142505,
+       "on_dollars_actually_locked_usd_period": 0.8540038830235416,
+       "share_of_net_trading_pnl": 0.02350449730460914
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 13584.425972042536,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 4528.141990680845,
+      "pnl_usd": 2533.479779331118,
+      "pnl_ci95_usd_match_clustered": [
+       904.0582137948029,
+       4221.045779922992
+      ],
+      "return_on_capital_pct": 18.649884688135906,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       6.9676799189242855,
+       30.337388015230783
+      ],
+      "return_on_capital_ann_pct": 170.18019777924013,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       63.58007926018411,
+       276.82866563898085
+      ],
+      "sharpe_ann": 9.272747859573085,
+      "sortino_ann": 21.9591539652782,
+      "calmar": 91.49280657607062,
+      "max_dd_usd": -252.67563485633437,
+      "max_dd_pct": -1.8600391019565652,
+      "max_dd_dates": {
+       "peak_date": "2026-09-03",
+       "trough_date": "2026-09-07",
+       "recovery_date": "2026-09-08"
+      },
+      "days_trough_to_recovery": 1,
+      "days_peak_to_recovery": 5,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -223.98184811354943,
+      "worst_day_pct": -1.648813491085423,
+      "worst_week_usd": 158.03805960872958,
+      "worst_week_pct": 1.1633767958541659,
+      "worst_month_usd": -187.33503601007595,
+      "worst_month_pct": -1.3790427096118842,
+      "months_positive": 2,
+      "months_total": 3,
+      "skew_daily": 0.17198929073305594,
+      "kurtosis_daily_pearson": 2.6608321854305967
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 4803.997352926812,
+      "shares_per_day_now": 9232.340933488118,
+      "notional_usd_period": 192159.8941170725
+     }
+    },
+    "U2_IS_blind": {
+     "status": "ok",
+     "label": "v2-safe (net cap 50) U2_IS_blind",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-02-07",
+      "2026-08-26"
+     ],
+     "per_share_c": 2.1111572104154144,
+     "per_share_ci95_c_match_clustered": [
+      1.3664027379220043,
+      2.8773329887698376
+     ],
+     "per_fill_mean_c": 2.1451382447019745,
+     "per_fill_mean_ci95_c_match_clustered": [
+      1.3624080681469601,
+      2.9196860047822315
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 2.9634597224244303,
+       "taker_fees": -0.8523025120090152,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 2.1111572104154144
+      },
+      "usd_period": {
+       "gross_edge": 7145.797109104006,
+       "taker_fees": -2055.1589685226136,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 5090.638140581392
+      },
+      "usd_per_day": {
+       "gross_edge": 35.5512293985274,
+       "taker_fees": -10.224671485187132,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 25.326557913340256
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 3884.987013449154,
+       "net_per_share_c": 1.6111572104154148,
+       "net_usd_per_day": 19.328293599249523
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 8487.966772602738,
+       "net_after_costs_usd_per_day": -16.90213249761864,
+       "net_after_costs_usd_period": -3397.3286320213465,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1023.4414798919015,
+       "breakeven_notional_multiple_of_now": 1.6673679287747103,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -17.623063192802082
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 33552.68109041096,
+       "net_after_costs_usd_per_day": -141.60220373049538,
+       "net_after_costs_usd_period": -28462.042949829567,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 4045.6338378173796,
+       "breakeven_notional_multiple_of_now": 6.59105600591343,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -142.3231344256788
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 66730.53738082192,
+       "net_after_costs_usd_per_day": -306.66616537433094,
+       "net_after_costs_usd_period": -61639.89924024053,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 8046.072959598592,
+       "breakeven_notional_multiple_of_now": 13.108481793050947,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -307.38709606951437
+      }
+     },
+     "unit_economics": {
+      "n_trades": 10115,
+      "n_matches": 3244,
+      "calendar_days": 201,
+      "active_days": 104,
+      "per_trade_usd": 0.5032761384657827,
+      "per_trade_median_usd": 0.91509,
+      "per_match_usd": 1.5692472689831665,
+      "match_win_rate": 0.5653514180024661,
+      "per_day_usd": 25.326557913340263,
+      "per_day_median_usd": 0.0,
+      "profitable_days_share": 0.34328358208955223,
+      "profitable_active_days_share": 0.6634615384615384,
+      "trade_win_rate": 0.5606524962926347,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5521664089305256,
+       0.5688662912760037
+      ],
+      "trade_loss_rate": 0.4393475037073653,
+      "avg_win_usd": 8.634545542840103,
+      "avg_loss_usd": -9.873057973191907,
+      "win_loss_ratio": 0.8745563498447281,
+      "profit_factor": 1.1160236408572126,
+      "expectancy_usd_per_trade": 0.5032761384657827,
+      "expectancy_c_per_share": 2.1111572104154144,
+      "net_c_per_usd_notional": 4.126146070942835,
+      "turnover_x_per_year": 34.05634568979308,
+      "hold_hours_to_resolution": {
+       "median": 1.6525,
+       "p90": 4.513500000000001,
+       "mean": 2.3960182778047443
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 144.90706973187142,
+       "on_reserved_capital_usd_per_day": 0.7209306951834399,
+       "on_dollars_actually_locked_usd_period": 1.2870465088284428,
+       "share_of_net_trading_pnl": 0.028465403694029185
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 6578.49259354889,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 2192.8308645162965,
+      "pnl_usd": 5090.638140581392,
+      "pnl_ci95_usd_match_clustered": [
+       3327.538143370835,
+       6900.359427455721
+      ],
+      "return_on_capital_pct": 77.38304890049518,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       44.14494126047043,
+       111.10060386550951
+      ],
+      "return_on_capital_ann_pct": 140.52145695861066,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       80.16369930383934,
+       201.74985279060186
+      ],
+      "sharpe_ann": 6.047426587622111,
+      "sortino_ann": 16.6640787155695,
+      "calmar": 24.04396416039914,
+      "max_dd_usd": -384.4704465827874,
+      "max_dd_pct": -5.844354783644709,
+      "max_dd_dates": {
+       "peak_date": "2026-06-25",
+       "trough_date": "2026-07-04",
+       "recovery_date": "2026-07-09"
+      },
+      "days_trough_to_recovery": 5,
+      "days_peak_to_recovery": 14,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -208.91999278719524,
+      "worst_day_pct": -3.1758034202557255,
+      "worst_week_usd": -213.61483608154182,
+      "worst_week_pct": -3.2471699715983617,
+      "worst_month_usd": -16.089260000148172,
+      "worst_month_pct": -0.24457365834729203,
+      "months_positive": 4,
+      "months_total": 7,
+      "skew_daily": 1.7217697520127726,
+      "kurtosis_daily_pearson": 8.12876080935916
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 613.8066243387519,
+      "shares_per_day_now": 1199.6528628181472,
+      "notional_usd_period": 123375.13149208913
+     }
+    },
+    "U2_OOS_blind": {
+     "status": "ok",
+     "label": "v2-safe (net cap 50) U2_OOS_blind",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-08-25",
+      "2026-10-03"
+     ],
+     "per_share_c": 1.2057787207785529,
+     "per_share_ci95_c_match_clustered": [
+      -0.024487393891254337,
+      2.428511478231625
+     ],
+     "per_fill_mean_c": 0.6946959525128715,
+     "per_fill_mean_ci95_c_match_clustered": [
+      -0.8281249159496696,
+      2.1093700635821677
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 2.2107060661082074,
+       "taker_fees": -1.0049273453296534,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.2057787207785529
+      },
+      "usd_period": {
+       "gross_edge": 2458.5914983514804,
+       "taker_fees": -1117.6093762830772,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1340.9821220684025
+      },
+      "usd_per_day": {
+       "gross_edge": 61.46478745878701,
+       "taker_fees": -27.94023440707693,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 33.524553051710065
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 784.9173570497634,
+       "net_per_share_c": 0.7057787207785529,
+       "net_usd_per_day": 19.622933926244084
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1689.147616438356,
+       "net_after_costs_usd_per_day": -8.704137359248833,
+       "net_after_costs_usd_period": -348.1654943699534,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 1799.7987960510532,
+       "breakeven_notional_multiple_of_now": 1.2596347025364694,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -9.199905631876295
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 6677.150465753425,
+       "net_after_costs_usd_per_day": -133.40420859212557,
+       "net_after_costs_usd_period": -5336.168343685023,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 7114.551299343655,
+       "breakeven_notional_multiple_of_now": 4.979298646766618,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -133.89997686475303
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 13279.708931506848,
+       "net_after_costs_usd_per_day": -298.4681702359611,
+       "net_after_costs_usd_period": -11938.726809438445,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 14149.624292298602,
+       "breakeven_notional_multiple_of_now": 9.902972390879837,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -298.96393850858857
+      }
+     },
+     "unit_economics": {
+      "n_trades": 4196,
+      "n_matches": 1549,
+      "calendar_days": 40,
+      "active_days": 40,
+      "per_trade_usd": 0.3195858250877985,
+      "per_trade_median_usd": 0.8847101521573035,
+      "per_match_usd": 0.8657082776426099,
+      "match_win_rate": 0.5461588121368625,
+      "per_day_usd": 33.52455305171007,
+      "per_day_median_usd": 20.741083152078865,
+      "profitable_days_share": 0.6,
+      "profitable_active_days_share": 0.6,
+      "trade_win_rate": 0.5507626310772163,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5346109333025321,
+       0.5669260226150501
+      ],
+      "trade_loss_rate": 0.4492373689227836,
+      "avg_win_usd": 10.16409033629453,
+      "avg_loss_usd": -11.74972448016353,
+      "win_loss_ratio": 0.8650492488954998,
+      "profit_factor": 1.060545790025199,
+      "expectancy_usd_per_trade": 0.3195858250877985,
+      "expectancy_c_per_share": 1.2057787207785529,
+      "net_c_per_usd_notional": 2.346300625581763,
+      "turnover_x_per_year": 115.28176085863417,
+      "hold_hours_to_resolution": {
+       "median": 1.6911111111111112,
+       "p90": 3.7293055555555554,
+       "mean": 2.5057138983483744
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 19.830730905098488,
+       "on_reserved_capital_usd_per_day": 0.4957682726274622,
+       "on_dollars_actually_locked_usd_period": 0.7321470975641458,
+       "share_of_net_trading_pnl": 0.014788214233990314
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 4523.885487725593,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 1507.9618292418643,
+      "pnl_usd": 1340.9821220684025,
+      "pnl_ci95_usd_match_clustered": [
+       -26.620745939018743,
+       2672.1698476499023
+      ],
+      "return_on_capital_pct": 29.642264944743076,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       0.2016156398446321,
+       63.470503808125386
+      ],
+      "return_on_capital_ann_pct": 270.4856676207806,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       1.8397427135822677,
+       579.1683472491442
+      ],
+      "sharpe_ann": 5.524164336636546,
+      "sortino_ann": 13.032612773769701,
+      "calmar": 30.35880814755116,
+      "max_dd_usd": -403.0613390486876,
+      "max_dd_pct": -8.90962735777224,
+      "max_dd_dates": {
+       "peak_date": "2026-09-27",
+       "trough_date": "2026-10-01",
+       "recovery_date": null
+      },
+      "days_trough_to_recovery": null,
+      "days_peak_to_recovery": null,
+      "days_since_trough_unrecovered": 2,
+      "worst_day_usd": -225.05288790875605,
+      "worst_day_pct": -4.974769775216008,
+      "worst_week_usd": -386.6888151683337,
+      "worst_week_pct": -8.547714486087568,
+      "worst_month_usd": -208.68036402840195,
+      "worst_month_pct": -4.61285690353133,
+      "months_positive": 2,
+      "months_total": 3,
+      "skew_daily": 1.7261390459657868,
+      "kurtosis_daily_pearson": 9.907542674362569
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 1428.8259861584313,
+      "shares_per_day_now": 2780.3238250931954,
+      "notional_usd_period": 57153.03944633725
+     }
+    }
+   },
+   "waterfall_note": "Slippage as modelled is zero: v2 fills at the fast tier's own print price (they already crossed the spread). Repo stresses: +\u00bd tick in the table above; doubled fees in `results/v2/cost_stress.json` (OOS does not survive doubled fees).",
+   "scaling": {
+    "0.5x": {
+     "IS": {
+      "n_trades": 46518,
+      "per_share_c": 1.2700799255169861,
+      "per_share_ci95_c": [
+       1.1072578652486185,
+       1.4265420112712603
+      ],
+      "pnl_usd": 13466.293912837422,
+      "pnl_usd_per_day": 65.37035880018166,
+      "notional_usd_per_day": 2590.1963571116307,
+      "sharpe_ann": 15.989419205556992,
+      "capital_usd": 11003.398480436717,
+      "return_on_capital_ann_pct": 216.84374154483322,
+      "max_dd_usd": -173.74767594373043,
+      "max_dd_pct": -1.5790364790718232,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 8694,
+      "per_share_c": 0.6874409271260447,
+      "per_share_ci95_c": [
+       0.2892348430578809,
+       1.1158474248507122
+      ],
+      "pnl_usd": 1463.2217952933786,
+      "pnl_usd_per_day": 36.580544882334465,
+      "notional_usd_per_day": 2757.8586481346188,
+      "sharpe_ann": 10.544678959035428,
+      "capital_usd": 7471.107865280746,
+      "return_on_capital_ann_pct": 178.71377475488163,
+      "max_dd_usd": -128.77035365232862,
+      "max_dd_pct": -1.7235777608129843,
+      "days": 40
+     }
+    },
+    "1x": {
+     "IS": {
+      "n_trades": 50950,
+      "per_share_c": 1.3328961476025758,
+      "per_share_ci95_c": [
+       1.155146199387172,
+       1.5176686335632352
+      ],
+      "pnl_usd": 23863.922025441054,
+      "pnl_usd_per_day": 115.84428167689832,
+      "notional_usd_per_day": 4383.29617683147,
+      "sharpe_ann": 15.695873058769765,
+      "capital_usd": 17680.604395182603,
+      "return_on_capital_ann_pct": 239.1499853002123,
+      "max_dd_usd": -284.1582717168385,
+      "max_dd_pct": -1.6071751019680214,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 9487,
+      "per_share_c": 0.6860339640787971,
+      "per_share_ci95_c": [
+       0.24261209337899814,
+       1.1528888996078328
+      ],
+      "pnl_usd": 2533.479779331118,
+      "pnl_usd_per_day": 63.336994483277955,
+      "notional_usd_per_day": 4803.997352926812,
+      "sharpe_ann": 9.272747859573085,
+      "capital_usd": 13584.425972042536,
+      "return_on_capital_ann_pct": 170.18019777924013,
+      "max_dd_usd": -252.67563485633437,
+      "max_dd_pct": -1.8600391019565652,
+      "days": 40
+     }
+    },
+    "2x": {
+     "IS": {
+      "n_trades": 55562,
+      "per_share_c": 1.3812272851686291,
+      "per_share_ci95_c": [
+       1.1688444267608888,
+       1.5928006646912223
+      ],
+      "pnl_usd": 40433.20404940949,
+      "pnl_usd_per_day": 196.27768956024025,
+      "notional_usd_per_day": 7184.866326658417,
+      "sharpe_ann": 14.495459327891112,
+      "capital_usd": 28302.367701375253,
+      "return_on_capital_ann_pct": 253.12849244767082,
+      "max_dd_usd": -569.4550360798748,
+      "max_dd_pct": -2.0120402719953505,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 10412,
+      "per_share_c": 0.598736335564979,
+      "per_share_ci95_c": [
+       0.08724550818301618,
+       1.1271958683912837
+      ],
+      "pnl_usd": 3687.5359201936667,
+      "pnl_usd_per_day": 92.18839800484167,
+      "notional_usd_per_day": 8062.2581058811575,
+      "sharpe_ann": 6.667551867200974,
+      "capital_usd": 22754.046251146858,
+      "return_on_capital_ann_pct": 147.88035894965816,
+      "max_dd_usd": -469.4297898304612,
+      "max_dd_pct": -2.0630607174176805,
+      "days": 40
+     }
+    },
+    "5x": {
+     "IS": {
+      "n_trades": 62466,
+      "per_share_c": 1.4122048756533117,
+      "per_share_ci95_c": [
+       1.1407377889019148,
+       1.6900427595653724
+      ],
+      "pnl_usd": 74718.04652347413,
+      "pnl_usd_per_day": 362.7089637061851,
+      "notional_usd_per_day": 13042.09478143219,
+      "sharpe_ann": 12.177128126659062,
+      "capital_usd": 52065.129201122414,
+      "return_on_capital_ann_pct": 254.2753159054939,
+      "max_dd_usd": -2489.3147914144065,
+      "max_dd_pct": -4.781155505825081,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 11851,
+      "per_share_c": 0.2408215320512705,
+      "per_share_ci95_c": [
+       -0.4375194524903741,
+       0.9071962406758416
+      ],
+      "pnl_usd": 2710.5152777730696,
+      "pnl_usd_per_day": 67.76288194432674,
+      "notional_usd_per_day": 14839.363413262447,
+      "sharpe_ann": 2.255127082638172,
+      "capital_usd": 37293.0546206826,
+      "return_on_capital_ann_pct": 66.32187189075731,
+      "max_dd_usd": -2548.511255340937,
+      "max_dd_pct": -6.833742318140766,
+      "days": 40
+     }
+    },
+    "all prints": {
+     "IS": {
+      "n_trades": 82274,
+      "per_share_c": 0.3659727858357431,
+      "per_share_ci95_c": [
+       -0.8284828599534553,
+       1.6238916304643445
+      ],
+      "pnl_usd": 101197.24962817838,
+      "pnl_usd_per_day": 491.2487846028077,
+      "notional_usd_per_day": 67441.6077099156,
+      "sharpe_ann": 0.821728252735113,
+      "capital_usd": 534206.8665152368,
+      "return_on_capital_ann_pct": 33.564863654726274,
+      "max_dd_usd": -170104.2917580513,
+      "max_dd_pct": -31.842400841397556,
+      "days": 206
+     },
+     "OOS": {
+      "n_trades": 16362,
+      "per_share_c": -0.9568149020137369,
+      "per_share_ci95_c": [
+       -3.5812156251129323,
+       1.5229879450837143
+      ],
+      "pnl_usd": -51261.85847219865,
+      "pnl_usd_per_day": -1281.5464618049662,
+      "notional_usd_per_day": 67053.49780809828,
+      "sharpe_ann": -2.1478234199722435,
+      "capital_usd": 303724.34983278945,
+      "return_on_capital_ann_pct": -154.00953490108148,
+      "max_dd_usd": -78119.3999927748,
+      "max_dd_pct": -25.72049295217264,
+      "days": 40
+     }
+    }
+   },
+   "ceiling": {
+    "IS": {
+     "fast_tier_qualified_print_usd_per_day": 82324.54243294417,
+     "days": 206,
+     "rows": 98948
+    },
+    "OOS": {
+     "fast_tier_qualified_print_usd_per_day": 105489.68496252266,
+     "days": 40,
+     "rows": 25264
+    }
+   },
+   "coverage": {
+    "IS": "yes, from 2x (central cost $167/day)",
+    "OOS": "no: not even with every qualifying print (central cost $167/day)"
+   },
+   "capacity_md": "**Now:** $4,383 notional/day IS, $4,804 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $65.4 | +1.27 | $2,590 | 16.0 | $11,003 | \u22121.6% | $36.6 | +0.69 | $2,758 | 10.5 | $7,471 | \u22121.7% |\n| 1x | $115.8 | +1.33 | $4,383 | 15.7 | $17,681 | \u22121.6% | $63.3 | +0.69 | $4,804 | 9.3 | $13,584 | \u22121.9% |\n| 2x | $196.3 | +1.38 | $7,185 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 5x | $362.7 | +1.41 | $13,042 | 12.2 | $52,065 | \u22124.8% | $67.8 | +0.24 | $14,839 | 2.3 | $37,293 | \u22126.8% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |",
+   "caveats": [
+    "IS is in-sample for the rule's selection; the OOS is burned (looked at before v2-safe was designed).",
+    "Per-share P&L moves with size because a bigger book takes a different mix of trades (more same-direction stacking within a match once the net cap loosens; at 'all prints', every print at its full size instead of risk-parity sizing). None of it is modelled price impact, which the engine does not have; real impact would make the larger rows worse.",
+    "U2 has few markets before May 2026 (research/v2/expand/RESULTS.md, coverage facts), so U2-IS per-day figures are spread over a mostly empty 201-day calendar."
+   ]
+  },
+  "tier0": {
+   "name": "Tier-0 CV edge (COUNTERFACTUAL)",
+   "cost": {
+    "note": "Feed licence + London gateway + one camera, operator and GPU per covered match (coverage from the scenario).",
+    "items": {
+     "feed_licence": {
+      "low": 1250.0,
+      "central": 5000.0,
+      "high": 10000.0
+     },
+     "vps_london": {
+      "low": 34.455999999999996,
+      "central": 77.4165,
+      "high": 98.112
+     },
+     "polymarket_api": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "hipergator": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "per_event_total": {
+      "low": 110.14500000000001,
+      "central": 396.86,
+      "high": 685.608
+     },
+     "events_per_day": {
+      "low": 10,
+      "central": 10,
+      "high": 10
+     },
+     "camera_operator_gpu_access_month": {
+      "low": 33502.43750000001,
+      "central": 120711.58333333334,
+      "high": 208539.1
+     },
+     "camera_kits_amortised_month": {
+      "low": 208.33333333333334,
+      "central": 416.6666666666667,
+      "high": 833.3333333333334
+     }
+    },
+    "monthly": {
+     "low": 34995.22683333334,
+     "central": 126205.66650000002,
+     "high": 219470.54533333334
+    },
+    "daily": {
+     "low": 1150.5280054794523,
+     "central": 4149.2273917808225,
+     "high": 7215.469983561644
+    }
+   },
+   "periods": {
+    "IS": {
+     "status": "pending",
+     "expected_file": "results/tier0/results.json",
+     "why": "verifier-corrected headline not yet written (research/v2/tier0/DEVIATIONS.md V1-V10 in progress; results.json has no 'headline' key). The pre-registered primary's fill pricing was refuted (V1) and is not used."
+    },
+    "OOS": {
+     "status": "pending",
+     "expected_file": "results/tier0/results.json",
+     "why": "verifier-corrected headline not yet written (research/v2/tier0/DEVIATIONS.md V1-V10 in progress; results.json has no 'headline' key). The pre-registered primary's fill pricing was refuted (V1) and is not used."
+    }
+   },
+   "about": "**COUNTERFACTUAL WITH ASSUMED DATA: licensed live feed + courtside camera, not purchased; parameters from our measurements.** A trader with a courtside 120 fps camera, our CV model, a licensed live point feed and a London gateway, backtested on real Polymarket tapes (research/v2/tier0). Only the verifier-corrected headline is used; the pre-registered primary's fill pricing was refuted (DEVIATIONS V1) and is never shown as an estimate.",
+   "tier0_extra": {
+    "label": "COUNTERFACTUAL WITH ASSUMED DATA: licensed live feed + courtside camera, not purchased; parameters from our measurements."
+   },
+   "extra_md": "**Fixed costs at the scenario's 10 covered matches a day** (low / central / high): per covered match $110 / $397 / $686 (operator and GPU hours plus venue access); camera kits $208 / $417 / $833 a month; plus the feed licence and VPS. Total **$1,151 / $4,149 / $7,215 per day**, which is the trading P&L per day the counterfactual must clear to break even. With venue access at $0 and everything else at its low value it is still $1,151/day."
+  },
+  "maker": {
+   "name": "Maker v1, side markets",
+   "cost": {
+    "note": "Public moneyline websocket + quoting in side markets: no licensed data, no camera.",
+    "items": {
+     "vps_london": {
+      "low": 34.455999999999996,
+      "central": 77.4165,
+      "high": 98.112
+     },
+     "polymarket_api": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "hipergator": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     }
+    },
+    "monthly": {
+     "low": 34.455999999999996,
+     "central": 77.4165,
+     "high": 98.112
+    },
+    "daily": {
+     "low": 1.1327999999999998,
+     "central": 2.5452,
+     "high": 3.2255999999999996
+    }
+   },
+   "periods": {
+    "IS": {
+     "status": "ok",
+     "label": "maker IS (walk-forward, Feb\u2013Aug 2026)",
+     "source": "data/v2_crossmarket/wf_lean_maker.parquet",
+     "calendar": [
+      "2026-02-01",
+      "2026-08-25"
+     ],
+     "per_share_c": 2.593740005037715,
+     "per_share_ci95_c_match_clustered": [
+      -0.09137831514037778,
+      5.1994244890791395
+     ],
+     "per_fill_mean_c": 2.72515891883029,
+     "per_fill_mean_ci95_c_match_clustered": [
+      1.6980123836086962,
+      3.704866111806801
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 2.467852270934528,
+       "taker_fees": -0.0,
+       "maker_rebates": 0.12588773410318801,
+       "slippage_modelled": -0.0,
+       "net_trading": 2.593740005037715
+      },
+      "usd_period": {
+       "gross_edge": 3959.538094884453,
+       "taker_fees": -0.0,
+       "maker_rebates": 201.9801933571581,
+       "slippage_modelled": -0.0,
+       "net_trading": 4161.51828824161
+      },
+      "usd_per_day": {
+       "gross_edge": 19.221058713031326,
+       "taker_fees": -0.0,
+       "maker_rebates": 0.9804863755201849,
+       "slippage_modelled": -0.0,
+       "net_trading": 20.201545088551505
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 3359.2948039758658,
+       "net_per_share_c": 2.093740005037715,
+       "net_usd_per_day": 16.307256329979932
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 1.1327999999999998,
+       "fixed_cost_usd_period": 233.35679999999996,
+       "net_after_costs_usd_per_day": 19.068745088551506,
+       "net_after_costs_usd_period": 3928.16148824161,
+       "breakeven_pnl_usd_per_day": 1.1327999999999998,
+       "breakeven_notional_usd_per_day": 23.814539207152894,
+       "breakeven_notional_multiple_of_now": 0.05607491877648374,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 18.764163065173374
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 2.5452,
+       "fixed_cost_usd_period": 524.3112,
+       "net_after_costs_usd_per_day": 17.656345088551504,
+       "net_after_costs_usd_period": 3637.20708824161,
+       "breakeven_pnl_usd_per_day": 2.5452,
+       "breakeven_notional_usd_per_day": 53.50703141776621,
+       "breakeven_notional_multiple_of_now": 0.12599036305606148,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 17.351763065173373
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 3.2255999999999996,
+       "fixed_cost_usd_period": 664.4735999999999,
+       "net_after_costs_usd_per_day": 16.975945088551505,
+       "net_after_costs_usd_period": 3497.0446882416104,
+       "breakeven_pnl_usd_per_day": 3.2255999999999996,
+       "breakeven_notional_usd_per_day": 67.8108913017235,
+       "breakeven_notional_multiple_of_now": 0.1596709551601571,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 16.671363065173374
+      }
+     },
+     "unit_economics": {
+      "n_trades": 8905,
+      "n_matches": 2556,
+      "calendar_days": 206,
+      "active_days": 189,
+      "per_trade_usd": 0.4673237830703661,
+      "per_trade_median_usd": 0.2351232,
+      "per_match_usd": 1.6281370454779387,
+      "match_win_rate": 0.5657276995305164,
+      "per_day_usd": 20.20154508855151,
+      "per_day_median_usd": 3.6929614355917373,
+      "profitable_days_share": 0.5436893203883495,
+      "profitable_active_days_share": 0.5925925925925926,
+      "trade_win_rate": 0.5759685569904548,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5640199425298924,
+       0.5876498983366077
+      ],
+      "trade_loss_rate": 0.4239191465468838,
+      "avg_win_usd": 6.894293456214842,
+      "avg_loss_usd": -8.264718635413063,
+      "win_loss_ratio": 0.8341836861419387,
+      "profit_factor": 1.133384934098544,
+      "expectancy_usd_per_trade": 0.4673237830703661,
+      "expectancy_c_per_share": 2.593740005037715,
+      "net_c_per_usd_notional": 4.756758004621622,
+      "turnover_x_per_year": 55.773673936829105,
+      "hold_hours_to_resolution": {
+       "median": 1.3391579241885079,
+       "p90": 3.6154670606719135,
+       "mean": 2.0831763665150986
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 1.3391579241885079,
+       "p90": 3.6154670606719135,
+       "rule": "until the side market's resolution (analyze.py capital_for: entry \u2192 match end), capital = 3 \u00d7 peak locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 62.74389681589527,
+       "on_reserved_capital_usd_per_day": 0.3045820233781324,
+       "on_dollars_actually_locked_usd_period": 0.793679826918735,
+       "share_of_net_trading_pnl": 0.015077164743737508
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 2779.310963325458,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 926.4369877751526,
+      "pnl_usd": 4161.51828824161,
+      "pnl_ci95_usd_match_clustered": [
+       -152.34156605291915,
+       8317.117392777547
+      ],
+      "return_on_capital_pct": 149.73201427098806,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       -3.882194451989914,
+       306.41973909721554
+      ],
+      "return_on_capital_ann_pct": 265.30186994616815,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       -6.87864550959378,
+       542.9281784974936
+      ],
+      "sharpe_ann": 2.4908627097407927,
+      "sortino_ann": 4.067465731657714,
+      "calmar": 4.484067205763543,
+      "max_dd_usd": -1644.3919368210577,
+      "max_dd_pct": -59.16545354297222,
+      "max_dd_dates": {
+       "peak_date": "2026-07-05",
+       "trough_date": "2026-07-14",
+       "recovery_date": "2026-07-22"
+      },
+      "days_trough_to_recovery": 8,
+      "days_peak_to_recovery": 17,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -668.9082068264319,
+      "worst_day_pct": -24.067411515049766,
+      "worst_week_usd": -731.9917925020483,
+      "worst_week_pct": -26.337167814652044,
+      "worst_month_usd": -561.4416001551249,
+      "worst_month_pct": -20.200747867498695,
+      "months_positive": 5,
+      "months_total": 7,
+      "skew_daily": 0.37487978676165173,
+      "kurtosis_daily_pearson": 8.835573754248298
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 424.69146147279037,
+      "shares_per_day_now": 778.8577517143149,
+      "notional_usd_period": 87486.44106339481
+     }
+    },
+    "IS_1s5": {
+     "status": "ok",
+     "label": "maker IS, 1 s / 5% regime",
+     "source": "data/v2_crossmarket/wf_lean_maker.parquet (regime 1s/5%)",
+     "calendar": [
+      "2026-07-11",
+      "2026-08-25"
+     ],
+     "per_share_c": 3.353803976076433,
+     "per_share_ci95_c_match_clustered": [
+      -0.414764755592212,
+      6.875031741464981
+     ],
+     "per_fill_mean_c": 2.0166731158864306,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.5189118354696588,
+      3.58799507108119
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 3.197766860312818,
+       "taker_fees": -0.0,
+       "maker_rebates": 0.15603711576361357,
+       "slippage_modelled": -0.0,
+       "net_trading": 3.353803976076433
+      },
+      "usd_period": {
+       "gross_edge": 3116.8205268084903,
+       "taker_fees": -0.0,
+       "maker_rebates": 152.08728672247474,
+       "slippage_modelled": -0.0,
+       "net_trading": 3268.9078135309665
+      },
+      "usd_per_day": {
+       "gross_edge": 67.75696797409762,
+       "taker_fees": -0.0,
+       "maker_rebates": 3.3062453635320597,
+       "slippage_modelled": -0.0,
+       "net_trading": 71.0632133376297
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 2781.5645106950005,
+       "net_per_share_c": 2.853803976076433,
+       "net_usd_per_day": 60.468793710760885
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 1.1327999999999998,
+       "fixed_cost_usd_period": 52.10879999999999,
+       "net_after_costs_usd_per_day": 69.9304133376297,
+       "net_after_costs_usd_period": 3216.7990135309665,
+       "breakeven_pnl_usd_per_day": 1.1327999999999998,
+       "breakeven_notional_usd_per_day": 18.825547042204693,
+       "breakeven_notional_multiple_of_now": 0.015940737081757528,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 69.62583131425157
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 2.5452,
+       "fixed_cost_usd_period": 117.0792,
+       "net_after_costs_usd_per_day": 68.51801333762971,
+       "net_after_costs_usd_period": 3151.8286135309663,
+       "breakeven_pnl_usd_per_day": 2.5452,
+       "breakeven_notional_usd_per_day": 42.29765389461457,
+       "breakeven_notional_multiple_of_now": 0.03581599931187258,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 68.21343131425158
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 3.2255999999999996,
+       "fixed_cost_usd_period": 148.37759999999997,
+       "net_after_costs_usd_per_day": 67.8376133376297,
+       "net_after_costs_usd_period": 3120.5302135309666,
+       "breakeven_pnl_usd_per_day": 3.2255999999999996,
+       "breakeven_notional_usd_per_day": 53.60494751000658,
+       "breakeven_notional_multiple_of_now": 0.04539057338534346,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 67.53303131425157
+      }
+     },
+     "unit_economics": {
+      "n_trades": 4159,
+      "n_matches": 1017,
+      "calendar_days": 46,
+      "active_days": 46,
+      "per_trade_usd": 0.7859840859656086,
+      "per_trade_median_usd": 0.28153279922502883,
+      "per_match_usd": 3.2142653033736144,
+      "match_win_rate": 0.5850540806293019,
+      "per_day_usd": 71.0632133376297,
+      "per_day_median_usd": 84.18685692481034,
+      "profitable_days_share": 0.6521739130434783,
+      "profitable_active_days_share": 0.6521739130434783,
+      "trade_win_rate": 0.5967780716518394,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5819267133890074,
+       0.6134174993583262
+      ],
+      "trade_loss_rate": 0.4032219283481606,
+      "avg_win_usd": 8.823807908453436,
+      "avg_loss_usd": -11.110186890429611,
+      "win_loss_ratio": 0.7942087739364962,
+      "profit_factor": 1.1754479289865138,
+      "expectancy_usd_per_trade": 0.7859840859656086,
+      "expectancy_c_per_share": 3.353803976076433,
+      "net_c_per_usd_notional": 6.017355020071362,
+      "turnover_x_per_year": 155.09397613246858,
+      "hold_hours_to_resolution": {
+       "median": 1.2033584288756052,
+       "p90": 2.252428058584531,
+       "mean": 1.3042717366922116
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 1.2033584288756052,
+       "p90": 2.252428058584531,
+       "rule": "until the side market's resolution (analyze.py capital_for: entry \u2192 match end), capital = 3 \u00d7 peak locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 14.01077307539408,
+       "on_reserved_capital_usd_per_day": 0.30458202337813217,
+       "on_dollars_actually_locked_usd_period": 0.32966071340740916,
+       "share_of_net_trading_pnl": 0.004286071640625468
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 2779.3109633254558,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 926.4369877751519,
+      "pnl_usd": 3268.9078135309665,
+      "pnl_ci95_usd_match_clustered": [
+       -418.14280941131926,
+       6722.373649072334
+      ],
+      "return_on_capital_pct": 117.615763643076,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       -15.722420964457323,
+       249.2205412563556
+      ],
+      "return_on_capital_ann_pct": 933.2555158635378,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       -124.75399243536788,
+       1977.5108164906478
+      ],
+      "sharpe_ann": 4.829085557673454,
+      "sortino_ann": 8.245311797276386,
+      "calmar": 16.127326883747426,
+      "max_dd_usd": -1608.330571780892,
+      "max_dd_pct": -57.86796054862887,
+      "max_dd_dates": {
+       "peak_date": "2026-07-10",
+       "trough_date": "2026-07-14",
+       "recovery_date": "2026-07-22"
+      },
+      "days_trough_to_recovery": 8,
+      "days_peak_to_recovery": 12,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -668.9082068264319,
+      "worst_day_pct": -24.067411515049784,
+      "worst_week_usd": -430.6501209775752,
+      "worst_week_pct": -15.494852021247048,
+      "worst_month_usd": 275.5127937825961,
+      "worst_month_pct": 9.912989133570862,
+      "months_positive": 2,
+      "months_total": 2,
+      "skew_daily": -0.15190084505790216,
+      "kurtosis_daily_pearson": 3.482329261780412
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 1180.9709266046752,
+      "shares_per_day_now": 2118.883925373764,
+      "notional_usd_period": 54324.662623815064
+     }
+    },
+    "OOS_blind": {
+     "status": "ok",
+     "label": "maker OOS (blind, pre-registered)",
+     "source": "research/v2/maker/oos/book_v1.csv",
+     "calendar": [
+      "2026-08-25",
+      "2026-10-03"
+     ],
+     "per_share_c": -0.7515756876079489,
+     "per_share_ci95_c_match_clustered": [
+      -4.972760619376541,
+      3.3346406712343173
+     ],
+     "per_fill_mean_c": 1.8654505848950147,
+     "per_fill_mean_ci95_c_match_clustered": [
+      -0.056718989878624414,
+      3.9969072300018884
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": -0.906258616361654,
+       "taker_fees": -0.0,
+       "maker_rebates": 0.15468292875370576,
+       "slippage_modelled": -0.0,
+       "net_trading": -0.7515756876079489
+      },
+      "usd_period": {
+       "gross_edge": -457.0405054407504,
+       "taker_fees": -0.0,
+       "maker_rebates": 78.00903921275048,
+       "slippage_modelled": -0.0,
+       "net_trading": -379.0314662280003
+      },
+      "usd_per_day": {
+       "gross_edge": -11.42601263601876,
+       "taker_fees": -0.0,
+       "maker_rebates": 1.950225980318762,
+       "slippage_modelled": -0.0,
+       "net_trading": -9.475786655700007
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": -631.1893476480003,
+       "net_per_share_c": -1.2515756876079491,
+       "net_usd_per_day": -15.779733691200008
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 1.1327999999999998,
+       "fixed_cost_usd_period": 45.31199999999999,
+       "net_after_costs_usd_per_day": -10.608586655700007,
+       "net_after_costs_usd_period": -424.3434662280003,
+       "breakeven_pnl_usd_per_day": 1.1327999999999998,
+       "breakeven_notional_usd_per_day": null,
+       "breakeven_notional_multiple_of_now": null,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -10.830142067597329
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 2.5452,
+       "fixed_cost_usd_period": 101.80799999999999,
+       "net_after_costs_usd_per_day": -12.020986655700007,
+       "net_after_costs_usd_period": -480.8394662280003,
+       "breakeven_pnl_usd_per_day": 2.5452,
+       "breakeven_notional_usd_per_day": null,
+       "breakeven_notional_multiple_of_now": null,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -12.242542067597329
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 3.2255999999999996,
+       "fixed_cost_usd_period": 129.02399999999997,
+       "net_after_costs_usd_per_day": -12.701386655700007,
+       "net_after_costs_usd_period": -508.0554662280002,
+       "breakeven_pnl_usd_per_day": 3.2255999999999996,
+       "breakeven_notional_usd_per_day": null,
+       "breakeven_notional_multiple_of_now": null,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -12.92294206759733
+      }
+     },
+     "unit_economics": {
+      "n_trades": 2207,
+      "n_matches": 524,
+      "calendar_days": 40,
+      "active_days": 40,
+      "per_trade_usd": -0.17174058279474413,
+      "per_trade_median_usd": 0.265346,
+      "per_match_usd": -0.7233424928015271,
+      "match_win_rate": 0.5801526717557252,
+      "per_day_usd": -9.475786655700002,
+      "per_day_median_usd": -10.885516449999997,
+      "profitable_days_share": 0.425,
+      "profitable_active_days_share": 0.425,
+      "trade_win_rate": 0.5949252378794744,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5732941607026676,
+       0.616790829841545
+      ],
+      "trade_loss_rate": 0.4050747621205256,
+      "avg_win_usd": 7.462776970732673,
+      "avg_loss_usd": -11.384404506487696,
+      "win_loss_ratio": 0.6555263357411287,
+      "profit_factor": 0.9627584774363559,
+      "expectancy_usd_per_trade": -0.17174058279474413,
+      "expectancy_c_per_share": -0.7515756876079489,
+      "net_c_per_usd_notional": -1.3159116408628875,
+      "turnover_x_per_year": 130.0068314573551,
+      "hold_hours_to_resolution": {
+       "median": null,
+       "p90": null,
+       "mean": null,
+       "note": "fill timestamps in the source CSV are rounded to 6 significant digits"
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": null,
+       "p90": null,
+       "rule": "until the side market's resolution (analyze.py capital_for: entry \u2192 match end), capital = 3 \u00d7 peak locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 8.862216475892872,
+       "on_reserved_capital_usd_per_day": 0.2215554118973218,
+       "on_dollars_actually_locked_usd_period": null,
+       "share_of_net_trading_pnl": null
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 2021.693133563061,
+      "capital_rule": "3 x peak dollars locked (repo convention) (taken from results/maker/oos.json: book_v1.csv rounds fill times)",
+      "peak_locked_usd": 673.897711187687,
+      "pnl_usd": -379.0314662280003,
+      "pnl_ci95_usd_match_clustered": [
+       -2555.1944973363,
+       1651.7268625274492
+      ],
+      "return_on_capital_pct": -18.7482194965954,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       -94.59783773725941,
+       59.70309022110551
+      ],
+      "return_on_capital_ann_pct": -171.07750290643304,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       -863.2052693524922,
+       544.7906982675878
+      ],
+      "sharpe_ann": -1.4226706180503594,
+      "sortino_ann": -2.102199508880697,
+      "calmar": -2.9916084620636654,
+      "max_dd_usd": -1156.1212549,
+      "max_dd_pct": -57.1857932198857,
+      "max_dd_dates": {
+       "peak_date": "2026-09-11",
+       "trough_date": "2026-09-29",
+       "recovery_date": null
+      },
+      "days_trough_to_recovery": null,
+      "days_peak_to_recovery": null,
+      "days_since_trough_unrecovered": 4,
+      "worst_day_usd": -207.11537900000002,
+      "worst_day_pct": -10.244649673166615,
+      "worst_week_usd": -759.6985544,
+      "worst_week_pct": -37.577342564402755,
+      "worst_month_usd": -367.01106070000003,
+      "worst_month_pct": -18.15364827663902,
+      "months_positive": 1,
+      "months_total": 3,
+      "skew_daily": 0.680202260937975,
+      "kurtosis_daily_pearson": 3.33558234864198
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 720.092927325,
+      "shares_per_day_now": 1260.7894070999998,
+      "notional_usd_period": 28803.717093
+     },
+     "verdict": {
+      "statistic": "mean_pnl_per_share_c (fill-weighted, held to resolution)",
+      "value_c": 1.8654493548710172,
+      "ci95_c": [
+       -0.1397399233597994,
+       3.8600603441293164
+      ],
+      "verdict": "FAILURE",
+      "n_fills": 2207,
+      "n_matches": 524
+     },
+     "cost_label": "cost-fragile",
+     "stresses_repo": {
+      "i_queue10": {
+       "per_fill_c": 1.8654493548710172,
+       "ci95_c": [
+        -0.1397399233597994,
+        3.8600603441293164
+       ],
+       "pnl_usd": -106.80922348044717
+      },
+      "ii_trade_through": {
+       "per_fill_c": -3.9885070825865627,
+       "ci95_c": [
+        -13.282668611843846,
+        5.704860711800638
+       ],
+       "pnl_usd": 98.82280718559656
+      },
+      "iii_no_rebate": {
+       "per_fill_c": 1.7098485715360217,
+       "ci95_c": [
+        -0.2949166465357794,
+        3.703226998720796
+       ],
+       "pnl_usd": -457.0406182736172
+      },
+      "iv_all": {
+       "per_fill_c": -4.150479711224489,
+       "ci95_c": [
+        -13.447629677855305,
+        5.540709840048592
+       ],
+       "pnl_usd": 110.1353512843195
+      },
+      "viii_maker_base_fee": {
+       "per_fill_c": -0.20922775626224924,
+       "ci95_c": [
+        -2.1951609252115167,
+        1.7865517105328799
+       ],
+       "pnl_usd": -1419.152122978582
+      }
+     },
+     "derived_repo": {
+      "breakeven_maker_fee_rate": 0.08991516534599638,
+      "note": "rate r at which mean(pnl_ps - r*px*(1-px)) = 0 on book 1; derived from book 1, not a variant"
+     }
+    },
+    "live_paper": {
+     "status": "pending",
+     "expected_file": "results/live/summary.json",
+     "why": "live paper session on real markets still running (results/live/)"
+    }
+   },
+   "about": "Leaning maker on the same match's side markets (set winner, handicaps, totals): quote only on the side that gains from the moneyline's move, filled by takers trading against it; 0 fee + 15% rebate; 20% of each contrary print, \u2264 $250 per fill, \u2264 $2,000 per match; hold to resolution. Remote-executable with public data. The idea is IS-generated (research/v2/crossmarket/RESULTS.md 5b).",
+   "waterfall_note": "Slippage as modelled is zero: we join the printed level and are filled at the print price. The realism verifier's combined conservative stress (VWAP fix + 1\u00a2 step-ahead + no rebate) is in section 5d.",
+   "scaling": {
+    "0.5x": {
+     "pnl_usd": 2080.759144120805,
+     "pnl_usd_per_day": 10.100772544275753,
+     "notional_usd_per_day": 212.34573073639518,
+     "how": "exact: every cap halves with the queue share, so each fill halves and the per-match cap keeps the same fills"
+    },
+    "1x": {
+     "pnl_usd": 4161.51828824161,
+     "pnl_usd_per_day": 20.201545088551505,
+     "notional_usd_per_day": 424.69146147279037,
+     "how": "base book (20% of each contrary print)"
+    },
+    "2x": {
+     "how": "not run by the repo; between the linear 2x and the 5x model below"
+    },
+    "5x_step_ahead_model": {
+     "share": 1.0,
+     "pnl_usd_all_months": 12988.965380780892,
+     "pnl_usd_per_30d_1s5": 6044.7460405181,
+     "notional_usd_per_30d_1s5": 136657.20700408804,
+     "same_model_at_1x": {
+      "pnl_usd_all_months": 1197.9185286909394,
+      "pnl_usd_per_30d_1s5": 130.33555834377592,
+      "notional_usd_per_30d_1s5": 29887.306777083202
+     },
+     "how": "verify_realism.json 2_fill_stress: our quote one tick ahead of the printed level, filled for 100% (5x) vs 20% (1x) of each contrary print"
+    },
+    "conservative_combined": {
+     "per_fill_c": 2.0024225400761866,
+     "pnl_usd": 1028.5139530314032,
+     "notional_usd": 73373.74636440373,
+     "cur_pnl_per_30d": 47.739883049270325,
+     "cur_notional_per_30d": 29887.306777083202
+    }
+   },
+   "coverage": {
+    "IS": "yes at 1x (central cost $2.55/day)",
+    "IS_1s5": "yes at 1x (central cost $2.55/day)",
+    "OOS_blind": "no: net trading P&L is below the fixed cost"
+   },
+   "capacity_md": "**Now:** $425 notional/day over Feb\u2013Aug ($1,181/day in the 1 s / 5% regime). **Ceiling (measured):** 100% of the contrary side-market flow, about $136,657 notional per 30 days in the current regime (verifier's step-ahead model), against $29,887 at a 20% share in the same model ($35,535 in the base fill model). Side markets are 1.4\u20131.9% of moneyline in-play volume (crossmarket RESULTS.md section 1).\n\n| size | P&L | notional | model |\n|---|---|---|---|\n| 0.5x | $2,081 ($10.1/day) | $212/day | exact: every cap halves with the queue share, so each fill halves and the per-match cap keeps the same fills |\n| 1x | $4,162 ($20.2/day) | $425/day | base book (20% of each contrary print) |\n| 2x | not run | | not run by the repo; between the linear 2x and the 5x model below |\n| 1x, step-ahead model | $1,198 Feb\u2013Aug; $130 per 30 d at 1 s/5% | $29,887 per 30 d | one tick ahead of the print, 20% share |\n| 5x, step-ahead model | $12,989 Feb\u2013Aug; $6,045 per 30 d at 1 s/5% | $136,657 per 30 d | one tick ahead, 100% of each contrary print |\n| 1x, combined conservative | $1,029 Feb\u2013Aug (+2.00\u00a2/fill); $48 per 30 d at 1 s/5% | $29,887 per 30 d | VWAP fix + 1\u00a2 step-ahead + no rebate (verifier) |\n\nThe maker's depth model is the verifier's: fills are a share of the contrary taker prints that traded through our level, with a one-tick price penalty for stepping ahead of the queue; there is no historical book, so queue position is modelled, not observed (crossmarket RESULTS.md section 7).",
+   "caveats": [
+    "The leaning-maker idea was formed on all IS months (post-hoc hypothesis); only the blind OOS can confirm it.",
+    "Hold-to-resolution variance on a tiny capital base makes the dollar series noisy (2 of 7 months negative in $).",
+    "Per fill (the lens's own headline) the IS edge is +2.73\u00a2 [+1.70, +3.70]; share-weighted (used here, as for every strategy) it is +2.59\u00a2 [\u22120.09, +5.20]: the large fills earn less.",
+    "Max drawdown here is measured against the capital base (equity starting at 0); crossmarket RESULTS.md's \u221244% is measured against capital plus accumulated P&L, so the two differ."
+   ],
+   "extra_md": "**Blind OOS verdict (research/v2/maker/PREREG.md, primary = per-fill mean, match-clustered CI): +1.87\u00a2 [\u22120.14, +3.86] over 2207 fills / 524 matches: FAILURE.** Cost label: cost-fragile. Pre-registered stresses, per fill (\u00a2) and $: i_queue10 +1.87 [\u22120.14, +3.86], \u2212$107; ii_trade_through \u22123.99 [\u221213.28, +5.70], $99; iii_no_rebate +1.71 [\u22120.29, +3.70], \u2212$457; iv_all \u22124.15 [\u221213.45, +5.54], $110; viii_maker_base_fee \u22120.21 [\u22122.20, +1.79], \u2212$1,419. Break-even maker fee rate (derived in the repo): 0.090. Source: `results/maker/oos.json`; the fill book `research/v2/maker/oos/book_v1.csv` is what the tables below use."
+  },
+  "tt": {
+   "name": "Table tennis (out-of-sport test)",
+   "cost": {
+    "note": "Same remote stack as the maker.",
+    "items": {
+     "vps_london": {
+      "low": 34.455999999999996,
+      "central": 77.4165,
+      "high": 98.112
+     },
+     "polymarket_api": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     },
+     "hipergator": {
+      "low": 0.0,
+      "central": 0.0,
+      "high": 0.0
+     }
+    },
+    "monthly": {
+     "low": 34.455999999999996,
+     "central": 77.4165,
+     "high": 98.112
+    },
+    "daily": {
+     "low": 1.1327999999999998,
+     "central": 2.5452,
+     "high": 3.2255999999999996
+    }
+   },
+   "periods": {
+    "results": {
+     "status": "pending",
+     "expected_file": "results/tt/results.json",
+     "why": "out-of-sport blind test still running (research/tt)"
+    }
+   },
+   "about": "Out-of-sport test of the CV + book mechanism on every Polymarket table-tennis match. Liquidity context from docs/NOTE.md section 7: 89\u00a2 median spread, $23 at the touch, about $2 of volume per match."
+  }
+ }
+}
