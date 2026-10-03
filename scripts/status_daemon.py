@@ -68,9 +68,13 @@ def main():
                 hpg = [{"id": "-", "name": "unreachable", "state": "-", "time": "-"}]
         wf = []
         for name, done_file, work_dir in (
-                ("Tier-0 backtest: CV + live feed, full pipeline", "results/tier0/results.json", "research/v2/tier0"),
-                ("Blind test on ~26k never-examined matches", "results/expand/results.json", "research/v2/expand"),
-                ("COURTSIDE engine: vision → execution (paper)", "results/engine/demo_run.json", "engine")):
+                ("CV-edge backtest (tier 0) + verifiers", "results/tier0/VERIFIED", "research/v2/tier0"),
+                ("Blind test on 11,307 unseen markets", "results/expand/results.json", "research/v2/expand"),
+                ("v2-safe (risk dial), blind-tested", "results/lowloss/results.json", "research/v2/lowloss"),
+                ("COURTSIDE engine: vision → execution (paper)", "results/engine/demo_run.json", "engine"),
+                ("Spin-aware CV (tennis filter + table-tennis Magnus fit)", "results/spin/tennis/RESULTS.md", "results/spin"),
+                ("Rigor pack: deflated Sharpe, PBO, bootstrap", "results/rigor/rigor.json", "research/rigor"),
+                ("Tier-0 v3: optimise → freeze → blind test", "results/tier0_v3/blind.json", "research/v2/tier0_v3")):
             act = max(tree_mtime(work_dir), newest([done_file]))
             wf.append({"name": name, "done": os.path.exists(done_file), "last_activity_s": round(now - act) if act else None})
         c = jload("results/v2/causal.json") or {}
@@ -83,8 +87,23 @@ def main():
             hl["Book vs public score feed"] = f"book first {s['h4']['share_book_first']*100:.0f}% · median {s['h4']['median_lead_s']:.0f} s ahead"
         fw = jload("results/v2/forward.json")
         hl["Forward test (blind)"] = (fw.get("verdict_A_fast_tier", "?") + " / " + fw.get("verdict_B_v2_book", "?")) if fw else "scheduled ~11:30 UTC"
-        for k, p in (("Tier-0 scenario", "results/tier0/results.json"), ("Unseen-match test", "results/expand/results.json")):
-            hl[k] = "done: see results" if os.path.exists(p) else "running"
+        e = jload("results/expand/results.json")
+        if e:
+            pr = e.get("primary", {})
+            hl["Blind test, unseen markets"] = (f"IS {pr['u2_is']['per_share_c']:+.2f}¢ ({pr['u2_is']['label']}) · "
+                                                f"OOS {pr['u2_oos']['per_share_c']:+.2f}¢ ({pr['u2_oos']['label']})")
+        ll = jload("results/lowloss/results.json")
+        if ll:
+            hl["v2-safe"] = "worst day halved; blind OOS still fails (see paper)"
+        fr = jload("results/v2/factor_regression.json")
+        if fr:
+            hl["Factor exposure"] = f"alpha t={fr['t']['alpha_daily']}, R²={fr['r2']} (not a market bet)"
+        t0 = jload("results/tier0/results.json")
+        if t0:
+            pi, po = t0["primary"]["IS"], t0["primary"].get("burned_OOS", {})
+            hl["CV-edge (assumed data)"] = f"Sharpe IS {pi['sharpe_ann']:.0f} · OOS {po.get('sharpe_ann', float('nan')):.0f} (being verified)"
+        rg = jload("results/rigor/rigor.json")
+        hl["Rigor pack"] = "done: see results/rigor" if rg else "running"
         git = subprocess.run(["git", "log", "-6", "--format=%cr|%s"], capture_output=True, text=True).stdout.splitlines()
         du = shutil.disk_usage(os.path.expanduser("~"))
         OUT.write_text(json.dumps({"t": now, "recorders": rec, "hpg": hpg, "workflows": wf, "headline": hl,
