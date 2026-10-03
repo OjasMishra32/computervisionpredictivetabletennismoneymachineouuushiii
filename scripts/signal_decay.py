@@ -292,6 +292,9 @@ def figure(J: dict, path: Path):
     panels = [("tennis", "Tennis · Polymarket ATP/WTA moneylines · U1 IS + burned OOS (non-blind)"),
               ("table_tennis", "Table tennis · Polymarket WTT + Setka moneylines · UTT (first look)")]
     fig, axes = plt.subplots(2, 1, figsize=(11.5, 11.5), facecolor=C["surface"])
+    # post-hoc same-block split (research/decay/audit_sameblock.py), drawn into the Reading B box when present
+    au_path = OUT / "audit_sameblock.json"
+    AU = json.loads(au_path.read_text()) if au_path.exists() else None
     for ax, (sport, title) in zip(axes, panels):
         B = J[sport]
         sub = B["subsets"][B["primary"]]
@@ -347,17 +350,30 @@ def figure(J: dict, path: Path):
         row1, row2 = yhi - 0.02 * H, yhi - 0.25 * H
         for n in ("LDN-20", "FL-meas"):
             ax.axvline(st[n]["l_s"], color=C["stack"], lw=0.8, ls=(0, (2, 2)), alpha=0.7, zorder=2)
-        ax.text(0.022, row1, f"Reading B (x = ℓ, {st['LDN-20']['l_s']:.2f}–{st['FL-meas']['l_s']:.2f} s)\n"
-                f"upper bound: venue delay\ncancels on the tape clock\nwith-jump {val(rd('FL-20', 'B'))}\n"
-                f"fast tier {val(rd('FL-20', 'B', 'fast'))}",
+        sbw = None
+        if AU is not None:
+            sbw = (AU["tennis"]["IS+burned_OOS"] if sport == "tennis" else AU["table_tennis"])["same_block"]["with_jump"]
+        split = ("" if sbw is None else
+                 f"not an upper bound: {sbw['share_at_or_before']:.0%} of its with-jump\nprints are at or before the "
+                 f"detection print\n(at/before {sbw['net30_at_or_before']['mean_c']:+.2f}¢, "
+                 f"after {sbw['net30_strictly_after']['mean_c']:+.2f}¢)\n")
+        ax.text(0.022, row1, f"Reading B (x = ℓ, {st['LDN-20']['l_s']:.2f}–{st['FL-meas']['l_s']:.2f} s): same block\n"
+                + split + f"with-jump {val(rd('FL-20', 'B'))}\nfast tier {val(rd('FL-20', 'B', 'fast'))}",
                 fontsize=7.6, color=C["ink"], va="top", ha="left", bbox=box, zorder=5)
         for n in ("LDN-20", "FL-meas"):
             ax.axvline(A(n), color=C["stack"], lw=1, alpha=0.85, zorder=2)
+        ws = J["latency_inputs"]["net_florida_s"] + 1.0
+        today = ""
+        if sport == "tennis" and "burned_OOS" in B["subsets"]:
+            o = B["subsets"]["burned_OOS"]["curves"]
+            today = (f"\ntoday (burned OOS), [1, 2):\nwith-jump {val(o['with_jump']['net30']['1-2'])}"
+                     f"\nfast tier {val(o['fast']['net30']['1-2'])}")
         ax.text(A("FL-meas") * 1.05, row1,
-                f"(c) Florida / (d) London: camera + CV\n+ network + venue delay 1 s\n"
+                f"(c) Florida / (d) London: camera + CV\n+ network + 1 s hold (marketable)\n"
                 f"x = {A('LDN-20'):.2f}–{A('FL-meas'):.2f} s (all in one bin)\n"
-                f"Reading A (each market's own δ):\nwith-jump {val(rd('FL-20'))}\nfast tier {val(rd('FL-20', 'A', 'fast'))}",
-                fontsize=7.6, color=C["ink"], va="top", ha="left", bbox=box, zorder=5)
+                f"websocket bot on the move: x ≈ {ws:.2f} s\n"
+                f"Reading A (each market's own δ):\nwith-jump {val(rd('FL-20'))}\nfast tier {val(rd('FL-20', 'A', 'fast'))}"
+                + today, fontsize=7.6, color=C["ink"], va="top", ha="left", bbox=box, zorder=5)
         a0, a1 = A("stream-5s"), A("stream-30s")
         yb = row2 - 0.005 * H
         ax.plot([a0, a1], [yb, yb], color=C["stack"], lw=1, zorder=2)
@@ -400,16 +416,17 @@ def figure(J: dict, path: Path):
     axes[-1].set_xlabel("seconds after jump detection (block clock, log scale)")
     bl = J["latency_inputs"]["block_lag_s"]
     foot = [
-        "Steps: print-weighted mean per bin; bands: match-clustered 95% CI (2,000 draws). Stack markers are drawn for a 1 s venue delay. "
-        "Reading A uses each market's own delay",
+        "Steps: print-weighted mean per bin; bands: match-clustered 95% CI (2,000 draws). Stack markers are drawn for the 1 s hold on "
+        "marketable orders. Reading A uses each market's own delay",
         "(1 s markets read [1,3), 3 s markets read [3,5)), so the (c)+(d) value is not the [1,3) step. "
-        f"Tape stamps are block times, a median {bl['median']:.2f} s (p10 {bl['p10']:.2f}, p90 {bl['p90']:.2f}) after the trade.",
-        "since_det is a difference of two stamps, so that lag cancels up to ~1 s of jitter; a detector fed by the data-api tape "
-        "sees the jump ~2 s late, so it cannot act before x ≈ 2 s.",
+        f"Tape stamps are block times, a median {bl['median']:.2f} s (p10 {bl['p10']:.2f}, p90 {bl['p90']:.2f}) after the match.",
+        "since_det is a difference of two stamps, so that lag cancels up to ~1 s of jitter. A bot fed by the data-api tape sees the jump "
+        "at least that late (a lower bound),",
+        "so with the 1 s hold it lands at x ≥ 3 s; a bot fed by the CLOB websocket (as our live paper trader is) does not have that lag.",
         "Assumes the point happens at detection (detection can lag the move by up to 10 s). Bins: research/decay/PRERUN.md (TT5-D3).",
     ]
     fig.text(0.01, 0.005, "\n".join(foot), fontsize=7.6, color=C["ink2"], va="bottom")
-    fig.tight_layout(rect=(0, 0.065, 1, 1))
+    fig.tight_layout(rect=(0, 0.075, 1, 1))
     fig.savefig(path, dpi=150, facecolor=C["surface"])
     plt.close(fig)
 

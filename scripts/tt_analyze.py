@@ -317,7 +317,9 @@ def tt3(P: pd.DataFrame, U: pd.DataFrame):
     _, sh, _ = fasttier.walk_forward(Pc, bucket="bucket_c")  # the call v2.run makes first
     out = {"shadow_rows": int(len(sh)), "shadow_matches": int(sh.cond.nunique()) if len(sh) else 0}
     if sh.empty:
-        out.update({p: {"n_trades": 0, "n_matches": 0, "verdict": "FAIL (no trades)", "labels": []}
+        # 0 matches with v2 trades is < 30, so the pre-registered "underpowered" label applies (the first run,
+        # 2026-10-03 19:23 UTC, wrote labels=[] here; corrected after the verifier, research/tt/DEVIATIONS.md TT-C2)
+        out.update({p: {"n_trades": 0, "n_matches": 0, "verdict": "FAIL (no trades)", "labels": ["underpowered"]}
                     for p in ("IS", "OOS")})
         out.update(ALL={"n_trades": 0}, verdict="FAIL (no trades)",
                    note="fast-tier shadow is empty: no wallet qualified, so v2 has no opportunity set (TT-D5)",
@@ -552,10 +554,15 @@ def fig_fasttier(tt2r: dict, path: Path, title_note: str = ""):
         else:
             ax.plot([], [], "o", color=col, label=lab.split(" (")[0] + ": none")
     ax.axhline(0, color=INK2, lw=0.8)
-    ticks = [f"{r['month']}\n{r['n_qualified_wallets']} qual. wallets\n{r['others_prints']} other prints" for r in mo]
+    ticks = [f"{r['month']}\n{r['n_qualified_wallets']} qual. wallets\n{r['others_prints']} other prints"
+             + (f"\n{r['prior_matches']} prior matches" if r.get("prior_matches") is not None else "") for r in mo]
     ax.set_xticks(x, ticks, fontsize=7)
     if not any(r["fast_net30_c"] for r in mo):
-        ax.text(0.5, 0.92, "No wallet qualified as fast tier in any month", transform=ax.transAxes,
+        if tt2r.get("structural_note"):  # leave a strip above the data for the note
+            lo, hi = ax.get_ylim()
+            ax.set_ylim(lo, hi + 0.40 * (hi - lo))
+        ax.text(0.5, 0.97, "No wallet qualified as fast tier in any month" +
+                (f"\n{tt2r['structural_note']}" if tt2r.get("structural_note") else ""), transform=ax.transAxes,
                 ha="center", va="top", color=INK2, fontsize=8)
     ax.set_xlim(-0.6, len(mo) - 0.4)
     ax.set_ylabel("Net 30 s markout, ¢/share")
@@ -581,8 +588,9 @@ def fig_equity(tt3r: dict, tr: pd.DataFrame, path: Path):
                          f"\\${r['capital_usd']:,.0f} capital", fontsize=8)
             ax.tick_params(axis="x", labelrotation=30, labelsize=7)
         else:
-            ax.text(0.5, 0.5, f"{p}: no v2 trades\n({r.get('verdict', 'FAIL (no trades)')})", ha="center",
-                    va="center", transform=ax.transAxes, color=INK2, fontsize=9)
+            lab = ", ".join([r.get("verdict", "FAIL (no trades)")] + list(r.get("labels") or []))
+            ax.text(0.5, 0.5, f"{p}: no v2 trades\n{lab}" + (f"\n\n{r['structural_note']}" if r.get("structural_note") else ""),
+                    ha="center", va="center", transform=ax.transAxes, color=INK2, fontsize=9)
             ax.set_title(f"{p}: return on capital n/a", fontsize=8)
             ax.set_xticks([]); ax.set_yticks([])
         ax.set_ylabel("Cumulative P&L, \\$" if p == "IS" else "")

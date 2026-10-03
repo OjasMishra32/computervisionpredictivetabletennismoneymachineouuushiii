@@ -124,3 +124,56 @@ stacks, unlisted-markets sensitivity) are listed in `research/decay/PRERUN.md`.
 TT5-D3 (19:21 UTC, before the TT5 run): tape stamps step in 2 s blocks, so the pre-registered [1, 2) bin is
 (nearly) empty; TT5 reports the pre-registered test as written plus a block-resolution version that merges
 [1, 2) and [2, 3) into [1, 3). Details in `research/decay/PRERUN.md`.
+
+## Post-run corrections after verification (2026-10-03, about 20:20 UTC)
+
+A verifier reviewed the TT1–TT4 run, the audit (`research/tt/audit_tt3.py`, `research/tt/audit_checks.py`) and
+`research/tt/RESULTS.md`. Verdict: not refuted, severity minor. The fixes below change labels, one count and the
+post-hoc text. **No PASS or FAIL changes, and TT1–TT4 were not re-run**: `results/tt/results.json` stays the record
+of the single pre-registered run. The corrected labels are written by `research/tt/corrections.py` to
+`results/tt/corrections.json`, which also redraws `results/tt/fig_fasttier.png` and `fig_v2_equity.png`.
+
+### TT-C1 (label). TT2 and TT3 were structurally untestable on this sample
+- **Original:** TT2 "FAIL (no fast tier detected), underpowered"; TT3 "FAIL (no trades)" in IS and OOS.
+- **Corrected:** TT2 "FAIL (no fast tier detected), underpowered, structurally untestable on this sample";
+  TT3 "FAIL (no trades), underpowered, structurally untestable on this sample" in IS and in OOS.
+- **Why.** A wallet qualifies only with ≥ 10 earlier matches. Before the evaluated months 2026-04, -05, -07 and -09
+  there were 3, 7, 8 and 18 evaluable matches, so only 2026-09 could qualify anyone. 2026-09 has 9 matches, so at
+  most 9 matches could hold fast-tier prints, against TT2's 30-match bar. TT3 has 24 IS and 3 OOS evaluable
+  matches, both under its 30-match bar, and v2 could have traded only in 2026-09, which would have been its
+  empty-training month (TT-D6). The per-month match counts (2, 1, 4, 1, 10, 9) had been read before TT-D5 was
+  written, so these FAILs were close to certain from arithmetic before the run.
+- **Consequence.** TT2 and TT3 say nothing about whether v2 carries over to another sport. Wherever they sit next to
+  tennis, they are not evidence against v2 generalising. Applied in `research/tt/RESULTS.md`, `docs/RISK.md`,
+  `research/financials/PM_REVIEW.md` P33, and `scripts/financials.py` `tt_block` (its table tennis block in
+  `research/financials/FINANCIALS.md` and `results/financials/financials.json` was refreshed from that function).
+  `docs/NOTE.md` and the deck are owned by other workflows and were not edited here.
+
+### TT-C2 (label and code). TT3 lacked the pre-registered "underpowered" label
+- **Original:** `results/tt/results.json` TT3 IS and OOS `"labels": []`; RESULTS.md "FAIL (no trades)".
+- **Corrected:** "FAIL (no trades), underpowered" in both periods (0 matches with v2 trades against the bar of 30;
+  24 IS and 3 OOS evaluable matches). The independent recompute (`results/tt/audit_tt3.json`) already had
+  `"underpowered": true` for both.
+- **Cause and fix.** `tt3()` in `scripts/tt_analyze.py` set `labels=[]` on its empty-shadow path. It now sets
+  `["underpowered"]`. The fix applies to any future logged re-run (`--rerun`); the first run was not repeated.
+  The figure functions in that file now also print a label list and an optional note; they changed after the run
+  only in what they draw. No statistic in `scripts/tt_analyze.py` changed.
+
+### TT-C3 (count). The liquidity verdict miscounted matches with 20 in-play prints
+- **Original:** "Only 27 matches (0.75%) reach the 20 in-play prints the tennis pipeline needs" (and "27 of 3,588
+  matches have the 20 in-play prints" in the summary).
+- **Corrected:** 39 matches (1.09%) reach 20 in-play prints; 27 of them also have a detected jump (12 dropped, 10 WTT
+  and 2 Setka, all IS: the unchanged tennis behaviour). Source: `results/tt/audit_checks.json` `ge20_inplay`.
+- **Effect on TT1:** none. With the 12 kept (post-hoc), the largest judgeable in-play bin rises from 19 to 23 matches,
+  still under 30.
+
+### TT-C4 (post-hoc text). The nearest fast-tier candidate was measurable, and it shows no edge
+- **Original:** "Its t-stat was not computed" and "It does not say a fast tier is absent from the sport. There was
+  too little activity to look for one."
+- **Corrected:** the most active 0–3 s wallet (`0xc07d…`, the same wallet before 2026-09 and over all months) has
+  t = −0.001 on its 31 prints in 6 matches before 2026-09 and t = 0.70 on 58 prints in 14 matches over all months,
+  against the bar t > 3. It holds 51% of the 113 prints in the 0–3 s bucket, 53% of TT2's "others" prints and 28% of
+  all 1,002 print rows, so TT2's "others' net30 −0.16¢ [−3.06, +2.45]" is largely that one wallet. Sources:
+  `results/tt/audit_tt3.json` (`walk_forward`, `posthoc`) and `results/tt/corrections.json`
+  (`most_active_b03_wallet`).
+

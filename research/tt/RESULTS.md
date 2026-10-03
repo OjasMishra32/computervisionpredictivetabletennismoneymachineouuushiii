@@ -8,9 +8,11 @@
 | Run | `scripts/tt_analyze.py` at commit `eb0e692`, 2026-10-03 19:23:14 UTC |
 | Logs | `results/oos_peeks.log` ("table tennis TT1-TT4 evaluated (first run)") and `results/tt/peeks.log`, both written before any result was printed |
 | Where it ran | Locally on the laptop. HiPerGator was not used. |
+| Corrections after verification | `research/tt/DEVIATIONS.md` TT-C1–TT-C4 (labels, one count, post-hoc wallet figures); `results/tt/corrections.json` (`research/tt/corrections.py`). TT1–TT4 were **not** re-run, and no verdict changed. |
 
-All the numbers below come from `results/tt/results.json`. The only exception is the post-hoc
-section, which comes from `results/tt/posthoc.json` (`research/tt/posthoc.py`).
+All the numbers below come from `results/tt/results.json`. The exceptions are the post-hoc
+section, which comes from `results/tt/posthoc.json` (`research/tt/posthoc.py`) and `results/tt/audit_tt3.json`,
+and the corrected labels and counts, which come from `results/tt/corrections.json` and `results/tt/audit_checks.json`.
 
 TT5 is not part of this run (TT-D1). It runs separately as `scripts/signal_decay.py`.
 
@@ -19,22 +21,28 @@ TT5 is not part of this run (TT-D1). It runs separately as `scripts/signal_decay
 | test | verdict | why |
 |---|---|---|
 | **TT1** calibration | **FAIL** | In-play: **not judged**. No bin reaches 30 matches; the largest has 19. Closing: **not calibrated**. 5 of 9 judged bins miss at 95%, and 3 still miss at the Bonferroni level. |
-| **TT2** fast tier | **FAIL (no fast tier detected)**, underpowered | 0 wallets qualify in any of the 4 evaluated months, so there are 0 fast-tier prints. |
-| **TT3** frozen v2, blind | **FAIL (no trades)** in IS and in OOS | The fast-tier shadow is empty, so v2 has nothing to trade (TT-D5). |
+| **TT2** fast tier | **FAIL (no fast tier detected)**, underpowered; **structurally untestable on this sample** | 0 wallets qualify in any of the 4 evaluated months, so there are 0 fast-tier prints. A wallet needs ≥ 10 earlier matches; before 2026-04, -05, -07 and -09 there were 3, 7, 8 and 18 evaluable matches, so only 2026-09 could qualify anyone, and at most 9 matches could hold fast-tier prints against the 30-match bar (TT-C1). |
+| **TT3** frozen v2, blind | **FAIL (no trades), underpowered** in IS and in OOS; **structurally untestable on this sample** | The fast-tier shadow is empty, so v2 has nothing to trade (TT-D5). 0 matches with trades in either period, against the 30-match bar; IS has 24 evaluable matches and OOS 3, so neither could reach it (TT-C1, TT-C2). |
 | **TT4** capacity | **"capacity is negligible"** | v2 deployed $0 per calendar day, against the $1,000 bar. |
 
 Plainly: **the tennis structure could not be found in table tennis, and nothing could be traded.**
 - The tennis structure means calibrated prices, a persistent fast tier, and the v2 edge.
 - The reason is not a negative edge. The market is too thin for any of these tests to have material:
-  - 27 of 3,588 matches have the 20 in-play prints the pipeline needs;
-  - those matches hold 113 prints in the 0–3 s post-detection window, across all months;
+  - 39 of 3,588 matches (1.09%) have the 20 in-play prints the pipeline needs, and 27 of them also have a
+    detected jump;
+  - those 27 matches hold 113 prints in the 0–3 s post-detection window, across all months;
   - the open books right now are 94¢ wide with nothing near the mid.
+- **TT2 and TT3 say nothing about whether v2 carries over to another sport.** Their FAILs were close to
+  certain from the match counts before the run (TT-C1). Wherever these results sit next to tennis (the note,
+  the deck, the financials), they are not evidence against v2 generalising.
 
 ## Counts
 
 - UTT: 3,588 markets, 2,870 IS and 718 OOS, cut 2026-09-16 05:30 UTC.
 - **Evaluable matches** (≥ 20 in-play prints and a detected jump): **27**. That is Setka IS 16, Setka
-  OOS 3 and WTT IS 8, with 1,002 print rows.
+  OOS 3 and WTT IS 8, with 1,002 print rows. 39 matches reach 20 in-play prints; 12 of them (10 WTT,
+  2 Setka, all IS) were dropped because no jump was detected, the unchanged tennis behaviour
+  (`results/tt/audit_checks.json` `ge20_inplay`).
 - So OOS has 3 evaluable matches.
 
 ## TT1: calibration (`run_all.calibration()` unchanged)
@@ -124,16 +132,20 @@ favourites in size, because there was nothing to sell into.
 - **Qualified wallets: 0, 0, 0, 0.**
 - The parity checks against `walk_forward`'s own table passed.
 
-| month | qualified wallets | fast-tier prints | other takers' 0–3 s prints (matches) | others' net30, ¢/share (95% CI) |
-|---|---|---|---|---|
-| 2026-04 | 0 | 0 | 9 (4) | −0.93 (−10.63 to +0.90) |
-| 2026-05 | 0 | 0 | 2 (1) | −12.59 (one match) |
-| 2026-07 | 0 | 0 | 44 (10) | −3.34 (−7.21 to +0.39) |
-| 2026-09 | 0 | 0 | 47 (9) | +3.50 (−0.18 to +7.00) |
+| month | evaluable matches before it (bar: 10) | qualified wallets | fast-tier prints | other takers' 0–3 s prints (matches) | others' net30, ¢/share (95% CI) |
+|---|---|---|---|---|---|
+| 2026-04 | 3 | 0 | 0 | 9 (4) | −0.93 (−10.63 to +0.90) |
+| 2026-05 | 7 | 0 | 0 | 2 (1) | −12.59 (one match) |
+| 2026-07 | 8 | 0 | 0 | 44 (10) | −3.34 (−7.21 to +0.39) |
+| 2026-09 | 18 | 0 | 0 | 47 (9) | +3.50 (−0.18 to +7.00) |
+
+The second column comes from `results/tt/corrections.json` (`structural`): only 2026-09 had enough earlier
+matches for any wallet to reach the ≥ 10-match qualification bar.
 
 **Statistics**
 - Fast net30: none, because there are no prints.
-- **Others' net30: −0.16¢ (CI −3.06 to +2.45)**, from 102 prints in 24 matches.
+- **Others' net30: −0.16¢ (CI −3.06 to +2.45)**, from 102 prints in 24 matches. 53% of those prints come
+  from one wallet (`0xc07d…`; post-hoc, see below), so this figure is largely that wallet.
 - Gap: none.
 - Others in months with a qualified wallet: none.
 - Fast-tier prints by period: 0 IS and 0 OOS.
@@ -145,7 +157,8 @@ favourites in size, because there was nothing to sell into.
 - (d) fast > 0 in IS and OOS: no.
 
 **Verdict:** FAIL (no fast tier detected), labelled **underpowered** (0 matches with fast-tier prints,
-against the bar of 30).
+against the bar of 30) and **structurally untestable on this sample**: even had a wallet qualified in 2026-09,
+the only month where one could, that month has 9 matches, so the 30-match bar was out of reach (TT-C1).
 
 **Others' net30 by causal bucket**, point estimates in the evaluated months:
 
@@ -158,7 +171,14 @@ The figure is `results/tt/fig_fasttier.png`.
 ## TT3: the frozen v2 rule, blind (`G_50pct_net100`, causal)
 - The fast-tier shadow has **0 rows**, so v2 has no opportunity set (TT-D5). `v2.run` was not
   called.
-- **IS: no trades. OOS: no trades. TT3 FAILS ("no trades").**
+- **IS: no trades. OOS: no trades. TT3 FAILS ("no trades"), labelled underpowered in both periods**
+  (0 matches with v2 trades, against the bar of 30). The first run's `results.json` has `"labels": []` for
+  both periods, because `tt3()`'s empty-shadow path never set the label. The label is applied here and in
+  `results/tt/corrections.json`; the code path is fixed in `scripts/tt_analyze.py` for any logged re-run
+  (TT-C2). The independent recompute (`results/tt/audit_tt3.json`) also marks both periods underpowered.
+- **Structurally untestable on this sample** (TT-C1): IS has 24 evaluable matches and OOS 3, both under the
+  30-match bar. v2 could only have traded in 2026-09, the one month where a fast tier could qualify, and that
+  month would have been v2's empty-training month, where trades hold about 0 shares (TT-D6).
 - Every TT3 secondary is undefined because there are no trades: $ P&L, Sharpe, drawdown, worst day,
   profitable days, win rate, return on capital, by league, and the doubled-cost stress.
 - The figure `results/tt/fig_v2_equity.png` says so for each panel; it does not plot an empty line.
@@ -234,7 +254,7 @@ This is one snapshot of public clob `/book`, taken 2026-10-03 19:24:32 UTC. It i
 - **TT2:** FAIL (no fast tier detected), underpowered, with 0 qualified wallets in every month.
   - Others' net30 is unchanged at −0.16¢ (−3.06 to +2.45).
   - The 7 added evaluable WTT matches are all in March, which is a training-only month.
-- **TT3:** FAIL (no trades).
+- **TT3:** FAIL (no trades); 0 matches with trades, so also underpowered.
 - **TT4:** v2 deploys $0 per day.
 
 ## Post-hoc diagnostics
@@ -264,8 +284,19 @@ month, and t > 3):
   | 2026-07 | 2 | 1 |
   | 2026-09 | 31 | 6 |
 
-- One wallet ends the window with 58 bucket prints in 14 matches. Only then could it pass the count
-  thresholds, and no month is left to evaluate it on. Its t-stat was not computed.
+- The 31 prints in 6 matches before 2026-09 belong to one wallet (`0xc07d…`), and it is the same wallet that
+  ends the window with 58 bucket prints in 14 matches. Only then could it pass the count thresholds, and no
+  month is left to evaluate it on.
+- **Its t-stat** (mean 30 s markout over its sd / √matches, the qualification statistic): **−0.001** on the 31
+  prints before 2026-09, and **0.70** on all 58, against the bar of t > 3 (`results/tt/audit_tt3.json`
+  `walk_forward`, `posthoc`). The one wallet active enough to measure shows no edge.
+- **How concentrated the bucket is.** That wallet holds 51% of the 113 prints in the 0–3 s bucket, 53% of
+  TT2's "others" prints, and 28% of all 1,002 print rows. TT2's "others' net30 −0.16¢ [−3.06, +2.45]" is
+  therefore largely one wallet.
+- **Copying every 0–3 s print to resolution** (an upper bound on v2's opportunity set: any wallet, net of each
+  market's fee; `audit_tt3.json` `posthoc`): IS, 100 prints in 24 matches, −12.93¢ print-weighted
+  [−21.20, −5.27] and +0.58¢ share-weighted [−10.39, +8.47]. OOS has 13 prints in 3 matches, so its CI is not
+  interpretable.
 
 ## Liquidity verdict
 **Polymarket table tennis cannot carry this strategy family today. On these numbers, it is not a
@@ -274,7 +305,10 @@ venue for any size-bearing taker strategy.**
   trades $21 (Setka $9.90, WTT $163). Half of all closing fills are under $5.
 - **Print density.**
   - In-play prints arrive at a median of one every 2.3 hours of the market window.
-  - Only 27 matches (0.75%) reach the 20 in-play prints the tennis pipeline needs.
+  - 39 matches (1.09%) reach the 20 in-play prints the tennis pipeline needs; 27 of them also have a
+    detected jump (12 dropped, the unchanged tennis behaviour). Keeping the 12 would not change TT1: the
+    largest judgeable in-play bin rises from 19 to 23 matches, still under 30 (post-hoc,
+    `audit_checks.json`).
   - The causal 0–3 s window after a detected jump, which is where the tennis edge lives, saw $8,064
     in total, or about $90 per detected jump.
 - **Books.** The open books are a market-maker placeholder: a 94¢ spread and $0 within 2¢ of the
@@ -288,8 +322,10 @@ venue for any size-bearing taker strategy.**
 **What this run does not say.**
 - It does not say table tennis prices are miscalibrated in a tradeable way. The closing "edge" sits
   on $2–$5 prints against an empty book.
-- It does not say a fast tier is absent from the sport. There was too little activity to look for
-  one.
+- It cannot say whether table tennis has a fast tier. The one wallet active enough to measure shows no
+  edge (t = 0.70 over all months, against a bar of 3). Nobody else traded often enough to be measured.
+- TT2 and TT3 are not evidence against v2 carrying over to another sport. On this sample they could not
+  have passed (TT-C1).
 - It does not say our table tennis CV has no value. That needs a liquid venue, and TT5 asks the
   latency question separately.
 
@@ -305,3 +341,6 @@ filter would be a new hypothesis with a fresh forward window.
 - `results/tt/fig_fasttier.png` and `results/tt/fig_v2_equity.png`: the figures.
 - `results/tt/peeks.log`: the run log.
 - No v2 trade file was written, because there were no trades.
+- `research/tt/corrections.py` and `results/tt/corrections.json`: the post-run label corrections (TT-C1–TT-C4).
+  The script also redraws both figures with the corrected labels.
+- `research/tt/audit_tt3.py`, `research/tt/audit_checks.py` and their JSON: the independent audit.

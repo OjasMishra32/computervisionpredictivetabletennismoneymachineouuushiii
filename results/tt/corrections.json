@@ -1,0 +1,127 @@
+{
+ "label": "post-run label corrections; results/tt/results.json (single pre-registered run) is not re-run",
+ "run_utc": "2026-10-03T20:22:03.013714+00:00",
+ "commit": "8c89b2e7f8ab4c9072a996e412cb6f234ed7c60c+uncommitted",
+ "structural": {
+  "evaluated_months": [
+   {
+    "month": "2026-04",
+    "prior_matches": 3,
+    "matches_in_month": 4,
+    "qualification_bar_reachable": false
+   },
+   {
+    "month": "2026-05",
+    "prior_matches": 7,
+    "matches_in_month": 1,
+    "qualification_bar_reachable": false
+   },
+   {
+    "month": "2026-07",
+    "prior_matches": 8,
+    "matches_in_month": 10,
+    "qualification_bar_reachable": false
+   },
+   {
+    "month": "2026-09",
+    "prior_matches": 18,
+    "matches_in_month": 9,
+    "qualification_bar_reachable": true
+   }
+  ],
+  "min_matches_bar": 10,
+  "months_where_a_wallet_could_qualify": [
+   "2026-09"
+  ],
+  "max_matches_that_could_hold_fast_tier_prints": 9,
+  "underpowered_bar": 30,
+  "tt2_underpowered_certain": true,
+  "evaluable_matches_by_period": {
+   "IS": 24,
+   "OOS": 3
+  },
+  "tt3_underpowered_certain": {
+   "IS": true,
+   "OOS": true
+  },
+  "note": "TT3 trades only where the fast-tier shadow has rows, so at most in the months where a wallet could qualify; the first such month is v2's empty-training month (TT-D6: trades hold ~0 shares)."
+ },
+ "TT2": {
+  "verdict": "FAIL (no fast tier detected)",
+  "labels_as_run": [
+   "underpowered"
+  ],
+  "labels_corrected": [
+   "underpowered",
+   "structurally untestable on this sample"
+  ]
+ },
+ "TT3": {
+  "IS": {
+   "verdict": "FAIL (no trades)",
+   "labels_as_run": [],
+   "labels_corrected": [
+    "underpowered",
+    "structurally untestable on this sample"
+   ],
+   "evaluable_matches": 24,
+   "matches_with_trades": 0
+  },
+  "OOS": {
+   "verdict": "FAIL (no trades)",
+   "labels_as_run": [],
+   "labels_corrected": [
+    "underpowered",
+    "structurally untestable on this sample"
+   ],
+   "evaluable_matches": 3,
+   "matches_with_trades": 0
+  }
+ },
+ "tt3_code_fix": "scripts/tt_analyze.py tt3(): empty-shadow path now writes labels=['underpowered']",
+ "liquidity_count": {
+  "markets": 3588,
+  "ge20_inplay_prints": 39,
+  "share": 0.010869565217391304,
+  "evaluable_with_jump": 27,
+  "dropped_no_jump": 12,
+  "dropped_no_jump_by_league": {
+   "WTT": 10,
+   "Setka": 2
+  },
+  "as_written": {
+   "matches": 27,
+   "share": 0.007525083612040134
+  },
+  "tt1_inplay_with_the_12_posthoc": {
+   "matches": 39,
+   "obs": 621,
+   "max_matches_in_a_judgeable_bin": 23,
+   "bins_reaching_30": []
+  },
+  "source": "results/tt/audit_checks.json ge20_inplay"
+ },
+ "most_active_b03_wallet": {
+  "same_wallet_before_last_month_and_all_months": true,
+  "wallet_prefix": "0xc07d",
+  "b03_prints_all_months": 113,
+  "b03_wallets": 28,
+  "before_last_month": {
+   "month": "2026-09",
+   "prints": 31,
+   "matches": 6,
+   "t_mo30": -0.0012419620757253187
+  },
+  "all_months": {
+   "prints": 58,
+   "matches": 14,
+   "t_mo30": 0.6967511955583635,
+   "share_of_b03_prints": 0.5132743362831859,
+   "share_of_all_print_rows": 0.281437125748503
+  },
+  "share_of_tt2_others_prints": 0.5294117647058824,
+  "t_bar": 3.0,
+  "source": "results/tt/audit_tt3.json walk_forward[-1], posthoc (t = mean mo30 / (sd / sqrt(matches)))"
+ },
+ "not_evidence_about_v2_generalising": true
+}

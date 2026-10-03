@@ -411,7 +411,7 @@ Caveats: The leaning-maker idea was formed on all IS months (post-hoc hypothesis
 
 Out-of-sport test of the CV + book mechanism on every Polymarket table-tennis match. Liquidity context from docs/NOTE.md section 6: 89¢ median spread, $23 at the touch, about $2 of volume per match.
 
-**Results** (`results/tt/results.json`): Run 2026-10-03T19:23 UTC: 3,588 markets, 27 evaluable matches. TT1 FAIL; TT2 FAIL (no fast tier detected); TT3 FAIL (no trades). Fast-tier shadow is empty: no wallet qualified, so v2 has no opportunity set (TT-D5). No trades, so no P&L to put against costs; the books are untradable anyway (PM_REVIEW P33).
+**Results** (`results/tt/results.json`): Run 2026-10-03T19:23 UTC: 3,588 markets, 27 evaluable matches. TT1 FAIL; TT2 FAIL (no fast tier detected), underpowered, structurally untestable on this sample; TT3 FAIL (no trades), underpowered, structurally untestable on this sample (IS and OOS). Fast-tier shadow is empty: no wallet qualified, so v2 has no opportunity set (TT-D5). No trades, so no P&L to put against costs; the books are untradable anyway (PM_REVIEW P33). TT2 and TT3 are structurally untestable on this sample (results/tt/corrections.json): a wallet could qualify only in 2026-09, and OOS has 3 evaluable matches against the 30-match bar. They are not evidence about whether v2 carries over to another sport.
 
 ## Reference checks
 

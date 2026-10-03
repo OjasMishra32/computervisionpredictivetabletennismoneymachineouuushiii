@@ -367,7 +367,8 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 - **P32 [OUT-OF-SCOPE]** Platform, oracle and stablecoin failure probabilities, and UMA dispute counts. Only
   a close-time proxy exists (R12, R15).
 - **P33 [DONE]** Table-tennis out-of-sport test: first run 19:23 UTC, TT1, TT2 and TT3 all FAIL (no fast tier
-  detected, no trades; 27 evaluable matches; `results/tt/results.json`). Before that run: Table
+  detected, no trades; 27 evaluable matches; `results/tt/results.json`). TT2 and TT3 were structurally untestable on
+  this sample (`results/tt/corrections.json`), so they are not evidence against v2 carrying over to another sport. Before that run: Table
   tennis is untradable (89¢ spread, $23 at the touch), so the result cannot change the allocation either way.
 
 ## Numbers that disagree between files

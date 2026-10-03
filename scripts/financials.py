@@ -667,6 +667,16 @@ def tt_block() -> dict:
         return pending(path, "out-of-sport blind test still running (research/tt)")
     c, t3 = r.get("counts", {}), r.get("TT3", {})
     verdicts = {k: r.get(k, {}).get("verdict") for k in ("TT1", "TT2", "TT3")}
+    # post-run label corrections (research/tt/DEVIATIONS.md TT-C1/TT-C2; results/tt/corrections.json)
+    corr = jload(ROOT / "results/tt/corrections.json") or {}
+    if corr:
+        verdicts["TT2"] = ", ".join([corr["TT2"]["verdict"]] + corr["TT2"]["labels_corrected"])
+        verdicts["TT3"] = ", ".join([corr["TT3"]["IS"]["verdict"]] + corr["TT3"]["IS"]["labels_corrected"]) + " (IS and OOS)"
+    st = corr.get("structural", {})
+    caveat = (f" TT2 and TT3 are structurally untestable on this sample (results/tt/corrections.json): a wallet could "
+              f"qualify only in {', '.join(st['months_where_a_wallet_could_qualify'])}, and OOS has "
+              f"{st['evaluable_matches_by_period']['OOS']} evaluable matches against the {st['underpowered_bar']}-match bar. "
+              f"They are not evidence about whether v2 carries over to another sport.") if st else ""
     return {"status": "ok (verdicts only)", "label": "table tennis TT1-TT4", "source": path,
             "n_trades": int(t3.get("shadow_rows") or 0), "n_matches": int(t3.get("shadow_matches") or 0),
             "verdicts": verdicts, "counts": {k: c.get(k) for k in ("utt_markets", "evaluable_matches", "print_rows")},
@@ -674,7 +684,7 @@ def tt_block() -> dict:
             "text": (f"Run {r.get('run', {}).get('utc', 'n/a')[:16]} UTC: {c.get('utt_markets') or 0:,} markets, "
                      f"{c.get('evaluable_matches')} evaluable matches. " + "; ".join(f"{k} {v}" for k, v in verdicts.items())
                      + f". {(lambda z: z[:1].upper() + z[1:])((t3.get('note') or '').rstrip('.'))}. No trades, so no P&L to put against costs; the books are untradable anyway "
-                     "(PM_REVIEW P33).")}
+                     "(PM_REVIEW P33)." + caveat)}
 
 
 def live_block(cost, conv_caps: list[float]) -> dict:
