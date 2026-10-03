@@ -1,0 +1,3054 @@
+{
+ "generated_utc": "2026-10-03T20:11:08Z",
+ "script": "scripts/alpha_pack.py",
+ "git_head": "d6c7a8b",
+ "labels": {
+  "IS": "in sample (IS)",
+  "OOS": "burned OOS (non-blind for v2; held-out matches from 2026-08-25 14:15 UTC)",
+  "v2_fills": "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+  "tier0": "counterfactual: assumes licensed feed + courtside camera (not purchased); parameters measured"
+ },
+ "trade_file": {
+  "path": "data/v2_trades_is_oos.parquet",
+  "rows_in_file": 69264,
+  "rows_training_only_excluded": 3190,
+  "oos_start_utc": "2026-08-25 14:15:00+00:00",
+  "split": "IS = month >= 2026-02 and match not in OOS; OOS = match start >= OOS start (src/tape.py universe().oos), as scripts/v2_causal.py"
+ },
+ "A_source": {
+  "what": "Fast tier (walk-forward qualified wallets) vs every other taker, prints 0-3 s after a detected jump, net 30 s markout after the match's taker fee (c/share), by month. 'Copy 3 s later' = the same prints entered ~delay+3 s later at the then-mid plus half the spread, fee paid, held to resolution (src/fasttier.py net_cols follow_res).",
+  "note": "Aug 2026 appears in both periods: IS matches started before 2026-08-25 14:15 UTC, OOS after. Oct 2026 is 3 days. The fast tier's own prints are not v2 and not ours.",
+  "IS": {
+   "label": "in sample (IS)",
+   "months": [
+    {
+     "month": "2025-12",
+     "n_wallets": 4,
+     "n_prints": 71,
+     "n_matches": 14,
+     "volume_usd_k": 8.8,
+     "fast_net30_c": 1.969,
+     "others_net30_c": -0.4794,
+     "fast_minus_others_c": 2.4484,
+     "fast_net_to_resolution_c": 2.081,
+     "copy_3s_later_net_to_resolution_c": -0.3653
+    },
+    {
+     "month": "2026-01",
+     "n_wallets": 4,
+     "n_prints": 4464,
+     "n_matches": 606,
+     "volume_usd_k": 281.1,
+     "fast_net30_c": 2.4098,
+     "others_net30_c": -0.5609,
+     "fast_minus_others_c": 2.9707,
+     "fast_net_to_resolution_c": 1.164,
+     "copy_3s_later_net_to_resolution_c": -2.0996
+    },
+    {
+     "month": "2026-02",
+     "n_wallets": 10,
+     "n_prints": 8808,
+     "n_matches": 932,
+     "volume_usd_k": 971.5,
+     "fast_net30_c": 1.2087,
+     "others_net30_c": -0.6297,
+     "fast_minus_others_c": 1.8384,
+     "fast_net_to_resolution_c": 2.0592,
+     "copy_3s_later_net_to_resolution_c": -0.0625
+    },
+    {
+     "month": "2026-03",
+     "n_wallets": 12,
+     "n_prints": 3380,
+     "n_matches": 403,
+     "volume_usd_k": 449.8,
+     "fast_net30_c": 2.0198,
+     "others_net30_c": -0.4905,
+     "fast_minus_others_c": 2.5103,
+     "fast_net_to_resolution_c": 0.4349,
+     "copy_3s_later_net_to_resolution_c": -2.5269
+    },
+    {
+     "month": "2026-04",
+     "n_wallets": 16,
+     "n_prints": 14532,
+     "n_matches": 1359,
+     "volume_usd_k": 1266.6,
+     "fast_net30_c": 1.4256,
+     "others_net30_c": -0.8667,
+     "fast_minus_others_c": 2.2923,
+     "fast_net_to_resolution_c": 1.954,
+     "copy_3s_later_net_to_resolution_c": -1.0246
+    },
+    {
+     "month": "2026-05",
+     "n_wallets": 30,
+     "n_prints": 35899,
+     "n_matches": 1408,
+     "volume_usd_k": 1499.3,
+     "fast_net30_c": 0.8029,
+     "others_net30_c": -1.6815,
+     "fast_minus_others_c": 2.4844,
+     "fast_net_to_resolution_c": 1.0575,
+     "copy_3s_later_net_to_resolution_c": -1.0321
+    },
+    {
+     "month": "2026-06",
+     "n_wallets": 52,
+     "n_prints": 23760,
+     "n_matches": 1248,
+     "volume_usd_k": 1958.8,
+     "fast_net30_c": 0.7315,
+     "others_net30_c": -0.8434,
+     "fast_minus_others_c": 1.5749,
+     "fast_net_to_resolution_c": 1.1853,
+     "copy_3s_later_net_to_resolution_c": -0.7007
+    },
+    {
+     "month": "2026-07",
+     "n_wallets": 72,
+     "n_prints": 28906,
+     "n_matches": 1399,
+     "volume_usd_k": 2726.5,
+     "fast_net30_c": 0.601,
+     "others_net30_c": -1.2728,
+     "fast_minus_others_c": 1.8738,
+     "fast_net_to_resolution_c": 1.1093,
+     "copy_3s_later_net_to_resolution_c": -0.9656
+    },
+    {
+     "month": "2026-08",
+     "n_wallets": 101,
+     "n_prints": 18871,
+     "n_matches": 1154,
+     "volume_usd_k": 2351.8,
+     "fast_net30_c": 0.8716,
+     "others_net30_c": -1.2137,
+     "fast_minus_others_c": 2.0853,
+     "fast_net_to_resolution_c": 0.7658,
+     "copy_3s_later_net_to_resolution_c": -1.6438
+    }
+   ],
+   "months_fast_positive": "9/9",
+   "months_others_positive": "0/9",
+   "months_copy_3s_later_positive": "0/9",
+   "fast_net30_c_range": [
+    0.601,
+    2.4098
+   ],
+   "others_net30_c_range": [
+    -1.6815,
+    -0.4794
+   ],
+   "copy_3s_later_c_range": [
+    -2.5269,
+    -0.0625
+   ],
+   "print_weighted": {
+    "fast_net30_c": 0.9309,
+    "copy_3s_later_net_to_resolution_c": -1.0528,
+    "fast_net_to_resolution_c": 1.1968,
+    "others_net30_c_unweighted_month_mean": -0.8932
+   },
+   "unweighted_month_mean": {
+    "fast_net30_c": 1.3378,
+    "others_net30_c": -0.8932,
+    "copy_3s_later_net_to_resolution_c": -1.1579
+   },
+   "fast_tier_volume_usd_k": 11514.3,
+   "fast_tier_prints": 138691
+  },
+  "OOS": {
+   "label": "OOS (held-out matches; the fast-tier test H6 was frozen before it was opened, so OOS is the H6 out-of-sample read)",
+   "months": [
+    {
+     "month": "2026-08",
+     "n_wallets": 101,
+     "n_prints": 23635,
+     "n_matches": 1533,
+     "volume_usd_k": 2931.3,
+     "fast_net30_c": 0.8275,
+     "others_net30_c": -1.2035,
+     "fast_minus_others_c": 2.031,
+     "fast_net_to_resolution_c": 0.8496,
+     "copy_3s_later_net_to_resolution_c": -1.5279
+    },
+    {
+     "month": "2026-09",
+     "n_wallets": 122,
+     "n_prints": 24207,
+     "n_matches": 1683,
+     "volume_usd_k": 3115.1,
+     "fast_net30_c": 0.6973,
+     "others_net30_c": -1.2203,
+     "fast_minus_others_c": 1.9176,
+     "fast_net_to_resolution_c": 0.703,
+     "copy_3s_later_net_to_resolution_c": -1.5695
+    },
+    {
+     "month": "2026-10",
+     "n_wallets": 131,
+     "n_prints": 2097,
+     "n_matches": 133,
+     "volume_usd_k": 304.9,
+     "fast_net30_c": 0.4447,
+     "others_net30_c": -1.8569,
+     "fast_minus_others_c": 2.3016,
+     "fast_net_to_resolution_c": -0.5351,
+     "copy_3s_later_net_to_resolution_c": -2.4217
+    }
+   ],
+   "months_fast_positive": "3/3",
+   "months_others_positive": "0/3",
+   "months_copy_3s_later_positive": "0/3",
+   "fast_net30_c_range": [
+    0.4447,
+    0.8275
+   ],
+   "others_net30_c_range": [
+    -1.8569,
+    -1.2035
+   ],
+   "copy_3s_later_c_range": [
+    -2.4217,
+    -1.5279
+   ],
+   "print_weighted": {
+    "fast_net30_c": 0.7483,
+    "copy_3s_later_net_to_resolution_c": -1.5856,
+    "fast_net_to_resolution_c": 0.7204,
+    "others_net30_c_unweighted_month_mean": -1.4269
+   },
+   "unweighted_month_mean": {
+    "fast_net30_c": 0.6565,
+    "others_net30_c": -1.4269,
+    "copy_3s_later_net_to_resolution_c": -1.8397
+   },
+   "fast_tier_volume_usd_k": 6351.4,
+   "fast_tier_prints": 49939
+  },
+  "copy_3s_later_note": "NOTE.md Table 1 'Copying the fast tier 3 s later: < 0 every month' is the follow_res_c column above.",
+  "unseen_markets_check": {
+   "label": "11,307 never-examined markets (mostly ITF), pre-registered; per print, net 30 s",
+   "IS_fast_minus_others_c": 3.0869,
+   "IS_ci95_c": [
+    2.8879,
+    3.2781
+   ],
+   "OOS_fast_minus_others_c": 2.1595,
+   "OOS_ci95_c": [
+    1.7918,
+    2.5326
+   ],
+   "OOS_fast_net30_c": 0.7985,
+   "OOS_others_net30_c": -1.361
+  }
+ },
+ "B_size": {
+  "label": "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+  "what": "Frozen v2 book, causal window, held to resolution. Per share and per $ of notional (bps). Gross = payout minus fill price; fee = rate x q(1-q) of the match's own taker fee; no slippage is modelled at fast-tier fills (they already crossed the spread), so +0.5c and +1c worse-entry rows are shown from the committed stress.",
+  "IS": {
+   "label": "in sample (IS)",
+   "n_trades": 55662,
+   "n_matches": 7639,
+   "shares": 2926323.0,
+   "usd_traded": 1479564.0,
+   "avg_price_per_share": 0.5056,
+   "waterfall": [
+    {
+     "step": "gross edge (fill to resolution)",
+     "c_per_share": 1.988,
+     "bps_of_notional": 393.2,
+     "ci95_c_match_clustered": [
+      1.7722,
+      2.2031
+     ],
+     "usd": 58174.19
+    },
+    {
+     "step": "taker fee",
+     "c_per_share": -0.6065,
+     "bps_of_notional": -120.0,
+     "usd": -17748.47
+    },
+    {
+     "step": "slippage modelled at fast-tier fills",
+     "c_per_share": 0.0,
+     "bps_of_notional": 0.0,
+     "usd": 0.0
+    },
+    {
+     "step": "net (at fast-tier fills)",
+     "c_per_share": 1.3815,
+     "bps_of_notional": 273.2,
+     "ci95_c_match_clustered": [
+      1.1678,
+      1.5935
+     ],
+     "usd": 40425.72
+    },
+    {
+     "step": "net with +0.5c worse entry (stress)",
+     "c_per_share": 0.8815,
+     "bps_of_notional": 174.3,
+     "ci95_c_match_clustered": [
+      0.6678,
+      1.0935
+     ],
+     "usd": 25794.1,
+     "sharpe_ann": 9.76,
+     "months_positive": "7/7"
+    },
+    {
+     "step": "net with +1c worse entry (stress)",
+     "c_per_share": 0.3815,
+     "bps_of_notional": 75.4,
+     "ci95_c_match_clustered": [
+      0.1678,
+      0.5935
+     ],
+     "usd": 11162.49,
+     "sharpe_ann": 4.34,
+     "months_positive": "7/7"
+    }
+   ],
+   "per_print_mean_c": 1.3723,
+   "per_print_ci95_c": [
+    1.0451,
+    1.6942
+   ],
+   "pnl_usd": 40425.72,
+   "pnl_ci95_usd": [
+    34262.0,
+    46589.0
+   ],
+   "days": 206,
+   "capital_usd": 28302.0,
+   "capital_rule": "3 x peak dollars locked, 4 h ex-ante lock per position",
+   "ann_return_pct": 253.1,
+   "ann_vol_pct": 17.5,
+   "sharpe_ann": 14.48,
+   "max_dd_pct": -2.01,
+   "worst_day_pct": -1.95,
+   "skew": 0.53,
+   "turnover_x_per_year": 92.6,
+   "usd_traded_per_day": 7182.0,
+   "fee_bps_of_notional_note_metrics": 120.0,
+   "net_edge_bps_of_notional_note_metrics": 273.2,
+   "months_positive": "7/7"
+  },
+  "OOS": {
+   "label": "burned OOS (non-blind for v2; held-out matches from 2026-08-25 14:15 UTC)",
+   "n_trades": 10412,
+   "n_matches": 2003,
+   "shares": 615886.0,
+   "usd_traded": 322490.0,
+   "avg_price_per_share": 0.5236,
+   "waterfall": [
+    {
+     "step": "gross edge (fill to resolution)",
+     "c_per_share": 1.5361,
+     "bps_of_notional": 293.4,
+     "ci95_c_match_clustered": [
+      1.0044,
+      2.0718
+     ],
+     "usd": 9460.72
+    },
+    {
+     "step": "taker fee",
+     "c_per_share": -0.9374,
+     "bps_of_notional": -179.0,
+     "usd": -5773.18
+    },
+    {
+     "step": "slippage modelled at fast-tier fills",
+     "c_per_share": 0.0,
+     "bps_of_notional": 0.0,
+     "usd": 0.0
+    },
+    {
+     "step": "net (at fast-tier fills)",
+     "c_per_share": 0.5987,
+     "bps_of_notional": 114.3,
+     "ci95_c_match_clustered": [
+      0.0872,
+      1.1272
+     ],
+     "usd": 3687.54
+    },
+    {
+     "step": "net with +0.5c worse entry (stress)",
+     "c_per_share": 0.0987,
+     "bps_of_notional": 18.9,
+     "ci95_c_match_clustered": [
+      -0.4128,
+      0.6272
+     ],
+     "usd": 608.1,
+     "sharpe_ann": 1.11,
+     "months_positive": "1/3"
+    },
+    {
+     "step": "net with +1c worse entry (stress)",
+     "c_per_share": -0.4013,
+     "bps_of_notional": -76.6,
+     "ci95_c_match_clustered": [
+      -0.9128,
+      0.1272
+     ],
+     "usd": -2471.33,
+     "sharpe_ann": -4.45,
+     "months_positive": "0/3"
+    }
+   ],
+   "per_print_mean_c": 0.926,
+   "per_print_ci95_c": [
+    0.2312,
+    1.6399
+   ],
+   "pnl_usd": 3687.54,
+   "pnl_ci95_usd": [
+    540.0,
+    6890.0
+   ],
+   "days": 40,
+   "capital_usd": 22754.0,
+   "capital_rule": "3 x peak dollars locked, 4 h ex-ante lock per position",
+   "ann_return_pct": 147.9,
+   "ann_vol_pct": 22.2,
+   "sharpe_ann": 6.67,
+   "max_dd_pct": -2.06,
+   "worst_day_pct": -2.06,
+   "skew": 0.33,
+   "turnover_x_per_year": 129.3,
+   "usd_traded_per_day": 8062.0,
+   "fee_bps_of_notional_note_metrics": 179.0,
+   "net_edge_bps_of_notional_note_metrics": 114.3,
+   "months_positive": "2/3"
+  },
+  "luck": {
+   "IS_sharpe_ci95_block_bootstrap": [
+    11.93,
+    17.37
+   ],
+   "OOS_sharpe_ci95_bootstrap": [
+    1.89,
+    12.35
+   ],
+   "IS_deflated_sharpe_N3386": 0.9969,
+   "OOS_deflated_sharpe_N3386": 0.0749,
+   "OOS_expected_best_of_3386_null_sharpe": 10.97,
+   "reading": "40 OOS days cannot rule out luck: the expected best of 3,386 zero-skill trials beats v2's OOS Sharpe."
+  },
+  "gross_split_IS_only": {
+   "label": "IS only (not computed for OOS); mid = print-based proxy",
+   "gross_fill_to_resolution_c": 1.9881,
+   "stale_quote_fill_vs_mid_30s_c": 1.5611,
+   "of_which_fill_vs_mid_5s_c": 1.1329,
+   "of_which_mid_5s_to_mid_30s_c": 0.4282,
+   "drift_mid_30s_to_resolution_c": 0.427,
+   "drift_ci95_c": [
+    0.2088,
+    0.6422
+   ],
+   "share_of_gross_from_stale_quote": 0.7852
+  }
+ },
+ "C_factor_neutral": {
+  "committed": {
+   "label": "Fama-French 3 + momentum on v2 daily returns, weekdays with factor data; period 2026-02-02 to 2026-08-31 (the last 7 days are burned OOS)",
+   "n_days": 142,
+   "alpha_pct_per_day": 0.792,
+   "alpha_t": 8.5,
+   "alpha_annualised_pct": 199.6,
+   "betas": {
+    "alpha_daily": 0.007919,
+    "MktRF": 0.168837,
+    "SMB": 0.092071,
+    "HML": 0.060932,
+    "Mom": 0.033704
+   },
+   "betas_t": {
+    "alpha_daily": 8.5,
+    "MktRF": 1.33,
+    "SMB": 0.51,
+    "HML": 0.55,
+    "Mom": 0.48
+   },
+   "r2": 0.0331,
+   "corr_with_market": 0.167,
+   "max_abs_factor_t": 1.33
+  },
+  "IS_only_calendar_days": {
+   "label": "IS only, every calendar day (zero days kept), Newey-West 5 lags",
+   "n_days": 206,
+   "alpha_pct_per_day": 0.675,
+   "alpha_t": 9.52,
+   "r2": 0.0231,
+   "corr_with_market": 0.1501,
+   "max_abs_factor_t": 1.54
+  },
+  "reading": "No factor explains the P&L: largest factor |t| = 1.33, R2 = 3.3% (IS-only calendar-day spec 2.3%)."
+ },
+ "D_where": {
+  "label": "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+  "what": "Descriptive splits of the frozen v2 trades. Net c/share is share-weighted; 95% CI = match-clustered bootstrap (1,000 draws). Price deciles use IS decile edges for both periods (intervals open on the left, prices are on a 1c tick so deciles are not equal-count).",
+  "side_market_type": "n/a: v2 trades only the match-winner moneyline (side markets were traded only by maker v1, which failed its blind OOS test; see I).",
+  "IS": {
+   "label": "in sample (IS)",
+   "by_price_decile_q": [
+    {
+     "group": "0.05-0.21",
+     "n_trades": 5761,
+     "n_matches": 3228,
+     "shares": 375600.0,
+     "usd_traded": 54621.9,
+     "gross_c_per_share": 1.5774,
+     "fee_c_per_share": 0.4079,
+     "net_c_per_share": 1.1695,
+     "net_ci95_c_match_clustered": [
+      -0.4031,
+      2.7155
+     ],
+     "pnl_usd": 4392.64,
+     "share_of_period_pnl": 0.1087,
+     "win_rate": 0.1611
+    },
+    {
+     "group": "0.21-0.30",
+     "n_trades": 5486,
+     "n_matches": 3138,
+     "shares": 303318.6,
+     "usd_traded": 78545.5,
+     "gross_c_per_share": 0.9601,
+     "fee_c_per_share": 0.5924,
+     "net_c_per_share": 0.3678,
+     "net_ci95_c_match_clustered": [
+      -1.5479,
+      2.1663
+     ],
+     "pnl_usd": 1115.51,
+     "share_of_period_pnl": 0.0276,
+     "win_rate": 0.2769
+    },
+    {
+     "group": "0.30-0.38",
+     "n_trades": 5672,
+     "n_matches": 3064,
+     "shares": 291390.8,
+     "usd_traded": 100375.7,
+     "gross_c_per_share": 1.2997,
+     "fee_c_per_share": 0.6848,
+     "net_c_per_share": 0.6149,
+     "net_ci95_c_match_clustered": [
+      -1.4875,
+      2.8518
+     ],
+     "pnl_usd": 1791.69,
+     "share_of_period_pnl": 0.0443,
+     "win_rate": 0.3612
+    },
+    {
+     "group": "0.38-0.45",
+     "n_trades": 5479,
+     "n_matches": 2901,
+     "shares": 281053.7,
+     "usd_traded": 117480.7,
+     "gross_c_per_share": 3.3279,
+     "fee_c_per_share": 0.7356,
+     "net_c_per_share": 2.5923,
+     "net_ci95_c_match_clustered": [
+      0.4813,
+      4.6153
+     ],
+     "pnl_usd": 7285.69,
+     "share_of_period_pnl": 0.1802,
+     "win_rate": 0.4484
+    },
+    {
+     "group": "0.45-0.52",
+     "n_trades": 5433,
+     "n_matches": 2680,
+     "shares": 273617.3,
+     "usd_traded": 132282.0,
+     "gross_c_per_share": 4.4375,
+     "fee_c_per_share": 0.7703,
+     "net_c_per_share": 3.6672,
+     "net_ci95_c_match_clustered": [
+      1.8212,
+      5.6317
+     ],
+     "pnl_usd": 10034.2,
+     "share_of_period_pnl": 0.2482,
+     "win_rate": 0.517
+    },
+    {
+     "group": "0.52-0.58",
+     "n_trades": 5570,
+     "n_matches": 2778,
+     "shares": 264704.8,
+     "usd_traded": 145605.2,
+     "gross_c_per_share": 0.6126,
+     "fee_c_per_share": 0.7429,
+     "net_c_per_share": -0.1303,
+     "net_ci95_c_match_clustered": [
+      -2.0982,
+      1.8018
+     ],
+     "pnl_usd": -345.04,
+     "share_of_period_pnl": -0.0085,
+     "win_rate": 0.5686
+    },
+    {
+     "group": "0.58-0.65",
+     "n_trades": 5591,
+     "n_matches": 2986,
+     "shares": 263153.1,
+     "usd_traded": 162778.2,
+     "gross_c_per_share": 1.5063,
+     "fee_c_per_share": 0.7173,
+     "net_c_per_share": 0.789,
+     "net_ci95_c_match_clustered": [
+      -1.1797,
+      2.7387
+     ],
+     "pnl_usd": 2076.17,
+     "share_of_period_pnl": 0.0514,
+     "win_rate": 0.6344
+    },
+    {
+     "group": "0.65-0.73",
+     "n_trades": 5726,
+     "n_matches": 3236,
+     "shares": 286508.5,
+     "usd_traded": 198299.8,
+     "gross_c_per_share": 3.0098,
+     "fee_c_per_share": 0.651,
+     "net_c_per_share": 2.3588,
+     "net_ci95_c_match_clustered": [
+      0.2532,
+      4.3922
+     ],
+     "pnl_usd": 6758.15,
+     "share_of_period_pnl": 0.1672,
+     "win_rate": 0.7214
+    },
+    {
+     "group": "0.73-0.82",
+     "n_trades": 5434,
+     "n_matches": 3175,
+     "shares": 270098.2,
+     "usd_traded": 210036.0,
+     "gross_c_per_share": 1.2939,
+     "fee_c_per_share": 0.5453,
+     "net_c_per_share": 0.7487,
+     "net_ci95_c_match_clustered": [
+      -1.209,
+      2.5793
+     ],
+     "pnl_usd": 2022.13,
+     "share_of_period_pnl": 0.05,
+     "win_rate": 0.7913
+    },
+    {
+     "group": "0.82-0.95",
+     "n_trades": 5510,
+     "n_matches": 3275,
+     "shares": 316877.7,
+     "usd_traded": 279539.0,
+     "gross_c_per_share": 2.0045,
+     "fee_c_per_share": 0.3336,
+     "net_c_per_share": 1.6709,
+     "net_ci95_c_match_clustered": [
+      0.3049,
+      2.9281
+     ],
+     "pnl_usd": 5294.58,
+     "share_of_period_pnl": 0.131,
+     "win_rate": 0.8929
+    }
+   ],
+   "by_regime_delay_fee": [
+    {
+     "group": "3s/0%",
+     "n_trades": 7487,
+     "n_matches": 1238,
+     "shares": 417933.3,
+     "usd_traded": 216729.4,
+     "gross_c_per_share": 1.9569,
+     "fee_c_per_share": 0.0,
+     "net_c_per_share": 1.9569,
+     "net_ci95_c_match_clustered": [
+      1.3734,
+      2.5384
+     ],
+     "pnl_usd": 8178.67,
+     "share_of_period_pnl": 0.2023,
+     "win_rate": 0.5332
+    },
+    {
+     "group": "3s/3%",
+     "n_trades": 12167,
+     "n_matches": 2024,
+     "shares": 685898.6,
+     "usd_traded": 343489.4,
+     "gross_c_per_share": 1.9553,
+     "fee_c_per_share": 0.5998,
+     "net_c_per_share": 1.3556,
+     "net_ci95_c_match_clustered": [
+      0.846,
+      1.8471
+     ],
+     "pnl_usd": 9297.72,
+     "share_of_period_pnl": 0.23,
+     "win_rate": 0.5292
+    },
+    {
+     "group": "1s/3%",
+     "n_trades": 20888,
+     "n_matches": 2241,
+     "shares": 1013081.0,
+     "usd_traded": 505753.5,
+     "gross_c_per_share": 2.0412,
+     "fee_c_per_share": 0.5902,
+     "net_c_per_share": 1.451,
+     "net_ci95_c_match_clustered": [
+      1.0985,
+      1.7964
+     ],
+     "pnl_usd": 14699.9,
+     "share_of_period_pnl": 0.3636,
+     "win_rate": 0.5323
+    },
+    {
+     "group": "1s/5%",
+     "n_trades": 15120,
+     "n_matches": 2136,
+     "shares": 809410.0,
+     "usd_traded": 413591.8,
+     "gross_c_per_share": 1.965,
+     "fee_c_per_share": 0.9458,
+     "net_c_per_share": 1.0192,
+     "net_ci95_c_match_clustered": [
+      0.5994,
+      1.4381
+     ],
+     "pnl_usd": 8249.43,
+     "share_of_period_pnl": 0.2041,
+     "win_rate": 0.5475
+    }
+   ],
+   "by_time_of_day_utc": [
+    {
+     "group": "00-04 UTC",
+     "n_trades": 3092,
+     "n_matches": 576,
+     "shares": 175121.4,
+     "usd_traded": 89785.9,
+     "gross_c_per_share": 2.3423,
+     "fee_c_per_share": 0.6156,
+     "net_c_per_share": 1.7267,
+     "net_ci95_c_match_clustered": [
+      0.7321,
+      2.8286
+     ],
+     "pnl_usd": 3023.85,
+     "share_of_period_pnl": 0.0748,
+     "win_rate": 0.5488
+    },
+    {
+     "group": "04-08 UTC",
+     "n_trades": 1592,
+     "n_matches": 368,
+     "shares": 86891.9,
+     "usd_traded": 44522.2,
+     "gross_c_per_share": 1.4451,
+     "fee_c_per_share": 0.5215,
+     "net_c_per_share": 0.9236,
+     "net_ci95_c_match_clustered": [
+      -0.6709,
+      2.5502
+     ],
+     "pnl_usd": 802.55,
+     "share_of_period_pnl": 0.0199,
+     "win_rate": 0.5396
+    },
+    {
+     "group": "08-12 UTC",
+     "n_trades": 12166,
+     "n_matches": 2120,
+     "shares": 578226.1,
+     "usd_traded": 292543.3,
+     "gross_c_per_share": 2.0027,
+     "fee_c_per_share": 0.5961,
+     "net_c_per_share": 1.4065,
+     "net_ci95_c_match_clustered": [
+      0.8402,
+      1.9462
+     ],
+     "pnl_usd": 8132.92,
+     "share_of_period_pnl": 0.2012,
+     "win_rate": 0.5352
+    },
+    {
+     "group": "12-16 UTC",
+     "n_trades": 18537,
+     "n_matches": 3088,
+     "shares": 947669.8,
+     "usd_traded": 475426.3,
+     "gross_c_per_share": 2.2381,
+     "fee_c_per_share": 0.6071,
+     "net_c_per_share": 1.6311,
+     "net_ci95_c_match_clustered": [
+      1.186,
+      2.0949
+     ],
+     "pnl_usd": 15457.18,
+     "share_of_period_pnl": 0.3824,
+     "win_rate": 0.5374
+    },
+    {
+     "group": "16-20 UTC",
+     "n_trades": 14572,
+     "n_matches": 2401,
+     "shares": 802710.7,
+     "usd_traded": 405462.7,
+     "gross_c_per_share": 1.6074,
+     "fee_c_per_share": 0.6169,
+     "net_c_per_share": 0.9905,
+     "net_ci95_c_match_clustered": [
+      0.5404,
+      1.4551
+     ],
+     "pnl_usd": 7951.2,
+     "share_of_period_pnl": 0.1967,
+     "win_rate": 0.5274
+    },
+    {
+     "group": "20-24 UTC",
+     "n_trades": 5703,
+     "n_matches": 1066,
+     "shares": 335703.0,
+     "usd_traded": 171823.7,
+     "gross_c_per_share": 2.1219,
+     "fee_c_per_share": 0.6152,
+     "net_c_per_share": 1.5067,
+     "net_ci95_c_match_clustered": [
+      0.6579,
+      2.3329
+     ],
+     "pnl_usd": 5058.02,
+     "share_of_period_pnl": 0.1251,
+     "win_rate": 0.5457
+    }
+   ],
+   "by_month": [
+    {
+     "group": "2026-02",
+     "n_trades": 5901,
+     "n_matches": 922,
+     "shares": 318402.2,
+     "usd_traded": 164198.8,
+     "gross_c_per_share": 1.9477,
+     "fee_c_per_share": 0.0,
+     "net_c_per_share": 1.9477,
+     "net_ci95_c_match_clustered": [
+      1.3135,
+      2.6379
+     ],
+     "pnl_usd": 6201.39,
+     "share_of_period_pnl": 0.1534,
+     "win_rate": 0.5269
+    },
+    {
+     "group": "2026-03",
+     "n_trades": 1949,
+     "n_matches": 404,
+     "shares": 123538.8,
+     "usd_traded": 64852.1,
+     "gross_c_per_share": 2.1805,
+     "fee_c_per_share": 0.1224,
+     "net_c_per_share": 2.0581,
+     "net_ci95_c_match_clustered": [
+      0.9955,
+      3.2856
+     ],
+     "pnl_usd": 2542.56,
+     "share_of_period_pnl": 0.0629,
+     "win_rate": 0.5505
+    },
+    {
+     "group": "2026-04",
+     "n_trades": 6636,
+     "n_matches": 1315,
+     "shares": 422962.9,
+     "usd_traded": 214112.3,
+     "gross_c_per_share": 2.0649,
+     "fee_c_per_share": 0.5963,
+     "net_c_per_share": 1.4685,
+     "net_ci95_c_match_clustered": [
+      0.8049,
+      2.0856
+     ],
+     "pnl_usd": 6211.32,
+     "share_of_period_pnl": 0.1536,
+     "win_rate": 0.5377
+    },
+    {
+     "group": "2026-05",
+     "n_trades": 11588,
+     "n_matches": 1322,
+     "shares": 549927.5,
+     "usd_traded": 271603.7,
+     "gross_c_per_share": 2.0585,
+     "fee_c_per_share": 0.6011,
+     "net_c_per_share": 1.4575,
+     "net_ci95_c_match_clustered": [
+      0.9591,
+      1.9649
+     ],
+     "pnl_usd": 8014.92,
+     "share_of_period_pnl": 0.1983,
+     "win_rate": 0.5279
+    },
+    {
+     "group": "2026-06",
+     "n_trades": 10967,
+     "n_matches": 1228,
+     "shares": 542311.1,
+     "usd_traded": 271766.0,
+     "gross_c_per_share": 1.9458,
+     "fee_c_per_share": 0.5862,
+     "net_c_per_share": 1.3596,
+     "net_ci95_c_match_clustered": [
+      0.9157,
+      1.8097
+     ],
+     "pnl_usd": 7373.32,
+     "share_of_period_pnl": 0.1824,
+     "win_rate": 0.528
+    },
+    {
+     "group": "2026-07",
+     "n_trades": 11334,
+     "n_matches": 1332,
+     "shares": 570538.4,
+     "usd_traded": 286841.0,
+     "gross_c_per_share": 1.9019,
+     "fee_c_per_share": 0.8479,
+     "net_c_per_share": 1.054,
+     "net_ci95_c_match_clustered": [
+      0.5958,
+      1.4783
+     ],
+     "pnl_usd": 6013.23,
+     "share_of_period_pnl": 0.1487,
+     "win_rate": 0.544
+    },
+    {
+     "group": "2026-08",
+     "n_trades": 7287,
+     "n_matches": 1122,
+     "shares": 398641.9,
+     "usd_traded": 206190.2,
+     "gross_c_per_share": 1.9621,
+     "fee_c_per_share": 0.9414,
+     "net_c_per_share": 1.0207,
+     "net_ci95_c_match_clustered": [
+      0.3927,
+      1.6041
+     ],
+     "pnl_usd": 4068.97,
+     "share_of_period_pnl": 0.1007,
+     "win_rate": 0.5493
+    }
+   ],
+   "by_seconds_since_detection": [
+    {
+     "group": "0 s",
+     "n_trades": 47302,
+     "n_matches": 7543,
+     "shares": 2481304.8,
+     "usd_traded": 1262956.6,
+     "gross_c_per_share": 2.2024,
+     "fee_c_per_share": 0.6099,
+     "net_c_per_share": 1.5925,
+     "net_ci95_c_match_clustered": [
+      1.2696,
+      1.9051
+     ],
+     "pnl_usd": 39514.86,
+     "share_of_period_pnl": 0.9775,
+     "win_rate": 0.5404
+    },
+    {
+     "group": "1 s",
+     "n_trades": 2933,
+     "n_matches": 1650,
+     "shares": 153833.5,
+     "usd_traded": 75574.1,
+     "gross_c_per_share": 2.1818,
+     "fee_c_per_share": 0.752,
+     "net_c_per_share": 1.4298,
+     "net_ci95_c_match_clustered": [
+      -0.8121,
+      3.7257
+     ],
+     "pnl_usd": 2199.55,
+     "share_of_period_pnl": 0.0544,
+     "win_rate": 0.5271
+    },
+    {
+     "group": "2 s",
+     "n_trades": 5427,
+     "n_matches": 2949,
+     "shares": 291184.6,
+     "usd_traded": 141033.5,
+     "gross_c_per_share": 0.058,
+     "fee_c_per_share": 0.5005,
+     "net_c_per_share": -0.4426,
+     "net_ci95_c_match_clustered": [
+      -2.162,
+      1.1669
+     ],
+     "pnl_usd": -1288.69,
+     "share_of_period_pnl": -0.0319,
+     "win_rate": 0.5014
+    }
+   ],
+   "by_direction_vs_jump": [
+    {
+     "group": "with the jump",
+     "n_trades": 46087,
+     "n_matches": 7480,
+     "shares": 2417529.4,
+     "usd_traded": 1258368.0,
+     "gross_c_per_share": 2.1281,
+     "fee_c_per_share": 0.6133,
+     "net_c_per_share": 1.5148,
+     "net_ci95_c_match_clustered": [
+      1.1412,
+      1.8324
+     ],
+     "pnl_usd": 36620.41,
+     "share_of_period_pnl": 0.9059,
+     "win_rate": 0.5519
+    },
+    {
+     "group": "against the jump",
+     "n_trades": 9575,
+     "n_matches": 3964,
+     "shares": 508793.4,
+     "usd_traded": 221196.1,
+     "gross_c_per_share": 1.3222,
+     "fee_c_per_share": 0.5743,
+     "net_c_per_share": 0.7479,
+     "net_ci95_c_match_clustered": [
+      -0.5526,
+      2.0768
+     ],
+     "pnl_usd": 3805.3,
+     "share_of_period_pnl": 0.0941,
+     "win_rate": 0.4586
+    }
+   ],
+   "trade_win_rate": 0.5359,
+   "trade_win_rate_ci95_match_clustered": [
+    0.5326,
+    0.5396
+   ],
+   "share_weighted_win_rate": 0.5255,
+   "avg_win_usd": 19.847,
+   "avg_loss_usd": -21.349,
+   "avg_win_c_per_share": 38.5,
+   "avg_loss_c_per_share": -39.72,
+   "payoff_ratio_usd": 0.93,
+   "n_wins": 29827,
+   "n_losses": 25835,
+   "n_flat": 0,
+   "net_c_per_share": 1.3815,
+   "net_ci95_c_match_clustered": [
+    1.1678,
+    1.5935
+   ],
+   "reading_win_rate": "Held to resolution each trade pays 0 or 1: the share-weighted win rate 52.5% vs an average price paid of 50.6c is the gross edge; wins and losses are about the same size per share."
+  },
+  "OOS": {
+   "label": "burned OOS (non-blind for v2; held-out matches from 2026-08-25 14:15 UTC)",
+   "by_price_decile_q": [
+    {
+     "group": "0.05-0.21",
+     "n_trades": 1177,
+     "n_matches": 747,
+     "shares": 89327.9,
+     "usd_traded": 12528.6,
+     "gross_c_per_share": 1.8641,
+     "fee_c_per_share": 0.5934,
+     "net_c_per_share": 1.2708,
+     "net_ci95_c_match_clustered": [
+      -1.8841,
+      4.3098
+     ],
+     "pnl_usd": 1135.14,
+     "share_of_period_pnl": 0.3078,
+     "win_rate": 0.1665
+    },
+    {
+     "group": "0.21-0.30",
+     "n_trades": 907,
+     "n_matches": 615,
+     "shares": 54103.7,
+     "usd_traded": 13968.1,
+     "gross_c_per_share": 2.3999,
+     "fee_c_per_share": 0.9543,
+     "net_c_per_share": 1.4456,
+     "net_ci95_c_match_clustered": [
+      -2.9034,
+      6.0995
+     ],
+     "pnl_usd": 782.12,
+     "share_of_period_pnl": 0.2121,
+     "win_rate": 0.3054
+    },
+    {
+     "group": "0.30-0.38",
+     "n_trades": 945,
+     "n_matches": 611,
+     "shares": 55095.7,
+     "usd_traded": 19016.8,
+     "gross_c_per_share": 5.9364,
+     "fee_c_per_share": 1.1274,
+     "net_c_per_share": 4.809,
+     "net_ci95_c_match_clustered": [
+      -0.2061,
+      9.49
+     ],
+     "pnl_usd": 2649.56,
+     "share_of_period_pnl": 0.7185,
+     "win_rate": 0.3979
+    },
+    {
+     "group": "0.38-0.45",
+     "n_trades": 817,
+     "n_matches": 540,
+     "shares": 47159.8,
+     "usd_traded": 19750.9,
+     "gross_c_per_share": 2.9947,
+     "fee_c_per_share": 1.215,
+     "net_c_per_share": 1.7796,
+     "net_ci95_c_match_clustered": [
+      -3.196,
+      6.9225
+     ],
+     "pnl_usd": 839.28,
+     "share_of_period_pnl": 0.2276,
+     "win_rate": 0.4357
+    },
+    {
+     "group": "0.45-0.52",
+     "n_trades": 968,
+     "n_matches": 585,
+     "shares": 54661.2,
+     "usd_traded": 26376.0,
+     "gross_c_per_share": -3.3108,
+     "fee_c_per_share": 1.2466,
+     "net_c_per_share": -4.5574,
+     "net_ci95_c_match_clustered": [
+      -8.7488,
+      -0.6647
+     ],
+     "pnl_usd": -2491.14,
+     "share_of_period_pnl": -0.6756,
+     "win_rate": 0.4783
+    },
+    {
+     "group": "0.52-0.58",
+     "n_trades": 937,
+     "n_matches": 551,
+     "shares": 49769.8,
+     "usd_traded": 27325.3,
+     "gross_c_per_share": 4.761,
+     "fee_c_per_share": 1.236,
+     "net_c_per_share": 3.525,
+     "net_ci95_c_match_clustered": [
+      -1.1094,
+      7.704
+     ],
+     "pnl_usd": 1754.37,
+     "share_of_period_pnl": 0.4758,
+     "win_rate": 0.5912
+    },
+    {
+     "group": "0.58-0.65",
+     "n_trades": 962,
+     "n_matches": 611,
+     "shares": 51033.8,
+     "usd_traded": 31662.6,
+     "gross_c_per_share": -0.2392,
+     "fee_c_per_share": 1.1755,
+     "net_c_per_share": -1.4147,
+     "net_ci95_c_match_clustered": [
+      -5.9947,
+      3.3788
+     ],
+     "pnl_usd": -721.97,
+     "share_of_period_pnl": -0.1958,
+     "win_rate": 0.6227
+    },
+    {
+     "group": "0.65-0.73",
+     "n_trades": 1098,
+     "n_matches": 702,
+     "shares": 59035.4,
+     "usd_traded": 40850.9,
+     "gross_c_per_share": 0.9224,
+     "fee_c_per_share": 1.063,
+     "net_c_per_share": -0.1406,
+     "net_ci95_c_match_clustered": [
+      -4.5056,
+      4.1132
+     ],
+     "pnl_usd": -82.98,
+     "share_of_period_pnl": -0.0225,
+     "win_rate": 0.6922
+    },
+    {
+     "group": "0.73-0.82",
+     "n_trades": 1129,
+     "n_matches": 746,
+     "shares": 63280.2,
+     "usd_traded": 49211.8,
+     "gross_c_per_share": 3.3394,
+     "fee_c_per_share": 0.8612,
+     "net_c_per_share": 2.4783,
+     "net_ci95_c_match_clustered": [
+      -1.1779,
+      6.0029
+     ],
+     "pnl_usd": 1568.25,
+     "share_of_period_pnl": 0.4253,
+     "win_rate": 0.8105
+    },
+    {
+     "group": "0.82-0.95",
+     "n_trades": 1472,
+     "n_matches": 888,
+     "shares": 92419.0,
+     "usd_traded": 81799.4,
+     "gross_c_per_share": -1.3866,
+     "fee_c_per_share": 0.5017,
+     "net_c_per_share": -1.8882,
+     "net_ci95_c_match_clustered": [
+      -4.4059,
+      0.7314
+     ],
+     "pnl_usd": -1745.09,
+     "share_of_period_pnl": -0.4732,
+     "win_rate": 0.877
+    }
+   ],
+   "by_regime_delay_fee": [
+    {
+     "group": "1s/5%",
+     "n_trades": 10412,
+     "n_matches": 2003,
+     "shares": 615886.4,
+     "usd_traded": 322490.3,
+     "gross_c_per_share": 1.5361,
+     "fee_c_per_share": 0.9374,
+     "net_c_per_share": 0.5987,
+     "net_ci95_c_match_clustered": [
+      0.0872,
+      1.1272
+     ],
+     "pnl_usd": 3687.54,
+     "share_of_period_pnl": 1.0,
+     "win_rate": 0.5558
+    }
+   ],
+   "by_time_of_day_utc": [
+    {
+     "group": "00-04 UTC",
+     "n_trades": 847,
+     "n_matches": 218,
+     "shares": 52066.9,
+     "usd_traded": 26818.3,
+     "gross_c_per_share": 0.897,
+     "fee_c_per_share": 0.9139,
+     "net_c_per_share": -0.0169,
+     "net_ci95_c_match_clustered": [
+      -2.3797,
+      2.3325
+     ],
+     "pnl_usd": -8.78,
+     "share_of_period_pnl": -0.0024,
+     "win_rate": 0.5608
+    },
+    {
+     "group": "04-08 UTC",
+     "n_trades": 1134,
+     "n_matches": 286,
+     "shares": 71638.2,
+     "usd_traded": 38357.6,
+     "gross_c_per_share": 0.6489,
+     "fee_c_per_share": 0.9614,
+     "net_c_per_share": -0.3125,
+     "net_ci95_c_match_clustered": [
+      -2.0546,
+      1.3911
+     ],
+     "pnl_usd": -223.85,
+     "share_of_period_pnl": -0.0607,
+     "win_rate": 0.5547
+    },
+    {
+     "group": "08-12 UTC",
+     "n_trades": 2111,
+     "n_matches": 522,
+     "shares": 117045.1,
+     "usd_traded": 61211.4,
+     "gross_c_per_share": 1.7238,
+     "fee_c_per_share": 0.9494,
+     "net_c_per_share": 0.7744,
+     "net_ci95_c_match_clustered": [
+      -0.5117,
+      2.1934
+     ],
+     "pnl_usd": 906.43,
+     "share_of_period_pnl": 0.2458,
+     "win_rate": 0.5505
+    },
+    {
+     "group": "12-16 UTC",
+     "n_trades": 2742,
+     "n_matches": 631,
+     "shares": 161765.0,
+     "usd_traded": 84919.1,
+     "gross_c_per_share": 1.1437,
+     "fee_c_per_share": 0.9383,
+     "net_c_per_share": 0.2054,
+     "net_ci95_c_match_clustered": [
+      -1.0239,
+      1.3247
+     ],
+     "pnl_usd": 332.31,
+     "share_of_period_pnl": 0.0901,
+     "win_rate": 0.5667
+    },
+    {
+     "group": "16-20 UTC",
+     "n_trades": 2277,
+     "n_matches": 527,
+     "shares": 136210.7,
+     "usd_traded": 70523.7,
+     "gross_c_per_share": 2.4183,
+     "fee_c_per_share": 0.9383,
+     "net_c_per_share": 1.48,
+     "net_ci95_c_match_clustered": [
+      0.1604,
+      2.8634
+     ],
+     "pnl_usd": 2015.93,
+     "share_of_period_pnl": 0.5467,
+     "win_rate": 0.5468
+    },
+    {
+     "group": "20-24 UTC",
+     "n_trades": 1301,
+     "n_matches": 338,
+     "shares": 77160.5,
+     "usd_traded": 40660.2,
+     "gross_c_per_share": 1.7718,
+     "fee_c_per_share": 0.9093,
+     "net_c_per_share": 0.8625,
+     "net_ci95_c_match_clustered": [
+      -0.7695,
+      2.6498
+     ],
+     "pnl_usd": 665.49,
+     "share_of_period_pnl": 0.1805,
+     "win_rate": 0.555
+    }
+   ],
+   "by_month": [
+    {
+     "group": "2026-08",
+     "n_trades": 1799,
+     "n_matches": 354,
+     "shares": 90669.5,
+     "usd_traded": 49406.8,
+     "gross_c_per_share": 1.0815,
+     "fee_c_per_share": 0.889,
+     "net_c_per_share": 0.1925,
+     "net_ci95_c_match_clustered": [
+      -1.3109,
+      1.6466
+     ],
+     "pnl_usd": 174.55,
+     "share_of_period_pnl": 0.0473,
+     "win_rate": 0.5703
+    },
+    {
+     "group": "2026-09",
+     "n_trades": 7959,
+     "n_matches": 1523,
+     "shares": 484991.2,
+     "usd_traded": 252334.3,
+     "gross_c_per_share": 1.7597,
+     "fee_c_per_share": 0.9458,
+     "net_c_per_share": 0.8139,
+     "net_ci95_c_match_clustered": [
+      0.2421,
+      1.4207
+     ],
+     "pnl_usd": 3947.14,
+     "share_of_period_pnl": 1.0704,
+     "win_rate": 0.5515
+    },
+    {
+     "group": "2026-10",
+     "n_trades": 654,
+     "n_matches": 127,
+     "shares": 40225.7,
+     "usd_traded": 20749.2,
+     "gross_c_per_share": -0.1347,
+     "fee_c_per_share": 0.9446,
+     "net_c_per_share": -1.0793,
+     "net_ci95_c_match_clustered": [
+      -3.1591,
+      0.7903
+     ],
+     "pnl_usd": -434.15,
+     "share_of_period_pnl": -0.1177,
+     "win_rate": 0.5688
+    }
+   ],
+   "by_seconds_since_detection": [
+    {
+     "group": "0 s",
+     "n_trades": 9314,
+     "n_matches": 1972,
+     "shares": 551439.8,
+     "usd_traded": 288747.0,
+     "gross_c_per_share": 1.6054,
+     "fee_c_per_share": 0.9421,
+     "net_c_per_share": 0.6632,
+     "net_ci95_c_match_clustered": [
+      0.0326,
+      1.3275
+     ],
+     "pnl_usd": 3657.35,
+     "share_of_period_pnl": 0.9918,
+     "win_rate": 0.5568
+    },
+    {
+     "group": "1 s",
+     "n_trades": 619,
+     "n_matches": 466,
+     "shares": 35368.6,
+     "usd_traded": 17933.7,
+     "gross_c_per_share": 3.547,
+     "fee_c_per_share": 0.8876,
+     "net_c_per_share": 2.6594,
+     "net_ci95_c_match_clustered": [
+      -2.3201,
+      7.1271
+     ],
+     "pnl_usd": 940.6,
+     "share_of_period_pnl": 0.2551,
+     "win_rate": 0.546
+    },
+    {
+     "group": "2 s",
+     "n_trades": 479,
+     "n_matches": 356,
+     "shares": 29078.1,
+     "usd_traded": 15809.6,
+     "gross_c_per_share": -2.2231,
+     "fee_c_per_share": 0.9079,
+     "net_c_per_share": -3.1309,
+     "net_ci95_c_match_clustered": [
+      -8.092,
+      2.2311
+     ],
+     "pnl_usd": -910.42,
+     "share_of_period_pnl": -0.2469,
+     "win_rate": 0.5491
+    }
+   ],
+   "by_direction_vs_jump": [
+    {
+     "group": "with the jump",
+     "n_trades": 9192,
+     "n_matches": 1958,
+     "shares": 542855.1,
+     "usd_traded": 293730.7,
+     "gross_c_per_share": 1.6113,
+     "fee_c_per_share": 0.939,
+     "net_c_per_share": 0.6723,
+     "net_ci95_c_match_clustered": [
+      -0.0374,
+      1.3802
+     ],
+     "pnl_usd": 3649.66,
+     "share_of_period_pnl": 0.9897,
+     "win_rate": 0.5696
+    },
+    {
+     "group": "against the jump",
+     "n_trades": 1220,
+     "n_matches": 728,
+     "shares": 73031.3,
+     "usd_traded": 28759.6,
+     "gross_c_per_share": 0.9769,
+     "fee_c_per_share": 0.9251,
+     "net_c_per_share": 0.0519,
+     "net_ci95_c_match_clustered": [
+      -3.4409,
+      3.869
+     ],
+     "pnl_usd": 37.87,
+     "share_of_period_pnl": 0.0103,
+     "win_rate": 0.4516
+    }
+   ],
+   "trade_win_rate": 0.5558,
+   "trade_win_rate_ci95_match_clustered": [
+    0.5477,
+    0.5635
+   ],
+   "share_weighted_win_rate": 0.539,
+   "avg_win_usd": 20.421,
+   "avg_loss_usd": -24.755,
+   "avg_win_c_per_share": 35.6,
+   "avg_loss_c_per_share": -40.32,
+   "payoff_ratio_usd": 0.825,
+   "n_wins": 5787,
+   "n_losses": 4625,
+   "n_flat": 0,
+   "net_c_per_share": 0.5987,
+   "net_ci95_c_match_clustered": [
+    0.0872,
+    1.1272
+   ],
+   "reading_win_rate": "Held to resolution each trade pays 0 or 1: the share-weighted win rate 53.9% vs an average price paid of 52.4c is the gross edge; wins and losses are about the same size per share."
+  }
+ },
+ "E_decay": {
+  "within_a_point": {
+   "what": "Net 30 s markout (c/share, after fee) by seconds since jump DETECTION, tennis moneylines, match-clustered 95% CI. From the committed TT5 decay run.",
+   "resolution_note": "Tape timestamps are block times in whole seconds (median 1.98 s after the true trade), so the 0.25-1 s bins are empty by construction; '0 s' = same block second as detection. The requested 0-0.5/0.5-1 s split is not resolvable on these tapes.",
+   "empty_bins": [
+    "0.25-0.5",
+    "0.5-1"
+   ],
+   "IS": {
+    "label": "in sample (IS)",
+    "prints": 8303352,
+    "matches": 9581,
+    "rows": [
+     {
+      "bin": "0 s (same block second as detection)",
+      "fast": {
+       "net30_c": 1.1773,
+       "ci95_c": [
+        1.1366,
+        1.2208
+       ],
+       "n": 83775
+      },
+      "others": {
+       "net30_c": -0.883,
+       "ci95_c": [
+        -1.0671,
+        -0.6
+       ],
+       "n": 277003
+      },
+      "all": {
+       "net30_c": -0.412,
+       "ci95_c": [
+        -0.5491,
+        -0.1927
+       ],
+       "n": 370276
+      },
+      "with_jump": {
+       "net30_c": -0.3529,
+       "ci95_c": [
+        -0.4555,
+        -0.2669
+       ],
+       "n": 281289
+      }
+     },
+     {
+      "bin": "1 s",
+      "fast": {
+       "net30_c": 0.5854,
+       "ci95_c": [
+        0.4471,
+        0.7181
+       ],
+       "n": 7019
+      },
+      "others": {
+       "net30_c": -1.1878,
+       "ci95_c": [
+        -1.607,
+        -0.9288
+       ],
+       "n": 28587
+      },
+      "all": {
+       "net30_c": -0.8383,
+       "ci95_c": [
+        -1.2279,
+        -0.6244
+       ],
+       "n": 35606
+      },
+      "with_jump": {
+       "net30_c": -0.5535,
+       "ci95_c": [
+        -1.1412,
+        -0.2238
+       ],
+       "n": 22936
+      }
+     },
+     {
+      "bin": "2 s",
+      "fast": {
+       "net30_c": 0.6092,
+       "ci95_c": [
+        0.4748,
+        0.7463
+       ],
+       "n": 12057
+      },
+      "others": {
+       "net30_c": -1.2634,
+       "ci95_c": [
+        -1.534,
+        -1.0315
+       ],
+       "n": 80545
+      },
+      "all": {
+       "net30_c": -1.0049,
+       "ci95_c": [
+        -1.2413,
+        -0.8055
+       ],
+       "n": 94304
+      },
+      "with_jump": {
+       "net30_c": -0.8278,
+       "ci95_c": [
+        -1.2094,
+        -0.5369
+       ],
+       "n": 56433
+      }
+     },
+     {
+      "bin": "3-4 s",
+      "fast": {
+       "net30_c": 0.4654,
+       "ci95_c": [
+        0.3314,
+        0.6024
+       ],
+       "n": 15397
+      },
+      "others": {
+       "net30_c": -1.1183,
+       "ci95_c": [
+        -1.2617,
+        -1.0026
+       ],
+       "n": 111667
+      },
+      "all": {
+       "net30_c": -0.9168,
+       "ci95_c": [
+        -1.0429,
+        -0.8074
+       ],
+       "n": 128687
+      },
+      "with_jump": {
+       "net30_c": -0.6165,
+       "ci95_c": [
+        -0.7286,
+        -0.5053
+       ],
+       "n": 70308
+      }
+     },
+     {
+      "bin": "5-9 s",
+      "fast": {
+       "net30_c": 0.6178,
+       "ci95_c": [
+        0.4912,
+        0.7436
+       ],
+       "n": 26043
+      },
+      "others": {
+       "net30_c": -1.0391,
+       "ci95_c": [
+        -1.1095,
+        -0.9715
+       ],
+       "n": 198141
+      },
+      "all": {
+       "net30_c": -0.8424,
+       "ci95_c": [
+        -0.9108,
+        -0.7832
+       ],
+       "n": 227161
+      },
+      "with_jump": {
+       "net30_c": -0.7124,
+       "ci95_c": [
+        -0.8391,
+        -0.5999
+       ],
+       "n": 119647
+      }
+     },
+     {
+      "bin": "10-29 s",
+      "fast": {
+       "net30_c": 0.8575,
+       "ci95_c": [
+        0.8051,
+        0.9107
+       ],
+       "n": 117576
+      },
+      "others": {
+       "net30_c": -1.0851,
+       "ci95_c": [
+        -1.1363,
+        -1.0384
+       ],
+       "n": 748493
+      },
+      "all": {
+       "net30_c": -0.815,
+       "ci95_c": [
+        -0.8604,
+        -0.7741
+       ],
+       "n": 880792
+      },
+      "with_jump": {
+       "net30_c": -0.6421,
+       "ci95_c": [
+        -0.6937,
+        -0.5922
+       ],
+       "n": 464129
+      }
+     },
+     {
+      "bin": "baseline (no detection in last 30 s)",
+      "fast": {
+       "net30_c": 0.6698,
+       "ci95_c": [
+        0.6529,
+        0.6856
+       ],
+       "n": 926424
+      },
+      "others": {
+       "net30_c": -0.8617,
+       "ci95_c": [
+        -0.8728,
+        -0.8507
+       ],
+       "n": 5469579
+      },
+      "all": {
+       "net30_c": -0.6339,
+       "ci95_c": [
+        -0.6445,
+        -0.6239
+       ],
+       "n": 6530898
+      },
+      "with_jump": {
+       "net30_c": -0.6041,
+       "ci95_c": [
+        -0.6186,
+        -0.589
+       ],
+       "n": 3087439
+      }
+     }
+    ],
+    "decay_test_prereg": {
+     "stat_c": 0.0886,
+     "ci_c": [
+      -0.4666,
+      0.431
+     ],
+     "decays": false,
+     "a_c": -0.5535,
+     "b_c": -0.6421,
+     "n_a": 22936,
+     "n_b": 464129,
+     "matches": 9029,
+     "matches_a": 3864,
+     "matches_b": 8996,
+     "undefined_draws": 0
+    }
+   },
+   "OOS": {
+    "label": "burned OOS (non-blind; read by scripts/signal_decay.py, already logged)",
+    "prints": 1253202,
+    "matches": 2345,
+    "rows": [
+     {
+      "bin": "0 s (same block second as detection)",
+      "fast": {
+       "net30_c": 0.7549,
+       "ci95_c": [
+        0.6602,
+        0.8496
+       ],
+       "n": 20568
+      },
+      "others": {
+       "net30_c": -1.267,
+       "ci95_c": [
+        -1.3248,
+        -1.2104
+       ],
+       "n": 45958
+      },
+      "all": {
+       "net30_c": -0.6419,
+       "ci95_c": [
+        -0.6999,
+        -0.5824
+       ],
+       "n": 66526
+      },
+      "with_jump": {
+       "net30_c": -0.3395,
+       "ci95_c": [
+        -0.407,
+        -0.2745
+       ],
+       "n": 50495
+      }
+     },
+     {
+      "bin": "1 s",
+      "fast": {
+       "net30_c": 0.4133,
+       "ci95_c": [
+        0.0682,
+        0.7726
+       ],
+       "n": 2623
+      },
+      "others": {
+       "net30_c": -1.0948,
+       "ci95_c": [
+        -1.2767,
+        -0.9235
+       ],
+       "n": 7664
+      },
+      "all": {
+       "net30_c": -0.7102,
+       "ci95_c": [
+        -0.8926,
+        -0.524
+       ],
+       "n": 10287
+      },
+      "with_jump": {
+       "net30_c": -0.2909,
+       "ci95_c": [
+        -0.4935,
+        -0.079
+       ],
+       "n": 6936
+      }
+     },
+     {
+      "bin": "2 s",
+      "fast": {
+       "net30_c": -0.0165,
+       "ci95_c": [
+        -0.2877,
+        0.2672
+       ],
+       "n": 1958
+      },
+      "others": {
+       "net30_c": -1.1937,
+       "ci95_c": [
+        -1.3648,
+        -1.0281
+       ],
+       "n": 6905
+      },
+      "all": {
+       "net30_c": -0.9336,
+       "ci95_c": [
+        -1.1014,
+        -0.7762
+       ],
+       "n": 8863
+      },
+      "with_jump": {
+       "net30_c": -0.4637,
+       "ci95_c": [
+        -0.6694,
+        -0.2561
+       ],
+       "n": 5734
+      }
+     },
+     {
+      "bin": "3-4 s",
+      "fast": {
+       "net30_c": -0.6627,
+       "ci95_c": [
+        -1.1387,
+        -0.296
+       ],
+       "n": 3136
+      },
+      "others": {
+       "net30_c": -1.2116,
+       "ci95_c": [
+        -1.3161,
+        -1.1073
+       ],
+       "n": 17846
+      },
+      "all": {
+       "net30_c": -1.1296,
+       "ci95_c": [
+        -1.254,
+        -1.0158
+       ],
+       "n": 20982
+      },
+      "with_jump": {
+       "net30_c": -0.8548,
+       "ci95_c": [
+        -1.0098,
+        -0.6955
+       ],
+       "n": 12771
+      }
+     },
+     {
+      "bin": "5-9 s",
+      "fast": {
+       "net30_c": -0.0502,
+       "ci95_c": [
+        -0.2934,
+        0.1649
+       ],
+       "n": 5216
+      },
+      "others": {
+       "net30_c": -1.1543,
+       "ci95_c": [
+        -1.2573,
+        -1.0411
+       ],
+       "n": 30595
+      },
+      "all": {
+       "net30_c": -0.9935,
+       "ci95_c": [
+        -1.0971,
+        -0.8922
+       ],
+       "n": 35811
+      },
+      "with_jump": {
+       "net30_c": -0.7487,
+       "ci95_c": [
+        -0.9316,
+        -0.5672
+       ],
+       "n": 19504
+      }
+     },
+     {
+      "bin": "10-29 s",
+      "fast": {
+       "net30_c": 0.4166,
+       "ci95_c": [
+        0.2415,
+        0.5908
+       ],
+       "n": 20405
+      },
+      "others": {
+       "net30_c": -1.357,
+       "ci95_c": [
+        -1.4163,
+        -1.297
+       ],
+       "n": 101123
+      },
+      "all": {
+       "net30_c": -1.0592,
+       "ci95_c": [
+        -1.124,
+        -0.9962
+       ],
+       "n": 121528
+      },
+      "with_jump": {
+       "net30_c": -0.951,
+       "ci95_c": [
+        -1.0618,
+        -0.8463
+       ],
+       "n": 65482
+      }
+     },
+     {
+      "bin": "baseline (no detection in last 30 s)",
+      "fast": {
+       "net30_c": 0.3656,
+       "ci95_c": [
+        0.3346,
+        0.3975
+       ],
+       "n": 186585
+      },
+      "others": {
+       "net30_c": -1.0663,
+       "ci95_c": [
+        -1.0883,
+        -1.0441
+       ],
+       "n": 788812
+      },
+      "all": {
+       "net30_c": -0.7924,
+       "ci95_c": [
+        -0.815,
+        -0.7696
+       ],
+       "n": 975397
+      },
+      "with_jump": {
+       "net30_c": -0.7568,
+       "ci95_c": [
+        -0.7926,
+        -0.7219
+       ],
+       "n": 460424
+      }
+     }
+    ],
+    "decay_test_prereg": {
+     "stat_c": 0.6601,
+     "ci_c": [
+      0.4512,
+      0.8696
+     ],
+     "decays": true,
+     "a_c": -0.2909,
+     "b_c": -0.951,
+     "n_a": 6936,
+     "n_b": 65482,
+     "matches": 2159,
+     "matches_a": 1550,
+     "matches_b": 2121,
+     "undefined_draws": 0
+    }
+   },
+   "v2_by_seconds_since_detection": {
+    "IS": [
+     {
+      "group": "0 s",
+      "n_trades": 47302,
+      "n_matches": 7543,
+      "shares": 2481304.8,
+      "usd_traded": 1262956.6,
+      "gross_c_per_share": 2.2024,
+      "fee_c_per_share": 0.6099,
+      "net_c_per_share": 1.5925,
+      "net_ci95_c_match_clustered": [
+       1.2696,
+       1.9051
+      ],
+      "pnl_usd": 39514.86,
+      "share_of_period_pnl": 0.9775,
+      "win_rate": 0.5404
+     },
+     {
+      "group": "1 s",
+      "n_trades": 2933,
+      "n_matches": 1650,
+      "shares": 153833.5,
+      "usd_traded": 75574.1,
+      "gross_c_per_share": 2.1818,
+      "fee_c_per_share": 0.752,
+      "net_c_per_share": 1.4298,
+      "net_ci95_c_match_clustered": [
+       -0.8121,
+       3.7257
+      ],
+      "pnl_usd": 2199.55,
+      "share_of_period_pnl": 0.0544,
+      "win_rate": 0.5271
+     },
+     {
+      "group": "2 s",
+      "n_trades": 5427,
+      "n_matches": 2949,
+      "shares": 291184.6,
+      "usd_traded": 141033.5,
+      "gross_c_per_share": 0.058,
+      "fee_c_per_share": 0.5005,
+      "net_c_per_share": -0.4426,
+      "net_ci95_c_match_clustered": [
+       -2.162,
+       1.1669
+      ],
+      "pnl_usd": -1288.69,
+      "share_of_period_pnl": -0.0319,
+      "win_rate": 0.5014
+     }
+    ],
+    "OOS": [
+     {
+      "group": "0 s",
+      "n_trades": 9314,
+      "n_matches": 1972,
+      "shares": 551439.8,
+      "usd_traded": 288747.0,
+      "gross_c_per_share": 1.6054,
+      "fee_c_per_share": 0.9421,
+      "net_c_per_share": 0.6632,
+      "net_ci95_c_match_clustered": [
+       0.0326,
+       1.3275
+      ],
+      "pnl_usd": 3657.35,
+      "share_of_period_pnl": 0.9918,
+      "win_rate": 0.5568
+     },
+     {
+      "group": "1 s",
+      "n_trades": 619,
+      "n_matches": 466,
+      "shares": 35368.6,
+      "usd_traded": 17933.7,
+      "gross_c_per_share": 3.547,
+      "fee_c_per_share": 0.8876,
+      "net_c_per_share": 2.6594,
+      "net_ci95_c_match_clustered": [
+       -2.3201,
+       7.1271
+      ],
+      "pnl_usd": 940.6,
+      "share_of_period_pnl": 0.2551,
+      "win_rate": 0.546
+     },
+     {
+      "group": "2 s",
+      "n_trades": 479,
+      "n_matches": 356,
+      "shares": 29078.1,
+      "usd_traded": 15809.6,
+      "gross_c_per_share": -2.2231,
+      "fee_c_per_share": 0.9079,
+      "net_c_per_share": -3.1309,
+      "net_ci95_c_match_clustered": [
+       -8.092,
+       2.2311
+      ],
+      "pnl_usd": -910.42,
+      "share_of_period_pnl": -0.2469,
+      "win_rate": 0.5491
+     }
+    ]
+   },
+   "reading": "The fast tier earns most in the detection second (+1.18c IS, +0.75c OOS) and about half that one second later (+0.59c IS, +0.41c OOS). OOS its 2-9 s bins are -0.02 / -0.66 / -0.05c. Everyone else is below zero in every bin (max -0.86c)."
+  },
+  "over_calendar_time": {
+   "what": "Fast-tier net 30 s markout by month (A), OLS on month index (0 = 2025-12), unweighted.",
+   "IS_months": {
+    "slope_c_per_month": -0.1998,
+    "intercept_c": 2.1369,
+    "slope_t": -3.98,
+    "n_points": 9
+   },
+   "IS_plus_OOS_rows": {
+    "slope_c_per_month": -0.1694,
+    "intercept_c": 2.0569,
+    "slope_t": -5.37,
+    "n_points": 12,
+    "note": "OOS rows appended in calendar order; Aug has an IS and an OOS row; Oct is 3 days"
+   },
+   "first3_IS_months_mean_c": 1.8625,
+   "last3_rows_mean_c": 0.6565,
+   "wallets_first_to_last": [
+    4,
+    131
+   ],
+   "v2_monthly_net_c": {
+    "IS": [
+     {
+      "month": "2026-02",
+      "net_c_per_share": 1.9477,
+      "ci95": [
+       1.3135,
+       2.6379
+      ]
+     },
+     {
+      "month": "2026-03",
+      "net_c_per_share": 2.0581,
+      "ci95": [
+       0.9955,
+       3.2856
+      ]
+     },
+     {
+      "month": "2026-04",
+      "net_c_per_share": 1.4685,
+      "ci95": [
+       0.8049,
+       2.0856
+      ]
+     },
+     {
+      "month": "2026-05",
+      "net_c_per_share": 1.4575,
+      "ci95": [
+       0.9591,
+       1.9649
+      ]
+     },
+     {
+      "month": "2026-06",
+      "net_c_per_share": 1.3596,
+      "ci95": [
+       0.9157,
+       1.8097
+      ]
+     },
+     {
+      "month": "2026-07",
+      "net_c_per_share": 1.054,
+      "ci95": [
+       0.5958,
+       1.4783
+      ]
+     },
+     {
+      "month": "2026-08",
+      "net_c_per_share": 1.0207,
+      "ci95": [
+       0.3927,
+       1.6041
+      ]
+     }
+    ],
+    "OOS": [
+     {
+      "month": "2026-08",
+      "net_c_per_share": 0.1925,
+      "ci95": [
+       -1.3109,
+       1.6466
+      ]
+     },
+     {
+      "month": "2026-09",
+      "net_c_per_share": 0.8139,
+      "ci95": [
+       0.2421,
+       1.4207
+      ]
+     },
+     {
+      "month": "2026-10",
+      "net_c_per_share": -1.0793,
+      "ci95": [
+       -3.1591,
+       0.7903
+      ]
+     }
+    ]
+   },
+   "reading": "The edge is shrinking: the fast tier's net 30 s markout averaged 1.90c over Dec-Mar and 0.71c over the last four rows (Aug IS - Oct), a fitted -0.17c per month, while qualifying wallets grew from 4 to 131 and the venue moved from a 3 s delay / no fee to 1 s / 5% (docs/NOTE.md section 1). It stayed positive every month."
+  }
+ },
+ "F_concentration": {
+  "label": "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+  "what": "Share of v2 P&L carried by the top 1/5/10 copied wallets, matches and days (sum of the top-k units' P&L / period P&L; above 100% means the rest lost money).",
+  "IS": {
+   "label": "in sample (IS)",
+   "total_pnl_usd": 40425.72,
+   "wallets": {
+    "n": 80,
+    "n_positive": 50,
+    "top1_share_of_pnl": 0.4166,
+    "top5_share_of_pnl": 0.8137,
+    "top10_share_of_pnl": 0.9882,
+    "top1_pnl_usd": 16842.57,
+    "fewest_units_reaching_100pct_of_pnl": 11,
+    "ex_top5_wallets": {
+     "n_trades": 25202,
+     "pnl_usd": 7532.84,
+     "net_c_per_share": 0.6113,
+     "ci95_c_match_clustered": [
+      -0.0083,
+      1.2243
+     ],
+     "share_of_trades": 0.4528
+    }
+   },
+   "matches": {
+    "n": 7639,
+    "n_positive": 4410,
+    "top1_share_of_pnl": 0.0048,
+    "top5_share_of_pnl": 0.0222,
+    "top10_share_of_pnl": 0.0408,
+    "top1_pnl_usd": 192.96,
+    "fewest_units_reaching_100pct_of_pnl": 513
+   },
+   "days": {
+    "n": 199,
+    "n_positive": 164,
+    "top1_share_of_pnl": 0.0299,
+    "top5_share_of_pnl": 0.1173,
+    "top10_share_of_pnl": 0.2031,
+    "top1_pnl_usd": 1208.95,
+    "fewest_units_reaching_100pct_of_pnl": 103
+   }
+  },
+  "OOS": {
+   "label": "burned OOS (non-blind for v2; held-out matches from 2026-08-25 14:15 UTC)",
+   "total_pnl_usd": 3687.54,
+   "wallets": {
+    "n": 86,
+    "n_positive": 51,
+    "top1_share_of_pnl": 0.4836,
+    "top5_share_of_pnl": 1.421,
+    "top10_share_of_pnl": 2.0822,
+    "top1_pnl_usd": 1783.45,
+    "fewest_units_reaching_100pct_of_pnl": 4,
+    "ex_top5_wallets": {
+     "n_trades": 8272,
+     "pnl_usd": -1552.35,
+     "net_c_per_share": -0.3386,
+     "ci95_c_match_clustered": [
+      -1.1953,
+      0.4585
+     ],
+     "share_of_trades": 0.7945
+    }
+   },
+   "matches": {
+    "n": 2003,
+    "n_positive": 1114,
+    "top1_share_of_pnl": 0.0569,
+    "top5_share_of_pnl": 0.1963,
+    "top10_share_of_pnl": 0.3507,
+    "top1_pnl_usd": 209.86,
+    "fewest_units_reaching_100pct_of_pnl": 39
+   },
+   "days": {
+    "n": 40,
+    "n_positive": 24,
+    "top1_share_of_pnl": 0.2121,
+    "top5_share_of_pnl": 0.7404,
+    "top10_share_of_pnl": 1.2107,
+    "top1_pnl_usd": 782.0,
+    "fewest_units_reaching_100pct_of_pnl": 8
+   }
+  },
+  "wallet_clustered_ci95_c": {
+   "IS": [
+    0.5709,
+    2.301
+   ],
+   "OOS": [
+    -0.4545,
+    2.3772
+   ]
+  },
+  "reading": "OOS is concentrated: the top 5 of 86 copied wallets carry 142% of OOS P&L (IS 81%); without them OOS v2 earns -0.34c/share. Clustered by wallet, the OOS CI includes zero."
+ },
+ "G_tier_ladder": {
+  "what": "Who earns what per share, fastest to slowest. Horizons differ by row and are stated.",
+  "rows": [
+   {
+    "tier": "Tier-0: courtside camera + own CV + licensed feed + London gateway",
+    "label": "counterfactual: assumes licensed feed + courtside camera (not purchased); parameters measured",
+    "horizon": "to resolution",
+    "gross_c_correct_calls_vs_new_mid": {
+     "IS": 2.311,
+     "OOS": 2.326
+    },
+    "net_c_correct_calls": {
+     "IS": 1.799,
+     "OOS": 1.352
+    },
+    "net_c_all_calls": {
+     "IS": 1.0978,
+     "OOS": 0.5755
+    },
+    "net_ci95_c_all_calls": {
+     "IS": [
+      0.8238,
+      1.3769
+     ],
+     "OOS": [
+      -0.0764,
+      1.2097
+     ]
+    },
+    "wrong_call_share_of_trades": {
+     "IS": 0.1259,
+     "OOS": 0.1911
+    },
+    "usd_per_day": {
+     "IS": 88.7936,
+     "OOS": 46.4258
+    },
+    "sign_flip": "Under the stamp-noise reading of the book's reprice timing, the same trader loses: -3.2491c IS.",
+    "sources": "results/tier0/results.json :: headline.(IS|burned_OOS).mean; headline_by_size_and_decomposition.*.decomposition.correct; stresses_corrected; research/v2/tier0/RESULTS.md section 1"
+   },
+   {
+    "tier": "Real fast tier, live day: prints landing 0-0.5 s before the book reprices",
+    "label": "measured on one live day (482 official WTA points); 52 prints on points with a >= 3c move",
+    "horizon": "vs the new mid",
+    "gross_c": 2.243,
+    "net_c": 1.133,
+    "n_prints": 52,
+    "all_points": {
+     "gross_c": 1.839,
+     "net_c": 0.93,
+     "n_prints": 91
+    },
+    "sources": "research/v2/tier0/verify_out/verify_realism.json :: 3c_fast_tier_vs_model.measured_fast_tier_prints_landing_[-0.5,0)_with_move"
+   },
+   {
+    "tier": "Fast tier (walk-forward wallets), 0-3 s after detection",
+    "label": "IS and OOS (H6)",
+    "horizon": "30 s markout",
+    "net_c": {
+     "IS": 0.9309,
+     "OOS": 0.7483
+    },
+    "net_c_to_resolution": {
+     "IS": 1.1968,
+     "OOS": 0.7204
+    },
+    "sources": "section A print-weighted (results/summary.json h6_walkforward)"
+   },
+   {
+    "tier": "v2: copy the fast tier's prints at their fills (risk-sized, capped)",
+    "label": "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+    "horizon": "to resolution",
+    "gross_c": {
+     "IS": 1.988,
+     "OOS": 1.5361
+    },
+    "net_c": {
+     "IS": 1.3815,
+     "OOS": 0.5987
+    },
+    "net_ci95_c": {
+     "IS": [
+      1.1678,
+      1.5935
+     ],
+     "OOS": [
+      0.0872,
+      1.1272
+     ]
+    },
+    "sources": "section B (data/v2_trades_is_oos.parquet; results/v2/causal.json)"
+   },
+   {
+    "tier": "Copy the fast tier 3 s later (mid + half spread, fee)",
+    "label": "IS and OOS; what our speed gets today",
+    "horizon": "to resolution",
+    "net_c": {
+     "IS": -1.0528,
+     "OOS": -1.5856
+    },
+    "months_positive": {
+     "IS": "0/9",
+     "OOS": "0/3"
+    },
+    "sources": "section A (results/summary.json h6_walkforward follow_res_c)"
+   },
+   {
+    "tier": "Everyone else trading 0-3 s after detection",
+    "label": "IS and OOS",
+    "horizon": "30 s markout",
+    "net_c": {
+     "IS": -0.8932,
+     "OOS": -1.4269
+    },
+    "sources": "section A (results/summary.json h6_walkforward others_net30_c)"
+   },
+   {
+    "tier": "Chase the jump after the venue delay (H1)",
+    "label": "IS and OOS (pre-registered, failed)",
+    "horizon": "30 s",
+    "net_c": {
+     "IS": -1.6104,
+     "OOS": -2.0764
+    },
+    "ci95_c": {
+     "IS": [
+      -1.6504,
+      -1.5726
+     ],
+     "OOS": [
+      -2.1704,
+      -1.981
+     ]
+    },
+    "sources": "results/summary.json :: (is|oos).h1.J0.04_H30"
+   },
+   {
+    "tier": "Public score-feed traders (ESPN / widgets / streams)",
+    "label": "IS (lead), IS and OOS (calibration)",
+    "book_leads_public_score_median_s": 44.52,
+    "n_points": 75,
+    "share_book_first": 0.933,
+    "calibration_bins_with_price_inside_win_rate_ci": {
+     "IS": "8/11",
+     "OOS": "11/11"
+    },
+    "calibration_max_abs_edge_c": {
+     "IS": 1.01,
+     "OOS": 1.11
+    },
+    "reading": "By the time a public score arrives the book has already moved (median 44.52 s earlier). Prices are close to calibrated: the bin's mean price lies inside the win-rate CI in 8/11 IS and 11/11 OOS bins; the favourite-bias test (H2) found no edge after fees.",
+    "sources": "results/summary.json :: h4; (is|oos).calibration"
+   }
+  ]
+ },
+ "H_capacity": {
+  "label": "IS and burned OOS (the size-scaled OOS rows are non-blind evaluations already logged)",
+  "what": "Frozen v2 with every size cap scaled by the multiplier, same walk-forward fitting; no price-impact model beyond never taking more than the copied print (larger rows would be worse in reality).",
+  "financials_generated_utc": "2026-10-03T20:03:44Z",
+  "rows": [
+   {
+    "size": "0.5x",
+    "IS": {
+     "n_trades": 54628,
+     "per_share_c": 1.3093,
+     "per_share_ci95_c": [
+      1.1274,
+      1.4882
+     ],
+     "pnl_usd_per_day": 109.6461,
+     "notional_usd_per_day": 4229.899,
+     "sharpe_ann": 15.461,
+     "capital_usd": 17464.6051,
+     "max_dd_pct": -1.6189
+    },
+    "OOS": {
+     "n_trades": 10021,
+     "per_share_c": 0.6801,
+     "per_share_ci95_c": [
+      0.2324,
+      1.1477
+     ],
+     "pnl_usd_per_day": 62.1,
+     "notional_usd_per_day": 4754.9903,
+     "sharpe_ann": 9.2433,
+     "capital_usd": 13355.2584,
+     "max_dd_pct": -1.7665
+    }
+   },
+   {
+    "size": "1x",
+    "IS": {
+     "n_trades": 55662,
+     "per_share_c": 1.3815,
+     "per_share_ci95_c": [
+      1.1678,
+      1.5935
+     ],
+     "pnl_usd_per_day": 196.2414,
+     "notional_usd_per_day": 7182.3501,
+     "sharpe_ann": 14.4832,
+     "capital_usd": 28302.3677,
+     "max_dd_pct": -2.012
+    },
+    "OOS": {
+     "n_trades": 10412,
+     "per_share_c": 0.5987,
+     "per_share_ci95_c": [
+      0.0872,
+      1.1272
+     ],
+     "pnl_usd_per_day": 92.1884,
+     "notional_usd_per_day": 8062.2581,
+     "sharpe_ann": 6.6676,
+     "capital_usd": 22754.0463,
+     "max_dd_pct": -2.0631
+    }
+   },
+   {
+    "size": "2x",
+    "IS": {
+     "n_trades": 60788,
+     "per_share_c": 1.4109,
+     "per_share_ci95_c": [
+      1.1546,
+      1.6695
+     ],
+     "pnl_usd_per_day": 316.1926,
+     "notional_usd_per_day": 11366.4755,
+     "sharpe_ann": 12.8197,
+     "capital_usd": 45392.3794,
+     "max_dd_pct": -4.0952
+    },
+    "OOS": {
+     "n_trades": 11525,
+     "per_share_c": 0.3362,
+     "per_share_ci95_c": [
+      -0.2997,
+      0.9658
+     ],
+     "pnl_usd_per_day": 82.5378,
+     "notional_usd_per_day": 12934.5697,
+     "sharpe_ann": 3.2435,
+     "capital_usd": 33875.4756,
+     "max_dd_pct": -4.9
+    }
+   },
+   {
+    "size": "5x",
+    "IS": {
+     "n_trades": 67694,
+     "per_share_c": 1.3932,
+     "per_share_ci95_c": [
+      1.0406,
+      1.7666
+     ],
+     "pnl_usd_per_day": 529.3486,
+     "notional_usd_per_day": 19336.0576,
+     "sharpe_ann": 10.397,
+     "capital_usd": 80252.5742,
+     "max_dd_pct": -5.4448
+    },
+    "OOS": {
+     "n_trades": 13191,
+     "per_share_c": -0.0602,
+     "per_share_ci95_c": [
+      -0.9086,
+      0.7354
+     ],
+     "pnl_usd_per_day": -24.5496,
+     "notional_usd_per_day": 21524.7998,
+     "sharpe_ann": -0.4841,
+     "capital_usd": 53815.5686,
+     "max_dd_pct": -11.4042
+    }
+   },
+   {
+    "size": "all prints",
+    "IS": {
+     "n_trades": 82274,
+     "per_share_c": 0.366,
+     "per_share_ci95_c": [
+      -0.8285,
+      1.6239
+     ],
+     "pnl_usd_per_day": 491.2488,
+     "notional_usd_per_day": 67441.6077,
+     "sharpe_ann": 0.8217,
+     "capital_usd": 534206.8665,
+     "max_dd_pct": -31.8424
+    },
+    "OOS": {
+     "n_trades": 16362,
+     "per_share_c": -0.9568,
+     "per_share_ci95_c": [
+      -3.5812,
+      1.523
+     ],
+     "pnl_usd_per_day": -1281.5465,
+     "notional_usd_per_day": 67053.4978,
+     "sharpe_ann": -2.1478,
+     "capital_usd": 303724.3498,
+     "max_dd_pct": -25.7205
+    }
+   }
+  ],
+  "capacity_estimate": {
+   "OOS_capital_usd_range": [
+    22754.0,
+    33875.0
+   ],
+   "statement": "On the burned OOS, $/day peaks at 1x and the largest size still positive is 2x; every larger size loses. Capacity is about $23k-$34k of capital.",
+   "superseded": "The sizing lens's '~$100k at Sharpe ~6' (docs/NOTE.md section 6) used onset labels, was IS only, and its $102k row was the copy-everything baseline.",
+   "outer_ceiling_fast_tier_print_usd_per_day": {
+    "IS": 82325.0,
+    "OOS": 105490.0
+   },
+   "v2_share_of_match_volume_IS": 0.00072,
+   "source": "results/financials/financials.json :: strategies.v2.capacity_md, scaling, ceiling; results/v2/note_metrics.json :: is.v2_usd_traded_share_of_match_volume"
+  }
+ },
+ "I_failures": {
+  "what": "What failed, shown next to the alpha.",
+  "rows": [
+   {
+    "test": "v2, taker fees x2 (book fixed)",
+    "IS": {
+     "c": 0.7749,
+     "ci95": [
+      0.5652,
+      0.9844
+     ],
+     "months_positive": "7/7"
+    },
+    "OOS": {
+     "c": -0.3386,
+     "ci95": [
+      -0.8573,
+      0.1914
+     ],
+     "months_positive": "0/3"
+    },
+    "verdict": "OOS edge gone",
+    "source": "results/v2/cost_stress.json :: (is_eval|burned_oos)/fee_x2"
+   },
+   {
+    "test": "v2, all costs x2 (fee x2 + half a 1c spread)",
+    "IS": {
+     "c": 0.2749,
+     "ci95": [
+      0.0652,
+      0.4844
+     ]
+    },
+    "OOS": {
+     "c": -0.8386,
+     "ci95": [
+      -1.3573,
+      -0.3086
+     ]
+    },
+    "verdict": "OOS negative, CI excludes 0",
+    "source": "results/v2/cost_stress.json :: (is_eval|burned_oos)/costs_x2"
+   },
+   {
+    "test": "v2, +1c worse entry",
+    "IS": {
+     "c": 0.3815
+    },
+    "OOS": {
+     "c": -0.4013
+    },
+    "verdict": "OOS negative",
+    "source": "results/v2/causal.json :: causal/*/slip0.01"
+   },
+   {
+    "test": "v2 blind test on 11,307 never-examined markets (U2, pre-registered)",
+    "IS": {
+     "c": 2.0249,
+     "ci95": [
+      1.1406,
+      2.9269
+     ],
+     "verdict": "PASS"
+    },
+    "OOS": {
+     "c": 1.2238,
+     "ci95": [
+      -0.1863,
+      2.6479
+     ],
+     "verdict": "FAILURE"
+    },
+    "verdict": "FAIL",
+    "source": "results/expand/results.json :: primary"
+   },
+   {
+    "test": "Maker v1 in side markets (blind OOS, pre-registered)",
+    "OOS": {
+     "c_per_fill": 1.8654,
+     "ci95": [
+      -0.1397,
+      3.8601
+     ],
+     "share_weighted_c": -0.7516,
+     "pnl_usd": -379.03,
+     "n_fills": 2207
+    },
+    "verdict": "FAILURE",
+    "source": "results/maker/oos.json :: primary, headline"
+   },
+   {
+    "test": "v1 (fast-tier trades at full size, <= $1k) out of sample, blind",
+    "OOS": {
+     "c": 0.5741,
+     "pnl_usd": -36056.0
+    },
+    "verdict": "lost money",
+    "source": "results/summary.json :: oos.h6_shadow"
+   },
+   {
+    "test": "v2 at 5x size",
+    "OOS": {
+     "c": -0.0602,
+     "usd_per_day": -24.5
+    },
+    "IS": {
+     "c": 1.3932
+    },
+    "verdict": "OOS negative",
+    "source": "results/financials/financials.json :: strategies.v2.scaling.5x"
+   },
+   {
+    "test": "v2 OOS clustered by copied wallet",
+    "OOS": {
+     "ci95": [
+      -0.4545,
+      2.3772
+     ]
+    },
+    "verdict": "CI includes 0",
+    "source": "results/financials/pm_compute.json :: p07_wallet_clustered_ci.burned_oos"
+   },
+   {
+    "test": "v2 OOS deflated Sharpe at N = 3,386 trials",
+    "OOS": {
+     "dsr": 0.0749
+    },
+    "verdict": "40 days cannot rule out luck",
+    "source": "results/rigor/rigor.json :: psr_dsr.rows[v2_oos]"
+   },
+   {
+    "test": "H1 chase the jump after the delay",
+    "IS": {
+     "c": -1.6104
+    },
+    "OOS": {
+     "c": -2.0764
+    },
+    "verdict": "Fails",
+    "source": "results/summary.json :: (is|oos).h1.J0.04_H30"
+   },
+   {
+    "test": "Forward test (blind, matches from 2026-10-03 14:00 UTC)",
+    "verdict": "pending",
+    "source": "results/v2/forward.json (not yet written)"
+   }
+  ]
+ },
+ "headline": {
+  "one_line": "The edge is real at the fast tier's speed and shrinking; v2 (measured at their fills, not our execution) is positive IS and on the burned OOS, but fragile to costs and concentrated.",
+  "fast_tier_net30_c_months_positive": {
+   "IS": "9/9",
+   "OOS": "3/3"
+  },
+  "fast_tier_net30_c_print_weighted": {
+   "IS": 0.9309,
+   "OOS": 0.7483
+  },
+  "others_net30_c_month_mean": {
+   "IS": -0.8932,
+   "OOS": -1.4269
+  },
+  "copy_3s_later_c": {
+   "IS": -1.0528,
+   "OOS": -1.5856
+  },
+  "v2_gross_fee_net_c": {
+   "IS": [
+    1.988,
+    -0.6065,
+    1.3815
+   ],
+   "OOS": [
+    1.5361,
+    -0.9374,
+    0.5987
+   ]
+  },
+  "v2_net_ci95_c": {
+   "IS": [
+    1.1678,
+    1.5935
+   ],
+   "OOS": [
+    0.0872,
+    1.1272
+   ]
+  },
+  "v2_net_bps": {
+   "IS": 273.2,
+   "OOS": 114.3
+  },
+  "v2_sharpe": {
+   "IS": 14.48,
+   "OOS": 6.67
+  },
+  "v2_pnl_usd": {
+   "IS": 40425.72,
+   "OOS": 3687.54
+  },
+  "factor_alpha_pct_per_day_t": [
+   0.792,
+   8.5
+  ],
+  "fast_tier_slope_c_per_month": -0.1694,
+  "top5_wallet_share_of_pnl": {
+   "IS": 0.8137,
+   "OOS": 1.421
+  },
+  "tier0_net_c_counterfactual": {
+   "IS": 1.0978,
+   "OOS": 0.5755
+  },
+  "oos_capital_capacity_usd": [
+   22754.0,
+   33875.0
+  ],
+  "fees_x2_OOS_c": -0.3386,
+  "labels": [
+   "measured at the fast tier's own fill prices: the opportunity at their speed, not our execution",
+   "OOS = burned OOS (non-blind for v2; held-out matches from 2026-08-25 14:15 UTC)",
+   "tier-0 = counterfactual: assumes licensed feed + courtside camera (not purchased); parameters measured"
+  ]
+ },
+ "checks": [
+  {
+   "what": "v2 IS net c/share from data/v2_trades_is_oos.parquet vs results/v2/causal.json causal/is_eval/slip0.0",
+   "ours": 1.381451,
+   "repo": 1.381451,
+   "n_trades_ours": 55662,
+   "n_trades_repo": 55662,
+   "ok": true
+  },
+  {
+   "what": "v2 OOS net c/share from data/v2_trades_is_oos.parquet vs results/v2/causal.json causal/burned_oos/slip0.0",
+   "ours": 0.598736,
+   "repo": 0.598736,
+   "n_trades_ours": 10412,
+   "n_trades_repo": 10412,
+   "ok": true
+  },
+  {
+   "what": "B IS fee bps (ours vs note_metrics)",
+   "ours": 119.957,
+   "repo": 119.957,
+   "ok": true
+  },
+  {
+   "what": "B OOS fee bps (ours vs note_metrics)",
+   "ours": 179.019,
+   "repo": 179.019,
+   "ok": true
+  },
+  {
+   "what": "F IS top-5 wallet share vs pm_compute p07",
+   "ours": 0.8137,
+   "repo": 0.8137,
+   "ok": true
+  },
+  {
+   "what": "F OOS top-5 wallet share vs pm_compute p07",
+   "ours": 1.421,
+   "repo": 1.421,
+   "ok": true
+  }
+ ],
+ "sources": {
+  "A.IS.months": "results/summary.json :: is.h6_walkforward",
+  "A.IS.print_weighted": "computed in scripts/alpha_pack.py: pooled = n_prints-weighted mean of results/summary.json is.h6_walkforward monthly means (copy-3s is computed on the same fast-tier prints, so the weights are exact); others: unweighted month mean (the file has no per-month count of other takers' prints)",
+  "A.OOS.months": "results/summary.json :: oos.h6_walkforward",
+  "A.OOS.print_weighted": "computed in scripts/alpha_pack.py: pooled = n_prints-weighted mean of results/summary.json oos.h6_walkforward monthly means (copy-3s is computed on the same fast-tier prints, so the weights are exact); others: unweighted month mean (the file has no per-month count of other takers' prints)",
+  "A.copy_3s_later_note": "docs/NOTE.md Table 1; src/fasttier.py net_cols",
+  "A.unseen.IS": "results/expand/results.json :: fast_minus_others_u2.u2_is.fast_minus_others_c",
+  "A.unseen.OOS": "results/expand/results.json :: fast_minus_others_u2.u2_oos.fast_minus_others_c",
+  "B.IS.slip0.005": "results/v2/causal.json :: causal/is_eval/slip0.005",
+  "B.IS.slip0.01": "results/v2/causal.json :: causal/is_eval/slip0.01",
+  "B.IS.decomposition": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet: share-weighted gross_res, rate*q*(1-q), pnl; bps = / usd_in",
+  "B.IS.net_ci": "results/v2/causal.json :: causal/is_eval/slip0.0.per_share_ci_c",
+  "B.IS.annualised": "results/v2/note_metrics.json :: is.(ann_return_pct, ann_vol_pct, sharpe_ann, max_dd_pct, ...)",
+  "B.IS.pnl": "results/v2/causal.json :: causal/is_eval/slip0.0",
+  "B.OOS.slip0.005": "results/v2/causal.json :: causal/burned_oos/slip0.005",
+  "B.OOS.slip0.01": "results/v2/causal.json :: causal/burned_oos/slip0.01",
+  "B.OOS.decomposition": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet: share-weighted gross_res, rate*q*(1-q), pnl; bps = / usd_in",
+  "B.OOS.net_ci": "results/v2/causal.json :: causal/burned_oos/slip0.0.per_share_ci_c",
+  "B.OOS.annualised": "results/v2/note_metrics.json :: burned_oos.(ann_return_pct, ann_vol_pct, sharpe_ann, max_dd_pct, ...)",
+  "B.OOS.pnl": "results/v2/causal.json :: causal/burned_oos/slip0.0",
+  "B.luck.IS": "results/rigor/rigor.json :: bootstrap.v2_is.sharpe_ann_ci95",
+  "B.luck.OOS": "results/rigor/rigor.json :: bootstrap.v2_oos.sharpe_ann_ci95",
+  "B.luck.dsr": "results/rigor/rigor.json :: psr_dsr.rows[series=v2_is|v2_oos].dsr_min_N3386, sr0_ann_max_N3386",
+  "B.gross_split_IS": "results/financials/pm_compute.json :: p26_gross_edge_split_is",
+  "C.committed": "results/v2/factor_regression.json :: (all keys)",
+  "C.IS_only_calendar_days": "results/financials/pm_compute.json :: p24_factor_regression_is.calendar_days_excess_x365",
+  "D.IS": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet, period IS; groupby splits; match bootstrap seed per group",
+  "D.OOS": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet, period OOS; groupby splits; match bootstrap seed per group",
+  "E.within_a_point": "results/decay/decay.json :: tennis.subsets.(IS|burned_OOS).curves.(fast|others|all|with_jump).net30",
+  "E.within_a_point.v2_by_seconds_since_detection": "section D (computed from data/v2_trades_is_oos.parquet)",
+  "E.over_calendar_time": "computed in scripts/alpha_pack.py: OLS of results/summary.json (is|oos).h6_walkforward net30_c on month index",
+  "F.IS": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet: groupby wallet / cond / date, sorted P&L",
+  "F.OOS": "computed in scripts/alpha_pack.py: data/v2_trades_is_oos.parquet: groupby wallet / cond / date, sorted P&L",
+  "F.wallet_clustered_ci95_c": "results/financials/pm_compute.json :: p07_wallet_clustered_ci.(is|burned_oos).ci95_c_wallet_clustered",
+  "G.rows[0]": "results/tier0/results.json :: headline.(IS|burned_OOS).mean; headline_by_size_and_decomposition.*.decomposition.correct; stresses_corrected; research/v2/tier0/RESULTS.md section 1",
+  "G.rows[1]": "research/v2/tier0/verify_out/verify_realism.json :: 3c_fast_tier_vs_model.measured_fast_tier_prints_landing_[-0.5,0)_with_move",
+  "G.rows[2]": "section A print-weighted (results/summary.json h6_walkforward)",
+  "G.rows[3]": "section B (data/v2_trades_is_oos.parquet; results/v2/causal.json)",
+  "G.rows[4]": "section A (results/summary.json h6_walkforward follow_res_c)",
+  "G.rows[5]": "section A (results/summary.json h6_walkforward others_net30_c)",
+  "G.rows[6]": "results/summary.json :: (is|oos).h1.J0.04_H30",
+  "G.rows[7]": "results/summary.json :: h4; (is|oos).calibration",
+  "H.rows": "results/financials/financials.json :: strategies.v2.scaling (generated 2026-10-03T20:03:44Z)",
+  "H.capacity_estimate": "results/financials/financials.json :: strategies.v2.capacity_md, scaling, ceiling; results/v2/note_metrics.json :: is.v2_usd_traded_share_of_match_volume",
+  "I.rows[0]": "results/v2/cost_stress.json :: (is_eval|burned_oos)/fee_x2",
+  "I.rows[1]": "results/v2/cost_stress.json :: (is_eval|burned_oos)/costs_x2",
+  "I.rows[2]": "results/v2/causal.json :: causal/*/slip0.01",
+  "I.rows[3]": "results/expand/results.json :: primary",
+  "I.rows[4]": "results/maker/oos.json :: primary, headline",
+  "I.rows[5]": "results/summary.json :: oos.h6_shadow",
+  "I.rows[6]": "results/financials/financials.json :: strategies.v2.scaling.5x",
+  "I.rows[7]": "results/financials/pm_compute.json :: p07_wallet_clustered_ci.burned_oos",
+  "I.rows[8]": "results/rigor/rigor.json :: psr_dsr.rows[v2_oos]",
+  "I.rows[9]": "results/summary.json :: (is|oos).h1.J0.04_H30",
+  "I.rows[10]": "results/v2/forward.json (not yet written)",
+  "headline": "copied from sections A-I (see their sources)"
+ },
+ "figures": [
+  "results/alpha/fig_alpha_source.png",
+  "results/alpha/fig_alpha_waterfall.png",
+  "results/alpha/fig_alpha_ladder.png",
+  "results/alpha/fig_alpha_where.png",
+  "results/alpha/fig_alpha_decay.png",
+  "results/alpha/fig_alpha_concentration.png",
+  "results/alpha/fig_alpha_capacity.png"
+ ],
+ "runtime_s": 6.0
+}
