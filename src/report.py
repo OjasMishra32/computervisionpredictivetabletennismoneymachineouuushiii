@@ -107,3 +107,28 @@ def h4_figure(leads: pd.DataFrame):
     ax.set_ylabel("Score changes")
     ax.set_title("The book knows first")
     _save(fig, "fig5_h4")
+
+
+def v2_figure(v1_daily: pd.Series, v2_daily: pd.Series, v2_monthly: pd.DataFrame, oos_start,
+              v1_cap: float, v2_cap: float, v1_lab: str, v2_lab: str):
+    """Left: cumulative return on each book's own capital. Right: v2 P&L by month, IS vs burned OOS."""
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.9), gridspec_kw={"width_ratios": [1.35, 1]})
+    a1.plot(v1_daily.index, v1_daily.cumsum().values / v1_cap * 100, color=ORANGE, lw=1.6, label=v1_lab)
+    a1.plot(v2_daily.index, v2_daily.cumsum().values / v2_cap * 100, color=BLUE, lw=2, label=v2_lab)
+    a1.axvline(oos_start, color=INK2, lw=0.8, ls="--")
+    a1.text(oos_start, a1.get_ylim()[0] + 0.04 * (a1.get_ylim()[1] - a1.get_ylim()[0]), " OOS →", color=INK2, fontsize=8)
+    a1.set_ylabel("Cumulative return on capital, %")
+    a1.set_title("Same edge, a fraction of the noise")
+    a1.legend(loc="upper left", fontsize=7)
+    a1.tick_params(axis="x", labelrotation=45, labelsize=7)
+    from matplotlib.patches import Patch
+    oos_m = str(pd.Period(oos_start, "M"))
+    cols = [ORANGE if m >= oos_m else BLUE for m in v2_monthly.month]
+    x = np.arange(len(v2_monthly))
+    a2.bar(x, v2_monthly.pnl / 1e3, color=cols, width=0.7)
+    a2.axhline(0, color=INK2, lw=0.8)
+    a2.set_xticks(x, v2_monthly.month.str[2:], rotation=60, fontsize=7)
+    a2.set_ylabel("v2 P&L, $k")
+    a2.set_title("v2 by month")
+    a2.legend(handles=[Patch(color=BLUE, label="In sample"), Patch(color=ORANGE, label="Burned OOS*")], fontsize=7, loc="upper right")
+    _save(fig, "fig6_v2")
