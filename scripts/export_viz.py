@@ -128,6 +128,9 @@ viz["race"] = {"dates": [str(x.date()) for x in idx],
                "v1_oos": S["oos"]["h6_shadow"]["total_pnl_usd"], "v2_oos": B["burned_oos"]["total_pnl_usd"]}
 viz["v2"] = {k: {kk: B[k][kk] for kk in ("n_trades", "n_matches", "per_share_c", "per_share_ci_c", "total_pnl_usd", "capital_usd",
                                           "sharpe_ann", "max_dd_pct", "worst_day_pct", "months_positive", "months_total")} for k in B}
+C = json.loads(Path("results/v2/causal.json").read_text())
+viz["v2slip"] = {f"{part}/{sl}": {"per_share_c": C[f"causal/{part}/slip{sl}"]["per_share_c"], "ci": C[f"causal/{part}/slip{sl}"]["per_share_ci_c"]}
+                 for part in ("is_eval", "burned_oos") for sl in ("0.005", "0.01")}
 fw = Path("results/v2/forward.json")
 viz["forward"] = json.loads(fw.read_text()) if fw.exists() else None
 viz["latency"] = [

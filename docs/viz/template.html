@@ -170,7 +170,7 @@ footer { margin-top: 48px; color: var(--muted); font-size: .8rem; display: grid;
         <svg id="c-race" viewBox="0 0 520 280"></svg>
       </div>
       <div class="card scroll">
-        <h3>v2 results, net of fees, held to resolution</h3>
+        <h3>v2 (causal window), net of fees, held to resolution</h3>
         <p>In-sample months are walk-forward. The burned out-of-sample period was seen before v2 was designed, so it is labelled. The forward window is the blind test.</p>
         <table id="t-v2" style="min-width:0"></table>
       </div>
@@ -515,13 +515,17 @@ function frameChart(svg, w, h, m, yd, ylab, ticks) {
   const V = D.v2, F = D.forward, ci = a => `[${a[0].toFixed(2)}, ${a[1].toFixed(2)}]`;
   const col = (k, f) => V[k] ? f(V[k]) : "—";
   const fwd = (f) => F && F.secondary_res ? f(F) : "pending";
+  const slp = (part, sl) => { const x = D.v2slip && D.v2slip[part + "/" + sl]; return x ? fmtC(x.per_share_c) + " " + ci(x.ci) : "—"; };
   $("#t-v2").innerHTML = `<thead><tr><th></th><th>In sample</th><th>Burned OOS</th><th>Forward (blind)</th></tr></thead><tbody>
     <tr><td>Trades / matches</td><td>${col("is_eval", v => v.n_trades.toLocaleString() + " / " + v.n_matches.toLocaleString())}</td><td>${col("burned_oos", v => v.n_trades.toLocaleString() + " / " + v.n_matches.toLocaleString())}</td><td>${fwd(f => f.v2_trades + " / " + f.v2_matches)}</td></tr>
     <tr><td>Net per share</td><td>${col("is_eval", v => fmtC(v.per_share_c) + " " + ci(v.per_share_ci_c))}</td><td>${col("burned_oos", v => fmtC(v.per_share_c) + " " + ci(v.per_share_ci_c))}</td><td>${fwd(f => fmtC(f.secondary_res.per_share_c))}</td></tr>
-    <tr><td>30 s markout (forward primary)</td><td>+1.18¢</td><td>—</td><td>${fwd(f => fmtC(f.primary_m30_per_share_c[0]) + " " + ci(f.primary_m30_per_share_c.slice(1)))}</td></tr>
+    <tr><td>… +½ tick worse entry</td><td>${slp("is_eval", "0.005")}</td><td>${slp("burned_oos", "0.005")}</td><td>${fwd(f => fmtC(f["res_slip0.005"].per_share_c))}</td></tr>
+    <tr><td>… +1 tick worse entry</td><td>${slp("is_eval", "0.01")}</td><td>${slp("burned_oos", "0.01")}</td><td>${fwd(f => fmtC(f["res_slip0.01"].per_share_c))}</td></tr>
     <tr><td>P&amp;L / capital</td><td>${col("is_eval", v => usd(v.total_pnl_usd) + " / $" + (v.capital_usd / 1e3).toFixed(1) + "k")}</td><td>${col("burned_oos", v => usd(v.total_pnl_usd) + " / $" + (v.capital_usd / 1e3).toFixed(1) + "k")}</td><td>${fwd(f => usd(f.secondary_res.total_pnl_usd))}</td></tr>
     <tr><td>Sharpe · max drawdown</td><td>${col("is_eval", v => v.sharpe_ann.toFixed(1) + " · " + v.max_dd_pct.toFixed(1) + "%")}</td><td>${col("burned_oos", v => v.sharpe_ann.toFixed(1) + " · " + v.max_dd_pct.toFixed(1) + "%")}</td><td>${fwd(f => f.verdict)}</td></tr>
-    <tr><td>Months positive</td><td>${col("is_eval", v => v.months_positive + " / " + v.months_total)}</td><td>${col("burned_oos", v => v.months_positive + " / " + v.months_total)}</td><td></td></tr></tbody>`;
+    <tr><td>Months positive</td><td>${col("is_eval", v => v.months_positive + " / " + v.months_total)}</td><td>${col("burned_oos", v => v.months_positive + " / " + v.months_total)}</td><td></td></tr>
+    <tr><td>Forward A: fast tier minus others, 30 s</td><td></td><td></td><td>${fwd(f => fmtC(f.primary_A_fast_minus_others_c[0]) + " " + ci(f.primary_A_fast_minus_others_c.slice(1)) + " · " + f.verdict_A_fast_tier)}</td></tr>
+    <tr><td>Forward B: v2 book, 30 s per share</td><td></td><td></td><td>${fwd(f => fmtC(f.primary_m30_per_share_c[0]) + " " + ci(f.primary_m30_per_share_c.slice(1)))}</td></tr></tbody>`;
   $("#t-lat").innerHTML = `<thead><tr><th>Source</th><th>Knows the point</th><th></th></tr></thead><tbody>` +
     D.latency.map(r => `<tr><td>${r.src}</td><td>${r.t}</td><td><span class="src ${r.kind === "measured" ? "meas" : ""}">${r.kind}</span></td></tr>`).join("") + "</tbody>";
 })();
