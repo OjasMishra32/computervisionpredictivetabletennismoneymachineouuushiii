@@ -1,0 +1,3 @@
+2026-10-03T19:23:14.155322+00:00 table tennis TT1-TT4 evaluated (first run) commit=eb0e6925ca380e72e4ac2fc2aed26f76560541d4
+2026-10-03T19:25:45.920153+00:00 a5769c786f935dcc05ff2ab90a1947ad0cde4cb5+dirty(signal_decay.py) TT5 signal decay run (scripts/signal_decay.py; research/decay/PRERUN.md): UTT prints (IS+OOS) + unlisted sensitivity; tennis U1 IS + burned OOS (non-blind)
+2026-10-03T19:28:49.781129+00:00 table tennis post-hoc diagnostics after TT1-TT4 (closing-print size, fast-tier distance; not pre-registered, no verdict change) commit=ad164da6da24325afcfdbab8fe24dcf5f0516fed

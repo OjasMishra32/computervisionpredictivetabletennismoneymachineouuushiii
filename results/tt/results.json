@@ -1,0 +1,2036 @@
+{
+  "counts": {
+    "utt_markets": 3588,
+    "utt_is": 2870,
+    "utt_oos": 718,
+    "evaluable_matches": 27,
+    "print_rows": 1002,
+    "evaluable_by_league_period": {
+      "Setka/IS": 16,
+      "Setka/OOS": 3,
+      "WTT/IS": 8
+    }
+  },
+  "TT1": {
+    "inplay": {
+      "verdict": "not judged (no bin with >= 30 matches)",
+      "n_obs": 450,
+      "n_matches": 27,
+      "judged_bins": 0,
+      "failing_judged_bins": [],
+      "bins": [
+        {
+          "bin": "[0.5, 0.6)",
+          "n_obs": 73,
+          "n_matches": 17,
+          "mean_price": 0.539611202,
+          "win_rate": 0.6164383562,
+          "lo": 0.5,
+          "hi": 0.718504772,
+          "edge_c": 7.6827154181,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.6, 0.7)",
+          "n_obs": 66,
+          "n_matches": 19,
+          "mean_price": 0.6440045724,
+          "win_rate": 0.696969697,
+          "lo": 0.5043181818,
+          "hi": 0.8306453716,
+          "edge_c": 5.2965124617,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.7, 0.8)",
+          "n_obs": 62,
+          "n_matches": 17,
+          "mean_price": 0.7459650371,
+          "win_rate": 0.7258064516,
+          "lo": 0.4237943262,
+          "hi": 0.9407594381,
+          "edge_c": -2.0158585479,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.8, 0.85)",
+          "n_obs": 32,
+          "n_matches": 14,
+          "mean_price": 0.8165750967,
+          "win_rate": 0.875,
+          "lo": 0.6666666667,
+          "hi": 1.0,
+          "edge_c": 5.8424903331,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.85, 0.9)",
+          "n_obs": 40,
+          "n_matches": 15,
+          "mean_price": 0.8749725109,
+          "win_rate": 0.85,
+          "lo": 0.6097495528,
+          "hi": 1.0,
+          "edge_c": -2.4972510925,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.9, 0.93)",
+          "n_obs": 23,
+          "n_matches": 10,
+          "mean_price": 0.909468657,
+          "win_rate": 0.7391304348,
+          "lo": 0.4929054054,
+          "hi": 1.0,
+          "edge_c": -17.0338222187,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.93, 0.95)",
+          "n_obs": 11,
+          "n_matches": 5,
+          "mean_price": 0.9357615588,
+          "win_rate": 0.9090909091,
+          "lo": 0.6666666667,
+          "hi": 1.0,
+          "edge_c": -2.6670649736,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.95, 0.97)",
+          "n_obs": 27,
+          "n_matches": 11,
+          "mean_price": 0.9562329191,
+          "win_rate": 0.962962963,
+          "lo": 0.8571428571,
+          "hi": 1.0,
+          "edge_c": 0.67300439,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.97, 0.98)",
+          "n_obs": 12,
+          "n_matches": 8,
+          "mean_price": 0.9708808118,
+          "win_rate": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "edge_c": 2.9119188158,
+          "judged": false,
+          "ci_covers_price": false
+        },
+        {
+          "bin": "[0.98, 0.99)",
+          "n_obs": 34,
+          "n_matches": 10,
+          "mean_price": 0.9828010606,
+          "win_rate": 0.9705882353,
+          "lo": 0.8866452991,
+          "hi": 1.0,
+          "edge_c": -1.2212825321,
+          "judged": false,
+          "ci_covers_price": true
+        },
+        {
+          "bin": "[0.99, 1.0)",
+          "n_obs": 70,
+          "n_matches": 14,
+          "mean_price": 0.995295282,
+          "win_rate": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "edge_c": 0.4704718043,
+          "judged": false,
+          "ci_covers_price": false
+        }
+      ]
+    },
+    "closing": {
+      "verdict": "not calibrated",
+      "n_obs": 780,
+      "n_matches": 780,
+      "judged_bins": 9,
+      "failing_judged_bins": [
+        "[0.8, 0.85)",
+        "[0.9, 0.93)",
+        "[0.95, 0.97)",
+        "[0.98, 0.99)",
+        "[0.99, 1.0)"
+      ],
+      "bins": [
+        {
+          "bin": "[0.5, 0.6)",
+          "n_obs": 258,
+          "n_matches": 258,
+          "mean_price": 0.5230899963,
+          "win_rate": 0.492248062,
+          "lo": 0.4261627907,
+          "hi": 0.5503875969,
+          "edge_c": -3.0841934298,
+          "judged": true,
+          "ci_covers_price": true,
+          "bonf_lo": 0.3992248062,
+          "bonf_hi": 0.5775193798,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.6, 0.7)",
+          "n_obs": 119,
+          "n_matches": 119,
+          "mean_price": 0.6480738464,
+          "win_rate": 0.5798319328,
+          "lo": 0.4829831933,
+          "hi": 0.6638655462,
+          "edge_c": -6.8241913597,
+          "judged": true,
+          "ci_covers_price": true,
+          "bonf_lo": 0.4434640523,
+          "bonf_hi": 0.6858309991,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.7, 0.8)",
+          "n_obs": 81,
+          "n_matches": 81,
+          "mean_price": 0.7406974312,
+          "win_rate": 0.7037037037,
+          "lo": 0.6049382716,
+          "hi": 0.7966049383,
+          "edge_c": -3.699372747,
+          "judged": true,
+          "ci_covers_price": true,
+          "bonf_lo": 0.5479766804,
+          "bonf_hi": 0.8518518519,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.8, 0.85)",
+          "n_obs": 37,
+          "n_matches": 37,
+          "mean_price": 0.8208735524,
+          "win_rate": 0.6756756757,
+          "lo": 0.5135135135,
+          "hi": 0.8108108108,
+          "edge_c": -14.519787677,
+          "judged": true,
+          "ci_covers_price": false,
+          "bonf_lo": 0.4594594595,
+          "bonf_hi": 0.8648648649,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.85, 0.9)",
+          "n_obs": 40,
+          "n_matches": 40,
+          "mean_price": 0.8675720141,
+          "win_rate": 0.85,
+          "lo": 0.725,
+          "hi": 0.95,
+          "edge_c": -1.7572014132,
+          "judged": true,
+          "ci_covers_price": true,
+          "bonf_lo": 0.7,
+          "bonf_hi": 0.975,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.9, 0.93)",
+          "n_obs": 62,
+          "n_matches": 62,
+          "mean_price": 0.913551727,
+          "win_rate": 0.7903225806,
+          "lo": 0.6935483871,
+          "hi": 0.8870967742,
+          "edge_c": -12.3229146402,
+          "judged": true,
+          "ci_covers_price": false,
+          "bonf_lo": 0.6451612903,
+          "bonf_hi": 0.9292562724,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.93, 0.95)",
+          "n_obs": 18,
+          "n_matches": 18,
+          "mean_price": 0.9379332544,
+          "win_rate": 0.8333333333,
+          "lo": 0.6375,
+          "hi": 1.0,
+          "edge_c": -10.4599921083,
+          "judged": false,
+          "ci_covers_price": true,
+          "bonf_lo": 0.5555555556,
+          "bonf_hi": 1.0,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.95, 0.97)",
+          "n_obs": 42,
+          "n_matches": 42,
+          "mean_price": 0.9580945924,
+          "win_rate": 0.8095238095,
+          "lo": 0.6904761905,
+          "hi": 0.9047619048,
+          "edge_c": -14.8570782876,
+          "judged": true,
+          "ci_covers_price": false,
+          "bonf_lo": 0.6666666667,
+          "bonf_hi": 0.9523809524,
+          "bonf_covers_price": false
+        },
+        {
+          "bin": "[0.97, 0.98)",
+          "n_obs": 20,
+          "n_matches": 20,
+          "mean_price": 0.9716979226,
+          "win_rate": 0.8,
+          "lo": 0.6,
+          "hi": 0.95,
+          "edge_c": -17.1697922615,
+          "judged": false,
+          "ci_covers_price": false,
+          "bonf_lo": 0.5193055556,
+          "bonf_hi": 1.0,
+          "bonf_covers_price": true
+        },
+        {
+          "bin": "[0.98, 0.99)",
+          "n_obs": 43,
+          "n_matches": 43,
+          "mean_price": 0.9820403758,
+          "win_rate": 0.8139534884,
+          "lo": 0.6976744186,
+          "hi": 0.9191860465,
+          "edge_c": -16.8086887419,
+          "judged": true,
+          "ci_covers_price": false,
+          "bonf_lo": 0.6368863049,
+          "bonf_hi": 0.9445090439,
+          "bonf_covers_price": false
+        },
+        {
+          "bin": "[0.99, 1.0)",
+          "n_obs": 60,
+          "n_matches": 60,
+          "mean_price": 0.9915795564,
+          "win_rate": 0.8,
+          "lo": 0.7,
+          "hi": 0.9,
+          "edge_c": -19.157955643,
+          "judged": true,
+          "ci_covers_price": false,
+          "bonf_lo": 0.6666666667,
+          "bonf_hi": 0.9268981481,
+          "bonf_covers_price": false
+        }
+      ],
+      "bonferroni_level": 0.9944444444444445,
+      "bonferroni_failing_judged_bins": [
+        "[0.95, 0.97)",
+        "[0.98, 0.99)",
+        "[0.99, 1.0)"
+      ],
+      "coverage": {
+        "eligible_matches": 3571,
+        "with_prestart_fill": 780,
+        "no_tape": 0,
+        "without_prestart_fill": 2791
+      }
+    },
+    "verdict": "FAIL",
+    "verdict_detail": "in-play: not judged (no bin with >= 30 matches); closing: not calibrated",
+    "secondary": {
+      "pooled_won_minus_fav_inplay_050_099": {
+        "n_obs": 380,
+        "n_matches": 27,
+        "mean_c": 1.2183404670263147,
+        "ci_c": [
+          -9.972960682967647,
+          9.861654770290542
+        ]
+      },
+      "inplay_truncated_at_first_fav_ge_099": {
+        "verdict": "not judged (no bin with >= 30 matches)",
+        "n_obs": 332,
+        "n_matches": 27,
+        "judged_bins": 0,
+        "failing_judged_bins": [],
+        "bins": [
+          {
+            "bin": "[0.5, 0.6)",
+            "n_obs": 70,
+            "n_matches": 17,
+            "mean_price": 0.5395373964,
+            "win_rate": 0.6142857143,
+            "lo": 0.4901617251,
+            "hi": 0.7204883721,
+            "edge_c": 7.4748317931,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.6, 0.7)",
+            "n_obs": 65,
+            "n_matches": 18,
+            "mean_price": 0.6437287863,
+            "win_rate": 0.6923076923,
+            "lo": 0.5035447761,
+            "hi": 0.8323051948,
+            "edge_c": 4.8578906057,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.7, 0.8)",
+            "n_obs": 60,
+            "n_matches": 16,
+            "mean_price": 0.7448387975,
+            "win_rate": 0.7166666667,
+            "lo": 0.4148527382,
+            "hi": 0.9214637916,
+            "edge_c": -2.8172130843,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.8, 0.85)",
+            "n_obs": 26,
+            "n_matches": 13,
+            "mean_price": 0.8158027628,
+            "win_rate": 0.8461538462,
+            "lo": 0.6118729097,
+            "hi": 1.0,
+            "edge_c": 3.0351083308,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.85, 0.9)",
+            "n_obs": 38,
+            "n_matches": 13,
+            "mean_price": 0.8754732668,
+            "win_rate": 0.8421052632,
+            "lo": 0.5817239498,
+            "hi": 1.0,
+            "edge_c": -3.3368003605,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.9, 0.93)",
+            "n_obs": 20,
+            "n_matches": 9,
+            "mean_price": 0.9083889535,
+            "win_rate": 0.7,
+            "lo": 0.4750588235,
+            "hi": 0.9333333333,
+            "edge_c": -20.8388953485,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.93, 0.95)",
+            "n_obs": 10,
+            "n_matches": 5,
+            "mean_price": 0.9353377147,
+            "win_rate": 0.9,
+            "lo": 0.6923076923,
+            "hi": 1.0,
+            "edge_c": -3.533771471,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.95, 0.97)",
+            "n_obs": 19,
+            "n_matches": 10,
+            "mean_price": 0.9566467797,
+            "win_rate": 0.9473684211,
+            "lo": 0.7857142857,
+            "hi": 1.0,
+            "edge_c": -0.9278358653,
+            "judged": false,
+            "ci_covers_price": true
+          },
+          {
+            "bin": "[0.97, 0.98)",
+            "n_obs": 6,
+            "n_matches": 4,
+            "mean_price": 0.9707437424,
+            "win_rate": 1.0,
+            "lo": 1.0,
+            "hi": 1.0,
+            "edge_c": 2.925625765,
+            "judged": false,
+            "ci_covers_price": false
+          },
+          {
+            "bin": "[0.98, 0.99)",
+            "n_obs": 18,
+            "n_matches": 8,
+            "mean_price": 0.9833806792,
+            "win_rate": 0.9444444444,
+            "lo": 0.7380681818,
+            "hi": 1.0,
+            "edge_c": -3.893623475,
+            "judged": false,
+            "ci_covers_price": true
+          }
+        ]
+      },
+      "inplay_by_league": {
+        "Setka": {
+          "verdict": "not judged (no bin with >= 30 matches)",
+          "n_obs": 211,
+          "n_matches": 19,
+          "judged_bins": 0,
+          "failing_judged_bins": [],
+          "bins": [
+            {
+              "bin": "[0.5, 0.6)",
+              "n_obs": 54,
+              "n_matches": 13,
+              "mean_price": 0.5443454345,
+              "win_rate": 0.5555555556,
+              "lo": 0.4328366209,
+              "hi": 0.6666666667,
+              "edge_c": 1.1210121091,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.6, 0.7)",
+              "n_obs": 44,
+              "n_matches": 14,
+              "mean_price": 0.6497740331,
+              "win_rate": 0.6136363636,
+              "lo": 0.3333333333,
+              "hi": 0.8206498389,
+              "edge_c": -3.6137669445,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.7, 0.8)",
+              "n_obs": 25,
+              "n_matches": 11,
+              "mean_price": 0.7438645068,
+              "win_rate": 0.64,
+              "lo": 0.3650757576,
+              "hi": 0.8846666667,
+              "edge_c": -10.3864506832,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.8, 0.85)",
+              "n_obs": 22,
+              "n_matches": 10,
+              "mean_price": 0.8176502449,
+              "win_rate": 0.8636363636,
+              "lo": 0.6,
+              "hi": 1.0,
+              "edge_c": 4.5986118786,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.85, 0.9)",
+              "n_obs": 14,
+              "n_matches": 9,
+              "mean_price": 0.8734247548,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 12.6575245236,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.9, 0.93)",
+              "n_obs": 5,
+              "n_matches": 3,
+              "mean_price": 0.91,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 9.0,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.93, 0.95)",
+              "n_obs": 2,
+              "n_matches": 1,
+              "mean_price": 0.935,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 6.5,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.95, 0.97)",
+              "n_obs": 11,
+              "n_matches": 5,
+              "mean_price": 0.9543808675,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 4.5619132545,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.97, 0.98)",
+              "n_obs": 5,
+              "n_matches": 3,
+              "mean_price": 0.9707729617,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 2.922703826,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.98, 0.99)",
+              "n_obs": 14,
+              "n_matches": 3,
+              "mean_price": 0.9816345597,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 1.8365440329,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.99, 1.0)",
+              "n_obs": 15,
+              "n_matches": 6,
+              "mean_price": 0.9942666393,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 0.5733360693,
+              "judged": false,
+              "ci_covers_price": false
+            }
+          ]
+        },
+        "WTT": {
+          "verdict": "not judged (no bin with >= 30 matches)",
+          "n_obs": 239,
+          "n_matches": 8,
+          "judged_bins": 0,
+          "failing_judged_bins": [],
+          "bins": [
+            {
+              "bin": "[0.5, 0.6)",
+              "n_obs": 19,
+              "n_matches": 4,
+              "mean_price": 0.5261560149,
+              "win_rate": 0.7894736842,
+              "lo": 0.6842105263,
+              "hi": 1.0,
+              "edge_c": 26.3317669279,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.6, 0.7)",
+              "n_obs": 22,
+              "n_matches": 5,
+              "mean_price": 0.6324656509,
+              "win_rate": 0.8636363636,
+              "lo": 0.8275862069,
+              "hi": 1.0,
+              "edge_c": 23.1170712741,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.7, 0.8)",
+              "n_obs": 37,
+              "n_matches": 6,
+              "mean_price": 0.7473843143,
+              "win_rate": 0.7837837838,
+              "lo": 0.3333333333,
+              "hi": 1.0,
+              "edge_c": 3.6399469489,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.8, 0.85)",
+              "n_obs": 10,
+              "n_matches": 4,
+              "mean_price": 0.8142097707,
+              "win_rate": 0.9,
+              "lo": 0.5,
+              "hi": 1.0,
+              "edge_c": 8.579022933,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.85, 0.9)",
+              "n_obs": 26,
+              "n_matches": 6,
+              "mean_price": 0.8758059181,
+              "win_rate": 0.7692307692,
+              "lo": 0.25,
+              "hi": 1.0,
+              "edge_c": -10.6575148858,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.9, 0.93)",
+              "n_obs": 18,
+              "n_matches": 7,
+              "mean_price": 0.9093210617,
+              "win_rate": 0.6666666667,
+              "lo": 0.4166666667,
+              "hi": 0.9310714286,
+              "edge_c": -24.2654395017,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.93, 0.95)",
+              "n_obs": 9,
+              "n_matches": 4,
+              "mean_price": 0.9359307941,
+              "win_rate": 0.8888888889,
+              "lo": 0.5714285714,
+              "hi": 1.0,
+              "edge_c": -4.7041905233,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.95, 0.97)",
+              "n_obs": 16,
+              "n_matches": 6,
+              "mean_price": 0.9575062045,
+              "win_rate": 0.9375,
+              "lo": 0.7692307692,
+              "hi": 1.0,
+              "edge_c": -2.0006204544,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.97, 0.98)",
+              "n_obs": 7,
+              "n_matches": 5,
+              "mean_price": 0.9709578476,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 2.9042152371,
+              "judged": false,
+              "ci_covers_price": false
+            },
+            {
+              "bin": "[0.98, 0.99)",
+              "n_obs": 20,
+              "n_matches": 7,
+              "mean_price": 0.9836176113,
+              "win_rate": 0.95,
+              "lo": 0.781547619,
+              "hi": 1.0,
+              "edge_c": -3.3617611275,
+              "judged": false,
+              "ci_covers_price": true
+            },
+            {
+              "bin": "[0.99, 1.0)",
+              "n_obs": 55,
+              "n_matches": 8,
+              "mean_price": 0.9955758209,
+              "win_rate": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "edge_c": 0.4424179138,
+              "judged": false,
+              "ci_covers_price": false
+            }
+          ]
+        }
+      },
+      "closing_by_league": {
+        "Setka": {
+          "verdict": "calibrated",
+          "n_obs": 461,
+          "n_matches": 461,
+          "judged_bins": 3,
+          "failing_judged_bins": [],
+          "bins": [
+            {
+              "bin": "[0.5, 0.6)",
+              "n_obs": 209,
+              "n_matches": 209,
+              "mean_price": 0.5226983241,
+              "win_rate": 0.4641148325,
+              "lo": 0.4019138756,
+              "hi": 0.5336124402,
+              "edge_c": -5.8583491567,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.3875598086,
+              "bonf_hi": 0.5502392344,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.6, 0.7)",
+              "n_obs": 105,
+              "n_matches": 105,
+              "mean_price": 0.6491922563,
+              "win_rate": 0.5714285714,
+              "lo": 0.4666666667,
+              "hi": 0.6666666667,
+              "edge_c": -7.7763684883,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.4491269841,
+              "bonf_hi": 0.6857142857,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.7, 0.8)",
+              "n_obs": 57,
+              "n_matches": 57,
+              "mean_price": 0.7383776364,
+              "win_rate": 0.6666666667,
+              "lo": 0.5438596491,
+              "hi": 0.7894736842,
+              "edge_c": -7.1710969688,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.5087719298,
+              "bonf_hi": 0.8042397661,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.8, 0.85)",
+              "n_obs": 18,
+              "n_matches": 18,
+              "mean_price": 0.8194444379,
+              "win_rate": 0.5555555556,
+              "lo": 0.3333333333,
+              "hi": 0.7777777778,
+              "edge_c": -26.3888882367,
+              "judged": false,
+              "ci_covers_price": false,
+              "bonf_lo": 0.2865740741,
+              "bonf_hi": 0.824537037,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.85, 0.9)",
+              "n_obs": 10,
+              "n_matches": 10,
+              "mean_price": 0.8589999903,
+              "win_rate": 0.7,
+              "lo": 0.4,
+              "hi": 0.9,
+              "edge_c": -15.899999028,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.3158333333,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.9, 0.93)",
+              "n_obs": 13,
+              "n_matches": 13,
+              "mean_price": 0.9051281581,
+              "win_rate": 0.3076923077,
+              "lo": 0.0769230769,
+              "hi": 0.5384615385,
+              "edge_c": -59.7435850431,
+              "judged": false,
+              "ci_covers_price": false,
+              "bonf_lo": 0.0121794872,
+              "bonf_hi": 0.6153846154,
+              "bonf_covers_price": false
+            },
+            {
+              "bin": "[0.93, 0.95)",
+              "n_obs": 2,
+              "n_matches": 2,
+              "mean_price": 0.9399999624,
+              "win_rate": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "edge_c": -43.99999624,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.0,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.95, 0.97)",
+              "n_obs": 4,
+              "n_matches": 4,
+              "mean_price": 0.9649964479,
+              "win_rate": 0.75,
+              "lo": 0.25,
+              "hi": 1.0,
+              "edge_c": -21.49964479,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.25,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.97, 0.98)",
+              "n_obs": 4,
+              "n_matches": 4,
+              "mean_price": 0.9723786956,
+              "win_rate": 0.75,
+              "lo": 0.25,
+              "hi": 1.0,
+              "edge_c": -22.237869565,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.25,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.98, 0.99)",
+              "n_obs": 15,
+              "n_matches": 15,
+              "mean_price": 0.9825482554,
+              "win_rate": 0.5333333333,
+              "lo": 0.2666666667,
+              "hi": 0.8,
+              "edge_c": -44.92149221,
+              "judged": false,
+              "ci_covers_price": false,
+              "bonf_lo": 0.2105555556,
+              "bonf_hi": 0.8561111111,
+              "bonf_covers_price": false
+            },
+            {
+              "bin": "[0.99, 1.0)",
+              "n_obs": 24,
+              "n_matches": 24,
+              "mean_price": 0.990375,
+              "win_rate": 0.5833333333,
+              "lo": 0.375,
+              "hi": 0.7916666667,
+              "edge_c": -40.7041666667,
+              "judged": false,
+              "ci_covers_price": false,
+              "bonf_lo": 0.3333333333,
+              "bonf_hi": 0.8267361111,
+              "bonf_covers_price": false
+            }
+          ],
+          "bonferroni_level": 0.9833333333333333,
+          "bonferroni_failing_judged_bins": []
+        },
+        "WTT": {
+          "verdict": "not calibrated",
+          "n_obs": 319,
+          "n_matches": 319,
+          "judged_bins": 5,
+          "failing_judged_bins": [
+            "[0.95, 0.97)"
+          ],
+          "bins": [
+            {
+              "bin": "[0.5, 0.6)",
+              "n_obs": 49,
+              "n_matches": 49,
+              "mean_price": 0.5247605982,
+              "win_rate": 0.612244898,
+              "lo": 0.4897959184,
+              "hi": 0.7551020408,
+              "edge_c": 8.7484299767,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.4489795918,
+              "bonf_hi": 0.7858163265,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.6, 0.7)",
+              "n_obs": 14,
+              "n_matches": 14,
+              "mean_price": 0.6396857718,
+              "win_rate": 0.6428571429,
+              "lo": 0.3571428571,
+              "hi": 0.8571428571,
+              "edge_c": 0.3171371043,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.2857142857,
+              "bonf_hi": 0.9285714286,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.7, 0.8)",
+              "n_obs": 24,
+              "n_matches": 24,
+              "mean_price": 0.7462069439,
+              "win_rate": 0.7916666667,
+              "lo": 0.625,
+              "hi": 0.9166666667,
+              "edge_c": 4.5459722796,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.5833333333,
+              "bonf_hi": 0.9583333333,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.8, 0.85)",
+              "n_obs": 19,
+              "n_matches": 19,
+              "mean_price": 0.8222274504,
+              "win_rate": 0.7894736842,
+              "lo": 0.6315789474,
+              "hi": 0.9473684211,
+              "edge_c": -3.2753766205,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.5523684211,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.85, 0.9)",
+              "n_obs": 30,
+              "n_matches": 30,
+              "mean_price": 0.8704293554,
+              "win_rate": 0.9,
+              "lo": 0.8,
+              "hi": 1.0,
+              "edge_c": 2.9570644583,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.7666666667,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.9, 0.93)",
+              "n_obs": 49,
+              "n_matches": 49,
+              "mean_price": 0.9157865515,
+              "win_rate": 0.9183673469,
+              "lo": 0.8367346939,
+              "hi": 0.9795918367,
+              "edge_c": 0.2580795484,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.8163265306,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.93, 0.95)",
+              "n_obs": 16,
+              "n_matches": 16,
+              "mean_price": 0.9376749159,
+              "win_rate": 0.875,
+              "lo": 0.6875,
+              "hi": 1.0,
+              "edge_c": -6.2674915919,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.6559375,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.95, 0.97)",
+              "n_obs": 38,
+              "n_matches": 38,
+              "mean_price": 0.9573680813,
+              "win_rate": 0.8157894737,
+              "lo": 0.6842105263,
+              "hi": 0.9210526316,
+              "edge_c": -14.1578607611,
+              "judged": true,
+              "ci_covers_price": false,
+              "bonf_lo": 0.6709210526,
+              "bonf_hi": 0.9606578947,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.97, 0.98)",
+              "n_obs": 16,
+              "n_matches": 16,
+              "mean_price": 0.9715277294,
+              "win_rate": 0.8125,
+              "lo": 0.625,
+              "hi": 1.0,
+              "edge_c": -15.9027729356,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.5625,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.98, 0.99)",
+              "n_obs": 28,
+              "n_matches": 28,
+              "mean_price": 0.9817682974,
+              "win_rate": 0.9642857143,
+              "lo": 0.8928571429,
+              "hi": 1.0,
+              "edge_c": -1.7482583125,
+              "judged": false,
+              "ci_covers_price": true,
+              "bonf_lo": 0.8391071429,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            },
+            {
+              "bin": "[0.99, 1.0)",
+              "n_obs": 36,
+              "n_matches": 36,
+              "mean_price": 0.9923825941,
+              "win_rate": 0.9444444444,
+              "lo": 0.8611111111,
+              "hi": 1.0,
+              "edge_c": -4.7938149606,
+              "judged": true,
+              "ci_covers_price": true,
+              "bonf_lo": 0.8333333333,
+              "bonf_hi": 1.0,
+              "bonf_covers_price": true
+            }
+          ],
+          "bonferroni_level": 0.99,
+          "bonferroni_failing_judged_bins": []
+        }
+      }
+    }
+  },
+  "TT2": {
+    "print_months": [
+      "2026-02",
+      "2026-03",
+      "2026-04",
+      "2026-05",
+      "2026-07",
+      "2026-09"
+    ],
+    "evaluated_months": [
+      "2026-04",
+      "2026-05",
+      "2026-07",
+      "2026-09"
+    ],
+    "qualified_wallets_by_month": {
+      "2026-04": 0,
+      "2026-05": 0,
+      "2026-07": 0,
+      "2026-09": 0
+    },
+    "any_wallet_qualified": false,
+    "fast_net30_c": null,
+    "others_net30_c": [
+      -0.15736470476360173,
+      -3.0596932656486686,
+      2.4525621451321986
+    ],
+    "gap_fast_minus_others_c": null,
+    "others_net30_c_months_with_qualified_wallet": null,
+    "n_fast_prints": 0,
+    "n_fast_matches": 0,
+    "n_others_prints": 102,
+    "n_others_matches": 24,
+    "months_with_fast_prints": 0,
+    "months_fast_positive": 0,
+    "by_period": {
+      "IS": {
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_net30_c": null
+      },
+      "OOS": {
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_net30_c": null
+      }
+    },
+    "criteria": {
+      "a_fast_gt0_ci_excl0": false,
+      "b_others_lt0_ci_excl0": false,
+      "c_fast_gt0_in_2of3_months": false,
+      "d_fast_gt0_IS_and_OOS": false
+    },
+    "verdict": "FAIL (no fast tier detected)",
+    "labels": [
+      "underpowered"
+    ],
+    "monthly": [
+      {
+        "month": "2026-04",
+        "n_qualified_wallets": 0,
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_usd": 0.0,
+        "fast_net30_c": null,
+        "others_prints": 9,
+        "others_matches": 4,
+        "others_net30_c": [
+          -0.9339144019243376,
+          -10.626131763111117,
+          0.8989382627128428
+        ]
+      },
+      {
+        "month": "2026-05",
+        "n_qualified_wallets": 0,
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_usd": 0.0,
+        "fast_net30_c": null,
+        "others_prints": 2,
+        "others_matches": 1,
+        "others_net30_c": [
+          -12.59314335996599,
+          -12.59314335996599,
+          -12.59314335996599
+        ]
+      },
+      {
+        "month": "2026-07",
+        "n_qualified_wallets": 0,
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_usd": 0.0,
+        "fast_net30_c": null,
+        "others_prints": 44,
+        "others_matches": 10,
+        "others_net30_c": [
+          -3.341176089457458,
+          -7.205601933882848,
+          0.3936851300690163
+        ]
+      },
+      {
+        "month": "2026-09",
+        "n_qualified_wallets": 0,
+        "fast_prints": 0,
+        "fast_matches": 0,
+        "fast_usd": 0.0,
+        "fast_net30_c": null,
+        "others_prints": 47,
+        "others_matches": 9,
+        "others_net30_c": [
+          3.501107752925358,
+          -0.18139496597921798,
+          7.003800406172359
+        ]
+      }
+    ],
+    "wf_table": [
+      {
+        "month": "2026-04",
+        "n_wallets": 0,
+        "n_prints": 0,
+        "n_matches": 0,
+        "usd_k": 0.0,
+        "net30_c": null,
+        "net_res_c": null,
+        "follow_res_c": null,
+        "others_net30_c": -0.9339144019
+      },
+      {
+        "month": "2026-05",
+        "n_wallets": 0,
+        "n_prints": 0,
+        "n_matches": 0,
+        "usd_k": 0.0,
+        "net30_c": null,
+        "net_res_c": null,
+        "follow_res_c": null,
+        "others_net30_c": -12.59314336
+      },
+      {
+        "month": "2026-07",
+        "n_wallets": 0,
+        "n_prints": 0,
+        "n_matches": 0,
+        "usd_k": 0.0,
+        "net30_c": null,
+        "net_res_c": null,
+        "follow_res_c": null,
+        "others_net30_c": -3.3411760895
+      },
+      {
+        "month": "2026-09",
+        "n_wallets": 0,
+        "n_prints": 0,
+        "n_matches": 0,
+        "usd_k": 0.0,
+        "net30_c": null,
+        "net_res_c": null,
+        "follow_res_c": null,
+        "others_net30_c": 3.5011077529
+      }
+    ],
+    "by_bucket_c_net30_c": [
+      {
+        "bucket_c": "no jump",
+        "others": -1.8568365595
+      },
+      {
+        "bucket_c": "0-3s",
+        "others": -0.1573647048
+      },
+      {
+        "bucket_c": "3-6s",
+        "others": -0.0823696246
+      },
+      {
+        "bucket_c": "6-10s",
+        "others": -1.2881158081
+      },
+      {
+        "bucket_c": "10-20s",
+        "others": 1.1633629181
+      },
+      {
+        "bucket_c": "20-40s",
+        "others": -2.4969743046
+      },
+      {
+        "bucket_c": "40-120s",
+        "others": 1.1841312642
+      },
+      {
+        "bucket_c": ">120s",
+        "others": -1.5644344397
+      }
+    ]
+  },
+  "TT3": {
+    "shadow_rows": 0,
+    "shadow_matches": 0,
+    "IS": {
+      "n_trades": 0,
+      "n_matches": 0,
+      "verdict": "FAIL (no trades)",
+      "labels": []
+    },
+    "OOS": {
+      "n_trades": 0,
+      "n_matches": 0,
+      "verdict": "FAIL (no trades)",
+      "labels": []
+    },
+    "ALL": {
+      "n_trades": 0
+    },
+    "verdict": "FAIL (no trades)",
+    "note": "fast-tier shadow is empty: no wallet qualified, so v2 has no opportunity set (TT-D5)",
+    "by_league": [],
+    "first_shadow_month": null
+  },
+  "TT4": {
+    "volume_per_match": {
+      "ALL": {
+        "markets": 3588,
+        "listed_volume_shares": {
+          "n": 3588,
+          "sum": 1016076.325494,
+          "mean": 283.18738168729095,
+          "median": 40.9008105,
+          "p90": 400.0
+        },
+        "tape_usd": {
+          "n": 3588,
+          "sum": 652467.8509133945,
+          "mean": 181.8472271219048,
+          "median": 21.043199499362675,
+          "p90": 274.4090903955358
+        },
+        "prestart_usd": {
+          "n": 3588,
+          "sum": 161205.37689456777,
+          "mean": 44.929034808965376,
+          "median": 0.0,
+          "p90": 27.004634941562777
+        },
+        "inplay_window_usd": {
+          "n": 3588,
+          "sum": 491262.4740188267,
+          "mean": 136.91819231293942,
+          "median": 13.974012,
+          "p90": 224.2076967
+        }
+      },
+      "Setka": {
+        "markets": 2706,
+        "listed_volume_shares": {
+          "n": 2706,
+          "sum": 358607.748834,
+          "mean": 132.5231887782705,
+          "median": 19.029412,
+          "p90": 186.520673
+        },
+        "tape_usd": {
+          "n": 2706,
+          "sum": 248396.3638879044,
+          "mean": 91.79466514704522,
+          "median": 9.9,
+          "p90": 99.0
+        },
+        "prestart_usd": {
+          "n": 2706,
+          "sum": 16609.521946997724,
+          "mean": 6.138034718033158,
+          "median": 0.0,
+          "p90": 6.62425
+        },
+        "inplay_window_usd": {
+          "n": 2706,
+          "sum": 231786.84194090666,
+          "mean": 85.65663042901207,
+          "median": 7.954999500243083,
+          "p90": 88.26669849975525
+        }
+      },
+      "WTT": {
+        "markets": 881,
+        "listed_volume_shares": {
+          "n": 881,
+          "sum": 657460.5563599999,
+          "mean": 746.2662387741202,
+          "median": 190.41,
+          "p90": 1330.0
+        },
+        "tape_usd": {
+          "n": 881,
+          "sum": 404065.50632849004,
+          "mean": 458.64416155333714,
+          "median": 162.936,
+          "p90": 830.122982019991
+        },
+        "prestart_usd": {
+          "n": 881,
+          "sum": 144595.85494757007,
+          "mean": 164.1269636181272,
+          "median": 0.0,
+          "p90": 142.87560000000002
+        },
+        "inplay_window_usd": {
+          "n": 881,
+          "sum": 259469.65138091997,
+          "mean": 294.51719793520994,
+          "median": 126.3539295494085,
+          "p90": 579.730814
+        }
+      },
+      "other": {
+        "markets": 1,
+        "listed_volume_shares": {
+          "n": 1,
+          "sum": 8.0203,
+          "mean": 8.0203,
+          "median": 8.0203,
+          "p90": 8.0203
+        },
+        "tape_usd": {
+          "n": 1,
+          "sum": 5.980697,
+          "mean": 5.980697,
+          "median": 5.980697,
+          "p90": 5.980697
+        },
+        "prestart_usd": {
+          "n": 1,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        },
+        "inplay_window_usd": {
+          "n": 1,
+          "sum": 5.980697,
+          "mean": 5.980697,
+          "median": 5.980697,
+          "p90": 5.980697
+        }
+      },
+      "Setka/IS": {
+        "markets": 1988,
+        "listed_volume_shares": {
+          "n": 1988,
+          "sum": 286027.160965,
+          "mean": 143.87684153169013,
+          "median": 22.75,
+          "p90": 187.10237379999992
+        },
+        "tape_usd": {
+          "n": 1988,
+          "sum": 201650.1263058481,
+          "mean": 101.43366514378677,
+          "median": 12.929199499869254,
+          "p90": 97.80008659953762
+        },
+        "prestart_usd": {
+          "n": 1988,
+          "sum": 7658.378111991114,
+          "mean": 3.8523028732349665,
+          "median": 0.0,
+          "p90": 3.3999993
+        },
+        "inplay_window_usd": {
+          "n": 1988,
+          "sum": 193991.748193857,
+          "mean": 97.58136227055181,
+          "median": 9.9,
+          "p90": 93.27865440011149
+        }
+      },
+      "Setka/OOS": {
+        "markets": 718,
+        "listed_volume_shares": {
+          "n": 718,
+          "sum": 72580.587869,
+          "mean": 101.08716973398327,
+          "median": 10.0,
+          "p90": 183.46700000000018
+        },
+        "tape_usd": {
+          "n": 718,
+          "sum": 46746.2375820563,
+          "mean": 65.10618047640153,
+          "median": 5.825,
+          "p90": 105.0969987995926
+        },
+        "prestart_usd": {
+          "n": 718,
+          "sum": 8951.14383500661,
+          "mean": 12.466774143463244,
+          "median": 0.0,
+          "p90": 29.65793000008003
+        },
+        "inplay_window_usd": {
+          "n": 718,
+          "sum": 37795.09374704969,
+          "mean": 52.63940633293828,
+          "median": 3.9000000000000004,
+          "p90": 73.77520000006983
+        }
+      },
+      "WTT/IS": {
+        "markets": 881,
+        "listed_volume_shares": {
+          "n": 881,
+          "sum": 657460.5563599999,
+          "mean": 746.2662387741202,
+          "median": 190.41,
+          "p90": 1330.0
+        },
+        "tape_usd": {
+          "n": 881,
+          "sum": 404065.50632849004,
+          "mean": 458.64416155333714,
+          "median": 162.936,
+          "p90": 830.122982019991
+        },
+        "prestart_usd": {
+          "n": 881,
+          "sum": 144595.85494757007,
+          "mean": 164.1269636181272,
+          "median": 0.0,
+          "p90": 142.87560000000002
+        },
+        "inplay_window_usd": {
+          "n": 881,
+          "sum": 259469.65138091997,
+          "mean": 294.51719793520994,
+          "median": 126.3539295494085,
+          "p90": 579.730814
+        }
+      },
+      "other/IS": {
+        "markets": 1,
+        "listed_volume_shares": {
+          "n": 1,
+          "sum": 8.0203,
+          "mean": 8.0203,
+          "median": 8.0203,
+          "p90": 8.0203
+        },
+        "tape_usd": {
+          "n": 1,
+          "sum": 5.980697,
+          "mean": 5.980697,
+          "median": 5.980697,
+          "p90": 5.980697
+        },
+        "prestart_usd": {
+          "n": 1,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        },
+        "inplay_window_usd": {
+          "n": 1,
+          "sum": 5.980697,
+          "mean": 5.980697,
+          "median": 5.980697,
+          "p90": 5.980697
+        }
+      },
+      "ALL/IS": {
+        "markets": 2870,
+        "listed_volume_shares": {
+          "n": 2870,
+          "sum": 943495.7376250001,
+          "mean": 328.74415945121956,
+          "median": 50.0,
+          "p90": 435.5209999999999
+        },
+        "tape_usd": {
+          "n": 2870,
+          "sum": 605721.6133313382,
+          "mean": 211.05282694471714,
+          "median": 34.18655000006811,
+          "p90": 290.87326009560974
+        },
+        "prestart_usd": {
+          "n": 2870,
+          "sum": 152254.2330595612,
+          "mean": 53.0502554214499,
+          "median": 0.0,
+          "p90": 25.369433485977392
+        },
+        "inplay_window_usd": {
+          "n": 2870,
+          "sum": 453467.3802717769,
+          "mean": 158.00257152326722,
+          "median": 23.217299999838573,
+          "p90": 247.72474169796763
+        }
+      },
+      "ALL/OOS": {
+        "markets": 718,
+        "listed_volume_shares": {
+          "n": 718,
+          "sum": 72580.587869,
+          "mean": 101.08716973398327,
+          "median": 10.0,
+          "p90": 183.46700000000018
+        },
+        "tape_usd": {
+          "n": 718,
+          "sum": 46746.2375820563,
+          "mean": 65.10618047640153,
+          "median": 5.825,
+          "p90": 105.0969987995926
+        },
+        "prestart_usd": {
+          "n": 718,
+          "sum": 8951.14383500661,
+          "mean": 12.466774143463244,
+          "median": 0.0,
+          "p90": 29.65793000008003
+        },
+        "inplay_window_usd": {
+          "n": 718,
+          "sum": 37795.09374704969,
+          "mean": 52.63940633293828,
+          "median": 3.9000000000000004,
+          "p90": 73.77520000006983
+        }
+      }
+    },
+    "depth_from_tapes": {
+      "ALL": {
+        "markets": 3588,
+        "inplay_fills": 10645,
+        "inplay_print_usd": {
+          "n": 10645,
+          "sum": 491262.4740188267,
+          "mean": 46.14959831083388,
+          "median": 7.6596,
+          "p90": 98.93664792
+        },
+        "inplay_prints_per_min": {
+          "n": 3571,
+          "sum": 55.3640548341737,
+          "mean": 0.015503795809065723,
+          "median": 0.007235890014471781,
+          "p90": 0.03418803418803419
+        },
+        "spread_proxy_c_pooled_median": 0.9999968000000026,
+        "spread_proxy_c_median_of_market_medians": 5.551115123125783e-15,
+        "spread_proxy_fills": 799,
+        "spread_proxy_markets": 266
+      },
+      "Setka": {
+        "markets": 2706,
+        "inplay_fills": 6633,
+        "inplay_print_usd": {
+          "n": 6633,
+          "sum": 231786.8419409067,
+          "mean": 34.94449599591538,
+          "median": 6.16,
+          "p90": 36.60001999843799
+        },
+        "inplay_prints_per_min": {
+          "n": 2704,
+          "sum": 43.8287184912849,
+          "mean": 0.016208845595889386,
+          "median": 0.007238508867173362,
+          "p90": 0.03501756661045457
+        },
+        "spread_proxy_c_pooled_median": 0.9999986099999969,
+        "spread_proxy_c_median_of_market_medians": 0.0,
+        "spread_proxy_fills": 713,
+        "spread_proxy_markets": 226
+      },
+      "WTT": {
+        "markets": 881,
+        "inplay_fills": 4008,
+        "inplay_print_usd": {
+          "n": 4008,
+          "sum": 259469.65138091997,
+          "mean": 64.73793697128741,
+          "median": 10.721125,
+          "p90": 122.42338217200015
+        },
+        "inplay_prints_per_min": {
+          "n": 866,
+          "sum": 11.535220622238448,
+          "mean": 0.013320116191961256,
+          "median": 0.00701273780422162,
+          "p90": 0.02897850963466169
+        },
+        "spread_proxy_c_pooled_median": 0.798028675,
+        "spread_proxy_c_median_of_market_medians": 0.7957898749999998,
+        "spread_proxy_fills": 86,
+        "spread_proxy_markets": 40
+      },
+      "other": {
+        "markets": 1,
+        "inplay_fills": 4,
+        "inplay_print_usd": {
+          "n": 4,
+          "sum": 5.980697,
+          "mean": 1.49517425,
+          "median": 1.4999985,
+          "p90": 2.6582094
+        },
+        "inplay_prints_per_min": {
+          "n": 1,
+          "sum": 0.00011572065035005496,
+          "mean": 0.00011572065035005496,
+          "median": 0.00011572065035005496,
+          "p90": 0.00011572065035005496
+        },
+        "spread_proxy_c_pooled_median": null,
+        "spread_proxy_c_median_of_market_medians": null,
+        "spread_proxy_fills": 0,
+        "spread_proxy_markets": 0
+      },
+      "ALL/IS": {
+        "markets": 2870,
+        "inplay_fills": 9347,
+        "inplay_print_usd": {
+          "n": 9347,
+          "sum": 453467.380271777,
+          "mean": 48.51475128616422,
+          "median": 9.129999999999999,
+          "p90": 99.0
+        },
+        "inplay_prints_per_min": {
+          "n": 2853,
+          "sum": 46.488530771591456,
+          "mean": 0.01629461295884734,
+          "median": 0.00727802037845706,
+          "p90": 0.035722368223700424
+        },
+        "spread_proxy_c_pooled_median": 1.0000000000000009,
+        "spread_proxy_c_median_of_market_medians": 0.5992292200000032,
+        "spread_proxy_fills": 635,
+        "spread_proxy_markets": 206
+      },
+      "ALL/OOS": {
+        "markets": 718,
+        "inplay_fills": 1298,
+        "inplay_print_usd": {
+          "n": 1298,
+          "sum": 37795.09374704969,
+          "mean": 29.1179458760013,
+          "median": 3.4499999999999997,
+          "p90": 49.99999699882852
+        },
+        "inplay_prints_per_min": {
+          "n": 718,
+          "sum": 8.875524062582247,
+          "mean": 0.012361454126159119,
+          "median": 0.007157769798609007,
+          "p90": 0.02587531541101533
+        },
+        "spread_proxy_c_pooled_median": 0.0,
+        "spread_proxy_c_median_of_market_medians": 0.0,
+        "spread_proxy_fills": 164,
+        "spread_proxy_markets": 60
+      }
+    },
+    "bucket_0_3s_from_prints": {
+      "ALL": {
+        "matches": 27,
+        "detections": 90,
+        "usd_0_3s": 8063.594085020128,
+        "usd_0_3s_per_detection": 89.59548983355697,
+        "inplay_spread_proxy_c_median": 2.8999999900000017
+      },
+      "Setka": {
+        "matches": 19,
+        "detections": 76,
+        "usd_0_3s": 6785.131260980808,
+        "usd_0_3s_per_detection": 89.27804290764222,
+        "inplay_spread_proxy_c_median": 2.949999850000001
+      },
+      "WTT": {
+        "matches": 8,
+        "detections": 14,
+        "usd_0_3s": 1278.462824039319,
+        "usd_0_3s_per_detection": 91.31877314566565,
+        "inplay_spread_proxy_c_median": 2.536086120000003
+      }
+    },
+    "fast_tier_volume": {
+      "usd_total": 0.0,
+      "prints": 0,
+      "matches": 0,
+      "usd_per_match_with_fast_prints": 0.0,
+      "usd_per_evaluable_match": 0.0,
+      "active_days": 0,
+      "usd_per_active_day": 0.0,
+      "usd_by_evaluated_month": {
+        "2026-04": 0.0,
+        "2026-05": 0.0,
+        "2026-07": 0.0,
+        "2026-09": 0.0
+      }
+    },
+    "v2_deploy": {
+      "trades": 0,
+      "usd_in_per_calendar_day": 0.0,
+      "note": "v2 placed no trade on table tennis"
+    },
+    "tennis_v2_context": {
+      "months": [
+        "2026-04",
+        "2026-05",
+        "2026-07",
+        "2026-09"
+      ],
+      "calendar_days": 122,
+      "trades": 37517,
+      "matches": 5491,
+      "usd_in_per_calendar_day": 8400.74818128211,
+      "pnl_usd_per_calendar_day": 198.25098397787718,
+      "source": "data/v2_trades_is_oos.parquet (tennis v2 causal; context only, not compared)"
+    },
+    "capacity": {
+      "rule": "v2 deployed USD per calendar day < $1,000 -> 'capacity is negligible'",
+      "usd_in_per_calendar_day": 0.0,
+      "statement": "capacity is negligible"
+    },
+    "book_snapshot": {
+      "taken_utc": "2026-10-03T19:24:32+00:00",
+      "open_moneylines_listed": 300,
+      "books_read": 300,
+      "two_sided": 251,
+      "in_play_books": 49,
+      "label": "one snapshot of public clob /book, not history",
+      "all": {
+        "books": 300,
+        "two_sided": 251,
+        "spread_c": {
+          "n": 251,
+          "sum": 22508.0,
+          "mean": 89.67330677290836,
+          "median": 94.0,
+          "p90": 94.0
+        },
+        "depth_1c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        },
+        "depth_2c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        }
+      },
+      "league=Setka": {
+        "books": 300,
+        "two_sided": 251,
+        "spread_c": {
+          "n": 251,
+          "sum": 22508.0,
+          "mean": 89.67330677290836,
+          "median": 94.0,
+          "p90": 94.0
+        },
+        "depth_1c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        },
+        "depth_2c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        }
+      },
+      "in_play=False": {
+        "books": 251,
+        "two_sided": 251,
+        "spread_c": {
+          "n": 251,
+          "sum": 22508.0,
+          "mean": 89.67330677290836,
+          "median": 94.0,
+          "p90": 94.0
+        },
+        "depth_1c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        },
+        "depth_2c_usd": {
+          "n": 251,
+          "sum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0
+        }
+      },
+      "in_play=True": {
+        "books": 49,
+        "two_sided": 0,
+        "spread_c": {
+          "n": 0
+        },
+        "depth_1c_usd": {
+          "n": 0
+        },
+        "depth_2c_usd": {
+          "n": 0
+        }
+      }
+    }
+  },
+  "sensitivity_with_unlisted": {
+    "note": "UTT + the 96 zero-listed markets that traded (TT-D8); verdicts above are UTT only",
+    "counts": {
+      "utt_markets": 3684,
+      "utt_is": 2966,
+      "utt_oos": 718,
+      "evaluable_matches": 34,
+      "print_rows": 1274,
+      "evaluable_by_league_period": {
+        "Setka/IS": 16,
+        "Setka/OOS": 3,
+        "WTT/IS": 15
+      }
+    },
+    "TT1": {
+      "verdict": "FAIL",
+      "verdict_detail": "in-play: not judged (no bin with >= 30 matches); closing: not calibrated",
+      "inplay_judged_bins": 0,
+      "closing_judged_bins": 9,
+      "closing_failing_judged_bins": [
+        "[0.8, 0.85)",
+        "[0.9, 0.93)",
+        "[0.95, 0.97)",
+        "[0.98, 0.99)",
+        "[0.99, 1.0)"
+      ]
+    },
+    "TT2": {
+      "verdict": "FAIL (no fast tier detected)",
+      "labels": [
+        "underpowered"
+      ],
+      "qualified_wallets_by_month": {
+        "2026-04": 0,
+        "2026-05": 0,
+        "2026-07": 0,
+        "2026-09": 0
+      },
+      "fast_net30_c": null,
+      "others_net30_c": [
+        -0.15736470476360173,
+        -3.0596932656486686,
+        2.4525621451321986
+      ],
+      "gap_fast_minus_others_c": null,
+      "n_fast_matches": 0
+    },
+    "TT3": {
+      "verdict": "FAIL (no trades)",
+      "shadow_rows": 0,
+      "IS": {
+        "n_trades": 0,
+        "n_matches": 0,
+        "per_share_c": null,
+        "per_share_ci_c": null,
+        "total_pnl_usd": null,
+        "verdict": "FAIL (no trades)"
+      },
+      "OOS": {
+        "n_trades": 0,
+        "n_matches": 0,
+        "per_share_c": null,
+        "per_share_ci_c": null,
+        "total_pnl_usd": null,
+        "verdict": "FAIL (no trades)"
+      }
+    },
+    "TT4_v2_usd_in_per_calendar_day": 0.0
+  },
+  "run": {
+    "utc": "2026-10-03T19:23:14.155322+00:00",
+    "commit": "eb0e6925ca380e72e4ac2fc2aed26f76560541d4",
+    "log": "table tennis TT1-TT4 evaluated (first run)",
+    "hiper_gator": "not used; everything ran locally on the laptop"
+  }
+}

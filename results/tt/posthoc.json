@@ -1,0 +1,131 @@
+{
+  "closing": {
+    "ALL": {
+      "matches": 780,
+      "mean_fav": 0.7334219836310257,
+      "win_rate": 0.6525641025641026,
+      "closing_print_usd_median": 4.9999989998913446,
+      "closing_print_usd_p90": 31.005950000888074,
+      "share_closing_print_lt_5usd": 0.5128205128205128,
+      "secs_before_start_median": 6754.0,
+      "share_taker_bought_fav": 0.6717948717948717,
+      "prestart_fills_median": 2.0,
+      "prestart_usd_median": 18.344296500456693
+    },
+    "Setka / fav < 0.80": {
+      "matches": 371,
+      "mean_fav": 0.5916352073380053,
+      "win_rate": 0.5256064690026954,
+      "closing_print_usd_median": 5.0,
+      "closing_print_usd_p90": 12.55,
+      "share_closing_print_lt_5usd": 0.49595687331536387,
+      "secs_before_start_median": 11414.0,
+      "share_taker_bought_fav": 0.5067385444743935,
+      "prestart_fills_median": 2.0,
+      "prestart_usd_median": 9.999998000517383
+    },
+    "Setka / fav >= 0.80": {
+      "matches": 90,
+      "mean_fav": 0.9249265574611111,
+      "win_rate": 0.5555555555555556,
+      "closing_print_usd_median": 1.994986,
+      "closing_print_usd_p90": 99.99992779693119,
+      "share_closing_print_lt_5usd": 0.6555555555555556,
+      "secs_before_start_median": 2365.0,
+      "share_taker_bought_fav": 0.9,
+      "prestart_fills_median": 1.0,
+      "prestart_usd_median": 9.7
+    },
+    "WTT / fav < 0.80": {
+      "matches": 87,
+      "mean_fav": 0.604342951375862,
+      "win_rate": 0.6666666666666666,
+      "closing_print_usd_median": 3.6999999993600006,
+      "closing_print_usd_p90": 17.650404159968442,
+      "share_closing_print_lt_5usd": 0.5862068965517241,
+      "secs_before_start_median": 3909.0,
+      "share_taker_bought_fav": 0.7126436781609196,
+      "prestart_fills_median": 3.0,
+      "prestart_usd_median": 20.0
+    },
+    "WTT / fav >= 0.80": {
+      "matches": 232,
+      "mean_fav": 0.9342726653818967,
+      "win_rate": 0.8879310344827587,
+      "closing_print_usd_median": 8.144998999943825,
+      "closing_print_usd_p90": 103.62752200014882,
+      "share_closing_print_lt_5usd": 0.45689655172413796,
+      "secs_before_start_median": 4079.5,
+      "share_taker_bought_fav": 0.8318965517241379,
+      "prestart_fills_median": 3.0,
+      "prestart_usd_median": 46.35051150053066
+    },
+    "ALL / fav < 0.80": {
+      "matches": 458,
+      "mean_fav": 0.5940491237818778,
+      "win_rate": 0.5524017467248908,
+      "closing_print_usd_median": 4.999999000000032,
+      "closing_print_usd_p90": 12.729000000000001,
+      "share_closing_print_lt_5usd": 0.5131004366812227,
+      "secs_before_start_median": 11044.5,
+      "share_taker_bought_fav": 0.5458515283842795,
+      "prestart_fills_median": 2.0,
+      "prestart_usd_median": 10.71999999954906
+    },
+    "ALL / fav >= 0.80": {
+      "matches": 322,
+      "mean_fav": 0.9316603991928571,
+      "win_rate": 0.7950310559006211,
+      "closing_print_usd_median": 4.999976,
+      "closing_print_usd_p90": 100.65269510162763,
+      "share_closing_print_lt_5usd": 0.5124223602484472,
+      "secs_before_start_median": 3570.5,
+      "share_taker_bought_fav": 0.8509316770186336,
+      "prestart_fills_median": 2.0,
+      "prestart_usd_median": 35.87100740033124
+    }
+  },
+  "fast_tier_distance": {
+    "thresholds": {
+      "prints": 30,
+      "matches": 10,
+      "t": 3.0
+    },
+    "bucket_0_3s_prints_all_months": 113,
+    "bucket_0_3s_matches_all_months": 27,
+    "wallets_in_bucket_all_months": 28,
+    "max_prints_one_wallet_all_months": 58,
+    "max_matches_one_wallet_all_months": 14,
+    "before_each_evaluated_month": {
+      "2026-04": {
+        "bucket_prints_before": 4,
+        "wallets": 4,
+        "max_prints_one_wallet": 1,
+        "max_matches_one_wallet": 1
+      },
+      "2026-05": {
+        "bucket_prints_before": 13,
+        "wallets": 12,
+        "max_prints_one_wallet": 2,
+        "max_matches_one_wallet": 1
+      },
+      "2026-07": {
+        "bucket_prints_before": 15,
+        "wallets": 14,
+        "max_prints_one_wallet": 2,
+        "max_matches_one_wallet": 1
+      },
+      "2026-09": {
+        "bucket_prints_before": 63,
+        "wallets": 23,
+        "max_prints_one_wallet": 31,
+        "max_matches_one_wallet": 6
+      }
+    }
+  },
+  "run": {
+    "utc": "2026-10-03T19:28:49.781129+00:00",
+    "commit": "ad164da6da24325afcfdbab8fe24dcf5f0516fed",
+    "label": "post-hoc, not pre-registered; no TT verdict changes"
+  }
+}

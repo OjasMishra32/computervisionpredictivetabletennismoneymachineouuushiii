@@ -23,3 +23,4 @@
 2026-10-03T19:19:14.670497+00:00 maker v1 live paper engine REPLAY (B2: own raw log) on data/live_maker/raw_20261003T190317Z.jsonl.gz window=-+Nonemin clock=recv: run=20261003T191913Z commit=56a9c8f77b1aaf7b1306c2f1b06d6a2e05c798a8+dirty (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)
 2026-10-03T19:20:24.912939+00:00 PM review P07: wallet-clustered bootstrap CI of the frozen v2 causal book on burned OOS (non-blind, labelled; the CI the note already quotes, no rule or parameter change; scripts/pm_compute.py)
 2026-10-03T19:23:14.155322+00:00 table tennis TT1-TT4 evaluated (first run)
+2026-10-03T19:28:49.781129+00:00 table tennis post-hoc diagnostics after TT1-TT4 (closing-print size, fast-tier distance; not pre-registered, no verdict change)
