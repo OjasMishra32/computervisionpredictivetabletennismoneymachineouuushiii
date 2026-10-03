@@ -133,7 +133,7 @@ COSTS = {
         "name": "Camera position / venue access fee per event (tier-0 only)", "label": "ASSUMPTION (no public price exists)",
         "unit": "$/event", "low": 0.0, "central": 250.0, "high": 500.0,
         "basis": ("A legal tier-0 needs the organiser's permission for a camera (courtsiding breaches ticket terms, "
-                  "docs/NOTE.md section 6). No public price exists for that right. Range is ours; low = $0."),
+                  "docs/NOTE.md section 5). No public price exists for that right. Range is ours; low = $0."),
         "sources": []},
     "camera_kit": {
         "name": "120 fps camera kit, amortised over 24 months (tier-0 only)", "label": "ASSUMPTION",
@@ -147,7 +147,7 @@ CAMERA_LIFE_MONTHS = 24
 STACKS = {
     "v2": {"monthly": ["feed_licence", "vps_london", "polymarket_api", "hipergator"],
            "note": ("v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a "
-                    "signal about 2.5 s before the official stamp (docs/NOTE.md section 7); an official feed licence "
+                    "signal about 2.5 s before the official stamp (docs/NOTE.md section 6); an official feed licence "
                     "is a necessary cost, not a sufficient one. The cost stack is a lower bound.")},
     "v2_safe": {"monthly": ["feed_licence", "vps_london", "polymarket_api", "hipergator"],
                 "note": "Same infrastructure as v2."},
@@ -302,6 +302,20 @@ def book_stats(b: pd.DataFrame, cost: dict, label: str, source: str, lock_note: 
     coc_locked = locked_dollar_hours / 8760 * TBILL["rate"]
     for lvl in cc:
         cc[lvl]["net_after_costs_and_cost_of_capital_usd_per_day"] = cc[lvl]["net_after_costs_usd_per_day"] - coc_reserved / T
+    # break-even taker fee (PM_REVIEW P03): book held fixed, fee linear in the rate, so scaling every trade's rate by k
+    # gives net = gross + rebate - slip - k * fees; k* = (that - fixed costs) / fees. As a rate when one rate applied.
+    be_fee = None
+    if comp["fee"] > 0:
+        pre = comp["gross"] + comp["rebate"] - comp["slip"]
+        rates = b["rate"].unique() if "rate" in b else []
+        one = float(rates[0]) if len(rates) == 1 else None
+        be_fee = {"fee_multiple_before_fixed_costs": pre / comp["fee"], "uniform_rate_charged": one,
+                  "rate_before_fixed_costs": pre / comp["fee"] * one if one else None,
+                  "fee_share_of_gross": comp["fee"] / comp["gross"] if comp["gross"] else None}
+        for lvl in cc:
+            k = (pre - cc[lvl]["fixed_cost_usd_per_day"] * T) / comp["fee"]
+            be_fee[f"fee_multiple_after_{lvl}_fixed_costs"] = k
+            be_fee[f"rate_after_{lvl}_fixed_costs"] = k * one if one else None
     # unit economics
     pnl = b.pnl.to_numpy()
     wins, losses = pnl[pnl > 0], pnl[pnl < 0]
@@ -376,8 +390,8 @@ def book_stats(b: pd.DataFrame, cost: dict, label: str, source: str, lock_note: 
             "calendar": [str(daily.index[0].date()), str(daily.index[-1].date())],
             "per_share_c": m["per_share_c"], "per_share_ci95_c_match_clustered": m["per_share_ci_c"],
             "per_fill_mean_c": m["per_print_c"], "per_fill_mean_ci95_c_match_clustered": m["per_print_ci_c"],
-            "waterfall": wf, "fixed_costs": cc, "unit_economics": ue, "capital_returns": cr, "capacity": capy,
-            "_daily": daily}
+            "waterfall": wf, "fixed_costs": cc, "breakeven_taker_fee": be_fee, "unit_economics": ue,
+            "capital_returns": cr, "capacity": capy, "_daily": daily}
 
 
 def summary_block(m: dict, label: str, source: str, cost: dict, extra: dict | None = None) -> dict:
@@ -434,7 +448,8 @@ def std_engine_book(tr: pd.DataFrame) -> pd.DataFrame:
                       "month": tr.month.astype(str).to_numpy(), "shares": tr.shares.to_numpy(),
                       "usd_in": tr.usd_in.to_numpy(), "pnl": tr.pnl.to_numpy(), "pnl_ps": tr.pnl_ps.to_numpy(),
                       "gross_ps": tr.gross_res.to_numpy(), "fee_ps": fee, "rebate_ps": 0.0, "slip_ps": 0.0,
-                      "hold_h": ((tr.end_ts - tr.ts) / 3600).to_numpy(), "lock_end": tr.lock_end.to_numpy()})
+                      "hold_h": ((tr.end_ts - tr.ts) / 3600).to_numpy(), "lock_end": tr.lock_end.to_numpy(),
+                      "rate": tr.rate.to_numpy()})
     b["date"] = pd.to_datetime(b.date, utc=True)
     assert np.allclose(b.gross_ps - b.fee_ps, b.pnl_ps, atol=1e-12), "engine pnl_ps != gross - fee"
     return b
@@ -602,9 +617,13 @@ def tier0_block(cost_fn) -> dict:
             S, days = mm["shares"], mm["days"]
             ps = {"gross_edge": net + fee_c, "taker_fees": -fee_c, "maker_rebates": 0.0, "slippage_modelled": 0.0,
                   "net_trading": net}
+            # dollars: scale so net trading equals the file's 20-seed mean P&L (the mean of per-seed P&L is not
+            # mean ¢/share x mean shares), keeping the per-share decomposition's proportions
+            sc = (mm["pnl_usd"] / (net / 100 * S)) if mm.get("pnl_usd") and net else 1.0
             blk["waterfall"] = {"per_share_c": ps,
-                                "usd_period": {k: v / 100 * S for k, v in ps.items()},
-                                "usd_per_day": {k: v / 100 * S / days for k, v in ps.items()},
+                                "usd_period": {k: v / 100 * S * sc for k, v in ps.items()},
+                                "usd_per_day": {k: v / 100 * S * sc / days for k, v in ps.items()},
+                                "usd_scaled_to_seed_mean_pnl": sc,
                                 "note": ("Fees split from the pooled 20-seed decomposition (correct vs wrong fills); the share "
                                          "weight of correct fills is solved from the net per share. Slippage is inside the "
                                          "book-priced fill (we pay the measured cost of walking the stale book, DEVIATIONS V1/V2)."),
@@ -625,6 +644,45 @@ def forward_block(cost) -> dict:
     extra = {"primary_m30_per_share_c": r.get("primary_m30_per_share_c"), "verdicts": {k: v for k, v in r.items() if k.startswith("verdict")}}
     return summary_block(m, "v2 forward (blind)", "results/v2/forward.json", cost, extra) if m else \
         {"status": "ok (no secondary_res block)", "source": "results/v2/forward.json", **extra}
+
+
+def tt_block() -> dict:
+    """Table-tennis out-of-sport test (results/tt/results.json, research/tt): verdicts and trade count only."""
+    path = "results/tt/results.json"
+    r = jload(ROOT / path)
+    if not r:
+        return pending(path, "out-of-sport blind test still running (research/tt)")
+    c, t3 = r.get("counts", {}), r.get("TT3", {})
+    verdicts = {k: r.get(k, {}).get("verdict") for k in ("TT1", "TT2", "TT3")}
+    return {"status": "ok (verdicts only)", "label": "table tennis TT1-TT4", "source": path,
+            "n_trades": int(t3.get("shadow_rows") or 0), "n_matches": int(t3.get("shadow_matches") or 0),
+            "verdicts": verdicts, "counts": {k: c.get(k) for k in ("utt_markets", "evaluable_matches", "print_rows")},
+            "run": r.get("run", {}).get("utc"), "fixed_costs": {},
+            "text": (f"Run {r.get('run', {}).get('utc', 'n/a')[:16]} UTC: {c.get('utt_markets') or 0:,} markets, "
+                     f"{c.get('evaluable_matches')} evaluable matches. " + "; ".join(f"{k} {v}" for k, v in verdicts.items())
+                     + f". {(lambda z: z[:1].upper() + z[1:])((t3.get('note') or '').rstrip('.'))}. No trades, so no P&L to put against costs; the books are untradable anyway "
+                     "(PM_REVIEW P33).")}
+
+
+def live_block(cost, conv_caps: list[float]) -> dict:
+    """Maker live paper session (results/live/summary.json, written by scripts/live_paper.py while it runs).
+    Reported as pending until the primary book has resolved fills; its capital convention is stated (PM P13)."""
+    path = "results/live/summary.json"
+    r = jload(ROOT / path)
+    if not r:
+        return pending(path, "live paper session on real markets not started (results/live/)")
+    b1 = (r.get("books") or {}).get("B1", {})
+    why = (f"session {r.get('run')} ({r.get('kind')}, mode {r.get('mode')}) status '{r.get('status')}'; primary book B1: "
+           f"{b1.get('fills', 0)} fills, {b1.get('resolved_fills', 0)} resolved. The session books "
+           f"${r.get('capital_per_book', 0):,.0f} of paper capital per book, not the 3 × peak-locked convention "
+           f"({'–'.join(f'${c:,.0f}' for c in sorted(conv_caps)) or 'n/a'} for the maker's IS and OOS books). It checks plumbing only: maker v1 already failed its blind OOS, and any rule "
+           "change would be maker v2 with its own pre-registration")
+    if not b1.get("resolved_fills"):
+        return {**pending(path, why), "snapshot_utc": r.get("now")}
+    return {"status": "ok (live paper, summary only)", "label": "maker v1 live paper session", "source": path,
+            "n_trades": b1.get("fills"), "n_matches": b1.get("matches"), "pnl_usd": b1.get("pnl"),
+            "per_share_c": b1.get("net_c_share_w"), "per_share_ci95_c": b1.get("ci95_c"),
+            "capital_usd": r.get("capital_per_book"), "note": why, "fixed_costs": {}, "snapshot_utc": r.get("now")}
 
 
 def generic_block(path: str, label: str, cost, why: str) -> dict:
@@ -752,7 +810,8 @@ def figure(S: dict, path: Path):
             blk = strat["periods"][p]
             cal = blk.get("calendar") or [None, None]
             days = blk.get("unit_economics", {}).get("calendar_days") or blk.get("calendar_days")
-            labs.append(f"{LEG.get(p, p)}: {days} days" + (f", {cal[0]} to {cal[1]}" if cal[0] else ""))
+            labs.append(f"{LEG.get(p, p)}: {days:g} days" + (f", {cal[0]} to {cal[1]}" if cal[0] else "")
+                        + ("" if cal[0] else " (20-seed mean)" if key == "tier0" else ""))
         for p in missing:
             handles.append(plt.Rectangle((0, 0), 1, 1, color=GRID))
             labs.append(f"{LEG.get(p, p)}: pending")
@@ -803,7 +862,7 @@ PER_NAMES = {"IS": "IS", "OOS": "OOS (burned, non-blind)", "U2_IS_blind": "U2 un
 
 def headline_rows(S: dict) -> list[dict]:
     rows = []
-    order = [("v2", ["IS", "OOS", "U2_OOS_blind", "forward"]), ("v2_safe", ["IS", "OOS", "U2_OOS_blind"]),
+    order = [("v2", ["IS", "IS_1s5", "OOS", "U2_OOS_blind", "forward"]), ("v2_safe", ["IS", "IS_1s5", "OOS", "U2_OOS_blind"]),
              ("tier0", ["IS", "OOS"]), ("maker", ["IS", "IS_1s5", "OOS_blind", "live_paper"]), ("tt", ["results"])]
     for k, pers in order:
         for p in pers:
@@ -841,7 +900,9 @@ def md(S: dict, R: dict) -> str:
       "result file or computed from a trade file in this repo; external costs are cited ESTIMATES or labelled "
       "ASSUMPTIONS (section 1). Anything still running shows as **pending** and is filled in on the next run. "
       "Raw numbers: `results/financials/financials.json`; figure: `results/financials/fig_waterfall.png`.\n")
-    a("Conventions: daily P&L is calendar-day and zero-filled; Sharpe and Sortino are ×√365; capital is 3 × peak "
+    a("Conventions: daily P&L is calendar-day and zero-filled, and each trade's P&L is booked on its **entry** date "
+      "(research/v2/sizing/engine.py daily_series), not on the settlement date (entry-to-resolution hours are in each "
+      "unit-economics table); Sharpe and Sortino are ×√365; capital is 3 × peak "
       "dollars locked (repo convention); annualised returns are simple (×365/days, no compounding); kurtosis is Pearson "
       "(normal = 3). IS = matches starting before 2026-08-25 14:15 UTC (trades from 2026-02); OOS = matches starting after "
       "it, **burned (non-blind)**. U2 = 11,307 markets never used in development (the blind test). "
@@ -857,7 +918,9 @@ def md(S: dict, R: dict) -> str:
         fc, na = r["fixed_cost_usd_per_day"], r["net_after_costs_usd_per_day"]
         fcs = f"{f_usd(fc['central'])} [{f_usd(fc['low'])} to {f_usd(fc['high'])}]" if fc.get("central") is not None else "n/a"
         nas = f"**{f_usd(na['central'])}** [{f_usd(na['high'])} to {f_usd(na['low'])}]" if na.get("central") is not None else "n/a"
-        a(f"| {r['strategy']} | {r['period']} | {f'{r['trades']:,}' if isinstance(r['trades'], (int, float)) else 'n/a'} | {f_num(r['net_c_per_share'], 2, True)} {f_ci(r['net_c_per_share_ci95'])} | "
+        tcell = ("n/a" if not isinstance(r["trades"], (int, float)) else f"{r['trades']:,}" if float(r["trades"]).is_integer()
+                 else f"≈{round(r['trades']):,} (seed mean)")
+        a(f"| {r['strategy']} | {r['period']} | {tcell} | {f_num(r['net_c_per_share'], 2, True)} {f_ci(r['net_c_per_share_ci95'])} | "
           f"{f_usd(r['net_trading_usd_per_day'])} | {fcs} | {nas} | {f_usd(r['capital_usd'])} | {f_pct(r['return_on_capital_ann_pct'], 0)} | "
           f"{f_num(r['sharpe_ann'], 1)} | {f_pct(r['max_dd_pct'], 1)} |")
     a("")
@@ -948,6 +1011,23 @@ def md(S: dict, R: dict) -> str:
                   f"{f_usd(now)} | {f_usd(need) if need else 'never (net edge ≤ 0)'} | "
                   f"{f_num(need / now, 1) + '×' if need and now else 'n/a'} | {cov} |")
             a("")
+            bef = [(p, b["breakeven_taker_fee"]) for p, b in wfp if b.get("breakeven_taker_fee")]
+            if bef:
+                def fee_cell(x, key):
+                    k = x.get(f"fee_multiple_{key}")
+                    r = x.get(f"rate_{key}")
+                    return "n/a" if k is None else (f"{f_num(k, 2)}× ({f_pct(r * 100, 1)})" if r is not None else f"{f_num(k, 2)}×")
+                a("**Break-even taker fee** (PM_REVIEW P03). Book held fixed, fee linear in the rate: every trade's fee "
+                  "is scaled by k until net P&L is zero, before and after fixed costs. Shown as k × the schedule each trade "
+                  "actually paid, and as a rate where every trade paid the same rate. Today's rate is 5%.\n")
+                a("| period | taker fees as % of gross | rate charged | break-even before fixed costs | after low fixed costs | after central fixed costs | after high fixed costs |")
+                a("|---|---|---|---|---|---|---|")
+                for p, x in bef:
+                    a(f"| {PER_NAMES.get(p, p)} | {f_pct(x['fee_share_of_gross'] * 100, 1)} | "
+                      f"{f_pct(x['uniform_rate_charged'] * 100, 0) if x['uniform_rate_charged'] is not None else 'mixed (0–5%)'} | "
+                      f"{fee_cell(x, 'before_fixed_costs')} | {fee_cell(x, 'after_low_fixed_costs')} | "
+                      f"{fee_cell(x, 'after_central_fixed_costs')} | {fee_cell(x, 'after_high_fixed_costs')} |")
+                a("\nA negative multiple means the book loses money after fixed costs even with zero taker fees.\n")
         if full:
             a(f"### {n}b. Unit economics\n")
             a("| | " + " | ".join(PER_NAMES.get(p, p) for p, _ in full) + " |")
@@ -988,8 +1068,21 @@ def md(S: dict, R: dict) -> str:
             ]
             for lab, fn in rows:
                 a(f"| {lab} | " + " | ".join(fn(b["capital_returns"]) for _, b in full) + " |")
-            a("\nWeeks are calendar weeks (Mon–Sun) and months calendar months; the first and last can be partial.\n")
+            fx = [b["capital_returns"].get("fixed_capital") for _, b in full]
+            if all(fx):
+                for j, c0 in enumerate(fx[0]):
+                    a(f"| return, annualised / max DD, on one capital fixed ex ante: {c0['what']} {f_usd(c0['capital_usd'])} | "
+                      + " | ".join(f"{f_pct(c[j]['return_ann_pct'], 0)} / {f_pct(c[j]['max_dd_pct'], 2)}" for c in fx) + " |")
+            a("\nWeeks are calendar weeks (Mon–Sun) and months calendar months; the first and last can be partial.")
+            if all(fx):
+                a("The rows 'on one capital fixed ex ante' use the same dollar capital for every period (PM_REVIEW P13): "
+                  + "; ".join(f"{c0['what']} = {c0['source']}" for c0 in fx[0])
+                  + ". The rows above them use each period's own 3 × peak locked, which a trader cannot know in advance.")
+            a("")
         for p, b in summ:
+            if b.get("text"):
+                a(f"**{PER_NAMES.get(p, p)}** (`{b.get('source')}`): {b['text']}\n")
+                continue
             a(f"**{PER_NAMES.get(p, p)}** (`{b.get('source')}`; summary file, no trade-level data): "
               f"{b.get('n_trades') or 'n/a'} trades, {f_num(b.get('per_share_c'), 2, True)}¢/share {f_ci(b.get('per_share_ci95_c'))}, "
               f"{f_usd(b.get('pnl_usd'))} ({f_usd(b.get('pnl_usd_per_day'), 1)}/day), capital {f_usd(b.get('capital_usd'))}, "
@@ -1046,17 +1139,35 @@ def main():
             ("v2", "v2 (frozen fast-tier book)",
              "The frozen v2 rule: copy qualifying fast-tier prints 0–3 s after a detected jump, risk-parity size, wallet filter, "
              "0.05–0.95 zone, |net| ≤ 100 shares per match, hold to resolution. It fills at the fast tier's own print price, "
-             "so it is the prize for fast-tier speed, not a remotely executable strategy (docs/NOTE.md section 5)."),
+             "so it is the prize for fast-tier speed, not a remotely executable strategy (docs/NOTE.md sections 3 and 6)."),
             ("v2_safe", "v2-safe (net cap 50)",
              "v2 with the per-match net cap halved to 50 shares (pre-registered risk dial, research/v2/lowloss).")):
         cost = cost_stack(name)
         S[name] = {"name": nice, "about": about, "cost": cost, "periods": {}}
-        bk = V["books"].get(name, {})
+        bk = dict(V["books"].get(name, {}))
+        if "IS" in bk and "regime" in bk["IS"]:   # PM_REVIEW P08: the only IS slice in today's venue regime (1 s / 5%)
+            bk = {k: v for kk, vv in bk.items() for k, v in
+                  ([(kk, vv), ("IS_1s5", vv[vv.regime == "1s/5%"])] if kk == "IS" else [(kk, vv)])}
         for per, tr in bk.items():
             if "gross_res" not in tr:
                 continue
             S[name]["periods"][per] = book_stats(std_engine_book(tr), cost, f"{nice} {per}",
                                                  "engine re-simulation (verified equal to the repo trade file)", lock_v2)
+        # PM_REVIEW P13: one capital, fixed ex ante (the IS figure), for every period
+        P_ = S[name]["periods"]
+        fixed = [("IS capital", P_["IS"]["capital_returns"]["capital_usd"], "this book's IS capital (3 x IS peak locked)")]
+        if name == "v2":
+            rl = (jload(ROOT / "results/risk/risk_stats.json") or {}).get("liquidity_capital", {}).get("is_eval", {})
+            if rl.get("capital_usd_3x_peak_realised"):
+                fixed.append(("realised-lock capital", rl["capital_usd_3x_peak_realised"],
+                              "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)"))
+        for per, blk in P_.items():
+            if blk.get("status") != "ok":
+                continue
+            T_ = blk["unit_economics"]["calendar_days"]
+            blk["capital_returns"]["fixed_capital"] = [
+                {"what": w, "capital_usd": c, "source": s_, "return_ann_pct": blk["capital_returns"]["pnl_usd"] / c * 100 * 365 / T_,
+                 "max_dd_pct": blk["capital_returns"]["max_dd_usd"] / c * 100} for w, c, s_ in fixed]
         if name == "v2":
             S[name]["periods"]["forward"] = forward_block(cost)
         S[name]["waterfall_note"] = ("Slippage as modelled is zero: v2 fills at the fast tier's own print price (they already "
@@ -1068,6 +1179,10 @@ def main():
         # reference checks
         P = S[name]["periods"]
         if name == "v2":
+            pmc = (jload(ROOT / "results/financials/pm_checks.json") or {}).get("current_regime_1s_5pct_is", {})
+            if "IS_1s5" in P and pmc:
+                chk("v2 IS 1 s/5% slice net P&L $ vs results/financials/pm_checks.json", P["IS_1s5"]["capital_returns"]["pnl_usd"], pmc["total_pnl_usd"], 1e-9)
+                chk("v2 IS 1 s/5% slice capital $ vs results/financials/pm_checks.json", P["IS_1s5"]["capital_returns"]["capital_usd"], pmc["capital_usd_3x_own_peak"], 1e-9)
             for per, key in (("IS", "causal/is_eval/slip0.0"), ("OOS", "causal/burned_oos/slip0.0")):
                 if per in P and key in cz:
                     chk(f"v2 {per} net P&L $ vs results/v2/causal.json", P[per]["capital_returns"]["pnl_usd"], cz[key]["total_pnl_usd"], 1e-9)
@@ -1141,18 +1256,17 @@ def main():
     else:
         S["maker"]["periods"]["OOS_blind"] = generic_block("results/maker/oos.json", "maker OOS (blind)", mcost,
                                                            "pre-registered blind OOS (research/v2/maker/PREREG.md) not run yet")
-    S["maker"]["periods"]["live_paper"] = generic_block("results/live/summary.json", "live paper session", mcost,
-                                                        "live paper session on real markets still running (results/live/)")
+    S["maker"]["periods"]["live_paper"] = live_block(mcost, [b["capital_returns"]["capital_usd"] for k_, b in S["maker"]["periods"].items()
+                                                                if k_ in ("IS", "OOS_blind") and b.get("status") == "ok"])
     S["maker"]["waterfall_note"] = ("Slippage as modelled is zero: we join the printed level and are filled at the print price. "
                                     "The realism verifier's combined conservative stress (VWAP fix + 1¢ step-ahead + no rebate) "
                                     "is in section 5d.")
 
     # ---- table tennis
     S["tt"] = {"name": "Table tennis (out-of-sport test)", "cost": cost_stack("tt"),
-               "periods": {"results": generic_block("results/tt/results.json", "table tennis", cost_stack("tt"),
-                                                    "out-of-sport blind test still running (research/tt)")},
+               "periods": {"results": tt_block()},
                "about": ("Out-of-sport test of the CV + book mechanism on every Polymarket table-tennis match. Liquidity "
-                         "context from docs/NOTE.md section 7: 89¢ median spread, $23 at the touch, about $2 of volume per match.")}
+                         "context from docs/NOTE.md section 6: 89¢ median spread, $23 at the touch, about $2 of volume per match.")}
 
     # ---- capacity text, coverage of costs within tested sizes
     for name in ("v2", "v2_safe"):
@@ -1192,6 +1306,18 @@ def main():
                "book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen "
                "rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward "
                "fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n" + "\n".join(rows))
+        # PM_REVIEW P04: what the causal curve says about capacity out of sample (derived from the rows above)
+        oo = [(k, r["OOS"]) for k, r in sc.items() if r["OOS"].get("n_trades")]
+        best = max(oo, key=lambda kv: kv[1]["pnl_usd_per_day"])
+        pos = [(k, r) for k, r in oo if r["pnl_usd_per_day"] > 0 and r["sharpe_ann"] > 0]
+        txt += (f"\n\n**Out-of-sample capacity on this evidence.** On the burned OOS, $/day peaks at {best[0]} "
+                f"({f_usd(best[1]['pnl_usd_per_day'], 1)}/day, capital {f_usd(best[1]['capital_usd'])}); the largest size still "
+                f"positive is {pos[-1][0]} ({f_usd(pos[-1][1]['pnl_usd_per_day'], 1)}/day, Sharpe {f_num(pos[-1][1]['sharpe_ann'], 1)}, "
+                f"capital {f_usd(pos[-1][1]['capital_usd'])}), and every larger size loses money. So out-of-sample capacity is "
+                f"about {f_usd(best[1]['capital_usd'])}–{f_usd(pos[-1][1]['capital_usd'])} of capital."
+                + (" This replaces the sizing lens's '~$100k at Sharpe ~6' (research/v2/sizing/RESULTS.md §6), which used "
+                   "onset-window labels (the D9 hindsight bug), was in-sample only, and whose $102k row is the "
+                   "copy-everything Baseline, not v2." if name == "v2" else "")) if pos else ""
         s["capacity_md"] = txt
         s["caveats"] = ["IS is in-sample for the rule's selection; the OOS is burned (looked at before v2-safe was designed).",
                         "Per-share P&L moves with size because a bigger book takes a different mix of trades (more same-direction "
@@ -1200,6 +1326,16 @@ def main():
                         "would make the larger rows worse.",
                         "U2 has few markets before May 2026 (research/v2/expand/RESULTS.md, coverage facts), so U2-IS per-day "
                         "figures are spread over a mostly empty 201-day calendar."]
+        if name == "v2_safe":
+            stz = (jload(ROOT / "research/v2/lowloss/out/results.json") or {}).get("stitched_is", {})
+            if stz:
+                s["caveats"].append(
+                    f"The IS Sharpe {f_num(s['periods']['IS']['capital_returns']['sharpe_ann'], 2)} is the frozen variant's "
+                    "full-period figure and is in-sample for its own selection. The honest IS figure is the stitched "
+                    f"walk-forward series: Sharpe {f_num(stz.get('sharpe_ann'), 2)}, {f_num(stz.get('per_share_c'), 2, True)}¢/share, "
+                    f"{f_usd(stz.get('pnl_usd'))} (research/rigor/RESULTS.md verifier correction 4; "
+                    "research/v2/lowloss/out/results.json stitched_is).")
+                s["stitched_is_repo"] = {k: stz.get(k) for k in ("sharpe_ann", "per_share_c", "per_share_ci_c", "pnl_usd", "capital_usd")}
     # maker capacity
     mk = S["maker"]
     fs = vr.get("2_fill_stress", {})
@@ -1252,9 +1388,19 @@ def main():
                          "Hold-to-resolution variance on a tiny capital base makes the dollar series noisy (2 of 7 months negative in $).",
                          f"Per fill (the lens's own headline) the IS edge is {f_num(pf['per_fill_mean_c'], 2, True)}¢ "
                          f"{f_ci(pf['per_fill_mean_ci95_c_match_clustered'])}; share-weighted (used here, as for every strategy) it is "
-                         f"{f_num(pf['per_share_c'], 2, True)}¢ {f_ci(pf['per_share_ci95_c_match_clustered'])}: the large fills earn less.",
+                         f"{f_num(pf['per_share_c'], 2, True)}¢ {f_ci(pf['per_share_ci95_c_match_clustered'])}: the large fills earn less. "
+                         "Both CIs here come from the engine's bootstrap (research/v2/sizing/engine.py metrics: 1,000 match "
+                         "draws, seed 0); crossmarket RESULTS.md 5b's per-fill CI [+1.73, +3.70] comes from that lens's own "
+                         "bootstrap. Same point estimate, different resampling draws.",
                          "Max drawdown here is measured against the capital base (equity starting at 0); crossmarket RESULTS.md's −44% "
                          "is measured against capital plus accumulated P&L, so the two differ."]
+        mo_h = (jload(ROOT / "results/maker/oos.json") or {}).get("headline", {})
+        if mo_h.get("max_dd_usd") and mo_h.get("max_dd_pct_capital"):
+            den = mo_h["max_dd_usd"] / (mo_h["max_dd_pct_capital"] / 100)
+            mk["caveats"].append(
+                f"Same for the blind OOS: results/maker/oos.json reports {f_pct(mo_h['max_dd_pct_capital'], 1)} for the same "
+                f"{f_usd(mo_h['max_dd_usd'])} drawdown, i.e. a denominator of {f_usd(den)} (capital {f_usd(mo_h.get('capital'))} "
+                f"plus the equity peak); the table above divides by capital alone. Name the base when quoting either.")
     mo_ = S["maker"]["periods"].get("OOS_blind", {})
     if mo_.get("verdict"):
         v, sr = mo_["verdict"], mo_.get("stresses_repo", {})
@@ -1316,6 +1462,23 @@ def main():
             f"With a feed licence (ASSUMPTION, central {f_usd(COSTS['feed_licence']['central'])}/month) plus a London VPS, v2's fixed costs are "
             f"{f_usd(c['central'])}/day (range {f_usd(c['low'])}–{f_usd(c['high'])}). That leaves {f_usd(v2i['fixed_costs']['central']['net_after_costs_usd_per_day'])}/day IS "
             f"and {f_usd(v2o['fixed_costs']['central']['net_after_costs_usd_per_day'])}/day OOS at central costs.")
+        v2c = S["v2"]["periods"].get("IS_1s5")
+        if v2c:
+            reading.append(
+                f"Forecast-relevant IS row (PM_REVIEW P08): only {v2c['calendar'][0]} to {v2c['calendar'][1]} "
+                f"({v2c['unit_economics']['calendar_days']} days) ran under today's 1 s delay and 5% fee. There v2 nets "
+                f"{f_num(v2c['per_share_c'], 2, True)}¢ {f_ci(v2c['per_share_ci95_c_match_clustered'])} and "
+                f"{f_usd(v2c['waterfall']['usd_per_day']['net_trading'], 1)}/day against {f_usd(c['central'], 1)}/day of central fixed "
+                f"costs: {f_usd(v2c['fixed_costs']['central']['net_after_costs_usd_per_day'], 1)}/day. The full IS row blends fee and "
+                "delay regimes that no longer exist.")
+        bo = v2o.get("breakeven_taker_fee") or {}
+        if bo.get("rate_before_fixed_costs") is not None:
+            reading.append(
+                f"Fees are the binding variable (PM_REVIEW P03). On the burned OOS taker fees are "
+                f"{f_pct(bo['fee_share_of_gross'] * 100, 1)} of gross ({f_pct((v2i.get('breakeven_taker_fee') or {}).get('fee_share_of_gross', 0) * 100, 1)} IS). "
+                f"With the book held fixed, the break-even taker fee rate is {f_pct(bo['rate_before_fixed_costs'] * 100, 1)} before fixed "
+                f"costs and {f_pct(bo['rate_after_central_fixed_costs'] * 100, 1)} after central fixed costs; today's rate is "
+                f"{f_pct(bo['uniform_rate_charged'] * 100, 0)}.")
     mi = S["maker"]["periods"].get("IS")
     mo_ = S["maker"]["periods"].get("OOS_blind", {})
     if mi and mi.get("status") == "ok":
@@ -1339,9 +1502,18 @@ def main():
                        f"for {S['tier0']['cost']['items'].get('events_per_day', {}).get('central', 'n/a')} covered matches a day.")
     else:
         tb = S["tier0"]["periods"]
-        reading.append("Tier-0 (counterfactual) at the scenario's net cap: " + "; ".join(
-            f"{p} {f_usd(b.get('pnl_usd_per_day'))}/day trading vs {f_usd(b['fixed_costs']['central']['fixed_cost_usd_per_day'])}/day fixed"
-            for p, b in tb.items() if b.get("status", "").startswith("ok") and b.get("fixed_costs", {}).get("central")) + ".")
+        cdy = S["tier0"]["cost"]["daily"]
+        reading.append("Tier-0 (counterfactual, verifier-corrected headline in results/tier0/results.json) at the scenario's net cap: " + "; ".join(
+            f"{p} {f_usd(b.get('pnl_usd_per_day'), 1)}/day trading vs {f_usd(cdy['low'])} / {f_usd(cdy['central'])} / {f_usd(cdy['high'])} "
+            f"per day fixed (low / central / high), so it would need {f_num(cdy['low'] / b['pnl_usd_per_day'], 1)}× its trading P&L "
+            f"just to cover the low-cost case"
+            for p, b in tb.items() if b.get("status", "").startswith("ok") and b.get("pnl_usd_per_day")) +
+            ". Uneconomic at 10 covered matches a day in every cost case (PM_REVIEW P10).")
+    stz = S["v2_safe"].get("stitched_is_repo")
+    if stz:
+        reading.append(f"v2-safe's honest IS Sharpe is the stitched walk-forward {f_num(stz['sharpe_ann'], 2)}, not the frozen "
+                       f"variant's {f_num(S['v2_safe']['periods']['IS']['capital_returns']['sharpe_ann'], 2)} shown in the headline "
+                       "(research/rigor/RESULTS.md verifier correction 4).")
     for name in ("v2", "v2_safe"):
         cov = S[name].get("coverage", {})
         if cov:

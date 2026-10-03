@@ -1465,7 +1465,8 @@
       }
     ]
   },
-  "v2": {
+  "v2_onset_superseded": {
+    "_note": "SUPERSEDED: onset-window (hindsight-labelled, D9) draft of v2, not written by the current run_all.py; the frozen causal v2 is results/v2/causal.json (PM_REVIEW P16)",
     "is_eval": {
       "n_trades": 67468,
       "n_matches": 7782,

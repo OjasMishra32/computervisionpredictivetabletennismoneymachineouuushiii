@@ -1,0 +1,1203 @@
+{
+ "p07_wallet_clustered_ci": {
+  "method": "bootstrap over copied wallets, 2,000 draws, seed 0, share-weighted (pm_checks.py section 2)",
+  "is": {
+   "n_wallets": 80,
+   "n_trades": 55662,
+   "per_share_c": 1.3814511010237982,
+   "ci95_c_wallet_clustered": [
+    0.5708655563632707,
+    2.3009511949014922
+   ],
+   "ci95_c_match_clustered_causal_json": [
+    1.167847083750991,
+    1.5935130267793969
+   ],
+   "top1_share_of_pnl": 0.41663005401551656,
+   "top5_share_of_pnl": 0.813662288525831
+  },
+  "burned_oos": {
+   "n_wallets": 86,
+   "n_trades": 10412,
+   "per_share_c": 0.5987363355649791,
+   "ci95_c_wallet_clustered": [
+    -0.45453363092194293,
+    2.377185320961488
+   ],
+   "ci95_c_match_clustered_causal_json": [
+    0.08724550818301618,
+    1.1271958683912837
+   ],
+   "top1_share_of_pnl": 0.48364393364112396,
+   "top5_share_of_pnl": 1.4209721784903246
+  },
+  "note_md_table2_footnote_value": [
+   -0.6,
+   2.11
+  ],
+  "note_value_reproduced_to_2dp": false
+ },
+ "p14_volume_bands_is": {
+  "frozen_book_subset_no_refit": {
+   "prestart>=5000": {
+    "n_trades": 29052,
+    "n_matches": 3969,
+    "per_share_c": 1.2756617535046355,
+    "per_share_ci_c": [
+     0.9929316981137405,
+     1.563377262889229
+    ],
+    "total_pnl_usd": 21320.798705616686,
+    "sharpe_ann": 11.101749585998862,
+    "capital_usd": 16021.459653803571
+   },
+   "prestart>=20000": {
+    "n_trades": 11836,
+    "n_matches": 1695,
+    "per_share_c": 1.39875308969034,
+    "per_share_ci_c": [
+     0.9752572919747236,
+     1.812265811402752
+    ],
+    "total_pnl_usd": 10502.22790259032,
+    "sharpe_ann": 8.514705405897411,
+    "capital_usd": 11442.160532322214
+   }
+  },
+  "scope": "IS v2 trades (data/v2_trades_is_oos.parquet, IS conds, months >= 2026-02)",
+  "prestart_definition": "$ traded before the scheduled start (size x price on the public tape), src/tier0.py prestart_volume",
+  "by_prestart_volume": [
+   {
+    "band": "< $1k",
+    "n_matches": 1036,
+    "n_trades": 7103,
+    "share_of_shares": 0.10498193066381377,
+    "pnl_usd": 5774.761496616929,
+    "per_share_c": 1.8797377302711222,
+    "ci95_c_match_clustered": [
+     1.1435177572358497,
+     2.63483981010379
+    ]
+   },
+   {
+    "band": "$1-5k",
+    "n_matches": 2634,
+    "n_trades": 19507,
+    "share_of_shares": 0.3238739664670433,
+    "pnl_usd": 13330.1589894456,
+    "per_share_c": 1.4064913032606803,
+    "ci95_c_match_clustered": [
+     1.031787220497166,
+     1.798787708438291
+    ]
+   },
+   {
+    "band": "$5-20k",
+    "n_matches": 2274,
+    "n_trades": 17216,
+    "share_of_shares": 0.31456685554766195,
+    "pnl_usd": 10818.570803026363,
+    "per_share_c": 1.175261995390685,
+    "ci95_c_match_clustered": [
+     0.7854679456156737,
+     1.5678001518612226
+    ]
+   },
+   {
+    "band": "$20-100k",
+    "n_matches": 1410,
+    "n_trades": 9977,
+    "share_of_shares": 0.21264719448798283,
+    "pnl_usd": 8657.598334380798,
+    "per_share_c": 1.3912831893525075,
+    "ci95_c_match_clustered": [
+     0.9249945631092592,
+     1.8442571152016358
+    ]
+   },
+   {
+    "band": ">= $100k",
+    "n_matches": 285,
+    "n_trades": 1859,
+    "share_of_shares": 0.04393005283349808,
+    "pnl_usd": 1844.6295682095238,
+    "per_share_c": 1.4349117839665664,
+    "ci95_c_match_clustered": [
+     0.33948146191794637,
+     2.5002097506379153
+    ]
+   }
+  ],
+  "by_lifetime_volume_reproduces_risk_stats": [
+   {
+    "band": "$5-20k",
+    "n_matches": 356,
+    "n_trades": 1291,
+    "share_of_shares": 0.01602375983049362,
+    "pnl_usd": 1196.2427285086355,
+    "per_share_c": 2.5511303288061793,
+    "ci95_c_match_clustered": [
+     0.752794751506205,
+     4.489288965571134
+    ]
+   },
+   {
+    "band": "$20-100k",
+    "n_matches": 2824,
+    "n_trades": 16935,
+    "share_of_shares": 0.24795362073820576,
+    "pnl_usd": 15606.99643229415,
+    "per_share_c": 2.1509317912680515,
+    "ci95_c_match_clustered": [
+     1.7077028171669566,
+     2.6113007423576753
+    ]
+   },
+   {
+    "band": "$0.1-1M",
+    "n_matches": 4188,
+    "n_trades": 34811,
+    "share_of_shares": 0.6661403678314656,
+    "pnl_usd": 21671.789045337235,
+    "per_share_c": 1.111749067921071,
+    "ci95_c_match_clustered": [
+     0.8386494155197814,
+     1.3817092904259614
+    ]
+   },
+   {
+    "band": "> $1M",
+    "n_matches": 271,
+    "n_trades": 2625,
+    "share_of_shares": 0.06988225159983497,
+    "pnl_usd": 1950.6909855391903,
+    "per_share_c": 0.9538923140796076,
+    "ci95_c_match_clustered": [
+     0.1694645239435018,
+     1.7667564199155654
+    ]
+   }
+  ],
+  "is_universe_matches_feb_aug": 9093,
+  "is_universe_matches_prestart_ge_5k": 4756,
+  "is_universe_prestart_quantiles_usd": {
+   "0.1": 706.094585605477,
+   "0.25": 1848.1169840343018,
+   "0.5": 5557.9077523535725,
+   "0.75": 17779.916471935692,
+   "0.9": 48658.89334893053
+  },
+  "spearman_prestart_vs_lifetime_is_universe": 0.6529295515773899
+ },
+ "p24_factor_regression_is": {
+  "capital_usd": 28302.367701375268,
+  "factor_source": "Kenneth French data library, daily F-F 3 factors + momentum (https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html), cached in data/factors/",
+  "newey_west_lags": 5,
+  "calendar_days_excess_x365": {
+   "n_days": 206,
+   "period": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "coef": {
+    "alpha_daily": 0.00675021129278595,
+    "MktRF": 0.18038755699769157,
+    "SMB": 0.027389519495707317,
+    "HML": 0.027393225356683707,
+    "Mom": 0.012840517771351723
+   },
+   "t": {
+    "alpha_daily": 9.51820534389775,
+    "MktRF": 1.5370259730589517,
+    "SMB": 0.16175349729435723,
+    "HML": 0.24849958075638817,
+    "Mom": 0.19087222812798374
+   },
+   "r2": 0.02311131332600258,
+   "alpha_annualised_pct": 246.3827121866872,
+   "annualisation": 365,
+   "max_abs_factor_t": 1.5370259730589517,
+   "corr_with_market": 0.1500999788392874,
+   "spec": "IS only; every calendar day (zero-P&L days kept); factors and RF = 0 on weekends and US holidays; y = v2 return on IS capital minus RF; alpha x 365",
+   "days_without_factor_data": 64
+  },
+  "weekdays_only_excess_x252": {
+   "n_days": 142,
+   "period": [
+    "2026-02-02",
+    "2026-08-25"
+   ],
+   "coef": {
+    "alpha_daily": 0.007643102046179723,
+    "MktRF": 0.16782444447925865,
+    "SMB": 0.025753875143099198,
+    "HML": 0.01371192564435061,
+    "Mom": 0.013168925963713654
+   },
+   "t": {
+    "alpha_daily": 8.125075219647456,
+    "MktRF": 1.3719309929669916,
+    "SMB": 0.13929549126227272,
+    "HML": 0.12172353078912325,
+    "Mom": 0.18750815177931854
+   },
+   "r2": 0.026834443418538356,
+   "alpha_annualised_pct": 192.60617156372902,
+   "annualisation": 252,
+   "max_abs_factor_t": 1.3719309929669916,
+   "corr_with_market": 0.16223069182086522,
+   "spec": "IS only; days with factor data only (weekend P&L dropped); excess of RF; alpha x 252"
+  },
+  "committed_spec_is_only": {
+   "n_days": 138,
+   "period": [
+    "2026-02-02",
+    "2026-08-25"
+   ],
+   "coef": {
+    "alpha_daily": 0.008011342396736015,
+    "MktRF": 0.1725913224252477,
+    "SMB": 0.0846170345449053,
+    "HML": 0.04424124666076952,
+    "Mom": 0.027541674287265238
+   },
+   "t": {
+    "alpha_daily": 8.476134072469517,
+    "MktRF": 1.3640304952389357,
+    "SMB": 0.46322405897751984,
+    "HML": 0.3947737949953515,
+    "Mom": 0.39118525426047346
+   },
+   "r2": 0.03335942188641561,
+   "alpha_annualised_pct": 201.88582839774756,
+   "annualisation": 252,
+   "max_abs_factor_t": 1.3640304952389357,
+   "corr_with_market": 0.17291622662832584,
+   "spec": "scripts/factor_regression.py as committed (active trade days joined to factor days, raw return, alpha x 252) but IS conds only"
+  },
+  "committed_results_file": {
+   "n_days": 142,
+   "period": [
+    "2026-02-02",
+    "2026-08-31"
+   ],
+   "coef": {
+    "alpha_daily": 0.007919,
+    "MktRF": 0.168837,
+    "SMB": 0.092071,
+    "HML": 0.060932,
+    "Mom": 0.033704
+   },
+   "t": {
+    "alpha_daily": 8.5,
+    "MktRF": 1.33,
+    "SMB": 0.51,
+    "HML": 0.55,
+    "Mom": 0.48
+   },
+   "r2": 0.0331,
+   "alpha_annualised_pct": 199.6,
+   "corr_with_market": 0.167
+  }
+ },
+ "p25_kill_rules_is": {
+  "trailing_30d_edge_rule_v2_is": {
+   "rule": "docs/RISK.md kill table: trailing 30-day net edge < 0.3c/share -> half size; <= 0 -> stop. Edge known at the start of each UTC day from trades entered in the previous 30 days whose market had resolved; the full-size book is always measured, so a stopped book can restart",
+   "days": 206,
+   "days_full": 206,
+   "days_half": 0,
+   "days_stopped": 0,
+   "trailing_edge_c_min": 0.7427599369573765,
+   "trailing_edge_c_median": 1.4740638957968732,
+   "trailing_edge_c_on_last_is_day": 1.104930864767434,
+   "first_day_below_0.3c": null,
+   "last_day_below_0.3c": null,
+   "base": {
+    "pnl_usd": 40425.719191679214,
+    "sharpe_ann": 14.483153541485253,
+    "max_dd_usd": -569.4550360798748,
+    "max_dd_pct_of_capital": -2.0120402719953496,
+    "worst_day_usd": -550.764300067122,
+    "sd_daily_usd": 258.86529601389145
+   },
+   "with_rule": {
+    "pnl_usd": 40425.719191679214,
+    "sharpe_ann": 14.483153541485253,
+    "max_dd_usd": -569.4550360798748,
+    "max_dd_pct_of_capital": -2.0120402719953496,
+    "worst_day_usd": -550.764300067122,
+    "sd_daily_usd": 258.86529601389145
+   },
+   "by_month_days_not_full": {
+    "2026-02": 0,
+    "2026-03": 0,
+    "2026-04": 0,
+    "2026-05": 0,
+    "2026-06": 0,
+    "2026-07": 0,
+    "2026-08": 0
+   }
+  },
+  "drawdown_5pct_stop_v2_is": {
+   "fires": false,
+   "worst_dd_pct": -2.0120402719953496
+  },
+  "daily_stop_1000_v2_is": {
+   "fires_days": 0,
+   "worst_day_usd": -550.764300067122
+  },
+  "v2_vs_maker_is_daily_corr": {
+   "pearson": -0.04128507848040234,
+   "days": 206,
+   "note": "calendar-day zero-filled IS daily P&L, Feb-Aug 2026; IS only"
+  },
+  "daily_stop_per_book": {
+   "sigma_multiple_from_v2": 3.8630129855117277,
+   "books": {
+    "v2": {
+     "capital_usd": 28302.367701375268,
+     "capital_source": "results/v2/causal.json",
+     "is_daily_sd_usd": 258.86529601389145,
+     "worst_is_day_usd": -550.764300067122,
+     "max_is_dd_pct_of_capital": -2.0120402719953496,
+     "daily_stop_at_same_sigma_multiple_usd": 1000.0,
+     "daily_stop_pct_of_capital": 3.533273295546252,
+     "current_1000_stop_pct_of_capital": 3.533273295546252,
+     "current_1000_stop_in_sigma": 3.8630129855117277,
+     "days_the_scaled_stop_would_fire_is": 0
+    },
+    "v2_safe": {
+     "capital_usd": 17680.604395182603,
+     "capital_source": "results/lowloss/results.json",
+     "is_daily_sd_usd": 141.0053385099683,
+     "worst_is_day_usd": -284.1582717168387,
+     "max_is_dd_pct_of_capital": -1.6071751019680214,
+     "daily_stop_at_same_sigma_multiple_usd": 544.7054536904844,
+     "daily_stop_pct_of_capital": 3.0808078814257005,
+     "current_1000_stop_pct_of_capital": 5.6559152484202855,
+     "current_1000_stop_in_sigma": 7.09193006851514,
+     "days_the_scaled_stop_would_fire_is": 0
+    },
+    "maker_v1": {
+     "capital_usd": 2779.310963325458,
+     "capital_source": "3 x peak locked of data/v2_crossmarket/wf_lean_maker.parquet",
+     "is_daily_sd_usd": 154.9463065514585,
+     "worst_is_day_usd": -668.9082068264319,
+     "max_is_dd_pct_of_capital": -59.16545354297222,
+     "daily_stop_at_same_sigma_multiple_usd": 598.559594265365,
+     "daily_stop_pct_of_capital": 21.536258524637553,
+     "current_1000_stop_pct_of_capital": 35.980140876481684,
+     "current_1000_stop_in_sigma": 6.453848576686755,
+     "days_the_scaled_stop_would_fire_is": 1
+    }
+   },
+   "rule": "daily stop = (1000 / v2 IS daily sd) x the book's own IS daily sd, so every book stops at the same sigma multiple as v2's $1,000"
+  }
+ },
+ "p26_gross_edge_split_is": {
+  "scope": "IS v2 trades with a 5 s and 30 s mid (mid = print-based proxy, src/tiers.py)",
+  "rows_used": 55630,
+  "rows_total": 55662,
+  "share_of_shares_used": 0.999410088845572,
+  "method": "share-weighted cents/share; 95% CI bootstrap over matches, 2,000 draws, seed 0",
+  "components": {
+   "gross_fill_to_resolution": {
+    "c_per_share": 1.988117136739633,
+    "ci95_c_match_clustered": [
+     1.766953938691292,
+     2.2060295679709916
+    ]
+   },
+   "fill_vs_mid_5s": {
+    "c_per_share": 1.1329418073353221,
+    "ci95_c_match_clustered": [
+     1.0864893430856504,
+     1.1788518019651286
+    ]
+   },
+   "mid_5s_to_mid_30s": {
+    "c_per_share": 0.4281762431173869,
+    "ci95_c_match_clustered": [
+     0.3786707529835908,
+     0.4810606072028639
+    ]
+   },
+   "fill_vs_mid_30s (stale quote)": {
+    "c_per_share": 1.5611180504527096,
+    "ci95_c_match_clustered": [
+     1.5041383949178933,
+     1.6226380054654896
+    ]
+   },
+   "mid_30s_to_resolution (drift)": {
+    "c_per_share": 0.426999086286924,
+    "ci95_c_match_clustered": [
+     0.20877840876707873,
+     0.6422400938086141
+    ]
+   },
+   "fee": {
+    "c_per_share": 0.6066989859466551,
+    "ci95_c_match_clustered": [
+     0.59724789696801,
+     0.616036574994269
+    ]
+   },
+   "net": {
+    "c_per_share": 1.3814181507929786,
+    "ci95_c_match_clustered": [
+     1.1608300762337886,
+     1.5998107083689082
+    ]
+   }
+  },
+  "share_of_gross_from_stale_quote_30s": 0.7852243822075943,
+  "current_regime_1s_5pct": {
+   "gross_fill_to_resolution": {
+    "c_per_share": 1.9634550028442987,
+    "ci95_c_match_clustered": [
+     1.545173632721053,
+     2.3858341520780977
+    ]
+   },
+   "fill_vs_mid_30s (stale quote)": {
+    "c_per_share": 1.5797444549265487,
+    "ci95_c_match_clustered": [
+     1.4765476038042065,
+     1.6929003841962804
+    ]
+   },
+   "mid_30s_to_resolution (drift)": {
+    "c_per_share": 0.38371054791774956,
+    "ci95_c_match_clustered": [
+     -0.04082019980087271,
+     0.8062627354507291
+    ]
+   },
+   "net": {
+    "c_per_share": 1.0172408944434819,
+    "ci95_c_match_clustered": [
+     0.6008362839855603,
+     1.44117186205182
+    ]
+   }
+  }
+ },
+ "quick_meta": {
+  "generated_utc": "2026-10-03T19:30:02+00:00",
+  "git_head": "ad164da",
+  "runtime_s": 5.4,
+  "reference_check": {
+   "is_pnl_usd": 40425.71919167921,
+   "is_sharpe": 14.483153541485253,
+   "pass": true
+  }
+ },
+ "script": "scripts/pm_compute.py",
+ "p15_sensitivity_is": {
+  "runs": {
+   "base": {
+    "n_trades": 55662,
+    "n_matches": 7639,
+    "per_share_c": 1.3814511010237975,
+    "per_share_ci_c": [
+     1.167847083750991,
+     1.5935130267793969
+    ],
+    "total_pnl_usd": 40425.71919167921,
+    "pnl_per_day_usd": 196.24135529941364,
+    "sharpe_ann": 14.483153541485253,
+    "capital_usd": 28302.367701375268,
+    "max_dd_pct": -2.0120402719953496,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 80,
+    "current_1s_5pct": {
+     "n_trades": 15120,
+     "per_share_c": 1.0191905861301158,
+     "per_share_ci_c": [
+      0.5855940429347282,
+      1.4497603548018778
+     ],
+     "total_pnl_usd": 8249.430042252829,
+     "sharpe_ann": 11.233499742638212
+    },
+    "params": "frozen v2",
+    "runtime_s": 10.9,
+    "reproduces_results_v2_causal_json_is": true
+   },
+   "window_s=2": {
+    "n_trades": 50868,
+    "n_matches": 7573,
+    "per_share_c": 1.4500199949811785,
+    "per_share_ci_c": [
+     1.2107985818025284,
+     1.677868084573754
+    ],
+    "total_pnl_usd": 38390.02095167539,
+    "pnl_per_day_usd": 186.35932500813297,
+    "sharpe_ann": 14.135571425383603,
+    "capital_usd": 27185.708300246402,
+    "max_dd_pct": -2.510037125746518,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 78,
+    "current_1s_5pct": {
+     "n_trades": 14499,
+     "per_share_c": 1.111864333521909,
+     "per_share_ci_c": [
+      0.6985315546739992,
+      1.5514444252751192
+     ],
+     "total_pnl_usd": 8625.88990391198,
+     "sharpe_ann": 11.882927207677335
+    },
+    "params": {
+     "window_s": 2
+    },
+    "runtime_s": 8.7
+   },
+   "window_s=4": {
+    "n_trades": 58516,
+    "n_matches": 7651,
+    "per_share_c": 1.305798872120706,
+    "per_share_ci_c": [
+     1.076526333840081,
+     1.519698288556958
+    ],
+    "total_pnl_usd": 40169.76050921477,
+    "pnl_per_day_usd": 194.99883742337266,
+    "sharpe_ann": 14.607485509347859,
+    "capital_usd": 30478.43102288794,
+    "max_dd_pct": -1.4625140967553591,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 77,
+    "current_1s_5pct": {
+     "n_trades": 16191,
+     "per_share_c": 0.8623648268533325,
+     "per_share_ci_c": [
+      0.5064434086805125,
+      1.2670373370977723
+     ],
+     "total_pnl_usd": 7541.617138154236,
+     "sharpe_ann": 10.593577566577405
+    },
+    "params": {
+     "window_s": 4
+    },
+    "runtime_s": 8.3
+   },
+   "window_s=6": {
+    "n_trades": 62854,
+    "n_matches": 7669,
+    "per_share_c": 1.2081671403326006,
+    "per_share_ci_c": [
+     1.006864099702718,
+     1.4140355512952485
+    ],
+    "total_pnl_usd": 40388.47412483637,
+    "pnl_per_day_usd": 196.06055400406007,
+    "sharpe_ann": 14.641940427478668,
+    "capital_usd": 32136.895624495366,
+    "max_dd_pct": -1.4536674018822566,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 73,
+    "current_1s_5pct": {
+     "n_trades": 16913,
+     "per_share_c": 0.7633202593514864,
+     "per_share_ci_c": [
+      0.3902429350816181,
+      1.1786415317365138
+     ],
+     "total_pnl_usd": 6973.409109814167,
+     "sharpe_ann": 9.829571129160628
+    },
+    "params": {
+     "window_s": 6
+    },
+    "runtime_s": 8.3
+   },
+   "min_prints=20": {
+    "n_trades": 55663,
+    "n_matches": 7639,
+    "per_share_c": 1.3816481993489411,
+    "per_share_ci_c": [
+     1.167847083750991,
+     1.5935177757609449
+    ],
+    "total_pnl_usd": 40433.16051546313,
+    "pnl_per_day_usd": 196.27747823040355,
+    "sharpe_ann": 14.486159597717664,
+    "capital_usd": 28302.367701375268,
+    "max_dd_pct": -2.0120402719953496,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 81,
+    "current_1s_5pct": {
+     "n_trades": 15120,
+     "per_share_c": 1.0191905861301158,
+     "per_share_ci_c": [
+      0.5855940429347282,
+      1.4497603548018778
+     ],
+     "total_pnl_usd": 8249.430042252829,
+     "sharpe_ann": 11.233499742638212
+    },
+    "params": {
+     "min_prints": 20
+    },
+    "runtime_s": 7.9
+   },
+   "min_prints=40": {
+    "n_trades": 55659,
+    "n_matches": 7639,
+    "per_share_c": 1.3814707149888508,
+    "per_share_ci_c": [
+     1.1678165604552988,
+     1.5935358495245942
+    ],
+    "total_pnl_usd": 40425.95904625203,
+    "pnl_per_day_usd": 196.24251964200013,
+    "sharpe_ann": 14.482494896360684,
+    "capital_usd": 28302.367701375268,
+    "max_dd_pct": -2.0120402719953496,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 80,
+    "current_1s_5pct": {
+     "n_trades": 15120,
+     "per_share_c": 1.019243773821358,
+     "per_share_ci_c": [
+      0.5857094320026269,
+      1.4496485730851507
+     ],
+     "total_pnl_usd": 8249.71596554064,
+     "sharpe_ann": 11.23213969992671
+    },
+    "params": {
+     "min_prints": 40
+    },
+    "runtime_s": 9.3
+   },
+   "min_matches=5": {
+    "n_trades": 55662,
+    "n_matches": 7639,
+    "per_share_c": 1.3814511010237975,
+    "per_share_ci_c": [
+     1.167847083750991,
+     1.5935130267793969
+    ],
+    "total_pnl_usd": 40425.71919167921,
+    "pnl_per_day_usd": 196.24135529941364,
+    "sharpe_ann": 14.483153541485253,
+    "capital_usd": 28302.367701375268,
+    "max_dd_pct": -2.0120402719953496,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 80,
+    "current_1s_5pct": {
+     "n_trades": 15120,
+     "per_share_c": 1.0191905861301158,
+     "per_share_ci_c": [
+      0.5855940429347282,
+      1.4497603548018778
+     ],
+     "total_pnl_usd": 8249.430042252829,
+     "sharpe_ann": 11.233499742638212
+    },
+    "params": {
+     "min_matches": 5
+    },
+    "runtime_s": 8.3
+   },
+   "min_matches=15": {
+    "n_trades": 55662,
+    "n_matches": 7639,
+    "per_share_c": 1.3814511010237975,
+    "per_share_ci_c": [
+     1.167847083750991,
+     1.5935130267793969
+    ],
+    "total_pnl_usd": 40425.71919167921,
+    "pnl_per_day_usd": 196.24135529941364,
+    "sharpe_ann": 14.483153541485253,
+    "capital_usd": 28302.367701375268,
+    "max_dd_pct": -2.0120402719953496,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 80,
+    "current_1s_5pct": {
+     "n_trades": 15120,
+     "per_share_c": 1.0191905861301158,
+     "per_share_ci_c": [
+      0.5855940429347282,
+      1.4497603548018778
+     ],
+     "total_pnl_usd": 8249.430042252829,
+     "sharpe_ann": 11.233499742638212
+    },
+    "params": {
+     "min_matches": 15
+    },
+    "runtime_s": 7.8
+   },
+   "min_t=2.0": {
+    "n_trades": 57974,
+    "n_matches": 7680,
+    "per_share_c": 1.365973825588498,
+    "per_share_ci_c": [
+     1.1619163869260656,
+     1.5839343236457633
+    ],
+    "total_pnl_usd": 41011.94337971753,
+    "pnl_per_day_usd": 199.08710378503656,
+    "sharpe_ann": 14.632211665427228,
+    "capital_usd": 29097.10564603989,
+    "max_dd_pct": -1.8928490921641967,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 95,
+    "current_1s_5pct": {
+     "n_trades": 15157,
+     "per_share_c": 1.0066484541116085,
+     "per_share_ci_c": [
+      0.6030338116731826,
+      1.4616282973279873
+     ],
+     "total_pnl_usd": 8171.452580298888,
+     "sharpe_ann": 11.081601362571067
+    },
+    "params": {
+     "min_t": 2.0
+    },
+    "runtime_s": 8.5
+   },
+   "min_t=4.0": {
+    "n_trades": 50757,
+    "n_matches": 7509,
+    "per_share_c": 1.4560520961273504,
+    "per_share_ci_c": [
+     1.2321116948727204,
+     1.688103034176654
+    ],
+    "total_pnl_usd": 39033.55075798876,
+    "pnl_per_day_usd": 189.48325610674158,
+    "sharpe_ann": 14.387220208232018,
+    "capital_usd": 28153.53838964401,
+    "max_dd_pct": -1.6588873617818665,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 65,
+    "current_1s_5pct": {
+     "n_trades": 14531,
+     "per_share_c": 1.0630309546246857,
+     "per_share_ci_c": [
+      0.6426114041466947,
+      1.5366084759468723
+     ],
+     "total_pnl_usd": 8061.342143573849,
+     "sharpe_ann": 11.768761265536167
+    },
+    "params": {
+     "min_t": 4.0
+    },
+    "runtime_s": 8.0
+   },
+   "wallet_n0=100.0": {
+    "n_trades": 57351,
+    "n_matches": 7653,
+    "per_share_c": 1.3502522111411397,
+    "per_share_ci_c": [
+     1.1402816322061806,
+     1.5646924446408594
+    ],
+    "total_pnl_usd": 40538.80719536277,
+    "pnl_per_day_usd": 196.79032619108142,
+    "sharpe_ann": 14.25418104366773,
+    "capital_usd": 28493.951655163713,
+    "max_dd_pct": -2.3644062263434997,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 84,
+    "current_1s_5pct": {
+     "n_trades": 16259,
+     "per_share_c": 0.9947086753299951,
+     "per_share_ci_c": [
+      0.6216081942575611,
+      1.4043630747869846
+     ],
+     "total_pnl_usd": 8599.074081928804,
+     "sharpe_ann": 11.356498861774474
+    },
+    "params": {
+     "wallet_n0": 100.0
+    },
+    "runtime_s": 9.7
+   },
+   "wallet_n0=400.0": {
+    "n_trades": 51628,
+    "n_matches": 7598,
+    "per_share_c": 1.377029250388961,
+    "per_share_ci_c": [
+     1.146457844706168,
+     1.6191592458153752
+    ],
+    "total_pnl_usd": 37772.80751346004,
+    "pnl_per_day_usd": 183.36314326922349,
+    "sharpe_ann": 13.817242951449522,
+    "capital_usd": 26021.818928669985,
+    "max_dd_pct": -2.4701730146536462,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 73,
+    "current_1s_5pct": {
+     "n_trades": 13802,
+     "per_share_c": 0.9455695932279551,
+     "per_share_ci_c": [
+      0.5080664991855295,
+      1.4346712143574618
+     ],
+     "total_pnl_usd": 6932.889273195935,
+     "sharpe_ann": 9.817868550381862
+    },
+    "params": {
+     "wallet_n0": 400.0
+    },
+    "runtime_s": 9.4
+   },
+   "zone=0.0-1.0": {
+    "n_trades": 56514,
+    "n_matches": 7668,
+    "per_share_c": 1.3588536021231379,
+    "per_share_ci_c": [
+     1.1295739751173661,
+     1.5803187795203555
+    ],
+    "total_pnl_usd": 40658.42710468567,
+    "pnl_per_day_usd": 197.37100536255178,
+    "sharpe_ann": 14.532734808860363,
+    "capital_usd": 29145.295101375355,
+    "max_dd_pct": -1.9864216068464533,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 84,
+    "current_1s_5pct": {
+     "n_trades": 15392,
+     "per_share_c": 1.0034647206136451,
+     "per_share_ci_c": [
+      0.5753046491030959,
+      1.432259050660095
+     ],
+     "total_pnl_usd": 8342.113467434669,
+     "sharpe_ann": 11.360320145978545
+    },
+    "params": {
+     "zone": "0.0-1.0"
+    },
+    "runtime_s": 9.3
+   },
+   "zone=0.1-0.9": {
+    "n_trades": 53299,
+    "n_matches": 7516,
+    "per_share_c": 1.3894221544331067,
+    "per_share_ci_c": [
+     1.13860559836916,
+     1.625958599950019
+    ],
+    "total_pnl_usd": 38397.08339501094,
+    "pnl_per_day_usd": 186.39360871364534,
+    "sharpe_ann": 13.827284951102593,
+    "capital_usd": 26383.96158746322,
+    "max_dd_pct": -1.9877303917827092,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 79,
+    "current_1s_5pct": {
+     "n_trades": 14369,
+     "per_share_c": 0.9714829883371013,
+     "per_share_ci_c": [
+      0.542014509792375,
+      1.432090196763479
+     ],
+     "total_pnl_usd": 7300.630856723097,
+     "sharpe_ann": 10.316956983453307
+    },
+    "params": {
+     "zone": "0.1-0.9"
+    },
+    "runtime_s": 9.1
+   },
+   "universe_prestart>=5000": {
+    "n_trades": 25092,
+    "n_matches": 3892,
+    "per_share_c": 1.2937503078657724,
+    "per_share_ci_c": [
+     0.9828736009685155,
+     1.591378340465598
+    ],
+    "total_pnl_usd": 18987.513742355135,
+    "pnl_per_day_usd": 92.1723968075492,
+    "sharpe_ann": 9.953711714545575,
+    "capital_usd": 15307.880698321766,
+    "max_dd_pct": -3.7963738252004777,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 54,
+    "current_1s_5pct": {
+     "n_trades": 7533,
+     "per_share_c": 0.4380685159070502,
+     "per_share_ci_c": [
+      -0.13826941042485213,
+      1.0117934216936348
+     ],
+     "total_pnl_usd": 1935.0140911859285,
+     "sharpe_ann": 4.40628905840805
+    },
+    "params": "frozen v2",
+    "runtime_s": 4.9,
+    "universe_matches_kept_of_is": [
+     4731,
+     9581
+    ]
+   },
+   "universe_prestart>=20000": {
+    "n_trades": 7952,
+    "n_matches": 1608,
+    "per_share_c": 1.3505463903776946,
+    "per_share_ci_c": [
+     0.8134665629376502,
+     1.8610968284022047
+    ],
+    "total_pnl_usd": 7614.563550105232,
+    "pnl_per_day_usd": 36.963900728666175,
+    "sharpe_ann": 6.529124665121755,
+    "capital_usd": 9068.426489658845,
+    "max_dd_pct": -7.971998795425564,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 22,
+    "current_1s_5pct": {
+     "n_trades": 3045,
+     "per_share_c": 0.1717957362834277,
+     "per_share_ci_c": [
+      -0.7250221269008525,
+      1.056299726247072
+     ],
+     "total_pnl_usd": 367.6499074876549,
+     "sharpe_ann": 0.9951537614717538
+    },
+    "params": "frozen v2",
+    "runtime_s": 2.4,
+    "universe_matches_kept_of_is": [
+     1995,
+     9581
+    ]
+   },
+   "J=0.03": {
+    "n_trades": 73875,
+    "n_matches": 7994,
+    "per_share_c": 1.274655267550399,
+    "per_share_ci_c": [
+     1.1010218224357824,
+     1.464084418718705
+    ],
+    "total_pnl_usd": 47965.63591497075,
+    "pnl_per_day_usd": 232.84289279112014,
+    "sharpe_ann": 17.630881258765786,
+    "capital_usd": 37759.37971428985,
+    "max_dd_pct": -1.475025281069293,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 84,
+    "current_1s_5pct": {
+     "n_trades": 19889,
+     "per_share_c": 0.7035355462187141,
+     "per_share_ci_c": [
+      0.34102040624013513,
+      1.048837181454048
+     ],
+     "total_pnl_usd": 7245.946721586899,
+     "sharpe_ann": 11.592659625403044
+    },
+    "params": {
+     "J": 0.03
+    },
+    "runtime_s": 10.6
+   },
+   "J=0.06": {
+    "n_trades": 30052,
+    "n_matches": 6433,
+    "per_share_c": 1.3436037450664815,
+    "per_share_ci_c": [
+     0.9774063350771695,
+     1.6930753996461565
+    ],
+    "total_pnl_usd": 21849.156826311217,
+    "pnl_per_day_usd": 106.06386808888941,
+    "sharpe_ann": 8.96630189633298,
+    "capital_usd": 17315.039788055987,
+    "max_dd_pct": -3.953931177451484,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 58,
+    "current_1s_5pct": {
+     "n_trades": 8262,
+     "per_share_c": 0.9013713909034614,
+     "per_share_ci_c": [
+      0.18482654370497498,
+      1.5796032593903215
+     ],
+     "total_pnl_usd": 4069.1227370860006,
+     "sharpe_ann": 6.9427932363301075
+    },
+    "params": {
+     "J": 0.06
+    },
+    "runtime_s": 11.0
+   },
+   "short_w=5": {
+    "n_trades": 58724,
+    "n_matches": 7632,
+    "per_share_c": 1.2964967710830684,
+    "per_share_ci_c": [
+     1.0767598774167557,
+     1.5049664887165553
+    ],
+    "total_pnl_usd": 38974.110633861135,
+    "pnl_per_day_usd": 189.1947118148599,
+    "sharpe_ann": 14.122517230882464,
+    "capital_usd": 31170.89543079533,
+    "max_dd_pct": -2.497833689335248,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 80,
+    "current_1s_5pct": {
+     "n_trades": 16260,
+     "per_share_c": 0.6608288674430991,
+     "per_share_ci_c": [
+      0.3104953660820492,
+      1.0779501746889073
+     ],
+     "total_pnl_usd": 5757.8460208437045,
+     "sharpe_ann": 8.527719928710235
+    },
+    "params": {
+     "short_w": 5
+    },
+    "runtime_s": 11.5
+   },
+   "short_w=20": {
+    "n_trades": 54655,
+    "n_matches": 7646,
+    "per_share_c": 1.281376438668102,
+    "per_share_ci_c": [
+     1.0669401606250564,
+     1.4980346176187684
+    ],
+    "total_pnl_usd": 37723.256511392625,
+    "pnl_per_day_usd": 183.12260442423604,
+    "sharpe_ann": 14.814067004484938,
+    "capital_usd": 27504.236309988024,
+    "max_dd_pct": -2.169041445017901,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 70,
+    "current_1s_5pct": {
+     "n_trades": 14264,
+     "per_share_c": 0.9394471600676024,
+     "per_share_ci_c": [
+      0.5006558426983405,
+      1.358331937155217
+     ],
+     "total_pnl_usd": 7190.975241937905,
+     "sharpe_ann": 14.154866282374316
+    },
+    "params": {
+     "short_w": 20
+    },
+    "runtime_s": 15.9
+   },
+   "long_w=30": {
+    "n_trades": 57816,
+    "n_matches": 7253,
+    "per_share_c": 1.2088991916530623,
+    "per_share_ci_c": [
+     1.0163941368331793,
+     1.4078668330379027
+    ],
+    "total_pnl_usd": 38533.501911016356,
+    "pnl_per_day_usd": 187.05583451949687,
+    "sharpe_ann": 13.76529901313035,
+    "capital_usd": 31459.41812733595,
+    "max_dd_pct": -3.0952813556059455,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 86,
+    "current_1s_5pct": {
+     "n_trades": 16548,
+     "per_share_c": 0.7752811902324936,
+     "per_share_ci_c": [
+      0.42952030853361584,
+      1.1218944163637194
+     ],
+     "total_pnl_usd": 7081.809182106909,
+     "sharpe_ann": 10.461257737138656
+    },
+    "params": {
+     "long_w": 30
+    },
+    "runtime_s": 11.6
+   },
+   "long_w=120": {
+    "n_trades": 47591,
+    "n_matches": 7788,
+    "per_share_c": 1.383788318399895,
+    "per_share_ci_c": [
+     1.113560737439434,
+     1.6403166628492278
+    ],
+    "total_pnl_usd": 32577.4203483718,
+    "pnl_per_day_usd": 158.14281722510583,
+    "sharpe_ann": 11.775564852745664,
+    "capital_usd": 23078.012859094466,
+    "max_dd_pct": -4.008009347513888,
+    "months_positive": 7,
+    "months_total": 7,
+    "n_wallets": 70,
+    "current_1s_5pct": {
+     "n_trades": 12305,
+     "per_share_c": 1.394826059574126,
+     "per_share_ci_c": [
+      0.8420889114996164,
+      1.9634028141418494
+     ],
+     "total_pnl_usd": 8772.040261642545,
+     "sharpe_ann": 13.913701419666967
+    },
+    "params": {
+     "long_w": 120
+    },
+    "runtime_s": 9.5
+   }
+  },
+  "base_params": {
+   "J": 0.04,
+   "short_w": 10,
+   "long_w": 60,
+   "window_s": 3,
+   "min_prints": 30,
+   "min_matches": 10,
+   "min_t": 3.0,
+   "wallet_n0": 200.0,
+   "zone": "0.05-0.95"
+  },
+  "note": "Each run changes ONE threshold of the frozen v2 by one step and re-runs the whole walk-forward on IS prints only (data/is_prints.parquet). Nothing is selected: the frozen rule stays as registered. No OOS data is opened.",
+  "sens_meta": {
+   "generated_utc": "2026-10-03T19:29:47+00:00",
+   "git_head": "ad164da",
+   "runtime_s": 279.2
+  }
+ }
+}

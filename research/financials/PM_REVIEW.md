@@ -4,6 +4,12 @@ Written 2026-10-03, about 19:10 UTC, against `main` at `b694498` plus the untrac
 review is adversarial on purpose: it lists what a PM at a systematic fund, or a hackathon judge, would raise
 before putting money or points on this. Paper only: nothing here places an order or reads a key.
 
+**Update, about 19:45 UTC.** Every [COMPUTE-NOW] item has now been run (section "Compute-now results" below;
+`scripts/pm_compute.py` → `results/financials/pm_compute.json`). `scripts/financials.py` was re-run and now
+carries the 1 s / 5% rows, break-even fees, ex-ante capital, the corrected tier-0 headline and the table-tennis
+verdicts. `docs/RISK.md` was brought up to date. Edits needed in files this review does not own (NOTE, README,
+Devpost, compliance) are listed line by line in `research/financials/CORRECTIONS.md`. The verdict is unchanged.
+
 **Read:** `docs/NOTE.md` (source of `docs/NOTE.pdf`), `README.md`, `docs/COMPLIANCE.md`, `docs/RISK.md`,
 `research/financials/FINANCIALS.md`, `research/rigor/RESULTS.md` (including "Verifier corrections"),
 `research/v2/{expand,lowloss,maker,crossmarket,latency,livefill,tier0,sizing}/` results and deviations,
@@ -26,8 +32,9 @@ No new external price was looked up.
    (NOTE §3). Our executable copy of the same trades, entered after the delay, loses −0.89¢/share
    [−1.10, −0.68] IS and −1.89¢ [−2.41, −1.36] on the burned OOS (`docs/RISK.md` stress table).
 2. **No strategy has passed a blind out-of-sample test.** v1 lost $36k (blind). v2 and v2-safe failed the
-   pre-registered U2 test. Maker v1 failed its blind OOS. The v2 forward test and the corrected tier-0
-   counterfactual are pending.
+   pre-registered U2 test. Maker v1 failed its blind OOS. The v2 forward test is pending. The corrected tier-0
+   counterfactual landed at 19:20 UTC (`results/tier0/results.json` `headline`, `VERIFIED` marker present):
+   $88.8/day IS and $46.4/day burned OOS, against $1,151/day of fixed costs even at the low assumption.
 3. **The economics are break-even at best.** In today's fee and delay regime (1 s, 5%), in-sample v2 makes
    $179/day (`pm_checks.json`) against $167/day of central fixed costs (`FINANCIALS.md`): about +$12/day,
    or $65.5k a year against $60.9k a year. On the burned OOS it makes $92/day, which is −$75/day after
@@ -47,6 +54,25 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
 - **S1** changes the allocation decision or risks the criterion-5 cap. **S2** is material to a headline
   number or a rubric criterion. **S3** is an inconsistency or missing analysis a careful reader will find.
   **S4** is hygiene.
+
+## Compute-now results (about 19:45 UTC)
+
+Run with `.venv/bin/python scripts/pm_compute.py quick` (about 7 s) and `... sens` (about 5 min, one process,
+IS prints only). Output: `results/financials/pm_compute.json`. No rule changed and nothing was selected; every
+IS rebuild first reproduces `results/v2/causal.json` (P&L $40,425.72, Sharpe 14.483) or stops. Only P07 reads
+burned-OOS rows; P17 re-ran committed scripts on a clone. Both are logged in `results/oos_peeks.log`.
+
+| item | result | where it now lives |
+|---|---|---|
+| **P07** wallet-clustered CI | IS +1.38¢ [0.57, 2.30] (80 wallets); burned OOS +0.60¢ **[−0.45, 2.38]** (86 wallets; top wallet 48.4%, top 5 142.1% of P&L). The note's [−0.60, 2.11] does not reproduce: across 4 seeds and 1,000–10,000 draws the bounds stay within [−0.53, −0.45] and [2.28, 2.41]. Logged OOS read | `pm_compute` `p07_wallet_clustered_ci`; RISK R2; CORRECTIONS N1 |
+| **P14** volume bands, IS | By **pre-start** volume (known at the start): < $1k +1.88¢ [1.14, 2.63]; $1–5k +1.41 [1.03, 1.80]; $5–20k +1.18 [0.79, 1.57]; $20–100k +1.39 [0.92, 1.84]; ≥ $100k +1.43 [0.34, 2.50]. Matches under $5k pre-start carry 43% of shares and 47% of P&L. The lifetime-volume bands reproduce `risk_stats` exactly | `pm_compute` `p14_volume_bands_is`; RISK R9 |
+| **P14** point-in-time universe | Pre-start ≥ $5k (a subset of the lifetime ≥ $5k universe), rebuilt walk-forward on IS prints: 4,731 of 9,581 IS matches, 25,092 trades, +1.29¢ [0.98, 1.59], $18,988, Sharpe 10.0. **1 s / 5% slice: +0.44¢ [−0.14, 1.01].** The frozen book's own trades in those matches (no refit): +1.28¢ [0.99, 1.56], $21,321. At ≥ $20k pre-start: +1.35¢ [0.81, 1.86], $7,615, Sharpe 6.5; 1 s / 5% +0.17¢ [−0.73, 1.06] | `pm_compute` `p15_sensitivity_is.runs`; RISK R9; CORRECTIONS N14 |
+| **P15** threshold surface, IS | 19 one-step runs (detector 3/6¢, short window 5/20 s, long window 30/120 s, entry window 2/4/6 s, ≥ 20/40 prints, ≥ 5/15 matches, t > 2/4, n₀ 100/400, zone 0–1 / 0.1–0.9): +1.21 to +1.46¢/share, every CI above 0; Sharpe 9.0–17.6; P&L $21.8k–48.0k (base +1.38¢, 14.5, $40.4k). 1 s / 5% slice: +0.66 to +1.39¢, every CI above 0. The print and match counts never bind; the 6¢ detector halves P&L ($21.8k) | `pm_compute` `p15_sensitivity_is`; RISK R10; CORRECTIONS N15 |
+| **P17** clean clone | Clone of `56a9c8f` in scratch, `data/` linked read-only by file, `.venv` linked. (1) `reproduce.sh` fails at once when `PY` is a path with spaces (unquoted `$PY`; CORRECTIONS O7). (2) `run_all.py --oos` with 1 worker (the ≤ 2-process budget) printed nothing in 18 min (its first stage, the H1/H2/H5 grids); stopped, as this item allows. (3) `v2_causal.py`, `v2_cost_stress.py`, `note_metrics.py`, `factor_regression.py`, `v2_figures.py` ran clean (6 min) and reproduced `results/v2/{causal,burned_oos,cost_stress,note_metrics,factor_regression}.json` with **0 differences** (tolerance 1e-9) and left `results/figures/` byte-identical. The v2 steps need none of the untracked files (P05) | this table; CORRECTIONS O7, O8, C2 |
+| **P24** factor regression, IS only | Every calendar day (factors and RF 0 off trading days), excess return, ×365: alpha +0.675%/day (t = 9.5), 246% a year; market beta 0.18 (t = 1.54), largest factor t 1.54, R² 2.3%, 206 days. Weekdays only (×252): alpha t 8.1, largest t 1.37, R² 2.7%, 142 days. Same conclusion as the committed file, which included Aug 25–31 burned-OOS days | `pm_compute` `p24_factor_regression_is`; RISK R14; CORRECTIONS N5, O2 |
+| **P25** kill rules on IS | Trailing 30-day edge rule (causal: trades entered in the last 30 days and already resolved): edge min +0.74¢, median +1.47¢, so 206/206 days at full size; the rule never fires. 5% drawdown stop: never (worst −2.01%). $1,000 daily stop: never (worst −$551). Per-book stop at v2's 3.86 σ: v2 $1,000, v2-safe $545, maker $599 (the $1,000 stop is 36% of the maker's $2,779 capital; the scaled stop would fire on 1 IS day). v2 vs maker IS daily correlation −0.04 | `pm_compute` `p25_kill_rules_is`; RISK kill table and R14; CORRECTIONS O4 |
+| **P26** gross edge split, IS | Of +1.99¢ gross: fill vs mid 30 s later (the stale quote) **+1.56¢ [1.50, 1.62]** (79%); 30 s to resolution +0.43¢ [0.21, 0.64]. Finer: fill vs 5 s mid +1.13¢, 5 s→30 s +0.43¢. Fees −0.61¢, net +1.38¢. In the 1 s / 5% slice: stale quote +1.58¢ [1.48, 1.69], drift +0.38¢ [−0.04, 0.81] (CI includes 0) | `pm_compute` `p26_gross_edge_split_is`; CORRECTIONS N16 |
+| **P10** tier-0 bound | Corrected headline (20-seed means): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4; burned OOS +0.58¢ [−0.08, 1.21], $46.4/day, Sharpe 7.3. To cover the low fixed-cost case ($1,151/day) it would need 13.0× (IS) or 24.8× (OOS) its trading P&L. Decision table: **stop** | `FINANCIALS.md` headline and §4 |
 
 ## Findings, most severe first
 
@@ -134,7 +160,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
 - **Fix:** add the burned-OOS ex-top-5 line to NOTE §5, and show the wallet-clustered CIs next to the
   headline.
 
-**P07 [COMPUTE-NOW] The OOS wallet-clustered CI in Table 2 has no source file.**
+**P07 [COMPUTE-NOW, done] The OOS wallet-clustered CI in Table 2 has no source file.**
 - `[−0.60, 2.11]` (NOTE Table 2 footnote) appears in no results file and no script. The only other place
   it appears is `research/compliance/JUDGE.md`. Spot-checkers will look for it.
 - **How:** copy the wallet bootstrap in `research/financials/pm_checks.py` §2 into `scripts/v2_causal.py`
@@ -147,7 +173,10 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
 
   | trades | ¢/share | $/day | Sharpe | capital | max drawdown | months positive |
   |---|---|---|---|---|---|---|
-  | 15,120 | +1.02 [0.60, 1.45] | $179 | 11.2 | $28.0k | −2.0% | 2/2 |
+  | 15,120 | +1.02 [0.60, 1.45]* | $179 | 11.2 | $28.0k | −2.0% | 2/2 |
+
+  \* 2,000 match draws (`pm_checks.json`). The engine's default 1,000 draws, used for every other CI in Table 2
+  and in `FINANCIALS.md`, gives [0.59, 1.45]; quote that one in the note.
 
   The point estimate matches `docs/RISK.md` R11.
 - **Fix:** add this row to NOTE Table 2 and the `FINANCIALS.md` headline as the forecast-relevant in-sample
@@ -167,7 +196,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
 - **Fix:** report the audited and online results next to 11/11. Measuring tennis at high frame rates needs
   footage we do not have [OUT-OF-SCOPE].
 
-**P10 [PENDING, with a bound computable now] Tier-0 is unlikely to clear its fixed costs.**
+**P10 [DONE: the corrected headline landed; it does not clear its fixed costs] Tier-0 is unlikely to clear its fixed costs.**
 - The pre-registered primary makes $307.9/day IS (`results/tier0/results.json`).
   `research/v2/tier0/DEVIATIONS.md` V1 shows that number **overstates** the fill edge.
 - At the scenario's 10 covered matches a day, fixed costs are $1,151 / $4,149 / $7,215 per day (low /
@@ -210,7 +239,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
 - The 3× multiplier is a convention, not a loss quantile.
 - **Fix:** fix capital ex ante, at $34.8k realised-lock capital for v2, and use it for every period.
 
-**P14 [COMPUTE-NOW] The edge sits in the thinnest markets, and the universe filter looks ahead.**
+**P14 [COMPUTE-NOW, done] The edge sits in the thinnest markets, and the universe filter looks ahead.**
 - In sample, ¢/share by final volume band (R9):
 
   | band | $5–20k | $20–100k | $0.1–1M | > $1M |
@@ -223,7 +252,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
   v2 trades (`data/v2_trades_is_oos.parquet`, IS conds, months ≥ 2026-02) by it, with match-clustered CIs.
   Then rebuild the universe with a pre-start threshold. IS only, about 15 minutes.
 
-**P15 [COMPUTE-NOW] No sensitivity surface for v2's signal thresholds.**
+**P15 [COMPUTE-NOW, done] No sensitivity surface for v2's signal thresholds.**
 - The plateau evidence covers net cap and deployment (onset labels) and the v2-safe grid. It does not cover:
   - the detector (4¢ over 10 s against 60 s);
   - the 3 s window;
@@ -234,7 +263,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
   only, and report per-share and Sharpe. Each run takes 10–20 s (`financials.py` ran four scaled books in
   55 s), so about 25 runs fit in 15 minutes on 1–2 processes. No OOS.
 
-**P16 [WRITE] `results/summary.json` holds a stale v2 and some broken statistics.**
+**P16 [WRITE, key renamed; ratio guard in CORRECTIONS O3] `results/summary.json` holds a stale v2 and some broken statistics.**
 - Its `v2` key is a third version of the superseded onset-window book:
 
   | source | IS trades | IS Sharpe | OOS trades | OOS Sharpe | OOS capital |
@@ -247,7 +276,7 @@ feed licence is quoted below the opportunity, and there is a legal route to a ve
   `oos.h1`, and 1.7×10¹¹ in `results/maker/oos.json`.
 - **Fix:** delete the key or rename it `v2_onset_superseded`, and guard the ratio.
 
-**P17 [COMPUTE-NOW] `reproduce.sh` has not been run end to end since the last scripts were added.**
+**P17 [COMPUTE-NOW, done in part] `reproduce.sh` has not been run end to end since the last scripts were added.**
 - The last full run is `reproduce.log`, 09:47 local. That predates `v2_cost_stress.py`, `note_metrics.py`
   and the D9 causal pipeline. COMPLIANCE item 53 leaves the clean-clone diff to the team.
 - **How:** clone into a scratch directory, link `data/` read-only, run `bash reproduce.sh`, and diff
@@ -290,7 +319,7 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 - R12 asks for the note's "retirements" line to be corrected. NOTE §5 already says "mostly walkovers".
 - `docs/RISK.md` still lists the maker OOS as pending. It returned FAILURE (`a4cce70`).
 
-**P24 [COMPUTE-NOW] The factor regression needs cleaning up.**
+**P24 [COMPUTE-NOW, done] The factor regression needs cleaning up.**
 - `results/v2/factor_regression.json` runs from 2026-02-02 to **2026-08-31**, so it includes burned-OOS
   days (Aug 25–31). The script filters `month ≥ 2026-02`, not on IS.
 - Weekends are dropped by the inner join with trading days: 142 days instead of 206. Tennis trades every day.
@@ -299,14 +328,14 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 - **How:** restrict to IS conds; keep calendar days with weekend factors set to 0, or regress
   weekday-only and say so; annualise ×365. About 5 minutes.
 
-**P25 [WRITE + COMPUTE-NOW] Kill switches are not calibrated per book, and most are untested.**
+**P25 [WRITE + COMPUTE-NOW, done] Kill switches are not calibrated per book, and most are untested.**
 - The $1,000 daily stop never fires in the backtest (worst IS day −$551).
 - On the maker's $2.0–2.8k capital, the same stop would be 36–50% of capital.
 - The drawdown, trailing-edge, fee-change and dispute rules are policy only (RISK kill table).
 - **How:** replay the trailing-30-day edge rule (halve below 0.3¢, stop at 0) on the IS daily series from
   `data/v2_trades_is_oos.parquet`. About 10 minutes. Then set a `RiskConfig` per book.
 
-**P26 [COMPUTE-NOW] No split of the gross edge.**
+**P26 [COMPUTE-NOW, done] No split of the gross edge.**
 - The question is whether v2's +1.99¢ gross IS comes from the fill price (stale quote against the new mid)
   or from drift after the point.
 - **How:** in `data/v2_trades_is_oos.parquet`, IS rows only, split `gross_res` into the fill price against
@@ -337,7 +366,8 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
   Within those limits, live work stays paper.
 - **P32 [OUT-OF-SCOPE]** Platform, oracle and stablecoin failure probabilities, and UMA dispute counts. Only
   a close-time proxy exists (R12, R15).
-- **P33 [PENDING]** Table-tennis out-of-sport test: `results/tt/results.json` does not exist yet. Table
+- **P33 [DONE]** Table-tennis out-of-sport test: first run 19:23 UTC, TT1, TT2 and TT3 all FAIL (no fast tier
+  detected, no trades; 27 evaluable matches; `results/tt/results.json`). Before that run: Table
   tennis is untradable (89¢ spread, $23 at the touch), so the result cannot change the allocation either way.
 
 ## Numbers that disagree between files
@@ -364,6 +394,15 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 | 18 | Live paper capital | `results/live/summary.json`: $10,000 per book | Maker convention: $2,022–2,779 | State it |
 | 19 | CV precision headline | NOTE §6: 11/11 at 50 ms, recall 27% | `DEVIATIONS.md` H3-D10: audited 8/8, recall 0.38; online rule 3/3, recall 0.07 | Show all three |
 
+Status at about 19:45 UTC. Fixed in files this review owns: row 2 (`FINANCIALS.md` caveat and reading line give
+the stitched 14.02), row 3 (`results/summary.json` key renamed `v2_onset_superseded`), row 4 (`FINANCIALS.md` §2d
+capacity sentence, `docs/RISK.md` R3), row 5 (RISK R2 adds the wallet-clustered CIs), rows 7–9 (`FINANCIALS.md`
+maker caveats name the bootstrap and the drawdown base), row 10 (RISK R3 quotes the verifier's models), row 11
+(RISK), row 15 (`pm_compute` P24), row 16 (`FINANCIALS.md` §2c rows on one ex-ante capital), row 18
+(`FINANCIALS.md` live-session line). Rows 1, 6, 13, 14, 17 and 19 need edits in the note, README, Devpost or
+compliance files: `research/financials/CORRECTIONS.md` lists each one. Row 12 (label the maker book each time) is
+still open.
+
 ## Pending tests: what each outcome would mean for the allocation
 
 | Test | Outcome | What it means |
@@ -372,7 +411,7 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 | | fail | H6 persistence fails out of sample in the current regime. v2 and tier-0 lose their reason to exist |
 | v2 forward, primary B (v2 book, 30 s net) | pass | Supporting evidence only: one day of 30 s markouts, not P&L |
 | | fail | Expected even if the edge is real, because B is underpowered (A1.5). Uninformative unless A also fails |
-| Tier-0 revision | corrected P&L < $1,151/day | Uneconomic at 10 matches a day in every cost case (P10). Stop |
+| Tier-0 revision | corrected P&L < $1,151/day | Uneconomic at 10 matches a day in every cost case (P10). Stop. **This is the outcome: $88.8/day IS, $46.4/day OOS** |
 | | ≥ $4,149/day | Worth a feed-licence quote and a legal review. Still a counterfactual |
 | Maker live paper | any | Maker v1 already failed its blind OOS. A changed rule is maker v2, which needs its own pre-registration (PREREG §5). The live run only checks the plumbing |
 | Table tennis | any | No allocation consequence: the books cannot be traded (P33) |

@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-10-03T18:57:24Z",
+ "generated_utc": "2026-10-03T19:42:17Z",
  "script": "scripts/financials.py",
- "runtime_s": 55.5,
+ "runtime_s": 21.2,
  "conventions": {
   "daily": "calendar-day zero-filled P&L from first to last trade day (research/v2/sizing/engine.py daily_series)",
   "sharpe_sortino": "x sqrt(365); Sortino denominator = RMS of negative days (scripts/lowloss_test.py)",
@@ -108,7 +108,7 @@
    "low": 0.0,
    "central": 250.0,
    "high": 500.0,
-   "basis": "A legal tier-0 needs the organiser's permission for a camera (courtsiding breaches ticket terms, docs/NOTE.md section 6). No public price exists for that right. Range is ours; low = $0.",
+   "basis": "A legal tier-0 needs the organiser's permission for a camera (courtsiding breaches ticket terms, docs/NOTE.md section 5). No public price exists for that right. Range is ours; low = $0.",
    "sources": []
   },
   "camera_kit": {
@@ -137,7 +137,7 @@
     "polymarket_api",
     "hipergator"
    ],
-   "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 7); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound."
+   "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 6); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound."
   },
   "v2_safe": {
    "monthly": [
@@ -203,6 +203,34 @@
    "max_dd_pct": -2.0120402719953496,
    "notional_usd_per_day": 7182.350074785291,
    "breakeven_notional_usd_per_day_central": 6109.521623753285
+  },
+  {
+   "strategy": "v2 (frozen fast-tier book)",
+   "period": "IS, current 1 s / 5% regime only",
+   "status": "ok",
+   "trades": 15120,
+   "net_c_per_share": 1.0191905861301158,
+   "net_c_per_share_ci95": [
+    0.5855940429347282,
+    1.4497603548018778
+   ],
+   "net_trading_usd_per_day": 179.33543570114844,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 137.10674529018954,
+    "central": 12.406674057312813,
+    "high": -152.65728758652276
+   },
+   "capital_usd": 27996.665823518437,
+   "return_on_capital_ann_pct": 233.80439100691788,
+   "sharpe_ann": 11.233499742638212,
+   "max_dd_pct": -1.967249613003759,
+   "notional_usd_per_day": 8991.12689861107,
+   "breakeven_notional_usd_per_day_central": 8369.108275225915
   },
   {
    "strategy": "v2 (frozen fast-tier book)",
@@ -295,6 +323,34 @@
   },
   {
    "strategy": "v2-safe (net cap 50)",
+   "period": "IS, current 1 s / 5% regime only",
+   "status": "ok",
+   "trades": 13920,
+   "net_c_per_share": 1.0229125592852246,
+   "net_c_per_share_ci95": [
+    0.648771734052176,
+    1.3920720932188302
+   ],
+   "net_trading_usd_per_day": 108.77484698484149,
+   "fixed_cost_usd_per_day": {
+    "low": 42.2286904109589,
+    "central": 166.92876164383563,
+    "high": 331.9927232876712
+   },
+   "net_after_costs_usd_per_day": {
+    "low": 66.5461565738826,
+    "central": -58.15391465899414,
+    "high": -223.21787630282972
+   },
+   "capital_usd": 17680.604395182636,
+   "return_on_capital_ann_pct": 224.5557802327437,
+   "sharpe_ann": 12.138028335919536,
+   "max_dd_pct": -1.6071751019680196,
+   "notional_usd_per_day": 5413.017969661054,
+   "breakeven_notional_usd_per_day_central": 8306.960767844337
+  },
+  {
+   "strategy": "v2-safe (net cap 50)",
    "period": "OOS (burned, non-blind)",
    "status": "ok",
    "trades": 9487,
@@ -352,12 +408,58 @@
   {
    "strategy": "Tier-0 CV edge (COUNTERFACTUAL)",
    "period": "IS",
-   "status": "pending"
+   "status": "ok (summary file only)",
+   "trades": 6446.8,
+   "net_c_per_share": 1.0978,
+   "net_c_per_share_ci95": [
+    0.8238,
+    1.3769
+   ],
+   "net_trading_usd_per_day": 88.7936067961165,
+   "fixed_cost_usd_per_day": {
+    "low": 1150.5280054794523,
+    "central": 4149.2273917808225,
+    "high": 7215.469983561644
+   },
+   "net_after_costs_usd_per_day": {
+    "low": -1061.7344054794523,
+    "central": -4060.4337917808225,
+    "high": -7126.676383561644
+   },
+   "capital_usd": 28999.9388,
+   "return_on_capital_ann_pct": 115.03843203883494,
+   "sharpe_ann": 11.4207,
+   "max_dd_pct": -1.7634,
+   "notional_usd_per_day": 3915.167918446602,
+   "breakeven_notional_usd_per_day_central": 182951.48217079337
   },
   {
    "strategy": "Tier-0 CV edge (COUNTERFACTUAL)",
    "period": "OOS (burned, non-blind)",
-   "status": "pending"
+   "status": "ok (summary file only)",
+   "trades": 1968.95,
+   "net_c_per_share": 0.5755,
+   "net_c_per_share_ci95": [
+    -0.0764,
+    1.2097
+   ],
+   "net_trading_usd_per_day": 46.42577,
+   "fixed_cost_usd_per_day": {
+    "low": 1150.5280054794523,
+    "central": 4149.2273917808225,
+    "high": 7215.469983561644
+   },
+   "net_after_costs_usd_per_day": {
+    "low": -1104.1022054794523,
+    "central": -4102.8015917808225,
+    "high": -7169.044183561644
+   },
+   "capital_usd": 21410.5908,
+   "return_on_capital_ann_pct": 66.1389125,
+   "sharpe_ann": 7.3199,
+   "max_dd_pct": -3.1886,
+   "notional_usd_per_day": 3231.3518625,
+   "breakeven_notional_usd_per_day_central": 288796.79670077586
   },
   {
    "strategy": "Maker v1, side markets",
@@ -451,19 +553,54 @@
   {
    "strategy": "Table tennis (out-of-sport test)",
    "period": "Results",
-   "status": "pending"
+   "status": "ok (verdicts only)",
+   "trades": 0,
+   "net_c_per_share": null,
+   "net_c_per_share_ci95": null,
+   "net_trading_usd_per_day": null,
+   "fixed_cost_usd_per_day": {
+    "low": null,
+    "central": null,
+    "high": null
+   },
+   "net_after_costs_usd_per_day": {
+    "low": null,
+    "central": null,
+    "high": null
+   },
+   "capital_usd": null,
+   "return_on_capital_ann_pct": null,
+   "sharpe_ann": null,
+   "max_dd_pct": null,
+   "notional_usd_per_day": null,
+   "breakeven_notional_usd_per_day_central": null
   }
  ],
  "reading": [
   "v2 nets $196/day IS and $92/day in the burned OOS before fixed costs. Taker fees take 0.61\u00a2 of a 1.99\u00a2 gross edge per share IS and 0.94\u00a2 of 1.54\u00a2 OOS.",
   "With a feed licence (ASSUMPTION, central $5,000/month) plus a London VPS, v2's fixed costs are $167/day (range $42\u2013$332). That leaves $29/day IS and \u2212$75/day OOS at central costs.",
+  "Forecast-relevant IS row (PM_REVIEW P08): only 2026-07-11 to 2026-08-25 (46 days) ran under today's 1 s delay and 5% fee. There v2 nets +1.02\u00a2 [+0.59, +1.45] and $179.3/day against $166.9/day of central fixed costs: $12.4/day. The full IS row blends fee and delay regimes that no longer exist.",
+  "Fees are the binding variable (PM_REVIEW P03). On the burned OOS taker fees are 61.0% of gross (30.5% IS). With the book held fixed, the break-even taker fee rate is 8.2% before fixed costs and 2.4% after central fixed costs; today's rate is 5%.",
   "The maker is the only remote-executable book. It nets $20.2/day IS ($71.1/day in the current 1 s / 5% regime) against $2.55/day of VPS. Its pre-registered blind OOS verdict is FAILURE: per fill +1.87\u00a2 [\u22120.14, +3.86]; in dollars it made \u2212$9.5/day (\u2212$379 over 40 days). The per-fill mean is positive while the share-weighted mean is \u22120.75\u00a2, so the larger fills did worse.",
-  "Tier-0 is pending: the verifier-corrected headline has not been written yet. Its fixed costs are already known: $4,149/day central ($1,151\u2013$7,215) for 10 covered matches a day.",
+  "Tier-0 (counterfactual, verifier-corrected headline in results/tier0/results.json) at the scenario's net cap: IS $88.8/day trading vs $1,151 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 13.0\u00d7 its trading P&L just to cover the low-cost case; OOS $46.4/day trading vs $1,151 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 24.8\u00d7 its trading P&L just to cover the low-cost case. Uneconomic at 10 covered matches a day in every cost case (PM_REVIEW P10).",
+  "v2-safe's honest IS Sharpe is the stitched walk-forward 14.02, not the frozen variant's 15.70 shown in the headline (research/rigor/RESULTS.md verifier correction 4).",
   "v2 (frozen fast-tier book): covers central fixed costs in IS: yes, from 1x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 2d).",
   "v2-safe (net cap 50): covers central fixed costs in IS: yes, from 2x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 3d).",
-  "Pending: v2 (frozen fast-tier book) Forward (blind); Tier-0 CV edge (COUNTERFACTUAL) IS; Tier-0 CV edge (COUNTERFACTUAL) OOS (burned, non-blind); Maker v1, side markets Live paper session; Table tennis (out-of-sport test) Results."
+  "Pending: v2 (frozen fast-tier book) Forward (blind); Maker v1, side markets Live paper session."
  ],
  "checks": [
+  {
+   "what": "v2 IS 1 s/5% slice net P&L $ vs results/financials/pm_checks.json",
+   "ours": 8249.43,
+   "repo": 8249.43,
+   "ok": true
+  },
+  {
+   "what": "v2 IS 1 s/5% slice capital $ vs results/financials/pm_checks.json",
+   "ours": 27996.6658,
+   "repo": 27996.6658,
+   "ok": true
+  },
   {
    "what": "v2 IS net P&L $ vs results/v2/causal.json",
    "ours": 40425.7192,
@@ -611,17 +748,14 @@
  ],
  "pending": [
   "v2 (frozen fast-tier book) Forward (blind)",
-  "Tier-0 CV edge (COUNTERFACTUAL) IS",
-  "Tier-0 CV edge (COUNTERFACTUAL) OOS (burned, non-blind)",
-  "Maker v1, side markets Live paper session",
-  "Table tennis (out-of-sport test) Results"
+  "Maker v1, side markets Live paper session"
  ],
  "strategies": {
   "v2": {
    "name": "v2 (frozen fast-tier book)",
-   "about": "The frozen v2 rule: copy qualifying fast-tier prints 0\u20133 s after a detected jump, risk-parity size, wallet filter, 0.05\u20130.95 zone, |net| \u2264 100 shares per match, hold to resolution. It fills at the fast tier's own print price, so it is the prize for fast-tier speed, not a remotely executable strategy (docs/NOTE.md section 5).",
+   "about": "The frozen v2 rule: copy qualifying fast-tier prints 0\u20133 s after a detected jump, risk-parity size, wallet filter, 0.05\u20130.95 zone, |net| \u2264 100 shares per match, hold to resolution. It fills at the fast tier's own print price, so it is the prize for fast-tier speed, not a remotely executable strategy (docs/NOTE.md sections 3 and 6).",
    "cost": {
-    "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 7); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound.",
+    "note": "v2 trades at the fast tier's own fills, so running it means being in the fast tier. That needs a signal about 2.5 s before the official stamp (docs/NOTE.md section 6); an official feed licence is a necessary cost, not a sufficient one. The cost stack is a lower bound.",
     "items": {
      "feed_licence": {
       "low": 1250.0,
@@ -734,6 +868,18 @@
        "net_after_costs_and_cost_of_capital_usd_per_day": -138.85299732539457
       }
      },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 3.277702141729188,
+      "uniform_rate_charged": null,
+      "rate_before_fixed_costs": null,
+      "fee_share_of_gross": 0.3050917858791278,
+      "fee_multiple_after_low_fixed_costs": 2.787569068378225,
+      "rate_after_low_fixed_costs": null,
+      "fee_multiple_after_central_fixed_costs": 1.3402206290671033,
+      "rate_after_central_fixed_costs": null,
+      "fee_multiple_after_high_fixed_costs": -0.5756168272368497,
+      "rate_after_high_fixed_costs": null
+     },
      "unit_economics": {
       "n_trades": 55662,
       "n_matches": 7639,
@@ -820,12 +966,228 @@
       "months_positive": 7,
       "months_total": 7,
       "skew_daily": 0.5345103599734671,
-      "kurtosis_daily_pearson": 4.295491038665969
+      "kurtosis_daily_pearson": 4.295491038665969,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 28302.367701375268,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 253.0816341588461,
+        "max_dd_pct": -2.0120402719953496
+       },
+       {
+        "what": "realised-lock capital",
+        "capital_usd": 34818.12,
+        "source": "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)",
+        "return_ann_pct": 205.72074162615894,
+        "max_dd_pct": -1.6355134512715646
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 7182.350074785291,
       "shares_per_day_now": 14205.450714395794,
       "notional_usd_period": 1479564.11540577
+     }
+    },
+    "IS_1s5": {
+     "status": "ok",
+     "label": "v2 (frozen fast-tier book) IS_1s5",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-07-11",
+      "2026-08-25"
+     ],
+     "per_share_c": 1.0191905861301158,
+     "per_share_ci95_c_match_clustered": [
+      0.5855940429347282,
+      1.4497603548018778
+     ],
+     "per_fill_mean_c": 1.177854638589388,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.5467931496774155,
+      1.7546088013247647
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.9649974841521485,
+       "taker_fees": -0.9458068980220325,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.0191905861301158
+      },
+      "usd_period": {
+       "gross_edge": 15904.88520921884,
+       "taker_fees": -7655.455166966011,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 8249.430042252829
+      },
+      "usd_per_day": {
+       "gross_edge": 345.75837411345304,
+       "taker_fees": -166.4229384123046,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 179.33543570114844
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 4202.380278196404,
+       "net_per_share_c": 0.5191905861301158,
+       "net_usd_per_day": 91.35609300426965
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1942.5197589041093,
+       "net_after_costs_usd_per_day": 137.10674529018954,
+       "net_after_costs_usd_period": 6306.9102833487195,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 2117.1694972755486,
+       "breakeven_notional_multiple_of_now": 0.23547320832526614,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 134.03861752870807
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 7678.723035616439,
+       "net_after_costs_usd_per_day": 12.406674057312813,
+       "net_after_costs_usd_period": 570.7070066363895,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 8369.108275225915,
+       "breakeven_notional_multiple_of_now": 0.9308186136844268,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 9.33854629583134
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 15271.665271232876,
+       "net_after_costs_usd_per_day": -152.65728758652276,
+       "net_after_costs_usd_period": -7022.235228980047,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 16644.72329645561,
+       "breakeven_notional_multiple_of_now": 1.8512388362605416,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -155.72541534800422
+      }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 2.0775884467131194,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.10387942233565597,
+      "fee_share_of_gross": 0.4813272819176797,
+      "fee_multiple_after_low_fixed_costs": 1.8238452379113412,
+      "rate_after_low_fixed_costs": 0.09119226189556706,
+      "fee_multiple_after_central_fixed_costs": 1.0745490626212593,
+      "rate_after_central_fixed_costs": 0.05372745313106297,
+      "fee_multiple_after_high_fixed_costs": 0.0827148646521198,
+      "rate_after_high_fixed_costs": 0.00413574323260599
+     },
+     "unit_economics": {
+      "n_trades": 15120,
+      "n_matches": 2136,
+      "calendar_days": 46,
+      "active_days": 46,
+      "per_trade_usd": 0.5455972250167215,
+      "per_trade_median_usd": 1.0749807000000002,
+      "per_match_usd": 3.8620927164105003,
+      "match_win_rate": 0.576310861423221,
+      "per_day_usd": 179.3354357011485,
+      "per_day_median_usd": 133.305680261801,
+      "profitable_days_share": 0.7391304347826086,
+      "profitable_active_days_share": 0.7391304347826086,
+      "trade_win_rate": 0.5474867724867725,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5407170604340065,
+       0.5544113655401964
+      ],
+      "trade_loss_rate": 0.45251322751322753,
+      "avg_win_usd": 19.176007449099178,
+      "avg_loss_usd": -21.994966328762086,
+      "win_loss_ratio": 0.8718361811731147,
+      "profit_factor": 1.0548172913988663,
+      "expectancy_usd_per_trade": 0.5455972250167215,
+      "expectancy_c_per_share": 1.0191905861301158,
+      "net_c_per_usd_notional": 1.9945824113421398,
+      "turnover_x_per_year": 117.21971961519134,
+      "hold_hours_to_resolution": {
+       "median": 0.8360437395837572,
+       "p90": 2.005388522479269,
+       "mean": 1.0211675880845812
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 141.1338770281477,
+       "on_reserved_capital_usd_per_day": 3.0681277614814717,
+       "on_dollars_actually_locked_usd_period": 1.7597863772159394,
+       "share_of_net_trading_pnl": 0.01710831855113297
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 27996.665823518437,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 9332.221941172813,
+      "pnl_usd": 8249.430042252829,
+      "pnl_ci95_usd_match_clustered": [
+       4836.233418595271,
+       11712.09659404805
+      ],
+      "return_on_capital_pct": 29.465758866625265,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       14.95892454593773,
+       43.7323673237615
+      ],
+      "return_on_capital_ann_pct": 233.80439100691788,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       118.69581433189721,
+       347.0068276776728
+      ],
+      "sharpe_ann": 11.233499742638212,
+      "sortino_ann": 27.78127551058397,
+      "calmar": 118.84836040197567,
+      "max_dd_usd": -550.7643000671221,
+      "max_dd_pct": -1.967249613003759,
+      "max_dd_dates": {
+       "peak_date": "2026-07-17",
+       "trough_date": "2026-07-18",
+       "recovery_date": "2026-07-21"
+      },
+      "days_trough_to_recovery": 3,
+      "days_peak_to_recovery": 4,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -550.764300067122,
+      "worst_day_pct": -1.9672496130037587,
+      "worst_week_usd": -383.0259617975781,
+      "worst_week_pct": -1.3681127753284799,
+      "worst_month_usd": 4068.9695085905432,
+      "worst_month_pct": 14.533764606971268,
+      "months_positive": 2,
+      "months_total": 2,
+      "skew_daily": 0.10060851210367243,
+      "kurtosis_daily_pearson": 3.041156029040355,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 28302.367701375268,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 231.27900365642722,
+        "max_dd_pct": -1.9460007935673855
+       },
+       {
+        "what": "realised-lock capital",
+        "capital_usd": 34818.12,
+        "source": "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)",
+        "return_ann_pct": 187.99818609080324,
+        "max_dd_pct": -1.5818323909134728
+       }
+      ]
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 8991.12689861107,
+      "shares_per_day_now": 17595.86853937576,
+      "notional_usd_period": 413591.83733610925
      }
     },
     "OOS": {
@@ -905,6 +1267,18 @@
        "breakeven_notional_multiple_of_now": 3.601241918427036,
        "net_after_costs_and_cost_of_capital_usd_per_day": -242.29791939254426
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 1.638735631525123,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.08193678157625615,
+      "fee_share_of_gross": 0.6102265556216224,
+      "fee_multiple_after_low_fixed_costs": 1.3461503407306552,
+      "rate_after_low_fixed_costs": 0.06730751703653276,
+      "fee_multiple_after_central_fixed_costs": 0.4821546484964099,
+      "rate_after_central_fixed_costs": 0.024107732424820495,
+      "fee_multiple_after_high_fixed_costs": -0.6615058995161145,
+      "rate_after_high_fixed_costs": -0.033075294975805726
      },
      "unit_economics": {
       "n_trades": 10412,
@@ -992,7 +1366,23 @@
       "months_positive": 2,
       "months_total": 3,
       "skew_daily": 0.3256376673081488,
-      "kurtosis_daily_pearson": 3.259698998705011
+      "kurtosis_daily_pearson": 3.259698998705011,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 28302.367701375268,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 118.8902837628392,
+        "max_dd_pct": -1.658623740541858
+       },
+       {
+        "what": "realised-lock capital",
+        "capital_usd": 34818.12,
+        "source": "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)",
+        "return_ann_pct": 96.6415339822116,
+        "max_dd_pct": -1.3482341660907056
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 8062.2581058811575,
@@ -1077,6 +1467,18 @@
        "breakeven_notional_multiple_of_now": 8.972792258625578,
        "net_after_costs_and_cost_of_capital_usd_per_day": -296.2740626768421
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 3.3652837332445933,
+      "uniform_rate_charged": null,
+      "rate_before_fixed_costs": null,
+      "fee_share_of_gross": 0.29715176468519144,
+      "fee_multiple_after_low_fixed_costs": 0.6657428657725576,
+      "rate_after_low_fixed_costs": null,
+      "fee_multiple_after_central_fixed_costs": -7.305921308365886,
+      "rate_after_central_fixed_costs": null,
+      "fee_multiple_after_high_fixed_costs": -17.85791583786549,
+      "rate_after_high_fixed_costs": null
      },
      "unit_economics": {
       "n_trades": 10764,
@@ -1164,7 +1566,23 @@
       "months_positive": 4,
       "months_total": 7,
       "skew_daily": 1.6091528448894312,
-      "kurtosis_daily_pearson": 8.842881027525845
+      "kurtosis_daily_pearson": 8.842881027525845,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 28302.367701375268,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 47.716771016161346,
+        "max_dd_pct": -2.3457756089972817
+       },
+       {
+        "what": "realised-lock capital",
+        "capital_usd": 34818.12,
+        "source": "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)",
+        "return_ann_pct": 38.78720616798737,
+        "max_dd_pct": -1.9067946181688893
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 935.6505275128574,
@@ -1249,6 +1667,18 @@
        "breakeven_notional_multiple_of_now": 6.2723942309239815,
        "net_after_costs_and_cost_of_capital_usd_per_day": -279.8779502876789
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 2.2182048921905833,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.11091024460952917,
+      "fee_share_of_gross": 0.45081498265584125,
+      "fee_multiple_after_low_fixed_costs": 1.2462799341606299,
+      "rate_after_low_fixed_costs": 0.0623139967080315,
+      "fee_multiple_after_central_fixed_costs": -1.6237856615248372,
+      "rate_after_central_fixed_costs": -0.08118928307624186,
+      "fee_multiple_after_high_fixed_costs": -5.422856445669,
+      "rate_after_high_fixed_costs": -0.27114282228345
      },
      "unit_economics": {
       "n_trades": 4616,
@@ -1336,7 +1766,23 @@
       "months_positive": 2,
       "months_total": 3,
       "skew_daily": 0.9244966731357283,
-      "kurtosis_daily_pearson": 5.187276248175613
+      "kurtosis_daily_pearson": 5.187276248175613,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 28302.367701375268,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 68.25984748687439,
+        "max_dd_pct": -2.8428774273015436
+       },
+       {
+        "what": "realised-lock capital",
+        "capital_usd": 34818.12,
+        "source": "3 x IS peak locked with realised lock times (results/risk/risk_stats.json)",
+        "return_ann_pct": 55.48591660932053,
+        "max_dd_pct": -2.310870382359186
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 2222.9435416918786,
@@ -1601,7 +2047,7 @@
     "IS": "yes, from 1x (central cost $167/day)",
     "OOS": "no: not even with every qualifying print (central cost $167/day)"
    },
-   "capacity_md": "**Now:** $7,182 notional/day IS, $8,062 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $109.6 | +1.31 | $4,230 | 15.5 | $17,465 | \u22121.6% | $62.1 | +0.68 | $4,755 | 9.2 | $13,355 | \u22121.8% |\n| 1x | $196.2 | +1.38 | $7,182 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 2x | $316.2 | +1.41 | $11,366 | 12.8 | $45,392 | \u22124.1% | $82.5 | +0.34 | $12,935 | 3.2 | $33,875 | \u22124.9% |\n| 5x | $529.3 | +1.39 | $19,336 | 10.4 | $80,253 | \u22125.4% | \u2212$24.5 | \u22120.06 | $21,525 | \u22120.5 | $53,816 | \u221211.4% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |",
+   "capacity_md": "**Now:** $7,182 notional/day IS, $8,062 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $109.6 | +1.31 | $4,230 | 15.5 | $17,465 | \u22121.6% | $62.1 | +0.68 | $4,755 | 9.2 | $13,355 | \u22121.8% |\n| 1x | $196.2 | +1.38 | $7,182 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 2x | $316.2 | +1.41 | $11,366 | 12.8 | $45,392 | \u22124.1% | $82.5 | +0.34 | $12,935 | 3.2 | $33,875 | \u22124.9% |\n| 5x | $529.3 | +1.39 | $19,336 | 10.4 | $80,253 | \u22125.4% | \u2212$24.5 | \u22120.06 | $21,525 | \u22120.5 | $53,816 | \u221211.4% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |\n\n**Out-of-sample capacity on this evidence.** On the burned OOS, $/day peaks at 1x ($92.2/day, capital $22,754); the largest size still positive is 2x ($82.5/day, Sharpe 3.2, capital $33,875), and every larger size loses money. So out-of-sample capacity is about $22,754\u2013$33,875 of capital. This replaces the sizing lens's '~$100k at Sharpe ~6' (research/v2/sizing/RESULTS.md \u00a76), which used onset-window labels (the D9 hindsight bug), was in-sample only, and whose $102k row is the copy-everything Baseline, not v2.",
    "caveats": [
     "IS is in-sample for the rule's selection; the OOS is burned (looked at before v2-safe was designed).",
     "Per-share P&L moves with size because a bigger book takes a different mix of trades (more same-direction stacking within a match once the net cap loosens; at 'all prints', every print at its full size instead of risk-parity sizing). None of it is modelled price impact, which the engine does not have; real impact would make the larger rows worse.",
@@ -1725,6 +2171,18 @@
        "net_after_costs_and_cost_of_capital_usd_per_day": -218.0860420924367
       }
      },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 3.199228340398469,
+      "uniform_rate_charged": null,
+      "rate_before_fixed_costs": null,
+      "fee_share_of_gross": 0.31257537555929765,
+      "fee_multiple_after_low_fixed_costs": 2.397544119258237,
+      "rate_after_low_fixed_costs": null,
+      "fee_multiple_after_central_fixed_costs": 0.030194374106852145,
+      "rate_after_central_fixed_costs": null,
+      "fee_multiple_after_high_fixed_costs": -3.1034375770847564,
+      "rate_after_high_fixed_costs": null
+     },
      "unit_economics": {
       "n_trades": 50950,
       "n_matches": 7639,
@@ -1811,12 +2269,214 @@
       "months_positive": 7,
       "months_total": 7,
       "skew_daily": 0.6086410964208812,
-      "kurtosis_daily_pearson": 3.9433565566545163
+      "kurtosis_daily_pearson": 3.9433565566545163,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 17680.604395182603,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 239.1499853002123,
+        "max_dd_pct": -1.6071751019680214
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 4383.29617683147,
       "shares_per_day_now": 8691.170867682567,
       "notional_usd_period": 902959.0124272828
+     }
+    },
+    "IS_1s5": {
+     "status": "ok",
+     "label": "v2-safe (net cap 50) IS_1s5",
+     "source": "engine re-simulation (verified equal to the repo trade file)",
+     "calendar": [
+      "2026-07-11",
+      "2026-08-25"
+     ],
+     "per_share_c": 1.0229125592852246,
+     "per_share_ci95_c_match_clustered": [
+      0.648771734052176,
+      1.3920720932188302
+     ],
+     "per_fill_mean_c": 1.246899203370017,
+     "per_fill_mean_ci95_c_match_clustered": [
+      0.6769278556893301,
+      1.8302631515846348
+     ],
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.9776548030177654,
+       "taker_fees": -0.9547422437325412,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 1.0229125592852246
+      },
+      "usd_period": {
+       "gross_edge": 9673.826413785504,
+       "taker_fees": -4670.183452482797,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 5003.6429613027085
+      },
+      "usd_per_day": {
+       "gross_edge": 210.30057421272835,
+       "taker_fees": -101.5257272278869,
+       "maker_rebates": 0.0,
+       "slippage_modelled": -0.0,
+       "net_trading": 108.77484698484149
+      },
+      "stress_half_tick_slippage": {
+       "net_trading_usd": 2557.860613689791,
+       "net_per_share_c": 0.5229125592852246,
+       "net_usd_per_day": 55.60566551499546
+      }
+     },
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 42.2286904109589,
+       "fixed_cost_usd_period": 1942.5197589041093,
+       "net_after_costs_usd_per_day": 66.5461565738826,
+       "net_after_costs_usd_period": 3061.1232023985995,
+       "breakeven_pnl_usd_per_day": 42.2286904109589,
+       "breakeven_notional_usd_per_day": 2101.447773690077,
+       "breakeven_notional_multiple_of_now": 0.3882210968942457,
+       "net_after_costs_and_cost_of_capital_usd_per_day": 64.60855609221875
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 166.92876164383563,
+       "fixed_cost_usd_period": 7678.723035616439,
+       "net_after_costs_usd_per_day": -58.15391465899414,
+       "net_after_costs_usd_period": -2675.0800743137306,
+       "breakeven_pnl_usd_per_day": 166.92876164383563,
+       "breakeven_notional_usd_per_day": 8306.960767844337,
+       "breakeven_notional_multiple_of_now": 1.5346264901397497,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -60.09151514065799
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 331.9927232876712,
+       "fixed_cost_usd_period": 15271.665271232876,
+       "net_after_costs_usd_per_day": -223.21787630282972,
+       "net_after_costs_usd_period": -10268.022309930167,
+       "breakeven_pnl_usd_per_day": 331.9927232876712,
+       "breakeven_notional_usd_per_day": 16521.122545944007,
+       "breakeven_notional_multiple_of_now": 3.052109311024236,
+       "net_after_costs_and_cost_of_capital_usd_per_day": -225.15547678449357
+      }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 2.0714018008527337,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.10357009004263669,
+      "fee_share_of_gross": 0.48276485981055445,
+      "fee_multiple_after_low_fixed_costs": 1.655461018511215,
+      "rate_after_low_fixed_costs": 0.08277305092556075,
+      "fee_multiple_after_central_fixed_costs": 0.4272002156806952,
+      "rate_after_central_fixed_costs": 0.021360010784034763,
+      "fee_multiple_after_high_fixed_costs": -1.19863361137803,
+      "rate_after_high_fixed_costs": -0.0599316805689015
+     },
+     "unit_economics": {
+      "n_trades": 13920,
+      "n_matches": 2136,
+      "calendar_days": 46,
+      "active_days": 46,
+      "per_trade_usd": 0.35945710928898766,
+      "per_trade_median_usd": 1.0408736319335294,
+      "per_match_usd": 2.3425294762653124,
+      "match_win_rate": 0.5828651685393258,
+      "per_day_usd": 108.77484698484149,
+      "per_day_median_usd": 101.63924843291164,
+      "profitable_days_share": 0.7608695652173914,
+      "profitable_active_days_share": 0.7608695652173914,
+      "trade_win_rate": 0.5443247126436782,
+      "trade_win_rate_ci95_match_clustered": [
+       0.5378432986976615,
+       0.5505683201839564
+      ],
+      "trade_loss_rate": 0.45567528735632185,
+      "avg_win_usd": 12.767122975504895,
+      "avg_loss_usd": -14.46206019613714,
+      "win_loss_ratio": 0.882801122547881,
+      "profit_factor": 1.0545458151577005,
+      "expectancy_usd_per_trade": 0.35945710928898766,
+      "expectancy_c_per_share": 1.0229125592852246,
+      "net_c_per_usd_notional": 2.0095046348359458,
+      "turnover_x_per_year": 111.74683369221303,
+      "hold_hours_to_resolution": {
+       "median": 0.84622090001901,
+       "p90": 2.018720992684364,
+       "mean": 1.0322773825148521
+      },
+      "capital_lock_hours_in_capital_model": {
+       "median": 4.0,
+       "p90": 4.0,
+       "rule": "ex-ante 4 h per position from entry (src/v2.py LOCK_S), capital = 3 \u00d7 peak of the dollars locked"
+      },
+      "cost_of_capital": {
+       "rate": 0.04,
+       "on_reserved_capital_usd_period": 89.12962215653712,
+       "on_reserved_capital_usd_per_day": 1.9376004816638506,
+       "on_dollars_actually_locked_usd_period": 1.0723618271587554,
+       "share_of_net_trading_pnl": 0.017812946056673086
+      }
+     },
+     "capital_returns": {
+      "capital_usd": 17680.604395182636,
+      "capital_rule": "3 x peak dollars locked (repo convention)",
+      "peak_locked_usd": 5893.534798394212,
+      "pnl_usd": 5003.6429613027085,
+      "pnl_ci95_usd_match_clustered": [
+       3196.149950153358,
+       6873.224489009117
+      ],
+      "return_on_capital_pct": 28.300180522482766,
+      "return_on_capital_ci95_pct_day_bootstrap": [
+       15.507720054467262,
+       40.936694606689464
+      ],
+      "return_on_capital_ann_pct": 224.5557802327437,
+      "return_on_capital_ann_ci95_pct_day_bootstrap": [
+       123.05038738870762,
+       324.82377242264465
+      ],
+      "sharpe_ann": 12.138028335919536,
+      "sortino_ann": 32.38476538788802,
+      "calmar": 139.72079330856386,
+      "max_dd_usd": -284.1582717168387,
+      "max_dd_pct": -1.6071751019680196,
+      "max_dd_dates": {
+       "peak_date": "2026-07-17",
+       "trough_date": "2026-07-18",
+       "recovery_date": "2026-07-21"
+      },
+      "days_trough_to_recovery": 3,
+      "days_peak_to_recovery": 4,
+      "days_since_trough_unrecovered": null,
+      "worst_day_usd": -284.1582717168387,
+      "worst_day_pct": -1.6071751019680196,
+      "worst_week_usd": -176.31579073274378,
+      "worst_week_pct": -0.9972271693426037,
+      "worst_month_usd": 2473.914535317716,
+      "worst_month_pct": 13.992250943592028,
+      "months_positive": 2,
+      "months_total": 2,
+      "skew_daily": 0.10812776589798972,
+      "kurtosis_daily_pearson": 2.800778056388108,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 17680.604395182603,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 224.55578023274413,
+        "max_dd_pct": -1.607175101968023
+       }
+      ]
+     },
+     "capacity": {
+      "notional_usd_per_day_now": 5413.017969661054,
+      "shares_per_day_now": 10633.836293969205,
+      "notional_usd_period": 248998.82660440847
      }
     },
     "OOS": {
@@ -1896,6 +2556,18 @@
        "breakeven_notional_multiple_of_now": 5.241687358173002,
        "net_after_costs_and_cost_of_capital_usd_per_day": -270.14443302050745
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 1.7273659035128301,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.08636829517564151,
+      "fee_share_of_gross": 0.5789161392883615,
+      "fee_multiple_after_low_fixed_costs": 1.242409050010093,
+      "rate_after_low_fixed_costs": 0.06212045250050466,
+      "fee_multiple_after_central_fixed_costs": -0.18965416549917224,
+      "rate_after_central_fixed_costs": -0.009482708274958613,
+      "fee_multiple_after_high_fixed_costs": -2.085258757696453,
+      "rate_after_high_fixed_costs": -0.10426293788482266
      },
      "unit_economics": {
       "n_trades": 9487,
@@ -1983,7 +2655,16 @@
       "months_positive": 2,
       "months_total": 3,
       "skew_daily": 0.17198929073305594,
-      "kurtosis_daily_pearson": 2.6608321854305967
+      "kurtosis_daily_pearson": 2.6608321854305967,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 17680.604395182603,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 130.7534656037854,
+        "max_dd_pct": -1.4291119760882176
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 4803.997352926812,
@@ -2068,6 +2749,18 @@
        "breakeven_notional_multiple_of_now": 13.108481793050947,
        "net_after_costs_and_cost_of_capital_usd_per_day": -307.38709606951437
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 3.477004561958964,
+      "uniform_rate_charged": null,
+      "rate_before_fixed_costs": null,
+      "fee_share_of_gross": 0.28760387919554364,
+      "fee_multiple_after_low_fixed_costs": -0.6530734040800619,
+      "rate_after_low_fixed_costs": null,
+      "fee_multiple_after_central_fixed_costs": -12.849071232815628,
+      "rate_after_central_fixed_costs": null,
+      "fee_multiple_after_high_fixed_costs": -28.99276463978425,
+      "rate_after_high_fixed_costs": null
      },
      "unit_economics": {
       "n_trades": 10115,
@@ -2155,7 +2848,16 @@
       "months_positive": 4,
       "months_total": 7,
       "skew_daily": 1.7217697520127726,
-      "kurtosis_daily_pearson": 8.12876080935916
+      "kurtosis_daily_pearson": 8.12876080935916,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 17680.604395182603,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 52.28437575860212,
+        "max_dd_pct": -2.174532261394544
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 613.8066243387519,
@@ -2240,6 +2942,18 @@
        "breakeven_notional_multiple_of_now": 9.902972390879837,
        "net_after_costs_and_cost_of_capital_usd_per_day": -298.96393850858857
       }
+     },
+     "breakeven_taker_fee": {
+      "fee_multiple_before_fixed_costs": 2.199866563868867,
+      "uniform_rate_charged": 0.05,
+      "rate_before_fixed_costs": 0.10999332819344335,
+      "fee_share_of_gross": 0.4545730256663011,
+      "fee_multiple_after_low_fixed_costs": 0.6884730016064516,
+      "rate_after_low_fixed_costs": 0.03442365008032258,
+      "fee_multiple_after_central_fixed_costs": -3.774627393903891,
+      "rate_after_central_fixed_costs": -0.18873136969519455,
+      "fee_multiple_after_high_fixed_costs": -9.682378890864374,
+      "rate_after_high_fixed_costs": -0.48411894454321874
      },
      "unit_economics": {
       "n_trades": 4196,
@@ -2327,7 +3041,16 @@
       "months_positive": 2,
       "months_total": 3,
       "skew_daily": 1.7261390459657868,
-      "kurtosis_daily_pearson": 9.907542674362569
+      "kurtosis_daily_pearson": 9.907542674362569,
+      "fixed_capital": [
+       {
+        "what": "IS capital",
+        "capital_usd": 17680.604395182603,
+        "source": "this book's IS capital (3 x IS peak locked)",
+        "return_ann_pct": 69.20839124259925,
+        "max_dd_pct": -2.279680773574171
+       }
+      ]
      },
      "capacity": {
       "notional_usd_per_day_now": 1428.8259861584313,
@@ -2535,12 +3258,23 @@
     "IS": "yes, from 2x (central cost $167/day)",
     "OOS": "no: not even with every qualifying print (central cost $167/day)"
    },
-   "capacity_md": "**Now:** $4,383 notional/day IS, $4,804 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $65.4 | +1.27 | $2,590 | 16.0 | $11,003 | \u22121.6% | $36.6 | +0.69 | $2,758 | 10.5 | $7,471 | \u22121.7% |\n| 1x | $115.8 | +1.33 | $4,383 | 15.7 | $17,681 | \u22121.6% | $63.3 | +0.69 | $4,804 | 9.3 | $13,584 | \u22121.9% |\n| 2x | $196.3 | +1.38 | $7,185 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 5x | $362.7 | +1.41 | $13,042 | 12.2 | $52,065 | \u22124.8% | $67.8 | +0.24 | $14,839 | 2.3 | $37,293 | \u22126.8% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |",
+   "capacity_md": "**Now:** $4,383 notional/day IS, $4,804 OOS. **Outer ceiling (measured):** the qualifying fast tier's own 0\u20133 s prints total $82,325/day IS and $105,490/day OOS (walk-forward shadow rows, `src/fasttier.py`; every wallet, before v2's wallet filter and zone). **Ceiling for this rule:** the 'all prints' row below, where the engine takes every print that passes v2's wallet filter and zone, in full.\n\nDepth / impact model: the repo's engine (`research/v2/sizing/engine.py`) caps every trade at the fast-tier print it copies (the liquidity known to exist at that price) and has no price-impact model beyond that cap; a 1x book that is larger than the print is impossible by construction. The rows scale every size cap of the frozen rule (risk budget R, per-match net cap, $ per order, $ per match) by the factor, with the same walk-forward fitting. The OOS rows are new evaluations on the burned (non-blind) OOS.\n\n| size | IS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % | OOS: $/day | \u00a2/share | notional $/day | Sharpe | capital | max DD % |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 0.5x | $65.4 | +1.27 | $2,590 | 16.0 | $11,003 | \u22121.6% | $36.6 | +0.69 | $2,758 | 10.5 | $7,471 | \u22121.7% |\n| 1x | $115.8 | +1.33 | $4,383 | 15.7 | $17,681 | \u22121.6% | $63.3 | +0.69 | $4,804 | 9.3 | $13,584 | \u22121.9% |\n| 2x | $196.3 | +1.38 | $7,185 | 14.5 | $28,302 | \u22122.0% | $92.2 | +0.60 | $8,062 | 6.7 | $22,754 | \u22122.1% |\n| 5x | $362.7 | +1.41 | $13,042 | 12.2 | $52,065 | \u22124.8% | $67.8 | +0.24 | $14,839 | 2.3 | $37,293 | \u22126.8% |\n| all prints | $491.2 | +0.37 | $67,442 | 0.8 | $534,207 | \u221231.8% | \u2212$1,281.5 | \u22120.96 | $67,053 | \u22122.1 | $303,724 | \u221225.7% |\n\n**Out-of-sample capacity on this evidence.** On the burned OOS, $/day peaks at 2x ($92.2/day, capital $22,754); the largest size still positive is 5x ($67.8/day, Sharpe 2.3, capital $37,293), and every larger size loses money. So out-of-sample capacity is about $22,754\u2013$37,293 of capital.",
    "caveats": [
     "IS is in-sample for the rule's selection; the OOS is burned (looked at before v2-safe was designed).",
     "Per-share P&L moves with size because a bigger book takes a different mix of trades (more same-direction stacking within a match once the net cap loosens; at 'all prints', every print at its full size instead of risk-parity sizing). None of it is modelled price impact, which the engine does not have; real impact would make the larger rows worse.",
-    "U2 has few markets before May 2026 (research/v2/expand/RESULTS.md, coverage facts), so U2-IS per-day figures are spread over a mostly empty 201-day calendar."
-   ]
+    "U2 has few markets before May 2026 (research/v2/expand/RESULTS.md, coverage facts), so U2-IS per-day figures are spread over a mostly empty 201-day calendar.",
+    "The IS Sharpe 15.70 is the frozen variant's full-period figure and is in-sample for its own selection. The honest IS figure is the stitched walk-forward series: Sharpe 14.02, +1.33\u00a2/share, $25,530 (research/rigor/RESULTS.md verifier correction 4; research/v2/lowloss/out/results.json stitched_is)."
+   ],
+   "stitched_is_repo": {
+    "sharpe_ann": 14.016793744293441,
+    "per_share_c": 1.3322130296561019,
+    "per_share_ci_c": [
+     1.1268331748892386,
+     1.548055108667015
+    ],
+    "pnl_usd": 25530.37121182877,
+    "capital_usd": 24038.71801439818
+   }
   },
   "tier0": {
    "name": "Tier-0 CV edge (COUNTERFACTUAL)",
@@ -2601,21 +3335,235 @@
    },
    "periods": {
     "IS": {
-     "status": "pending",
-     "expected_file": "results/tier0/results.json",
-     "why": "verifier-corrected headline not yet written (research/v2/tier0/DEVIATIONS.md V1-V10 in progress; results.json has no 'headline' key). The pre-registered primary's fill pricing was refuted (V1) and is not used."
+     "status": "ok (summary file only)",
+     "label": "tier-0 corrected headline, IS (20-seed mean)",
+     "source": "results/tier0/results.json",
+     "n_trades": 6446.8,
+     "n_matches": 701.8,
+     "calendar_days": 103.0,
+     "per_share_c": 1.0978,
+     "per_share_ci95_c": [
+      0.8238,
+      1.3769
+     ],
+     "pnl_usd": 9145.7415,
+     "pnl_usd_per_day": 88.7936,
+     "usd_traded": 403262.2956,
+     "notional_usd_per_day_now": 3915.167918446602,
+     "capital_usd": 28999.9388,
+     "sharpe_ann": 11.4207,
+     "max_dd_usd": -473.1393,
+     "max_dd_pct": -1.7634,
+     "worst_day_usd": -229.2821,
+     "return_on_capital_pct": 32.4629,
+     "return_on_capital_ann_pct": 115.03843203883494,
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 1150.5280054794523,
+       "net_after_costs_usd_per_day": -1061.7344054794523,
+       "breakeven_pnl_usd_per_day": 1150.5280054794523,
+       "breakeven_notional_usd_per_day": 50730.120093787176
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 4149.2273917808225,
+       "net_after_costs_usd_per_day": -4060.4337917808225,
+       "breakeven_pnl_usd_per_day": 4149.2273917808225,
+       "breakeven_notional_usd_per_day": 182951.48217079337
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 7215.469983561644,
+       "net_after_costs_usd_per_day": -7126.676383561644,
+       "breakeven_pnl_usd_per_day": 7215.469983561644,
+       "breakeven_notional_usd_per_day": 318151.0202758259
+      }
+     },
+     "n_seeds": 20,
+     "seed_sd": {
+      "per_share_c": 0.164,
+      "pnl_per_day_usd": 21.3241,
+      "sharpe_ann": 2.45
+     },
+     "capacity_stale_usd_per_day": 86123.3093,
+     "fill_rate": 0.2509,
+     "wrong_call_share_of_trades": 0.1259,
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.8948,
+       "taker_fees": -0.797,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 1.0978
+      },
+      "usd_period": {
+       "gross_edge": 15785.52650227728,
+       "taker_fees": -6639.785002277281,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 9145.7415
+      },
+      "usd_per_day": {
+       "gross_edge": 153.25753885706098,
+       "taker_fees": -64.46393206094447,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 88.7936067961165
+      },
+      "usd_scaled_to_seed_mean_pnl": 1.0108447344003058,
+      "note": "Fees split from the pooled 20-seed decomposition (correct vs wrong fills); the share weight of correct fills is solved from the net per share. Slippage is inside the book-priced fill (we pay the measured cost of walking the stale book, DEVIATIONS V1/V2).",
+      "correct_fill_share_weight_derived": 0.8807685767726577
+     }
     },
     "OOS": {
-     "status": "pending",
-     "expected_file": "results/tier0/results.json",
-     "why": "verifier-corrected headline not yet written (research/v2/tier0/DEVIATIONS.md V1-V10 in progress; results.json has no 'headline' key). The pre-registered primary's fill pricing was refuted (V1) and is not used."
+     "status": "ok (summary file only)",
+     "label": "tier-0 corrected headline, OOS (20-seed mean)",
+     "source": "results/tier0/results.json",
+     "n_trades": 1968.95,
+     "n_matches": 253.35,
+     "calendar_days": 40.0,
+     "per_share_c": 0.5755,
+     "per_share_ci95_c": [
+      -0.0764,
+      1.2097
+     ],
+     "pnl_usd": 1857.0308,
+     "pnl_usd_per_day": 46.4258,
+     "usd_traded": 129254.0745,
+     "notional_usd_per_day_now": 3231.3518625,
+     "capital_usd": 21410.5908,
+     "sharpe_ann": 7.3199,
+     "max_dd_usd": -443.6482,
+     "max_dd_pct": -3.1886,
+     "worst_day_usd": -192.9019,
+     "return_on_capital_pct": 7.2481,
+     "return_on_capital_ann_pct": 66.1389125,
+     "fixed_costs": {
+      "low": {
+       "fixed_cost_usd_per_day": 1150.5280054794523,
+       "net_after_costs_usd_per_day": -1104.1022054794523,
+       "breakeven_pnl_usd_per_day": 1150.5280054794523,
+       "breakeven_notional_usd_per_day": 80079.68017255155
+      },
+      "central": {
+       "fixed_cost_usd_per_day": 4149.2273917808225,
+       "net_after_costs_usd_per_day": -4102.8015917808225,
+       "breakeven_pnl_usd_per_day": 4149.2273917808225,
+       "breakeven_notional_usd_per_day": 288796.79670077586
+      },
+      "high": {
+       "fixed_cost_usd_per_day": 7215.469983561644,
+       "net_after_costs_usd_per_day": -7169.044183561644,
+       "breakeven_pnl_usd_per_day": 7215.469983561644,
+       "breakeven_notional_usd_per_day": 502215.09239792393
+      }
+     },
+     "n_seeds": 20,
+     "seed_sd": {
+      "per_share_c": 0.3715,
+      "pnl_per_day_usd": 38.9702,
+      "sharpe_ann": 5.9006
+     },
+     "capacity_stale_usd_per_day": 72736.6825,
+     "fill_rate": 0.2032,
+     "wrong_call_share_of_trades": 0.1911,
+     "waterfall": {
+      "per_share_c": {
+       "gross_edge": 1.5998663810689515,
+       "taker_fees": -1.0243663810689514,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 0.5755
+      },
+      "usd_period": {
+       "gross_edge": 5162.469410129593,
+       "taker_fees": -3305.438610129592,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 1857.0308
+      },
+      "usd_per_day": {
+       "gross_edge": 129.06173525323982,
+       "taker_fees": -82.63596525323979,
+       "maker_rebates": 0.0,
+       "slippage_modelled": 0.0,
+       "net_trading": 46.42577
+      },
+      "usd_scaled_to_seed_mean_pnl": 1.2213676729420804,
+      "note": "Fees split from the pooled 20-seed decomposition (correct vs wrong fills); the share weight of correct fills is solved from the net per share. Slippage is inside the book-priced fill (we pay the measured cost of walking the stale book, DEVIATIONS V1/V2).",
+      "correct_fill_share_weight_derived": 0.841595267237862
+     }
     }
    },
    "about": "**COUNTERFACTUAL WITH ASSUMED DATA: licensed live feed + courtside camera, not purchased; parameters from our measurements.** A trader with a courtside 120 fps camera, our CV model, a licensed live point feed and a London gateway, backtested on real Polymarket tapes (research/v2/tier0). Only the verifier-corrected headline is used; the pre-registered primary's fill pricing was refuted (DEVIATIONS V1) and is never shown as an estimate.",
    "tier0_extra": {
-    "label": "COUNTERFACTUAL WITH ASSUMED DATA: licensed live feed + courtside camera, not purchased; parameters from our measurements."
+    "label": "COUNTERFACTUAL WITH ASSUMED DATA: licensed live feed + courtside camera, not purchased; parameters from our measurements.",
+    "scenario": {
+     "cv": "own120",
+     "stamp_lag": 2.0,
+     "phi": 0.5,
+     "coverage": 10,
+     "p_event": 0.95,
+     "net_cap": 100.0,
+     "trade_cap": 1000.0,
+     "slip": 0.005,
+     "lat_map": "region",
+     "pool": "D>=3c",
+     "vol_scale": "cap1",
+     "stale": "ref",
+     "regime": "delay1",
+     "price": "live",
+     "order": "limit",
+     "r_mode": "tournament",
+     "r_shift": 0.0,
+     "queue_s": 0.0,
+     "stale_adj": 0.005,
+     "edge_scale": false,
+     "wrong_price": "live"
+    },
+    "verified_marker": true,
+    "capacity_by_net_cap": {
+     "IS": {
+      "100.0": {
+       "sharpe_median": 15.475,
+       "pnl_per_day_median": 75.02,
+       "per_share_c_median": 1.237,
+       "fill_rate_median": 0.345,
+       "share_positive": 0.782
+      },
+      "1000.0": {
+       "sharpe_median": 4.847,
+       "pnl_per_day_median": 202.394,
+       "per_share_c_median": 0.55,
+       "fill_rate_median": 0.44,
+       "share_positive": 0.741
+      }
+     },
+     "OOS": {
+      "100.0": {
+       "sharpe_median": 11.962,
+       "pnl_per_day_median": 57.117,
+       "per_share_c_median": 0.878,
+       "fill_rate_median": 0.264,
+       "share_positive": 0.764
+      },
+      "1000.0": {
+       "sharpe_median": 1.342,
+       "pnl_per_day_median": 54.127,
+       "per_share_c_median": 0.107,
+       "fill_rate_median": 0.338,
+       "share_positive": 0.623
+      }
+     }
+    }
    },
-   "extra_md": "**Fixed costs at the scenario's 10 covered matches a day** (low / central / high): per covered match $110 / $397 / $686 (operator and GPU hours plus venue access); camera kits $208 / $417 / $833 a month; plus the feed licence and VPS. Total **$1,151 / $4,149 / $7,215 per day**, which is the trading P&L per day the counterfactual must clear to break even. With venue access at $0 and everything else at its low value it is still $1,151/day."
+   "extra_md": "**Fixed costs at the scenario's 10 covered matches a day** (low / central / high): per covered match $110 / $397 / $686 (operator and GPU hours plus venue access); camera kits $208 / $417 / $833 a month; plus the feed licence and VPS. Total **$1,151 / $4,149 / $7,215 per day**, which is the trading P&L per day the counterfactual must clear to break even. With venue access at $0 and everything else at its low value it is still $1,151/day.",
+   "capacity_md": "IS: reachable stale depth before caps $86,123/day; traded now $3,915/day. IS, corrected grid medians by net cap: net cap 100.0: $75/day, Sharpe 15.5; net cap 1000.0: $202/day, Sharpe 4.8. OOS: reachable stale depth before caps $72,737/day; traded now $3,231/day. OOS, corrected grid medians by net cap: net cap 100.0: $57/day, Sharpe 12.0; net cap 1000.0: $54/day, Sharpe 1.3.\n\nDepth model: fills are priced from the measured live book (the cost of the first n stale shares at the same time before the reprice, src/tier0.py live_edge_curve), depth scaled by match volume, never up. Dollar scale is set by the net cap, not by the edge.",
+   "coverage": {
+    "IS": "no at the scenario's net cap",
+    "OOS": "no at the scenario's net cap"
+   },
+   "caveats": [
+    "Counterfactual: the feed and the camera were not bought; every number depends on the assumptions in research/v2/tier0/RESULTS.md section 6 and DEVIATIONS.md."
+   ]
   },
   "maker": {
    "name": "Maker v1, side markets",
@@ -2728,6 +3676,7 @@
        "net_after_costs_and_cost_of_capital_usd_per_day": 16.671363065173374
       }
      },
+     "breakeven_taker_fee": null,
      "unit_economics": {
       "n_trades": 8905,
       "n_matches": 2556,
@@ -2900,6 +3849,7 @@
        "net_after_costs_and_cost_of_capital_usd_per_day": 67.53303131425157
       }
      },
+     "breakeven_taker_fee": null,
      "unit_economics": {
       "n_trades": 4159,
       "n_matches": 1017,
@@ -3072,6 +4022,7 @@
        "net_after_costs_and_cost_of_capital_usd_per_day": -12.92294206759733
       }
      },
+     "breakeven_taker_fee": null,
      "unit_economics": {
       "n_trades": 2207,
       "n_matches": 524,
@@ -3228,7 +4179,8 @@
     "live_paper": {
      "status": "pending",
      "expected_file": "results/live/summary.json",
-     "why": "live paper session on real markets still running (results/live/)"
+     "why": "session 20261003T193534Z (session, mode LIVE) status 'warm-up: trade-side check 3/50 matched, agree 3'; primary book B1: 0 fills, 0 resolved. The session books $10,000 of paper capital per book, not the 3 \u00d7 peak-locked convention ($2,022\u2013$2,779 for the maker's IS and OOS books). It checks plumbing only: maker v1 already failed its blind OOS, and any rule change would be maker v2 with its own pre-registration",
+     "snapshot_utc": "2026-10-03T19:42:16.993Z"
     }
    },
    "about": "Leaning maker on the same match's side markets (set winner, handicaps, totals): quote only on the side that gains from the moneyline's move, filled by takers trading against it; 0 fee + 15% rebate; 20% of each contrary print, \u2264 $250 per fill, \u2264 $2,000 per match; hold to resolution. Remote-executable with public data. The idea is IS-generated (research/v2/crossmarket/RESULTS.md 5b).",
@@ -3278,8 +4230,9 @@
    "caveats": [
     "The leaning-maker idea was formed on all IS months (post-hoc hypothesis); only the blind OOS can confirm it.",
     "Hold-to-resolution variance on a tiny capital base makes the dollar series noisy (2 of 7 months negative in $).",
-    "Per fill (the lens's own headline) the IS edge is +2.73\u00a2 [+1.70, +3.70]; share-weighted (used here, as for every strategy) it is +2.59\u00a2 [\u22120.09, +5.20]: the large fills earn less.",
-    "Max drawdown here is measured against the capital base (equity starting at 0); crossmarket RESULTS.md's \u221244% is measured against capital plus accumulated P&L, so the two differ."
+    "Per fill (the lens's own headline) the IS edge is +2.73\u00a2 [+1.70, +3.70]; share-weighted (used here, as for every strategy) it is +2.59\u00a2 [\u22120.09, +5.20]: the large fills earn less. Both CIs here come from the engine's bootstrap (research/v2/sizing/engine.py metrics: 1,000 match draws, seed 0); crossmarket RESULTS.md 5b's per-fill CI [+1.73, +3.70] comes from that lens's own bootstrap. Same point estimate, different resampling draws.",
+    "Max drawdown here is measured against the capital base (equity starting at 0); crossmarket RESULTS.md's \u221244% is measured against capital plus accumulated P&L, so the two differ.",
+    "Same for the blind OOS: results/maker/oos.json reports \u221246.7% for the same \u2212$1,156 drawdown, i.e. a denominator of $2,474 (capital $2,022 plus the equity peak); the table above divides by capital alone. Name the base when quoting either."
    ],
    "extra_md": "**Blind OOS verdict (research/v2/maker/PREREG.md, primary = per-fill mean, match-clustered CI): +1.87\u00a2 [\u22120.14, +3.86] over 2207 fills / 524 matches: FAILURE.** Cost label: cost-fragile. Pre-registered stresses, per fill (\u00a2) and $: i_queue10 +1.87 [\u22120.14, +3.86], \u2212$107; ii_trade_through \u22123.99 [\u221213.28, +5.70], $99; iii_no_rebate +1.71 [\u22120.29, +3.70], \u2212$457; iv_all \u22124.15 [\u221213.45, +5.54], $110; viii_maker_base_fee \u22120.21 [\u22122.20, +1.79], \u2212$1,419. Break-even maker fee rate (derived in the repo): 0.090. Source: `results/maker/oos.json`; the fill book `research/v2/maker/oos/book_v1.csv` is what the tables below use."
   },
@@ -3317,12 +4270,27 @@
    },
    "periods": {
     "results": {
-     "status": "pending",
-     "expected_file": "results/tt/results.json",
-     "why": "out-of-sport blind test still running (research/tt)"
+     "status": "ok (verdicts only)",
+     "label": "table tennis TT1-TT4",
+     "source": "results/tt/results.json",
+     "n_trades": 0,
+     "n_matches": 0,
+     "verdicts": {
+      "TT1": "FAIL",
+      "TT2": "FAIL (no fast tier detected)",
+      "TT3": "FAIL (no trades)"
+     },
+     "counts": {
+      "utt_markets": 3588,
+      "evaluable_matches": 27,
+      "print_rows": 1002
+     },
+     "run": "2026-10-03T19:23:14.155322+00:00",
+     "fixed_costs": {},
+     "text": "Run 2026-10-03T19:23 UTC: 3,588 markets, 27 evaluable matches. TT1 FAIL; TT2 FAIL (no fast tier detected); TT3 FAIL (no trades). Fast-tier shadow is empty: no wallet qualified, so v2 has no opportunity set (TT-D5). No trades, so no P&L to put against costs; the books are untradable anyway (PM_REVIEW P33)."
     }
    },
-   "about": "Out-of-sport test of the CV + book mechanism on every Polymarket table-tennis match. Liquidity context from docs/NOTE.md section 7: 89\u00a2 median spread, $23 at the touch, about $2 of volume per match."
+   "about": "Out-of-sport test of the CV + book mechanism on every Polymarket table-tennis match. Liquidity context from docs/NOTE.md section 6: 89\u00a2 median spread, $23 at the touch, about $2 of volume per match."
   }
  }
 }

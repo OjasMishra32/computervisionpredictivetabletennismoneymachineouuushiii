@@ -1,6 +1,6 @@
 # COURTSIDE risk register
 
-Written 2026-10-03 (about 18:45 UTC). Paper only: this repo places no orders and holds no keys.
+Written 2026-10-03 (about 18:45 UTC); updated about 19:40 UTC with the PM review's compute items (`scripts/pm_compute.py` → `results/financials/pm_compute.json`, marked `pm_compute`) and the results that landed since (maker blind OOS, corrected tier-0 headline). Paper only: this repo places no orders and holds no keys.
 
 Every number below comes from a file in this repo or from a public source with its URL. Numbers marked
 `risk_stats` come from `scripts/risk_stats.py`, which writes `results/risk/risk_stats.json` (run:
@@ -19,9 +19,9 @@ calendar days.
 |---|---|---|---|
 | **v2** | Frozen fast-tier book (`HYPOTHESIS_V2.md`, `src/v2.py`), priced at the fast tier's own fills | **No.** It measures the opportunity at the fast tier's speed. Copying the fast tier from a remote seat loses money (late-entry stress below: −0.89¢/share IS) | IS +1.38¢ [1.17, 1.59]; burned OOS +0.60¢ [0.09, 1.13]; blind U2-OOS +1.22¢ [−0.19, 2.65], FAIL; forward test `results/v2/forward.json` **pending** (one run, about 11:30 UTC Oct 4) |
 | **v2-safe** | v2 with the net cap at 50 shares (`research/v2/lowloss/`) | Same as v2 | Burned OOS +0.69¢ [0.24, 1.15]; blind U2-OOS FAIL |
-| **tier-0** | Counterfactual: courtside camera + own CV + licensed point feed + London gateway. Not purchased, not built | **No.** Needs a data licence and organiser consent (see R16) | A verifier refuted the pre-registered fill pricing (`research/v2/tier0/DEVIATIONS.md` V1–V10). The corrected headline is **pending**: `results/tier0/results.json` still holds the pre-registered numbers at the time of writing |
-| **maker v1** | Leaning maker on side markets (`research/v2/crossmarket/RESULTS.md` 5b) | **Technically yes, remotely:** public moneyline feed plus post-only quotes. Live *paper* trading only: a US person cannot open positions on polymarket.com, and the hackathon forbids funded accounts (checklist 1–2) | IS only: +2.73¢ [1.73, 3.70]. Blind OOS `results/maker/oos.json` and live paper session `results/live/summary.json` **pending** |
-| **table tennis** | Out-of-sport test (`HYPOTHESIS_TT.md`) | **No.** Polymarket TT books: 89¢ median spread, $23 at the touch (NOTE §7) | `results/tt/results.json` **pending** |
+| **tier-0** | Counterfactual: courtside camera + own CV + licensed point feed + London gateway. Not purchased, not built | **No.** Needs a data licence and organiser consent (see R16) | A verifier refuted the pre-registered fill pricing (`research/v2/tier0/DEVIATIONS.md` V1–V10). Corrected headline (`results/tier0/results.json` `headline`, 20-seed means; `results/tier0/VERIFIED` present): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4; burned OOS +0.58¢, $46.4/day, Sharpe 7.3. Fixed costs at 10 covered matches a day are $1,151 / $4,149 / $7,215 per day (low / central / high, `research/financials/FINANCIALS.md` §4), so it is uneconomic in every cost case |
+| **maker v1** | Leaning maker on side markets (`research/v2/crossmarket/RESULTS.md` 5b) | **Technically yes, remotely:** public moneyline feed plus post-only quotes. Live *paper* trading only: a US person cannot open positions on polymarket.com, and the hackathon forbids funded accounts (checklist 1–2) | IS +2.73¢ [1.73, 3.70] per fill (share-weighted +2.59¢ [−0.09, 5.20]). **Blind OOS: FAILURE**, +1.87¢ [−0.14, 3.86] per fill, −$379 (−0.75¢/share share-weighted) (`results/maker/oos.json`). Live paper session (`results/live/summary.json`) running, 0 fills at 19:21 UTC; it checks plumbing only |
+| **table tennis** | Out-of-sport test (`HYPOTHESIS_TT.md`) | **No.** Polymarket TT books: 89¢ median spread, $23 at the touch (NOTE §6) | First run 19:23 UTC (`results/tt/results.json`): 27 evaluable matches; TT1 FAIL, TT2 FAIL (no fast tier detected), TT3 FAIL (no trades) |
 
 ---
 
@@ -40,7 +40,7 @@ Go only if every line is YES. Any NO means no new risk; risk-reducing orders are
 | 7 | Feeds healthy | Feed delay near the measured baseline (p50 58 ms, p95 102 ms, p99 134 ms); no `gap` event in the last minute; Mission Control green | `engine/market/clob.py`, `docs/live/control.html` |
 | 8 | Keys | No key on disk or in env on the research host. The paper executor refuses to start if a live flag or key variable is set | `engine/execution/paper.py` (`LiveTradingForbidden`) |
 | 9 | Signal freshness | v2: wallet set re-qualified walk-forward this month and filtered at today's fee. Tier-0: CV precision on audited calls with a Wilson 95% lower bound ≥ 0.95 (that takes at least 73 correct calls in a row; see R7) | `src/fasttier.py`, `src/v2.py`; policy only for CV |
-| 10 | Edge still alive | Trailing 30-day net edge ≥ 0.3¢/share (else half size); > 0 (else stop) | policy only (NOTE §6) |
+| 10 | Edge still alive | Trailing 30-day net edge ≥ 0.3¢/share (else half size); > 0 (else stop) | policy only (NOTE §5); replayed on IS it never fires (`pm_compute` P25: trailing edge min +0.74¢) |
 | 11 | Settlement rules read | Retirement after the start resolves to the advancing player. Walkover, cancellation, tie, or no winner within 14 days resolves 50-50 ([market rules](https://polymarket.com/sports/wta/wta-bouzkov-birrell-2026-10-01)) | policy only |
 | 12 | Kill switch tested today | `RiskManager.kill("manual")` blocks every order, risk-reducing ones included | `engine/risk/limits.py` |
 
@@ -54,14 +54,29 @@ Go only if every line is YES. Any NO means no new risk; risk-reducing orders are
 | Recent feed delay (median of last 25) > rolling p95 (floor 150 ms), or > 2 s | Risk-reducing only | `limits.py` `latency_*` |
 | Manual kill | Everything halts, including risk-reducing orders | `limits.py` `kill("manual")` |
 | Any market's fee rate or order delay differs from the frozen backtest | No new risk until the cost stress is re-run at the new values | policy only |
-| Drawdown from equity peak > 5% of capital (2.5 × the worst measured drawdown, 2.06%) | Stop; review before restarting | policy only |
-| Trailing 30-day net edge < 0.3¢/share; ≤ 0 | Half size; stop | policy only (NOTE §6) |
+| Drawdown from equity peak > 5% of capital (2.5 × the worst measured drawdown, 2.06%) | Stop; review before restarting | policy only; never fires on IS (worst −2.01%, `pm_compute` P25) |
+| Trailing 30-day net edge < 0.3¢/share; ≤ 0 | Half size; stop | policy only (NOTE §5). IS replay (`pm_compute` P25): the causal trailing edge never fell below +0.74¢ (median +1.47¢), so 206/206 days stay at full size and the rule changes nothing in sample. It is untested on a decline |
 | Any UMA proposal on a market we hold is disputed | Add no risk to that market; earmark its capital for 4–6 days | policy only |
 | Venue incident, matching-engine restart (2 min post-only mode), CLOB upgrade | No taker orders until resolved; makers: cancel and re-check | policy only (`VENUE_RULES.md`) |
 | Tier-0: a false call is confirmed in the live audit | Halt tier-0 for the day; re-audit | policy only |
 
 What is not automated yet: the trailing-edge rule, the drawdown stop, the fee/delay change stop and the dispute
-freeze are written policy, not code. `engine/risk/limits.py` covers the per-order and per-match caps, the daily
+freeze are written policy, not code.
+
+**Per-book calibration (`pm_compute` P25).** The $1,000 daily stop never fires in the v2 backtest (worst IS day
+−$551). It is 3.86 σ of v2's IS daily P&L (σ $259) and 3.5% of v2's capital. Applied unchanged to the other books it
+means very different things:
+
+| book | capital | IS daily σ | worst IS day | $1,000 stop in σ / % of capital | stop at v2's 3.86 σ | that stop, % of capital | IS days it would fire |
+|---|---|---|---|---|---|---|---|
+| v2 | $28,302 | $259 | −$551 | 3.86 σ / 3.5% | $1,000 | 3.5% | 0 |
+| v2-safe | $17,681 | $141 | −$284 | 7.09 σ / 5.7% | $545 | 3.1% | 0 |
+| maker v1 | $2,779 | $155 | −$669 | 6.45 σ / 36.0% | $599 | 21.5% | 1 |
+
+Proposed `RiskConfig` per book (for the engine owner; `engine/` is not edited here): `daily_stop_usd` = 1,000 (v2),
+545 (v2-safe), 599 (maker). The maker's capital convention (3 × peak locked = $2,779) is itself too small for its
+variance (IS max drawdown −59% of capital), so a maker book should be funded well above it before any stop in % of
+capital means anything. `engine/risk/limits.py` covers the per-order and per-match caps, the daily
 stop and the feed, vision and latency kills. `scripts/live_paper.py` is being written in parallel by another
 workstream; check at submission that it routes every order through `RiskManager.approve`.
 
@@ -98,7 +113,9 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   | U2-OOS blind ($2,117; 68 wallets) | **98.4%** (top 1: 63.4%) | | | |
 
   Without its top-5 wallets, v2 earns +0.61¢ [0.00, 1.27] IS and **−0.34¢ [−1.24, 0.55] on the burned OOS
-  (−$1,552)**. Out of sample the whole profit sits on the five fastest wallets. The U2 row confirms the NOTE's
+  (−$1,552)**. Clustered by copied wallet instead of by match (`pm_compute` P07; 2,000 draws, seed 0), the 95% CI
+  is [+0.57, +2.30] IS (80 wallets) and **[−0.45, +2.38] on the burned OOS** (86 wallets), against [1.17, 1.59] and
+  [0.09, 1.13] by match. The effective sample is the wallets, not the matches. Out of sample the whole profit sits on the five fastest wallets. The U2 row confirms the NOTE's
   "98%". Match concentration is low in sample: without the top-5 matches, IS is still +1.35¢ [1.15, 1.57].
 - **(c)** Per-match net cap (R1). No per-wallet cap exists, in the backtest or in `limits.py`. For a live tier-0
   trader the "wallet" is ourselves, so this risk becomes "are we one of the top-5 fastest" (R6).
@@ -116,10 +133,15 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   - v2's size equals the copied print in 84% of trades (median participation 100% of the print), and the net cap
     cut 31–35% of trades. So **the book assumes we take the fast tier's whole fill**, which live we would be
     competing for.
-  - Moneyline depth: 1¢ median spread, $8.1k at the touch, $61k within 2¢ (NOTE §7).
+  - Moneyline depth: 1¢ median spread, $8.1k at the touch, $61k within 2¢ (NOTE §6).
   - Side markets (maker): in play at tour level, two-sided 29% of minutes, median spread 13¢, top of book about
-    234/200 shares (`research/v2/maker/VENUE_RULES.md` §5b). Maker capacity is about $1.3–2.1k P&L per 30 days
-    (crossmarket RESULTS §7).
+    234/200 shares (`research/v2/maker/VENUE_RULES.md` §5b). Maker capacity is $1.3–2.1k P&L per 30 days in the
+    lens's own fill model (crossmarket RESULTS §7), but $130 per 30 days in the realism verifier's step-ahead model
+    and $48 in its combined conservative model (`research/financials/FINANCIALS.md` §5d). Use the verifier's.
+  - v2 capacity out of sample: on the burned OOS, $/day peaks at 1x ($92.2/day, capital $22,754); 2x makes
+    $82.5/day (Sharpe 3.2, capital $33,875) and 5x loses (−$24.5/day). So OOS capacity is about $23–34k of capital,
+    not the ~$100k of the sizing lens, which used onset labels, was IS only, and whose $102k row is the Baseline,
+    not v2 (`FINANCIALS.md` §2d).
   - Table tennis: not tradable (89¢ spread, $23 at the touch).
 - **(c)** Never take more than the copied print (backtest). The engine caps size at the visible stale depth
   inside the limit (`engine/strategy.py` `cap_at_visible`) and does not re-take liquidity its own paper fills
@@ -136,8 +158,8 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
     unfilled, it fell −5.7¢ (`research/v2/livefill/RESULTS.md`). That is adverse selection.
   - Chasing after the move: the engine demo sent 0 orders from 45 calls. 3 were skipped because the book had
     already repriced and 2 because it moved against the call (`results/engine/demo_run.json`).
-  - Tier-0 fill rate: 31.8% IS / 32.6% OOS under the pre-registered model, whose pricing was refuted. The
-    corrected fill rate is **pending**.
+  - Tier-0 fill rate: 31.8% IS / 32.6% OOS under the pre-registered model, whose pricing was refuted. Corrected
+    headline (20-seed means, `results/tier0/results.json`): 25.1% IS / 20.3% OOS.
   - v2 worst-quartile fills (every fill at the 75th-percentile price within its 3 s burst; a +1.0¢ add-on for
     singletons): +0.49¢ [0.28, 0.71] IS, **−0.31¢ [−0.83, 0.21] OOS** (`risk_stats` `stress`).
 - **(c)** Hold to resolution, so no exit fills are needed (HYPOTHESIS_V2 rule 6). Taker orders are FAK limits at
@@ -204,7 +226,8 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   [0.97, 1.00]; recall is 0.96 [0.92, 0.98] at 0 ms falling to 0.87–0.92 at 300 ms. On the real video no
   false call has been seen, but the CI is wide: a Wilson lower bound of 0.95 needs **73 correct calls in a row**.
   Under the pre-registered tier-0 model, wrong calls were 8.7% / 9.0% of trades and cost −$4,565 IS (that
-  model's pricing was refuted; corrected numbers **pending**).
+  model's pricing was refuted). In the corrected headline they are 12.6% IS / 19.1% OOS of trades and cost
+  −$3,942 IS (`results/tier0/results.json`, 20-seed means).
 
   Markov fair value: live prices are calibrated within about 1¢. 3 of 11 price bands have CIs excluding the
   price, with the largest gap 1.01¢ (DEVIATIONS D10; `results/calibration_is.csv`). The engine's limits:
@@ -246,6 +269,15 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   `universe_volume_filter`). The blind U2 test covered markets below the filter ($1–5k bands: IS +4.15¢ and
   +3.95¢), so the filter does not flatter the result. Markets never marked closed by Oct 3 are not in the
   sample (unmeasured).
+  - **Pre-start volume instead** (`pm_compute` P14; $ traded before the scheduled start, the ex-ante measure
+    tier-0 uses). IS ¢/share by pre-start band: < $1k +1.88 [1.14, 2.63]; $1–5k +1.41 [1.03, 1.80]; $5–20k +1.18
+    [0.79, 1.57]; $20–100k +1.39 [0.92, 1.84]; ≥ $100k +1.43 [0.34, 2.50]. Matches under $5k pre-start carry 43%
+    of IS shares and 47% of IS P&L.
+  - **Point-in-time universe** (pre-start ≥ $5k; every such market is inside the lifetime ≥ $5k universe, so
+    nothing is missing). Rebuilt walk-forward from scratch on IS prints (wallets re-qualified on the smaller
+    universe): 4,731 of 9,581 IS matches, +1.29¢ [0.98, 1.59], $18,988, Sharpe 10.0. **In today's 1 s/5% regime
+    it is +0.44¢ [−0.14, 1.01]: the CI includes 0.** The frozen book's own trades in the same matches, without
+    re-fitting: +1.28¢ [0.99, 1.56], $21,321.
 - **(c)** A live filter should use pre-start volume; tier-0 already ranks coverage by pre-start volume (tier0
   DEVIATIONS T1).
 - **(d)** Policy only: the live universe rule is written down before trading and never uses end-of-match fields.
@@ -253,14 +285,22 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 ### R10. Overfitting
 - **(a)** Thousands of variants were tried. The best one can look good by luck.
 - **(b)** (`research/rigor/RESULTS.md`, incl. "Verifier corrections"; `results/rigor/rigor.json`)
-  - Trials: 44 (H1–H6), 3,386 (all v2 lenses), 3,410 (+ the v2-safe grid). The tier-0 grid (432 × 2) comes on
-    top of that.
+  - Trials: 3,386 = 44 (H1–H6) + 3,342 (the six v2 lenses); 3,410 adds the 24-variant v2-safe grid. The tier-0
+    grid (432 × 2) comes on top of that.
   - IS: DSR 0.997 at N = 3,386 under the most conservative variance.
   - OOS headline: PSR vs 0 = 0.987 (0.995 with an AR(1) adjustment). DSR 0.951 / 0.880 / 0.825 at N = 2 / 4 / 6
     strategies looked at on the OOS. The stress case, N = 3,386 at T = 40, gives 0.075.
   - PBO: about 9–24% on the v2-safe grid; 39–42% for its selection rule; 0% for the sizing grid.
   - MinTRL: 6 days at the IS Sharpe, 22 days at the OOS Sharpe.
-  - Peeks: 15 logged reads of the OOS, from 10:42 to 18:27 UTC Oct 3 (`results/oos_peeks.log`).
+  - Threshold sensitivity (`pm_compute` P15; IS prints only; each threshold of the frozen rule moved one step and
+    the whole walk-forward re-run; 19 runs; nothing selected): detector 3¢/6¢, 5 s/20 s short window, 30 s/120 s
+    long window, 2/4/6 s entry window, ≥ 20/40 prints, ≥ 5/15 matches, t > 2/4, n₀ 100/400, zone 0–1/0.1–0.9.
+    Every run stays at +1.21 to +1.46¢/share with the CI above 0 (base +1.38¢), Sharpe 9.0–17.6, P&L
+    $21.8k–48.0k (base $40.4k). In the 1 s/5% regime the range is +0.66 to +1.39¢, every CI above 0. The
+    print and match counts never bind; the detector threshold moves dollars most (6¢: $21.8k, Sharpe 9.0).
+  - Peeks: `results/oos_peeks.log` had 28 lines at 19:41 UTC Oct 3 (first 10:42 UTC). It grows while the other
+    workstreams run (maker live replays, table tennis, this review's P07 and P17 lines); recount at submission and
+    use one number everywhere (NOTE §4 says 19).
 - **(c)** Pre-registration (`HYPOTHESIS*.md`), deviations logged, adversarial verifiers for every lens, a blind
   U2 test and a blind forward window.
 - **(d)** If the forward primary (`results/v2/forward.json`) fails, v2 is not traded. Its CI-excludes-0 rule is
@@ -287,8 +327,8 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   player, even one who was losing. Walkovers and cancellations pay 50-50.
 - **(b)** Counted in the 13,084-match universe (`risk_stats` `settlement`):
   - 50-50 resolutions: 378 (2.89%). **302 of them had a "0-0" score (never started: walkover or cancellation)**,
-    73 had no score, 2 a complete score, 1 a partial score. NOTE §6 calls these "retirements"; the data says
-    they are mostly walkovers. That line in the note should be corrected.
+    73 had no score, 2 a complete score, 1 a partial score. They are mostly walkovers, which is what NOTE §5 now
+    says.
   - Retirements (score shows play started but no winner of the match): 283, of which 282 resolved to a player and
     1 to 50-50, which agrees with the current rule text.
   - v2 exposure: retirement matches 148 IS (760 trades, +$1,614, 4.0% of P&L) and 44 OOS (−$81); 50-50
@@ -318,11 +358,14 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   - Same-day cross-match variance ratio: 1.07 IS (implied mean pairwise correlation 0.0013 across about 39
     matches a day); 0.92 OOS (`risk_stats` `correlation`).
   - Lag-1 autocorrelation of daily P&L: +0.15 IS, −0.15 OOS.
-  - Factors (Fama–French market, size, value, momentum): R² 3%, no beta significant (largest t = 1.33)
-    (`results/v2/factor_regression.json`).
+  - Factors (Fama–French market, size, value, momentum), IS only, every calendar day (factors 0 on weekends),
+    returns net of the risk-free rate, alpha ×365 (`pm_compute` P24): R² 2.3%, no beta significant (largest
+    t = 1.54, market beta 0.18), alpha t = 9.5. The committed `results/v2/factor_regression.json` (R² 3.3%, largest
+    t = 1.33) also used burned-OOS days to Aug 31, dropped weekends and annualised ×252; the conclusion is the same.
   - v2 vs v2-safe daily correlation 0.955: they trade the same opportunities, so running both does not
     diversify. U1 vs U2 OOS: 0.21.
-  - v2 vs maker: **unmeasured** (maker OOS pending).
+  - v2 vs maker: daily correlation −0.04 IS (206 days, `pm_compute`); OOS not computed (the maker failed its
+    blind OOS, so the pair is not a portfolio candidate).
   - Up to 61 matches were open at once (IS, 4 h lock).
 - **(c)** Per-match net cap. Treat v2 and v2-safe as one book.
 - **(d)** Policy only: if the trailing 30-day variance ratio exceeds 2, halve size.
@@ -428,10 +471,11 @@ all open positions resolving against us at the same time: the peak locked amount
 capital by construction (capital = 3 × peak locked). Same-day correlation is about 0 (R14), so this is far in
 the tail, but it is the true worst case.
 
-**Tier-0 stresses (latency ×2, worst-quartile timing): pending.** The pre-registered sensitivities ("all venues
-at 100 ms", "stamp lag 1.0 s") use the refuted fill pricing. The corrected grid and timing curve
-(`results/tier0/pnl_vs_reprice_timing.csv`) were being revised at the time of writing. Use the revised
-`research/v2/tier0/RESULTS.md` once it is committed.
+**Tier-0 stresses (latency ×2, worst-quartile timing).** The pre-registered sensitivities ("all venues at
+100 ms", "stamp lag 1.0 s") use the refuted fill pricing. The corrected stresses, one change at a time over 20
+seeds, are in `research/v2/tier0/RESULTS.md` §3 (revised in commit `a5769c7`) and `results/tier0/results.json`
+`stresses_corrected`. Every row stays far below the counterfactual's fixed costs ($1,151–7,215/day at 10 covered
+matches a day): the headline is $89 ± 21/day IS and $46 ± 39/day burned OOS, and the best of the 27 stresses in either period is $203/day (IS, net cap 1,000 shares).
 
 ## Fixed costs a live tier-0 would carry (not in any backtest)
 
@@ -447,7 +491,7 @@ at 100 ms", "stamp lag 1.0 s") use the refuted fill pricing. The corrected grid 
 - t_stamp − t_bounce, the lag between a ball landing and the umpire's stamp. Tier-0 depends on it most.
 - Live CV precision on real tennis footage. Our real-video numbers come from table tennis.
 - UMA dispute counts (only a close-time proxy).
-- v2 vs maker correlation; maker OOS and live results; the table-tennis study; the v2 forward test.
+- v2 vs maker correlation out of sample; maker live results; the v2 forward test.
 - Platform, stablecoin and smart-contract failure probabilities.
 - After-tax returns.
 - Session uptime and reconnect counts.
