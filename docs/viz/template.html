@@ -158,6 +158,24 @@ footer { margin-top: 48px; color: var(--muted); font-size: .8rem; display: grid;
     </div>
   </section>
 
+
+  <section class="ev">
+    <div class="eyebrow">Strategy · v2, frozen and pre-registered</div>
+    <h2>Same edge, a fraction of the noise</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Return on capital, v1 against v2</h3>
+        <p>v1 copied the fast tier's tickets and held them to resolution, so a few cheap longshots swung its P&amp;L. v2 sizes by risk, keeps only wallets that beat today's fee, and caps each match at 100 shares net.</p>
+        <div class="legend"><span><i class="sq" style="background:var(--others)"></i><span id="lab-v1"></span></span><span><i class="sq" style="background:var(--fast)"></i><span id="lab-v2"></span></span></div>
+        <svg id="c-race" viewBox="0 0 520 280"></svg>
+      </div>
+      <div class="card scroll">
+        <h3>v2 results, net of fees, held to resolution</h3>
+        <p>In-sample months are walk-forward. The burned out-of-sample period was seen before v2 was designed, so it is labelled. The forward window is the blind test.</p>
+        <table id="t-v2" style="min-width:0"></table>
+      </div>
+    </div>
+  </section>
   <section class="ev">
     <div class="eyebrow">Latency · live, 3 Oct 2026</div>
     <h2>How early can anyone know?</h2>
@@ -171,6 +189,11 @@ footer { margin-top: 48px; color: var(--muted); font-size: .8rem; display: grid;
         <h3>The book beats the public score feed by about a minute</h3>
         <p id="h4-p">How far the order book's move led Polymarket's own score feed, per score change.</p>
         <svg id="c-h4" viewBox="0 0 520 260"></svg>
+      </div>
+      <div class="card scroll" style="grid-column:1/-1">
+        <h3>Who knows the point when</h3>
+        <p>Times relative to the official WTA point timestamp, measured live on 482 points, unless marked as a model.</p>
+        <table id="t-lat" style="min-width:0"></table>
       </div>
     </div>
   </section>
@@ -213,6 +236,7 @@ function hover(node, html) { node.addEventListener("pointermove", e => showTip(e
 const U = D.universe, T6 = D.tests.h6, WF = D.walkforward;
 const posMonths = WF.filter(r => r.net30_c > 0).length;
 [["13,084", "resolved ATP & WTA matches"], ["$" + (U.volume_usd / 1e9).toFixed(2) + "B", "traded on them"],
+ [D.v2 ? D.v2.is_eval.sharpe_ann.toFixed(1) + " · " + D.v2.burned_oos.sharpe_ann.toFixed(1) : "—", "v2 Sharpe, in sample · out of sample"],
  [posMonths + " / " + WF.length, "months the fast tier won, walk-forward"],
  [Math.round(D.h4.median) + " s", "book leads Polymarket's public score feed"],
  ["±2.4 cm", "landing call 100 ms before the bounce"]]
@@ -459,9 +483,46 @@ function frameChart(svg, w, h, m, yd, ylab, ticks) {
     ["Buy favourites entering 85–97¢", ci(T.h2.is), ci(T.h2.oos), "fail", "No edge"],
     ["Quote as a maker right after jumps", ci(T.h5.is), ci(T.h5.oos), "weak", "Inconclusive"],
     ["Fast tier, 30 s markout, by month", `${WF.filter(r => r.month < "2026-08").filter(r => r.net30_c > 0).length}/${WF.filter(r => r.month < "2026-08").length} months > 0`, `${WF.filter(r => r.month >= "2026-08").filter(r => r.net30_c > 0).length}/${WF.filter(r => r.month >= "2026-08").length} months > 0`, "hold", "Holds"],
-    ["Fast-tier shadow book, held to resolution", ci(T.h6.is), ci(T.h6.oos), "weak", "Fee-bound"],
+    ["v1: fast-tier book, dollar sizing, held to resolution", ci(T.h6.is), ci(T.h6.oos), "weak", "Fee-bound"],
+    ["v2: risk sizing, fee-aware wallets, 100-share net cap", D.v2 ? ci({mean_pnl_per_share_c: D.v2.is_eval.per_share_c, ci95_pnl_per_share_c: D.v2.is_eval.per_share_ci_c}) : "—", D.v2 ? ci({mean_pnl_per_share_c: D.v2.burned_oos.per_share_c, ci95_pnl_per_share_c: D.v2.burned_oos.per_share_ci_c}) + ' <span style="color:var(--muted)">non-blind</span>' : "—", "hold", "Holds"],
   ];
   $("#t-score").innerHTML = `<thead><tr><th>Test</th><th>In sample (¢/share, 95% CI)</th><th>Out of sample</th><th>Verdict</th></tr></thead><tbody>` +
     rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><span class="verdict v-${r[3]}">${r[4]}</span></td></tr>`).join("") + "</tbody>";
+})();
+
+// v2 race + table + latency
+(() => {
+  const R = D.race; if (!R) return;
+  const svg = $("#c-race"), w = 520, h = 280, m = { l: 46, r: 10, t: 10, b: 34 };
+  const all = R.v1.concat(R.v2), ymax = Math.ceil(Math.max(...all) / 50) * 50, ymin = Math.min(0, Math.floor(Math.min(...all) / 50) * 50);
+  const ticks = []; for (let v = ymin; v <= ymax; v += 50) ticks.push(v);
+  const y = frameChart(svg, w, h, m, [ymin, ymax], v => v + "%", ticks);
+  const n = R.dates.length, x = i => m.l + i / (n - 1) * (w - m.l - m.r);
+  const oi = R.dates.findIndex(d => d >= R.oos_start);
+  el("rect", { x: x(oi), y: m.t, width: w - m.r - x(oi), height: h - m.t - m.b, fill: tok("--oos"), "fill-opacity": .07 }, svg);
+  el("text", { x: w - m.r - 4, y: m.t + 12, class: "lbl", "text-anchor": "end" }, svg).textContent = "OOS";
+  [["v1", "--others", 1.6], ["v2", "--fast", 2.2]].forEach(([k, c, sw]) => el("path", { d: R[k].map((v, i) => (i ? "L" : "M") + x(i) + "," + y(v)).join(""), fill: "none", stroke: tok(c), "stroke-width": sw }, svg));
+  [0, Math.floor(n / 4), Math.floor(n / 2), Math.floor(3 * n / 4), n - 1].forEach(i => el("text", { x: x(i), y: h - m.b + 16, "text-anchor": "middle", class: "lbl" }, svg).textContent = R.dates[i].slice(2, 7).replace("-", "/"));
+  const hit = el("rect", { x: m.l, y: m.t, width: w - m.l - m.r, height: h - m.t - m.b, fill: "transparent" }, svg);
+  const cross = el("line", { y1: m.t, y2: h - m.b, stroke: tok("--muted"), "stroke-dasharray": "2 3", opacity: 0 }, svg);
+  hit.addEventListener("pointermove", e => { const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * w; const i = Math.max(0, Math.min(n - 1, Math.round((px - m.l) / (w - m.l - m.r) * (n - 1))));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("opacity", 1);
+    showTip(e, `${R.dates[i]}<br>v1: ${R.v1[i].toFixed(0)}% of capital<br>v2: ${R.v2[i].toFixed(0)}% of capital`); });
+  hit.addEventListener("pointerleave", () => { cross.setAttribute("opacity", 0); hideTip(); });
+  const usd = v => (v < 0 ? "−$" : "+$") + Math.abs(v / 1e3).toFixed(1) + "k";
+  $("#lab-v1").textContent = `v1 · Sharpe ${R.v1_sharpe.toFixed(1)} in sample · ${usd(R.v1_oos)} out of sample`;
+  $("#lab-v2").textContent = `v2 · Sharpe ${R.v2_sharpe.toFixed(1)} in sample · ${usd(R.v2_oos)} out of sample`;
+  const V = D.v2, F = D.forward, ci = a => `[${a[0].toFixed(2)}, ${a[1].toFixed(2)}]`;
+  const col = (k, f) => V[k] ? f(V[k]) : "—";
+  const fwd = (f) => F && F.secondary_res ? f(F) : "pending";
+  $("#t-v2").innerHTML = `<thead><tr><th></th><th>In sample</th><th>Burned OOS</th><th>Forward (blind)</th></tr></thead><tbody>
+    <tr><td>Trades / matches</td><td>${col("is_eval", v => v.n_trades.toLocaleString() + " / " + v.n_matches.toLocaleString())}</td><td>${col("burned_oos", v => v.n_trades.toLocaleString() + " / " + v.n_matches.toLocaleString())}</td><td>${fwd(f => f.v2_trades + " / " + f.v2_matches)}</td></tr>
+    <tr><td>Net per share</td><td>${col("is_eval", v => fmtC(v.per_share_c) + " " + ci(v.per_share_ci_c))}</td><td>${col("burned_oos", v => fmtC(v.per_share_c) + " " + ci(v.per_share_ci_c))}</td><td>${fwd(f => fmtC(f.secondary_res.per_share_c))}</td></tr>
+    <tr><td>30 s markout (forward primary)</td><td>+1.18¢</td><td>—</td><td>${fwd(f => fmtC(f.primary_m30_per_share_c[0]) + " " + ci(f.primary_m30_per_share_c.slice(1)))}</td></tr>
+    <tr><td>P&amp;L / capital</td><td>${col("is_eval", v => usd(v.total_pnl_usd) + " / $" + (v.capital_usd / 1e3).toFixed(1) + "k")}</td><td>${col("burned_oos", v => usd(v.total_pnl_usd) + " / $" + (v.capital_usd / 1e3).toFixed(1) + "k")}</td><td>${fwd(f => usd(f.secondary_res.total_pnl_usd))}</td></tr>
+    <tr><td>Sharpe · max drawdown</td><td>${col("is_eval", v => v.sharpe_ann.toFixed(1) + " · " + v.max_dd_pct.toFixed(1) + "%")}</td><td>${col("burned_oos", v => v.sharpe_ann.toFixed(1) + " · " + v.max_dd_pct.toFixed(1) + "%")}</td><td>${fwd(f => f.verdict)}</td></tr>
+    <tr><td>Months positive</td><td>${col("is_eval", v => v.months_positive + " / " + v.months_total)}</td><td>${col("burned_oos", v => v.months_positive + " / " + v.months_total)}</td><td></td></tr></tbody>`;
+  $("#t-lat").innerHTML = `<thead><tr><th>Source</th><th>Knows the point</th><th></th></tr></thead><tbody>` +
+    D.latency.map(r => `<tr><td>${r.src}</td><td>${r.t}</td><td><span class="src ${r.kind === "measured" ? "meas" : ""}">${r.kind}</span></td></tr>`).join("") + "</tbody>";
 })();
 </script>

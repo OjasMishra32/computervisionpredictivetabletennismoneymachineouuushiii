@@ -100,3 +100,44 @@ print("shot out_cm", round(d * 100, 1), "t_bounce", round(tl, 3), "preds", len(p
 print("tape", viz["tape"]["title"], viz["tape"]["date"], "jump", round(viz["tape"]["jump"], 3), "prints", len(viz["tape"]["prints"]),
       "fast", sum(p["fast"] for p in viz["tape"]["prints"]))
 print("bytes", (OUT / "viz_data.json").stat().st_size)
+
+# ---- v2 additions: equity race (return on own capital), table, latency ladder, tracking
+import run_all  # noqa: E402
+from src.tape import universe  # noqa: E402
+U2 = universe()
+oos0 = U2.loc[U2.oos, "start"].min()
+B = json.loads(Path("results/v2/burned_oos.json").read_text())
+tr2 = pd.read_parquet("data/v2_trades_is_oos.parquet")
+tr2 = tr2[tr2.month >= "2026-02"]
+d2 = tr2.groupby(pd.to_datetime(tr2.ts, unit="s").dt.floor("D")).pnl.sum()
+pp = pd.concat([pd.read_parquet("data/is_prints.parquet", columns=["cond", "ts", "wallet", "bucket", "p", "fee_rate", "mo30", "mo_res", "mo5", "mo15", "delay", "spread", "dir", "usd"]),
+                pd.read_parquet("data/locked/oos_prints.parquet", columns=["cond", "ts", "wallet", "bucket", "p", "fee_rate", "mo30", "mo_res", "mo5", "mo15", "delay", "spread", "dir", "usd"])], ignore_index=True)
+_, shx, _ = fasttier.walk_forward(pp)
+del pp
+sh1, _ = run_all.shadow_book(shx, U2)
+sh1 = sh1.assign(pnl=sh1.shares * sh1.net_res)
+sh1 = sh1[pd.to_datetime(sh1.ts, unit="s") >= pd.Timestamp("2026-02-01")]
+d1 = sh1.groupby(pd.to_datetime(sh1.ts, unit="s").dt.floor("D")).pnl.sum()
+idx = d1.index.union(d2.index)
+c1, c2 = S["is"]["h6_shadow"]["capital"], B["is_eval"]["capital_usd"]
+viz["race"] = {"dates": [str(x.date()) for x in idx],
+               "v1": (d1.reindex(idx, fill_value=0).cumsum() / c1 * 100).round(2).tolist(),
+               "v2": (d2.reindex(idx, fill_value=0).cumsum() / c2 * 100).round(2).tolist(),
+               "oos_start": str(oos0.date()),
+               "v1_sharpe": S["is"]["h6_shadow"]["sharpe_ann"], "v2_sharpe": B["is_eval"]["sharpe_ann"],
+               "v1_oos": S["oos"]["h6_shadow"]["total_pnl_usd"], "v2_oos": B["burned_oos"]["total_pnl_usd"]}
+viz["v2"] = {k: {kk: B[k][kk] for kk in ("n_trades", "n_matches", "per_share_c", "per_share_ci_c", "total_pnl_usd", "capital_usd",
+                                          "sharpe_ann", "max_dd_pct", "worst_day_pct", "months_positive", "months_total")} for k in B}
+fw = Path("results/v2/forward.json")
+viz["forward"] = json.loads(fw.read_text()) if fw.exists() else None
+viz["latency"] = [
+    {"src": "Ball tracking, Hawk-Eye class", "t": "−100 to −300 ms before the bounce", "kind": "model"},
+    {"src": "Ball tracking, 120 fps video", "t": "misses called 50 ms before contact, 11/11", "kind": "measured"},
+    {"src": "Polymarket book (market makers)", "t": "−1.2 s vs the official point stamp", "kind": "measured"},
+    {"src": "Kalshi", "t": "leads Polymarket on 69% of repricings, ~2 s", "kind": "measured"},
+    {"src": "ESPN scoreboard", "t": "+27.5 s", "kind": "measured"},
+    {"src": "Polymarket sports feed", "t": "+29.1 s", "kind": "measured"},
+    {"src": "WTA public API", "t": "+43.3 s", "kind": "measured"},
+]
+Path(OUT / "viz_data.json").write_text(json.dumps(viz, separators=(",", ":"), default=str))
+print("v2 race points", len(idx))
