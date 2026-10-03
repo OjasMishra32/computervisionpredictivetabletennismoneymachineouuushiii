@@ -21,6 +21,21 @@ skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertain
 | 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
 | 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
+**Stats everywhere (team request): it should read like a paper summary.** A persistent, clean STATS RAIL on the right
+third of the frame (or lower band on full-bleed shots) that updates per segment with the key numbers, animated count-ups,
+each from the manifest:
+- Edge exists: fast tier months positive 11/11; late traders' net c/share; factor alpha t-stat 8.5; R^2 3%.
+- Model works: frames tracked, detection within 5 px %, MISS precision (with n), first-call lead median, GPU 120 fps,
+  frame->decision 4.6 ms p50; spin: landing error 5-8x lower, spin within ~7 rpm (simulated physics).
+- Pipeline: each stage ms and the total vs < 3 s; WebRTC leg ms.
+- Speed: Sharpe and $/day at 0 / 0.5 / 1 s; break-even latency.
+- Backtest at the simulated 1 s baseline: IS and OOS side by side - $/day, total P&L, Sharpe, per-share net with CI,
+  win rate, max drawdown, months positive, trades; both stamp-lag readings (calibrated and pre-registered) shown compactly.
+- v2 (edge at fast-tier speed): Sharpe 14.5 IS / 6.7 OOS, +1.38c / +0.60c per share, deflated Sharpe, annualised return/vol.
+- Rigor: variants tested, blind tests, OOS looks logged, deflated Sharpe, PBO.
+- Capacity: capital at which Sharpe halves / P&L-max size, ADV share (results/capacity).
+Big hero numbers (Sharpe, $/day) get a full-screen moment with a count-up and a sound hit. Every number labelled IS/OOS.
+
 The material below (presentation structure, IC framing) now applies to the DECK and PAPER, not the video.
 
 ---
