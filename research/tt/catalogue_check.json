@@ -1,0 +1,260 @@
+{
+ "window": [
+  "2025-07-01",
+  "2026-10-03"
+ ],
+ "events": 26948,
+ "markets_all_types": 126438,
+ "events_without_moneyline": 0,
+ "events_with_gt1_moneyline": 0,
+ "moneylines": 26948,
+ "moneylines_2_outcomes": 26948,
+ "cached_catalogue_rows": 26764,
+ "cached_in_fresh": 26764,
+ "cached_missing_from_fresh": 0,
+ "fresh_not_in_cached": 184,
+ "fresh_not_in_cached_with_volume": 5,
+ "volume_changed_gt_1c": 0,
+ "zero_in_cache_but_volume_now": 0,
+ "utt_in_fresh": 3588,
+ "utt_res0_changed": 0,
+ "utt_fee_rate_changed": 0,
+ "utt_delay_changed": 0,
+ "utt_tick_now": {
+  "0.001": 3115,
+  "0.01": 473
+ },
+ "utt_fee_schedule_now": {
+  "(0.03, 1.0, True, 0.25)": 709,
+  "(0.05, 1.0, True, 0.15)": 2707,
+  "(nan, nan, nan, nan)": 172
+ },
+ "utt_fees_enabled_now": {
+  "True": 3416,
+  "False": 172
+ },
+ "utt_min_size_now": {
+  "5": 3588
+ },
+ "market_types": {
+  "moneyline": {
+   "markets": 26948,
+   "events": 26948,
+   "with_volume": 3593,
+   "listed_usd": 1017162.63
+  },
+  "table_tennis_game_handicap": {
+   "markets": 48338,
+   "events": 25575,
+   "with_volume": 733,
+   "listed_usd": 40206.73
+  },
+  "table_tennis_match_totals": {
+   "markets": 51152,
+   "events": 25576,
+   "with_volume": 1834,
+   "listed_usd": 102388.28
+  }
+ },
+ "by_series": {
+  "setkamecz-games": {
+   "events": 3840,
+   "markets": 17526,
+   "moneylines": 3840
+  },
+  "setkamemd-games": {
+   "events": 2912,
+   "markets": 13821,
+   "moneylines": 2912
+  },
+  "setkameua-games": {
+   "events": 18425,
+   "markets": 89736,
+   "moneylines": 18425
+  },
+  "setkawoua-games": {
+   "events": 675,
+   "markets": 3321,
+   "moneylines": 675
+  },
+  "ttelite-games": {
+   "events": 1,
+   "markets": 1,
+   "moneylines": 1
+  },
+  "wtt-mens-singles": {
+   "events": 572,
+   "markets": 1038,
+   "moneylines": 572
+  },
+  "wtt-womens-singles": {
+   "events": 523,
+   "markets": 995,
+   "moneylines": 523
+  }
+ },
+ "child_tags": [
+  {
+   "tag_id": "103768",
+   "sport": NaN,
+   "closed_events_seen": 1095,
+   "offset_capped": false,
+   "in_window": 1095,
+   "in_window_missing_from_walk": 0,
+   "series": "wtt-mens-singles,wtt-womens-singles"
+  },
+  {
+   "tag_id": "103773",
+   "sport": "wttmen",
+   "closed_events_seen": 572,
+   "offset_capped": false,
+   "in_window": 572,
+   "in_window_missing_from_walk": 0,
+   "series": "wtt-mens-singles"
+  },
+  {
+   "tag_id": "103774",
+   "sport": "wttwom",
+   "closed_events_seen": 523,
+   "offset_capped": false,
+   "in_window": 523,
+   "in_window_missing_from_walk": 0,
+   "series": "wtt-womens-singles"
+  },
+  {
+   "tag_id": "105328",
+   "sport": "ttworldcup",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105329",
+   "sport": "ttworlds",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105330",
+   "sport": "ttolympics",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105331",
+   "sport": "ttcl",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105332",
+   "sport": "tteuropecup",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105333",
+   "sport": "ttbl",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105708",
+   "sport": "ttelite",
+   "closed_events_seen": 1,
+   "offset_capped": false,
+   "in_window": 1,
+   "in_window_missing_from_walk": 0,
+   "series": "ttelite-games"
+  },
+  {
+   "tag_id": "105709",
+   "sport": "czechligapro",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105710",
+   "sport": "ttcup",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105711",
+   "sport": "ttchallenger",
+   "closed_events_seen": 0,
+   "offset_capped": false,
+   "in_window": 0,
+   "in_window_missing_from_walk": 0,
+   "series": NaN
+  },
+  {
+   "tag_id": "105715",
+   "sport": NaN,
+   "closed_events_seen": 2000,
+   "offset_capped": true,
+   "in_window": 2000,
+   "in_window_missing_from_walk": 0,
+   "series": "setkamecz-games,setkamemd-games,setkameua-games,setkawoua-games"
+  },
+  {
+   "tag_id": "105716",
+   "sport": "setkameua",
+   "closed_events_seen": 2000,
+   "offset_capped": true,
+   "in_window": 2000,
+   "in_window_missing_from_walk": 0,
+   "series": "setkameua-games"
+  },
+  {
+   "tag_id": "105717",
+   "sport": "setkamemd",
+   "closed_events_seen": 2000,
+   "offset_capped": true,
+   "in_window": 2000,
+   "in_window_missing_from_walk": 0,
+   "series": "setkamemd-games"
+  },
+  {
+   "tag_id": "105718",
+   "sport": "setkamecz",
+   "closed_events_seen": 2000,
+   "offset_capped": true,
+   "in_window": 2000,
+   "in_window_missing_from_walk": 0,
+   "series": "setkamecz-games"
+  },
+  {
+   "tag_id": "105719",
+   "sport": "setkawoua",
+   "closed_events_seen": 675,
+   "offset_capped": false,
+   "in_window": 675,
+   "in_window_missing_from_walk": 0,
+   "series": "setkawoua-games"
+  }
+ ]
+}
