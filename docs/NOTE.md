@@ -148,6 +148,14 @@ trip, and that decides queue order behind the 1 s delay.
 - **Tennis is deep:** median 1¢ spread, $8.1k at the touch and $61k within 2¢ (live sample).
   **Table tennis is not tradable on Polymarket:** 89¢ median spread, $23 at the touch, ~$2 of volume
   per match.
+- **What there is to take, per point (live, 482 points).** Depth resting at prices the next reprice
+  makes stale: median $222–565 (mean $1.3–3.1k) from 2 s to 0.25 s before the reprice, and gone 0.5 s
+  after it. Even an oracle that knew every point and held to resolution would net a mean +$18–21 per
+  point at today's fee (median ≈ $0; +$38 on moves ≥ 3¢). Exiting at the touch loses after the second
+  fee. With the 1 s order delay, an order must leave **≥ 1.3 s before the reprice, ≈ 2.5 s before the
+  official point stamp**: that is the time budget a tier-0 signal has to beat. Prints landing in the
+  0.5 s before a reprice were 98% with the move and earned +0.91¢/share net, so some takers already
+  have the point 1–1.5 s before the book.
 - **v2 is small by design.** ~$1.48M traded over 206 days on $28k capital (turnover ~93× a year; peak locked $9.4k).
   Capacity is bounded by the stale quotes resting at each point (a few $k at the touch) and shared
   with the existing fast tier. Fast-tier volume in the 0–3 s window ran $0.3–3.1M a month. Side markets add
