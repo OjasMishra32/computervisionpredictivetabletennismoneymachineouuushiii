@@ -113,8 +113,10 @@ def main(oos: bool):
         sh_oos = sh2[pd.to_datetime(sh2.ts, unit="s", utc=True) >= pd.Timestamp(summary["universe"]["oos_start"])]
         summary["oos"]["h6_shadow"] = shadow_stats(sh_oos, u)
         summary["oos"]["calibration"] = calibration(po).round(4).to_dict("records")
-        sh, oos_start = sh2, pd.Timestamp(summary["universe"]["oos_start"]).tz_localize(None)
-    report.walkforward_figure(wf, sh, oos_start)
+        wf, sh, oos_start = wf2, sh2, pd.Timestamp(summary["universe"]["oos_start"]).tz_localize(None)
+    sh_capped, _ = shadow_book(sh, u)
+    sh_capped = sh_capped.assign(pnl=sh_capped.shares * sh_capped.net_res)
+    report.walkforward_figure(wf, sh_capped, oos_start)
 
     hk = RES / "hawkeye_tennis_calls.csv"
     tt = RES / "tracking" / "summary.json"

@@ -145,6 +145,26 @@ class Fitter:
         self.max_frames = max_frames
         self.hit_sigma = hit_sigma          # px; include the hit-frame position (offset 0) if set
 
+    def _inits(self, cam, frames, uv, zmu, fps):
+        """Multi-start: the ball starts on the first pixel ray at the prior hit height and ends
+        on the last pixel ray at one of several heights (ballistic vz for that end height).
+        The linear drag-free solve is degenerate (it collapses towards the camera centre), so it
+        is only used when it lands somewhere physical."""
+        t0, t1 = frames[0] / fps, frames[-1] / fps
+        a = cam.backproject_to_z(uv[0][None], zmu)[0]
+        out = []
+        for h in (0.15, 0.8, 1.6, 2.6):
+            b = cam.backproject_to_z(uv[-1][None], h)[0]
+            T = max(t1 - t0, 1e-3)
+            v = (b - a) / T
+            v[2] = (h - zmu + 0.5 * G * T * T) / T
+            X0 = a - v * t0 + np.r_[0, 0, -0.5 * G * t0 * t0]
+            out.append(np.r_[X0, v, self.c_mu])
+        x0 = linear_init(frames, uv, P=cam.P, fps=fps)
+        if np.all(np.isfinite(x0)) and 0 < x0[2] < 5 and abs(x0[1]) < 16 and np.linalg.norm(x0[3:6]) < 90:
+            out.append(np.r_[x0, self.c_mu])
+        return out
+
     def fit(self, cam, frames, uv, serve, fps, uv_hit=None):
         """frames: int offsets (>0) from the hit frame; uv: (n,2) pixels; uv_hit: ball at the hit
         frame (offset 0) or None. -> dict or None."""
@@ -163,16 +183,19 @@ class Fitter:
         zmu, zsd = self.z_serve if serve else self.z_rally
         pm = np.array([self.c_mu, zmu])
         ps = np.array([self.c_sd, zsd])
-        x0 = linear_init(frames, uv, P, fps)
-        th0 = np.r_[x0, self.c_mu]
-        if not np.all(np.isfinite(th0)) or abs(th0[2]) > 20 or np.linalg.norm(th0[3:6]) > 120:
-            th0 = np.r_[0.0, 0.0, zmu, 0.0, 0.0, 0.0, self.c_mu]
         args = (frames, uv, P, self.kd, sig, pm, ps, float(fps))
-        try:
-            res = least_squares(_resid, th0, jac=_jac, args=args, loss=self.loss, f_scale=1.0,
-                                method="trf", max_nfev=80, x_scale=np.r_[1, 1, 1, 10, 10, 10, 0.005])
-        except Exception:
+        best = None
+        for th0 in self._inits(cam, frames, uv, zmu, fps):
+            try:
+                res = least_squares(_resid, th0, jac=_jac, args=args, loss=self.loss, f_scale=1.0,
+                                    method="trf", max_nfev=80, x_scale=np.r_[1, 1, 1, 10, 10, 10, 0.005])
+            except Exception:
+                continue
+            if best is None or res.cost < best.cost:
+                best = res
+        if best is None:
             return None
+        res = best
         th = res.x
         land = landing(th, self.kd, 3.0 * fps, float(fps))
         r = res.fun[:-2].reshape(-1, 2) * sig[:, None]

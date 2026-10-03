@@ -19,8 +19,9 @@ positions f_n-4..f_n+8):
           passes the table end line (mean x of the two end corners), or drops below the near
           table edge (y > near edge + 10 px), or is lost for >= 6 frames (T_ref = last seen + 1).
           If none of these happens within 90 frames the flight is dropped (counted).
-Flight start t0 = the last contact before f_n: the later of (last labelled bounce before f_n) and
-(the last x-velocity reversal in the track before f_n, i.e. the racket hit), +1 frame.
+Flight start t0 = the last contact before f_n found in the TRACK alone (no labels): the last
+x-velocity reversal (racket hit) or vertical reversal (bounce) before f_n, +1 frame. The labelled
+previous bounce (b_prev) is stored only for diagnostics.
 
 Output: WORK/flights.csv
 """
@@ -57,9 +58,28 @@ def net_stop(f_n, d, ball, trk, k=8):
     return before > 0 and after < 0.4 * before
 
 
-def flight_start(f_n, d, trk, b_prev):
-    """Walk back from f_n while the ball keeps moving in direction d; stop at a reversal."""
-    lo = max(f_n - 150, (b_prev + 1) if b_prev is not None else -10 ** 9)
+def last_bounce(f_n, trk, lo):
+    """Last bounce in the track before f_n (no labels): a local maximum of image y (the ball is
+    lowest) with >= 2 px of descent before and ascent after, over +-2 frames."""
+    for b in range(f_n - 3, lo + 2, -1):
+        ys = [trk.get(t) for t in range(b - 2, b + 3)]
+        if any(p is None for p in ys):
+            continue
+        y = [p[1] for p in ys]
+        if y[2] == max(y) and y[2] - y[0] >= 2 and y[2] - y[4] >= 2:
+            return b
+    return None
+
+
+def flight_start(f_n, d, trk):
+    """Start of the flight from the track alone (no labels): walk back from f_n while the ball
+    keeps moving in direction d (a racket hit reverses it on 2 consecutive steps), without a gap of
+    > 4 frames, for at most 150 frames, and not past the last bounce found in the track.
+    Returns the first frame of the flight's track."""
+    lo = f_n - 150
+    b = last_bounce(f_n, trk, lo)
+    if b is not None:
+        lo = b
     t, last, opp = f_n, None, 0
     start = f_n
     while t > lo:
@@ -81,7 +101,7 @@ def flight_start(f_n, d, trk, b_prev):
         else:
             start = t
         last = t
-    return max(start, lo)
+    return start
 
 
 def build(videos):
@@ -141,7 +161,7 @@ def build(videos):
                 if t_ref is None:
                     dropped.append((v, f_n, "out: no end/lost within 90 frames"))
                     continue
-            t0 = flight_start(f_n, d, trk, b_prev) + 1
+            t0 = flight_start(f_n, d, trk) + 1
             rows.append({
                 "video": v, "split": "test" if v in TEST else "train", "f_net": f_n, "dir": d,
                 "label": label, "miss_type": mtype, "t_ref": int(t_ref), "t0": int(t0),

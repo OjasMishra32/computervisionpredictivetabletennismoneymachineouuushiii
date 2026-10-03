@@ -14,7 +14,7 @@ C_BOUNCE = "#2e86ab"
 C_GREY = "#6c757d"
 
 
-def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path):
+def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path, tau_on=None):
     """cur_te: test snapshot (primary); cur_te_onl: test online; cur_tr: train LOGO snapshot."""
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), sharex=True)
     ax = axes[0]
@@ -39,7 +39,8 @@ def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path):
     ax.set_ylim(0, 1.02)
     ax.set_xlabel("lead before contact / table end (ms)")
     ax.set_ylabel("recall of MISS flights")
-    ax.set_title(f"Recall at the frozen threshold (tau = {tau:.2f})")
+    ax.set_title(f"Recall at the frozen thresholds (snapshot {tau:.3f}"
+                 + (f", online {tau_on:.3f})" if tau_on is not None else ")"))
     ax.legend(fontsize=8, loc="upper right", frameon=False)
     for a in axes:
         a.spines[["top", "right"]].set_visible(False)
@@ -49,7 +50,7 @@ def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path):
     plt.close(fig)
 
 
-def _arc(F, t_dec, horizon=0.35):
+def _arc(F, t_dec, horizon=0.12):
     """Fitted prefix + extrapolated arc (image px) at decision frame t_dec."""
     from early_call import LAG, NFIT, robust_quadfit
     m = F.fr <= t_dec - LAG
@@ -57,8 +58,8 @@ def _arc(F, t_dec, horizon=0.35):
     tau = (fr - (t_dec - LAG)) / FPS
     cu, _ = robust_quadfit(tau, u)
     cw, _ = robust_quadfit(tau, w)
-    tt = np.linspace(tau[0], horizon, 80)
-    return np.polyval(cu, tt), np.polyval(cw, tt)
+    tt = np.linspace(0.0, horizon, 40)
+    return cu[2] + cu[1] * tt, np.polyval(cw, tt)   # same extrapolation as the features
 
 
 def _to_px(u, w, g, d):
@@ -72,6 +73,7 @@ def _to_px(u, w, g, d):
 
 def plot_examples(fl, objs, model, name, geo, path, lead_ms=50):
     """A few test flights over a frame of their video, with the arc extrapolated at T_ref - 50 ms."""
+    import early_call as E
     from early_call import FEATS_ALL, FEATS_PHYS, k_of
     feats = FEATS_PHYS if name == "physics" else FEATS_ALL
     k = k_of(lead_ms)
@@ -81,7 +83,7 @@ def plot_examples(fl, objs, model, name, geo, path, lead_ms=50):
         sub = fl[fl.video == v]
         miss = sub[sub.label == "MISS"]
         bnc = sub[sub.label == "BOUNCE"]
-        pick = list(miss.index[:3]) + list(bnc.index[:: max(1, len(bnc) // 3)][:3])
+        pick = list(miss.index[:2]) + list(bnc.index[:: max(1, len(bnc) // 3)][:3])
         chosen.append((v, pick))
     fig, axes = plt.subplots(len(chosen), 1, figsize=(10, 5.8 * len(chosen)))
     axes = np.atleast_1d(axes)
@@ -104,20 +106,23 @@ def plot_examples(fl, objs, model, name, geo, path, lead_ms=50):
             t_dec = r.t_ref - k
             seen = F.fr <= t_dec - 2
             ax.plot(x[seen], y[seen], "o", ms=2.5, color=col)
-            ax.plot(x[~seen], y[~seen], "o", ms=2.5, mfc="none", color=col, alpha=0.8)
+            ax.plot(x[~seen], y[~seen], "o", ms=4, mfc="none", mec="w", mew=0.8)
             if seen.sum() >= 5:
                 au, aw = _arc(F, t_dec)
                 ax_, ay_ = _to_px(au, aw, g, r.dir)
-                ax.plot(ax_, ay_, "-", lw=1.2, color=col, alpha=0.9)
+                ax.plot(ax_, ay_, "--", lw=1.5, color="yellow" if r.label == "MISS" else "cyan", alpha=0.95)
                 f = F.features(t_dec)
                 if f is not None:
                     p = model.predict_proba(np.array([[f[c] for c in feats]]))[0, 1]
+                    if min(f["tau_end"], f["tau_net"]) > E.GATE_H:
+                        p = 0.0   # same horizon gate as the evaluation
                     ax.annotate(f"{r.label.lower()}{'/' + r.miss_type if r.miss_type == r.miss_type and r.miss_type else ''}"
                                 f" p={p:.2f}", (x[seen][-1], y[seen][-1]), color="w", fontsize=7,
                                 xytext=(4, -8), textcoords="offset points")
-        ax.set_title(f"{v}: filled = track seen at T_ref - {lead_ms} ms (minus 2-frame detector lag), "
-                     f"open = rest; line = arc extrapolated at decision time\n"
-                     f"red = MISS flights, blue = TABLE BOUNCE flights; p = model P(miss)", fontsize=9)
+        ax.set_title(f"{v}: dots = track available at the decision time T_ref - {lead_ms} ms "
+                     f"(2-frame detector lag), white rings = the rest up to T_ref;\n"
+                     f"dashed = arc extrapolated 120 ms from the decision time. red = MISS, "
+                     f"blue = TABLE BOUNCE; p = model P(miss) at the decision time", fontsize=9)
         ax.axis("off")
     fig.tight_layout()
     fig.savefig(path, dpi=110)

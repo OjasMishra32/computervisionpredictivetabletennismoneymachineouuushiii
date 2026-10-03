@@ -25,8 +25,9 @@ Call rules:
   'online'   (secondary, what a trader acting on the first call experiences): MISS is called by
              lead L if, at some decision frame t <= T_ref - L, the score was >= tau on PERSIST = 3
              consecutive frames. The first such frame gives the per-flight call lead.
-tau = smallest threshold whose out-of-fold train precision (snapshot, 50 ms lead) is >= 95% and
-stays >= 95% for every higher threshold that still makes >= 5 calls.
+tau = smallest threshold whose out-of-fold train precision at the 50 ms lead is >= 95% and stays
+>= 95% for every higher threshold that still makes >= 5 calls; chosen separately for the snapshot
+rule (verdict) and the online rule (first-call leads).
 
 Usage:
   python early_call.py --dev            # train-only model selection + LOGO CV, never reads test
@@ -200,11 +201,12 @@ def feats_of(name):
     return FEATS_PHYS if name == "physics" else FEATS_ALL
 
 
-def gated(score, S):
+def gated(score, S, h=None):
     """Zero the score unless the ball is predicted to reach the net (if still ahead) or the end
     line within GATE_H seconds, i.e. only short extrapolations may trigger a call."""
     out = np.asarray(score, float).copy()
-    out[(np.minimum(S.tau_end, S.tau_net) > GATE_H).values] = 0.0
+    h = GATE_H if h is None else h
+    out[(np.minimum(S.tau_end, S.tau_net) > h).values] = 0.0
     return out
 
 
@@ -327,7 +329,8 @@ def logo_oof(name, S):
     oof = np.full(len(S), np.nan)
     for v in TRAIN:
         te = S.video == v
-        oof[te.values], _ = fit_predict(name, S[~te], S[te])
+        if te.any():
+            oof[te.values], _ = fit_predict(name, S[~te], S[te])
     return oof
 
 
@@ -362,29 +365,39 @@ def lead_table(cur):
 
 
 def dev(args):
+    """Model / gate selection on game_1..5 only (leave-one-game-out). Never reads test flights."""
+    global GATE_H
     from sklearn.metrics import average_precision_score
     fl = pd.read_csv(os.path.join(WORK, "flights.csv"))
     fl = fl[fl.split == "train"].reset_index(drop=True)
     geo = geometry_all()
-    S, _ = build_samples(fl, load_tracks(TRAIN), geo)
+    S, _ = build_samples(fl, load_tracks(sorted(fl.video.unique())), geo)
     print("train flights", fl.label.value_counts().to_dict(), "samples", len(S))
     k50 = k_of(50)
     rep = {}
+    keep = GATE_H
     for name in args.models:
-        oof = logo_oof(name, S)
-        tau, grid = choose_tau(S, oof, fl, k50)
-        cv = curves(S, oof, fl, tau)
-        sel = (S.k == k50).values
-        ap = average_precision_score(S.y[sel], oof[sel])
-        snap, onl = cv["snapshot"][2], cv["online"][2]
-        rep[name] = dict(tau=round(tau, 4), ap_snapshot_50ms=round(ap, 4),
-                         snapshot=lead_table(snap), online=lead_table(onl))
-        p = stats_at(snap, ms(k50))
-        q = stats_at(onl, ms(k50))
-        print(f"{name:8s} tau={tau:.3f} AP@50={ap:.3f} | snapshot@50 prec={p['precision']} "
-              f"rec={p['recall']} tp={p['tp']} fp={p['fp']} | online@50 prec={q['precision']} "
-              f"rec={q['recall']} tp={q['tp']} fp={q['fp']}")
-        print(grid[grid.ncalls >= 1].iloc[::60].round(3).to_string(index=False))
+        GATE_H = np.inf
+        raw = logo_oof(name, S)
+        GATE_H = keep
+        for h in (np.inf, 0.25, 0.15, 0.10):
+            oof = gated(raw, S, h)
+            tau, grid = choose_tau(S, oof, fl, k50)
+            tau_on, _ = choose_tau(S, oof, fl, k50, mode="online")
+            snap = curves(S, oof, fl, tau)["snapshot"][2]
+            onl = curves(S, oof, fl, tau_on)["online"][2]
+            sel = (S.k == k50).values
+            ap = average_precision_score(S.y[sel], oof[sel])
+            key = f"{name}|gate={h}"
+            rep[key] = dict(tau_snapshot=round(tau, 4), tau_online=round(tau_on, 4),
+                            ap_snapshot_50ms=round(ap, 4),
+                            snapshot=lead_table(snap), online=lead_table(onl))
+            p, q = stats_at(snap, ms(k50)), stats_at(onl, ms(k50))
+            q100 = stats_at(onl, ms(k_of(100)))
+            print(f"{key:20s} tau={tau:.3f}/{tau_on:.3f} AP@50={ap:.3f} | snapshot@50 prec={p['precision']} "
+                  f"rec={p['recall']} ({p['tp']}/{p['tp'] + p['fp']}) | online@50 prec={q['precision']} "
+                  f"rec={q['recall']} ({q['tp']}/{q['tp'] + q['fp']}) | online@100 prec={q100['precision']} "
+                  f"rec={q100['recall']}", flush=True)
     json.dump(rep, open(os.path.join(WORK, "dev_report.json"), "w"), indent=1)
 
 
@@ -400,50 +413,84 @@ def final(args):
     tr_fl = fl[fl.split == "train"].reset_index(drop=True)
     te_fl = fl[fl.split == "test"].reset_index(drop=True)
     tracks = load_tracks(sorted(fl.video.unique()))
-    S_tr, _ = build_samples(tr_fl, tracks, geo)
+    S_tr, objs_tr = build_samples(tr_fl, tracks, geo)
     S_te, objs_te = build_samples(te_fl, tracks, geo)
     k50 = k_of(50)
     name = args.model
     # threshold frozen from leave-one-game-out predictions on the training games
     oof = logo_oof(name, S_tr)
-    tau, _ = choose_tau(S_tr, oof, tr_fl, k50)
-    cv_tr = curves(S_tr, oof, tr_fl, tau)
+    tau, _ = choose_tau(S_tr, oof, tr_fl, k50)                      # snapshot rule (verdict)
+    tau_on, _ = choose_tau(S_tr, oof, tr_fl, k50, mode="online")    # online first-call rule
+    cv_tr = {"snapshot": curves(S_tr, oof, tr_fl, tau)["snapshot"],
+             "online": curves(S_tr, oof, tr_fl, tau_on)["online"]}
     # final model on all training games, applied once to test
     s_te, model = fit_predict(name, S_tr, S_te)
-    cv_te = curves(S_te, s_te, te_fl, tau)
+    cv_te = {"snapshot": curves(S_te, s_te, te_fl, tau)["snapshot"],
+             "online": curves(S_te, s_te, te_fl, tau_on)["online"]}
     for mode in ("snapshot", "online"):
         cv_te[mode][2].to_csv(os.path.join(RES, f"test_precision_vs_lead_{mode}.csv"), index=False)
         cv_tr[mode][2].to_csv(os.path.join(WORK, f"train_oof_precision_vs_lead_{mode}.csv"), index=False)
-    lead_te = cv_te["online"][1]
-    # per-flight table for test (first-call lead, speed, landing distance)
-    te_fl["p_miss_at_50ms"] = np.nan
-    s50 = pd.Series(s_te[(S_te.k == k50).values], index=S_te.fid[(S_te.k == k50).values].values)
-    te_fl.loc[s50.index, "p_miss_at_50ms"] = s50.values
-    te_fl["first_call_lead_ms"] = te_fl.index.map(lead_te)
-    sp_ = S_te.groupby("fid").apply(lambda g: g.sort_values("k").speed.iloc[0])
-    te_fl["speed_mps"] = te_fl.index.map(sp_)
-    te_fl["dist_out_m"] = [hindsight_landing(objs_te[i]) for i in te_fl.index]
+    # per-flight tables (first-call lead, speed at the end of the flight, landing distance)
+    def per_flight(df, S, score, objs, lead):
+        df = df.copy()
+        sel = (S.k == k50).values
+        s50 = pd.Series(score[sel], index=S.fid[sel].values)
+        df["p_miss_at_50ms"] = df.index.map(s50)
+        df["first_call_lead_ms"] = df.index.map(lead)
+        last = S.sort_values("k").groupby("fid").first()
+        df["speed_mps"] = df.index.map(last.speed)
+        df["dist_out_m"] = [hindsight_landing(objs[i]) for i in df.index]
+        return df
+    te_fl = per_flight(te_fl, S_te, s_te, objs_te, cv_te["online"][1])
+    tr_fl = per_flight(tr_fl, S_tr, oof, objs_tr, cv_tr["online"][1])
     te_fl.to_csv(os.path.join(RES, "test_flights.csv"), index=False)
+    tr_fl.to_csv(os.path.join(WORK, "train_flights_oof.csv"), index=False)
 
     snap_te = lead_table(cv_te["snapshot"][2])
     p50 = snap_te["50ms"]["precision"]
     verdict = "PASS" if (p50 is not None and p50 >= PREC_TARGET) else "FAIL"
-    miss_te = te_fl[te_fl.label == "MISS"]
-    lc = miss_te.first_call_lead_ms.dropna()
     def sp(a, b):
         ok = np.isfinite(a.values) & np.isfinite(b.values)
         if ok.sum() < 4:
             return None
         r = spearmanr(a.values[ok], b.values[ok])
         return dict(rho=round(float(r.statistic), 3), p=round(float(r.pvalue), 4), n=int(ok.sum()))
-    called = miss_te[miss_te.first_call_lead_ms.notna()]
-    outs = called[called.miss_type == "out"]
+
+    def lead_stats(df):
+        miss = df[df.label == "MISS"]
+        lc = miss.first_call_lead_ms.dropna()
+        called = miss[miss.first_call_lead_ms.notna()]
+        outs = miss[miss.miss_type == "out"]
+        # recall-by-bin views: a miss that is never called has lead 0 for the bins below
+        lead0 = miss.first_call_lead_ms.fillna(0.0)
+        bins = {}
+        for col in ("speed_mps", "dist_out_m"):
+            sub = miss if col == "speed_mps" else outs
+            if sub[col].notna().sum() >= 6:
+                q = pd.qcut(sub[col], 3, duplicates="drop")
+                g = lead0.loc[sub.index].groupby(q, observed=True)
+                bins[col] = [dict(bin=str(k), n=int(len(v)), called=int((v > 0).sum()),
+                                  median_lead_ms_called=(None if (v > 0).sum() == 0 else
+                                                         round(float(v[v > 0].median()), 1)))
+                             for k, v in g]
+        return dict(
+            n_miss=int(len(miss)), n_called=int(len(lc)),
+            median=None if lc.empty else round(float(lc.median()), 1),
+            p10=None if lc.empty else round(float(lc.quantile(0.1)), 1),
+            p90=None if lc.empty else round(float(lc.quantile(0.9)), 1),
+            spearman_lead_vs_speed_called=sp(called.speed_mps, called.first_call_lead_ms),
+            spearman_lead_vs_dist_out_called_out=sp(called[called.miss_type == "out"].dist_out_m,
+                                                    called[called.miss_type == "out"].first_call_lead_ms),
+            spearman_lead0_vs_speed_all_miss=sp(miss.speed_mps, lead0),
+            spearman_lead0_vs_dist_out_all_out=sp(outs.dist_out_m, lead0.loc[outs.index]),
+            by_bin=bins)
     # lead at which snapshot precision on test stays >= 95% (largest lead L such that precision
     # >= 0.95 for every lead in [0, L] with at least one call)
     cur = cv_te["snapshot"][2]
     okL = [r.lead_ms for r in cur.itertuples() if (r.tp + r.fp) > 0 and r.precision >= PREC_TARGET]
     summary = dict(
-        hypothesis="H3", model=name, tau=round(tau, 4), primary_rule="snapshot",
+        hypothesis="H3", model=name, tau_snapshot=round(tau, 4), tau_online=round(tau_on, 4),
+        primary_rule="snapshot",
         decision_lag_frames=LAG, online_persistence_frames=PERSIST,
         precision_recall_test_snapshot=snap_te,
         precision_recall_test_online=lead_table(cv_te["online"][2]),
@@ -451,34 +498,33 @@ def final(args):
         precision_recall_train_oof_online=lead_table(cv_tr["online"][2]),
         verdict=verdict,
         verdict_rule="PASS iff test precision of MISS calls at the 50 ms lead (snapshot rule) >= 0.95",
-        miss_first_call_lead_test_ms=dict(
-            n_miss=int(len(miss_te)), n_called=int(len(lc)),
-            median=None if lc.empty else round(float(lc.median()), 1),
-            p10=None if lc.empty else round(float(lc.quantile(0.1)), 1),
-            p90=None if lc.empty else round(float(lc.quantile(0.9)), 1)),
-        test_snapshot_leads_with_precision_ge_95=okL,
-        lead_vs_speed_spearman=sp(called.speed_mps, called.first_call_lead_ms),
-        lead_vs_dist_out_spearman=sp(outs.dist_out_m, outs.first_call_lead_ms),
+        gate_h_s=GATE_H,
+        miss_first_call_lead_test_ms=lead_stats(te_fl),
+        miss_first_call_lead_train_oof_ms=lead_stats(tr_fl),
+        test_snapshot_leads_ms_with_precision_ge_95=okL,
     )
     json.dump(summary, open(os.path.join(WORK, "early_call_final.json"), "w"), indent=1)
     plot_precision_vs_lead(cv_te["snapshot"][2], cv_te["online"][2], cv_tr["snapshot"][2], tau,
-                           os.path.join(RES, "precision_vs_lead.png"))
+                           os.path.join(RES, "precision_vs_lead.png"), tau_on=tau_on)
     plot_examples(te_fl, objs_te, model, name, geo, os.path.join(RES, "example_trajectories.png"))
     print(json.dumps(summary, indent=1))
 
 
 def hindsight_landing(F):
-    """Landing position relative to the end line (m, > 0 = long) from a fit to the whole
-    observed flight (not causal; used only to describe 'how far out')."""
+    """Landing position relative to the end line (m, > 0 = long) from a fit to the last 30 points
+    of the whole observed flight (not causal; only used to describe 'how far out'): where the arc
+    reaches the table mid-level, with u extrapolated linearly. NaN if it does not come down
+    within 0.5 s."""
     if len(F.fr) < NMIN:
         return np.nan
-    tau = (F.fr - F.fr[-1]) / FPS
-    cu, _ = robust_quadfit(tau, F.u)
-    cw, _ = robust_quadfit(tau, F.w)
-    tc = first_cross(cw, 0.0, horizon=1.5)
+    fr, u, w = F.fr[-NFIT:], F.u[-NFIT:], F.w[-NFIT:]
+    tau = (fr - fr[-1]) / FPS
+    cu, _ = robust_quadfit(tau, u)
+    cw, _ = robust_quadfit(tau, w)
+    tc = first_cross(cw, 0.0, horizon=0.5)
     if tc is None:
-        tc = 0.0
-    return float((np.polyval(cu, tc) - 1.0) * 2.74)
+        return np.nan
+    return float((cu[2] + cu[1] * tc - 1.0) * 2.74)
 
 
 if __name__ == "__main__":

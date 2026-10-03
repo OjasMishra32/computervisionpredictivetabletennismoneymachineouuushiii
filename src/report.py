@@ -59,19 +59,27 @@ def calibration_figure(cal: pd.DataFrame):
 
 
 def walkforward_figure(wf: pd.DataFrame, shadow: pd.DataFrame, oos_start=None):
+    """Left: monthly net 30 s markout of wallets picked on past data. Right: capped shadow book."""
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.9))
     x = np.arange(len(wf))
-    a1.bar(x, wf.net30_c, color=BLUE, width=0.7)
+    oos_m = str(pd.Period(oos_start, "M")) if oos_start is not None else None
+    colors = [ORANGE if oos_m and m >= oos_m else BLUE for m in wf.month]
+    a1.bar(x, wf.net30_c, color=colors, width=0.7)
     a1.axhline(0, color=INK2, lw=0.8)
     a1.set_xticks(x, wf.month, rotation=60, fontsize=7)
     a1.set_ylabel("¢/share, net of fee")
     a1.set_title("Fast tier, picked on past data only")
+    if oos_m:
+        from matplotlib.patches import Patch
+        a1.legend(handles=[Patch(color=BLUE, label="In sample"), Patch(color=ORANGE, label="Out of sample*")],
+                  loc="upper right", fontsize=7)
     if len(shadow):
         d = shadow.groupby(pd.to_datetime(shadow.ts, unit="s").dt.floor("D")).pnl.sum().cumsum()
         a2.plot(d.index, d.values / 1e3, color=BLUE)
         if oos_start is not None:
             a2.axvline(oos_start, color=INK2, lw=0.8, ls="--")
-            a2.text(oos_start, a2.get_ylim()[1] * 0.95, " OOS", color=INK2, fontsize=8, va="top")
+            a2.text(oos_start, a2.get_ylim()[0] + 0.05 * (a2.get_ylim()[1] - a2.get_ylim()[0]), " OOS →",
+                    color=INK2, fontsize=8, va="bottom")
         a2.set_ylabel("Cumulative P&L, $k")
         a2.set_title("Shadow book at fast-tier speed")
         a2.tick_params(axis="x", labelrotation=45, labelsize=7)

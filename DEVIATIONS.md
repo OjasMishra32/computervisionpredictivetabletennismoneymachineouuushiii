@@ -69,3 +69,11 @@ their 0–3 s post-jump prints in month m, and in the locked OOS period.
 - Frozen for OOS: H1 J0.04/H30, H2 0.85–0.97, H5 J0.04/W30 + always-on, H6 selection rule and
   shadow sizing as above. OOS is evaluated once via `run_all.py --oos`; peeks are logged in
   `results/oos_peeks.log`.
+
+## D7 — after the single OOS evaluation (2026-10-03 10:42 UTC)
+- OOS results are reported as computed; no rule was changed afterwards.
+- Post-OOS diagnostics only (decompositions, `scripts/diagnostics.py`): shadow-book dollar P&L by
+  entry price, and always-on maker P&L by venue regime. They explain results; they are not used to
+  pick or re-fit anything.
+- Figure fix after OOS: the walk-forward figure now plots the same capped shadow book the stats use
+  (it plotted the uncapped one) and colours OOS months. Numbers are unchanged.
