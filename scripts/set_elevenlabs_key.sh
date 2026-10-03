@@ -7,6 +7,8 @@ read -r -s -p "Paste your ElevenLabs API key (input hidden), then press Enter: "
 [ -n "$KEY" ] || { echo "No key entered."; exit 1; }
 touch .env && chmod 600 .env
 grep -v '^ELEVENLABS_API_KEY=' .env > .env.tmp 2>/dev/null || true
+KEY=$(printf '%s' "$KEY" | tr -d '[:space:]')
 printf 'ELEVENLABS_API_KEY=%s\n' "$KEY" >> .env.tmp && mv .env.tmp .env && chmod 600 .env
+echo "Saved a ${#KEY}-character key ending in ...${KEY: -4} (re-run this script to replace it)."
 unset KEY
 git check-ignore -q .env && echo "Saved to .env (gitignored)." || echo "WARNING: .env is not gitignored!"
