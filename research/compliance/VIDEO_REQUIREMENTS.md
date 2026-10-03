@@ -20,3 +20,30 @@ Voice: ElevenLabs "Liam" (scripts/tts_elevenlabs.py). Length about 3:00-3:30. St
 
 Hard rules: no footage of matches we do not have rights to (no YouTube/Setka captures); every number from a results file;
 CV-strategy results labelled "simulated 1 s licensed-feed baseline"; tennis Hawk-Eye segments labelled "simulated physics".
+
+## Addendum (team, 2026-10-03): pitch it like an investment committee
+
+Frame the whole video (and the deck) as an investment-committee pitch. Every question an IC would ask about the strategy is
+answered on screen, with a number and its source:
+
+- **The latency graph, full and clear (must be in the video, ~15 s, held long enough to read):** returns ($/day and Sharpe)
+  vs feed latency on a log axis (0.05-60 s), IS and OOS, both stamp-lag readings with seed bands, the dotted 1 s baseline,
+  break-even markers, and shaded bands for every real source with its measured/stated latency (venue/official <= 0.15 s,
+  licensed betting video 0.5-8 s vendor-stated, sportsbook apps 4-8 s, our measured public WebRTC stream 12.2 s, TV,
+  public score feeds 28-44 s measured), plus the market-side decay panel (edge vs seconds after the move). Source:
+  results/tier0/latency_sweep.json, research/v2/feed_latency/LATENCY_SWEEP.md, results/decay/*, research/v2/latency.
+- **The pipeline diagram (~15 s):** camera/feed -> WebRTC -> GPU CV (detect, track, spin fit, P(miss)) -> fair value
+  (Markov point leverage) -> risk checks -> order -> network -> Polymarket 1 s taker delay -> fill vs live book -> hold to
+  resolution; each box annotated with its measured ms (results/e2e, results/engine, results/webrtc) and the total vs the
+  < 3 s requirement.
+- **"IC questions" segment (~25-30 s, fast cards, one per question, answer + number):**
+  1. Where does the edge come from and who pays? (slow takers; fast tier wins 11/11 months; factor-neutral t = 8.5)
+  2. Why does it persist? (speed costs money; sub-second video is sold only to bookmakers/desks)
+  3. How fast do you need to be, and can you trade that fast? (break-even latency; our pipeline ms; < 3 s proof)
+  4. How much capital can it run? (capacity in $, Sharpe vs size, ADV share; results/capacity)
+  5. What does it cost to run? (feed licence, infra; after-cost break-even; results/financials)
+  6. What kills it? (stamp lag unmeasured, queue position vs fast tier, fee changes, shrinking edge -0.17c/month, concentration)
+  7. How do you know it is not overfit? (pre-registration, blind tests, deflated Sharpe, PBO, peeks logged)
+  8. Is it legal / allowed? (licensed feed only, no courtsiding, paper only per event rules)
+  9. What do you need to go live? (licensed low-latency feed, London gateway, one live calibration session for the stamp lag)
+- Tone: confident and precise, like a PM presenting to an IC: lead with the answer, then the number.
