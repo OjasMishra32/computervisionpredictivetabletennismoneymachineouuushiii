@@ -29,3 +29,17 @@
    money; every assumed number labelled; IS/OOS separate; failures reported compactly in the robustness table and the
    appendix (track rule: report OOS good or bad, variant counts, peeks). Today's all-points match replay is reported in
    the appendix with its result.
+
+## Addendum after the red team (binding; resolves item 3's ordering)
+- Latency-scenario table: show BOTH readings side by side, **pre-registered (2.0 s stamp lag) column first**, then the
+  post hoc one-day inference (3.14 s; 95% interval 2.23-3.22 s from results/redteam/) labelled "post hoc estimate";
+  never write "calibrated from the data". The high Sharpe values stay visible (that is the optimised estimate), with
+  their label and interval next to them. Also state the lag-free requirement: the CV call must land >= ~0.9 s before the
+  umpire stamp.
+- The sweep's trade set is points the market repriced >= 4c (selected on outcomes, not ex ante): say so in the Table
+  caption; report the ex-ante tests (all-points replay; the Markov-leverage selective replay, exploratory) in the
+  robustness table and appendix.
+- CV: lead with the live causal engine numbers (results/engine/online_vs_offline.json); the offline 11/11 is labelled
+  "offline evaluation with a look-ahead feature".
+- e2e: our part ~54 ms; 2,119 ms total with a simulated 1 s feed + network + 1 s venue hold, vs the 3,000 ms bar.
+- Read derived Q&A numbers from results/redteam/derived.json; run scripts/redteam_acceptance.py before the final commit.

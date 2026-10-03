@@ -116,3 +116,11 @@ answered on screen, with a number and its source:
   8. Is it legal / allowed? (licensed feed only, no courtsiding, paper only per event rules)
   9. What do you need to go live? (licensed low-latency feed, London gateway, one live calibration session for the stamp lag)
 - Tone: confident and precise, like a PM presenting to an IC: lead with the answer, then the number.
+
+## Addendum after the red team (binding)
+- Never say "calibrated from the data", "conservative" or "stricter readings lose". In the profit segment show the two
+  readings compactly as "post-hoc estimate" and "pre-registered", each labelled; the hero Sharpe moment uses the post-hoc
+  estimate WITH its label on screen, and the pre-registered number stays visible on the stats rail.
+- CV counters use the live causal engine numbers; "11/11 at 50 ms" only with "offline".
+- Pipeline scene: our part ~54 ms; 2.1 s total with a 1 s feed + network + 1 s venue hold vs the 3 s bar (results/e2e).
+- Do not say the strategy "goes live"; say "with a licensed feed, this is what we'd deploy".
