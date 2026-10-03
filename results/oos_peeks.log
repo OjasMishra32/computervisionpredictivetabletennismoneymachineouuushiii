@@ -1,3 +1,11 @@
 2026-10-03T10:42:28.967743+00:00 OOS prints built
 2026-10-03T13:24:37.297968+00:00 v2 evaluated on burned OOS (non-blind, labelled)
 2026-10-03T13:53:01.186962+00:00 v2-causal (D9 fix) evaluated on burned OOS (non-blind)
+2026-10-03T17:23:41.710383+00:00 tier0 counterfactual: OOS jump table built (burned OOS, non-blind)
+2026-10-03T17:29:29.198786+00:00 tier0 counterfactual grid evaluated on burned OOS (non-blind, labelled)
+2026-10-03T17:31:29.130682+00:00 U2 out-of-universe test evaluated (PREREG research/v2/expand, first run)
+2026-10-03T17:37:16.448743+00:00 v2-safe (lowloss PREREG) evaluated on burned OOS (non-blind, labelled)
+2026-10-03T17:37:47.784154+00:00 v2-safe U2 out-of-universe test evaluated (PREREG research/v2/lowloss, first run)
+2026-10-03T17:43:41.266161+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
+2026-10-03T17:45:17.819645+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
+2026-10-03T17:48:08.518292+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)

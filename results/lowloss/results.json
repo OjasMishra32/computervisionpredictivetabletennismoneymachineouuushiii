@@ -1,0 +1,2053 @@
+{
+  "prereg": "research/v2/lowloss/PREREG.md @ 342d51565bf6cbf6f8921e780b0565b638490d76 2026-10-03T13:30:44-04:00",
+  "git_head": "342d51565bf6cbf6f8921e780b0565b638490d76",
+  "run_started_utc": "2026-10-03T17:36:52.238871+00:00",
+  "policies": {
+    "v2": {
+      "name": "G_50pct_net100",
+      "sizing": "risk_parity",
+      "edge_src": "mo30",
+      "var_src": "res",
+      "wallet": "filter",
+      "zone": "0.05-0.95",
+      "usd_cap": 1000,
+      "match_cap": 3000,
+      "net_cap": 100,
+      "day_cap": "inf",
+      "wallet_day_cap": "inf",
+      "stop_k": "inf",
+      "deploy_frac": 0.5,
+      "filt": [],
+      "kelly_max_mult": 3.0,
+      "family": "G"
+    },
+    "v2_safe": {
+      "name": "v2_safe_n50",
+      "sizing": "risk_parity",
+      "edge_src": "mo30",
+      "var_src": "res",
+      "wallet": "filter",
+      "zone": "0.05-0.95",
+      "usd_cap": 1000,
+      "match_cap": 3000,
+      "net_cap": 50,
+      "day_cap": "inf",
+      "wallet_day_cap": "inf",
+      "stop_k": "inf",
+      "deploy_frac": 0.5,
+      "filt": [],
+      "kelly_max_mult": 3.0,
+      "family": "G"
+    }
+  },
+  "cutoff_utc": "2026-08-25 14:15:00+00:00",
+  "runs": {
+    "a_burned_oos_nonblind": {
+      "label": "NON-BLIND",
+      "reference_check": {
+        "reference": "data/v2_trades_is_oos.parquet",
+        "n_trades": [
+          69264,
+          69264
+        ],
+        "pnl_usd": [
+          45541.97782512345,
+          45541.97782512345
+        ],
+        "identical": true
+      },
+      "books": {
+        "u1_is": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-25"
+            ],
+            "calendar_days": 206,
+            "profitable_days_pct": 79.6116504854369,
+            "losing_days_pct": 16.990291262135923,
+            "active_days": 199,
+            "profitable_active_days": 164,
+            "profitable_active_days_pct": 82.41206030150754,
+            "profitable_active_days_wilson95_pct": [
+              76.52310625509217,
+              87.07336004425159
+            ],
+            "losing_active_days_pct": 17.587939698492463,
+            "worst_day_usd": -550.764300067122,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 2542.5647262976495,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 6201.388187919418,
+              "2026-03": 2542.5647262976495,
+              "2026-04": 6211.323915793618,
+              "2026-05": 8014.9244245879845,
+              "2026-06": 7373.318951094114,
+              "2026-07": 6013.229477395886,
+              "2026-08": 4068.9695085905437
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -569.4550360798748,
+            "max_dd_pct_cap": -2.0120402719953496,
+            "sharpe_ann": 14.483153541485253,
+            "sortino_ann": 46.41097469545944,
+            "pnl_usd": 40425.71919167921,
+            "pnl_ci_usd": [
+              34262.26432858429,
+              46589.37612202772
+            ],
+            "mean_daily_usd": 196.24135529941367,
+            "per_share_c": 1.3814511010237975,
+            "per_share_ci_c": [
+              1.167847083750991,
+              1.5935130267793969
+            ],
+            "per_share_slip_half_tick_c": 0.8814511010237972,
+            "per_share_slip_half_tick_ci_c": [
+              0.6678470837509906,
+              1.0935130267793964
+            ],
+            "per_share_slip_one_tick_c": 0.3814511010237971,
+            "per_share_slip_one_tick_ci_c": [
+              0.1678470837509904,
+              0.5935130267793962
+            ],
+            "profitable_matches_pct": 57.730069380809,
+            "losing_matches_pct": 42.25683990051054,
+            "worst_match_usd": -205.7602912085585,
+            "n_matches": 7639,
+            "n_trades": 55662,
+            "shares": 2926322.847165534,
+            "usd_traded": 1479564.11540577,
+            "peak_locked_usd": 9434.122567125089,
+            "capital_usd": 28302.367701375268,
+            "engine_metrics": {
+              "n_trades": 55662,
+              "n_matches": 7639,
+              "per_share_c": 1.3814511010237975,
+              "per_share_ci_c": [
+                1.167847083750991,
+                1.5935130267793969
+              ],
+              "per_print_c": 1.3723297597722453,
+              "per_print_ci_c": [
+                1.0450519223394046,
+                1.6942251208423753
+              ],
+              "per_usd_c": 2.7322722125220285,
+              "total_pnl_usd": 40425.71919167921,
+              "total_pnl_ci_usd": [
+                34262.26432858429,
+                46589.37612202772
+              ],
+              "usd_traded": 1479564.11540577,
+              "sharpe_ann": 14.483153541485253,
+              "peak_locked_usd": 9434.122567125089,
+              "capital_usd": 28302.367701375268,
+              "return_on_capital_pct": 142.83511407321177,
+              "max_dd_usd": -569.4550360798748,
+              "max_dd_pct": -2.0120402719953496,
+              "worst_day_usd": -550.764300067122,
+              "worst_day_pct": -1.9460007935673853,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 2542.5647262976495,
+              "days": 206
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-25"
+            ],
+            "calendar_days": 206,
+            "profitable_days_pct": 81.55339805825243,
+            "losing_days_pct": 15.048543689320388,
+            "active_days": 199,
+            "profitable_active_days": 168,
+            "profitable_active_days_pct": 84.42211055276381,
+            "profitable_active_days_wilson95_pct": [
+              78.73722716276738,
+              88.80320603886126
+            ],
+            "losing_active_days_pct": 15.577889447236181,
+            "worst_day_usd": -284.1582717168387,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 1499.1338324668723,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 3345.2115673261956,
+              "2026-03": 1499.1338324668723,
+              "2026-04": 3839.189449243979,
+              "2026-05": 4661.337464316385,
+              "2026-06": 4499.318533778524,
+              "2026-07": 3490.002752324104,
+              "2026-08": 2529.728425984992
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -284.1582717168385,
+            "max_dd_pct_cap": -1.6071751019680214,
+            "sharpe_ann": 15.695873058769765,
+            "sortino_ann": 58.20025083652984,
+            "pnl_usd": 23863.922025441054,
+            "pnl_ci_usd": [
+              20637.83653320673,
+              27014.4720519217
+            ],
+            "mean_daily_usd": 115.84428167689832,
+            "per_share_c": 1.3328961476025758,
+            "per_share_ci_c": [
+              1.155146199387172,
+              1.5176686335632352
+            ],
+            "per_share_slip_half_tick_c": 0.8328961476025752,
+            "per_share_slip_half_tick_ci_c": [
+              0.6551461993871717,
+              1.017668633563235
+            ],
+            "per_share_slip_one_tick_c": 0.3328961476025751,
+            "per_share_slip_one_tick_ci_c": [
+              0.1551461993871712,
+              0.5176686335632343
+            ],
+            "profitable_matches_pct": 58.20133525330541,
+            "losing_matches_pct": 41.78557402801414,
+            "worst_match_usd": -121.69773023013116,
+            "n_matches": 7639,
+            "n_trades": 50950,
+            "shares": 1790381.198742609,
+            "usd_traded": 902959.0124272828,
+            "peak_locked_usd": 5893.534798394201,
+            "capital_usd": 17680.604395182603,
+            "engine_metrics": {
+              "n_trades": 50950,
+              "n_matches": 7639,
+              "per_share_c": 1.3328961476025758,
+              "per_share_ci_c": [
+                1.155146199387172,
+                1.5176686335632352
+              ],
+              "per_print_c": 1.2997044487415061,
+              "per_print_ci_c": [
+                0.9913373660324317,
+                1.596887132013104
+              ],
+              "per_usd_c": 2.6428577263204254,
+              "total_pnl_usd": 23863.922025441054,
+              "total_pnl_ci_usd": [
+                20637.83653320673,
+                27014.4720519217
+              ],
+              "usd_traded": 902959.0124272828,
+              "sharpe_ann": 15.695873058769765,
+              "peak_locked_usd": 5893.534798394201,
+              "capital_usd": 17680.604395182603,
+              "return_on_capital_pct": 134.97232047080476,
+              "max_dd_usd": -284.1582717168385,
+              "max_dd_pct": -1.6071751019680214,
+              "worst_day_usd": -284.1582717168387,
+              "worst_day_pct": -1.607175101968023,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 1499.1338324668723,
+              "days": 206
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 1.155146199387172,
+            "P1": true,
+            "P2_wilson_lo_pct": 78.73722716276738,
+            "P2": true,
+            "n_matches": 7639,
+            "active_days": 199,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 1.167847083750991,
+            "P1": true,
+            "P2_wilson_lo_pct": 76.52310625509217,
+            "P2": true,
+            "n_matches": 7639,
+            "active_days": 199,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 199,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 84.42211055276381,
+            "profitable_share_v2_pct": 82.41206030150754,
+            "diff_pp": 2.0100502512562812,
+            "diff_ci_pp": [
+              -1.507537688442211,
+              5.527638190954774
+            ],
+            "days_safe_up_v2_down": 8,
+            "days_v2_up_safe_down": 4,
+            "worst_day_usd": [
+              -284.1582717168387,
+              -550.764300067122
+            ],
+            "max_dd_usd": [
+              -284.1582717168385,
+              -569.4550360798748
+            ],
+            "pnl_ratio": 0.5903153364394058
+          }
+        },
+        "u1_oos": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 60.0,
+            "losing_days_pct": 40.0,
+            "active_days": 40,
+            "profitable_active_days": 24,
+            "profitable_active_days_pct": 60.0,
+            "profitable_active_days_wilson95_pct": [
+              44.595893660346185,
+              73.65167431570808
+            ],
+            "losing_active_days_pct": 40.0,
+            "worst_day_usd": -469.4297898304612,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -434.1530679579675,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 174.54676062810512,
+              "2026-09": 3947.1422275235304,
+              "2026-10": -434.1530679579675
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -469.4297898304612,
+            "max_dd_pct_cap": -2.0630607174176805,
+            "sharpe_ann": 6.667551867200974,
+            "sortino_ann": 14.018509091853916,
+            "pnl_usd": 3687.5359201936667,
+            "pnl_ci_usd": [
+              539.5728022129647,
+              6889.925663653515
+            ],
+            "mean_daily_usd": 92.18839800484172,
+            "per_share_c": 0.598736335564979,
+            "per_share_ci_c": [
+              0.08724550818301618,
+              1.1271958683912837
+            ],
+            "per_share_slip_half_tick_c": 0.09873633556497882,
+            "per_share_slip_half_tick_ci_c": [
+              -0.41275449181698415,
+              0.6271958683912832
+            ],
+            "per_share_slip_one_tick_c": -0.4012636644350215,
+            "per_share_slip_one_tick_ci_c": [
+              -0.9127544918169845,
+              0.1271958683912828
+            ],
+            "profitable_matches_pct": 55.616575137294056,
+            "losing_matches_pct": 44.38342486270594,
+            "worst_match_usd": -154.36883288014866,
+            "n_matches": 2003,
+            "n_trades": 10412,
+            "shares": 615886.443022376,
+            "usd_traded": 322490.3242352463,
+            "peak_locked_usd": 7584.682083715619,
+            "capital_usd": 22754.046251146858,
+            "engine_metrics": {
+              "n_trades": 10412,
+              "n_matches": 2003,
+              "per_share_c": 0.598736335564979,
+              "per_share_ci_c": [
+                0.08724550818301618,
+                1.1271958683912837
+              ],
+              "per_print_c": 0.9259541349406295,
+              "per_print_ci_c": [
+                0.23124088690455072,
+                1.6399173935673823
+              ],
+              "per_usd_c": 1.1434562971581523,
+              "total_pnl_usd": 3687.5359201936667,
+              "total_pnl_ci_usd": [
+                539.5728022129647,
+                6889.925663653515
+              ],
+              "usd_traded": 322490.3242352463,
+              "sharpe_ann": 6.667551867200974,
+              "peak_locked_usd": 7584.682083715619,
+              "capital_usd": 22754.046251146858,
+              "return_on_capital_pct": 16.206066734209113,
+              "max_dd_usd": -469.4297898304612,
+              "max_dd_pct": -2.0630607174176805,
+              "worst_day_usd": -469.4297898304612,
+              "worst_day_pct": -2.0630607174176805,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -434.1530679579675,
+              "days": 40
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 67.5,
+            "losing_days_pct": 32.5,
+            "active_days": 40,
+            "profitable_active_days": 27,
+            "profitable_active_days_pct": 67.5,
+            "profitable_active_days_wilson95_pct": [
+              52.01774618987768,
+              79.9154977682173
+            ],
+            "losing_active_days_pct": 32.5,
+            "worst_day_usd": -223.98184811354943,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -187.33503601007595,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 312.16802609627393,
+              "2026-09": 2408.6467892449205,
+              "2026-10": -187.33503601007595
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -252.67563485633437,
+            "max_dd_pct_cap": -1.8600391019565652,
+            "sharpe_ann": 9.272747859573085,
+            "sortino_ann": 21.9591539652782,
+            "pnl_usd": 2533.479779331118,
+            "pnl_ci_usd": [
+              904.0582137948029,
+              4221.045779922992
+            ],
+            "mean_daily_usd": 63.336994483277955,
+            "per_share_c": 0.6860339640787971,
+            "per_share_ci_c": [
+              0.24261209337899814,
+              1.1528888996078328
+            ],
+            "per_share_slip_half_tick_c": 0.18603396407879674,
+            "per_share_slip_half_tick_ci_c": [
+              -0.2573879066210024,
+              0.6528888996078321
+            ],
+            "per_share_slip_one_tick_c": -0.3139660359212035,
+            "per_share_slip_one_tick_ci_c": [
+              -0.7573879066210026,
+              0.1528888996078318
+            ],
+            "profitable_matches_pct": 56.21567648527209,
+            "losing_matches_pct": 43.78432351472791,
+            "worst_match_usd": -76.74956940519367,
+            "n_matches": 2003,
+            "n_trades": 9487,
+            "shares": 369293.6373395247,
+            "usd_traded": 192159.8941170725,
+            "peak_locked_usd": 4528.141990680845,
+            "capital_usd": 13584.425972042536,
+            "engine_metrics": {
+              "n_trades": 9487,
+              "n_matches": 2003,
+              "per_share_c": 0.6860339640787971,
+              "per_share_ci_c": [
+                0.24261209337899814,
+                1.1528888996078328
+              ],
+              "per_print_c": 0.9787209855686955,
+              "per_print_ci_c": [
+                0.32201687354515135,
+                1.657820460104149
+              ],
+              "per_usd_c": 1.3184227598437412,
+              "total_pnl_usd": 2533.479779331118,
+              "total_pnl_ci_usd": [
+                904.0582137948029,
+                4221.045779922992
+              ],
+              "usd_traded": 192159.8941170725,
+              "sharpe_ann": 9.272747859573085,
+              "peak_locked_usd": 4528.141990680845,
+              "capital_usd": 13584.425972042536,
+              "return_on_capital_pct": 18.649884688135906,
+              "max_dd_usd": -252.67563485633437,
+              "max_dd_pct": -1.8600391019565652,
+              "worst_day_usd": -223.98184811354943,
+              "worst_day_pct": -1.648813491085423,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -187.33503601007595,
+              "days": 40
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 0.24261209337899814,
+            "P1": true,
+            "P2_wilson_lo_pct": 52.01774618987768,
+            "P2": true,
+            "n_matches": 2003,
+            "active_days": 40,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 0.08724550818301618,
+            "P1": true,
+            "P2_wilson_lo_pct": 44.595893660346185,
+            "P2": false,
+            "n_matches": 2003,
+            "active_days": 40,
+            "pass": false,
+            "underpowered": false,
+            "label": "FAILURE"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 40,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 67.5,
+            "profitable_share_v2_pct": 60.0,
+            "diff_pp": 7.5,
+            "diff_ci_pp": [
+              -5.0,
+              20.0
+            ],
+            "days_safe_up_v2_down": 5,
+            "days_v2_up_safe_down": 2,
+            "worst_day_usd": [
+              -223.98184811354943,
+              -469.4297898304612
+            ],
+            "max_dd_usd": [
+              -252.67563485633437,
+              -469.4297898304612
+            ],
+            "pnl_ratio": 0.687038671394979
+          }
+        }
+      },
+      "note": "u1_is is context (IS, in-sample for the selection); u1_oos is the burned-OOS test"
+    },
+    "b_u2_blind": {
+      "label": "BLIND (primary)",
+      "reference_check": {
+        "reference": "data/expand_v2_trades.parquet",
+        "n_trades": [
+          86123,
+          86123
+        ],
+        "pnl_usd": [
+          54189.82884988733,
+          54189.82884988733
+        ],
+        "identical": true
+      },
+      "books": {
+        "u2_is": {
+          "calendar_extended": true,
+          "v2": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-26"
+            ],
+            "calendar_days": 207,
+            "profitable_days_pct": 32.367149758454104,
+            "losing_days_pct": 17.874396135265698,
+            "active_days": 104,
+            "profitable_active_days": 67,
+            "profitable_active_days_pct": 64.42307692307693,
+            "profitable_active_days_wilson95_pct": [
+              54.859047306813714,
+              72.95956747090403
+            ],
+            "losing_active_days_pct": 35.57692307692308,
+            "worst_day_usd": -351.6725471352916,
+            "worst_day_date": "2026-08-19",
+            "worst_month_usd": -15.16926000014817,
+            "worst_month": "2026-02",
+            "monthly_usd": {
+              "2026-02": -15.16926000014817,
+              "2026-03": 0.0,
+              "2026-04": 0.0,
+              "2026-05": 383.62957183131937,
+              "2026-06": 1621.6411163057066,
+              "2026-07": 2980.131594700972,
+              "2026-08": 2466.753754235209
+            },
+            "months_positive": 4,
+            "months_total": 7,
+            "max_dd_usd": -663.9100383075856,
+            "max_dd_pct_cap": -5.678511152912189,
+            "sharpe_ann": 5.110065571523518,
+            "sortino_ann": 12.214979157303425,
+            "pnl_usd": 7436.986777073058,
+            "pnl_ci_usd": [
+              4103.501410579915,
+              10678.255717656912
+            ],
+            "mean_daily_usd": 35.927472353009954,
+            "per_share_c": 2.0248787790863743,
+            "per_share_ci_c": [
+              1.140615945330067,
+              2.926860089785939
+            ],
+            "per_share_slip_half_tick_c": 1.5248787790863743,
+            "per_share_slip_half_tick_ci_c": [
+              0.6406159453300667,
+              2.4268600897859387
+            ],
+            "per_share_slip_one_tick_c": 1.024878779086374,
+            "per_share_slip_one_tick_ci_c": [
+              0.14061594533006644,
+              1.9268600897859385
+            ],
+            "profitable_matches_pct": 56.13440197287299,
+            "losing_matches_pct": 43.86559802712701,
+            "worst_match_usd": -130.17889390746126,
+            "n_matches": 3244,
+            "n_trades": 10764,
+            "shares": 367280.5924919924,
+            "usd_traded": 188065.75603008433,
+            "peak_locked_usd": 3897.2072105385314,
+            "capital_usd": 11691.621631615595,
+            "engine_metrics": {
+              "n_trades": 10764,
+              "n_matches": 3244,
+              "per_share_c": 2.0248787790863743,
+              "per_share_ci_c": [
+                1.140615945330067,
+                2.926860089785939
+              ],
+              "per_print_c": 2.031906556946166,
+              "per_print_ci_c": [
+                1.2116219766462843,
+                2.892289275518935
+              ],
+              "per_usd_c": 3.9544608939244554,
+              "total_pnl_usd": 7436.986777073058,
+              "total_pnl_ci_usd": [
+                4103.501410579915,
+                10678.255717656912
+              ],
+              "usd_traded": 188065.75603008433,
+              "sharpe_ann": 5.190971389000454,
+              "peak_locked_usd": 3897.2072105385314,
+              "capital_usd": 11691.621631615595,
+              "return_on_capital_pct": 63.60954033068025,
+              "max_dd_usd": -663.9100383075856,
+              "max_dd_pct": -5.678511152912189,
+              "worst_day_usd": -351.6725471352916,
+              "worst_day_pct": -3.007902224481208,
+              "months_positive": 4,
+              "months_total": 5,
+              "worst_month_usd": -15.16926000014817,
+              "days": 201
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-26"
+            ],
+            "calendar_days": 207,
+            "profitable_days_pct": 33.33333333333333,
+            "losing_days_pct": 16.908212560386474,
+            "active_days": 104,
+            "profitable_active_days": 69,
+            "profitable_active_days_pct": 66.34615384615384,
+            "profitable_active_days_wilson95_pct": [
+              56.826627273605965,
+              74.70113614114081
+            ],
+            "losing_active_days_pct": 33.65384615384615,
+            "worst_day_usd": -208.91999278719524,
+            "worst_day_date": "2026-08-19",
+            "worst_month_usd": -16.08926000014817,
+            "worst_month": "2026-02",
+            "monthly_usd": {
+              "2026-02": -16.08926000014817,
+              "2026-03": 0.0,
+              "2026-04": 0.0,
+              "2026-05": 261.8114412390135,
+              "2026-06": 1179.0448802162446,
+              "2026-07": 2129.6706450588517,
+              "2026-08": 1536.200434067431
+            },
+            "months_positive": 4,
+            "months_total": 7,
+            "max_dd_usd": -384.4704465827874,
+            "max_dd_pct_cap": -5.844354783644709,
+            "sharpe_ann": 5.950891831678782,
+            "sortino_ann": 16.420794435402595,
+            "pnl_usd": 5090.638140581392,
+            "pnl_ci_usd": [
+              3327.538143370835,
+              6900.359427455721
+            ],
+            "mean_daily_usd": 24.59245478541737,
+            "per_share_c": 2.1111572104154144,
+            "per_share_ci_c": [
+              1.3664027379220043,
+              2.8773329887698376
+            ],
+            "per_share_slip_half_tick_c": 1.6111572104154148,
+            "per_share_slip_half_tick_ci_c": [
+              0.8664027379220041,
+              2.377332988769837
+            ],
+            "per_share_slip_one_tick_c": 1.1111572104154142,
+            "per_share_slip_one_tick_ci_c": [
+              0.36640273792200373,
+              1.8773329887698365
+            ],
+            "profitable_matches_pct": 56.53514180024661,
+            "losing_matches_pct": 43.464858199753394,
+            "worst_match_usd": -65.08944695373063,
+            "n_matches": 3244,
+            "n_trades": 10115,
+            "shares": 241130.22542644758,
+            "usd_traded": 123375.13149208913,
+            "peak_locked_usd": 2192.8308645162965,
+            "capital_usd": 6578.49259354889,
+            "engine_metrics": {
+              "n_trades": 10115,
+              "n_matches": 3244,
+              "per_share_c": 2.1111572104154144,
+              "per_share_ci_c": [
+                1.3664027379220043,
+                2.8773329887698376
+              ],
+              "per_print_c": 2.1451382447019745,
+              "per_print_ci_c": [
+                1.3624080681469601,
+                2.9196860047822315
+              ],
+              "per_usd_c": 4.126146070942835,
+              "total_pnl_usd": 5090.638140581392,
+              "total_pnl_ci_usd": [
+                3327.538143370835,
+                6900.359427455721
+              ],
+              "usd_traded": 123375.13149208913,
+              "sharpe_ann": 6.047426587622111,
+              "peak_locked_usd": 2192.8308645162965,
+              "capital_usd": 6578.49259354889,
+              "return_on_capital_pct": 77.38304890049518,
+              "max_dd_usd": -384.4704465827874,
+              "max_dd_pct": -5.844354783644709,
+              "worst_day_usd": -208.91999278719524,
+              "worst_day_pct": -3.1758034202557255,
+              "months_positive": 4,
+              "months_total": 5,
+              "worst_month_usd": -16.08926000014817,
+              "days": 201
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 1.3664027379220043,
+            "P1": true,
+            "P2_wilson_lo_pct": 56.826627273605965,
+            "P2": true,
+            "n_matches": 3244,
+            "active_days": 104,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 1.140615945330067,
+            "P1": true,
+            "P2_wilson_lo_pct": 54.859047306813714,
+            "P2": true,
+            "n_matches": 3244,
+            "active_days": 104,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 104,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 66.34615384615384,
+            "profitable_share_v2_pct": 64.42307692307693,
+            "diff_pp": 1.9230769230769231,
+            "diff_ci_pp": [
+              -3.8461538461538463,
+              7.6923076923076925
+            ],
+            "days_safe_up_v2_down": 5,
+            "days_v2_up_safe_down": 3,
+            "worst_day_usd": [
+              -208.91999278719524,
+              -351.6725471352916
+            ],
+            "max_dd_usd": [
+              -384.4704465827874,
+              -663.9100383075856
+            ],
+            "pnl_ratio": 0.6845027822659235
+          }
+        },
+        "u2_oos": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 60.0,
+            "losing_days_pct": 40.0,
+            "active_days": 40,
+            "profitable_active_days": 24,
+            "profitable_active_days_pct": 60.0,
+            "profitable_active_days_wilson95_pct": [
+              44.595893660346185,
+              73.65167431570808
+            ],
+            "losing_active_days_pct": 40.0,
+            "worst_day_usd": -332.71634560691484,
+            "worst_day_date": "2026-10-01",
+            "worst_month_usd": -354.45437346447244,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 918.8329697449461,
+              "2026-09": 1552.7888588574067,
+              "2026-10": -354.45437346447244
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -804.6016227742803,
+            "max_dd_pct_cap": -10.826875225371873,
+            "sharpe_ann": 5.300997763635398,
+            "sortino_ann": 11.298751422923921,
+            "pnl_usd": 2117.16745513788,
+            "pnl_ci_usd": [
+              -320.46339875436036,
+              4599.090631852033
+            ],
+            "mean_daily_usd": 52.92918637844703,
+            "per_share_c": 1.2237506660945057,
+            "per_share_ci_c": [
+              -0.18634258245445473,
+              2.647924922039621
+            ],
+            "per_share_slip_half_tick_c": 0.7237506660945059,
+            "per_share_slip_half_tick_ci_c": [
+              -0.6863425824544552,
+              2.1479249220396195
+            ],
+            "per_share_slip_one_tick_c": 0.22375066609450545,
+            "per_share_slip_one_tick_ci_c": [
+              -1.1863425824544556,
+              1.6479249220396195
+            ],
+            "profitable_matches_pct": 54.422207876049065,
+            "losing_matches_pct": 45.577792123950935,
+            "worst_match_usd": -141.90959719471437,
+            "n_matches": 1549,
+            "n_trades": 4616,
+            "shares": 173006.4394485387,
+            "usd_traded": 88917.74166767515,
+            "peak_locked_usd": 2477.1740261331784,
+            "capital_usd": 7431.5220783995355,
+            "engine_metrics": {
+              "n_trades": 4616,
+              "n_matches": 1549,
+              "per_share_c": 1.2237506660945057,
+              "per_share_ci_c": [
+                -0.18634258245445473,
+                2.647924922039621
+              ],
+              "per_print_c": 0.5724296409459034,
+              "per_print_ci_c": [
+                -1.1634670253857484,
+                2.1600122026688235
+              ],
+              "per_usd_c": 2.381040516133068,
+              "total_pnl_usd": 2117.16745513788,
+              "total_pnl_ci_usd": [
+                -320.46339875436036,
+                4599.090631852033
+              ],
+              "usd_traded": 88917.74166767515,
+              "sharpe_ann": 5.300997763635398,
+              "peak_locked_usd": 2477.1740261331784,
+              "capital_usd": 7431.5220783995355,
+              "return_on_capital_pct": 28.489015208494635,
+              "max_dd_usd": -804.6016227742803,
+              "max_dd_pct": -10.826875225371873,
+              "worst_day_usd": -332.71634560691484,
+              "worst_day_pct": -4.477095567999298,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -354.45437346447244,
+              "days": 40
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 60.0,
+            "losing_days_pct": 40.0,
+            "active_days": 40,
+            "profitable_active_days": 24,
+            "profitable_active_days_pct": 60.0,
+            "profitable_active_days_wilson95_pct": [
+              44.595893660346185,
+              73.65167431570808
+            ],
+            "losing_active_days_pct": 40.0,
+            "worst_day_usd": -225.05288790875605,
+            "worst_day_date": "2026-10-01",
+            "worst_month_usd": -208.68036402840195,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 523.5555967674973,
+              "2026-09": 1026.1068893293075,
+              "2026-10": -208.68036402840195
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -403.0613390486876,
+            "max_dd_pct_cap": -8.90962735777224,
+            "sharpe_ann": 5.524164336636546,
+            "sortino_ann": 13.032612773769701,
+            "pnl_usd": 1340.9821220684025,
+            "pnl_ci_usd": [
+              -26.620745939018743,
+              2672.1698476499023
+            ],
+            "mean_daily_usd": 33.52455305171007,
+            "per_share_c": 1.2057787207785529,
+            "per_share_ci_c": [
+              -0.024487393891254337,
+              2.428511478231625
+            ],
+            "per_share_slip_half_tick_c": 0.7057787207785526,
+            "per_share_slip_half_tick_ci_c": [
+              -0.5244873938912549,
+              1.9285114782316242
+            ],
+            "per_share_slip_one_tick_c": 0.20577872077855242,
+            "per_share_slip_one_tick_ci_c": [
+              -1.0244873938912549,
+              1.428511478231624
+            ],
+            "profitable_matches_pct": 54.615881213686244,
+            "losing_matches_pct": 45.38411878631375,
+            "worst_match_usd": -65.91609719471437,
+            "n_matches": 1549,
+            "n_trades": 4196,
+            "shares": 111212.95300372782,
+            "usd_traded": 57153.03944633725,
+            "peak_locked_usd": 1507.9618292418643,
+            "capital_usd": 4523.885487725593,
+            "engine_metrics": {
+              "n_trades": 4196,
+              "n_matches": 1549,
+              "per_share_c": 1.2057787207785529,
+              "per_share_ci_c": [
+                -0.024487393891254337,
+                2.428511478231625
+              ],
+              "per_print_c": 0.6946959525128715,
+              "per_print_ci_c": [
+                -0.8281249159496696,
+                2.1093700635821677
+              ],
+              "per_usd_c": 2.346300625581763,
+              "total_pnl_usd": 1340.9821220684025,
+              "total_pnl_ci_usd": [
+                -26.620745939018743,
+                2672.1698476499023
+              ],
+              "usd_traded": 57153.03944633725,
+              "sharpe_ann": 5.524164336636546,
+              "peak_locked_usd": 1507.9618292418643,
+              "capital_usd": 4523.885487725593,
+              "return_on_capital_pct": 29.642264944743076,
+              "max_dd_usd": -403.0613390486876,
+              "max_dd_pct": -8.90962735777224,
+              "worst_day_usd": -225.05288790875605,
+              "worst_day_pct": -4.974769775216008,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -208.68036402840195,
+              "days": 40
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": -0.024487393891254337,
+            "P1": false,
+            "P2_wilson_lo_pct": 44.595893660346185,
+            "P2": false,
+            "n_matches": 1549,
+            "active_days": 40,
+            "pass": false,
+            "underpowered": false,
+            "label": "FAILURE"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": -0.18634258245445473,
+            "P1": false,
+            "P2_wilson_lo_pct": 44.595893660346185,
+            "P2": false,
+            "n_matches": 1549,
+            "active_days": 40,
+            "pass": false,
+            "underpowered": false,
+            "label": "FAILURE"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 40,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 60.0,
+            "profitable_share_v2_pct": 60.0,
+            "diff_pp": 0.0,
+            "diff_ci_pp": [
+              -12.5,
+              12.5
+            ],
+            "days_safe_up_v2_down": 3,
+            "days_v2_up_safe_down": 3,
+            "worst_day_usd": [
+              -225.05288790875605,
+              -332.71634560691484
+            ],
+            "max_dd_usd": [
+              -403.0613390486876,
+              -804.6016227742803
+            ],
+            "pnl_ratio": 0.6333850063745059
+          }
+        },
+        "combined_is": {
+          "calendar_extended": true,
+          "v2": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-26"
+            ],
+            "calendar_days": 207,
+            "profitable_days_pct": 80.19323671497585,
+            "losing_days_pct": 16.425120772946862,
+            "active_days": 200,
+            "profitable_active_days": 166,
+            "profitable_active_days_pct": 83.0,
+            "profitable_active_days_wilson95_pct": [
+              77.18411637168737,
+              87.57209208741303
+            ],
+            "losing_active_days_pct": 17.0,
+            "worst_day_usd": -508.39336761082143,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 2542.5647262976495,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 6189.119926417508,
+              "2026-03": 2542.5647262976495,
+              "2026-04": 6212.064579784275,
+              "2026-05": 8398.553996419303,
+              "2026-06": 9107.71845733398,
+              "2026-07": 8500.573854997958,
+              "2026-08": 6206.03021830554
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -559.1858271701749,
+            "max_dd_pct_cap": -1.707410791631039,
+            "sharpe_ann": 15.147472557344573,
+            "sortino_ann": 52.69971110049644,
+            "pnl_usd": 47156.62575955621,
+            "pnl_ci_usd": [
+              39950.207493735776,
+              54737.88497912264
+            ],
+            "mean_daily_usd": 227.80978627804936,
+            "per_share_c": 1.4197962127578068,
+            "per_share_ci_c": [
+              1.2056843868221514,
+              1.65278463376699
+            ],
+            "per_share_slip_half_tick_c": 0.9197962127578063,
+            "per_share_slip_half_tick_ci_c": [
+              0.7056843868221511,
+              1.1527846337669896
+            ],
+            "per_share_slip_one_tick_c": 0.419796212757806,
+            "per_share_slip_one_tick_ci_c": [
+              0.20568438682215073,
+              0.6527846337669894
+            ],
+            "profitable_matches_pct": 57.12580348943985,
+            "losing_matches_pct": 42.86501377410468,
+            "worst_match_usd": -205.7602912085585,
+            "n_matches": 10890,
+            "n_trades": 67079,
+            "shares": 3321365.7943177186,
+            "usd_traded": 1681533.90608116,
+            "peak_locked_usd": 10916.838328363483,
+            "capital_usd": 32750.51498509045,
+            "engine_metrics": {
+              "n_trades": 67079,
+              "n_matches": 10890,
+              "per_share_c": 1.4197962127578068,
+              "per_share_ci_c": [
+                1.2056843868221514,
+                1.65278463376699
+              ],
+              "per_print_c": 1.47673301913336,
+              "per_print_ci_c": [
+                1.1553608994488145,
+                1.7861900764984253
+              ],
+              "per_usd_c": 2.8043814988813063,
+              "total_pnl_usd": 47156.62575955621,
+              "total_pnl_ci_usd": [
+                39950.207493735776,
+                54737.88497912264
+              ],
+              "usd_traded": 1681533.90608116,
+              "sharpe_ann": 15.147472557344573,
+              "peak_locked_usd": 10916.838328363483,
+              "capital_usd": 32750.51498509045,
+              "return_on_capital_pct": 143.98743281143547,
+              "max_dd_usd": -559.1858271701749,
+              "max_dd_pct": -1.707410791631039,
+              "worst_day_usd": -508.39336761082143,
+              "worst_day_pct": -1.5523217507946536,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 2542.5647262976495,
+              "days": 207
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-26"
+            ],
+            "calendar_days": 207,
+            "profitable_days_pct": 82.1256038647343,
+            "losing_days_pct": 14.492753623188406,
+            "active_days": 200,
+            "profitable_active_days": 170,
+            "profitable_active_days_pct": 85.0,
+            "profitable_active_days_wilson95_pct": [
+              79.39442071583333,
+              89.286406437758
+            ],
+            "losing_active_days_pct": 15.0,
+            "worst_day_usd": -265.3704948053165,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 1499.1338324668723,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 3329.1223073260476,
+              "2026-03": 1499.1338324668723,
+              "2026-04": 3841.808411578721,
+              "2026-05": 4923.148905555399,
+              "2026-06": 5719.711388377846,
+              "2026-07": 5495.529228130779,
+              "2026-08": 3938.930342056539
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -265.3704948053164,
+            "max_dd_pct_cap": -1.2908762907996658,
+            "sharpe_ann": 16.544161045106105,
+            "sortino_ann": 67.32992071394474,
+            "pnl_usd": 28747.384415492204,
+            "pnl_ci_usd": [
+              24944.542751429006,
+              32671.238748292533
+            ],
+            "mean_daily_usd": 138.87625321493817,
+            "per_share_c": 1.404284828512911,
+            "per_share_ci_c": [
+              1.2211823121959013,
+              1.593429126044734
+            ],
+            "per_share_slip_half_tick_c": 0.9042848285129107,
+            "per_share_slip_half_tick_ci_c": [
+              0.721182312195901,
+              1.0934291260447335
+            ],
+            "per_share_slip_one_tick_c": 0.40428482851291025,
+            "per_share_slip_one_tick_ci_c": [
+              0.22118231219590065,
+              0.5934291260447332
+            ],
+            "profitable_matches_pct": 57.57575757575758,
+            "losing_matches_pct": 42.41505968778696,
+            "worst_match_usd": -121.69773023013116,
+            "n_matches": 10890,
+            "n_trades": 61640,
+            "shares": 2047119.2048649197,
+            "usd_traded": 1034029.1218758606,
+            "peak_locked_usd": 6852.463883039894,
+            "capital_usd": 20557.391649119683,
+            "engine_metrics": {
+              "n_trades": 61640,
+              "n_matches": 10890,
+              "per_share_c": 1.404284828512911,
+              "per_share_ci_c": [
+                1.2211823121959013,
+                1.593429126044734
+              ],
+              "per_print_c": 1.4446625426599007,
+              "per_print_ci_c": [
+                1.1352146883330692,
+                1.758870730295257
+              ],
+              "per_usd_c": 2.7801329582807868,
+              "total_pnl_usd": 28747.384415492204,
+              "total_pnl_ci_usd": [
+                24944.542751429006,
+                32671.238748292533
+              ],
+              "usd_traded": 1034029.1218758606,
+              "sharpe_ann": 16.544161045106105,
+              "peak_locked_usd": 6852.463883039894,
+              "capital_usd": 20557.391649119683,
+              "return_on_capital_pct": 139.8396494368644,
+              "max_dd_usd": -265.3704948053164,
+              "max_dd_pct": -1.2908762907996658,
+              "worst_day_usd": -265.3704948053165,
+              "worst_day_pct": -1.2908762907996663,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 1499.1338324668723,
+              "days": 207
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 1.2211823121959013,
+            "P1": true,
+            "P2_wilson_lo_pct": 79.39442071583333,
+            "P2": true,
+            "n_matches": 10890,
+            "active_days": 200,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 1.2056843868221514,
+            "P1": true,
+            "P2_wilson_lo_pct": 77.18411637168737,
+            "P2": true,
+            "n_matches": 10890,
+            "active_days": 200,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 200,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 85.0,
+            "profitable_share_v2_pct": 83.0,
+            "diff_pp": 2.0,
+            "diff_ci_pp": [
+              -1.0,
+              5.5
+            ],
+            "days_safe_up_v2_down": 8,
+            "days_v2_up_safe_down": 4,
+            "worst_day_usd": [
+              -265.3704948053165,
+              -508.39336761082143
+            ],
+            "max_dd_usd": [
+              -265.3704948053164,
+              -559.1858271701749
+            ],
+            "pnl_ratio": 0.609614957653466
+          }
+        },
+        "combined_oos": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 67.5,
+            "losing_days_pct": 32.5,
+            "active_days": 40,
+            "profitable_active_days": 27,
+            "profitable_active_days_pct": 67.5,
+            "profitable_active_days_wilson95_pct": [
+              52.01774618987768,
+              79.9154977682173
+            ],
+            "losing_active_days_pct": 32.5,
+            "worst_day_usd": -573.3162582180654,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -670.3519100345078,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 965.0348491371899,
+              "2026-09": 5211.418940866321,
+              "2026-10": -670.3519100345078
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -721.3347884850336,
+            "max_dd_pct_cap": -2.7332178006496504,
+            "sharpe_ann": 7.346432370749024,
+            "sortino_ann": 16.423738209166405,
+            "pnl_usd": 5506.101879969005,
+            "pnl_ci_usd": [
+              1471.488774413421,
+              9808.321714620824
+            ],
+            "mean_daily_usd": 137.65254699922508,
+            "per_share_c": 0.6733044690429858,
+            "per_share_ci_c": [
+              0.1810440046788667,
+              1.2135202682521586
+            ],
+            "per_share_slip_half_tick_c": 0.1733044690429852,
+            "per_share_slip_half_tick_ci_c": [
+              -0.31895599532113383,
+              0.7135202682521583
+            ],
+            "per_share_slip_one_tick_c": -0.3266955309570152,
+            "per_share_slip_one_tick_ci_c": [
+              -0.8189559953211341,
+              0.2135202682521581
+            ],
+            "profitable_matches_pct": 54.93741307371349,
+            "losing_matches_pct": 45.06258692628651,
+            "worst_match_usd": -154.36883288014866,
+            "n_matches": 3595,
+            "n_trades": 15650,
+            "shares": 817772.9590589541,
+            "usd_traded": 425994.89553259104,
+            "peak_locked_usd": 8797.137551126025,
+            "capital_usd": 26391.412653378073,
+            "engine_metrics": {
+              "n_trades": 15650,
+              "n_matches": 3595,
+              "per_share_c": 0.6733044690429858,
+              "per_share_ci_c": [
+                0.1810440046788667,
+                1.2135202682521586
+              ],
+              "per_print_c": 0.7210037337828973,
+              "per_print_ci_c": [
+                0.09853406196905706,
+                1.40189999282038
+              ],
+              "per_usd_c": 1.2925276658738172,
+              "total_pnl_usd": 5506.101879969005,
+              "total_pnl_ci_usd": [
+                1471.488774413421,
+                9808.321714620824
+              ],
+              "usd_traded": 425994.89553259104,
+              "sharpe_ann": 7.346432370749024,
+              "peak_locked_usd": 8797.137551126025,
+              "capital_usd": 26391.412653378073,
+              "return_on_capital_pct": 20.86323287156146,
+              "max_dd_usd": -721.3347884850336,
+              "max_dd_pct": -2.7332178006496504,
+              "worst_day_usd": -573.3162582180654,
+              "worst_day_pct": -2.1723591144890135,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -670.3519100345078,
+              "days": 40
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 70.0,
+            "losing_days_pct": 30.0,
+            "active_days": 40,
+            "profitable_active_days": 28,
+            "profitable_active_days_pct": 70.0,
+            "profitable_active_days_wilson95_pct": [
+              54.56998118185506,
+              81.92515477025347
+            ],
+            "losing_active_days_pct": 30.0,
+            "worst_day_usd": -252.84069458966547,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -327.14556102426485,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 756.6517386711926,
+              "2026-09": 3288.0625667481518,
+              "2026-10": -327.14556102426485
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -327.1455610242647,
+            "max_dd_pct_cap": -2.0529449256932275,
+            "sharpe_ann": 9.285135295946574,
+            "sortino_ann": 25.72889748212458,
+            "pnl_usd": 3717.5687443950796,
+            "pnl_ci_usd": [
+              1502.1797045393307,
+              6080.842664927169
+            ],
+            "mean_daily_usd": 92.93921860987699,
+            "per_share_c": 0.745661635865462,
+            "per_share_ci_c": [
+              0.30557020066832397,
+              1.2102432678913242
+            ],
+            "per_share_slip_half_tick_c": 0.24566163586546153,
+            "per_share_slip_half_tick_ci_c": [
+              -0.1944297993316765,
+              0.7102432678913235
+            ],
+            "per_share_slip_one_tick_c": -0.2543383641345387,
+            "per_share_slip_one_tick_ci_c": [
+              -0.6944297993316767,
+              0.2102432678913233
+            ],
+            "profitable_matches_pct": 55.38247566063978,
+            "losing_matches_pct": 44.61752433936022,
+            "worst_match_usd": -79.60343932746368,
+            "n_matches": 3595,
+            "n_trades": 14242,
+            "shares": 498559.7442035803,
+            "usd_traded": 258619.02490216066,
+            "peak_locked_usd": 5311.809341626573,
+            "capital_usd": 15935.428024879719,
+            "engine_metrics": {
+              "n_trades": 14242,
+              "n_matches": 3595,
+              "per_share_c": 0.745661635865462,
+              "per_share_ci_c": [
+                0.30557020066832397,
+                1.2102432678913242
+              ],
+              "per_print_c": 0.7711945199941295,
+              "per_print_ci_c": [
+                0.20753934200163152,
+                1.4025746827002565
+              ],
+              "per_usd_c": 1.437469167553118,
+              "total_pnl_usd": 3717.5687443950796,
+              "total_pnl_ci_usd": [
+                1502.1797045393307,
+                6080.842664927169
+              ],
+              "usd_traded": 258619.02490216066,
+              "sharpe_ann": 9.285135295946574,
+              "peak_locked_usd": 5311.809341626573,
+              "capital_usd": 15935.428024879719,
+              "return_on_capital_pct": 23.328954444090876,
+              "max_dd_usd": -327.1455610242647,
+              "max_dd_pct": -2.0529449256932275,
+              "worst_day_usd": -252.84069458966547,
+              "worst_day_pct": -1.5866576925006939,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -327.14556102426485,
+              "days": 40
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 0.30557020066832397,
+            "P1": true,
+            "P2_wilson_lo_pct": 54.56998118185506,
+            "P2": true,
+            "n_matches": 3595,
+            "active_days": 40,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 0.1810440046788667,
+            "P1": true,
+            "P2_wilson_lo_pct": 52.01774618987768,
+            "P2": true,
+            "n_matches": 3595,
+            "active_days": 40,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 40,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 70.0,
+            "profitable_share_v2_pct": 67.5,
+            "diff_pp": 2.5,
+            "diff_ci_pp": [
+              -7.5,
+              12.5
+            ],
+            "days_safe_up_v2_down": 3,
+            "days_v2_up_safe_down": 2,
+            "worst_day_usd": [
+              -252.84069458966547,
+              -573.3162582180654
+            ],
+            "max_dd_usd": [
+              -327.1455610242647,
+              -721.3347884850336
+            ],
+            "pnl_ratio": 0.6751725313909388
+          }
+        },
+        "u1_context_is": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-25"
+            ],
+            "calendar_days": 206,
+            "profitable_days_pct": 79.12621359223301,
+            "losing_days_pct": 17.475728155339805,
+            "active_days": 199,
+            "profitable_active_days": 163,
+            "profitable_active_days_pct": 81.90954773869346,
+            "profitable_active_days_wilson95_pct": [
+              75.9734926800228,
+              86.63698189374973
+            ],
+            "losing_active_days_pct": 18.090452261306535,
+            "worst_day_usd": -537.527678567122,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 2542.5647262976495,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 6204.289186417656,
+              "2026-03": 2542.5647262976495,
+              "2026-04": 6212.064579784275,
+              "2026-05": 8014.9244245879845,
+              "2026-06": 7486.077341028273,
+              "2026-07": 5520.442260296986,
+              "2026-08": 3739.2764640703313
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -537.5276785671231,
+            "max_dd_pct_cap": -1.829514777763836,
+            "sharpe_ann": 14.554606301944379,
+            "sortino_ann": 47.34277838500742,
+            "pnl_usd": 39719.63898248316,
+            "pnl_ci_usd": [
+              32946.39174745986,
+              46028.193382436366
+            ],
+            "mean_daily_usd": 192.81378146836485,
+            "per_share_c": 1.344566465379369,
+            "per_share_ci_c": [
+              1.111157229152791,
+              1.5635416955810697
+            ],
+            "per_share_slip_half_tick_c": 0.8445664653793684,
+            "per_share_slip_half_tick_ci_c": [
+              0.6111572291527906,
+              1.0635416955810693
+            ],
+            "per_share_slip_one_tick_c": 0.3445664653793679,
+            "per_share_slip_one_tick_ci_c": [
+              0.11115722915279025,
+              0.5635416955810689
+            ],
+            "profitable_matches_pct": 57.546429505623856,
+            "losing_matches_pct": 42.44049176039759,
+            "worst_match_usd": -205.7602912085585,
+            "n_matches": 7646,
+            "n_trades": 56315,
+            "shares": 2954085.201825726,
+            "usd_traded": 1493468.150051076,
+            "peak_locked_usd": 9793.629165144504,
+            "capital_usd": 29380.88749543351,
+            "engine_metrics": {
+              "n_trades": 56315,
+              "n_matches": 7646,
+              "per_share_c": 1.344566465379369,
+              "per_share_ci_c": [
+                1.111157229152791,
+                1.5635416955810697
+              ],
+              "per_print_c": 1.3706176331612916,
+              "per_print_ci_c": [
+                1.0469308257158332,
+                1.7148601263590246
+              ],
+              "per_usd_c": 2.6595571509927924,
+              "total_pnl_usd": 39719.63898248316,
+              "total_pnl_ci_usd": [
+                32946.39174745986,
+                46028.193382436366
+              ],
+              "usd_traded": 1493468.150051076,
+              "sharpe_ann": 14.554606301944379,
+              "peak_locked_usd": 9793.629165144504,
+              "capital_usd": 29380.88749543351,
+              "return_on_capital_pct": 135.1886970352973,
+              "max_dd_usd": -537.5276785671231,
+              "max_dd_pct": -1.829514777763836,
+              "worst_day_usd": -537.527678567122,
+              "worst_day_pct": -1.8295147777638325,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 2542.5647262976495,
+              "days": 206
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-02-01",
+              "2026-08-25"
+            ],
+            "calendar_days": 206,
+            "profitable_days_pct": 81.06796116504854,
+            "losing_days_pct": 15.53398058252427,
+            "active_days": 199,
+            "profitable_active_days": 167,
+            "profitable_active_days_pct": 83.91959798994975,
+            "profitable_active_days_wilson95_pct": [
+              78.18123672781803,
+              88.37320474823939
+            ],
+            "losing_active_days_pct": 16.08040201005025,
+            "worst_day_usd": -271.2975517168387,
+            "worst_day_date": "2026-07-18",
+            "worst_month_usd": 1499.1338324668723,
+            "worst_month": "2026-03",
+            "monthly_usd": {
+              "2026-02": 3345.2115673261956,
+              "2026-03": 1499.1338324668723,
+              "2026-04": 3841.808411578721,
+              "2026-05": 4661.337464316385,
+              "2026-06": 4540.666508161601,
+              "2026-07": 3365.858583071928,
+              "2026-08": 2402.7299079891077
+            },
+            "months_positive": 7,
+            "months_total": 7,
+            "max_dd_usd": -271.2975517168379,
+            "max_dd_pct_cap": -1.5160599929293537,
+            "sharpe_ann": 15.888528221843757,
+            "sortino_ann": 60.81469817190247,
+            "pnl_usd": 23656.74627491081,
+            "pnl_ci_usd": [
+              20369.715220119382,
+              26895.00138197764
+            ],
+            "mean_daily_usd": 114.83857415005247,
+            "per_share_c": 1.3099053507107388,
+            "per_share_ci_c": [
+              1.1194075410984539,
+              1.490463906415625
+            ],
+            "per_share_slip_half_tick_c": 0.8099053507107385,
+            "per_share_slip_half_tick_ci_c": [
+              0.6194075410984534,
+              0.9904639064156247
+            ],
+            "per_share_slip_one_tick_c": 0.3099053507107382,
+            "per_share_slip_one_tick_ci_c": [
+              0.11940754109845313,
+              0.49046390641562426
+            ],
+            "profitable_matches_pct": 58.01726392885169,
+            "losing_matches_pct": 41.969657337169764,
+            "worst_match_usd": -121.69773023013116,
+            "n_matches": 7646,
+            "n_trades": 51525,
+            "shares": 1805988.979438472,
+            "usd_traded": 910653.9903837715,
+            "peak_locked_usd": 5964.969569852636,
+            "capital_usd": 17894.90870955791,
+            "engine_metrics": {
+              "n_trades": 51525,
+              "n_matches": 7646,
+              "per_share_c": 1.3099053507107388,
+              "per_share_ci_c": [
+                1.1194075410984539,
+                1.490463906415625
+              ],
+              "per_print_c": 1.3071504276447514,
+              "per_print_ci_c": [
+                1.0041815157078238,
+                1.6231202709995145
+              ],
+              "per_usd_c": 2.5977755025200393,
+              "total_pnl_usd": 23656.74627491081,
+              "total_pnl_ci_usd": [
+                20369.715220119382,
+                26895.00138197764
+              ],
+              "usd_traded": 910653.9903837715,
+              "sharpe_ann": 15.888528221843757,
+              "peak_locked_usd": 5964.969569852636,
+              "capital_usd": 17894.90870955791,
+              "return_on_capital_pct": 132.19819479869952,
+              "max_dd_usd": -271.2975517168379,
+              "max_dd_pct": -1.5160599929293537,
+              "worst_day_usd": -271.2975517168387,
+              "worst_day_pct": -1.516059992929358,
+              "months_positive": 7,
+              "months_total": 7,
+              "worst_month_usd": 1499.1338324668723,
+              "days": 206
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 1.1194075410984539,
+            "P1": true,
+            "P2_wilson_lo_pct": 78.18123672781803,
+            "P2": true,
+            "n_matches": 7646,
+            "active_days": 199,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 1.111157229152791,
+            "P1": true,
+            "P2_wilson_lo_pct": 75.9734926800228,
+            "P2": true,
+            "n_matches": 7646,
+            "active_days": 199,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 199,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 83.91959798994975,
+            "profitable_share_v2_pct": 81.90954773869346,
+            "diff_pp": 2.0100502512562812,
+            "diff_ci_pp": [
+              -2.0100502512562812,
+              5.527638190954774
+            ],
+            "days_safe_up_v2_down": 9,
+            "days_v2_up_safe_down": 5,
+            "worst_day_usd": [
+              -271.2975517168387,
+              -537.527678567122
+            ],
+            "max_dd_usd": [
+              -271.2975517168379,
+              -537.5276785671231
+            ],
+            "pnl_ratio": 0.5955931846546673
+          }
+        },
+        "u1_context_oos": {
+          "calendar_extended": false,
+          "v2": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 67.5,
+            "losing_days_pct": 32.5,
+            "active_days": 40,
+            "profitable_active_days": 27,
+            "profitable_active_days_pct": 67.5,
+            "profitable_active_days_wilson95_pct": [
+              52.01774618987768,
+              79.9154977682173
+            ],
+            "losing_active_days_pct": 32.5,
+            "worst_day_usd": -513.1847273551771,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -315.89753657003536,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 46.20187939224387,
+              "2026-09": 3658.630082008914,
+              "2026-10": -315.89753657003536
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -653.9848748736242,
+            "max_dd_pct_cap": -2.8290372346940686,
+            "sharpe_ann": 6.118596969429569,
+            "sortino_ann": 12.005315936524456,
+            "pnl_usd": 3388.9344248311227,
+            "pnl_ci_usd": [
+              338.7702296730412,
+              6625.828631468475
+            ],
+            "mean_daily_usd": 84.72336062077807,
+            "per_share_c": 0.5256064516003102,
+            "per_share_ci_c": [
+              0.05157181166832881,
+              1.035027609485286
+            ],
+            "per_share_slip_half_tick_c": 0.025606451600309613,
+            "per_share_slip_half_tick_ci_c": [
+              -0.44842818833167153,
+              0.5350276094852857
+            ],
+            "per_share_slip_one_tick_c": -0.4743935483996906,
+            "per_share_slip_one_tick_ci_c": [
+              -0.9484281883316719,
+              0.03502760948528545
+            ],
+            "profitable_matches_pct": 55.32746823069403,
+            "losing_matches_pct": 44.67253176930596,
+            "worst_match_usd": -154.36883288014866,
+            "n_matches": 2046,
+            "n_trades": 11034,
+            "shares": 644766.5196104154,
+            "usd_traded": 337077.15386491595,
+            "peak_locked_usd": 7705.6235109886065,
+            "capital_usd": 23116.87053296582,
+            "engine_metrics": {
+              "n_trades": 11034,
+              "n_matches": 2046,
+              "per_share_c": 0.5256064516003102,
+              "per_share_ci_c": [
+                0.05157181166832881,
+                1.035027609485286
+              ],
+              "per_print_c": 0.783158710449162,
+              "per_print_ci_c": [
+                0.09962140890967086,
+                1.4739492049889231
+              ],
+              "per_usd_c": 1.005388346843952,
+              "total_pnl_usd": 3388.9344248311227,
+              "total_pnl_ci_usd": [
+                338.7702296730412,
+                6625.828631468475
+              ],
+              "usd_traded": 337077.15386491595,
+              "sharpe_ann": 6.118596969429569,
+              "peak_locked_usd": 7705.6235109886065,
+              "capital_usd": 23116.87053296582,
+              "return_on_capital_pct": 14.660005211338326,
+              "max_dd_usd": -653.9848748736242,
+              "max_dd_pct": -2.8290372346940686,
+              "worst_day_usd": -513.1847273551771,
+              "worst_day_pct": -2.219957613308211,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -315.89753657003536,
+              "days": 40
+            }
+          },
+          "v2_safe": {
+            "calendar": [
+              "2026-08-25",
+              "2026-10-03"
+            ],
+            "calendar_days": 40,
+            "profitable_days_pct": 65.0,
+            "losing_days_pct": 35.0,
+            "active_days": 40,
+            "profitable_active_days": 26,
+            "profitable_active_days_pct": 65.0,
+            "profitable_active_days_wilson95_pct": [
+              49.50588083725769,
+              77.86547112682372
+            ],
+            "losing_active_days_pct": 35.0,
+            "worst_day_usd": -245.14790720260584,
+            "worst_day_date": "2026-09-07",
+            "worst_month_usd": -118.46519699586283,
+            "worst_month": "2026-10",
+            "monthly_usd": {
+              "2026-08": 233.09614190369533,
+              "2026-09": 2261.9556774188445,
+              "2026-10": -118.46519699586283
+            },
+            "months_positive": 2,
+            "months_total": 3,
+            "max_dd_usd": -248.44695313757154,
+            "max_dd_pct_cap": -1.7928460476221233,
+            "sharpe_ann": 8.705888500676958,
+            "sortino_ann": 19.307893649654645,
+            "pnl_usd": 2376.5866223266767,
+            "pnl_ci_usd": [
+              822.5580536747906,
+              4165.472878149279
+            ],
+            "mean_daily_usd": 59.41466555816692,
+            "per_share_c": 0.613555262705267,
+            "per_share_ci_c": [
+              0.21267588999410017,
+              1.0848402188691626
+            ],
+            "per_share_slip_half_tick_c": 0.11355526270526663,
+            "per_share_slip_half_tick_ci_c": [
+              -0.28732411000590025,
+              0.584840218869162
+            ],
+            "per_share_slip_one_tick_c": -0.3864447372947338,
+            "per_share_slip_one_tick_ci_c": [
+              -0.7873241100059004,
+              0.08484021886916178
+            ],
+            "profitable_matches_pct": 55.962854349951115,
+            "losing_matches_pct": 44.03714565004888,
+            "worst_match_usd": -79.60343932746368,
+            "n_matches": 2046,
+            "n_trades": 10046,
+            "shares": 387346.7911998525,
+            "usd_traded": 201465.98545582336,
+            "peak_locked_usd": 4619.228246379366,
+            "capital_usd": 13857.684739138098,
+            "engine_metrics": {
+              "n_trades": 10046,
+              "n_matches": 2046,
+              "per_share_c": 0.613555262705267,
+              "per_share_ci_c": [
+                0.21267588999410017,
+                1.0848402188691626
+              ],
+              "per_print_c": 0.8031463405347785,
+              "per_print_ci_c": [
+                0.14873918442062428,
+                1.4473790416501715
+              ],
+              "per_usd_c": 1.1796465874621822,
+              "total_pnl_usd": 2376.5866223266767,
+              "total_pnl_ci_usd": [
+                822.5580536747906,
+                4165.472878149279
+              ],
+              "usd_traded": 201465.98545582336,
+              "sharpe_ann": 8.705888500676958,
+              "peak_locked_usd": 4619.228246379366,
+              "capital_usd": 13857.684739138098,
+              "return_on_capital_pct": 17.149954462555428,
+              "max_dd_usd": -248.44695313757154,
+              "max_dd_pct": -1.7928460476221233,
+              "worst_day_usd": -245.14790720260584,
+              "worst_day_pct": -1.7690394305928856,
+              "months_positive": 2,
+              "months_total": 3,
+              "worst_month_usd": -118.46519699586283,
+              "days": 40
+            }
+          },
+          "primary_v2_safe": {
+            "P1_per_share_ci_lo_c": 0.21267588999410017,
+            "P1": true,
+            "P2_wilson_lo_pct": 49.50588083725769,
+            "P2": false,
+            "n_matches": 2046,
+            "active_days": 40,
+            "pass": false,
+            "underpowered": false,
+            "label": "FAILURE"
+          },
+          "primary_v2_context": {
+            "P1_per_share_ci_lo_c": 0.05157181166832881,
+            "P1": true,
+            "P2_wilson_lo_pct": 52.01774618987768,
+            "P2": true,
+            "n_matches": 2046,
+            "active_days": 40,
+            "pass": true,
+            "underpowered": false,
+            "label": "PASS"
+          },
+          "paired_v2_safe_minus_v2": {
+            "n_days": 40,
+            "days_only_one_active": 0,
+            "profitable_share_v2_safe_pct": 65.0,
+            "profitable_share_v2_pct": 67.5,
+            "diff_pp": -2.5,
+            "diff_ci_pp": [
+              -12.5,
+              7.5
+            ],
+            "days_safe_up_v2_down": 2,
+            "days_v2_up_safe_down": 3,
+            "worst_day_usd": [
+              -245.14790720260584,
+              -513.1847273551771
+            ],
+            "max_dd_usd": [
+              -248.44695313757154,
+              -653.9848748736242
+            ],
+            "pnl_ratio": 0.7012784328056471
+          }
+        }
+      },
+      "primary": {
+        "u2_is": {
+          "P1_per_share_ci_lo_c": 1.3664027379220043,
+          "P1": true,
+          "P2_wilson_lo_pct": 56.826627273605965,
+          "P2": true,
+          "n_matches": 3244,
+          "active_days": 104,
+          "pass": true,
+          "underpowered": false,
+          "label": "PASS"
+        },
+        "u2_oos": {
+          "P1_per_share_ci_lo_c": -0.024487393891254337,
+          "P1": false,
+          "P2_wilson_lo_pct": 44.595893660346185,
+          "P2": false,
+          "n_matches": 1549,
+          "active_days": 40,
+          "pass": false,
+          "underpowered": false,
+          "label": "FAILURE"
+        },
+        "verdict": "FAIL"
+      },
+      "reaches_stitched_is_active_share": {
+        "is": false,
+        "oos": false
+      },
+      "u2_markets": 11307,
+      "u2_matches_traded_by_v2_safe_by_period_series": {
+        "is/atp": 19,
+        "is/itf": 3225,
+        "oos/atp": 5,
+        "oos/itf": 1544
+      }
+    }
+  },
+  "stitched_is_reference": {
+    "profitable_days_pct": 79.12621359223301,
+    "profitable_active_days_pct": 81.90954773869346,
+    "worst_day_usd": -372.7669900142127,
+    "pnl_usd": 25530.37121182877,
+    "per_share_c": 1.3322130296561019
+  },
+  "runtime_s": 55.6
+}
