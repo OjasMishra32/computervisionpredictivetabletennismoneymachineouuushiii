@@ -1,0 +1,125 @@
+{
+  "inputs": [
+    "data/v2_trades_is_oos.parquet",
+    "results/v2/causal.json"
+  ],
+  "scope": "in-sample evaluation trades only (match start < OOS cutoff, months >= 2026-02)",
+  "reference_check": {
+    "is_pnl_usd": [
+      40425.71919167921,
+      40425.71919167921
+    ],
+    "is_sharpe": [
+      14.483153541485253,
+      14.483153541485253
+    ],
+    "pass": true
+  },
+  "current_regime_1s_5pct_is": {
+    "first_trade_date": "2026-07-11",
+    "last_trade_date": "2026-08-25",
+    "calendar_days": 46,
+    "n_trades": 15120,
+    "n_matches": 2136,
+    "per_share_c": 1.0191905861301158,
+    "per_share_ci_c": [
+      0.6012634215521223,
+      1.4463759078722531
+    ],
+    "total_pnl_usd": 8249.430042252829,
+    "pnl_per_day_usd": 179.33543570114844,
+    "usd_traded_per_day": 8991.12689861107,
+    "sharpe_ann": 11.233499742638212,
+    "capital_usd_3x_own_peak": 27996.665823518437,
+    "max_dd_pct": -1.967249613003759,
+    "worst_day_usd": -550.764300067122,
+    "months_positive": 2,
+    "months_total": 2,
+    "annualised_pnl_usd": 65457.43403091918
+  },
+  "wallet_clustered_is": {
+    "n_wallets": 80,
+    "per_share_c": 1.3814511010237982,
+    "ci95_c": [
+      0.5708655563632707,
+      2.3009511949014922
+    ],
+    "method": "bootstrap over copied wallets, 2,000 draws, seed 0, share-weighted",
+    "top1_share_of_pnl": 0.41663005401551656,
+    "top5_share_of_pnl": 0.813662288525831
+  },
+  "by_entry_price_is": [
+    {
+      "q_bucket": "(0.049, 0.2]",
+      "n_trades": 5395,
+      "share_of_shares": 0.12010708862957943,
+      "pnl_usd": 4805.155711004107,
+      "per_share_c": 1.3671513246393021,
+      "ci95_c_match_clustered": [
+        -0.2004030686874033,
+        2.9157406029951063
+      ]
+    },
+    {
+      "q_bucket": "(0.2, 0.4]",
+      "n_trades": 13188,
+      "share_of_shares": 0.24027618970768708,
+      "pnl_usd": 3757.9205417572116,
+      "per_share_c": 0.5344592755845903,
+      "ci95_c_match_clustered": [
+        -0.8333407116271581,
+        1.8807786867637726
+      ]
+    },
+    {
+      "q_bucket": "(0.4, 0.6]",
+      "n_trades": 16458,
+      "share_of_shares": 0.2776548255902779,
+      "pnl_usd": 16131.18257143361,
+      "per_share_c": 1.9853575997529995,
+      "ci95_c_match_clustered": [
+        1.1224198988131908,
+        2.802287842779606
+      ]
+    },
+    {
+      "q_bucket": "(0.6, 0.8]",
+      "n_trades": 14118,
+      "share_of_shares": 0.23624686959564317,
+      "pnl_usd": 9619.137727699293,
+      "per_share_c": 1.3913866830579438,
+      "ci95_c_match_clustered": [
+        0.08776903674267565,
+        2.7741599960978447
+      ]
+    },
+    {
+      "q_bucket": "(0.8, 0.95]",
+      "n_trades": 6503,
+      "share_of_shares": 0.1257150264768124,
+      "pnl_usd": 6112.32263978499,
+      "per_share_c": 1.6614865931653122,
+      "ci95_c_match_clustered": [
+        0.4097807641954563,
+        2.996992643701332
+      ]
+    }
+  ],
+  "null_fee_charged_3pct_is": {
+    "trades_with_zero_fee": 7487,
+    "share_of_is_trades": 0.13450828213143617,
+    "months_with_zero_fee_trades": [
+      "2026-02",
+      "2026-03"
+    ],
+    "per_share_c": 1.2954054952125305,
+    "per_share_ci_c": [
+      1.0756991222126324,
+      1.51372233743346
+    ],
+    "total_pnl_usd": 37907.746969842105,
+    "sharpe_ann": 13.646944037581926,
+    "base_per_share_c": 1.3814511010237975,
+    "base_total_pnl_usd": 40425.71919167921
+  }
+}
