@@ -15,8 +15,9 @@ every point moves fair value by a computable amount, its **leverage**. A simulat
 the book reprices buys from a stale quote; a trader who acts after it pays the spread to someone
 faster. The gaps are physical (camera frame rates, data licensing, stream delays), so they persist.
 Polymarket's own design admits it: sports markets hold every marketable order for 1 s (3 s before May
-2026) so makers can reprice. Hypotheses were committed before any result (`HYPOTHESIS.md`, commit
-`7232986`; v2 in `HYPOTHESIS_V2.md`). Every change since then is in `DEVIATIONS.md`.
+2026) so makers can reprice. H1–H4 were committed before any result (`HYPOTHESIS.md`, commit `7232986`). H5–H6 were written after
+in-sample results and frozen before OOS. v2 and its blind forward test are in `HYPOTHESIS_V2.md`, and
+every change is in `DEVIATIONS.md`.
 
 ## 2. Data and method
 
@@ -28,7 +29,8 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
   timestamps are on-chain block times, a median **1.98 s after the true match time** (5,472 trades
   joined to the live websocket by transaction hash).
 - **In sample:** the first 80% of matches. **Out of sample (OOS):** the last 20%, from 2026-08-25,
-  locked until v1 was frozen and opened once (`results/oos_peeks.log`). **Forward:** matches that
+  locked until v1 was frozen and opened once for v1. v2 was built knowing v1 lost there, so that
+window is burned: v2 is shown on it labelled non-blind, and every look is logged (`results/oos_peeks.log`). **Forward:** matches that
   start after 2026-10-03 13:00 UTC, the blind test for v2.
 - **Live, on 2026-10-03:** we recorded Polymarket order books (every tennis and table-tennis market)
   alongside four score sources, with millisecond receive times.
@@ -39,18 +41,19 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
 
 **Table 1. Tests, net of fees and traded spreads (¢/share; 95% CI clustered by match).**
 
-| Test | In sample | Out of sample (opened once) | Verdict |
+| Test | In sample | Out of sample (v1 run, opened once) | Verdict |
 |---|---|---|---|
 | H1 Follow the jump after the delay | −1.61 [−1.65, −1.57]; all 20 variants −1.5 to −1.9 | −2.08 [−2.17, −1.98] | Fails |
 | H2 Buy favourites entering 0.85–0.97 | −0.41 [−1.44, 0.59]; live prices calibrated within ~1¢ | +0.80 [−1.36, 2.66] | No edge |
-| H5 Maker quoting after jumps | +0.22 [−0.01, 0.43] | +0.16 [−0.49, 0.87] | Inconclusive |
-| **H6 Fast tier, 30 s markout, walk-forward** | **+0.6 to +2.4, 8/8 months > 0** | **+0.4 to +0.8, 3/3 months > 0** | **Holds** |
+| H5 Maker quoting after jumps (written after IS) | +0.22 [−0.01, 0.43] | +0.16 [−0.49, 0.87] | Inconclusive |
+| **H6 Fast tier, 30 s markout, walk-forward (written after IS)** | **+0.6 to +2.4, 8/8 months > 0** | **+0.4 to +0.8, 3/3 months > 0** | **Holds** |
 | Everyone else in the same 0–3 s window | −0.5 to −1.7, every month | −1.2 to −1.9 | |
 | Copying the fast tier 3 s later | < 0 every month | < 0 every month | Edge is speed |
 
 ![](../results/figures/fig1_tiers.png)
 *Fig. 1. 30 s markout per taker print, net of fee, by seconds since the score event. Fast-tier wallets
-are qualified each month using earlier months only.*
+are qualified each month using earlier months only. Onset-aligned ex-post event study; tradable
+numbers (Table 2) use the causal window.*
 
 Chasing the move loses, and live prices are calibrated, so slow money has no edge. What exists is a
 **persistent fast tier**: wallets that trade within 3 s of a score event and beat the market every
@@ -94,7 +97,8 @@ labelling put 81% of the first v2 draft's OOS P&L on trades made before detectio
 ![](../results/figures/fig6_v2.png)
 *Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&L by month (\*Aug includes IS days).*
 
-**Reading Table 2.** In sample the edge survives a full tick of slippage in every month. In today's
+Table 2 is a **paper book on the fast tier's own fills**: it prices the opportunity at their speed, not
+our execution, which needs in-venue tracking plus a co-located gateway. **Reading Table 2.** In sample the edge survives a full tick of slippage in every month. In today's
 regime (1 s delay, 5% fee, 131 qualifying wallets) it is positive only at the fast tier's own fill
 prices and is gone at half a tick. The strategy pays whoever is *first* to the stale quote, and the
 margin for second place is now under half a tick. That is the case for in-venue ball tracking plus a
@@ -107,11 +111,11 @@ per-share CIs above zero (onset labelling), so this is a plateau, not a tuned sp
 
 | Signal | When it knows the point, vs the official WTA point timestamp |
 |---|---|
-| Ball tracking, Hawk-Eye class (physics) | 100–300 ms *before the bounce*: ±2.4 cm landing error at 100 ms, ±10.7 cm at 300 ms |
-| Ball tracking, real 120 fps video (table tennis) | misses called **50 ms before contact: 11/11 correct** on held-out games; demo clips with calls at 408, 83 and 25 ms |
-| Ball tracking, 25 fps broadcast (tennis) | useless: 0.6–1.2 m landing error |
+| Ball tracking, Hawk-Eye class (simulated: 340 fps, ±3.6 mm) | 100–300 ms *before the bounce*: 1 SD landing error ±2.4 cm at 100 ms, ±10.7 cm at 300 ms |
+| Ball tracking, real 120 fps video (table tennis) | misses called **50 ms before contact: 11 of 11 calls correct** (11 of 41 misses called, recall 27%); median first-call lead 25 ms |
+| Ball tracking, 25 fps broadcast (tennis) | useless: 0.7–1.2 m median landing error |
 | **Polymarket book (market makers)** | **−1.2 s (reprices before the official stamp)**, n = 482 points |
-| Kalshi | leads Polymarket on 69% of 106k repricings, by ~2 s once block lag is removed; 6.1× Polymarket's in-play volume |
+| Kalshi | reprices with the market makers; leads Polymarket on 69% of 106k repricings by ~2 s, mostly Polymarket's own order delay; 6.1× its in-play volume |
 | ESPN / Polymarket sports feed / WTA API | +27.5 s / +29.1 s / +43.3 s; 0 of 295 changes beat the book by > 1.3 s |
 
 Market makers already sit on the official feed, and Kalshi is where prices are discovered. **Remote

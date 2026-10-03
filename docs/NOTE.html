@@ -26,8 +26,9 @@ every point moves fair value by a computable amount, its <strong>leverage</stron
 the book reprices buys from a stale quote; a trader who acts after it pays the spread to someone
 faster. The gaps are physical (camera frame rates, data licensing, stream delays), so they persist.
 Polymarket's own design admits it: sports markets hold every marketable order for 1 s (3 s before May
-2026) so makers can reprice. Hypotheses were committed before any result (<code>HYPOTHESIS.md</code>, commit
-<code>7232986</code>; v2 in <code>HYPOTHESIS_V2.md</code>). Every change since then is in <code>DEVIATIONS.md</code>.</p>
+2026) so makers can reprice. H1–H4 were committed before any result (<code>HYPOTHESIS.md</code>, commit <code>7232986</code>). H5–H6 were written after
+in-sample results and frozen before OOS. v2 and its blind forward test are in <code>HYPOTHESIS_V2.md</code>, and
+every change is in <code>DEVIATIONS.md</code>.</p>
 <h2>2. Data and method</h2>
 <ul>
 <li><strong>Every resolved ATP/WTA singles moneyline on Polymarket with ≥$5k volume, Oct 2025–Oct 2026:
@@ -38,7 +39,8 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
   timestamps are on-chain block times, a median <strong>1.98 s after the true match time</strong> (5,472 trades
   joined to the live websocket by transaction hash).</li>
 <li><strong>In sample:</strong> the first 80% of matches. <strong>Out of sample (OOS):</strong> the last 20%, from 2026-08-25,
-  locked until v1 was frozen and opened once (<code>results/oos_peeks.log</code>). <strong>Forward:</strong> matches that
+  locked until v1 was frozen and opened once for v1. v2 was built knowing v1 lost there, so that
+window is burned: v2 is shown on it labelled non-blind, and every look is logged (<code>results/oos_peeks.log</code>). <strong>Forward:</strong> matches that
   start after 2026-10-03 13:00 UTC, the blind test for v2.</li>
 <li><strong>Live, on 2026-10-03:</strong> we recorded Polymarket order books (every tennis and table-tennis market)
   alongside four score sources, with millisecond receive times.</li>
@@ -52,7 +54,7 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
 <tr>
 <th>Test</th>
 <th>In sample</th>
-<th>Out of sample (opened once)</th>
+<th>Out of sample (v1 run, opened once)</th>
 <th>Verdict</th>
 </tr>
 </thead>
@@ -70,13 +72,13 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
 <td>No edge</td>
 </tr>
 <tr>
-<td>H5 Maker quoting after jumps</td>
+<td>H5 Maker quoting after jumps (written after IS)</td>
 <td>+0.22 [−0.01, 0.43]</td>
 <td>+0.16 [−0.49, 0.87]</td>
 <td>Inconclusive</td>
 </tr>
 <tr>
-<td><strong>H6 Fast tier, 30 s markout, walk-forward</strong></td>
+<td><strong>H6 Fast tier, 30 s markout, walk-forward (written after IS)</strong></td>
 <td><strong>+0.6 to +2.4, 8/8 months &gt; 0</strong></td>
 <td><strong>+0.4 to +0.8, 3/3 months &gt; 0</strong></td>
 <td><strong>Holds</strong></td>
@@ -97,7 +99,8 @@ Polymarket's own design admits it: sports markets hold every marketable order fo
 </table>
 <p><img alt="" src="../results/figures/fig1_tiers.png" />
 <em>Fig. 1. 30 s markout per taker print, net of fee, by seconds since the score event. Fast-tier wallets
-are qualified each month using earlier months only.</em></p>
+are qualified each month using earlier months only. Onset-aligned ex-post event study; tradable
+numbers (Table 2) use the causal window.</em></p>
 <p>Chasing the move loses, and live prices are calibrated, so slow money has no edge. What exists is a
 <strong>persistent fast tier</strong>: wallets that trade within 3 s of a score event and beat the market every
 month, in sample and out. The other side of their trades is the ~1¢ a share that everyone else loses.
@@ -189,7 +192,8 @@ labelling put 81% of the first v2 draft's OOS P&amp;L on trades made before dete
 </table>
 <p><img alt="" src="../results/figures/fig6_v2.png" />
 <em>Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&amp;L by month (*Aug includes IS days).</em></p>
-<p><strong>Reading Table 2.</strong> In sample the edge survives a full tick of slippage in every month. In today's
+<p>Table 2 is a <strong>paper book on the fast tier's own fills</strong>: it prices the opportunity at their speed, not
+our execution, which needs in-venue tracking plus a co-located gateway. <strong>Reading Table 2.</strong> In sample the edge survives a full tick of slippage in every month. In today's
 regime (1 s delay, 5% fee, 131 qualifying wallets) it is positive only at the fast tier's own fill
 prices and is gone at half a tick. The strategy pays whoever is <em>first</em> to the stale quote, and the
 margin for second place is now under half a tick. That is the case for in-venue ball tracking plus a
@@ -207,16 +211,16 @@ per-share CIs above zero (onset labelling), so this is a plateau, not a tuned sp
 </thead>
 <tbody>
 <tr>
-<td>Ball tracking, Hawk-Eye class (physics)</td>
-<td>100–300 ms <em>before the bounce</em>: ±2.4 cm landing error at 100 ms, ±10.7 cm at 300 ms</td>
+<td>Ball tracking, Hawk-Eye class (simulated: 340 fps, ±3.6 mm)</td>
+<td>100–300 ms <em>before the bounce</em>: 1 SD landing error ±2.4 cm at 100 ms, ±10.7 cm at 300 ms</td>
 </tr>
 <tr>
 <td>Ball tracking, real 120 fps video (table tennis)</td>
-<td>misses called <strong>50 ms before contact: 11/11 correct</strong> on held-out games; demo clips with calls at 408, 83 and 25 ms</td>
+<td>misses called <strong>50 ms before contact: 11 of 11 calls correct</strong> (11 of 41 misses called, recall 27%); median first-call lead 25 ms</td>
 </tr>
 <tr>
 <td>Ball tracking, 25 fps broadcast (tennis)</td>
-<td>useless: 0.6–1.2 m landing error</td>
+<td>useless: 0.7–1.2 m median landing error</td>
 </tr>
 <tr>
 <td><strong>Polymarket book (market makers)</strong></td>
@@ -224,7 +228,7 @@ per-share CIs above zero (onset labelling), so this is a plateau, not a tuned sp
 </tr>
 <tr>
 <td>Kalshi</td>
-<td>leads Polymarket on 69% of 106k repricings, by ~2 s once block lag is removed; 6.1× Polymarket's in-play volume</td>
+<td>reprices with the market makers; leads Polymarket on 69% of 106k repricings by ~2 s, mostly Polymarket's own order delay; 6.1× its in-play volume</td>
 </tr>
 <tr>
 <td>ESPN / Polymarket sports feed / WTA API</td>

@@ -170,3 +170,10 @@ by `early_call.py --final` (logged in `results/tracking/test_peeks.log`).
 - H1–H6 tables keep the onset-aligned labelling. They are an ex-post event study (who traded around
   score events), not a tradable set. Every tradable claim (v2) now uses the causal window.
 - Forward-test changes are listed in HYPOTHESIS_V2.md amendment A1.
+
+## D10 — corrections found while building the deck (2026-10-03)
+- D4 said every calibration CI includes 0. That was true on the early partial sample. On the full
+  in-sample set, 3 of 11 price bands have CIs that exclude the price, each by under ~1¢; the largest
+  gap is 1.01¢. "Calibrated within ~1¢" stands; "every CI includes 0" does not.
+- The out-of-sample period was opened once for v1 (10:42 UTC). v2 was then shown on it twice
+  (onset 13:24, causal 13:53), labelled non-blind. All three are in results/oos_peeks.log.
