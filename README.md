@@ -61,6 +61,28 @@ Things to know before running it:
   (gitignored). The derived numbers are in `results/` and `research/v2/{latency,livefill,blocklag}/`.
 - The v2 forward test is a one-shot: `python scripts/forward_test.py` (pre-registered window; logs every run).
 
+## Run it live
+
+```bash
+.venv/bin/python scripts/live_paper.py
+```
+
+This paper-trades the frozen side-market maker (maker v1, `research/v2/maker/PREREG.md`) on whatever ATP, WTA and
+Challenger matches are in play right now. It also runs a taker control that trades the same signal at our real
+latency. The data is live: public Polymarket feeds, with no keys and no account. The orders are paper: nothing is
+ever signed or sent. The terminal dashboard shows equity, P&L (realised, and marked to mid until resolution), open
+quotes, the signals and a tape of fills for every book.
+- **Options.** `--minutes N` stops quoting after N minutes, `--until 2026-10-04T11:30:00Z` stops at a given time,
+  `--capital 10000` sets the starting capital, and `--no-dashboard` prints plain log lines instead.
+- **No tennis on right now?** Replay recorded live books through the same engine:
+  `.venv/bin/python scripts/live_paper.py --replay 'data/live_v2/clob_20261003_1123_20261003_1[12].jsonl.gz' --replay-from 2026-10-03T12:00:00Z --replay-minutes 60`
+- **Output.** `results/live/` holds every event and fill plus a rolling `summary.json`. `data/live_maker/raw_*.jsonl.gz`
+  holds every websocket message; `--replay` on that file re-runs a session exactly.
+- **Before it quotes,** a warm-up checks the websocket's trade-side convention against data-api on 50 trades
+  (about 10–20 minutes).
+- **Pre-registered session.** It runs until 2026-10-04 11:30 UTC; see `results/live/SESSION.md`. Fill-model details:
+  `research/v2/maker/DEVIATIONS_LIVE.md`. Tests: `pytest tests/test_live_paper.py`.
+
 Other pieces:
 
 | Command | What |

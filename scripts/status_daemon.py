@@ -222,12 +222,6 @@ def main():
         if cs:
             hl["Costs doubled"] = (f"IS {cs['is_eval/fee_x2']['per_share_c']:+.2f}¢ · "
                                    f"OOS {cs['burned_oos/fee_x2']['per_share_c']:+.2f}¢ (fees ×2)")
-        lv = jload("results/live/summary.json")
-        if lv and lv.get("books"):
-            b1, tk = lv["books"].get("B1", {}), lv["books"].get("CTRL-taker", {})
-            hl["Live paper (real markets, paper fills)"] = (
-                f"{lv.get('status', '?')} · maker B1 {b1.get('fills', 0)} fills, ${b1.get('usd_filled', 0):,.0f}, "
-                f"P&L {b1.get('pnl', 0):+,.2f} · taker control {tk.get('fills', 0)} fills, P&L {tk.get('pnl', 0):+,.2f}")
         git = subprocess.run(["git", "log", "-6", "--format=%cr|%s"], capture_output=True, text=True).stdout.splitlines()
         du = shutil.disk_usage(os.path.expanduser("~"))
         try:
