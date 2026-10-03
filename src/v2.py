@@ -84,11 +84,26 @@ def prepare(f: pd.DataFrame) -> pd.DataFrame:
     return f
 
 
-def run(prints: pd.DataFrame, ends: pd.Series, measure: str = "res") -> tuple[pd.DataFrame, pd.DataFrame]:
-    """v2 trades over every month present in `prints` (walk-forward throughout)."""
-    wf, sh, _ = fasttier.walk_forward(prints)
+LOCK_S = 4 * 3600  # ex-ante capital lock per position (a scheduled best-of-3 rarely runs longer)
+
+
+def run(prints: pd.DataFrame, ends: pd.Series, measure: str = "res", causal: bool = True) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """v2 trades over every month present in `prints` (walk-forward throughout).
+
+    causal=True (the frozen rule after D9): the 0-3 s window is measured from jump DETECTION, so the
+    opportunity set, wallet qualification and wallet filter use only information available at the time.
+    causal=False reproduces the original onset-labelled v2 (kept for comparison)."""
+    bucket = "bucket"
+    if causal:
+        from src.tiers import add_causal_bucket
+        if "bucket_c" not in prints:
+            prints = add_causal_bucket(prints)
+        bucket = "bucket_c"
+    wf, sh, _ = fasttier.walk_forward(prints, bucket=bucket)
     f = prepare(build_features(sh, prints, ends))
-    p03 = prints[prints.bucket == "0-3s"][["wallet", "ts", "mo30"]].copy()
+    if causal:  # ex-ante capital lock instead of the realised match end (affects capital/drawdown only)
+        f["lock_end"] = f.ts + LOCK_S
+    p03 = prints[prints[bucket] == "0-3s"][["wallet", "ts", "mo30"]].copy()
     p03["month"] = pd.to_datetime(p03.ts, unit="s").dt.to_period("M").astype(str)
     E._WCACHE.clear()
     tr = E.simulate(f, POLICY, measure, "actual", p03[["wallet", "month", "mo30"]])

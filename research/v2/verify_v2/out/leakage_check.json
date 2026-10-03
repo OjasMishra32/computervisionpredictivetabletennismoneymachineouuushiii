@@ -1,0 +1,665 @@
+{
+  "T0_baseline": {
+    "label": "T0 baseline (= scripts/v2_burned_oos.py)",
+    "burned_oos": {
+      "n_trades": 13184,
+      "n_matches": 2093,
+      "per_share_c": 0.753107997584926,
+      "per_share_ci_c": [
+        0.30105271318168925,
+        1.2015765827300007
+      ],
+      "per_print_c": 1.2806915190421815,
+      "total_pnl_usd": 5227.176139143266,
+      "sharpe_ann": 11.136030469442307,
+      "capital_usd": 8565.653102923161,
+      "max_dd_pct": -5.189791374282296,
+      "months_positive": 2,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.1412,
+        1.0553,
+        1.232
+      ],
+      "by_month_per_share_c": {
+        "2026-08": 0.7703,
+        "2026-09": 0.9,
+        "2026-10": -0.9026
+      }
+    },
+    "is_eval": {
+      "n_trades": 67468,
+      "per_share_c": 1.5855412600521863,
+      "per_share_ci_c": [
+        1.3518586445317755,
+        1.8041882143921286
+      ],
+      "total_pnl_usd": 43283.104559793894,
+      "sharpe_ann": 16.77640967922221
+    }
+  },
+  "T1_future_blindness": [
+    {
+      "month": "2026-08",
+      "opportunity_rows_identical": true,
+      "rows": 23635,
+      "rows_with_share_change": 0,
+      "max_abs_share_change": 0.0,
+      "trades_base": 11085,
+      "trades_scrambled": 11085
+    },
+    {
+      "month": "2026-09",
+      "opportunity_rows_identical": true,
+      "rows": 24207,
+      "rows_with_share_change": 0,
+      "max_abs_share_change": 0.0,
+      "trades_base": 9993,
+      "trades_scrambled": 9993
+    },
+    {
+      "month": "2026-10",
+      "opportunity_rows_identical": true,
+      "rows": 2097,
+      "rows_with_share_change": 0,
+      "max_abs_share_change": 0.0,
+      "trades_base": 926,
+      "trades_scrambled": 926
+    },
+    {
+      "month": "2026-09 truncated at 09-15",
+      "rows": 10232,
+      "rows_with_share_change": 0,
+      "max_abs_share_change": 0.0
+    }
+  ],
+  "T2_wallet_filter_history": [
+    {
+      "month": "2026-08",
+      "whist_rows_month_ge_m": 141817,
+      "identical_to_past_only": true,
+      "rows_passing_filter": 16686,
+      "rows_passing_if_month_m_leaked_in": 17771
+    },
+    {
+      "month": "2026-09",
+      "whist_rows_month_ge_m": 66902,
+      "identical_to_past_only": true,
+      "rows_passing_filter": 15605,
+      "rows_passing_if_month_m_leaked_in": 16136
+    },
+    {
+      "month": "2026-10",
+      "whist_rows_month_ge_m": 5215,
+      "identical_to_past_only": true,
+      "rows_passing_filter": 1393,
+      "rows_passing_if_month_m_leaked_in": 1395
+    }
+  ],
+  "T3_jump_onset_lookahead": {
+    "detector_validation": {
+      "is_conds_sampled": 300,
+      "jumps_recomputed": 6893,
+      "jumps_in_jumps_is": 6893,
+      "identical": true,
+      "indexed_copy_equals_jumps_is_all_IS": true,
+      "indexed_copy_equals_tiers_on_200_oos": true
+    },
+    "share_trades_at_or_before_detecting_print": 0.7108616504854369,
+    "share_trades_in_detect_second_after_detecting_print": 0.21609526699029127,
+    "share_trades_that_are_the_detecting_print": 0.4026092233009709,
+    "pnl_at_or_before_detecting_print_usd": 5537.76361388875,
+    "pnl_after_detecting_print_usd": -310.5874747454836,
+    "oos_book_trades": 13184,
+    "share_trades_before_detect": 0.28944174757281554,
+    "share_trades_in_detect_second": 0.6375151699029126,
+    "share_shares_before_detect": 0.259338810874054,
+    "pnl_before_detect_usd": 4215.274740442101,
+    "pnl_detect_second_usd": 772.7659260946284,
+    "pnl_after_detect_second_usd": 239.13547260653718,
+    "pnl_total_usd": 5227.176139143266,
+    "per_share_c_before_detect": 2.3417929584178485,
+    "per_share_c_at_or_after_detect": 0.19683790453183456,
+    "m30_net_per_share_c_before_detect": 1.179320541698765,
+    "m30_net_per_share_c_at_or_after_detect": 0.803136203176005,
+    "detect_minus_onset_s_of_oos_trades": {
+      "count": 13184.0,
+      "mean": 1.72,
+      "std": 3.06,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 2.0,
+      "max": 10.0
+    },
+    "ts_minus_detect_s_of_oos_trades": {
+      "-10.0": 310,
+      "-9.0": 661,
+      "-8.0": 330,
+      "-7.0": 250,
+      "-6.0": 509,
+      "-5.0": 252,
+      "-4.0": 220,
+      "-3.0": 509,
+      "-2.0": 453,
+      "-1.0": 322,
+      "0.0": 8405,
+      "1.0": 558,
+      "2.0": 405
+    }
+  },
+  "T3b_mask_ts_ge_detect": {
+    "label": "T3b book masked to prints with ts >= detect_ts",
+    "burned_oos": {
+      "n_trades": 9436,
+      "n_matches": 1998,
+      "per_share_c": 0.33867886305025907,
+      "per_share_ci_c": [
+        -0.25206974471838217,
+        0.9101790312779091
+      ],
+      "per_print_c": 0.6777816247135968,
+      "total_pnl_usd": 1762.5765760396307,
+      "sharpe_ann": 3.7171425672790828,
+      "capital_usd": 6705.96006387172,
+      "max_dd_pct": -12.063277862842227,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.0258,
+        0.9172,
+        1.1292
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -0.1084,
+        "2026-09": 0.652,
+        "2026-10": -2.3026
+      }
+    },
+    "is_eval": {
+      "n_trades": 42179,
+      "per_share_c": 1.5114758370034715,
+      "per_share_ci_c": [
+        1.114052221249919,
+        1.8306831179311311
+      ],
+      "total_pnl_usd": 27348.497771285012,
+      "sharpe_ann": 11.957458808194891
+    }
+  },
+  "T3c_mask_ts_gt_detect": {
+    "label": "T3c book masked to prints with ts > detect_ts",
+    "burned_oos": {
+      "n_trades": 1505,
+      "n_matches": 942,
+      "per_share_c": -0.3498783042045885,
+      "per_share_ci_c": [
+        -2.4639546060617046,
+        1.8542847463456384
+      ],
+      "per_print_c": -0.3790676299008646,
+      "total_pnl_usd": -324.02008149865014,
+      "sharpe_ann": -0.9090972345773242,
+      "capital_usd": 2533.826998560673,
+      "max_dd_pct": -27.802149346757744,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        0.521,
+        0.2355,
+        0.8038
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -4.3689,
+        "2026-09": 1.3101,
+        "2026-10": -6.488
+      }
+    },
+    "is_eval": {
+      "n_trades": 7541,
+      "per_share_c": 0.9580014014939784,
+      "per_share_ci_c": [
+        -0.08429753918738761,
+        2.0552152571919007
+      ],
+      "total_pnl_usd": 3230.7643071496395,
+      "sharpe_ann": 2.0841664029832496
+    }
+  },
+  "T3g_mask_after_detecting_print": {
+    "label": "T3g book masked to prints after the detecting print (tape order)",
+    "burned_oos": {
+      "n_trades": 4825,
+      "n_matches": 1680,
+      "per_share_c": 0.05080559557378353,
+      "per_share_ci_c": [
+        -0.968921851439126,
+        1.155200402902265
+      ],
+      "per_print_c": -0.16240513012055693,
+      "total_pnl_usd": 137.67812187711752,
+      "sharpe_ann": 0.34933130820734953,
+      "capital_usd": 4387.7660925998725,
+      "max_dd_pct": -19.13278991141309,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.3253,
+        1.1824,
+        1.4647
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -0.9653,
+        "2026-09": 0.5409,
+        "2026-10": -2.8932
+      }
+    },
+    "is_eval": {
+      "n_trades": 23711,
+      "per_share_c": 1.7653336284182524,
+      "per_share_ci_c": [
+        1.2104848985646988,
+        2.2377644712806886
+      ],
+      "total_pnl_usd": 18416.06085314335,
+      "sharpe_ann": 9.545011933868913
+    }
+  },
+  "T3d_drop_pre_detect_rows": {
+    "label": "T3d pre-detect rows dropped (k refit on post-detect)",
+    "burned_oos": {
+      "n_trades": 9436,
+      "n_matches": 1998,
+      "per_share_c": 0.33867886305025907,
+      "per_share_ci_c": [
+        -0.25206974471838217,
+        0.9101790312779091
+      ],
+      "per_print_c": 0.6777816247135968,
+      "total_pnl_usd": 1762.5765760396307,
+      "sharpe_ann": 3.7171425672790828,
+      "capital_usd": 6705.96006387172,
+      "max_dd_pct": -12.063277862842227,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.0258,
+        0.9172,
+        1.1292
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -0.1084,
+        "2026-09": 0.652,
+        "2026-10": -2.3026
+      }
+    },
+    "is_eval": {
+      "n_trades": 42194,
+      "per_share_c": 1.5087621839657375,
+      "per_share_ci_c": [
+        1.1146119389659173,
+        1.8271009727421108
+      ],
+      "total_pnl_usd": 27282.05024143317,
+      "sharpe_ann": 11.949276852215739
+    }
+  },
+  "T3e_causal_bucket_from_detect": {
+    "label": "T3e_causal_bucket_from_detect (qualification+filter+book re-derived)",
+    "burned_oos": {
+      "n_trades": 10430,
+      "n_matches": 2006,
+      "per_share_c": 0.5890839346026038,
+      "per_share_ci_c": [
+        0.07260789615171828,
+        1.1418007783383206
+      ],
+      "per_print_c": 0.9257713104486155,
+      "total_pnl_usd": 3633.6562652924376,
+      "sharpe_ann": 6.547506699636347,
+      "capital_usd": 7499.641516231109,
+      "max_dd_pct": -6.259363048413677,
+      "months_positive": 2,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        0.9831,
+        0.8834,
+        1.0805
+      ],
+      "by_month_per_share_c": {
+        "2026-08": 0.1317,
+        "2026-09": 0.8139,
+        "2026-10": -1.0793
+      }
+    },
+    "is_eval": {
+      "n_trades": 55644,
+      "per_share_c": 1.3837392667744952,
+      "per_share_ci_c": [
+        1.1648214144141944,
+        1.5533535714111792
+      ],
+      "total_pnl_usd": 40479.59884658044,
+      "sharpe_ann": 14.510092776561537
+    },
+    "n_wallets_by_month": {
+      "2025-12": 4,
+      "2026-01": 4,
+      "2026-02": 10,
+      "2026-03": 12,
+      "2026-04": 17,
+      "2026-05": 25,
+      "2026-06": 51,
+      "2026-07": 70,
+      "2026-08": 90,
+      "2026-09": 107,
+      "2026-10": 117
+    },
+    "n_0_3s_prints": 588139
+  },
+  "T3f_causal_bucket_strict": {
+    "label": "T3f_causal_bucket_strict (qualification+filter+book re-derived)",
+    "burned_oos": {
+      "n_trades": 1619,
+      "n_matches": 960,
+      "per_share_c": 0.7748633280121892,
+      "per_share_ci_c": [
+        -1.1430646622661846,
+        2.6457285491048967
+      ],
+      "per_print_c": 0.17534015721374932,
+      "total_pnl_usd": 839.1023671142606,
+      "sharpe_ann": 2.480679867872477,
+      "capital_usd": 2852.0210532300002,
+      "max_dd_pct": -13.82565322550858,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        0.3773,
+        0.1179,
+        0.6471
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -1.6293,
+        "2026-09": 1.7133,
+        "2026-10": -5.7599
+      }
+    },
+    "is_eval": {
+      "n_trades": 8754,
+      "per_share_c": 0.3297551587831693,
+      "per_share_ci_c": [
+        -0.5225198215831948,
+        1.2129780444777736
+      ],
+      "total_pnl_usd": 1477.741982984547,
+      "sharpe_ann": 0.877894013517121
+    },
+    "n_wallets_by_month": {
+      "2025-12": 0,
+      "2026-01": 0,
+      "2026-02": 3,
+      "2026-03": 5,
+      "2026-04": 6,
+      "2026-05": 10,
+      "2026-06": 16,
+      "2026-07": 25,
+      "2026-08": 28,
+      "2026-09": 33,
+      "2026-10": 40
+    },
+    "n_0_3s_prints": 214174
+  },
+  "T3h_causal_bucket_after_detecting_print": {
+    "label": "T3h causal 0-3 s after the detecting print (tape order)",
+    "burned_oos": {
+      "n_trades": 5554,
+      "n_matches": 1718,
+      "per_share_c": 0.14884630392944326,
+      "per_share_ci_c": [
+        -0.7714545996161205,
+        0.9860944922555548
+      ],
+      "per_print_c": 0.7496928343033026,
+      "total_pnl_usd": 493.75689267540133,
+      "sharpe_ann": 0.9333714599625268,
+      "capital_usd": 4953.901972523916,
+      "max_dd_pct": -18.910534352981788,
+      "months_positive": 1,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.1929,
+        1.0594,
+        1.3197
+      ],
+      "by_month_per_share_c": {
+        "2026-08": -1.9135,
+        "2026-09": 0.6891,
+        "2026-10": -1.1726
+      }
+    },
+    "is_eval": {
+      "n_trades": 31812,
+      "per_share_c": 1.6517629269302239,
+      "per_share_ci_c": [
+        1.2707894784324951,
+        2.030215984583362
+      ],
+      "total_pnl_usd": 26376.64531507699,
+      "sharpe_ann": 12.393456951808876
+    },
+    "n_wallets_by_month": {
+      "2025-12": 2,
+      "2026-01": 2,
+      "2026-02": 7,
+      "2026-03": 9,
+      "2026-04": 14,
+      "2026-05": 21,
+      "2026-06": 44,
+      "2026-07": 62,
+      "2026-08": 85,
+      "2026-09": 103,
+      "2026-10": 117
+    },
+    "n_0_3s_prints": 297437
+  },
+  "T3_baseline_n_wallets_by_month": {
+    "2025-12": 4,
+    "2026-01": 4,
+    "2026-02": 10,
+    "2026-03": 12,
+    "2026-04": 16,
+    "2026-05": 30,
+    "2026-06": 52,
+    "2026-07": 72,
+    "2026-08": 101,
+    "2026-09": 122,
+    "2026-10": 131
+  },
+  "T3_baseline_n_0_3s_prints": 545441,
+  "T4_forward_dedup": {
+    "facts": {
+      "rows_dropped": 284972,
+      "share_dropped": 0.029819535368083516,
+      "rows_dropped_identical_in_all_columns": 270253,
+      "dup_groups_with_both_directions": 19,
+      "rows_dropped_in_0_3s_bucket": 11551,
+      "oos_book_trades_that_dedup_drops": 18
+    },
+    "label": "T4 IS+OOS with forward_test dedup",
+    "burned_oos": {
+      "n_trades": 13251,
+      "n_matches": 2093,
+      "per_share_c": 0.7728318918411632,
+      "per_share_ci_c": [
+        0.3134803194301974,
+        1.224470129336322
+      ],
+      "per_print_c": 1.2788756782553117,
+      "total_pnl_usd": 5369.487947399273,
+      "sharpe_ann": 11.567451723982707,
+      "capital_usd": 8589.053102923159,
+      "max_dd_pct": -5.078168447092984,
+      "months_positive": 2,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.1416,
+        1.0553,
+        1.2306
+      ],
+      "by_month_per_share_c": {
+        "2026-08": 0.8135,
+        "2026-09": 0.9154,
+        "2026-10": -0.8853
+      }
+    },
+    "is_eval": {
+      "n_trades": 68356,
+      "per_share_c": 1.5883342204649677,
+      "per_share_ci_c": [
+        1.3692211884503724,
+        1.7938697919479205
+      ],
+      "total_pnl_usd": 43837.27696703523,
+      "sharpe_ann": 17.02663345061824
+    }
+  },
+  "T5_half_resolutions": {
+    "oos_matches_res_half_traded": 1,
+    "oos_trades": 1,
+    "oos_pnl_usd": -36.602000000000004,
+    "oos_shares": 100.0,
+    "res_values_all_prints": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "label": "T5 book without res=0.5 matches",
+    "burned_oos": {
+      "n_trades": 13183,
+      "n_matches": 2092,
+      "per_share_c": 0.7584907288364876,
+      "per_share_ci_c": [
+        0.3172725918777712,
+        1.2253193904345694
+      ],
+      "per_print_c": 1.2835651207655403,
+      "total_pnl_usd": 5263.778139143265,
+      "sharpe_ann": 11.116365701330611,
+      "capital_usd": 8565.653102923161,
+      "max_dd_pct": -5.189791374282296,
+      "months_positive": 2,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.1417,
+        1.054,
+        1.2352
+      ],
+      "by_month_per_share_c": {
+        "2026-08": 0.7703,
+        "2026-09": 0.9069,
+        "2026-10": -0.9026
+      }
+    },
+    "is_eval": {
+      "n_trades": 67464,
+      "per_share_c": 1.5868145122459332,
+      "per_share_ci_c": [
+        1.3192164405151408,
+        1.7829340537595888
+      ],
+      "total_pnl_usd": 43314.95046998511,
+      "sharpe_ann": 16.77298424142941
+    }
+  },
+  "T6_fees": {
+    "oos_fee_rate_counts": {
+      "0.05": 2617
+    },
+    "fee_exp_counts": {
+      "1.0": 10195,
+      "nan": 2889
+    },
+    "nan_fee_rate_last_start": "2026-03-31 07:05:00+00:00",
+    "oos_book_fee_rates": [
+      0.05
+    ],
+    "is_book_trades_with_rate_0": 8395
+  },
+  "T7_end_ts_no_hindsight": {
+    "shares_identical": true,
+    "label": "T7 lock_end = ts + 4 h (no match-end hindsight)",
+    "burned_oos": {
+      "n_trades": 13184,
+      "n_matches": 2093,
+      "per_share_c": 0.753107997584926,
+      "per_share_ci_c": [
+        0.30105271318168925,
+        1.2015765827300007
+      ],
+      "per_print_c": 1.2806915190421815,
+      "total_pnl_usd": 5227.176139143266,
+      "sharpe_ann": 11.136030469442307,
+      "capital_usd": 23024.73278211813,
+      "max_dd_pct": -1.930704386856972,
+      "months_positive": 2,
+      "months_total": 3,
+      "fwd_primary_m30_per_trade_c": [
+        1.1412,
+        1.0553,
+        1.232
+      ],
+      "by_month_per_share_c": {
+        "2026-08": 0.7703,
+        "2026-09": 0.9,
+        "2026-10": -0.9026
+      }
+    },
+    "is_eval": {
+      "n_trades": 67468,
+      "per_share_c": 1.5855412600521863,
+      "per_share_ci_c": [
+        1.3518586445317755,
+        1.8041882143921286
+      ],
+      "total_pnl_usd": 43283.104559793894,
+      "sharpe_ann": 16.77640967922221
+    }
+  },
+  "T8_split_by_time_vs_match": {
+    "oos_trades_from_IS_matches": 17,
+    "their_pnl_usd": -15.511904861236744,
+    "per_share_c_oos_matches_only": 0.7565159942693802,
+    "n_trades_oos_matches_only": 13167
+  },
+  "T9_dry_run_emulation": {
+    "window": [
+      "2026-09-01 00:00:00+00:00",
+      "2026-09-03 00:00:00+00:00"
+    ],
+    "w_matches": 159,
+    "universe_matches_in_window": 159,
+    "w_equals_universe_window": true,
+    "fw_rows": 80979,
+    "fw_rows_with_history_duplicate": 80979,
+    "window_match_prints_lost_to_truncation": 3462,
+    "window_match_0_3s_prints_lost_to_truncation": 227,
+    "window_trades": {
+      "dry_as_coded": {
+        "n_trades": 577,
+        "per_share_c": -0.0649764588944219,
+        "pnl_usd": -18.056486462962994
+      },
+      "dry_no_truncation": {
+        "n_trades": 617,
+        "per_share_c": 0.11542706619311531,
+        "pnl_usd": 34.51132936554748
+      },
+      "burned_oos_run_same_matches": {
+        "n_trades": 603,
+        "per_share_c": 0.16903897426495335,
+        "pnl_usd": 49.53717094969633
+      }
+    }
+  }
+}

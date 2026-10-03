@@ -36,3 +36,26 @@ Every match starting before 13:00 UTC is excluded from the forward test.
   this is expected to be noisy; it is reported, not tested.
 - **Also reported:** the H6 claim that the fast tier keeps beating other takers in the window.
 - **Fails if** the primary is ≤ 0 or its CI includes 0. Reported either way.
+
+## Amendment A1 — written 2026-10-03 ~14:40 UTC, before any forward-window data was fetched
+Two adversarial verifiers (research/v2/verify_v2/) found that the "0–3 s after the jump onset" label
+uses hindsight: the onset is the first print of a 10 s window that the detector confirms up to 10 s
+later. On the burned OOS, 81% of v2's P&L came from prints before detection. Changes, all made before
+the forward run:
+1. **Causal window.** The 0–3 s window is measured from jump *detection*
+   (`tiers.add_causal_bucket`), and qualification, the wallet filter and the opportunity set are all
+   re-derived on it (`v2.run(causal=True)`). The burned OOS is re-reported on this basis:
+   +0.60¢/share [0.09, 1.13].
+2. **Wallet filter wording.** The threshold is each match's own published fee rate × q(1−q) (0.05
+   today; the code always did this).
+3. **Capital.** Each position locks capital for 4 h (ex-ante), not until the realised match end.
+4. **forward_test.py fixes.** No dedup of prints (identical rows are distinct fills); a dry run drops
+   window matches from history instead of truncating; the OOS split is by match start.
+5. **Primary metrics.** A dry run on an old two-day window (Sep 10–12, already seen) showed the v2-book
+   metric is underpowered for a window under 1 day (+0.65¢, CI −0.10 to 1.34). So:
+   - **Primary A (economic claim):** in the causal 0–3 s window, the 30 s net markout of
+     walk-forward fast-tier wallets minus that of all other takers. Match-clustered bootstrap. Pass if
+     the 95% CI excludes 0.
+   - **Primary B (strategy):** the v2 book's share-weighted 30 s net markout > 0, CI excluding 0. With
+     <1 day of matches a fail may be underpowered, and it will be reported as such.
+   - **Secondary:** v2 resolution P&L, and the same at +½ tick and +1 tick of entry slippage.

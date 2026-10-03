@@ -92,3 +92,25 @@ def match_prints(row, J=0.04) -> pd.DataFrame | None:
     df = pd.DataFrame(out)
     df["bucket"] = pd.cut(df.since, [b[0] for b in BUCKETS] + [1e9], labels=LABELS, right=False)
     return df
+
+
+def add_causal_bucket(prints: pd.DataFrame) -> pd.DataFrame:
+    """Label each print by seconds since the latest jump DETECTION (known in real time from prints
+    up to that moment), instead of since the onset (which needs prints up to 10 s later).
+
+    Adds since_det, with_jump_det and bucket_c. The detector is run on each match's own print
+    table, which is the in-play tape, so it matches jump_onsets() exactly."""
+    out = []
+    for c, g in prints.sort_values(["cond", "ts"], kind="stable").groupby("cond", sort=False):
+        ts, p, usd = g.ts.to_numpy(float), g.p.to_numpy(), g.usd.to_numpy()
+        on = jump_onsets(ts, p, usd)
+        dt_ = np.array([o[3] for o in on]) if on else np.array([])
+        dd = np.array([o[1] for o in on]) if on else np.array([])
+        k = np.searchsorted(dt_, ts, "right") - 1
+        since = np.where(k >= 0, ts - dt_[np.maximum(k, 0)], -1.0)
+        wj = np.where(k >= 0, g.dir.to_numpy() * dd[np.maximum(k, 0)], 0.0)
+        out.append(pd.DataFrame({"since_det": since, "with_jump_det": wj}, index=g.index))
+    lab = pd.concat(out)
+    prints = prints.join(lab)
+    prints["bucket_c"] = pd.cut(prints.since_det, [b[0] for b in BUCKETS] + [1e9], labels=LABELS, right=False)
+    return prints

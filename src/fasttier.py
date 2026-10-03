@@ -13,8 +13,8 @@ MIN_PRINTS, MIN_MATCHES, MIN_T = 30, 10, 3.0
 SHADOW_MAX_USD = 1_000
 
 
-def qualify(past: pd.DataFrame) -> pd.Index:
-    f = past[past.bucket == "0-3s"]
+def qualify(past: pd.DataFrame, bucket: str = "bucket") -> pd.Index:
+    f = past[past[bucket] == "0-3s"]
     g = f.groupby("wallet").agg(n=("mo30", "size"), nm=("cond", "nunique"), m=("mo30", "mean"), sd=("mo30", "std"))
     g = g[(g.n >= MIN_PRINTS) & (g.nm >= MIN_MATCHES) & (g.sd > 0)]
     t = g.m / (g.sd / np.sqrt(g.nm))
@@ -30,16 +30,17 @@ def net_cols(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def walk_forward(prints: pd.DataFrame, start_month: int = 2):
+def walk_forward(prints: pd.DataFrame, start_month: int = 2, bucket: str = "bucket"):
+    """bucket="bucket" labels by jump onset (ex-post event study); "bucket_c" by detection time (causal)."""
     prints = prints.assign(month=pd.to_datetime(prints.ts, unit="s").dt.to_period("M"))
     prints = net_cols(prints)
     months = sorted(prints.month.unique())
     rows, shadow, labelled = [], [], []
     for m in months[start_month:]:
-        sel = qualify(prints[prints.month < m])
+        sel = qualify(prints[prints.month < m], bucket)
         labelled.append(prints[prints.month == m].assign(fast=lambda d: d.wallet.isin(sel)))
-        cur = prints[(prints.month == m) & (prints.bucket == "0-3s") & prints.wallet.isin(sel)]
-        rest = prints[(prints.month == m) & (prints.bucket == "0-3s") & ~prints.wallet.isin(sel)]
+        cur = prints[(prints.month == m) & (prints[bucket] == "0-3s") & prints.wallet.isin(sel)]
+        rest = prints[(prints.month == m) & (prints[bucket] == "0-3s") & ~prints.wallet.isin(sel)]
         rows.append({"month": str(m), "n_wallets": len(sel), "n_prints": len(cur), "n_matches": cur.cond.nunique(),
                      "usd_k": cur.usd.sum() / 1e3, "net30_c": cur.net30.mean() * 100,
                      "net_res_c": cur.net_res.mean() * 100, "follow_res_c": cur.follow_res.mean() * 100,
@@ -49,7 +50,7 @@ def walk_forward(prints: pd.DataFrame, start_month: int = 2):
             sh["shares"] = sh.usd_in / np.where(sh.dir > 0, sh.p, 1 - sh.p)
             shadow.append(sh.assign(pnl=sh.shares * sh.net_res, pnl30=sh.shares * sh.net30))
     lab = pd.concat(labelled) if labelled else pd.DataFrame()
-    by_bucket = (lab.groupby(["bucket", "fast"], observed=True).net30.mean().unstack() * 100
+    by_bucket = (lab.groupby([bucket, "fast"], observed=True).net30.mean().unstack() * 100
                  ).rename(columns={True: "fast", False: "others"}) if len(lab) else pd.DataFrame()
     return pd.DataFrame(rows), (pd.concat(shadow) if shadow else pd.DataFrame()), by_bucket
 

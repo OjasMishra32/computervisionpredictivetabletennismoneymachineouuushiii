@@ -161,3 +161,12 @@ by `early_call.py --final` (logged in `results/tracking/test_peeks.log`).
   book.
 - v2 is frozen in HYPOTHESIS_V2.md and tested blind on a forward window starting 2026-10-03 13:00 UTC.
   The burned OOS figure for v2 is reported as non-blind.
+
+## D9 — onset hindsight fixed; v2 made causal (before the forward run)
+- Verifiers (research/v2/verify_v2/): the v2 code reproduces exactly, but the opportunity set used
+  hindsight. Burned-OOS v2 fell from +0.75¢ to +0.60¢ [0.09, 1.13] with a causal window. With +½ tick
+  slippage it is +0.10¢; with +1 tick, −0.40¢. In sample, causal v2 is +1.38¢ [1.17, 1.59], Sharpe
+  14.5, 7/7 months, and still +0.38¢ at +1 tick.
+- H1–H6 tables keep the onset-aligned labelling. They are an ex-post event study (who traded around
+  score events), not a tradable set. Every tradable claim (v2) now uses the causal window.
+- Forward-test changes are listed in HYPOTHESIS_V2.md amendment A1.

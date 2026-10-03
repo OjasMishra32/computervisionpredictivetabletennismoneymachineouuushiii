@@ -1,0 +1,132 @@
+{
+  "v2_burned_oos": {
+    "n": 13159,
+    "share_weighted_c": [
+      0.901,
+      0.779,
+      1.027
+    ],
+    "per_print_c": [
+      1.14,
+      1.048,
+      1.231
+    ]
+  },
+  "pre_detect": {
+    "n": 3808,
+    "share_weighted_c": [
+      1.177,
+      0.937,
+      1.414
+    ],
+    "per_print_c": [
+      1.411,
+      1.234,
+      1.58
+    ]
+  },
+  "same_second": {
+    "n": 8391,
+    "share_weighted_c": [
+      0.859,
+      0.72,
+      0.995
+    ],
+    "per_print_c": [
+      1.102,
+      0.993,
+      1.203
+    ]
+  },
+  "after_detect": {
+    "n": 960,
+    "share_weighted_c": [
+      0.353,
+      -0.098,
+      0.8
+    ],
+    "per_print_c": [
+      0.406,
+      0.062,
+      0.735
+    ]
+  },
+  "at_or_after_detect_posthoc": {
+    "n": 9351,
+    "share_weighted_c": [
+      0.804,
+      0.681,
+      0.938
+    ],
+    "per_print_c": [
+      1.03,
+      0.931,
+      1.13
+    ]
+  },
+  "stress_i_tick": {
+    "n": 13159,
+    "share_weighted_c": [
+      -0.099,
+      -0.221,
+      0.027
+    ],
+    "per_print_c": [
+      0.14,
+      0.048,
+      0.231
+    ]
+  },
+  "stress_ii_policy_at_or_after": {
+    "n": 9416,
+    "share_weighted_c": [
+      0.801,
+      0.663,
+      0.933
+    ],
+    "per_print_c": [
+      1.024,
+      0.915,
+      1.129
+    ]
+  },
+  "stress_ii_policy_at_or_after_plus_tick": {
+    "n": 9416,
+    "share_weighted_c": [
+      -0.199,
+      -0.337,
+      -0.067
+    ],
+    "per_print_c": [
+      0.024,
+      -0.085,
+      0.129
+    ]
+  },
+  "stress_ii_policy_strict_after": {
+    "n": 1500,
+    "share_weighted_c": [
+      0.409,
+      0.078,
+      0.748
+    ],
+    "per_print_c": [
+      0.517,
+      0.235,
+      0.804
+    ]
+  },
+  "stress_ii_policy_strict_after_plus_tick": {
+    "n": 1500,
+    "share_weighted_c": [
+      -0.591,
+      -0.922,
+      -0.252
+    ],
+    "per_print_c": [
+      -0.483,
+      -0.765,
+      -0.196
+    ]
+  }
+}
