@@ -1,0 +1,219 @@
+{
+ "label": "paper; order not sent; CV call on our own streamed footage mapped to a live tennis market for timing (different sport); feed baseline 1 s is simulated (licensed feed not purchased)",
+ "monthly": [
+  {
+   "month": "2025-10",
+   "inplay_usd": 17644567.360901944,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 23,
+   "n_matches": 439,
+   "gamma_volume_usd": 38713496.276701
+  },
+  {
+   "month": "2025-11",
+   "inplay_usd": 11182168.27561149,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 16,
+   "n_matches": 116,
+   "gamma_volume_usd": 33476640.804514
+  },
+  {
+   "month": "2025-12",
+   "inplay_usd": 673484.2049452661,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 5,
+   "n_matches": 17,
+   "gamma_volume_usd": 2468090.280689
+  },
+  {
+   "month": "2026-01",
+   "inplay_usd": 37752308.7631671,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 30,
+   "n_matches": 802,
+   "gamma_volume_usd": 98154892.064334
+  },
+  {
+   "month": "2026-02",
+   "inplay_usd": 57393485.43802995,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 28,
+   "n_matches": 1142,
+   "gamma_volume_usd": 161383791.272298
+  },
+  {
+   "month": "2026-03",
+   "inplay_usd": 26547857.595589247,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 24,
+   "n_matches": 490,
+   "gamma_volume_usd": 70461871.472292
+  },
+  {
+   "month": "2026-04",
+   "inplay_usd": 138407203.5860385,
+   "inplay_usd_delay1": 0.0,
+   "days_with_prints": 30,
+   "n_matches": 1578,
+   "gamma_volume_usd": 370428855.54581
+  },
+  {
+   "month": "2026-05",
+   "inplay_usd": 153119177.99944118,
+   "inplay_usd_delay1": 92860159.62349798,
+   "days_with_prints": 31,
+   "n_matches": 1589,
+   "gamma_volume_usd": 399651586.7020429
+  },
+  {
+   "month": "2026-06",
+   "inplay_usd": 104400633.4494302,
+   "inplay_usd_delay1": 104400633.4494302,
+   "days_with_prints": 30,
+   "n_matches": 1416,
+   "gamma_volume_usd": 330981220.0119644
+  },
+  {
+   "month": "2026-07",
+   "inplay_usd": 139768560.55103216,
+   "inplay_usd_delay1": 139768560.55103216,
+   "days_with_prints": 31,
+   "n_matches": 1570,
+   "gamma_volume_usd": 358170777.823761
+  },
+  {
+   "month": "2026-08",
+   "inplay_usd": 182770603.06472585,
+   "inplay_usd_delay1": 182770603.06472585,
+   "days_with_prints": 31,
+   "n_matches": 1758,
+   "gamma_volume_usd": 482809203.811686
+  },
+  {
+   "month": "2026-09",
+   "inplay_usd": 170077099.88689217,
+   "inplay_usd_delay1": 170077099.88689217,
+   "days_with_prints": 30,
+   "n_matches": 2024,
+   "gamma_volume_usd": 453946929.58291304
+  },
+  {
+   "month": "2026-10",
+   "inplay_usd": 14347296.693771787,
+   "inplay_usd_delay1": 14347296.693771787,
+   "days_with_prints": 3,
+   "n_matches": 143,
+   "gamma_volume_usd": 35833725.89313301
+  }
+ ],
+ "concurrency": {
+  "IS|3": {
+   "covered_matches_per_day": 2.9902912621359223,
+   "max_simultaneous": 3.0,
+   "median_daily_max_simultaneous": 2.0,
+   "p90_daily_max_simultaneous": 2.0,
+   "match_hours_median": 1.7677594609724152,
+   "match_hours_p90": 3.97656734438075,
+   "covered_match_hours_per_day": 6.225131215761138
+  },
+  "IS|10": {
+   "covered_matches_per_day": 9.825242718446601,
+   "max_simultaneous": 10.0,
+   "median_daily_max_simultaneous": 4.0,
+   "p90_daily_max_simultaneous": 6.0,
+   "match_hours_median": 1.8016858212484252,
+   "match_hours_p90": 4.438999999999999,
+   "covered_match_hours_per_day": 21.68201271746022
+  },
+  "IS|20": {
+   "covered_matches_per_day": 19.145631067961165,
+   "max_simultaneous": 20.0,
+   "median_daily_max_simultaneous": 6.0,
+   "p90_daily_max_simultaneous": 11.700000000000003,
+   "match_hours_median": 1.86325226250622,
+   "match_hours_p90": 4.504082596944438,
+   "covered_match_hours_per_day": 43.22405426215007
+  },
+  "IS|30": {
+   "covered_matches_per_day": 27.524271844660195,
+   "max_simultaneous": 29.0,
+   "median_daily_max_simultaneous": 9.0,
+   "p90_daily_max_simultaneous": 14.700000000000003,
+   "match_hours_median": 1.879287020828989,
+   "match_hours_p90": 4.458333333333333,
+   "covered_match_hours_per_day": 62.640354410098084
+  },
+  "IS|all": {
+   "covered_matches_per_day": 50.90291262135922,
+   "max_simultaneous": 86.0,
+   "median_daily_max_simultaneous": 15.0,
+   "p90_daily_max_simultaneous": 32.0,
+   "match_hours_median": 1.9482488105694453,
+   "match_hours_p90": 4.587205280608602,
+   "covered_match_hours_per_day": 121.41152267832008
+  },
+  "burned_OOS|3": {
+   "covered_matches_per_day": 3.0,
+   "max_simultaneous": 3.0,
+   "median_daily_max_simultaneous": 2.0,
+   "p90_daily_max_simultaneous": 2.0,
+   "match_hours_median": 2.098600245714188,
+   "match_hours_p90": 3.73786855852604,
+   "covered_match_hours_per_day": 6.935350611637037
+  },
+  "burned_OOS|10": {
+   "covered_matches_per_day": 9.925,
+   "max_simultaneous": 8.0,
+   "median_daily_max_simultaneous": 3.0,
+   "p90_daily_max_simultaneous": 6.0,
+   "match_hours_median": 1.8873021933105256,
+   "match_hours_p90": 3.520423753831122,
+   "covered_match_hours_per_day": 20.733938601012035
+  },
+  "burned_OOS|20": {
+   "covered_matches_per_day": 19.575,
+   "max_simultaneous": 11.0,
+   "median_daily_max_simultaneous": 5.0,
+   "p90_daily_max_simultaneous": 8.0,
+   "match_hours_median": 1.8421990019745298,
+   "match_hours_p90": 3.346251279936897,
+   "covered_match_hours_per_day": 40.33425725939374
+  },
+  "burned_OOS|30": {
+   "covered_matches_per_day": 28.95,
+   "max_simultaneous": 13.0,
+   "median_daily_max_simultaneous": 8.0,
+   "p90_daily_max_simultaneous": 11.0,
+   "match_hours_median": 1.8748721526397598,
+   "match_hours_p90": 3.3367795647316507,
+   "covered_match_hours_per_day": 60.324643300505144
+  },
+  "burned_OOS|all": {
+   "covered_matches_per_day": 65.825,
+   "max_simultaneous": 41.0,
+   "median_daily_max_simultaneous": 15.0,
+   "p90_daily_max_simultaneous": 27.1,
+   "match_hours_median": 1.9434592949681813,
+   "match_hours_p90": 3.5651111111111127,
+   "covered_match_hours_per_day": 145.07361704438097
+  }
+ },
+ "period_days": {
+  "IS": [
+   "2026-05-15",
+   "2026-08-25"
+  ],
+  "burned_OOS": [
+   "2026-08-25",
+   "2026-10-03"
+  ]
+ },
+ "run": {
+  "host": "c0705a-s2.ufhpc",
+  "workers": 32,
+  "seeds": 20,
+  "runtime_s": 1040.3,
+  "utc": "2026-10-03T22:43:43+00:00",
+  "slurm_job": "44620396"
+ }
+}
