@@ -1,0 +1,80 @@
+{
+ "label": "Example match from the backtest (selected for illustration) · simulated 1 s licensed-feed baseline · real Polymarket price path · paper",
+ "label_full": "Example match from the backtest (selected for illustration) · simulated 1 s licensed-feed baseline · real Polymarket price path · paper · 548 of 931 traded backtest matches (58.9%) were profitable at this setting (IS 60.9%, burned OOS 52.2%; seed 14)",
+ "label_on_every_frame": true,
+ "label_lines": [
+  "Example match from the backtest (selected for illustration) · simulated 1 s licensed-feed baseline · real Polymarket price path · paper ·",
+  "548 of 931 traded backtest matches (58.9%) were profitable at this setting (IS 60.9%, burned OOS 52.2%; seed 14)"
+ ],
+ "outputs": {
+  "video": "results/viz/v60_assets/backtest_match/example_match.mp4",
+  "still": "results/viz/v60_assets/backtest_match/example_match.png",
+  "video_spec": "1920x1080, 30 fps, 12 s (360 frames), H.264 yuv420p bt709",
+  "still_spec": "3840x2160 px, 300 dpi (final state)"
+ },
+ "source": {
+  "match_json": "results/viz/v60_assets/backtest_match/match.json",
+  "match_json_sha256": "1daf1248541f36557c2bc2a21ad3cd8504d700687b8767dace41a4671154d9bf"
+ },
+ "on_screen": {
+  "title": "Anna Bondar vs Tamara Zidansek",
+  "subtitle": "Iasi Open · WTA · 15 July 2026 · Zidansek won",
+  "y_caption": "Polymarket price, Anna Bondar to win · every print (real)",
+  "y_ticks": [
+   "0¢",
+   "25¢",
+   "50¢",
+   "75¢",
+   "100¢"
+  ],
+  "x_ticks_utc": [
+   "13:00",
+   "14:00",
+   "15:00",
+   "16:00"
+  ],
+  "counter_caption": "Cumulative P&L at settlement · paper",
+  "share_line": "548 of 931 traded backtest matches (58.9%) were profitable at this setting",
+  "median_line": "Median traded match +$11.27",
+  "label_line1": "Example match from the backtest (selected for illustration) · simulated 1 s licensed-feed baseline · real Polymarket price path · paper ·",
+  "label_line2": "548 of 931 traded backtest matches (58.9%) were profitable at this setting (IS 60.9%, burned OOS 52.2%; seed 14)",
+  "counter_final": "+$82.22",
+  "counter_start": "$0.00",
+  "legend_final": {
+   "Our fills": 62,
+   "Missed calls": 45
+  },
+  "best_trade": [
+   "+$138.92",
+   "best trade"
+  ],
+  "worst_trade": [
+   "−$144.85",
+   "worst trade"
+  ],
+  "per_fill_labels": "transient, settlement P&L of each fill in whole dollars, in fill order: −$72, +$43, +$78, −$105, +$121, −$21, −$122, +$64, +$41, +$31, −$137, +$139, −$89, +$2, +$73, −$12, +$32, −$41, +$45, −$63, +$59, −$5, −$33, +$13, +$12, −$29, −$4, +$92, −$90, +$45, +$32, −$69, +$72, −$79, +$104, −$99, −$24, +$125, −$131, +$139, −$145, +$128, −$120, +$107, −$101, +$111, −$103, +$77, −$40, +$46, −$81, +$108, −$86, +$20, −$3, −$4, +$17, +$23, −$67, +$97, −$73, +$35"
+ },
+ "what_is_drawn": {
+  "line": "every Polymarket print of the match's in-play tape (real), outcome-0 price, linear between prints",
+  "orange_dot": "a modelled fill (paper): x = order live time on the display clock (the modelled book reprice put at the historical jump onset; display assumption, see match.json fields), y = fill price on the outcome-0 axis (1 - price for an outcome-1 buy)",
+  "grey_dot": "a missed call (order did not fill): y = stale outcome-0 VWAP before the jump",
+  "counter": "cumulative settlement P&L of the fills shown so far (each position held to the match result), rolling over 0.3 s per fill; ends exactly at the match P&L",
+  "per_fill_labels": "settlement P&L of the fill, whole dollars; orange if > 0, light grey if < 0; a correct call on the eventual loser's point loses at settlement",
+  "timing": "chrome fades in over 0.5 s (label at full opacity from frame 0); line draws 0.6-9.4 s with a mild ease; best / worst notes from 9.6 s; hold to 12 s"
+ },
+ "numbers": {
+  "pnl_usd": 82.22,
+  "fills": 62,
+  "misses": 45,
+  "calls": 107,
+  "profitable_share_pooled": 0.5886,
+  "profitable_matches": 548,
+  "traded_matches": 931,
+  "median_match_pnl_usd": 11.27
+ },
+ "render": {
+  "utc": "2026-10-03T23:21:52+00:00",
+  "script": "scripts/backtest_example_match.py render",
+  "font": "Inter (SIL OFL 1.1), results/viz/v60_assets/fonts/"
+ }
+}
