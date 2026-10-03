@@ -56,13 +56,23 @@
   },
   {
    "slide": "1 Title",
-   "text": "5.7%",
-   "source": "results/leverage_stats.json :: atp > mean_abs_leverage"
+   "text": "2.6¢",
+   "source": "results/leverage_stats.json :: atp  [total_abs_move_per_match / points_per_match, per $1 share]"
+  },
+  {
+   "slide": "1 Title",
+   "text": "5.7¢",
+   "source": "results/leverage_stats.json :: atp > mean_abs_leverage  [swing in fair value between winning and losing the point]"
   },
   {
    "slide": "2 Economics",
    "text": "±2.4 cm",
    "source": "results/summary.json :: tracking_tennis_physics > [lead_ms=100] > pred_err_sd_cm"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "158 ms",
+   "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > ms  [processing only; laptop benchmark]"
   },
   {
    "slide": "2 Economics",
@@ -111,8 +121,13 @@
   },
   {
    "slide": "2 Economics",
-   "text": "5.7%",
-   "source": "results/leverage_stats.json :: atp > mean_abs_leverage"
+   "text": "2.6¢",
+   "source": "results/leverage_stats.json :: atp  [total_abs_move_per_match / points_per_match, per $1 share]"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "5.7¢",
+   "source": "results/leverage_stats.json :: atp > mean_abs_leverage  [swing in fair value between winning and losing the point]"
   },
   {
    "slide": "2 Economics",
@@ -351,22 +366,37 @@
   },
   {
    "slide": "4 CV in action",
-   "text": "97.7%",
-   "source": "results/engine/demo_run.json :: vision > detection_vs_labels > within_5px"
+   "text": "94.0%",
+   "source": "results/tracking/summary.json :: detection_accuracy_pooled > [split=test, source=tracked] > within5"
   },
   {
    "slide": "4 CV in action",
-   "text": "99.7%",
-   "source": "results/engine/demo_run.json :: vision > detection_vs_labels > recall"
+   "text": "96.7%",
+   "source": "results/tracking/summary.json :: detection_accuracy_pooled > [split=test, source=tracked] > recall"
   },
   {
    "slide": "4 CV in action",
-   "text": "100 ms",
+   "text": "6,833",
+   "source": "results/tracking/summary.json :: detection_accuracy_pooled > [split=test, source=tracked] > n_visible"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "25 ms",
+   "source": "results/tracking/summary.json :: early_call > miss_first_call_lead_test_ms > median"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "408 ms",
+   "source": "results/tracking/demo/manifest.json :: clips > 0 > call_lead_ms"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "158 ms",
    "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > ms"
   },
   {
    "slide": "4 CV in action",
-   "text": "153 ms",
+   "text": "219 ms",
    "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > p90"
   },
   {
@@ -438,6 +468,11 @@
    "slide": "5 Backtest",
    "text": "pending",
    "source": "results/v2/forward.json  [blind forward test: one run, pre-registered in HYPOTHESIS_V2.md]"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
   },
   {
    "slide": "5 Backtest",
@@ -550,9 +585,14 @@
    "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > sharpe_ann"
   },
   {
+   "slide": "5 Backtest",
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
+  },
+  {
    "slide": "6 Rigor",
-   "text": "3,386",
-   "source": "results/rigor/rigor.json :: psr_dsr > N > all_NOTE_s8"
+   "text": "3,410",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > all_plus_v2safe_grid  [NOTE section 8 counts 3,386; plus the 24-variant v2-safe grid]"
   },
   {
    "slide": "6 Rigor",
@@ -561,18 +601,18 @@
   },
   {
    "slide": "6 Rigor",
-   "text": "1.00",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr > N3386/sizing_grid_55 > dsr"
+   "text": "0.997",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr_min_N3410"
   },
   {
    "slide": "6 Rigor",
    "text": "0.075",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N3386/null > dsr"
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr_min_N3410"
   },
   {
    "slide": "6 Rigor",
    "text": "0.481",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N44/null > dsr"
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr_min_N44"
   },
   {
    "slide": "6 Rigor",
@@ -628,6 +668,16 @@
    "slide": "6 Rigor",
    "text": "pending",
    "source": "results/v2/forward.json  [verdict_B_v2_book]"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "−0.22¢ / −0.52¢; burned +0.68¢ [−0.44, 1.74]",
+   "source": "results/tier0_v3/blind.json :: sets > u2_is|u2_oos|burned_oos > primary > per_share_c (+ burned CI)"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAIL",
+   "source": "results/tier0_v3/blind.json :: verdicts > U2 (primary, test b) > overall; sets > burned_oos > reading > verdict"
   },
   {
    "slide": "6 Rigor",
@@ -691,8 +741,18 @@
   },
   {
    "slide": "6 Rigor",
-   "text": "45",
-   "source": "results/oos_peeks.log  [non-empty lines]"
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "65",
+   "source": "results/oos_peeks.log  [non-empty lines at build time]"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
   },
   {
    "slide": "7 Tier-0 counterfactual",
@@ -976,8 +1036,48 @@
   },
   {
    "slide": "7 Tier-0 counterfactual",
+   "text": "0.68 s",
+   "source": "results/tier0/results.json :: timing > pre_registered_primary_median_t_reprice_minus_t_bounce_s"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
    "text": "$1,153",
    "source": "results/financials/financials.json :: headline > 9 > fixed_cost_usd_per_day > low  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−0.22¢",
+   "source": "results/tier0_v3/blind.json :: sets > u2_is > primary > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−0.52¢",
+   "source": "results/tier0_v3/blind.json :: sets > u2_oos > primary > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.68¢",
+   "source": "results/tier0_v3/blind.json :: sets > burned_oos > primary > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−0.44",
+   "source": "results/tier0_v3/blind.json :: sets > burned_oos > primary > per_share_ci95_c_lo"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "1.74",
+   "source": "results/tier0_v3/blind.json :: sets > burned_oos > primary > per_share_ci95_c_hi"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "FAIL",
+   "source": "results/tier0_v3/blind.json :: verdicts > U2 (primary, test b) > overall"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "FAIL",
+   "source": "results/tier0_v3/blind.json :: sets > burned_oos > reading > verdict"
   },
   {
    "slide": "7 Tier-0 counterfactual",
@@ -1061,18 +1161,28 @@
   },
   {
    "slide": "8 Live engine",
-   "text": "QUOTING (paper)",
+   "text": "WARMING UP",
+   "source": "results/live/summary.json :: status, run, started_process, now, counters  [+ STOPPED_<run> marker and file age; 1970 'now' or empty counters = warming up]"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "warm-up: waiting for trades (0 seen)",
    "source": "results/live/summary.json :: status"
   },
   {
    "slide": "8 Live engine",
-   "text": "20261003T193534Z",
+   "text": "20261003T204812Z",
    "source": "results/live/summary.json :: run"
   },
   {
    "slide": "8 Live engine",
-   "text": "2026-10-03 20:19 UTC",
-   "source": "results/live/summary.json :: now"
+   "text": "2026-10-03 20:48 UTC",
+   "source": "results/live/summary.json :: started_process"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "2026-10-03 21:32 UTC",
+   "source": "results/live/summary.json :: now  [file modification time when now is 1970]"
   },
   {
    "slide": "8 Live engine",
@@ -1093,16 +1203,6 @@
    "slide": "8 Live engine",
    "text": "$10,000",
    "source": "results/live/summary.json :: capital_per_book"
-  },
-  {
-   "slide": "8 Live engine",
-   "text": "25,982",
-   "source": "results/live/summary.json :: counters  [sum msg_*]"
-  },
-  {
-   "slide": "8 Live engine",
-   "text": "0",
-   "source": "results/live/summary.json :: matches_in_play"
   },
   {
    "slide": "9 Risk + liquidity + financials",
@@ -1251,13 +1351,18 @@
   },
   {
    "slide": "10 Close",
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
+  },
+  {
+   "slide": "10 Close",
    "text": "pending",
    "source": "results/v2/forward.json  [forward test]"
   },
   {
    "slide": "10 Close",
-   "text": "QUOTING (paper)",
-   "source": "results/live/summary.json :: status"
+   "text": "warming up (started 2026-10-03 20:48 UTC)",
+   "source": "results/live/summary.json :: status, run, started_process, now, counters  [+ STOPPED_<run> marker and file age; 1970 'now' or empty counters = warming up]"
   },
   {
    "slide": "10 Close",
@@ -1316,8 +1421,13 @@
   },
   {
    "slide": "12 Q2",
-   "text": "45",
+   "text": "65",
    "source": "results/oos_peeks.log  [non-empty lines]"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "2026-10-04 11:30 UTC",
+   "source": "HYPOTHESIS_V2.md :: Forward test 'planned ~<date> UTC'"
   },
   {
    "slide": "13 Q3",
@@ -1486,8 +1596,8 @@
   },
   {
    "slide": "17 Q7",
-   "text": "3,386",
-   "source": "results/rigor/rigor.json :: psr_dsr > N > all_NOTE_s8"
+   "text": "3,410",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > all_plus_v2safe_grid  [NOTE section 8 counts 3,386; plus the 24-variant v2-safe grid]"
   },
   {
    "slide": "17 Q7",
@@ -1501,18 +1611,18 @@
   },
   {
    "slide": "17 Q7",
-   "text": "1.00",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr > N3386/sizing_grid_55 > dsr"
+   "text": "0.997",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr_min_N3410"
   },
   {
    "slide": "17 Q7",
    "text": "0.481",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N44/null > dsr"
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr_min_N44"
   },
   {
    "slide": "17 Q7",
    "text": "0.075",
-   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N3386/null > dsr"
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr_min_N3410"
   },
   {
    "slide": "17 Q7",
@@ -1546,8 +1656,13 @@
   },
   {
    "slide": "18 Q8",
-   "text": "39",
+   "text": "38.7",
    "source": "results/v2/note_metrics.json :: holdout > oos_days"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "40",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > days  [UTC dates with trades in the burned OOS window]"
   },
   {
    "slide": "18 Q8",
@@ -1661,7 +1776,7 @@
   },
   {
    "slide": "20 Q10",
-   "text": "100 ms",
+   "text": "158 ms",
    "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > ms"
   }
  ],
@@ -1680,7 +1795,7 @@
   }
  ],
  "warnings": [
-  "docs/NOTE.md says oos_peeks.log has 19 lines; the log now has 45 (append-only; the deck shows the live count)",
+  "docs/NOTE.md says oos_peeks.log has 19 lines; the log now has 65 (append-only; the deck shows the live count)",
   "results/financials/pm_compute.json p07: the note's wallet-clustered CI does not reproduce to 2 dp; the deck quotes pm_compute's value"
  ]
 }

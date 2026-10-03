@@ -2,7 +2,7 @@
  "video": "results/viz/courtside_video.mp4",
  "srt": "results/viz/courtside_video.srt",
  "script": "docs/video_script.md",
- "duration_s": 204.58,
+ "duration_s": 274.14,
  "voice": "Samantha",
  "rate_wpm": 215,
  "scenes": [
@@ -11,84 +11,84 @@
    "key": "hook",
    "title": "Call the point before the ball lands",
    "start_s": 0.0,
-   "dur_s": 12.12
+   "dur_s": 18.46
   },
   {
    "id": "S02",
    "key": "economics",
    "title": "Information arrives in tiers",
-   "start_s": 12.12,
-   "dur_s": 17.66
+   "start_s": 18.46,
+   "dur_s": 23.81
   },
   {
    "id": "S03",
    "key": "evidence",
    "title": "The fast tier wins every month",
-   "start_s": 29.78,
-   "dur_s": 13.54
+   "start_s": 42.27,
+   "dur_s": 15.66
   },
   {
    "id": "S04",
    "key": "vision",
    "title": "Calling the point before contact",
-   "start_s": 43.32,
-   "dur_s": 16.44
+   "start_s": 57.93,
+   "dur_s": 17.44
   },
   {
    "id": "S05",
    "key": "tennis",
    "title": "Tennis replay (simulated physics)",
-   "start_s": 59.76,
-   "dur_s": 14.99
+   "start_s": 75.37,
+   "dur_s": 15.94
   },
   {
    "id": "S06",
    "key": "backtest",
    "title": "The backtest, in sample and out",
-   "start_s": 74.75,
-   "dur_s": 21.67
+   "start_s": 91.31,
+   "dur_s": 23.17
   },
   {
    "id": "S07",
    "key": "overfitting",
    "title": "Deflated Sharpe and overfitting",
-   "start_s": 96.42,
-   "dur_s": 18.66
+   "start_s": 114.48,
+   "dur_s": 21.56
   },
   {
    "id": "S08",
    "key": "scoreboard",
    "title": "Blind tests and failures",
-   "start_s": 115.08,
-   "dur_s": 13.69
+   "start_s": 136.05,
+   "dur_s": 26.54
   },
   {
    "id": "S09",
    "key": "tier0",
    "title": "What vision buys (counterfactual)",
-   "start_s": 128.77,
-   "dur_s": 24.52
+   "start_s": 162.58,
+   "dur_s": 31.84
   },
   {
    "id": "S10",
    "key": "live",
    "title": "Live books, paper only",
-   "start_s": 153.28,
-   "dur_s": 16.84
+   "start_s": 194.43,
+   "dur_s": 27.43
   },
   {
    "id": "S11",
    "key": "risk",
    "title": "Costs, capacity and kill switches",
-   "start_s": 170.12,
-   "dur_s": 23.16
+   "start_s": 221.86,
+   "dur_s": 26.56
   },
   {
    "id": "S12",
    "key": "close",
    "title": "Reproduce it",
-   "start_s": 193.28,
-   "dur_s": 11.3
+   "start_s": 248.42,
+   "dur_s": 25.72
   }
  ],
  "captions": [
@@ -104,208 +104,228 @@
   },
   {
    "start_s": 7.74,
-   "end_s": 11.82,
+   "end_s": 13.95,
+   "text": "That is our longest call on held-out games. The median is 25 milliseconds, and it called 8 of 41 test misses early."
+  },
+  {
+   "start_s": 14.07,
+   "end_s": 18.16,
    "text": "Courtside asks what that head start is worth on a prediction market, and what we can prove."
   },
   {
-   "start_s": 12.42,
-   "end_s": 14.59,
+   "start_s": 18.76,
+   "end_s": 20.92,
    "text": "When a point ends, the news spreads in tiers."
   },
   {
-   "start_s": 14.71,
-   "end_s": 18.41,
-   "text": "A courtside camera with our vision model would know in about 95 milliseconds."
+   "start_s": 21.04,
+   "end_s": 28.91,
+   "text": "Ball tracking knows before the bounce. Our vision model takes about 158 milliseconds per call in a laptop benchmark; we have no courtside camera."
   },
   {
-   "start_s": 18.53,
-   "end_s": 23.88,
-   "text": "ESPN's live score trails the order book by about 28 seconds, the public scoreboard by 45."
+   "start_s": 29.03,
+   "end_s": 36.37,
+   "text": "Market makers reprice about 1.3 seconds before the official point stamp. ESPN's live score trails the book by about 28 seconds."
   },
   {
-   "start_s": 24.0,
-   "end_s": 29.48,
+   "start_s": 36.49,
+   "end_s": 41.97,
    "text": "Slower tiers trade against stale prices. The gap persists because speed costs money, and capacity is small."
   },
   {
-   "start_s": 30.08,
-   "end_s": 33.32,
+   "start_s": 42.57,
+   "end_s": 45.81,
    "text": "A small group of wallets trades in the first three seconds after a point."
   },
   {
-   "start_s": 33.44,
-   "end_s": 38.62,
-   "text": "Thirty seconds later, net of fees, they are up in 9 of 9 months. Everyone else is down in 9."
+   "start_s": 45.93,
+   "end_s": 53.12,
+   "text": "Thirty seconds later, net of fees, they are up in 11 of 11 months, including 3 of 3 out of sample. Everyone else is down in 11."
   },
   {
-   "start_s": 38.75,
-   "end_s": 43.02,
-   "text": "Copying them three seconds later loses in 9 of 9. The edge goes to whoever is first."
+   "start_s": 53.24,
+   "end_s": 57.63,
+   "text": "Copying them three seconds later loses in 11 of 11. The edge goes to whoever is first."
   },
   {
-   "start_s": 43.62,
-   "end_s": 45.14,
-   "text": "So we built our own fast tier."
+   "start_s": 58.23,
+   "end_s": 60.1,
+   "text": "So we tested whether vision could get there."
   },
   {
-   "start_s": 45.26,
-   "end_s": 48.81,
-   "text": "On held-out games, it tracks the ball and calls misses before contact."
+   "start_s": 60.22,
+   "end_s": 64.42,
+   "text": "On held-out table tennis games, it tracks the ball and calls misses before contact."
   },
   {
-   "start_s": 48.93,
-   "end_s": 55.75,
+   "start_s": 64.54,
+   "end_s": 71.36,
    "text": "Fifty milliseconds out, it made 11 calls, all correct. The 95% lower bound on precision is 74 percent."
   },
   {
-   "start_s": 55.87,
-   "end_s": 59.46,
+   "start_s": 71.48,
+   "end_s": 75.07,
    "text": "It catches 27 percent of misses that early, and leaves the rest alone."
   },
   {
-   "start_s": 60.06,
-   "end_s": 63.78,
+   "start_s": 75.67,
+   "end_s": 79.39,
    "text": "We have no licensed tennis footage, so this replay is simulated physics."
   },
   {
-   "start_s": 63.9,
-   "end_s": 69.94,
-   "text": "A 340 frame per second tracker calls it out 200 milliseconds before the bounce, and reads the spin from the flight."
+   "start_s": 79.51,
+   "end_s": 86.5,
+   "text": "In simulation, a 340 frame per second tracker calls it out 200 milliseconds before the bounce, and reads the spin from the flight."
   },
   {
-   "start_s": 70.06,
-   "end_s": 74.45,
+   "start_s": 86.62,
+   "end_s": 91.01,
    "text": "On the right is a real Polymarket tape: fast-tier wallets traded within seconds of the point."
   },
   {
-   "start_s": 75.05,
-   "end_s": 78.74,
+   "start_s": 91.61,
+   "end_s": 95.3,
    "text": "Version two trades only at the fast tier's own fill prices, after fees."
   },
   {
-   "start_s": 78.86,
-   "end_s": 86.09,
+   "start_s": 95.42,
+   "end_s": 102.65,
    "text": "In sample, February to August: 1.38 cents a share, Sharpe 14.5, worst drawdown 2.0 percent."
   },
   {
-   "start_s": 86.21,
-   "end_s": 91.68,
+   "start_s": 102.77,
+   "end_s": 108.24,
    "text": "Out of sample, a window we had already seen: 0.60 cents, Sharpe 6.7."
   },
   {
-   "start_s": 91.8,
-   "end_s": 96.12,
+   "start_s": 108.36,
+   "end_s": 112.68,
    "text": "Double the fees, and out of sample turns negative: \u22120.34 cents."
   },
   {
-   "start_s": 96.72,
-   "end_s": 100.29,
+   "start_s": 114.78,
+   "end_s": 118.35,
    "text": "We tried thousands of configurations, so we deflate the Sharpe ratio."
   },
   {
-   "start_s": 100.41,
-   "end_s": 105.85,
-   "text": "In sample it stays above 0.99, even counting all 3,386 trials."
+   "start_s": 118.47,
+   "end_s": 123.49,
+   "text": "In sample it is 0.997, even counting all 3,410 trials."
   },
   {
-   "start_s": 105.97,
-   "end_s": 110.59,
-   "text": "The 40-day out-of-sample window does not survive that. It falls to 0.07."
+   "start_s": 123.61,
+   "end_s": 128.56,
+   "text": "The 40-day out-of-sample window does not survive that. It falls to 0.075."
   },
   {
-   "start_s": 110.71,
-   "end_s": 114.78,
-   "text": "Probability of backtest overfitting on the 24-variant grid: 15 percent."
+   "start_s": 128.68,
+   "end_s": 135.75,
+   "text": "Probability of backtest overfitting on the 24-variant grid: 15 percent picking by Sharpe, 42 percent with our own selection rule."
   },
   {
-   "start_s": 115.38,
-   "end_s": 120.87,
-   "text": "Unseen markets passed in sample, then failed out of sample. The market-making variant failed its blind test."
+   "start_s": 136.35,
+   "end_s": 145.58,
+   "text": "Unseen markets passed in sample and failed out of sample. The original copy strategy lost 36 thousand dollars on its blind window, and the market-making variant failed its blind test."
   },
   {
-   "start_s": 120.99,
-   "end_s": 123.3,
-   "text": "Table tennis markets had no fast tier at all."
+   "start_s": 145.7,
+   "end_s": 151.09,
+   "text": "The frozen tier-zero version failed its blind tests too. In table tennis markets we detected no fast tier."
   },
   {
-   "start_s": 123.42,
-   "end_s": 128.47,
-   "text": "The blind forward test is still pending. Every look at out-of-sample data is logged: 51 entries."
+   "start_s": 151.21,
+   "end_s": 160.78,
+   "text": "The blind forward test runs once, planned for 2026-10-04 11:30 UTC. Every look at out-of-sample data is logged: 65 entries at render time."
   },
   {
-   "start_s": 129.07,
-   "end_s": 131.76,
+   "start_s": 162.88,
+   "end_s": 165.58,
    "text": "What does vision buy? This part is a counterfactual."
   },
   {
-   "start_s": 131.88,
-   "end_s": 136.32,
+   "start_s": 165.7,
+   "end_s": 170.14,
    "text": "It assumes a licensed feed and a courtside camera we did not buy, with parameters we measured."
   },
   {
-   "start_s": 136.44,
-   "end_s": 144.17,
+   "start_s": 170.26,
+   "end_s": 177.99,
    "text": "In sample, 1.10 cents a share, Sharpe 11.4. Out of sample, 0.58 cents, Sharpe 7.3."
   },
   {
-   "start_s": 144.29,
-   "end_s": 148.62,
+   "start_s": 178.11,
+   "end_s": 182.44,
    "text": "The sign hinges on how fast the market reprices after the bounce, which we have not measured."
   },
   {
-   "start_s": 148.74,
-   "end_s": 152.98,
-   "text": "Under the stamp reading, if that takes less than 1.1 seconds, the edge is gone."
+   "start_s": 182.56,
+   "end_s": 190.99,
+   "text": "Under the stamp reading, if that takes less than 1.1 seconds, the edge is gone. Our pre-registered estimate, 0.68 seconds, falls in that zone."
   },
   {
-   "start_s": 153.58,
-   "end_s": 157.12,
-   "text": "The engine runs end to end on live Polymarket order books, paper only."
+   "start_s": 191.11,
+   "end_s": 194.13,
+   "text": "A frozen version then failed its blind tests on unseen markets."
   },
   {
-   "start_s": 157.24,
-   "end_s": 162.58,
+   "start_s": 194.73,
+   "end_s": 199.11,
+   "text": "The market-data and paper-trading legs run on live Polymarket order books, paper only."
+  },
+  {
+   "start_s": 199.23,
+   "end_s": 204.58,
    "text": "In a 60 second check it read 7,785 book messages across 27 markets,"
   },
   {
-   "start_s": 162.7,
-   "end_s": 167.71,
-   "text": "at a median feed latency of 65 milliseconds, with zero mismatches and zero orders sent."
+   "start_s": 204.7,
+   "end_s": 209.7,
+   "text": "at a median feed latency of 65 milliseconds, with 0 mismatches and 0 orders sent."
   },
   {
-   "start_s": 167.83,
-   "end_s": 169.82,
-   "text": "Tonight's live paper session is running now."
+   "start_s": 209.82,
+   "end_s": 221.56,
+   "text": "The full chain, from vision call to paper order, ran on a recorded book. A live paper session started on 2026-10-03 at 20:48 UTC; at render time it was still warming up, so it had not quoted yet."
   },
   {
-   "start_s": 170.42,
-   "end_s": 176.67,
+   "start_s": 222.16,
+   "end_s": 228.41,
    "text": "In sample, a gross edge of 282 dollars a day loses 86 to taker fees, leaving 196."
   },
   {
-   "start_s": 176.79,
-   "end_s": 184.39,
+   "start_s": 228.53,
+   "end_s": 236.13,
    "text": "Central fixed costs, mostly a data licence, are 167 a day. That leaves 29 in sample, and a loss out of sample."
   },
   {
-   "start_s": 184.51,
-   "end_s": 189.04,
-   "text": "Out of sample, the edge stays positive only up to about 34 thousand dollars of capital."
+   "start_s": 236.25,
+   "end_s": 242.68,
+   "text": "Before fixed costs, out of sample is still positive at 34 thousand dollars of capital, and negative by 54 thousand."
   },
   {
-   "start_s": 189.16,
-   "end_s": 192.98,
+   "start_s": 242.8,
+   "end_s": 246.62,
    "text": "Kill switches stop trading on a drawdown, a stale feed, or a fee change."
   },
   {
-   "start_s": 193.58,
-   "end_s": 199.3,
-   "text": "Everything here is paper trading. No real money was traded, and no live ATP or WTA data was used."
+   "start_s": 248.72,
+   "end_s": 251.58,
+   "text": "Everything here is paper trading. No real money was traded."
   },
   {
-   "start_s": 199.42,
-   "end_s": 204.28,
-   "text": "The code and every result file are in the public repository. One command rebuilds the backtest tables."
+   "start_s": 251.7,
+   "end_s": 259.42,
+   "text": "We bought no official ATP or WTA data feed, and no trading result uses one. Free public score pages were recorded only to time their lag."
+  },
+  {
+   "start_s": 259.54,
+   "end_s": 267.18,
+   "text": "The code is public. One command replays the paper engine on recorded books in seconds. Two more rebuild every table from public data, in one to two hours."
+  },
+  {
+   "start_s": 267.3,
+   "end_s": 270.84,
+   "text": "Every number in this video is listed with its source file in the video manifest."
   }
  ],
  "values": {
@@ -398,6 +418,52 @@
     "S01"
    ]
   },
+  "lead_med_ms": {
+   "value": 25.0,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.miss_first_call_lead_test_ms.median",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ]
+  },
+  "lead_p90_ms": {
+   "value": 210.0,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.miss_first_call_lead_test_ms.p90",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ]
+  },
+  "lead_n_called": {
+   "value": 8,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.miss_first_call_lead_test_ms.n_called",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ]
+  },
+  "lead_n_miss": {
+   "value": 41,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.miss_first_call_lead_test_ms.n_miss",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ]
+  },
+  "hook_is_longest": {
+   "value": true,
+   "file": "results/tracking/demo/manifest.json",
+   "key": "clips[0].call_lead_ms == max(call_lead_ms of MISS clips); the clips were picked from the test calls",
+   "pending": false,
+   "shown_in": [
+    "S01"
+   ],
+   "note": "the hook clip is the longest online call on held-out games"
+  },
   "tp50": {
    "value": 11,
    "file": "results/tracking/summary.json",
@@ -429,6 +495,15 @@
    "value": 1.0,
    "file": "results/tracking/summary.json",
    "key": "early_call.precision_recall_test_snapshot.50ms.precision",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "n50": {
+   "value": 11,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot.50ms.tp + .fp",
    "pending": false,
    "shown_in": [
     "S04"
@@ -488,32 +563,71 @@
     "S04"
    ]
   },
-  "det_prec": {
-   "value": 98.04,
+  "det_w5": {
+   "value": 93.97,
    "file": "results/tracking/summary.json",
-   "key": "detection_accuracy_pooled[split=test,source=tracked].precision@10px",
+   "key": "detection_accuracy_pooled[split=test,source=tracked].within5",
    "pending": false,
    "shown_in": [
     "S04"
    ]
   },
-  "ldn_ms": {
-   "value": 94.7,
-   "file": "results/decay/decay.json",
-   "key": "stacks[name=LDN-meas].l_s x 1000",
+  "det_n": {
+   "value": 6833,
+   "file": "results/tracking/summary.json",
+   "key": "detection_accuracy_pooled[split=test,source=tracked].n_visible",
+   "pending": false,
+   "shown_in": [
+    "S04"
+   ]
+  },
+  "he100_cm": {
+   "value": 2.3746,
+   "file": "results/summary.json",
+   "key": "tracking_tennis_physics[lead_ms=100].pred_err_sd_cm",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "simulated Hawk-Eye-class physics"
+  },
+  "vis_ms": {
+   "value": 158.44,
+   "file": "results/engine/demo_run.json",
+   "key": "latency_budget[stage 'vision\u2026'][0].ms (processing only)",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "laptop benchmark; no courtside camera"
+  },
+  "vis_p90_ms": {
+   "value": 219.37,
+   "file": "results/engine/demo_run.json",
+   "key": "latency_budget[stage 'vision\u2026'][0].p90",
    "pending": false,
    "shown_in": [
     "S02"
    ]
   },
-  "cv_ms": {
-   "value": 84.33,
-   "file": "results/decay/decay.json",
-   "key": "latency_inputs.cv_measured_s.p50 x 1000",
+  "book_vs_stamp_s": {
+   "value": -1.32,
+   "file": "results/tier0/results.json",
+   "key": "timing.median_t_reprice_minus_t_stamp_s",
    "pending": false,
    "shown_in": [
     "S02"
    ]
+  },
+  "stamp_lag_s": {
+   "value": 3.142,
+   "file": "results/tier0/results.json",
+   "key": "timing.calibrated_stamp_lag_s (inference)",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ],
+   "note": "inference, not a measurement"
   },
   "espn_s": {
    "value": 28.2,
@@ -522,12 +636,31 @@
    "pending": false,
    "shown_in": [
     "S02"
-   ]
+   ],
+   "note": "recorded from the free ESPN scoreboard, research/v2/latency/RESULTS.md"
   },
   "h4_s": {
    "value": 44.52,
-   "file": "results/decay/decay.json",
-   "key": "latency_inputs.h4_book_leads_public_score_s.median",
+   "file": "results/summary.json",
+   "key": "h4.median_lead_s",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "h4_share": {
+   "value": 93.33333333333333,
+   "file": "results/summary.json",
+   "key": "h4.share_book_first",
+   "pending": false,
+   "shown_in": [
+    "S02"
+   ]
+  },
+  "h4_n": {
+   "value": 75,
+   "file": "results/summary.json",
+   "key": "h4.n",
    "pending": false,
    "shown_in": [
     "S02"
@@ -582,35 +715,53 @@
    ]
   },
   "ft_rows": {
-   "value": "<series: 9 items>",
-   "file": "results/fasttier_walkforward_is.csv",
-   "key": "month, net30_c, others_net30_c, follow_res_c (all rows)",
+   "value": "<series: 11 items>",
+   "file": "results/summary.json",
+   "key": "is.h6_walkforward (months before universe.oos_start) + oos.h6_walkforward: month, net30_c, others_net30_c, follow_res_c",
    "pending": false,
    "shown_in": [
     "S03"
    ]
   },
   "ft_n": {
-   "value": 9,
-   "file": "results/fasttier_walkforward_is.csv",
-   "key": "count(rows)",
+   "value": 11,
+   "file": "results/summary.json",
+   "key": "count(months) in is.h6_walkforward (months before universe.oos_start) + oos.h6_walkforward",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
+  "ft_n_oos": {
+   "value": 3,
+   "file": "results/summary.json",
+   "key": "count(oos.h6_walkforward)",
    "pending": false,
    "shown_in": [
     "S03"
    ]
   },
   "ft_pos": {
-   "value": 9,
-   "file": "results/fasttier_walkforward_is.csv",
+   "value": 11,
+   "file": "results/summary.json",
    "key": "count(net30_c > 0)",
    "pending": false,
    "shown_in": [
     "S03"
    ]
   },
+  "ft_pos_oos": {
+   "value": 3,
+   "file": "results/summary.json",
+   "key": "count(oos.h6_walkforward net30_c > 0)",
+   "pending": false,
+   "shown_in": [
+    "S03"
+   ]
+  },
   "oth_neg": {
-   "value": 9,
-   "file": "results/fasttier_walkforward_is.csv",
+   "value": 11,
+   "file": "results/summary.json",
    "key": "count(others_net30_c < 0)",
    "pending": false,
    "shown_in": [
@@ -618,8 +769,8 @@
    ]
   },
   "fol_neg": {
-   "value": 9,
-   "file": "results/fasttier_walkforward_is.csv",
+   "value": 11,
+   "file": "results/summary.json",
    "key": "count(follow_res_c < 0)",
    "pending": false,
    "shown_in": [
@@ -627,9 +778,9 @@
    ]
   },
   "ft_wallets_last": {
-   "value": 101,
-   "file": "results/fasttier_walkforward_is.csv",
-   "key": "n_wallets (last row)",
+   "value": 131,
+   "file": "results/summary.json",
+   "key": "n_wallets (last month)",
    "pending": false,
    "shown_in": [
     "S03"
@@ -1034,10 +1185,10 @@
     "S07"
    ]
   },
-  "dsr_v2_is_N3386": {
-   "value": 0.9969107512828559,
+  "dsr_v2_is_N3410": {
+   "value": 0.9968730617381567,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3386",
+   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3410",
    "pending": false,
    "shown_in": [
     "S07"
@@ -1052,10 +1203,10 @@
     "S07"
    ]
   },
-  "dsr_v2_oos_N3386": {
-   "value": 0.07488192490720423,
+  "dsr_v2_oos_N3410": {
+   "value": 0.07461556150760898,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3386",
+   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3410",
    "pending": false,
    "shown_in": [
     "S07"
@@ -1070,41 +1221,42 @@
     "S07"
    ]
   },
-  "dsr_v2_u2oos_blind_N3386": {
-   "value": 0.020537491634348235,
+  "dsr_v2_u2oos_blind_N3410": {
+   "value": 0.02043712570598491,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.rows[series=v2_u2oos_blind].dsr_min_N3386",
+   "key": "psr_dsr.rows[series=v2_u2oos_blind].dsr_min_N3410",
    "pending": false,
    "shown_in": [
     "S07"
    ]
   },
   "dsr_is": {
-   "value": 0.9969107512828559,
+   "value": 0.9968730617381567,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3386",
+   "key": "psr_dsr.rows[series=v2_is].dsr_min_N3410",
    "pending": false,
    "shown_in": [
     "S07"
    ]
   },
   "dsr_oos": {
-   "value": 0.07488192490720423,
+   "value": 0.07461556150760898,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3386",
+   "key": "psr_dsr.rows[series=v2_oos].dsr_min_N3410",
    "pending": false,
    "shown_in": [
     "S07"
    ]
   },
   "n_trials": {
-   "value": 3386,
+   "value": 3410,
    "file": "results/rigor/rigor.json",
-   "key": "psr_dsr.N.all_NOTE_s8",
+   "key": "psr_dsr.N.all_plus_v2safe_grid",
    "pending": false,
    "shown_in": [
     "S07"
-   ]
+   ],
+   "note": "NOTE section 8 counts 3,386; plus the 24-variant v2-safe grid"
   },
   "n_trials_small": {
    "value": 44,
@@ -1124,10 +1276,37 @@
     "S07"
    ]
   },
+  "pbo24_sel": {
+   "value": 42.02797202797203,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_selection_rule.pbo",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
   "pbo24_n": {
    "value": 24,
    "file": "results/rigor/rigor.json",
    "key": "pbo_cscv.lowloss_24_sharpe.N_variants",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "cscv_blocks": {
+   "value": 16,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_sharpe.S_blocks",
+   "pending": false,
+   "shown_in": [
+    "S07"
+   ]
+  },
+  "cscv_splits": {
+   "value": 12870,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_sharpe.n_splits",
    "pending": false,
    "shown_in": [
     "S07"
@@ -1286,6 +1465,122 @@
     "S08"
    ]
   },
+  "v1_usd": {
+   "value": -36056.04046266016,
+   "file": "results/summary.json",
+   "key": "oos.h6_shadow.total_pnl_usd",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "v1_dd": {
+   "value": -0.7523349838536387,
+   "file": "results/summary.json",
+   "key": "oos.h6_shadow.max_dd",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "t3_u2is_c": {
+   "value": -0.2197,
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.u2_is.primary.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S08",
+    "S09"
+   ],
+   "note": "COUNTERFACTUAL (tier-0 v3, frozen)"
+  },
+  "t3_u2is_verdict": {
+   "value": "FAIL",
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.u2_is.reading.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "t3_u2oos_c": {
+   "value": -0.5169,
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.u2_oos.primary.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S08",
+    "S09"
+   ],
+   "note": "COUNTERFACTUAL (tier-0 v3, frozen)"
+  },
+  "t3_u2oos_verdict": {
+   "value": "FAIL",
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.u2_oos.reading.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "t3_boos_c": {
+   "value": 0.6793,
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.burned_oos.primary.per_share_c",
+   "pending": false,
+   "shown_in": [
+    "S08",
+    "S09"
+   ],
+   "note": "COUNTERFACTUAL (tier-0 v3, frozen)"
+  },
+  "t3_boos_lo": {
+   "value": -0.4367,
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.burned_oos.primary.per_share_ci95_c_lo",
+   "pending": false,
+   "shown_in": [
+    "S08",
+    "S09"
+   ]
+  },
+  "t3_boos_hi": {
+   "value": 1.7359,
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.burned_oos.primary.per_share_ci95_c_hi",
+   "pending": false,
+   "shown_in": [
+    "S08",
+    "S09"
+   ]
+  },
+  "t3_boos_verdict": {
+   "value": "FAIL",
+   "file": "results/tier0_v3/blind.json",
+   "key": "sets.burned_oos.reading.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "t3_overall": {
+   "value": "FAIL (out-of-universe generalisation failure in: U2-IS, U2-OOS)",
+   "file": "results/tier0_v3/blind.json",
+   "key": "verdicts['U2 (primary, test b)'].overall",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "fwd_when": {
+   "value": "2026-10-04 11:30 UTC",
+   "file": "HYPOTHESIS_V2.md",
+   "key": "Forward test: 'planned ~<date> UTC'",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
   "tt2_verdict": {
    "value": "FAIL (no fast tier detected)",
    "file": "results/tt/results.json",
@@ -1314,18 +1609,36 @@
    ]
   },
   "forward_sentence": {
-   "value": "The blind forward test is still pending.",
+   "value": "The blind forward test runs once, planned for 2026-10-04 11:30 UTC.",
    "file": "results/v2/forward.json",
-   "key": "derived from verdict",
+   "key": "derived from verdict (absent: not run yet) + HYPOTHESIS_V2.md planned date",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "s08_sentence": {
+   "value": "Unseen markets passed in sample and failed out of sample. The original copy strategy lost 36 thousand dollars on its blind window, and the market-making variant failed its blind test.",
+   "file": "results/expand/results.json",
+   "key": "derived: expand primary.u2_is/u2_oos.label; summary.json oos.h6_shadow.total_pnl_usd; maker primary.verdict",
+   "pending": false,
+   "shown_in": [
+    "S08"
+   ]
+  },
+  "s08_sentence2": {
+   "value": "The frozen tier-zero version failed its blind tests too. In table tennis markets we detected no fast tier.",
+   "file": "results/tier0_v3/blind.json; results/tt/results.json",
+   "key": "derived: verdicts overall; TT2.verdict",
    "pending": false,
    "shown_in": [
     "S08"
    ]
   },
   "peeks": {
-   "value": 51,
+   "value": 65,
    "file": "results/oos_peeks.log",
-   "key": "count(non-empty lines)",
+   "key": "count(non-empty lines) at render time",
    "pending": false,
    "shown_in": [
     "S08"
@@ -1484,6 +1797,24 @@
     "S09"
    ]
   },
+  "t0_pre_sentence": {
+   "value": "Our pre-registered estimate, 0.68 seconds, falls in that zone.",
+   "file": "results/tier0/results.json",
+   "key": "timing.pre_registered_primary_median_t_reprice_minus_t_bounce_s vs pnl_vs_t_reprice_minus_t_bounce.IS.stamp_breakeven_B_s",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
+  "t3_sentence": {
+   "value": "A frozen version then failed its blind tests on unseen markets.",
+   "file": "results/tier0_v3/blind.json",
+   "key": "derived from verdicts['U2 (primary, test b)'].overall",
+   "pending": false,
+   "shown_in": [
+    "S09"
+   ]
+  },
   "live_secs": {
    "value": 60.0,
    "file": "results/engine/live_market_run.json",
@@ -1593,9 +1924,9 @@
    ]
   },
   "sess_status": {
-   "value": "QUOTING (paper)",
+   "value": "warm-up: waiting for trades (0 seen)",
    "file": "results/live/summary.json",
-   "key": "status",
+   "key": "status (+ STOPPED_<run> marker, file age, 1970/empty-counter warm-up guard)",
    "pending": false,
    "shown_in": [
     "S10"
@@ -1638,28 +1969,37 @@
    ]
   },
   "sess_state": {
-   "value": "running",
+   "value": "warming up",
    "file": "results/live/summary.json",
-   "key": "derived from status",
+   "key": "derived: pending / warming up / running / stopped / finished / no update",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_since": {
+   "value": "2026-10-03 20:48",
+   "file": "results/live/summary.json",
+   "key": "started_process (UTC)",
+   "pending": false,
+   "shown_in": [
+    "S10"
+   ]
+  },
+  "sess_asof": {
+   "value": "2026-10-03 21:32",
+   "file": "results/live/summary.json",
+   "key": "now, or the file's modification time when now is unset (1970)",
    "pending": false,
    "shown_in": [
     "S10"
    ]
   },
   "live_sentence": {
-   "value": "Tonight's live paper session is running now.",
+   "value": "A live paper session started on 2026-10-03 at 20:48 UTC; at render time it was still warming up, so it had not quoted yet.",
    "file": "results/live/summary.json",
-   "key": "derived from status, books.B1.fills",
+   "key": "derived from status, started_process, books.B1.fills",
    "pending": false,
-   "shown_in": [
-    "S10"
-   ]
-  },
-  "engine_video": {
-   "value": null,
-   "file": "results/engine/engine_live_demo.mp4",
-   "key": "file exists",
-   "pending": true,
    "shown_in": [
     "S10"
    ]
@@ -1838,6 +2178,15 @@
     "S11"
    ]
   },
+  "cap_neg_k": {
+   "value": 53.815568644127055,
+   "file": "results/financials/financials.json",
+   "key": "strategies.v2.scaling.5x.OOS.capital_usd / 1000 (smallest size with OOS P&L <= 0)",
+   "pending": false,
+   "shown_in": [
+    "S11"
+   ]
+  },
   "kills": {
    "value": [
     [
@@ -1863,12 +2212,53 @@
    "shown_in": [
     "S11"
    ]
+  },
+  "vision_model_in_git": {
+   "value": false,
+   "file": "models/vision/frozen_call_model.pkl",
+   "key": "git ls-files --error-unmatch (tracked?)",
+   "pending": false,
+   "shown_in": [
+    "S12"
+   ]
   }
  },
  "pending": [
-  "engine_video",
   "fwd_verdict"
  ],
+ "rendered_utc": "2026-10-03T21:34:08Z",
+ "git_head_at_render": "1ccf1c9",
+ "source_files": [
+  "HYPOTHESIS_V2.md",
+  "docs/RISK.md",
+  "models/vision/frozen_call_model.pkl",
+  "results/decay/decay.json",
+  "results/engine/demo_run.json",
+  "results/engine/live_market_run.json",
+  "results/expand/results.json",
+  "results/financials/financials.json",
+  "results/live/summary.json",
+  "results/lowloss/daily.csv",
+  "results/maker/oos.json",
+  "results/oos_peeks.log",
+  "results/rigor/rigor.json",
+  "results/spin/tennis/metrics_v2.csv",
+  "results/summary.json",
+  "results/tier0/results.json",
+  "results/tier0_v3/blind.json",
+  "results/tracking/demo/manifest.json",
+  "results/tracking/summary.json",
+  "results/tt/results.json",
+  "results/v2/causal.json",
+  "results/v2/cost_stress.json",
+  "results/v2/note_metrics.json",
+  "results/viz/viz_data.json"
+ ],
+ "source_files_not_in_git_at_render": [
+  "models/vision/frozen_call_model.pkl",
+  "results/live/summary.json"
+ ],
+ "source_files_modified_vs_head_at_render": [],
  "embedded_in_assets": [
   {
    "asset": "results/tracking/demo/0[1-4]_*.mp4",

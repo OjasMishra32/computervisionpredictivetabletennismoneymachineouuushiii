@@ -132,3 +132,43 @@ by design of `scripts/live_paper.py`.
 - `bash run.sh setup` on macOS from scratch. The other commands above were also run on the authors' Mac
   (Python 3.14): `run.sh replay` (same output as Linux) and the full pytest suite (96 passed, 2 skipped, 6 min
   on a loaded laptop, working tree).
+
+## Update after FINAL_PREP_REVIEW (2026-10-03, ~21:35 UTC)
+
+Re-run on a fresh clone of GitHub `597b0de` (see `FINAL_PREP_REVIEW.md`, "Clean-clone re-runs"): F1 and F2 are
+resolved on GitHub (`run.sh help` exit 0; `run.sh tests` on a core install: 90 passed, 1 skipped, 393 s on the
+loaded laptop). The "push again" note under F1 is out of date. F6 and F8d were still open on `597b0de`.
+
+Fixed in files this workflow owns (`run.sh`, README judge box, deck, video):
+
+- **F6** `run.sh money` now checks for `data/v2_trades_is_oos.parquet` and prints the order to run things
+  (`data`, then `reproduce`, then `money`) instead of a `FileNotFoundError` traceback. Exit 1.
+- **F5** `run.sh reproduce` now refuses to start without the event list and at least 1,000 cached tapes, and
+  says to run `bash run.sh data` first (`FORCE=1` overrides). This replaces the misleading
+  `AttributeError: ... 'net30_c'` on a one-day cache.
+- **F7** `run.sh help` now says that `--minutes N` counts from the start of quoting, not from launch.
+- **F8d** `run.sh cv`, `run.sh help` and the README judge box say the frozen call model is not in git, that
+  `run.sh cv` then runs with calls disabled, and that `sbatch hpg/engine_vision.sbatch` rebuilds it. The deck
+  (slide 10) and the video (closing card) say the same.
+- The README judge box and the deck/video closing cards no longer claim one command reproduces everything; they
+  give `bash run.sh replay` (seconds) and `bash run.sh data && bash run.sh reproduce` (~1–2 h + ~15 min).
+
+## Needs owner
+
+Failures or claims that trace to files this workflow may not edit. Each item gives the exact fix.
+
+| # | file (owner) | failure on a clean clone or in the talk | exact fix |
+|---|---|---|---|
+| N1 | `src/polymarket.py:25-36` `_get` (research) | **F3**: the Gamma event crawl gives up after 5 tries in ~22 s (`RuntimeError: GET failed ... tag_slug=table-tennis`); `run.sh data` now retries the whole fetch 4 × 60 s as a workaround | Use exponential back-off with a longer budget: `tries: int = 8` and `time.sleep(min(60, 2 ** k))` in both the 429/5xx branch and the `RequestException` branch |
+| N2 | `run_all.py:98-102` (research) | **F5**: on too little data `fasttier.walk_forward` returns an empty frame and line 102 raises `AttributeError: 'DataFrame' object has no attribute 'net30_c'` | Right after `wf, sh, by_bucket = fasttier.walk_forward(p_is)`: `if wf.empty or "net30_c" not in wf: sys.exit("walk-forward fast tier: not enough in-sample data; run 'bash run.sh data' (full crawl) first")` |
+| N3 | `scripts/money_counter.py` (research) | **F6** when called directly (not via `run.sh`): `FileNotFoundError: data/v2_trades_is_oos.parquet` | At start: `if not Path("data/v2_trades_is_oos.parquet").exists(): sys.exit("needs bash run.sh data, then bash run.sh reproduce (writes data/v2_trades_is_oos.parquet)")` |
+| N4 | `scripts/live_paper.py` (live paper workflow) | **F7**: `--minutes 2` never exits on a quiet tape, because the clock starts only when quoting starts | Add `--max-wall-minutes M` (default: `--minutes` + 30) that stops the process M minutes after launch, warm-up included, and writes the summary with `status: "stopped: wall-clock limit (warm-up not passed)"` |
+| N5 | `scripts/live_paper.py:1333` (live paper workflow) | During warm-up `summary.json` has `"now": "1970-01-01T00:00:00.000Z"` (`iso(eng.key)` with `eng.key == 0`) and `counters: {}`; an unguarded rebuild printed "as of 1970-01-01" on deck slide 8 | `"now": iso(eng.key) if eng.key else iso(int(time.time() * 1000))`, plus `"venue_clock_started": bool(eng.key)`. The deck and video now guard this (show "warming up" and the file time), so this is a correctness fix, not a blocker |
+| N6 | `models/vision/frozen_call_model.pkl` + `scripts/get_models.sh` (vision workflow) | **F8d**: CV calls cannot be reproduced from a clone; the model is 12 MB and is not distributed | Publish it as a GitHub release asset (`gh release create vision-v1 models/vision/frozen_call_model.pkl --notes "frozen point-end call model, built by hpg/engine_vision.sbatch"`), then in `get_models.sh`: `[ -f models/vision/frozen_call_model.pkl ] \|\| gh release download vision-v1 -p frozen_call_model.pkl -D models/vision` (or curl the release URL). Do not commit `models/` |
+| N7 | `engine/run.py:290` (engine workflow) | **F9**: `engine --mode live-market` (also run by `run.sh engine`) overwrites the tracked `results/engine/live_market_run.json`, so a judge's clone shows a dirty tree | Write to `results/engine/live_market_run.json` only with `--out`; default to `/tmp/courtside_live_market_run.json` (or a timestamped file under `results/engine/runs/`, gitignored) |
+| N8 | `results/live/summary.json`, `results/live/session_*`, `results/live/STOPPED_*` (live paper workflow) | The video (S10) and the deck (slides 8, 10) read the live summary, but it is untracked, so GitHub cannot show it. (`results/tier0_v3/blind.json` and `results/spin/tennis/metrics_v2.csv` were committed by their owners during this pass, in `11d1016` and `62a5b07`.) The video manifest lists untracked sources under `source_files_not_in_git_at_render` | Commit the session files when the session ends (never `data/`), push, then rebuild the deck and re-render the video together |
+| N9 | `results/engine/demo_run.json` (engine workflow, committed in `1ccf1c9`) | The re-run on the loaded laptop raised the vision processing latency from 100 ms to 158 ms (p90 219 ms); the deck (slides 2, 4) and the video (S02) now show 158 ms, labelled as a laptop benchmark with no courtside camera | If a GPU or unloaded run is the intended figure, commit it to the same key (`latency_budget[vision…].ms`) and rebuild the deck and video together; no change is needed in the deck or video code |
+| N10 | `docs/NOTE.md:155` (note owner) | Quotes the peek log as "19 lines"; the log had 65 lines at this build. The deck build prints a warning | Replace "19 lines" with "every look is logged; the count at build time is in the deck and video manifests" (or the count at the final note build) |
+| N11 | `scripts/pm_compute.py` / `results/financials/pm_compute.json` p07 (PM review) | The note's wallet-clustered CI does not reproduce to 2 dp; the deck quotes pm_compute's value and warns | Re-run `pm_compute.py` against the note's input set, or correct the note's CI to pm_compute's value |
+| N12 | `README.md` body, "Reproduce" section (README owner; this workflow edits only the judge box) | Says `# Python 3.14` and runs `fetch_polymarket.py` + `bash reproduce.sh` directly, while the judge box (tested) uses `run.sh`; the table row "Ball tracking ... 11 of 11 calls correct" omits that the vision calls need the undistributed model | Point the section at `bash run.sh setup / data / reproduce`, say "Python 3.12+", and add "CV calls need `models/vision/frozen_call_model.pkl` (see judge box)" |
+| N13 | GitHub (repo owner) | `origin/main` is at `62a5b07`; local `main` is ahead (the deck, video, run.sh and judge-box fixes of this pass are local commits), so they are not public yet | After N8, `git push origin main`; confirm with `git ls-remote origin refs/heads/main` |

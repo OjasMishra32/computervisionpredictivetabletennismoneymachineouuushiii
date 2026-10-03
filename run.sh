@@ -14,24 +14,28 @@ bash run.sh <command> [args]                                  (times: laptop, af
 
   setup [--full]      make .venv, pip install -r requirements.txt               ~1-3 min
                       --full also installs requirements-extra.txt (vision, deck: torch, onnxruntime...)
-  tests               unit tests (pytest: tests/, engine/vision/tests/)          ~1 min
+  tests               unit tests (pytest: tests/, engine/vision/tests/)          ~2-7 min (393 s on a loaded laptop)
   replay              10 min of recorded live Polymarket books (tests/fixtures/live_sample.jsonl.gz)
                       through the live paper trader and the engine's order books  ~15 s, no network
   live [args]         live paper session on live public Polymarket data, read-only, until Ctrl-C
                       (scripts/live_paper.py --test). Quoting starts after a warm-up of 50 public trades (the
-                      pre-registered trade-side check), so on a quiet tape it can quote nothing for a while
+                      pre-registered trade-side check), so on a quiet tape it can quote nothing for a while;
+                      --minutes N counts from the start of quoting, not from launch (use Ctrl-C to stop earlier)
   data [--smoke DAY] [--parallel]
                       public Polymarket crawl into data/ (scripts/fetch_polymarket.py), no keys.
                       ETA ~1-2 h for ~13k tapes; resumable: every read is cached in data/raw, rerun to continue.
                       --smoke DAY: event list + tapes of the matches starting on DAY (default 2026-01-15, 38 in-sample matches), ~1-3 min
-  reproduce           bash reproduce.sh: every number and figure in docs/NOTE.pdf (needs `data` first)
+  reproduce           bash reproduce.sh: every number and figure in docs/NOTE.pdf (needs the full `data` crawl
+                      first; one smoke day is not enough for the walk-forward tables)        ~15 min
   engine [demo|books|live]
                       COURTSIDE engine, paper only. demo: vision calls -> paper decisions on a recorded book
                       (needs data/live, data/vision, models/); books: engine order books on the committed
                       sample; live: 60 s of live books, read-only. Default: demo if its inputs exist, else
                       books, then live.
   cv                  ball-tracking call engine on the held-out OpenTTGames clip (needs setup --full;
-                      fetches BlurBall weights via scripts/get_models.sh and the clip with ffmpeg)
+                      fetches BlurBall weights via scripts/get_models.sh and the clip with ffmpeg). The point-end
+                      calls need models/vision/frozen_call_model.pkl, which is not in git (rebuilt on HiPerGator by
+                      sbatch hpg/engine_vision.sbatch); without it, cv detects and tracks with calls disabled
   dashboard [port]    status daemon + read-only dashboard at http://localhost:8765 (Ctrl-C stops both)
   money [args]        terminal replay of the v2 in-sample backtest with a running paper-money counter
                       (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
@@ -147,6 +151,11 @@ EOF
 
   reproduce)
     need_venv
+    if ! ls data/raw/events_tennis_*.parquet >/dev/null 2>&1 || [ "$(ls data/raw/trades 2>/dev/null | wc -l)" -lt 1000 ]; then
+      echo "reproduce needs the full public crawl first: bash run.sh data (~1-2 h, resumable)."
+      echo "found $(ls data/raw/trades 2>/dev/null | wc -l | tr -d ' ') trade tapes in data/raw/trades; the walk-forward tables need the whole year."
+      [ "${FORCE:-0}" = 1 ] || { echo "(set FORCE=1 to run anyway)"; exit 1; }
+    fi
     PY="$PY" bash reproduce.sh "$@"
     ;;
 
@@ -175,6 +184,10 @@ EOF
   cv)
     need_venv
     "$PY" -c "import onnxruntime, cv2, av" 2>/dev/null || { echo "cv needs: bash run.sh setup --full"; exit 1; }
+    if [ ! -f models/vision/frozen_call_model.pkl ]; then
+      echo "note: models/vision/frozen_call_model.pkl is not in git, so this run detects and tracks the ball with"
+      echo "      point-end calls disabled. Rebuild the model on HiPerGator with: sbatch hpg/engine_vision.sbatch"
+    fi
     PY="$PY" bash scripts/get_models.sh
     if [ ! -f data/vision/test_2_copyts.mp4 ]; then
       command -v ffmpeg >/dev/null || { echo "cv needs ffmpeg to cut the held-out clip"; exit 1; }
@@ -211,6 +224,11 @@ EOF
 
   money)
     need_venv
+    if [ ! -f data/v2_trades_is_oos.parquet ]; then
+      echo "money needs data/v2_trades_is_oos.parquet, which bash run.sh reproduce writes (scripts/v2_causal.py)."
+      echo "on a fresh clone: bash run.sh data (~1-2 h), then bash run.sh reproduce (~15 min), then bash run.sh money."
+      exit 1
+    fi
     "$PY" scripts/money_counter.py "$@"
     ;;
 

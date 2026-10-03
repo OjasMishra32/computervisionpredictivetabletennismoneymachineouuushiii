@@ -1,13 +1,21 @@
-> **Judges: start here.** Four commands from the repo root (tested on Python 3.12 Linux and 3.14 macOS).
+> **Judges: start here.** Commands from the repo root (tested on Python 3.12 Linux and 3.14 macOS).
 >
 > | Command | What it does | Time |
 > |---|---|---|
 > | `bash run.sh setup` | makes `.venv`, installs `requirements.txt` | ~1-3 min |
 > | `bash run.sh replay` | 10 min of recorded live Polymarket books (`tests/fixtures/live_sample.jsonl.gz`, public market data) through the paper trader and the engine's order books; no network | ~15 s |
-> | `bash run.sh tests` | unit tests (vision tests too after `bash run.sh setup --full`) | ~2-6 min |
+> | `bash run.sh tests` | unit tests (vision tests too after `bash run.sh setup --full`) | ~2-7 min |
 > | `bash run.sh data && bash run.sh reproduce` | public Polymarket crawl (no keys, resumable), then every number and figure in `docs/NOTE.pdf` | ~1-2 h + ~15 min |
 >
-> Paper only: nothing here signs or sends an order. `bash run.sh help` lists the rest (live paper session, engine, vision, dashboard).
+> - A fresh clone has no market data: run `bash run.sh data` before `reproduce` or `money`. The full crawl-then-reproduce
+>   chain was last run end to end on the authors' machine, not on a clean clone (`research/compliance/CLEAN_CLONE.md`).
+> - The CV calls need `models/vision/frozen_call_model.pkl` (12 MB), which is not in git. `bash run.sh cv` still
+>   detects and tracks the ball on the held-out clip, with calls disabled; `sbatch hpg/engine_vision.sbatch`
+>   (HiPerGator) rebuilds the model.
+> - Paper only: nothing here signs or sends an order. We bought no official ATP/WTA data feed and no trading result
+>   uses one; free public score pages (WTA website, ESPN) were recorded only to time their lag.
+> - Footage notice: the demo clips are OpenTTGames (OSAI) footage, adapted (overlays added), CC BY-NC-SA 4.0.
+> - `bash run.sh help` lists the rest (live paper session, engine, vision, dashboard, money counter).
 
 # COURTSIDE
 

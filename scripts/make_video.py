@@ -1,4 +1,4 @@
-"""Narrated COURTSIDE video, ~3:15, every number read from results files at render time.
+"""Narrated COURTSIDE video (~4:30 at the 2026-10-03 render), every number read from results files at render time.
 
     .venv/bin/python scripts/make_video.py                 # full render
     .venv/bin/python scripts/make_video.py --stills        # one PNG per scene (end state) for review
@@ -12,7 +12,9 @@ Outputs
 The narration lives in docs/video_script.md (one caption per '>' line, {names} filled from build_values()).
 Voice: macOS `say` (Samantha). Each caption is rendered to AIFF, so captions are timed to the audio exactly.
 A result whose file does not exist yet renders as "pending". Tier-0 is always labelled a counterfactual.
-Everything is paper trading; no live ATP/WTA data was used.
+Everything is paper trading. We bought no official ATP/WTA data feed and no trading result uses one; free public
+score pages (WTA website, ESPN) were recorded only to time how far they lag the book.
+Dates are printed instead of "tonight"/"tomorrow", so a render stays true after the forward test.
 """
 from __future__ import annotations
 
@@ -44,6 +46,7 @@ from matplotlib import font_manager  # noqa: E402
 W, H, FPS = 1920, 1080, 30
 XF = 0.3            # crossfade length (s)
 LEAD = 0.3          # silence before the narration in each scene; the same again after it (scene = narration + 0.6 s)
+HOLD = {"backtest": 1.5, "scoreboard": 1.5, "risk": 1.5, "close": 3.0}   # extra seconds on dense scenes / end card
 GAP = 0.12          # pause between captions inside a scene
 SR = 48000
 VOICE, RATE = "Samantha", 215
@@ -54,7 +57,7 @@ SCRIPT = Path("docs/video_script.md")
 WORK = Path("data/v2_video_frames/video")      # cache (data/ is never committed)
 TIER0_LABEL = ("counterfactual: assumes a licensed live feed + courtside camera (not purchased); "
                "parameters measured")
-CREDIT = "Footage: OpenTTGames (OSAI), CC BY-NC-SA 4.0"
+CREDIT = "Footage: OpenTTGames (OSAI), adapted (overlays added), CC BY-NC-SA 4.0"
 
 # palette and type
 BG, PANEL, PANEL2, GRID = "#07111b", "#0d1b29", "#112336", "#1f3346"
@@ -172,6 +175,64 @@ def floor2(x):
     return f"{math.floor(x * 100) / 100:.2f}"
 
 
+def valid_mp4(path) -> bool:
+    """True only for a complete video (another workflow may still be writing it)."""
+    if not Path(path).exists():
+        return False
+    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1",
+                        str(path)], capture_output=True, text=True)
+    try:
+        return r.returncode == 0 and float(r.stdout.strip()) > 1.0
+    except ValueError:
+        return False
+
+
+def live_state(sm, path="results/live/summary.json"):
+    """State of the live paper session from its rolling summary. Never says 'running' for a stopped,
+    stale or warming-up session: a STOPPED_<run> marker or a status mentioning stopped/error/killed means
+    stopped; 'now' at the epoch (1970) or empty counters means warming up; no write for 15 min means no update."""
+    import datetime as _dt
+    out = {"state": None, "status": None, "since": None, "asof": None, "sentence": "The live paper session is pending."}
+    if sm is None:
+        return out
+    status = str(sm.get("status", ""))
+    run = sm.get("run") or ""
+    since = str(sm.get("started_process") or sm.get("session_start") or "")[:16].replace("T", " ")
+    now = str(sm.get("now") or "")
+    p = Path(path)
+    mtime = _dt.datetime.fromtimestamp(p.stat().st_mtime, _dt.timezone.utc)
+    asof = now[:16].replace("T", " ") if now and not now.startswith("1970") else mtime.strftime("%Y-%m-%d %H:%M")
+    age_min = (_dt.datetime.now(_dt.timezone.utc) - mtime).total_seconds() / 60
+    low = status.lower()
+    if (run and (p.parent / f"STOPPED_{run}").exists()) or re.search(r"\b(stopped|error|killed|crash\w*)\b", low):
+        state = "stopped"
+    elif re.search(r"\b(ended|done|complete|completed|final|settled|finished)\b", low):
+        state = "finished"
+    elif age_min > 15:
+        state = "no update"
+    elif now.startswith("1970") or not sm.get("counters") or low.startswith("warm"):
+        state = "warming up"
+    else:
+        state = "running"
+    out.update(state=state, status=status or None, since=since or None, asof=asof)
+    day = since[:10] if since else "today"
+    if state == "warming up":
+        out["sentence"] = (f"A live paper session started on {day} at {since[11:16]} UTC; at render time it was still "
+                           f"warming up, so it had not quoted yet.")
+    elif state == "running":
+        out["sentence"] = (f"A live paper session started on {day} at {since[11:16]} UTC; at render time it was "
+                           f"quoting, with {sm.get('books', {}).get('B1', {}).get('fills')} fills on the "
+                           f"pre-registered book.")
+    elif state == "stopped":
+        out["sentence"] = f"The live paper session of {day} was stopped before it finished."
+    elif state == "finished":
+        out["sentence"] = (f"The live paper session of {day} finished with "
+                           f"{sm.get('books', {}).get('B1', {}).get('fills')} fills on the pre-registered book.")
+    else:
+        out["sentence"] = f"The live paper session of {day} had not written an update for {age_min:.0f} minutes at render time."
+    return out
+
+
 def build_values(R: Results):
     P = R.put
     # S01 / S04: real footage, frozen model (results/tracking)
@@ -184,6 +245,16 @@ def build_values(R: Results):
           note=f"embedded in {c.get('file')} overlay")
     P("tt_lead_ms", R.get(dm, "clips", 0, "call_lead_ms"), dm, "clips[0].call_lead_ms", say="{:.0f}")
     ts = "results/tracking/summary.json"
+    ld = ("early_call", "miss_first_call_lead_test_ms")
+    P("lead_med_ms", R.get(ts, *ld, "median"), ts, "early_call.miss_first_call_lead_test_ms.median", say="{:.0f}")
+    P("lead_p90_ms", R.get(ts, *ld, "p90"), ts, "early_call.miss_first_call_lead_test_ms.p90")
+    P("lead_n_called", R.get(ts, *ld, "n_called"), ts, "early_call.miss_first_call_lead_test_ms.n_called", say="{}")
+    P("lead_n_miss", R.get(ts, *ld, "n_miss"), ts, "early_call.miss_first_call_lead_test_ms.n_miss", say="{}")
+    led = [c.get("call_lead_ms") for c in clips if c.get("label") == "MISS"]
+    P("hook_is_longest", None if not led or R.get(ts, *ld, "n_called") is None else
+      bool(led[0] is not None and abs(led[0] - max(led)) < 1e-9), dm,
+      "clips[0].call_lead_ms == max(call_lead_ms of MISS clips); the clips were picked from the test calls",
+      note="the hook clip is the longest online call on held-out games")
     k50 = ("early_call", "precision_recall_test_snapshot", "50ms")
     P("tp50", R.get(ts, *k50, "tp"), ts, "early_call.precision_recall_test_snapshot.50ms.tp", say="{}")
     P("fp50", R.get(ts, *k50, "fp"), ts, "early_call.precision_recall_test_snapshot.50ms.fp")
@@ -192,6 +263,7 @@ def build_values(R: Results):
                                                  else f"it made {tp + fp} calls, {tp} correct"), ts,
       "early_call.precision_recall_test_snapshot.50ms.tp, .fp", say="{}")
     P("prec50", R.get(ts, *k50, "precision"), ts, "early_call.precision_recall_test_snapshot.50ms.precision")
+    P("n50", None if tp is None else tp + fp, ts, "early_call.precision_recall_test_snapshot.50ms.tp + .fp")
     wl = R.get(ts, *k50, "precision_wilson95")
     P("wil50", None if wl is None else wl[0] * 100, ts,
       "early_call.precision_recall_test_snapshot.50ms.precision_wilson95[0]", say="{:.0f}")
@@ -203,23 +275,35 @@ def build_values(R: Results):
     P("n_test_bounce", R.get(ts, "n_flights", "test", "BOUNCE"), ts, "n_flights.test.BOUNCE")
     det = [d for d in (R.get(ts, "detection_accuracy_pooled") or []) if d["split"] == "test" and d["source"] == "tracked"]
     P("det_recall", det[0]["recall"] * 100 if det else None, ts, "detection_accuracy_pooled[split=test,source=tracked].recall")
-    P("det_prec", det[0]["precision@10px"] * 100 if det else None, ts,
-      "detection_accuracy_pooled[split=test,source=tracked].precision@10px")
+    P("det_w5", det[0]["within5"] * 100 if det else None, ts,
+      "detection_accuracy_pooled[split=test,source=tracked].within5")
+    P("det_n", det[0]["n_visible"] if det else None, ts, "detection_accuracy_pooled[split=test,source=tracked].n_visible")
 
-    # S02: latency tiers
+    # S02: latency tiers (same rungs, sources and latency as deck slides 2 and 4)
+    sm_ = "results/summary.json"
+    he = [r for r in (R.get(sm_, "tracking_tennis_physics") or []) if r.get("lead_ms") == 100]
+    P("he100_cm", he[0]["pred_err_sd_cm"] if he else None, sm_, "tracking_tennis_physics[lead_ms=100].pred_err_sd_cm",
+      note="simulated Hawk-Eye-class physics")
+    ed = "results/engine/demo_run.json"
+    vb = [r for r in (R.get(ed, "latency_budget") or []) if str(r.get("stage", "")).startswith("vision")]
+    P("vis_ms", vb[0]["ms"] if vb else None, ed, "latency_budget[stage 'vision…'][0].ms (processing only)", say="{:.0f}",
+      note="laptop benchmark; no courtside camera")
+    P("vis_p90_ms", vb[0].get("p90") if vb else None, ed, "latency_budget[stage 'vision…'][0].p90")
+    t0f = "results/tier0/results.json"
+    P("book_vs_stamp_s", R.get(t0f, "timing", "median_t_reprice_minus_t_stamp_s"), t0f,
+      "timing.median_t_reprice_minus_t_stamp_s", say=lambda v: f"{abs(v):.1f} seconds {'before' if v < 0 else 'after'}")
+    P("stamp_lag_s", R.get(t0f, "timing", "calibrated_stamp_lag_s (inference)"), t0f,
+      "timing.calibrated_stamp_lag_s (inference)", note="inference, not a measurement")
     dc = "results/decay/decay.json"
-    st = {s["name"]: s for s in (R.get(dc, "stacks") or [])}
-    P("ldn_ms", st["LDN-meas"]["l_s"] * 1000 if "LDN-meas" in st else None, dc, "stacks[name=LDN-meas].l_s x 1000",
-      say="{:.0f}")
-    P("cv_ms", (R.get(dc, "latency_inputs", "cv_measured_s", "p50") or 0) * 1000 or None, dc,
-      "latency_inputs.cv_measured_s.p50 x 1000")
-    P("espn_s", R.get(dc, "latency_inputs", "espn_behind_book_s"), dc, "latency_inputs.espn_behind_book_s", say="{:.0f}")
-    P("h4_s", R.get(dc, "latency_inputs", "h4_book_leads_public_score_s", "median"), dc,
-      "latency_inputs.h4_book_leads_public_score_s.median", say="{:.0f}")
+    P("espn_s", R.get(dc, "latency_inputs", "espn_behind_book_s"), dc, "latency_inputs.espn_behind_book_s", say="{:.0f}",
+      note="recorded from the free ESPN scoreboard, research/v2/latency/RESULTS.md")
+    P("h4_s", R.get(sm_, "h4", "median_lead_s"), sm_, "h4.median_lead_s", say="{:.0f}")
+    hs = R.get(sm_, "h4", "share_book_first")
+    P("h4_share", None if hs is None else hs * 100, sm_, "h4.share_book_first")
+    P("h4_n", R.get(sm_, "h4", "n"), sm_, "h4.n")
     sd = R.get(dc, "latency_inputs", "stream_delay_s_assumed")
     P("stream_lo", sd[0] if sd else None, dc, "latency_inputs.stream_delay_s_assumed[0]", note="ASSUMPTION")
     P("stream_hi", sd[1] if sd else None, dc, "latency_inputs.stream_delay_s_assumed[1]", note="ASSUMPTION")
-    P("block_lag_s", R.get(dc, "latency_inputs", "block_lag_s", "median"), dc, "latency_inputs.block_lag_s.median")
     fn = "results/financials/financials.json"
     P("feed_month", R.get(fn, "cost_assumptions", "feed_licence", "central"), fn,
       "cost_assumptions.feed_licence.central", note="ASSUMPTION (no public price)")
@@ -229,15 +313,22 @@ def build_values(R: Results):
     P("share_of_volume", R.get(nm, "is", "v2_usd_traded_share_of_match_volume"), nm,
       "is.v2_usd_traded_share_of_match_volume")
 
-    # S03: fast tier by month (in-sample walk-forward)
-    fw = "results/fasttier_walkforward_is.csv"
-    rows = R.load(fw) or []
-    P("ft_rows", rows or None, fw, "month, net30_c, others_net30_c, follow_res_c (all rows)")
-    P("ft_n", len(rows) or None, fw, "count(rows)", say="{}")
-    P("ft_pos", sum(float(r["net30_c"]) > 0 for r in rows), fw, "count(net30_c > 0)", say="{}")
-    P("oth_neg", sum(float(r["others_net30_c"]) < 0 for r in rows), fw, "count(others_net30_c < 0)", say="{}")
-    P("fol_neg", sum(float(r["follow_res_c"]) < 0 for r in rows), fw, "count(follow_res_c < 0)", say="{}")
-    P("ft_wallets_last", int(rows[-1]["n_wallets"]) if rows else None, fw, "n_wallets (last row)")
+    # S03: fast tier by month, walk-forward: in-sample months before the OOS start + OOS months (= deck slide 3)
+    wis = R.get(sm_, "is", "h6_walkforward") or []
+    wos = R.get(sm_, "oos", "h6_walkforward") or []
+    om = (R.get(sm_, "universe", "oos_start") or "9999-99")[:7]
+    rows = [dict(r, period="IS") for r in wis if r["month"] < om] + [dict(r, period="OOS") for r in wos]
+    wsrc = "results/summary.json"
+    wkey = "is.h6_walkforward (months before universe.oos_start) + oos.h6_walkforward"
+    P("ft_rows", rows or None, wsrc, wkey + ": month, net30_c, others_net30_c, follow_res_c")
+    P("ft_n", len(rows) or None, wsrc, "count(months) in " + wkey, say="{}")
+    P("ft_n_oos", sum(r["period"] == "OOS" for r in rows) or None, wsrc, "count(oos.h6_walkforward)", say="{}")
+    P("ft_pos", sum(r["net30_c"] > 0 for r in rows), wsrc, "count(net30_c > 0)", say="{}")
+    P("ft_pos_oos", sum(r["net30_c"] > 0 for r in rows if r["period"] == "OOS"), wsrc,
+      "count(oos.h6_walkforward net30_c > 0)", say="{}")
+    P("oth_neg", sum(r["others_net30_c"] < 0 for r in rows), wsrc, "count(others_net30_c < 0)", say="{}")
+    P("fol_neg", sum(r["follow_res_c"] < 0 for r in rows), wsrc, "count(follow_res_c < 0)", say="{}")
+    P("ft_wallets_last", int(rows[-1]["n_wallets"]) if rows else None, wsrc, "n_wallets (last month)")
 
     # S05: tennis replay (simulated physics) + spin (simulation)
     vz = "results/viz/viz_data.json"
@@ -306,18 +397,24 @@ def build_values(R: Results):
     # S07: rigor
     rg = "results/rigor/rigor.json"
     rr = {r["series"]: r for r in (R.get(rg, "psr_dsr", "rows") or [])}
+    # DSR: lowest across the variance sources (dsr_min), at N = all trials incl. the v2-safe grid; 3 dp in deck and video
     for s in ("v2_is", "v2_oos", "v2_u2oos_blind"):
-        for n in ("N44", "N3386"):
+        for n in ("N44", "N3410"):
             P(f"dsr_{s}_{n}", rr.get(s, {}).get(f"dsr_min_{n}"), rg, f"psr_dsr.rows[series={s}].dsr_min_{n}")
-    P("dsr_is", rr.get("v2_is", {}).get("dsr_min_N3386"), rg, "psr_dsr.rows[series=v2_is].dsr_min_N3386", say=floor2)
-    P("dsr_oos", rr.get("v2_oos", {}).get("dsr_min_N3386"), rg, "psr_dsr.rows[series=v2_oos].dsr_min_N3386",
-      say="{:.2f}")
+    P("dsr_is", rr.get("v2_is", {}).get("dsr_min_N3410"), rg, "psr_dsr.rows[series=v2_is].dsr_min_N3410", say="{:.3f}")
+    P("dsr_oos", rr.get("v2_oos", {}).get("dsr_min_N3410"), rg, "psr_dsr.rows[series=v2_oos].dsr_min_N3410",
+      say="{:.3f}")
     P("oos_days", rr.get("v2_oos", {}).get("T"), rg, "psr_dsr.rows[series=v2_oos].T", say="{}")
-    P("n_trials", R.get(rg, "psr_dsr", "N", "all_NOTE_s8"), rg, "psr_dsr.N.all_NOTE_s8", say="{:,}")
+    P("n_trials", R.get(rg, "psr_dsr", "N", "all_plus_v2safe_grid"), rg, "psr_dsr.N.all_plus_v2safe_grid", say="{:,}",
+      note="NOTE section 8 counts 3,386; plus the 24-variant v2-safe grid")
     P("n_trials_small", R.get(rg, "psr_dsr", "N", "H1_H6"), rg, "psr_dsr.N.H1_H6")
     pb = R.get(rg, "pbo_cscv", "lowloss_24_sharpe", "pbo")
     P("pbo24", None if pb is None else pb * 100, rg, "pbo_cscv.lowloss_24_sharpe.pbo", say="{:.0f}")
+    pb = R.get(rg, "pbo_cscv", "lowloss_24_selection_rule", "pbo")
+    P("pbo24_sel", None if pb is None else pb * 100, rg, "pbo_cscv.lowloss_24_selection_rule.pbo", say="{:.0f}")
     P("pbo24_n", R.get(rg, "pbo_cscv", "lowloss_24_sharpe", "N_variants"), rg, "pbo_cscv.lowloss_24_sharpe.N_variants")
+    P("cscv_blocks", R.get(rg, "pbo_cscv", "lowloss_24_sharpe", "S_blocks"), rg, "pbo_cscv.lowloss_24_sharpe.S_blocks")
+    P("cscv_splits", R.get(rg, "pbo_cscv", "lowloss_24_sharpe", "n_splits"), rg, "pbo_cscv.lowloss_24_sharpe.n_splits")
     pb = R.get(rg, "pbo_cscv", "sizing_55_res_actual_sharpe", "pbo")
     P("pbo55", None if pb is None else pb * 100, rg, "pbo_cscv.sizing_55_res_actual_sharpe.pbo")
     P("pbo55_n", R.get(rg, "pbo_cscv", "sizing_55_res_actual_sharpe", "N_variants"), rg,
@@ -340,6 +437,24 @@ def build_values(R: Results):
     P("mk_hi", ci[1], mk, "primary.ci95_c[1]")
     P("mk_verdict", R.get(mk, "primary", "verdict"), mk, "primary.verdict")
     P("mk_usd", R.get(mk, "headline", "total_pnl_usd"), mk, "headline.total_pnl_usd")
+    v1s = "results/summary.json"
+    P("v1_usd", R.get(v1s, "oos", "h6_shadow", "total_pnl_usd"), v1s, "oos.h6_shadow.total_pnl_usd",
+      say=lambda v: f"{abs(v) / 1000:.0f} thousand")
+    P("v1_dd", R.get(v1s, "oos", "h6_shadow", "max_dd"), v1s, "oos.h6_shadow.max_dd")
+    t3 = "results/tier0_v3/blind.json"
+    for tag, k in (("t3_u2is", "u2_is"), ("t3_u2oos", "u2_oos"), ("t3_boos", "burned_oos")):
+        P(f"{tag}_c", R.get(t3, "sets", k, "primary", "per_share_c"), t3, f"sets.{k}.primary.per_share_c",
+          say="{:.2f}", note="COUNTERFACTUAL (tier-0 v3, frozen)")
+        P(f"{tag}_lo", R.get(t3, "sets", k, "primary", "per_share_ci95_c_lo"), t3, f"sets.{k}.primary.per_share_ci95_c_lo")
+        P(f"{tag}_hi", R.get(t3, "sets", k, "primary", "per_share_ci95_c_hi"), t3, f"sets.{k}.primary.per_share_ci95_c_hi")
+        P(f"{tag}_verdict", R.get(t3, "sets", k, "reading", "verdict"), t3, f"sets.{k}.reading.verdict")
+    lab3 = R.get(t3, "label")
+    if lab3 is not None and "COUNTERFACTUAL" not in str(lab3).upper():
+        sys.exit(f"{t3} label lost its COUNTERFACTUAL marker")
+    P("t3_overall", R.get(t3, "verdicts", "U2 (primary, test b)", "overall"), t3, "verdicts['U2 (primary, test b)'].overall")
+    hv = R.load("HYPOTHESIS_V2.md") or ""
+    mfw = re.search(r"planned ~?(\d{4}-\d\d-\d\d \d\d:\d\d UTC)", hv)
+    P("fwd_when", mfw.group(1) if mfw else None, "HYPOTHESIS_V2.md", "Forward test: 'planned ~<date> UTC'", say="{}")
     tt = "results/tt/results.json"
     P("tt2_verdict", R.get(tt, "TT2", "verdict"), tt, "TT2.verdict")
     P("tt3_verdict", R.get(tt, "TT3", "verdict"), tt, "TT3.verdict")
@@ -349,12 +464,30 @@ def build_values(R: Results):
     if fwd is not None:
         fv = fwd.get("verdict") or (fwd.get("primary") or {}).get("verdict") or "done"
     P("fwd_verdict", fv, fw2, "verdict | primary.verdict")
-    P("forward_sentence", "The blind forward test is still pending." if fv is None
-      else f"The blind forward test is done. Its verdict is {str(fv).lower()}.", fw2, "derived from verdict",
-      say="{}")
+    when = R.entries["fwd_when"]["value"]
+    P("forward_sentence", (f"The blind forward test runs once, planned for {when}." if when else
+                           "The blind forward test has not run yet.") if fv is None
+      else f"The blind forward test is done. Its verdict is {str(fv).lower()}.", fw2,
+      "derived from verdict (absent: not run yet) + HYPOTHESIS_V2.md planned date", say="{}")
     peeks = R.load("results/oos_peeks.log")
+    def verdict_word(v):
+        v = str(v or "").upper()
+        return "passed" if v.startswith("PASS") else "failed" if v.startswith("FAIL") else "is pending"
+    ui, uo = R.entries["u2_is_label"]["value"], R.entries["u2_oos_label"]["value"]
+    v1v = R.entries["v1_usd"]["value"]
+    P("s08_sentence", f"Unseen markets {verdict_word(ui)} in sample and {verdict_word(uo)} out of sample. "
+      + ("" if v1v is None else f"The original copy strategy {'lost' if v1v < 0 else 'made'} {abs(v1v) / 1000:.0f} "
+         f"thousand dollars on its blind window, and ")
+      + f"the market-making variant {verdict_word(R.entries['mk_verdict']['value'])} its blind test.",
+      ex, "derived: expand primary.u2_is/u2_oos.label; summary.json oos.h6_shadow.total_pnl_usd; maker primary.verdict",
+      say="{}")
+    t3o = R.entries["t3_overall"]["value"]
+    P("s08_sentence2", (f"The frozen tier-zero version {verdict_word(t3o)} its blind tests too. " if t3o else "")
+      + ("In table tennis markets we detected no fast tier." if "no fast tier" in str(R.entries["tt2_verdict"]["value"]).lower()
+         else f"Table tennis: {R.entries['tt2_verdict']['value'] or 'pending'}."),
+      "results/tier0_v3/blind.json; results/tt/results.json", "derived: verdicts overall; TT2.verdict", say="{}")
     P("peeks", None if peeks is None else sum(1 for ln in peeks.splitlines() if ln.strip()), "results/oos_peeks.log",
-      "count(non-empty lines)", say="{}")
+      "count(non-empty lines) at render time", say="{}")
 
     # S09: tier-0 counterfactual
     t0 = "results/tier0/results.json"
@@ -378,6 +511,17 @@ def build_values(R: Results):
     P("t0_curves", R.get(t0, "pnl_vs_t_reprice_minus_t_bounce"), t0,
       "pnl_vs_t_reprice_minus_t_bounce.{IS,burned_OOS}.{stamp,tournament,point}[B].per_share_c")
     P("t0_mode", R.get(t0, "headline_scenario", "r_mode"), t0, "headline_scenario.r_mode")
+    pre, be_ = R.entries["t0_preB"]["value"], R.entries["t0_be"]["value"]
+    P("t0_pre_sentence", None if pre is None or be_ is None else
+      (f"Our pre-registered estimate, {pre:.2f} seconds, falls in that zone." if pre < be_ else
+       f"Our pre-registered estimate, {pre:.2f} seconds, is above it."), t0,
+      "timing.pre_registered_primary_median_t_reprice_minus_t_bounce_s vs pnl_vs_t_reprice_minus_t_bounce.IS.stamp_breakeven_B_s",
+      say="{}")
+    ov = R.entries["t3_overall"]["value"]
+    P("t3_sentence", None if ov is None else
+      ("A frozen version then failed its blind tests on unseen markets." if str(ov).upper().startswith("FAIL") else
+       f"A frozen version was then tested blind on unseen markets: {str(ov).split('(')[0].strip().lower()}."),
+      "results/tier0_v3/blind.json", "derived from verdicts['U2 (primary, test b)'].overall", say="{}")
 
     # S10: live
     lm = "results/engine/live_market_run.json"
@@ -393,26 +537,19 @@ def build_values(R: Results):
     P("live_paper", R.get(lm, "paper_only"), lm, "paper_only")
     P("live_when", R.get(lm, "when"), lm, "when")
     ls = "results/live/summary.json"
+    st_ = live_state(R.load(ls), ls)
     sm = R.load(ls)
-    status = None if sm is None else str(sm.get("status", ""))
-    done = status is not None and bool(re.search(r"\b(ended|done|complete|completed|final|settled|finished)\b",
-                                                 status.lower()))
-    P("sess_status", status, ls, "status")
+    P("sess_status", st_["status"], ls, "status (+ STOPPED_<run> marker, file age, 1970/empty-counter warm-up guard)")
     P("sess_label", None if sm is None else sm.get("label"), ls, "label")
     P("sess_strategy", None if sm is None else sm.get("strategy"), ls, "strategy")
     P("sess_fills", R.get(ls, "books", "B1", "fills"), ls, "books.B1.fills")
     P("sess_pnl", R.get(ls, "books", "B1", "pnl"), ls, "books.B1.pnl")
-    P("sess_state", None if sm is None else ("finished" if done else "running"), ls, "derived from status")
-    if sm is None:
-        sent = "Tonight's live paper session is pending."
-    elif not done:
-        sent = "Tonight's live paper session is running now."
-    else:
-        sent = (f"Tonight's live paper session finished with {R.get(ls, 'books', 'B1', 'fills')} fills "
-                f"on the pre-registered book.")
-    P("live_sentence", sent, ls, "derived from status, books.B1.fills", say="{}")
-    P("engine_video", "results/engine/engine_live_demo.mp4" if Path("results/engine/engine_live_demo.mp4").exists()
-      else None, "results/engine/engine_live_demo.mp4", "file exists")
+    P("sess_state", st_["state"], ls, "derived: pending / warming up / running / stopped / finished / no update")
+    P("sess_since", st_["since"], ls, "started_process (UTC)")
+    P("sess_asof", st_["asof"], ls, "now, or the file's modification time when now is unset (1970)")
+    P("live_sentence", st_["sentence"], ls, "derived from status, started_process, books.B1.fills", say="{}")
+    P("engine_video", "results/engine/engine_live_demo.mp4" if valid_mp4("results/engine/engine_live_demo.mp4")
+      else None, "results/engine/engine_live_demo.mp4", "file exists and ffprobe reads a duration (not mid-write)")
 
     # S11: financials, capacity, kill switches
     wf = ("strategies", "v2", "periods")
@@ -436,6 +573,10 @@ def build_values(R: Results):
     pos = [s for s in sizes if sc[s]["OOS"]["pnl_usd_per_day"] > 0]
     P("cap_k", sc[pos[-1]]["OOS"]["capital_usd"] / 1000 if pos else None, fn,
       f"strategies.v2.scaling.{pos[-1] if pos else '?'}.OOS.capital_usd / 1000 (largest size with OOS P&L > 0)",
+      say="{:.0f}")
+    neg = [s for s in sizes if sc[s]["OOS"]["pnl_usd_per_day"] <= 0]
+    P("cap_neg_k", sc[neg[0]]["OOS"]["capital_usd"] / 1000 if neg else None, fn,
+      f"strategies.v2.scaling.{neg[0] if neg else '?'}.OOS.capital_usd / 1000 (smallest size with OOS P&L <= 0)",
       say="{:.0f}")
     risk = R.load("docs/RISK.md") or ""
     kills = []
@@ -804,8 +945,8 @@ def build_scene(meta, R: Results) -> Scene:
 
 
 def scene_hook(S, R):
-    vw, vh = 1536, 864
-    x0, y0 = (W - vw) // 2, 34
+    vw, vh = 1440, 810                     # leaves room for the credit and the call note above the captions
+    x0, y0 = (W - vw) // 2, 30
     clip = Clip(["results/tracking/demo/01_miss_test_2_f2819_lead408ms.mp4",
                  "results/tracking/demo/02_miss_test_4_f5750_lead83ms.mp4"], (vw, vh))
     S.clips.append(clip)
@@ -828,69 +969,93 @@ def scene_hook(S, R):
         img.paste(ov, (0, 0), ov)
     S.els.append(Fn(title, 3.0, live=True))
     d = ImageDraw.Draw(S.bg)
-    text(d, (x0 + vw, y0 + vh + 14), "real held-out test game  ·  " + CREDIT, 18, "regular", MUTED, "ra")
+    longest = "our longest call on held-out games" if R["hook_is_longest"] else "one held-out call"
+    if R.pending("lead_med_ms"):
+        note = f"First clip: {longest}."
+    else:
+        note = (f"First clip: {longest}. Median lead {R['lead_med_ms']:.0f} ms (p90 {R['lead_p90_ms']:.0f} ms); "
+                f"{R['lead_n_called']} of {R['lead_n_miss']} test misses called early.")
+    text(d, (x0, y0 + vh + 12), note, 19, "demi", AMBER)
+    text(d, (x0, y0 + vh + 40), "MISS CALLED latches at the first crossing; P(miss) is per frame.", 17, "regular",
+         MUTED)
+    text(d, (x0 + vw, y0 + vh + 12), "real held-out test game", 18, "regular", MUTED, "ra")
+    text(d, (x0 + vw, y0 + vh + 40), CREDIT, 17, "regular", MUTED, "ra")
 
 
 def scene_economics(S, R):
     S.head()
+    vis = "pending" if R.pending("vis_ms") else f"~{R['vis_ms']:.0f} ms"
+    he = "pending" if R.pending("he100_cm") else f"±{R['he100_cm']:.1f} cm"
     tiers = [
-        ("TIER 0", "Ball tracking", "courtside camera + our vision model, to London",
-         f"~{R['ldn_ms']:.0f} ms" if not R.pending("ldn_ms") else "pending", "measured CV latency", BLUE),
-        ("TIER 1", "Umpire", "chair umpire enters the point", "", "", GREY),
-        ("TIER 2", "Official data feed", "licensed point-by-point feed (not purchased)", "", "", GREY),
-        ("TIER 3", "TV and live scores", "ESPN live score vs the order book",
-         f"{R['espn_s']:.1f} s behind", "measured", CORAL),
-        ("TIER 4", "Public scoreboard",
-         f"public score vs the book; video streams {R['stream_lo']:.0f}–{R['stream_hi']:.0f} s (assumed)",
-         f"{R['h4_s']:.1f} s behind", "measured (public score)", CORAL),
+        ("TIER 0", "Ball tracking", "before the bounce",
+         f"{he} at 100 ms (simulated); our vision {vis}/call (laptop, no courtside camera)", CORAL),
+        ("TIER 1", "Chair umpire", "at the bounce", "", GREY),
+        ("TIER 2", "Market makers", f"{R['book_vs_stamp_s']:+.2f} s",
+         "the book reprices, vs the official point stamp (median)", BLUE),
+        ("TIER 3", "Official feed", f"≈{R['stamp_lag_s']:.1f} s",
+         "umpire-entered point stamp; lag after the bounce inferred, not measured", "#3f6e9c"),
+        ("TIER 4", "TV and public scores", f"+{R['espn_s']:.1f} s",
+         f"ESPN vs the book (measured); book first on {R['h4_share']:.0f}% of {R['h4_n']} points, "
+         f"median {R['h4_s']:.1f} s", GREY),
+        ("TIER 5", "Streams", f"+{R['stream_lo']:.0f}–{R['stream_hi']:.0f} s", "the slowest money; assumed, not measured",
+         DIM),
     ]
-    y = 250
-    for i, (tag, name, sub, val, note, col) in enumerate(tiers):
-        t0 = 0.4 + i * 0.55
-        yy = y + i * 118
-        indent = i * 46
-        S.els += [Box((MX + indent, yy, 1130, yy + 100), PANEL, 14, t0=t0),
-                  Box((MX + indent, yy, MX + indent + 8, yy + 100), col, 3, t0=t0),
-                  Txt((MX + indent + 34, yy + 22), tag, 18, "demi", col, t0=t0, bg=PANEL, spacing=2),
-                  Txt((MX + indent + 140, yy + 16), name, 32, "demi", INK, t0=t0, bg=PANEL),
-                  Txt((MX + indent + 140, yy + 60), sub, 20, "regular", MUTED, t0=t0, bg=PANEL)]
-        if val:
-            S.els.append(Txt((1100, yy + 34), val, 34, "demi", col, "ra", t0=t0 + 0.2, bg=PANEL))
-    R["cv_ms"]
+    y = 236
+    for i, (tag, name, val, sub, col) in enumerate(tiers):
+        t0 = 0.4 + i * 0.45
+        yy = y + i * 102
+        indent = i * 34
+        S.els += [Box((MX + indent, yy, 1140, yy + 90), PANEL, 14, t0=t0),
+                  Box((MX + indent, yy, MX + indent + 8, yy + 90), col, 3, t0=t0),
+                  Txt((MX + indent + 30, yy + 18), tag, 17, "demi", col, t0=t0, bg=PANEL, spacing=2),
+                  Txt((MX + indent + 130, yy + 12), name, 30, "demi", INK, t0=t0, bg=PANEL)]
+        if sub:
+            S.els.append(Txt((MX + indent + 130, yy + 54), sub, 18, "regular", MUTED, t0=t0, bg=PANEL))
+        S.els.append(Txt((1112, yy + 14), val, 30, "demi", col if col not in (GREY, DIM) else INK, "ra", t0=t0 + 0.2,
+                         bg=PANEL))
+    R["vis_p90_ms"]
     # right column: who is on the other side, why it persists
     cx = 1210
-    S.els += [Box((cx, 250, W - MX, 540), PANEL2, 18, t0=3.4),
-              Txt((cx + 36, 282), "WHO IS ON THE OTHER SIDE", 18, "demi", AMBER, t0=3.5, bg=PANEL2, spacing=2),
-              Txt((cx + 36, 326), "Slow takers: traders reacting to TV, streams and score apps, and resting quotes "
+    S.els += [Box((cx, 236, W - MX, 526), PANEL2, 18, t0=3.4),
+              Txt((cx + 36, 268), "WHO IS ON THE OTHER SIDE", 18, "demi", AMBER, t0=3.5, bg=PANEL2, spacing=2),
+              Txt((cx + 36, 312), "Slow takers: traders reacting to TV, streams and score apps, and resting quotes "
                   "not pulled in time. They trade against prices the fast tier already knows are stale.",
                   24, "regular", INK, t0=3.6, bg=PANEL2, maxw=W - MX - cx - 72),
-              Box((cx, 566, W - MX, 870), PANEL2, 18, t0=4.4),
-              Txt((cx + 36, 598), "WHY IT PERSISTS", 18, "demi", AMBER, t0=4.5, bg=PANEL2, spacing=2),
-              Txt((cx + 36, 642), f"Speed costs money: a licensed feed (central {usd(R['feed_month'])}/month, our "
+              Box((cx, 552, W - MX, 856), PANEL2, 18, t0=4.4),
+              Txt((cx + 36, 584), "WHY IT PERSISTS", 18, "demi", AMBER, t0=4.5, bg=PANEL2, spacing=2),
+              Txt((cx + 36, 628), f"Speed costs money: a licensed feed (central {usd(R['feed_month'])}/month, our "
                   f"assumption) and a London gateway ({usd(R['vps_month'])}/month). The pool is small: our book "
                   f"trades {usd(R['notional_day'])}/day.", 24, "regular", INK, t0=4.6, bg=PANEL2,
                   maxw=W - MX - cx - 72)]
     d = ImageDraw.Draw(S.bg)
-    src_note(d, (MX, 860), "results/decay/decay.json (latency_inputs, stacks); results/financials/financials.json")
+    src_note(d, (MX, 860), "results/summary.json (h4, tracking_tennis_physics); results/tier0/results.json (timing); "
+             "results/decay/decay.json; results/engine/demo_run.json (latency_budget)")
 
 
 def scene_evidence(S, R):
     S.head()
     rows = R["ft_rows"]
     months = [r["month"] for r in rows]
+    oos = [r["period"] == "OOS" for r in rows]
     a = [float(r["net30_c"]) for r in rows]
     b = [float(r["others_net30_c"]) for r in rows]
     c = [float(r["follow_res_c"]) for r in rows]
     import datetime as _dt
     labels = [_dt.date(int(m[:4]), int(m[5:]), 1).strftime("%b\n%Y" if m.endswith("-01") or i == 0 else "%b")
               for i, m in enumerate(months)]
+    n_is = len(rows) - sum(oos)
+
+    def pale(col):
+        return "#" + "".join(f"{v:02x}" for v in mix(col, BG, 0.45))
 
     def plot(ax):
         x = np.arange(len(months))
         bw = 0.27
-        arts = list(ax.bar(x - bw, a, bw * 0.92, color=BLUE)) + list(ax.bar(x, b, bw * 0.92, color=GREY)) + \
-            list(ax.bar(x + bw, c, bw * 0.92, color=CORAL))
+        arts = []
+        for off, vals, col in ((-bw, a, BLUE), (0, b, GREY), (bw, c, CORAL)):
+            arts += list(ax.bar(x + off, vals, bw * 0.92, color=[pale(col) if o else col for o in oos]))
         ax.axhline(0, color=MUTED, lw=1.2)
+        ax.axvline(n_is - 0.5, color=MUTED, lw=1, ls=(0, (4, 4)))
         ax.set_xticks(x, labels)
         ax.set_ylabel("cents per share, net of fees", fontsize=15)
         ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: disp(f"{v:+.0f}¢") if v else "0"))
@@ -901,23 +1066,26 @@ def scene_evidence(S, R):
     ax_l, full, to_px = mpl_chart(w, h, plot, rect=(0.07, 0.13, 0.92, 0.84))
     y0 = to_px(0, 0)[1]
     S.els.append(Layer(full, (MX, 300), t0=0.6, dur=1.6, mode="grow", base=ax_l, y0=y0))
+    xd = MX + to_px(n_is - 0.5, 0)[0]
+    S.els += [Txt((xd - 12, 304), "in sample (walk-forward)", 18, "demi", BLUE, "ra", t0=1.2),
+              Txt((xd + 12, 304), "out of sample (faded)", 18, "demi", CYAN, "la", t0=1.4)]
     lx = MX + 120
     for i, (col, lab) in enumerate([(BLUE, "fast-tier wallets, first 3 s after a point (marked 30 s later)"),
                                     (GREY, "everyone else (marked 30 s later)"),
                                     (CORAL, "copying the fast tier 3 s later (held to resolution)")]):
-        S.els += [Box((lx, 248 + i * 0, lx + 18, 266), col, 3, t0=0.3 + 0.15 * i)]
+        S.els += [Box((lx, 248, lx + 18, 266), col, 3, t0=0.3 + 0.15 * i)]
         S.els += [Txt((lx + 28, 246), lab, 19, "regular", MUTED, t0=0.3 + 0.15 * i)]
         lx += 28 + F(19).getlength(lab) + 40
     # chips
-    S.els += [Box((1180, 104, 1490, 176), PANEL2, 16, t0=2.2), Box((1510, 104, W - MX, 176), PANEL2, 16, t0=2.5),
-              Num((1335, 140), R["ft_pos"], lambda v, n=R["ft_n"]: f"up {v:.0f}/{n} months", 28, "demi", BLUE, "mm",
+    S.els += [Box((1110, 104, 1470, 176), PANEL2, 16, t0=2.2), Box((1490, 104, W - MX, 176), PANEL2, 16, t0=2.5),
+              Num((1290, 140), R["ft_pos"], lambda v, n=R["ft_n"]: f"up {v:.0f}/{n} months", 28, "demi", BLUE, "mm",
                   t0=2.3, dur=0.9, bg=PANEL2),
-              Num((1645, 140), R["fol_neg"], lambda v, n=R["ft_n"]: f"copy: down {v:.0f}/{n}", 28, "demi", CORAL, "mm",
-                  t0=2.6, dur=0.9, bg=PANEL2)]
-    R["oth_neg"], R["ft_wallets_last"]
+              Num((1490 + (W - MX - 1490) / 2, 140), R["fol_neg"], lambda v, n=R["ft_n"]: f"copy: down {v:.0f}/{n}", 28,
+                  "demi", CORAL, "mm", t0=2.6, dur=0.9, bg=PANEL2)]
+    R["oth_neg"], R["ft_wallets_last"], R["ft_pos_oos"], R["ft_n_oos"]
     d = ImageDraw.Draw(S.bg)
-    src_note(d, (MX, 860), f"results/fasttier_walkforward_is.csv (in sample, {months[0]} to {months[-1]}; "
-             f"walk-forward wallet selection)")
+    src_note(d, (MX, 860), f"results/summary.json (is/oos h6_walkforward; {months[0]} to {months[-1]}, "
+             f"{n_is} in-sample + {sum(oos)} out-of-sample months; wallets picked from earlier months only)")
 
 
 def scene_vision(S, R):
@@ -942,14 +1110,15 @@ def scene_vision(S, R):
               Txt((px + 36, 512), "Recall at 50 ms", 22, "regular", MUTED, t0=1.6, bg=PANEL),
               Num((pw + px - 36, 504), R["recall50"], lambda v: f"{v:.0f}%", 36, "demi", INK, "ra", t0=1.6, bg=PANEL),
               Box((px + 36, 572, W - MX - 36, 574), GRID, 0, t0=2.0, bg=PANEL),
-              Txt((px + 36, 596), "BALL DETECTION, TEST SET", 18, "demi", MUTED, t0=2.0, bg=PANEL, spacing=2),
-              Txt((px + 36, 636), "recall", 22, "regular", MUTED, t0=2.2, bg=PANEL),
+              Txt((px + 36, 596), f"BALL DETECTION, {R['det_n']:,} TEST FRAMES", 18, "demi", MUTED, t0=2.0, bg=PANEL,
+                  spacing=2),
+              Txt((px + 36, 636), "ball found", 22, "regular", MUTED, t0=2.2, bg=PANEL),
               Num((pw + px - 36, 628), R["det_recall"], lambda v: f"{v:.1f}%", 32, "demi", INK, "ra", t0=2.2, bg=PANEL),
-              Txt((px + 36, 684), "precision within 10 px", 22, "regular", MUTED, t0=2.4, bg=PANEL),
-              Num((pw + px - 36, 676), R["det_prec"], lambda v: f"{v:.1f}%", 32, "demi", INK, "ra", t0=2.4, bg=PANEL),
-              Txt((px + 36, 760), f"Test flights: {R['n_test_miss']} misses, {R['n_test_bounce']} bounces. "
-                  f"Pre-registered rule: precision ≥ 95% at 50 ms. Verdict: {R['verdict_h3']}.",
-                  19, "regular", MUTED, t0=2.6, bg=PANEL, maxw=pw - 72)]
+              Txt((px + 36, 684), "within 5 px of the label", 22, "regular", MUTED, t0=2.4, bg=PANEL),
+              Num((pw + px - 36, 676), R["det_w5"], lambda v: f"{v:.1f}%", 32, "demi", INK, "ra", t0=2.4, bg=PANEL),
+              Txt((px + 36, 748), f"Test flights: {R['n_test_miss']} misses, {R['n_test_bounce']} bounces. "
+                  f"Pre-registered rule: precision ≥ 95% at 50 ms. Verdict: {R['verdict_h3']} on the point "
+                  f"estimate (n = {R['n50']}).", 19, "regular", MUTED, t0=2.6, bg=PANEL, maxw=pw - 72)]
     R["prec50"]
     src_note(d, (MX, 902), "results/tracking/summary.json (early_call.precision_recall_test_snapshot.50ms, "
              "detection_accuracy_pooled)")
@@ -986,7 +1155,7 @@ def scene_tennis(S, R):
               Txt((px + 36, 620), "baseline curve fit", 22, "regular", INK, t0=2.0, bg=PANEL),
               Num((pw + px - 36, 614), R["spin_base_rpm"], lambda v: f"{v:,.0f} rpm", 30, "demi", MUTED, "ra",
                   t0=2.0, bg=PANEL),
-              Txt((px + 36, 680), "Nominal simulation: the filter's physics matches the simulator's. "
+              Txt((px + 36, 680), "In simulation only: the filter's physics matches the simulator's. "
                   "Not measured on real tennis.", 19, "regular", MUTED, t0=2.3, bg=PANEL, maxw=pw - 72)]
     R["spin_bls_axis"]
     src_note(d, (MX, 902), "results/viz/viz_data.json (shot.preds); results/spin/tennis/metrics_v2.csv")
@@ -1064,7 +1233,7 @@ def scene_overfitting(S, R):
     S.head()
     groups = [("v2 in sample", "v2_is"), ("v2 out of sample", "v2_oos"), ("unseen markets,\nblind OOS", "v2_u2oos_blind")]
     v44 = [R[f"dsr_{s}_N44"] for _, s in groups]
-    v33 = [R[f"dsr_{s}_N3386"] for _, s in groups]
+    v33 = [R[f"dsr_{s}_N3410"] for _, s in groups]
     nt, ns = R["n_trials"], R["n_trials_small"]
 
     def plot(ax):
@@ -1081,7 +1250,7 @@ def scene_overfitting(S, R):
         labs = []
         for bars, vv in ((b1, v44), (b2, v33)):
             for b, v in zip(bars, vv):
-                labs.append(ax.text(b.get_x() + b.get_width() / 2, v + 0.02, floor2(v) if v > 0.99 else f"{v:.2f}",
+                labs.append(ax.text(b.get_x() + b.get_width() / 2, v + 0.02, f"{v:.3f}",
                                     ha="center", va="bottom", color=INK, fontsize=16, fontweight="demibold"))
         return list(b1) + list(b2) + labs
     w, h = 1060, 540
@@ -1093,13 +1262,15 @@ def scene_overfitting(S, R):
         lx += 28 + F(19).getlength(disp(lab)) + 40
     # PBO meters
     cx = 1190
-    S.els += [Box((cx, 250, W - MX, 830), PANEL, 18, t0=1.6),
+    S.els += [Box((cx, 250, W - MX, 850), PANEL, 18, t0=1.6),
               Txt((cx + 32, 280), "PROBABILITY OF BACKTEST OVERFITTING", 17, "demi", AMBER, t0=1.7, bg=PANEL, spacing=2),
-              Txt((cx + 32, 312), "CSCV, 16 blocks, all 12,870 splits", 19, "regular", MUTED, t0=1.7, bg=PANEL)]
+              Txt((cx + 32, 312), f"CSCV, {R['cscv_blocks']} blocks, all {R['cscv_splits']:,} splits", 19, "regular",
+                  MUTED, t0=1.7, bg=PANEL)]
     mw = W - MX - cx - 64
-    for i, (lab, val) in enumerate(((f"low-loss grid, {R['pbo24_n']} variants", R["pbo24"]),
+    for i, (lab, val) in enumerate(((f"{R['pbo24_n']}-variant grid, picked by Sharpe", R["pbo24"]),
+                                    (f"{R['pbo24_n']}-variant grid, picked by our rule", R["pbo24_sel"]),
                                     (f"sizing grid, {R['pbo55_n']} variants", R["pbo55"]))):
-        y = 380 + i * 150
+        y = 366 + i * 108
         S.els += [Txt((cx + 32, y), lab, 22, "regular", INK, t0=1.9 + 0.3 * i, bg=PANEL),
                   Num((W - MX - 32, y - 6), val, lambda v: f"{v:.0f}%", 40, "demi", BLUE, "ra", t0=1.9 + 0.3 * i,
                       bg=PANEL)]
@@ -1112,13 +1283,13 @@ def scene_overfitting(S, R):
             if val:
                 rrect(d, (cx + 32, y + 56, cx + 32 + max(16, mw * val / 100 * k), y + 72), 8, fill=rgb(BLUE))
         S.els.append(Fn(meter, 1.9 + 0.3 * i + 1.3))
-    S.els += [Box((cx + 32, 690, W - MX - 32, 692), GRID, 0, t0=2.6, bg=PANEL),
-              Txt((cx + 32, 712), "STATIONARY BOOTSTRAP, P(SHARPE ≤ 0)", 17, "demi", MUTED, t0=2.7, bg=PANEL,
+    S.els += [Box((cx + 32, 708, W - MX - 32, 710), GRID, 0, t0=2.6, bg=PANEL),
+              Txt((cx + 32, 730), "STATIONARY BOOTSTRAP, P(SHARPE ≤ 0)", 17, "demi", MUTED, t0=2.7, bg=PANEL,
                   spacing=2),
-              Txt((cx + 32, 748), f"in sample {R['boot_is_p']:.4f}   ·   out of sample {R['boot_oos_p']:.4f}", 24,
+              Txt((cx + 32, 766), f"in sample {R['boot_is_p']:.4f}   ·   out of sample {R['boot_oos_p']:.4f}", 24,
                   "demi", INK, t0=2.8, bg=PANEL)]
     d = ImageDraw.Draw(S.bg)
-    src_note(d, (MX, 860), "results/rigor/rigor.json (psr_dsr.rows dsr_min_N44 / dsr_min_N3386, pbo_cscv, bootstrap); "
+    src_note(d, (MX, 860), "results/rigor/rigor.json (psr_dsr.rows dsr_min_N44 / dsr_min_N3410, pbo_cscv, bootstrap); "
              "lowest DSR across the variance sources")
 
 
@@ -1147,37 +1318,48 @@ def scene_scoreboard(S, R):
          chip_for(R["u2_is_label"])),
         ("Unseen markets (U2)", "blind, out of sample",
          f"{fmt_c(R['u2_oos_c'])} {ci_txt(R['u2_oos_lo'], R['u2_oos_hi'])}", chip_for(R["u2_oos_label"])),
+        ("v1, copy the fast tier", "held-out window, opened once, blind",
+         f"{usd(R['v1_usd'] / 1000, 1)}k, max DD {R['v1_dd'] * 100:.0f}%" if not R.pending("v1_usd") else "pending",
+         ("FAIL", CORAL) if (R["v1_usd"] or 0) < 0 else ("PASS", GREEN)),
         ("Maker v1", "pre-registered, blind out of sample",
          f"{fmt_c(R['mk_c'])} {ci_txt(R['mk_lo'], R['mk_hi'])}  ·  {usd(R['mk_usd'])}", chip_for(R["mk_verdict"])),
+        ("Tier-0 v3, frozen*", "blind, unseen markets: IS / OOS period",
+         "pending" if R.pending("t3_u2is_c") else f"{fmt_c(R['t3_u2is_c'])} / {fmt_c(R['t3_u2oos_c'])}",
+         ("PENDING", AMBER) if R.pending("t3_overall") else chip_for(R["t3_overall"])),
+        ("Tier-0 v3, frozen*", "burned out of sample, not blind",
+         "pending" if R.pending("t3_boos_c") else f"{fmt_c(R['t3_boos_c'])} {ci_txt(R['t3_boos_lo'], R['t3_boos_hi'])}",
+         ("PENDING", AMBER) if R.pending("t3_boos_verdict") else chip_for(R["t3_boos_verdict"])),
         ("Table tennis markets", "pre-registered TT1–TT3",
          "; ".join(v.split("(")[-1].rstrip(")") for v in (tt2, str(R["tt3_verdict"] or "")) if "(" in v) or tt2,
          chip_for(tt2)),
         ("v2, blind forward test", "frozen rule, unseen days",
-         "running tomorrow" if R["fwd_verdict"] is None else str(R["fwd_verdict"]),
+         (f"runs once, {R['fwd_when']}" if R["fwd_when"] else "not run yet") if R["fwd_verdict"] is None
+         else str(R["fwd_verdict"]),
          ("PENDING", AMBER) if R["fwd_verdict"] is None else chip_for(R["fwd_verdict"])),
     ]
-    R["tt3_verdict"]
-    y0, rh = 236, 66
+    R["tt3_verdict"], R["t3_u2is_verdict"], R["t3_u2oos_verdict"], R["t3_boos_verdict"]
+    y0, rh = 238, 52
+    S.els.append(Txt((MX, 186), "* Tier-0 rows: " + TIER0_LABEL, 17, "demi", AMBER, t0=0.0, fade=0.0))
     d = ImageDraw.Draw(S.bg)
     for j, (lab, x) in enumerate((("TEST", MX + 24), ("KIND", MX + 470), ("RESULT, ¢/SHARE [95% CI]", MX + 960))):
         text(d, (x, y0 - 6), lab, 16, "demi", DIM, "ls", spacing=2)
     text(d, (W - MX - 24, y0 - 6), "VERDICT", 16, "demi", DIM, "rs", spacing=2)
     for i, (name, kind, res, (chip, col)) in enumerate(rows):
         y = y0 + 12 + i * rh
-        t0 = 0.4 + i * 0.28
-        S.els += [Box((MX, y, W - MX, y + rh - 10), PANEL if i % 2 == 0 else PANEL2, 12, t0=t0),
-                  Txt((MX + 24, y + 13), name, 25, "demi", INK, t0=t0, bg=PANEL if i % 2 == 0 else PANEL2),
-                  Txt((MX + 470, y + 15), kind, 21, "regular", MUTED, t0=t0, bg=PANEL if i % 2 == 0 else PANEL2),
-                  Txt((MX + 960, y + 13), res, 25, "demi", INK, t0=t0, bg=PANEL if i % 2 == 0 else PANEL2),
-                  Box((W - MX - 210, y + 9, W - MX - 20, y + rh - 19), col, 10, t0=t0 + 0.15,
-                      bg=PANEL if i % 2 == 0 else PANEL2),
-                  Txt((W - MX - 115, y + (rh - 10) / 2), chip, 19, "bold", BG if col != CORAL else INK, "mm",
+        t0 = 0.4 + i * 0.24
+        bgc = PANEL if i % 2 == 0 else PANEL2
+        S.els += [Box((MX, y, W - MX, y + rh - 7), bgc, 12, t0=t0),
+                  Txt((MX + 24, y + 9), name, 22, "demi", INK, t0=t0, bg=bgc),
+                  Txt((MX + 470, y + 11), kind, 19, "regular", MUTED, t0=t0, bg=bgc),
+                  Txt((MX + 960, y + 9), res, 22, "demi", INK, t0=t0, bg=bgc),
+                  Box((W - MX - 210, y + 6, W - MX - 20, y + rh - 13), col, 10, t0=t0 + 0.15, bg=bgc),
+                  Txt((W - MX - 115, y + (rh - 7) / 2), chip, 17, "bold", BG if col != CORAL else INK, "mm",
                       t0=t0 + 0.15, bg=col, rise=0, spacing=1)]
-    yb = y0 + 12 + len(rows) * rh + 8
+    yb = y0 + 12 + len(rows) * rh + 4
     S.els += [Txt((MX, yb), f"Every look at out-of-sample data is logged: {R['peeks']} entries in "
-                  f"results/oos_peeks.log.", 22, "demi", AMBER, t0=0.4 + len(rows) * 0.28)]
+                  f"results/oos_peeks.log at render time.", 21, "demi", AMBER, t0=0.4 + len(rows) * 0.24)]
     src_note(d, (W - MX, yb + 6), "results/v2/causal.json, cost_stress.json, expand/results.json, maker/oos.json, "
-             "tt/results.json, v2/forward.json", anchor="ra")
+             "summary.json (v1), tier0_v3/blind.json, tt/results.json, v2/forward.json", anchor="ra")
 
 
 def scene_tier0(S, R):
@@ -1219,15 +1401,15 @@ def scene_tier0(S, R):
         lo, hi = ax.get_ylim()
         ax.set_ylim(lo, hi + 1.6)
         return arts
-    w, h = 1060, 560
-    ax_l, full, to_px = mpl_chart(w, h, plot, rect=(0.09, 0.14, 0.89, 0.8))
-    gx, gy = MX + 600, 300
+    w, h = 1060, 520
+    ax_l, full, to_px = mpl_chart(w, h, plot, rect=(0.09, 0.15, 0.89, 0.79))
+    gx, gy = MX + 600, 296
     S.els.append(Layer(full, (gx, gy), t0=1.8, dur=2.2, mode="wipe", base=ax_l))
-    for xv, lab, c, row, anc in ((preB, f" pre-registered {preB:.2f} s", MUTED, 1, "la"),
-                                 (be, f"break-even {be:.1f} s (stamp) ", AMBER, 0, "ra"),
-                                 (calB, f" calibrated {calB:.2f} s (inference)", BLUE, 0, "la")):
-        px = gx + to_px(xv, 0)[0]
-        S.els.append(Txt((px, gy + 40 + 26 * row), lab, 16, "demi", c, anc, t0=2.4))
+    for xv, lab, c, row in ((preB, f" pre-registered estimate {preB:.2f} s", MUTED, 0),
+                            (be, f" break-even {be:.1f} s (stamp)", AMBER, 1),
+                            (calB, f" calibrated {calB:.2f} s (inference)", BLUE, 2)):
+        px = gx + to_px(xv, 0)[0]      # each label starts at its own line, one row each
+        S.els.append(Txt((px, gy + 34 + 24 * row), lab, 16, "demi", c, "la", t0=2.4))
     lx, ly = gx + to_px(1.62, 0)[0], gy + to_px(0, 0)[1] + 40
     S.els += [Txt((lx, ly), "TIMING READING", 15, "demi", DIM, t0=2.0, spacing=2)]
     for i, (col, lab) in enumerate(((AMBER, "stamp"), (BLUE, f"{mode} (headline), in sample"), (GREY, "point"),
@@ -1235,14 +1417,19 @@ def scene_tier0(S, R):
         yy = ly + 34 + i * 32
         S.els += [Box((lx, yy + 4, lx + 18, yy + 22), col, 3, t0=2.0 + 0.1 * i),
                   Txt((lx + 28, yy), lab, 19, "regular", MUTED, t0=2.0 + 0.1 * i)]
+    if not R.pending("t3_u2is_c"):
+        S.els.append(Txt((MX, 846), f"A frozen version (v3) then FAILED its blind tests: unseen markets "
+                         f"{fmt_c(R['t3_u2is_c'])} (IS period), {fmt_c(R['t3_u2oos_c'])} (OOS period); burned out of "
+                         f"sample {fmt_c(R['t3_boos_c'])}, CI {ci_txt(R['t3_boos_lo'], R['t3_boos_hi'])}¢ includes 0.",
+                         21, "demi", CORAL, t0=3.0))
     d = ImageDraw.Draw(S.bg)
-    src_note(d, (MX, 870), "results/tier0/results.json (headline, pnl_vs_t_reprice_minus_t_bounce, timing). "
-             "Readings: in sample unless marked.")
+    src_note(d, (MX, 870), "results/tier0/results.json (headline, pnl_vs_t_reprice_minus_t_bounce, timing); "
+             "results/tier0_v3/blind.json. Readings: in sample unless marked.")
 
 
 def scene_live(S, R):
     S.head()
-    ev = R["engine_video"]
+    ev = None                      # S10 keeps the session card; the engine demo video is on deck slide 4
     lx = MX
     if ev:
         clip = Clip([ev], (1152, 648))
@@ -1265,6 +1452,9 @@ def scene_live(S, R):
                       bg=PANEL),
                   Txt((cxx, y + 64), lab, 19, "regular", MUTED, t0=0.5 + 0.12 * i, bg=PANEL)]
     R["live_snap"], R["live_paper"]
+    S.els.append(Txt((lx + 32, 818), "Live: market data, risk and the paper executor. The full chain, from vision "
+                     "call to paper order, ran on a recorded book.", 17, "regular", MUTED, t0=1.8, bg=PANEL,
+                     maxw=cw - 64))
     # latency bars
     y = 620
     S.els += [Txt((lx + 32, y), "FEED LATENCY", 17, "demi", MUTED, t0=1.4, bg=PANEL, spacing=2)]
@@ -1287,9 +1477,11 @@ def scene_live(S, R):
     sx = 1220 if not ev else lx
     if not ev:
         state = R["sess_state"] or "pending"
-        col = {"running": GREEN, "finished": BLUE}.get(state, AMBER)
+        col = {"running": GREEN, "finished": BLUE, "stopped": CORAL, "no update": CORAL}.get(state, AMBER)
+        since = R["sess_since"]
         S.els += [Box((sx, 222, W - MX, 860), PANEL2, 18, t0=0.8),
-                  Txt((sx + 32, 252), "TONIGHT'S LIVE PAPER SESSION", 17, "demi", AMBER, t0=0.9, bg=PANEL2, spacing=2)]
+                  Txt((sx + 32, 252), "LIVE PAPER SESSION" + (f"  ·  {since[:10]}" if since else ""), 17, "demi",
+                      AMBER, t0=0.9, bg=PANEL2, spacing=2)]
 
         def pulse(img, d, t):
             if t < 1.0:
@@ -1299,15 +1491,17 @@ def scene_live(S, R):
             d.ellipse((sx + 32, 302, sx + 60, 330), fill=c)
             text(d, (sx + 76, 316), state.upper(), 40, "bold", col, "lm", spacing=2)
         S.els.append(Fn(pulse, 0.0, live=state == "running"))
-        lines = [("status", R["sess_status"] or "pending"), ("strategy", R["sess_strategy"] or "pending"),
+        lines = [("status", R["sess_status"] or "pending"),
+                 ("started  ·  as of", f"{since or 'pending'} UTC  ·  {R['sess_asof'] or 'pending'} UTC"),
+                 ("strategy", R["sess_strategy"] or "pending"),
                  ("fills, pre-registered book", "pending" if R["sess_fills"] is None else f"{R['sess_fills']}"),
                  ("P&L, marked to mid", "pending" if R["sess_pnl"] is None else usd(R["sess_pnl"], 2, sign=True))]
-        y = 370
+        y = 362
         for lab, val in lines:
             S.els += [Txt((sx + 32, y), lab.upper(), 15, "demi", DIM, t0=1.2, bg=PANEL2, spacing=2),
                       Txt((sx + 32, y + 26), val, 21, "regular", INK, t0=1.2, bg=PANEL2, maxw=W - MX - sx - 64)]
-            y += 26 + 30 * len(wrap(val, 21, "regular", W - MX - sx - 64)) + 22
-        S.els += [Txt((sx + 32, 800), R["sess_label"] or "", 16, "regular", MUTED, t0=1.4, bg=PANEL2,
+            y += 26 + 28 * len(wrap(val, 21, "regular", W - MX - sx - 64)) + 16
+        S.els += [Txt((sx + 32, 790), R["sess_label"] or "", 16, "regular", MUTED, t0=1.4, bg=PANEL2,
                       maxw=W - MX - sx - 64)]
     d = ImageDraw.Draw(S.bg)
     src_note(d, (MX, 880), "results/engine/live_market_run.json; results/live/summary.json (re-read at every render)")
@@ -1390,17 +1584,33 @@ def scene_close(S, R):
             url = u[:-4] if u.endswith(".git") else u
     except OSError:
         pass
-    S.els += [Txt((W / 2, 250), "COURTSIDE", 100, "bold", INK, "mm", t0=0.2),
-              Txt((W / 2, 340), "Call the point before the ball lands.", 36, "medium", MUTED, "mm", t0=0.4),
-              Box((W / 2 - 700, 410, W / 2 + 700, 490), PANEL, 16, t0=0.7),
-              Txt((W / 2, 450), url.replace("https://", ""), 28, "demi", BLUE, "mm", t0=0.8, bg=PANEL),
-              Box((W / 2 - 330, 520, W / 2 + 330, 600), PANEL2, 16, t0=1.1),
-              Txt((W / 2, 560), "$ bash reproduce.sh", 34, "demi", INK, "mm", t0=1.2, bg=PANEL2),
-              Txt((W / 2, 650), "Paper trading only. No real money was traded. No live ATP/WTA data was used.", 24,
-                  "regular", INK, "mm", t0=1.6),
-              Txt((W / 2, 692), "Tier-0 figures are a counterfactual: " + TIER0_LABEL.split(": ", 1)[1] + ".", 20,
+    vision_model = Path("models/vision/frozen_call_model.pkl")
+    in_git = subprocess.run(["git", "ls-files", "--error-unmatch", str(vision_model)],
+                            capture_output=True).returncode == 0
+    R.put("vision_model_in_git", in_git, str(vision_model), "git ls-files --error-unmatch (tracked?)")
+    R["vision_model_in_git"]
+    S.els += [Txt((W / 2, 200), "COURTSIDE", 96, "bold", INK, "mm", t0=0.2),
+              Txt((W / 2, 284), "Call the point before the ball lands.", 34, "medium", MUTED, "mm", t0=0.4),
+              Box((W / 2 - 700, 334, W / 2 + 700, 404), PANEL, 16, t0=0.7),
+              Txt((W / 2, 369), url.replace("https://", ""), 28, "demi", BLUE, "mm", t0=0.8, bg=PANEL),
+              Box((W / 2 - 560, 422, W / 2 + 560, 582), PANEL2, 16, t0=1.1),
+              Txt((W / 2 - 520, 440), "$ bash run.sh replay", 30, "demi", INK, "la", t0=1.2, bg=PANEL2),
+              Txt((W / 2 + 520, 448), "paper engine on recorded live books, in seconds", 20, "regular", MUTED, "ra",
+                  t0=1.2, bg=PANEL2),
+              Txt((W / 2 - 520, 498), "$ bash run.sh data && bash run.sh reproduce", 30, "demi", INK, "la", t0=1.3,
+                  bg=PANEL2),
+              Txt((W / 2 - 520, 542), "public crawl (no keys, ~1–2 h), then every table and figure in the note", 18,
+                  "regular", MUTED, "la", t0=1.3, bg=PANEL2),
+              Txt((W / 2, 606), "Vision calls need models/vision/frozen_call_model.pkl, which is not in git "
+                  "(rebuilt by hpg/engine_vision.sbatch)." if not in_git else "", 18, "regular", MUTED, "mm", t0=1.5),
+              Txt((W / 2, 652), "Paper trading only. No real money was traded.", 24, "regular", INK, "mm", t0=1.6),
+              Txt((W / 2, 690), "We bought no official ATP/WTA data feed and no trading result uses one; free public "
+                  "score pages were recorded only to time their lag.", 20, "regular", INK, "mm", t0=1.7),
+              Txt((W / 2, 726), "Tier-0 figures are a counterfactual: " + TIER0_LABEL.split(": ", 1)[1] + ".", 20,
                   "regular", AMBER, "mm", t0=1.8),
-              Txt((W / 2, 736), CREDIT + "  ·  narration: synthetic voice (macOS say, " + VOICE + ")", 18,
+              Txt((W / 2, 762), "Every number on screen is listed with its source file and key in "
+                  "results/viz/video_manifest.json.", 18, "regular", MUTED, "mm", t0=1.9),
+              Txt((W / 2, 796), CREDIT + "  ·  narration: synthetic voice (macOS say, " + VOICE + ")", 18,
                   "regular", MUTED, "mm", t0=2.0)]
 
 
@@ -1466,7 +1676,7 @@ def main():
                 n = len(audio[ln]) / SR
                 cues.append((tt, tt + n, ln, audio[ln]))
                 tt += n + GAP
-            S.dur = (tt - GAP - t) + LEAD
+            S.dur = (tt - GAP - t) + LEAD + HOLD.get(m["key"], 0.0)
             S.start = t
             t += S.dur
         scenes.append(S)
@@ -1564,6 +1774,19 @@ def main():
         man["values"][name] = {"value": v, "file": e["file"], "key": e["key"], "pending": e["pending"],
                                "shown_in": e["used_in"], **({"note": e["note"]} if e["note"] else {})}
     man["pending"] = sorted(n for n, e in man["values"].items() if e["pending"])
+    import datetime as _dt
+    srcs = sorted({e["file"] for e in man["values"].values() if e["file"] and Path(e["file"]).exists()})
+    untracked = [f for f in srcs if subprocess.run(["git", "ls-files", "--error-unmatch", f],
+                                                     capture_output=True).returncode != 0]
+    man["rendered_utc"] = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    man["git_head_at_render"] = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
+                                               text=True).stdout.strip()
+    man["source_files"] = srcs
+    man["source_files_not_in_git_at_render"] = untracked
+    man["source_files_modified_vs_head_at_render"] = [
+        f for f in srcs if f not in untracked and subprocess.run(["git", "diff", "--quiet", "HEAD", "--", f]).returncode]
+    if untracked:
+        print("NOTE: source files not tracked by git at render time:", ", ".join(untracked))
     man["embedded_in_assets"] = [
         {"asset": "results/tracking/demo/0[1-4]_*.mp4", "text": "MISS CALLED -<lead> ms, P(miss), frame, t",
          "source": "results/tracking/demo/manifest.json clips[i] (call_lead_ms, p_miss_at_50ms); rendered by "
