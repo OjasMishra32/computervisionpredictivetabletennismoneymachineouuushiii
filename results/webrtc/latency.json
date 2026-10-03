@@ -311,10 +311,20 @@
      }
     ],
     "frames_not_processed_total": "24/1250",
-    "frames_not_processed_share": 0.0192
+    "frames_not_processed_share": 0.0192,
+    "capture_to_own_position_final_ms": {
+     "p50": 106.84,
+     "p90": 163.41,
+     "p99": 231.51,
+     "mean": 117.33,
+     "max": 276.89,
+     "n": 1197
+    },
+    "capture_to_own_position_final_note": "capture of frame k -> frame k's ball position final (window k, k+1, k+2 run); in the 10 frames/s keep-up setting k+1 and k+2 arrive 100 ms apart, so this leg is not meaningful there",
+    "decision_share_of_sent": 0.9576
    },
    "frame_send_to_result": {
-    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "what": "frame-send (capture of frame k) -> decision ready for frame k (ball positions final through k-2; NOT frame k's own detection, which needs frames k+1 and k+2)",
     "p50": 40.18,
     "p90": 96.74,
     "p99": 164.84,
@@ -613,10 +623,20 @@
      }
     ],
     "frames_not_processed_total": "726/2500",
-    "frames_not_processed_share": 0.2904
+    "frames_not_processed_share": 0.2904,
+    "capture_to_own_position_final_ms": {
+     "p50": 129.75,
+     "p90": 181.54,
+     "p99": 251.52,
+     "mean": 133.31,
+     "max": 347.62,
+     "n": 1519
+    },
+    "capture_to_own_position_final_note": "capture of frame k -> frame k's ball position final (window k, k+1, k+2 run); in the 10 frames/s keep-up setting k+1 and k+2 arrive 100 ms apart, so this leg is not meaningful there",
+    "decision_share_of_sent": 0.6076
    },
    "frame_send_to_result": {
-    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "what": "frame-send (capture of frame k) -> decision ready for frame k (ball positions final through k-2; NOT frame k's own detection, which needs frames k+1 and k+2)",
     "p50": 96.41,
     "p90": 148.21,
     "p99": 218.18,
@@ -922,10 +942,20 @@
      }
     ],
     "frames_not_processed_total": "2943/5000",
-    "frames_not_processed_share": 0.5886
+    "frames_not_processed_share": 0.5886,
+    "capture_to_own_position_final_ms": {
+     "p50": 133.49,
+     "p90": 207.0,
+     "p99": 347.31,
+     "mean": 139.91,
+     "max": 422.5,
+     "n": 1377
+    },
+    "capture_to_own_position_final_note": "capture of frame k -> frame k's ball position final (window k, k+1, k+2 run); in the 10 frames/s keep-up setting k+1 and k+2 arrive 100 ms apart, so this leg is not meaningful there",
+    "decision_share_of_sent": 0.2754
    },
    "frame_send_to_result": {
-    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "what": "frame-send (capture of frame k) -> decision ready for frame k (ball positions final through k-2; NOT frame k's own detection, which needs frames k+1 and k+2)",
     "p50": 116.82,
     "p90": 190.34,
     "p99": 330.64,
@@ -1133,7 +1163,17 @@
      }
     ],
     "frames_not_processed_total": "0/5000",
-    "frames_not_processed_share": 0.0
+    "frames_not_processed_share": 0.0,
+    "capture_to_own_position_final_ms": {
+     "p50": 245.59,
+     "p90": 255.68,
+     "p99": 270.99,
+     "mean": 247.1,
+     "max": 402.54,
+     "n": 4990
+    },
+    "capture_to_own_position_final_note": "capture of frame k -> frame k's ball position final (window k, k+1, k+2 run); in the 10 frames/s keep-up setting k+1 and k+2 arrive 100 ms apart, so this leg is not meaningful there",
+    "decision_share_of_sent": 0.998
    },
    "frame_send_to_result": {
     "what": "frame-send (capture) -> CallEvent emit",
@@ -3005,14 +3045,27 @@
    "p99": 67.27,
    "n": 55
   },
+  "measured_capture_to_decision_ms": {
+   "p50": 45.59,
+   "p90": 55.68,
+   "p99": 70.99,
+   "mean": 47.1,
+   "max": 202.54,
+   "n": 4990
+  },
   "camera_to_call_estimate_ms": {
    "p50": 62.7,
    "p90": 74.7,
    "p99": 83.9,
    "note": "assumed capture 16.7 ms (2 frame periods at 120 fps) + measured frame-send -> result"
   },
-  "sentence": "our camera->WebRTC->CV->call pipeline runs in 63 ms p50 / 75 ms p90 on our own stream; this is our pipeline, not a match feed",
-  "footnote": "46 / 58 ms measured from frame capture by our virtual camera to the CallEvent (55 calls, 5 runs, loopback, engine fed 10 frames/s so it keeps up) plus 16.7 ms assumed 120 fps camera capture (2 frame periods)."
+  "realtime_120fps": {
+   "frames_not_processed_share": 0.5886,
+   "calls_total": 0,
+   "runs": 5
+  },
+  "sentence": "Measured on our own clip over loopback WebRTC: 46 ms p50 / 58 ms p90 from a frame leaving our virtual camera to the call, with the CV fed 10 frames/s so it keeps up (63 / 75 ms with an assumed 120 fps camera); at real-time 120 fps this laptop's CV skipped 59% of frames and made no calls. Our pipeline, not a match feed.",
+  "footnote": "46 / 58 ms measured from frame capture by our virtual camera (a paced file sender, no physical camera) to the CallEvent (55 calls = the same 11 calls in each of 5 runs; p99 of 55 values is close to their max), loopback on one shared laptop, engine fed 10 frames/s so it keeps up. The 63 / 75 ms adds 16.7 ms ASSUMED 120 fps camera capture (2 frame periods). No relay, no network hop, no display."
  },
  "latency_sweep": {
   "source": "results/tier0/latency_sweep.json",

@@ -1,0 +1,359 @@
+# WebRTC session evidence for campaign 20261003T221601Z (our own clip over loopback; not a match feed)
+# 1. MediaMTX v1.21.1 log, verbatim: every run = one WebRTC (WHIP) publisher + one WebRTC (WHEP) reader,
+#    ICE pair host/udp 127.0.0.1:8189 <-> 127.0.0.1:<ephemeral>; no RTSP session.
+2026/10/03 18:16:01 INF MediaMTX v1.21.1, darwin, arm64
+2026/10/03 18:16:01 INF configuration loaded from /Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/engine/webrtc/mediamtx.yml
+2026/10/03 18:16:01 INF [RTSP] started with listeners on 127.0.0.1:8554 (TCP/RTSP)
+2026/10/03 18:16:01 INF [WebRTC] started with listeners on 127.0.0.1:8889 (TCP/HTTP), 127.0.0.1:8189 (UDP/ICE)
+2026/10/03 18:16:02 INF [WebRTC] [session 04a54cf9] created by 127.0.0.1:51746
+2026/10/03 18:16:03 INF [WebRTC] [session 04a54cf9] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/62427
+2026/10/03 18:16:03 INF [path cs_dec30_transport_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:16:03 INF [WebRTC] [session 04a54cf9] is publishing to path 'cs_dec30_transport_r1'
+2026/10/03 18:16:08 INF [WebRTC] [session 6d424690] created by 127.0.0.1:51766
+2026/10/03 18:16:08 INF [WebRTC] [session 6d424690] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/60960
+2026/10/03 18:16:08 INF [WebRTC] [session 6d424690] is reading from path 'cs_dec30_transport_r1', 1 track (H264)
+2026/10/03 18:16:18 INF [WebRTC] [session 6d424690] closed: peer connection closed
+2026/10/03 18:16:19 INF [WebRTC] [session 04a54cf9] closed: terminated
+2026/10/03 18:16:20 INF [WebRTC] [session 622a767b] created by 127.0.0.1:51790
+2026/10/03 18:16:21 INF [WebRTC] [session 622a767b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/50342
+2026/10/03 18:16:21 INF [path cs_dec30_engine_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:16:21 INF [WebRTC] [session 622a767b] is publishing to path 'cs_dec30_engine_r1'
+2026/10/03 18:16:26 INF [WebRTC] [session f63f9479] created by 127.0.0.1:51804
+2026/10/03 18:16:26 INF [WebRTC] [session f63f9479] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/53547
+2026/10/03 18:16:26 INF [WebRTC] [session f63f9479] is reading from path 'cs_dec30_engine_r1', 1 track (H264)
+2026/10/03 18:16:36 INF [WebRTC] [session f63f9479] closed: peer connection closed
+2026/10/03 18:16:37 INF [WebRTC] [session 622a767b] closed: terminated
+2026/10/03 18:16:38 INF [WebRTC] [session 31f73d93] created by 127.0.0.1:51832
+2026/10/03 18:16:39 INF [WebRTC] [session 31f73d93] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/59428
+2026/10/03 18:16:39 INF [path cs_dec60_transport_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:16:39 INF [WebRTC] [session 31f73d93] is publishing to path 'cs_dec60_transport_r1'
+2026/10/03 18:16:44 INF [WebRTC] [session d55ca9a3] created by 127.0.0.1:51845
+2026/10/03 18:16:44 INF [WebRTC] [session d55ca9a3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/54300
+2026/10/03 18:16:44 INF [WebRTC] [session d55ca9a3] is reading from path 'cs_dec60_transport_r1', 1 track (H264)
+2026/10/03 18:16:54 INF [WebRTC] [session d55ca9a3] closed: peer connection closed
+2026/10/03 18:16:55 INF [WebRTC] [session 31f73d93] closed: terminated
+2026/10/03 18:16:56 INF [WebRTC] [session 34069cb5] created by 127.0.0.1:51874
+2026/10/03 18:16:57 INF [WebRTC] [session 34069cb5] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/59156
+2026/10/03 18:16:57 INF [path cs_dec60_engine_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:16:57 INF [WebRTC] [session 34069cb5] is publishing to path 'cs_dec60_engine_r1'
+2026/10/03 18:17:03 INF [WebRTC] [session 99df0823] created by 127.0.0.1:51891
+2026/10/03 18:17:03 INF [WebRTC] [session 99df0823] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/55230
+2026/10/03 18:17:03 INF [WebRTC] [session 99df0823] is reading from path 'cs_dec60_engine_r1', 1 track (H264)
+2026/10/03 18:17:13 INF [WebRTC] [session 99df0823] closed: peer connection closed
+2026/10/03 18:17:14 INF [WebRTC] [session 34069cb5] closed: terminated
+2026/10/03 18:17:15 INF [WebRTC] [session 7747361b] created by 127.0.0.1:51915
+2026/10/03 18:17:16 INF [WebRTC] [session 7747361b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/58259
+2026/10/03 18:17:16 INF [path cs_native120_transport_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:17:16 INF [WebRTC] [session 7747361b] is publishing to path 'cs_native120_transport_r1'
+2026/10/03 18:17:21 INF [WebRTC] [session a3e92ec8] created by 127.0.0.1:51929
+2026/10/03 18:17:21 INF [WebRTC] [session a3e92ec8] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/56288
+2026/10/03 18:17:21 INF [WebRTC] [session a3e92ec8] is reading from path 'cs_native120_transport_r1', 1 track (H264)
+2026/10/03 18:17:31 INF [WebRTC] [session a3e92ec8] closed: peer connection closed
+2026/10/03 18:17:32 INF [WebRTC] [session 7747361b] closed: terminated
+2026/10/03 18:17:33 INF [WebRTC] [session 8df4ea0b] created by 127.0.0.1:51954
+2026/10/03 18:17:34 INF [WebRTC] [session 8df4ea0b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/51920
+2026/10/03 18:17:34 INF [path cs_native120_engine_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:17:34 INF [WebRTC] [session 8df4ea0b] is publishing to path 'cs_native120_engine_r1'
+2026/10/03 18:17:41 INF [WebRTC] [session 004bebd9] created by 127.0.0.1:51971
+2026/10/03 18:17:41 INF [WebRTC] [session 004bebd9] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/59855
+2026/10/03 18:17:41 INF [WebRTC] [session 004bebd9] is reading from path 'cs_native120_engine_r1', 1 track (H264)
+2026/10/03 18:17:51 INF [WebRTC] [session 004bebd9] closed: peer connection closed
+2026/10/03 18:17:51 INF [WebRTC] [session 8df4ea0b] closed: terminated
+2026/10/03 18:17:53 INF [WebRTC] [session c5109e48] created by 127.0.0.1:51994
+2026/10/03 18:17:54 INF [WebRTC] [session c5109e48] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/59521
+2026/10/03 18:17:54 INF [path cs_slowmo10_engine_r1] stream is available and online, 1 track (H264)
+2026/10/03 18:17:54 INF [WebRTC] [session c5109e48] is publishing to path 'cs_slowmo10_engine_r1'
+2026/10/03 18:18:01 INF [WebRTC] [session 50139a38] created by 127.0.0.1:52000
+2026/10/03 18:18:01 INF [WebRTC] [session 50139a38] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/57415
+2026/10/03 18:18:01 INF [WebRTC] [session 50139a38] is reading from path 'cs_slowmo10_engine_r1', 1 track (H264)
+2026/10/03 18:19:44 INF [WebRTC] [session 50139a38] closed: peer connection closed
+2026/10/03 18:19:44 INF [WebRTC] [session c5109e48] closed: terminated
+2026/10/03 18:19:45 INF [WebRTC] [session 59210350] created by 127.0.0.1:52192
+2026/10/03 18:19:46 INF [WebRTC] [session 59210350] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/57468
+2026/10/03 18:19:46 INF [path cs_dec30_transport_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:19:46 INF [WebRTC] [session 59210350] is publishing to path 'cs_dec30_transport_r2'
+2026/10/03 18:19:52 INF [WebRTC] [session 8d3633d7] created by 127.0.0.1:52201
+2026/10/03 18:19:52 INF [WebRTC] [session 8d3633d7] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/50277
+2026/10/03 18:19:52 INF [WebRTC] [session 8d3633d7] is reading from path 'cs_dec30_transport_r2', 1 track (H264)
+2026/10/03 18:20:02 INF [WebRTC] [session 8d3633d7] closed: peer connection closed
+2026/10/03 18:20:02 INF [WebRTC] [session 59210350] closed: terminated
+2026/10/03 18:20:03 INF [WebRTC] [session d497a73e] created by 127.0.0.1:52221
+2026/10/03 18:20:04 INF [WebRTC] [session d497a73e] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54205
+2026/10/03 18:20:04 INF [path cs_dec30_engine_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:20:04 INF [WebRTC] [session d497a73e] is publishing to path 'cs_dec30_engine_r2'
+2026/10/03 18:20:10 INF [WebRTC] [session fe54d86d] created by 127.0.0.1:52238
+2026/10/03 18:20:10 INF [WebRTC] [session fe54d86d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/61397
+2026/10/03 18:20:10 INF [WebRTC] [session fe54d86d] is reading from path 'cs_dec30_engine_r2', 1 track (H264)
+2026/10/03 18:20:21 INF [WebRTC] [session fe54d86d] closed: peer connection closed
+2026/10/03 18:20:21 INF [WebRTC] [session d497a73e] closed: terminated
+2026/10/03 18:20:22 INF [WebRTC] [session 32dc647c] created by 127.0.0.1:52270
+2026/10/03 18:20:23 INF [WebRTC] [session 32dc647c] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/63895
+2026/10/03 18:20:23 INF [path cs_dec60_transport_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:20:23 INF [WebRTC] [session 32dc647c] is publishing to path 'cs_dec60_transport_r2'
+2026/10/03 18:20:29 INF [WebRTC] [session 3005acd5] created by 127.0.0.1:52284
+2026/10/03 18:20:29 INF [WebRTC] [session 3005acd5] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/54189
+2026/10/03 18:20:29 INF [WebRTC] [session 3005acd5] is reading from path 'cs_dec60_transport_r2', 1 track (H264)
+2026/10/03 18:20:39 INF [WebRTC] [session 3005acd5] closed: peer connection closed
+2026/10/03 18:20:39 INF [WebRTC] [session 32dc647c] closed: terminated
+2026/10/03 18:20:40 INF [WebRTC] [session 5cd4639b] created by 127.0.0.1:52306
+2026/10/03 18:20:41 INF [WebRTC] [session 5cd4639b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/50614
+2026/10/03 18:20:41 INF [path cs_dec60_engine_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:20:41 INF [WebRTC] [session 5cd4639b] is publishing to path 'cs_dec60_engine_r2'
+2026/10/03 18:20:48 INF [WebRTC] [session 828f661f] created by 127.0.0.1:52317
+2026/10/03 18:20:48 INF [WebRTC] [session 828f661f] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/52396
+2026/10/03 18:20:48 INF [WebRTC] [session 828f661f] is reading from path 'cs_dec60_engine_r2', 1 track (H264)
+2026/10/03 18:20:58 INF [WebRTC] [session 828f661f] closed: peer connection closed
+2026/10/03 18:20:58 INF [WebRTC] [session 5cd4639b] closed: terminated
+2026/10/03 18:20:59 INF [WebRTC] [session 9709f32f] created by 127.0.0.1:52335
+2026/10/03 18:21:00 INF [WebRTC] [session 9709f32f] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/60799
+2026/10/03 18:21:00 INF [path cs_native120_transport_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:21:00 INF [WebRTC] [session 9709f32f] is publishing to path 'cs_native120_transport_r2'
+2026/10/03 18:21:05 INF [WebRTC] [session 9885be02] created by 127.0.0.1:52341
+2026/10/03 18:21:05 INF [WebRTC] [session 9885be02] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/56527
+2026/10/03 18:21:05 INF [WebRTC] [session 9885be02] is reading from path 'cs_native120_transport_r2', 1 track (H264)
+2026/10/03 18:21:15 INF [WebRTC] [session 9885be02] closed: peer connection closed
+2026/10/03 18:21:16 INF [WebRTC] [session 9709f32f] closed: terminated
+2026/10/03 18:21:17 INF [WebRTC] [session 155ca757] created by 127.0.0.1:52354
+2026/10/03 18:21:18 INF [WebRTC] [session 155ca757] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54340
+2026/10/03 18:21:18 INF [path cs_native120_engine_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:21:18 INF [WebRTC] [session 155ca757] is publishing to path 'cs_native120_engine_r2'
+2026/10/03 18:21:26 INF [WebRTC] [session 2e60b0f1] created by 127.0.0.1:52369
+2026/10/03 18:21:26 INF [WebRTC] [session 2e60b0f1] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/63216
+2026/10/03 18:21:26 INF [WebRTC] [session 2e60b0f1] is reading from path 'cs_native120_engine_r2', 1 track (H264)
+2026/10/03 18:21:35 INF [WebRTC] [session 2e60b0f1] closed: peer connection closed
+2026/10/03 18:21:36 INF [WebRTC] [session 155ca757] closed: terminated
+2026/10/03 18:21:37 INF [WebRTC] [session f4156b98] created by 127.0.0.1:52389
+2026/10/03 18:21:38 INF [WebRTC] [session f4156b98] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54083
+2026/10/03 18:21:38 INF [path cs_slowmo10_engine_r2] stream is available and online, 1 track (H264)
+2026/10/03 18:21:38 INF [WebRTC] [session f4156b98] is publishing to path 'cs_slowmo10_engine_r2'
+2026/10/03 18:21:44 INF [WebRTC] [session dbb2501f] created by 127.0.0.1:52400
+2026/10/03 18:21:44 INF [WebRTC] [session dbb2501f] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/53087
+2026/10/03 18:21:44 INF [WebRTC] [session dbb2501f] is reading from path 'cs_slowmo10_engine_r2', 1 track (H264)
+2026/10/03 18:23:27 INF [WebRTC] [session dbb2501f] closed: peer connection closed
+2026/10/03 18:23:27 INF [WebRTC] [session f4156b98] closed: terminated
+2026/10/03 18:23:28 INF [WebRTC] [session d7409ab1] created by 127.0.0.1:52507
+2026/10/03 18:23:29 INF [WebRTC] [session d7409ab1] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/56977
+2026/10/03 18:23:29 INF [path cs_dec30_transport_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:23:29 INF [WebRTC] [session d7409ab1] is publishing to path 'cs_dec30_transport_r3'
+2026/10/03 18:23:35 INF [WebRTC] [session 08013aec] created by 127.0.0.1:52513
+2026/10/03 18:23:35 INF [WebRTC] [session 08013aec] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/65146
+2026/10/03 18:23:35 INF [WebRTC] [session 08013aec] is reading from path 'cs_dec30_transport_r3', 1 track (H264)
+2026/10/03 18:23:44 INF [WebRTC] [session 08013aec] closed: peer connection closed
+2026/10/03 18:23:45 INF [WebRTC] [session d7409ab1] closed: terminated
+2026/10/03 18:23:46 INF [WebRTC] [session 6f429cc9] created by 127.0.0.1:52525
+2026/10/03 18:23:47 INF [WebRTC] [session 6f429cc9] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/65012
+2026/10/03 18:23:47 INF [path cs_dec30_engine_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:23:47 INF [WebRTC] [session 6f429cc9] is publishing to path 'cs_dec30_engine_r3'
+2026/10/03 18:23:53 INF [WebRTC] [session 515d9cf6] created by 127.0.0.1:52534
+2026/10/03 18:23:53 INF [WebRTC] [session 515d9cf6] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/56441
+2026/10/03 18:23:53 INF [WebRTC] [session 515d9cf6] is reading from path 'cs_dec30_engine_r3', 1 track (H264)
+2026/10/03 18:24:03 INF [WebRTC] [session 515d9cf6] closed: peer connection closed
+2026/10/03 18:24:03 INF [WebRTC] [session 6f429cc9] closed: terminated
+2026/10/03 18:24:04 INF [WebRTC] [session 2ccc3d1f] created by 127.0.0.1:52553
+2026/10/03 18:24:05 INF [WebRTC] [session 2ccc3d1f] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/52745
+2026/10/03 18:24:05 INF [path cs_dec60_transport_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:24:05 INF [WebRTC] [session 2ccc3d1f] is publishing to path 'cs_dec60_transport_r3'
+2026/10/03 18:24:11 INF [WebRTC] [session 0217b477] created by 127.0.0.1:52557
+2026/10/03 18:24:11 INF [WebRTC] [session 0217b477] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/57413
+2026/10/03 18:24:11 INF [WebRTC] [session 0217b477] is reading from path 'cs_dec60_transport_r3', 1 track (H264)
+2026/10/03 18:24:21 INF [WebRTC] [session 0217b477] closed: peer connection closed
+2026/10/03 18:24:21 INF [WebRTC] [session 2ccc3d1f] closed: terminated
+2026/10/03 18:24:22 INF [WebRTC] [session 8172e7bd] created by 127.0.0.1:52562
+2026/10/03 18:24:23 INF [WebRTC] [session 8172e7bd] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/64468
+2026/10/03 18:24:23 INF [path cs_dec60_engine_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:24:23 INF [WebRTC] [session 8172e7bd] is publishing to path 'cs_dec60_engine_r3'
+2026/10/03 18:24:30 INF [WebRTC] [session 4f2a9d3f] created by 127.0.0.1:52569
+2026/10/03 18:24:30 INF [WebRTC] [session 4f2a9d3f] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/58527
+2026/10/03 18:24:30 INF [WebRTC] [session 4f2a9d3f] is reading from path 'cs_dec60_engine_r3', 1 track (H264)
+2026/10/03 18:24:39 INF [WebRTC] [session 4f2a9d3f] closed: peer connection closed
+2026/10/03 18:24:40 INF [WebRTC] [session 8172e7bd] closed: terminated
+2026/10/03 18:24:41 INF [WebRTC] [session c62a119e] created by 127.0.0.1:52583
+2026/10/03 18:24:42 INF [WebRTC] [session c62a119e] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/52842
+2026/10/03 18:24:42 INF [path cs_native120_transport_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:24:42 INF [WebRTC] [session c62a119e] is publishing to path 'cs_native120_transport_r3'
+2026/10/03 18:24:48 INF [WebRTC] [session 5d1e54ea] created by 127.0.0.1:52591
+2026/10/03 18:24:48 INF [WebRTC] [session 5d1e54ea] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/59852
+2026/10/03 18:24:48 INF [WebRTC] [session 5d1e54ea] is reading from path 'cs_native120_transport_r3', 1 track (H264)
+2026/10/03 18:24:57 INF [WebRTC] [session 5d1e54ea] closed: peer connection closed
+2026/10/03 18:24:58 INF [WebRTC] [session c62a119e] closed: terminated
+2026/10/03 18:24:59 INF [WebRTC] [session 7426afad] created by 127.0.0.1:52599
+2026/10/03 18:25:00 INF [WebRTC] [session 7426afad] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/62903
+2026/10/03 18:25:00 INF [path cs_native120_engine_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:25:00 INF [WebRTC] [session 7426afad] is publishing to path 'cs_native120_engine_r3'
+2026/10/03 18:25:09 INF [WebRTC] [session 188b2568] created by 127.0.0.1:52612
+2026/10/03 18:25:09 INF [WebRTC] [session 188b2568] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/49514
+2026/10/03 18:25:09 INF [WebRTC] [session 188b2568] is reading from path 'cs_native120_engine_r3', 1 track (H264)
+2026/10/03 18:25:19 INF [WebRTC] [session 188b2568] closed: peer connection closed
+2026/10/03 18:25:19 INF [WebRTC] [session 7426afad] closed: terminated
+2026/10/03 18:25:20 INF [WebRTC] [session 504591eb] created by 127.0.0.1:52630
+2026/10/03 18:25:21 INF [WebRTC] [session 504591eb] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/51466
+2026/10/03 18:25:21 INF [path cs_slowmo10_engine_r3] stream is available and online, 1 track (H264)
+2026/10/03 18:25:21 INF [WebRTC] [session 504591eb] is publishing to path 'cs_slowmo10_engine_r3'
+2026/10/03 18:25:29 INF [WebRTC] [session f5bd1f1c] created by 127.0.0.1:52646
+2026/10/03 18:25:29 INF [WebRTC] [session f5bd1f1c] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/57107
+2026/10/03 18:25:29 INF [WebRTC] [session f5bd1f1c] is reading from path 'cs_slowmo10_engine_r3', 1 track (H264)
+2026/10/03 18:27:11 INF [WebRTC] [session f5bd1f1c] closed: peer connection closed
+2026/10/03 18:27:11 INF [WebRTC] [session 504591eb] closed: terminated
+2026/10/03 18:27:13 INF [WebRTC] [session 5206e6e8] created by 127.0.0.1:52771
+2026/10/03 18:27:14 INF [WebRTC] [session 5206e6e8] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49477
+2026/10/03 18:27:14 INF [path cs_dec30_transport_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:27:14 INF [WebRTC] [session 5206e6e8] is publishing to path 'cs_dec30_transport_r4'
+2026/10/03 18:27:21 INF [WebRTC] [session bcb56d63] created by 127.0.0.1:52782
+2026/10/03 18:27:21 INF [WebRTC] [session bcb56d63] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/63535
+2026/10/03 18:27:21 INF [WebRTC] [session bcb56d63] is reading from path 'cs_dec30_transport_r4', 1 track (H264)
+2026/10/03 18:27:31 INF [WebRTC] [session bcb56d63] closed: peer connection closed
+2026/10/03 18:27:31 INF [WebRTC] [session 5206e6e8] closed: terminated
+2026/10/03 18:27:32 INF [WebRTC] [session eef58125] created by 127.0.0.1:52795
+2026/10/03 18:27:33 INF [WebRTC] [session eef58125] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54206
+2026/10/03 18:27:33 INF [path cs_dec30_engine_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:27:33 INF [WebRTC] [session eef58125] is publishing to path 'cs_dec30_engine_r4'
+2026/10/03 18:27:39 INF [WebRTC] [session 1d02bd07] created by 127.0.0.1:52802
+2026/10/03 18:27:39 INF [WebRTC] [session 1d02bd07] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/50926
+2026/10/03 18:27:39 INF [WebRTC] [session 1d02bd07] is reading from path 'cs_dec30_engine_r4', 1 track (H264)
+2026/10/03 18:27:49 INF [WebRTC] [session 1d02bd07] closed: peer connection closed
+2026/10/03 18:27:49 INF [WebRTC] [session eef58125] closed: terminated
+2026/10/03 18:27:51 INF [WebRTC] [session 604c2fe9] created by 127.0.0.1:52817
+2026/10/03 18:27:52 INF [WebRTC] [session 604c2fe9] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/50989
+2026/10/03 18:27:52 INF [path cs_dec60_transport_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:27:52 INF [WebRTC] [session 604c2fe9] is publishing to path 'cs_dec60_transport_r4'
+2026/10/03 18:27:59 INF [WebRTC] [session eebddb91] created by 127.0.0.1:52824
+2026/10/03 18:27:59 INF [WebRTC] [session eebddb91] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/61618
+2026/10/03 18:27:59 INF [WebRTC] [session eebddb91] is reading from path 'cs_dec60_transport_r4', 1 track (H264)
+2026/10/03 18:28:08 INF [WebRTC] [session eebddb91] closed: peer connection closed
+2026/10/03 18:28:09 INF [WebRTC] [session 604c2fe9] closed: terminated
+2026/10/03 18:28:10 INF [WebRTC] [session 17ede86d] created by 127.0.0.1:52828
+2026/10/03 18:28:11 INF [WebRTC] [session 17ede86d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/56375
+2026/10/03 18:28:11 INF [path cs_dec60_engine_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:28:11 INF [WebRTC] [session 17ede86d] is publishing to path 'cs_dec60_engine_r4'
+2026/10/03 18:28:21 INF [WebRTC] [session c6791424] created by 127.0.0.1:52841
+2026/10/03 18:28:21 INF [WebRTC] [session c6791424] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/54950
+2026/10/03 18:28:21 INF [WebRTC] [session c6791424] is reading from path 'cs_dec60_engine_r4', 1 track (H264)
+2026/10/03 18:28:31 INF [WebRTC] [session c6791424] closed: peer connection closed
+2026/10/03 18:28:31 INF [WebRTC] [session 17ede86d] closed: terminated
+2026/10/03 18:28:33 INF [WebRTC] [session 86ebbc0b] created by 127.0.0.1:52853
+2026/10/03 18:28:34 INF [WebRTC] [session 86ebbc0b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/50751
+2026/10/03 18:28:34 INF [path cs_native120_transport_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:28:34 INF [WebRTC] [session 86ebbc0b] is publishing to path 'cs_native120_transport_r4'
+2026/10/03 18:28:41 INF [WebRTC] [session e92d0427] created by 127.0.0.1:52863
+2026/10/03 18:28:41 INF [WebRTC] [session e92d0427] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/52679
+2026/10/03 18:28:41 INF [WebRTC] [session e92d0427] is reading from path 'cs_native120_transport_r4', 1 track (H264)
+2026/10/03 18:28:51 INF [WebRTC] [session e92d0427] closed: peer connection closed
+2026/10/03 18:28:51 INF [WebRTC] [session 86ebbc0b] closed: terminated
+2026/10/03 18:28:53 INF [WebRTC] [session 2359fe45] created by 127.0.0.1:52872
+2026/10/03 18:28:54 INF [WebRTC] [session 2359fe45] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/63636
+2026/10/03 18:28:54 INF [path cs_native120_engine_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:28:54 INF [WebRTC] [session 2359fe45] is publishing to path 'cs_native120_engine_r4'
+2026/10/03 18:29:05 INF [WebRTC] [session 715a417d] created by 127.0.0.1:52881
+2026/10/03 18:29:05 INF [WebRTC] [session 715a417d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/57728
+2026/10/03 18:29:05 INF [WebRTC] [session 715a417d] is reading from path 'cs_native120_engine_r4', 1 track (H264)
+2026/10/03 18:29:14 INF [WebRTC] [session 715a417d] closed: peer connection closed
+2026/10/03 18:29:15 INF [WebRTC] [session 2359fe45] closed: terminated
+2026/10/03 18:29:16 INF [WebRTC] [session dccdccb3] created by 127.0.0.1:52896
+2026/10/03 18:29:17 INF [WebRTC] [session dccdccb3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/61963
+2026/10/03 18:29:17 INF [path cs_slowmo10_engine_r4] stream is available and online, 1 track (H264)
+2026/10/03 18:29:17 INF [WebRTC] [session dccdccb3] is publishing to path 'cs_slowmo10_engine_r4'
+2026/10/03 18:29:26 INF [WebRTC] [session a5ef98e3] created by 127.0.0.1:52906
+2026/10/03 18:29:26 INF [WebRTC] [session a5ef98e3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/51945
+2026/10/03 18:29:26 INF [WebRTC] [session a5ef98e3] is reading from path 'cs_slowmo10_engine_r4', 1 track (H264)
+2026/10/03 18:31:08 INF [WebRTC] [session a5ef98e3] closed: peer connection closed
+2026/10/03 18:31:08 INF [WebRTC] [session dccdccb3] closed: terminated
+2026/10/03 18:31:10 INF [WebRTC] [session 805d2050] created by 127.0.0.1:53007
+2026/10/03 18:31:11 INF [WebRTC] [session 805d2050] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/53507
+2026/10/03 18:31:11 INF [path cs_dec30_transport_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:31:11 INF [WebRTC] [session 805d2050] is publishing to path 'cs_dec30_transport_r5'
+2026/10/03 18:31:17 INF [WebRTC] [session 901dbcc7] created by 127.0.0.1:53020
+2026/10/03 18:31:17 INF [WebRTC] [session 901dbcc7] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/56057
+2026/10/03 18:31:17 INF [WebRTC] [session 901dbcc7] is reading from path 'cs_dec30_transport_r5', 1 track (H264)
+2026/10/03 18:31:27 INF [WebRTC] [session 901dbcc7] closed: peer connection closed
+2026/10/03 18:31:27 INF [WebRTC] [session 805d2050] closed: terminated
+2026/10/03 18:31:29 INF [WebRTC] [session 7404b848] created by 127.0.0.1:53034
+2026/10/03 18:31:30 INF [WebRTC] [session 7404b848] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/64574
+2026/10/03 18:31:30 INF [path cs_dec30_engine_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:31:30 INF [WebRTC] [session 7404b848] is publishing to path 'cs_dec30_engine_r5'
+2026/10/03 18:31:37 INF [WebRTC] [session 76b677e7] created by 127.0.0.1:53044
+2026/10/03 18:31:37 INF [WebRTC] [session 76b677e7] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/63466
+2026/10/03 18:31:37 INF [WebRTC] [session 76b677e7] is reading from path 'cs_dec30_engine_r5', 1 track (H264)
+2026/10/03 18:31:47 INF [WebRTC] [session 76b677e7] closed: peer connection closed
+2026/10/03 18:31:47 INF [WebRTC] [session 7404b848] closed: terminated
+2026/10/03 18:31:48 INF [WebRTC] [session f1bf4bb4] created by 127.0.0.1:53062
+2026/10/03 18:31:49 INF [WebRTC] [session f1bf4bb4] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/53483
+2026/10/03 18:31:49 INF [path cs_dec60_transport_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:31:49 INF [WebRTC] [session f1bf4bb4] is publishing to path 'cs_dec60_transport_r5'
+2026/10/03 18:31:55 INF [WebRTC] [session 835bd4be] created by 127.0.0.1:53069
+2026/10/03 18:31:55 INF [WebRTC] [session 835bd4be] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/62659
+2026/10/03 18:31:55 INF [WebRTC] [session 835bd4be] is reading from path 'cs_dec60_transport_r5', 1 track (H264)
+2026/10/03 18:32:05 INF [WebRTC] [session 835bd4be] closed: peer connection closed
+2026/10/03 18:32:05 INF [WebRTC] [session f1bf4bb4] closed: terminated
+2026/10/03 18:32:06 INF [WebRTC] [session 82bc2d1e] created by 127.0.0.1:53080
+2026/10/03 18:32:07 INF [WebRTC] [session 82bc2d1e] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/64991
+2026/10/03 18:32:07 INF [path cs_dec60_engine_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:32:07 INF [WebRTC] [session 82bc2d1e] is publishing to path 'cs_dec60_engine_r5'
+2026/10/03 18:32:14 INF [WebRTC] [session 993365f7] created by 127.0.0.1:53088
+2026/10/03 18:32:14 INF [WebRTC] [session 993365f7] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/50285
+2026/10/03 18:32:14 INF [WebRTC] [session 993365f7] is reading from path 'cs_dec60_engine_r5', 1 track (H264)
+2026/10/03 18:32:24 INF [WebRTC] [session 993365f7] closed: peer connection closed
+2026/10/03 18:32:24 INF [WebRTC] [session 82bc2d1e] closed: terminated
+2026/10/03 18:32:26 INF [WebRTC] [session 2bb71f26] created by 127.0.0.1:53101
+2026/10/03 18:32:27 INF [WebRTC] [session 2bb71f26] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/51959
+2026/10/03 18:32:27 INF [path cs_native120_transport_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:32:27 INF [WebRTC] [session 2bb71f26] is publishing to path 'cs_native120_transport_r5'
+2026/10/03 18:32:33 INF [WebRTC] [session 0c8361a3] created by 127.0.0.1:53117
+2026/10/03 18:32:33 INF [WebRTC] [session 0c8361a3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/61673
+2026/10/03 18:32:33 INF [WebRTC] [session 0c8361a3] is reading from path 'cs_native120_transport_r5', 1 track (H264)
+2026/10/03 18:32:42 INF [WebRTC] [session 0c8361a3] closed: peer connection closed
+2026/10/03 18:32:43 INF [WebRTC] [session 2bb71f26] closed: terminated
+2026/10/03 18:32:44 INF [WebRTC] [session 6bb171e7] created by 127.0.0.1:53141
+2026/10/03 18:32:45 INF [WebRTC] [session 6bb171e7] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/53075
+2026/10/03 18:32:45 INF [path cs_native120_engine_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:32:45 INF [WebRTC] [session 6bb171e7] is publishing to path 'cs_native120_engine_r5'
+2026/10/03 18:32:53 INF [WebRTC] [session 853a1338] created by 127.0.0.1:53153
+2026/10/03 18:32:53 INF [WebRTC] [session 853a1338] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/54851
+2026/10/03 18:32:53 INF [WebRTC] [session 853a1338] is reading from path 'cs_native120_engine_r5', 1 track (H264)
+2026/10/03 18:33:02 INF [WebRTC] [session 853a1338] closed: peer connection closed
+2026/10/03 18:33:03 INF [WebRTC] [session 6bb171e7] closed: terminated
+2026/10/03 18:33:04 INF [WebRTC] [session f56b2eeb] created by 127.0.0.1:53165
+2026/10/03 18:33:05 INF [WebRTC] [session f56b2eeb] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/57839
+2026/10/03 18:33:05 INF [path cs_slowmo10_engine_r5] stream is available and online, 1 track (H264)
+2026/10/03 18:33:05 INF [WebRTC] [session f56b2eeb] is publishing to path 'cs_slowmo10_engine_r5'
+2026/10/03 18:33:12 INF [WebRTC] [session e59139c2] created by 127.0.0.1:53170
+2026/10/03 18:33:12 INF [WebRTC] [session e59139c2] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/65417
+2026/10/03 18:33:12 INF [WebRTC] [session e59139c2] is reading from path 'cs_slowmo10_engine_r5', 1 track (H264)
+2026/10/03 18:34:54 INF [WebRTC] [session e59139c2] closed: peer connection closed
+2026/10/03 18:34:55 INF [WebRTC] [session f56b2eeb] closed: terminated
+
+# 2. ffmpeg WHIP muxer handshake per run (sender side): ICE, DTLS, SRTP phases in ms
+dec30_engine_r1: elapsed 1019.6 ms (init:3.98,offer:0.01,answer:7.42,udp:0.09,ice:11.66,dtls:996.41,srtp:0.02)
+dec30_engine_r2: elapsed 1018.09 ms (init:3.88,offer:0.01,answer:5.76,udp:0.17,ice:12.67,dtls:995.57,srtp:0.02)
+dec30_engine_r3: elapsed 1028.46 ms (init:8.92,offer:0.00,answer:8.39,udp:0.19,ice:13.56,dtls:997.33,srtp:0.03)
+dec30_engine_r4: elapsed 1015.74 ms (init:2.85,offer:0.01,answer:4.78,udp:0.12,ice:12.29,dtls:995.66,srtp:0.02)
+dec30_engine_r5: elapsed 1023.82 ms (init:4.48,offer:0.01,answer:3.92,udp:0.19,ice:12.66,dtls:1002.48,srtp:0.04)
+dec30_transport_r1: elapsed 1020.1 ms (init:3.90,offer:0.01,answer:7.51,udp:0.18,ice:13.66,dtls:994.80,srtp:0.02)
+dec30_transport_r2: elapsed 1014.35 ms (init:3.03,offer:0.01,answer:3.69,udp:0.19,ice:11.54,dtls:995.86,srtp:0.02)
+dec30_transport_r3: elapsed 1022.28 ms (init:5.25,offer:0.01,answer:8.44,udp:0.18,ice:12.52,dtls:995.84,srtp:0.02)
+dec30_transport_r4: elapsed 1016.15 ms (init:3.73,offer:0.01,answer:3.52,udp:0.16,ice:12.67,dtls:996.01,srtp:0.03)
+dec30_transport_r5: elapsed 1014.59 ms (init:3.65,offer:0.01,answer:3.51,udp:0.17,ice:11.32,dtls:995.89,srtp:0.02)
+dec60_engine_r1: elapsed 1012.47 ms (init:2.24,offer:0.00,answer:2.10,udp:0.11,ice:12.57,dtls:995.40,srtp:0.02)
+dec60_engine_r2: elapsed 1012.29 ms (init:2.17,offer:0.00,answer:1.87,udp:0.08,ice:12.61,dtls:995.52,srtp:0.02)
+dec60_engine_r3: elapsed 1012.45 ms (init:2.28,offer:0.01,answer:2.13,udp:0.09,ice:12.18,dtls:995.74,srtp:0.02)
+dec60_engine_r4: elapsed 1016.79 ms (init:3.85,offer:0.01,answer:3.70,udp:0.23,ice:12.63,dtls:996.31,srtp:0.03)
+dec60_engine_r5: elapsed 1012.49 ms (init:2.38,offer:0.00,answer:1.96,udp:0.09,ice:12.62,dtls:995.40,srtp:0.02)
+dec60_transport_r1: elapsed 1011.64 ms (init:2.33,offer:0.00,answer:2.53,udp:0.20,ice:11.83,dtls:994.70,srtp:0.02)
+dec60_transport_r2: elapsed 1012.84 ms (init:2.44,offer:0.00,answer:2.15,udp:0.10,ice:12.59,dtls:995.52,srtp:0.02)
+dec60_transport_r3: elapsed 1012.78 ms (init:2.46,offer:0.01,answer:2.26,udp:0.09,ice:12.60,dtls:995.34,srtp:0.02)
+dec60_transport_r4: elapsed 1017.69 ms (init:4.94,offer:0.01,answer:4.56,udp:0.31,ice:12.13,dtls:995.66,srtp:0.04)
+dec60_transport_r5: elapsed 1013.86 ms (init:3.18,offer:0.01,answer:2.90,udp:0.11,ice:11.35,dtls:996.25,srtp:0.02)
+native120_engine_r1: elapsed 1011.89 ms (init:2.34,offer:0.00,answer:2.10,udp:0.09,ice:12.42,dtls:994.90,srtp:0.02)
+native120_engine_r2: elapsed 1013.1 ms (init:2.58,offer:0.01,answer:3.72,udp:0.11,ice:10.84,dtls:995.80,srtp:0.02)
+native120_engine_r3: elapsed 1013.84 ms (init:2.55,offer:0.01,answer:2.97,udp:0.16,ice:12.59,dtls:995.53,srtp:0.02)
+native120_engine_r4: elapsed 1013.84 ms (init:3.21,offer:0.01,answer:2.93,udp:0.16,ice:11.78,dtls:995.68,srtp:0.03)
+native120_engine_r5: elapsed 1013.82 ms (init:2.99,offer:0.01,answer:2.72,udp:0.11,ice:12.30,dtls:995.65,srtp:0.02)
+native120_transport_r1: elapsed 1012.23 ms (init:2.34,offer:0.00,answer:2.32,udp:0.08,ice:12.58,dtls:994.87,srtp:0.02)
+native120_transport_r2: elapsed 1015.27 ms (init:2.33,offer:0.01,answer:4.58,udp:0.11,ice:12.58,dtls:995.62,srtp:0.02)
+native120_transport_r3: elapsed 1014.53 ms (init:2.85,offer:0.01,answer:2.92,udp:0.12,ice:12.61,dtls:995.98,srtp:0.03)
+native120_transport_r4: elapsed 1027.64 ms (init:4.89,offer:0.01,answer:5.33,udp:0.15,ice:12.66,dtls:1004.55,srtp:0.03)
+native120_transport_r5: elapsed 1013.34 ms (init:3.00,offer:0.01,answer:2.88,udp:0.14,ice:10.74,dtls:996.53,srtp:0.02)
+slowmo10_engine_r1: elapsed 1015.42 ms (init:3.71,offer:0.01,answer:3.04,udp:0.14,ice:12.68,dtls:995.79,srtp:0.03)
+slowmo10_engine_r2: elapsed 1012.4 ms (init:2.28,offer:0.00,answer:1.88,udp:0.08,ice:12.57,dtls:995.55,srtp:0.02)
+slowmo10_engine_r3: elapsed 1012.53 ms (init:2.74,offer:0.01,answer:2.46,udp:0.12,ice:11.14,dtls:996.02,srtp:0.02)
+slowmo10_engine_r4: elapsed 1016.14 ms (init:3.63,offer:0.01,answer:3.28,udp:0.17,ice:12.68,dtls:996.31,srtp:0.03)
+slowmo10_engine_r5: elapsed 1012.22 ms (init:2.50,offer:0.01,answer:2.12,udp:0.09,ice:12.63,dtls:994.84,srtp:0.02)

@@ -71,6 +71,33 @@ def crop_resize(frame, y, h, w, D):
     return f2.to_ndarray(width=D.INP_W, height=D.INP_H, format="rgb24", interpolation="AREA")
 
 
+def webrtc_evidence(pc, offer_sdp, answer_sdp):
+    """What proves the frames came over WebRTC: the WHEP offer / answer SDP, ICE (states, candidates, nominated
+    pair) and DTLS-SRTP (state, role, SRTP profile) of the receiving transport, read once the first frame is in.
+    Uses a few private aiortc / aioice attributes, for evidence only: any failure is recorded, never raised."""
+    ev = dict(offer_sdp=offer_sdp, answer_sdp=answer_sdp, ice_connection_state=getattr(pc, "iceConnectionState", None),
+              connection_state=getattr(pc, "connectionState", None))
+    try:
+        for t in pc.getTransceivers():
+            dtls = t.receiver.transport
+            ice = dtls.transport
+            cand = lambda c: f"{c.type}/{c.protocol}/{c.ip}/{c.port}"
+            ev.update(mid=t.mid, kind=t.kind, dtls_state=dtls.state, dtls_role=getattr(dtls, "_role", None),
+                      ice_state=ice.state, ice_role=ice.role,
+                      ice_local_candidates=[cand(c) for c in ice.iceGatherer.getLocalCandidates()],
+                      ice_remote_candidates=[cand(c) for c in ice.getRemoteCandidates()],
+                      ice_nominated=[repr(p) for p in getattr(ice._connection, "_nominated", {}).values()])
+            try:
+                prof = dtls._ssl.get_selected_srtp_profile()
+                ev["srtp_profile"] = prof.decode() if isinstance(prof, bytes) else str(prof)
+            except Exception as e:      # noqa: BLE001
+                ev["srtp_profile"] = f"n/a ({e!r})"
+            break
+    except Exception as e:      # noqa: BLE001
+        ev["evidence_error"] = repr(e)
+    return ev
+
+
 class WhepFrameSource:
     """Drop-in for engine.vision.stream.FrameSource (run_stream reads only `.q`)."""
 
@@ -143,8 +170,9 @@ class WhepFrameSource:
             if t.kind == "video" and not fut.done():
                 fut.set_result(t)
         await pc.setLocalDescription(await pc.createOffer())
+        offer_sdp = pc.localDescription.sdp
         t_post = time.time()
-        answer, loc = await loop.run_in_executor(None, self._post, pc.localDescription.sdp)
+        answer, loc = await loop.run_in_executor(None, self._post, offer_sdp)
         await pc.setRemoteDescription(RTCSessionDescription(sdp=answer, type="answer"))
         self.info.update(whep_connect_s=round(time.time() - t_post, 3),
                          codec=next((ln for ln in answer.splitlines() if "rtpmap" in ln and "H264" in ln), None))
@@ -161,7 +189,12 @@ class WhepFrameSource:
             except MediaStreamError:
                 self.info["stopped_by"] = "track ended"
                 break
-            self._pq.put((frame, time.time()))
+            t_h = time.time()
+            # wall - monotonic at hand-off: time.time() can be slewed / stepped (observed: backward steps up to
+            # 1.6 ms in the 2026-10-03 campaign); a change in this offset between frames shows such a step
+            self._pq.put((frame, t_h, t_h - time.monotonic()))
+            if "webrtc" not in self.info:
+                self.info["webrtc"] = webrtc_evidence(pc, offer_sdp, answer)
             if time.time() - t_start > self.max_s:
                 self.info["stopped_by"] = "max_s"
                 break
@@ -190,7 +223,7 @@ class WhepFrameSource:
             it = self._pq.get()
             if it is None:
                 break
-            frame, t_h = it
+            frame, t_h, wm = it
             self.info["decoded"] += 1
             w, hh = frame.width, frame.height
             h = hh - FC.STRIP_H
@@ -199,7 +232,8 @@ class WhepFrameSource:
             st = aiortc_patch.STAMPS.pop(frame.pts, None) or {}
             row = dict(pts=frame.pts, key=bool(frame.key_frame), pict=str(getattr(frame.pict_type, "name", frame.pict_type)),
                        t_first=st.get("t_first"), t_complete=st.get("t_complete"), t_dec0=st.get("t_dec0"),
-                       t_dec1=st.get("t_dec1"), n_packets=st.get("n_packets"), nbytes=st.get("nbytes"), t_handoff=t_h)
+                       t_dec1=st.get("t_dec1"), n_packets=st.get("n_packets"), nbytes=st.get("nbytes"), t_handoff=t_h,
+                       wm=wm)
             if code is None:
                 self.info["bad_code"] += 1
                 row["seq"] = None
@@ -325,8 +359,10 @@ def main():
         geo, geo_prov = VS.load_geometry(a.video, frozen)
     offset = a.src0 if a.step == 1 else 0
     live = {}
+    emit_wm = {}      # id(CallEvent) -> wall - monotonic right after the engine stamped t_emit (clock-step check)
 
     def on_event(ev):
+        emit_wm[id(ev)] = time.time() - time.monotonic()
         r = live.get(ev.frame - offset, {})
         cap = r.get("t_cap_code")
         tag = "" if a.step == 1 else " [OUT OF DISTRIBUTION: decimated stream]"
@@ -404,6 +440,7 @@ def main():
                      t_due=r.get("t_due"), t_handoff=r.get("t_handoff"),
                      capture_to_emit_ms=((ev.t_emit - r["t_due"]) * 1e3 if r.get("t_due") else None),
                      capture_to_handoff_ms=((r["t_handoff"] - r["t_due"]) * 1e3 if r.get("t_due") else None),
+                     wm_emit=emit_wm.get(id(ev)), wm_handoff=r.get("wm"),
                      out_of_distribution=(a.step != 1))
             events.append(d)
     sent_clip = [q for q, s in sent.items() if s.get("flags", 0) & FC.CLIP]

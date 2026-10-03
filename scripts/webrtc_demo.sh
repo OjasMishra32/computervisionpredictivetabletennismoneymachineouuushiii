@@ -28,7 +28,11 @@
 #      REPS (default 1: repeat the whole preset list REPS times, interleaved; labels get _r<n>),
 #      SAVE_FRAMES=1 (rep 1 of each slowmo run saves the frames fed to the engine for webrtc_render_demo.py),
 #      SIZE (WxH of the sent picture; default the clip's 1920x1080; label suffix _<H>p),
-#      BACKEND_30 / BACKEND_60 / BACKEND_120 (real-time engine backend per preset; default BACKEND).
+#      BACKEND_30 / BACKEND_60 / BACKEND_120 (real-time engine backend per preset; default BACKEND),
+#      GOP_S (keyframe interval in seconds of wall time, sender default 0.5) and VBV_BUFSIZE (encoder VBV buffer,
+#      sender default bitrate / 2): GOP_S=6 SLOWMO_BITRATE=1M VBV_BUFSIZE=6M gives slowmo10 the bits per frame,
+#      keyframe spacing and VBV buffer (in frames) of a real-time 120 fps stream at 12 Mb/s,
+#      TAG (extra label suffix, e.g. TAG=enc120).
 # Output: results/webrtc/run_<ts>.jsonl (every run's meta, frame, call and summary rows, tagged by run label)
 #         and results/webrtc/summary_<ts>.json (+ a table on stdout), via scripts/webrtc_summary.py.
 set -euo pipefail
@@ -77,6 +81,7 @@ run_one() {   # label step fps mode bitrate backend [receiver args...]
   RECV_PID=$!
   "$PY" -m engine.webrtc.sender --whip-url "http://127.0.0.1:8889/$path/whip" --step "$step" --fps "$fps" \
       --encoder "$ENCODER" --bitrate "$rate" ${MAX_FRAMES:+--max-frames "$MAX_FRAMES"} ${SIZE:+--size "$SIZE"} \
+      ${GOP_S:+--gop-s "$GOP_S"} ${VBV_BUFSIZE:+--bufsize "$VBV_BUFSIZE"} \
       --log "$WORK/$label.send.jsonl" --ready-file "$WORK/$label.ready" --ffmpeg-log "$WORK/$label.ffmpeg.log" \
       > "$WORK/$label.send.log" 2>&1 || echo "sender failed (see $WORK/$label.send.log)"
   wait "$RECV_PID" || echo "receiver failed (see $WORK/$label.recv.log)"
@@ -89,6 +94,7 @@ run_one() {   # label step fps mode bitrate backend [receiver args...]
 SFX0="${STOCK_JITTER:+_stockjb}"
 [ "$ENCODER" != x264 ] && SFX0="${SFX0}_$ENCODER"
 [ -n "$SIZE" ] && SFX0="${SFX0}_${SIZE#*x}p"
+[ -n "${TAG:-}" ] && SFX0="${SFX0}_${TAG}"
 for rep in $(seq 1 "$REPS"); do
   SFX="$SFX0"
   [ "$REPS" -gt 1 ] && SFX="${SFX0}_r$rep"

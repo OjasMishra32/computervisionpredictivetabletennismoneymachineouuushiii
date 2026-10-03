@@ -21,6 +21,18 @@ skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertain
 | 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
 | 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
+**FIRST-TIME VIEWER MUST UNDERSTAND IT (team rule).** Someone who has never heard of the project must follow it:
+- Liam explains every concept in plain words the first time it appears: "Polymarket is a prediction market: each match
+  has a price between 0 and 1 dollar that moves with each player's chance of winning"; "after every point the price
+  jumps, but it takes about a second to update"; "a miss call means our model knows the ball is going out before it
+  lands"; "Sharpe ratio = return per unit of risk; above 2 is very good"; "out of sample = data the model never saw".
+- A small chapter title on each segment (1 The idea, 2 The edge, 3 The models, 4 The pipeline, 5 Speed, 6 The test,
+  7 The result) so viewers always know where they are.
+- One message per shot; on-screen text says what to look at ("watch the orange line: that's our predicted path").
+- Numbers come with a plain meaning ("+$94 a day per match feed... 11.9 Sharpe = very consistent").
+- QA: a reviewer who has NOT read the paper watches frame grabs + transcript and writes what they understood; every
+  confusion is fixed before the final render.
+
 **DESIGN: Apple keynote / product-film style. Very clean. No AI slop.** (overrides earlier style notes)
 - Canvas: pure black (#000) for most scenes, occasional pure white for data scenes; generous margins (>= 8% of width);
   a strict 12-column grid; one idea per frame.

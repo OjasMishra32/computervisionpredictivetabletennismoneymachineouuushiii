@@ -1,0 +1,1938 @@
+{
+ "what": "independent recomputation of the WebRTC campaign from raw per-frame timestamps (our own clip, our own loopback stream; not a match feed)",
+ "campaign": "results/webrtc/run_20261003T221601Z.jsonl",
+ "identity": {
+  "all_clip_frames_received": true,
+  "any_bad_crc": false,
+  "any_arith_mismatch": false,
+  "code_time_vs_sender_log_ms_max": 0.496,
+  "per_run": {
+   "dec30_engine_r1": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.387
+   },
+   "dec30_engine_r2": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.444
+   },
+   "dec30_engine_r3": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.436
+   },
+   "dec30_engine_r4": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.492
+   },
+   "dec30_engine_r5": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.45
+   },
+   "dec30_transport_r1": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.369
+   },
+   "dec30_transport_r2": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.361
+   },
+   "dec30_transport_r3": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.346
+   },
+   "dec30_transport_r4": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.468
+   },
+   "dec30_transport_r5": {
+    "step": 4,
+    "clip_frames_received": 250,
+    "clip_frames_expected": 250,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.425
+   },
+   "dec60_engine_r1": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.493
+   },
+   "dec60_engine_r2": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.369
+   },
+   "dec60_engine_r3": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.387
+   },
+   "dec60_engine_r4": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.496
+   },
+   "dec60_engine_r5": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.384
+   },
+   "dec60_transport_r1": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.379
+   },
+   "dec60_transport_r2": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.378
+   },
+   "dec60_transport_r3": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.426
+   },
+   "dec60_transport_r4": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.475
+   },
+   "dec60_transport_r5": {
+    "step": 2,
+    "clip_frames_received": 500,
+    "clip_frames_expected": 500,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.379
+   },
+   "native120_engine_r1": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.402
+   },
+   "native120_engine_r2": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.368
+   },
+   "native120_engine_r3": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.401
+   },
+   "native120_engine_r4": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.437
+   },
+   "native120_engine_r5": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.477
+   },
+   "native120_transport_r1": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.432
+   },
+   "native120_transport_r2": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.49
+   },
+   "native120_transport_r3": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.4
+   },
+   "native120_transport_r4": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.479
+   },
+   "native120_transport_r5": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.366
+   },
+   "slowmo10_engine_r1": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.413
+   },
+   "slowmo10_engine_r2": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.184
+   },
+   "slowmo10_engine_r3": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.393
+   },
+   "slowmo10_engine_r4": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.322
+   },
+   "slowmo10_engine_r5": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.177
+   }
+  },
+  "pixels": {
+   "slowmo10_engine_r1": {
+    "frames_compared": 996,
+    "static_frames_skipped": 0,
+    "best_matching_offset_counts": {
+     "0": 996
+    },
+    "exact": true
+   }
+  }
+ },
+ "clocks": {
+  "per_run": {
+   "native120_engine_r1": {
+    "clock": "time.time() (CLOCK_REALTIME) in sender, receiver and engine, one host: no cross-host offset",
+    "sender_backward_steps": [
+     {
+      "seq": 1663,
+      "src": 2452,
+      "step_ms": -0.164
+     }
+    ]
+   },
+   "native120_engine_r2": {
+    "clock": "time.time() (CLOCK_REALTIME) in sender, receiver and engine, one host: no cross-host offset",
+    "sender_backward_steps": [
+     {
+      "seq": 1480,
+      "src": 2269,
+      "step_ms": -1.591
+     },
+     {
+      "seq": 1948,
+      "src": 2737,
+      "step_ms": -0.253
+     }
+    ]
+   },
+   "native120_engine_r3": {
+    "clock": "time.time() (CLOCK_REALTIME) in sender, receiver and engine, one host: no cross-host offset",
+    "sender_backward_steps": [
+     {
+      "seq": 1487,
+      "src": 2155,
+      "step_ms": -1.506
+     }
+    ]
+   },
+   "native120_engine_r4": {
+    "clock": "time.time() (CLOCK_REALTIME) in sender, receiver and engine, one host: no cross-host offset",
+    "sender_backward_steps": [
+     {
+      "seq": 1557,
+      "src": null,
+      "step_ms": -0.905
+     },
+     {
+      "seq": 2254,
+      "src": 2682,
+      "step_ms": -0.078
+     }
+    ]
+   },
+   "native120_transport_r4": {
+    "clock": "time.time() (CLOCK_REALTIME) in sender, receiver and engine, one host: no cross-host offset",
+    "sender_backward_steps": [
+     {
+      "seq": 1803,
+      "src": 2591,
+      "step_ms": -1.572
+     },
+     {
+      "seq": 1865,
+      "src": 2653,
+      "step_ms": -0.005
+     }
+    ]
+   }
+  },
+  "sender_backward_steps_total": 8,
+  "largest_backward_step_ms": -1.591,
+  "note": "frames whose sender row shows a backward step are excluded in latency_excluding_clock_steps"
+ },
+ "webrtc": {
+  "per_run": {
+   "dec30_engine_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 300,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 165
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_engine_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 305,
+    "rtp_packets_per_clip_frame": {
+     "p50": 42.0,
+     "max": 157
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_engine_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 294,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 169
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_engine_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 296,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 168
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_engine_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 299,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 173
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_transport_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 295,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 161
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_transport_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 300,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.5,
+     "max": 165
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_transport_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 293,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 174
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_transport_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.012,
+    "frames_assembled_from_rtp": 292,
+    "rtp_packets_per_clip_frame": {
+     "p50": 40.0,
+     "max": 166
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec30_transport_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 301,
+    "rtp_packets_per_clip_frame": {
+     "p50": 41.0,
+     "max": 174
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_engine_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.007,
+    "frames_assembled_from_rtp": 591,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_engine_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.007,
+    "frames_assembled_from_rtp": 581,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_engine_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 586,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_engine_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.019,
+    "frames_assembled_from_rtp": 583,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_engine_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.013,
+    "frames_assembled_from_rtp": 586,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 144
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_transport_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 603,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_transport_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.007,
+    "frames_assembled_from_rtp": 601,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_transport_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.007,
+    "frames_assembled_from_rtp": 591,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 146
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_transport_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.021,
+    "frames_assembled_from_rtp": 577,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 145
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "dec60_transport_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.016,
+    "frames_assembled_from_rtp": 582,
+    "rtp_packets_per_clip_frame": {
+     "p50": 23.0,
+     "max": 146
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_engine_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 1180,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 126
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_engine_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 1162,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_engine_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.011,
+    "frames_assembled_from_rtp": 1201,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_engine_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.018,
+    "frames_assembled_from_rtp": 1167,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_engine_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.011,
+    "frames_assembled_from_rtp": 1167,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 126
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_transport_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 1179,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 126
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_transport_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.008,
+    "frames_assembled_from_rtp": 1190,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 126
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_transport_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.009,
+    "frames_assembled_from_rtp": 1170,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_transport_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.042,
+    "frames_assembled_from_rtp": 1149,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "native120_transport_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.01,
+    "frames_assembled_from_rtp": 1187,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 127
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "slowmo10_engine_r1": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.015,
+    "frames_assembled_from_rtp": 1027,
+    "rtp_packets_per_clip_frame": {
+     "p50": 32.0,
+     "max": 120
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "slowmo10_engine_r2": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.018,
+    "frames_assembled_from_rtp": 1025,
+    "rtp_packets_per_clip_frame": {
+     "p50": 32.0,
+     "max": 120
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "slowmo10_engine_r3": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.01,
+    "frames_assembled_from_rtp": 1025,
+    "rtp_packets_per_clip_frame": {
+     "p50": 32.0,
+     "max": 120
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "slowmo10_engine_r4": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.014,
+    "frames_assembled_from_rtp": 1026,
+    "rtp_packets_per_clip_frame": {
+     "p50": 32.0,
+     "max": 120
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   },
+   "slowmo10_engine_r5": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.012,
+    "frames_assembled_from_rtp": 1026,
+    "rtp_packets_per_clip_frame": {
+     "p50": 32.0,
+     "max": 119
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": false,
+    "ice_pair": null
+   }
+  },
+  "mediamtx": {
+   "log": "/var/folders/r7/sc0t4kvj3vd0j6wmby2jjhdw0000gn/T/courtside_webrtc/20261003T221601Z/mediamtx.log",
+   "webrtc_publish_sessions": 35,
+   "webrtc_read_sessions": 35,
+   "paths_read": [
+    "cs_dec30_engine_r1",
+    "cs_dec30_engine_r2",
+    "cs_dec30_engine_r3",
+    "cs_dec30_engine_r4",
+    "cs_dec30_engine_r5",
+    "cs_dec30_transport_r1",
+    "cs_dec30_transport_r2",
+    "cs_dec30_transport_r3",
+    "cs_dec30_transport_r4",
+    "cs_dec30_transport_r5",
+    "cs_dec60_engine_r1",
+    "cs_dec60_engine_r2",
+    "cs_dec60_engine_r3",
+    "cs_dec60_engine_r4",
+    "cs_dec60_engine_r5",
+    "cs_dec60_transport_r1",
+    "cs_dec60_transport_r2",
+    "cs_dec60_transport_r3",
+    "cs_dec60_transport_r4",
+    "cs_dec60_transport_r5",
+    "cs_native120_engine_r1",
+    "cs_native120_engine_r2",
+    "cs_native120_engine_r3",
+    "cs_native120_engine_r4",
+    "cs_native120_engine_r5",
+    "cs_native120_transport_r1",
+    "cs_native120_transport_r2",
+    "cs_native120_transport_r3",
+    "cs_native120_transport_r4",
+    "cs_native120_transport_r5",
+    "cs_slowmo10_engine_r1",
+    "cs_slowmo10_engine_r2",
+    "cs_slowmo10_engine_r3",
+    "cs_slowmo10_engine_r4",
+    "cs_slowmo10_engine_r5"
+   ],
+   "ice_local_candidates": [
+    "host/udp/127.0.0.1"
+   ],
+   "ice_remote_candidate_types": [
+    "host",
+    "prflx"
+   ],
+   "ice_remote_hosts": [
+    "127.0.0.1"
+   ],
+   "rtsp_sessions": 0
+  },
+  "whip_handshakes": {
+   "dec30_engine_r1": {
+    "total_ms": 1019.6,
+    "phases": "init:3.98,offer:0.01,answer:7.42,udp:0.09,ice:11.66,dtls:996.41,srtp:0.02"
+   },
+   "dec30_engine_r2": {
+    "total_ms": 1018.09,
+    "phases": "init:3.88,offer:0.01,answer:5.76,udp:0.17,ice:12.67,dtls:995.57,srtp:0.02"
+   },
+   "dec30_engine_r3": {
+    "total_ms": 1028.46,
+    "phases": "init:8.92,offer:0.00,answer:8.39,udp:0.19,ice:13.56,dtls:997.33,srtp:0.03"
+   },
+   "dec30_engine_r4": {
+    "total_ms": 1015.74,
+    "phases": "init:2.85,offer:0.01,answer:4.78,udp:0.12,ice:12.29,dtls:995.66,srtp:0.02"
+   },
+   "dec30_engine_r5": {
+    "total_ms": 1023.82,
+    "phases": "init:4.48,offer:0.01,answer:3.92,udp:0.19,ice:12.66,dtls:1002.48,srtp:0.04"
+   },
+   "dec30_transport_r1": {
+    "total_ms": 1020.1,
+    "phases": "init:3.90,offer:0.01,answer:7.51,udp:0.18,ice:13.66,dtls:994.80,srtp:0.02"
+   },
+   "dec30_transport_r2": {
+    "total_ms": 1014.35,
+    "phases": "init:3.03,offer:0.01,answer:3.69,udp:0.19,ice:11.54,dtls:995.86,srtp:0.02"
+   },
+   "dec30_transport_r3": {
+    "total_ms": 1022.28,
+    "phases": "init:5.25,offer:0.01,answer:8.44,udp:0.18,ice:12.52,dtls:995.84,srtp:0.02"
+   },
+   "dec30_transport_r4": {
+    "total_ms": 1016.15,
+    "phases": "init:3.73,offer:0.01,answer:3.52,udp:0.16,ice:12.67,dtls:996.01,srtp:0.03"
+   },
+   "dec30_transport_r5": {
+    "total_ms": 1014.59,
+    "phases": "init:3.65,offer:0.01,answer:3.51,udp:0.17,ice:11.32,dtls:995.89,srtp:0.02"
+   },
+   "dec60_engine_r1": {
+    "total_ms": 1012.47,
+    "phases": "init:2.24,offer:0.00,answer:2.10,udp:0.11,ice:12.57,dtls:995.40,srtp:0.02"
+   },
+   "dec60_engine_r2": {
+    "total_ms": 1012.29,
+    "phases": "init:2.17,offer:0.00,answer:1.87,udp:0.08,ice:12.61,dtls:995.52,srtp:0.02"
+   },
+   "dec60_engine_r3": {
+    "total_ms": 1012.45,
+    "phases": "init:2.28,offer:0.01,answer:2.13,udp:0.09,ice:12.18,dtls:995.74,srtp:0.02"
+   },
+   "dec60_engine_r4": {
+    "total_ms": 1016.79,
+    "phases": "init:3.85,offer:0.01,answer:3.70,udp:0.23,ice:12.63,dtls:996.31,srtp:0.03"
+   },
+   "dec60_engine_r5": {
+    "total_ms": 1012.49,
+    "phases": "init:2.38,offer:0.00,answer:1.96,udp:0.09,ice:12.62,dtls:995.40,srtp:0.02"
+   },
+   "dec60_transport_r1": {
+    "total_ms": 1011.64,
+    "phases": "init:2.33,offer:0.00,answer:2.53,udp:0.20,ice:11.83,dtls:994.70,srtp:0.02"
+   },
+   "dec60_transport_r2": {
+    "total_ms": 1012.84,
+    "phases": "init:2.44,offer:0.00,answer:2.15,udp:0.10,ice:12.59,dtls:995.52,srtp:0.02"
+   },
+   "dec60_transport_r3": {
+    "total_ms": 1012.78,
+    "phases": "init:2.46,offer:0.01,answer:2.26,udp:0.09,ice:12.60,dtls:995.34,srtp:0.02"
+   },
+   "dec60_transport_r4": {
+    "total_ms": 1017.69,
+    "phases": "init:4.94,offer:0.01,answer:4.56,udp:0.31,ice:12.13,dtls:995.66,srtp:0.04"
+   },
+   "dec60_transport_r5": {
+    "total_ms": 1013.86,
+    "phases": "init:3.18,offer:0.01,answer:2.90,udp:0.11,ice:11.35,dtls:996.25,srtp:0.02"
+   },
+   "native120_engine_r1": {
+    "total_ms": 1011.89,
+    "phases": "init:2.34,offer:0.00,answer:2.10,udp:0.09,ice:12.42,dtls:994.90,srtp:0.02"
+   },
+   "native120_engine_r2": {
+    "total_ms": 1013.1,
+    "phases": "init:2.58,offer:0.01,answer:3.72,udp:0.11,ice:10.84,dtls:995.80,srtp:0.02"
+   },
+   "native120_engine_r3": {
+    "total_ms": 1013.84,
+    "phases": "init:2.55,offer:0.01,answer:2.97,udp:0.16,ice:12.59,dtls:995.53,srtp:0.02"
+   },
+   "native120_engine_r4": {
+    "total_ms": 1013.84,
+    "phases": "init:3.21,offer:0.01,answer:2.93,udp:0.16,ice:11.78,dtls:995.68,srtp:0.03"
+   },
+   "native120_engine_r5": {
+    "total_ms": 1013.82,
+    "phases": "init:2.99,offer:0.01,answer:2.72,udp:0.11,ice:12.30,dtls:995.65,srtp:0.02"
+   },
+   "native120_transport_r1": {
+    "total_ms": 1012.23,
+    "phases": "init:2.34,offer:0.00,answer:2.32,udp:0.08,ice:12.58,dtls:994.87,srtp:0.02"
+   },
+   "native120_transport_r2": {
+    "total_ms": 1015.27,
+    "phases": "init:2.33,offer:0.01,answer:4.58,udp:0.11,ice:12.58,dtls:995.62,srtp:0.02"
+   },
+   "native120_transport_r3": {
+    "total_ms": 1014.53,
+    "phases": "init:2.85,offer:0.01,answer:2.92,udp:0.12,ice:12.61,dtls:995.98,srtp:0.03"
+   },
+   "native120_transport_r4": {
+    "total_ms": 1027.64,
+    "phases": "init:4.89,offer:0.01,answer:5.33,udp:0.15,ice:12.66,dtls:1004.55,srtp:0.03"
+   },
+   "native120_transport_r5": {
+    "total_ms": 1013.34,
+    "phases": "init:3.00,offer:0.01,answer:2.88,udp:0.14,ice:10.74,dtls:996.53,srtp:0.02"
+   },
+   "slowmo10_engine_r1": {
+    "total_ms": 1015.42,
+    "phases": "init:3.71,offer:0.01,answer:3.04,udp:0.14,ice:12.68,dtls:995.79,srtp:0.03"
+   },
+   "slowmo10_engine_r2": {
+    "total_ms": 1012.4,
+    "phases": "init:2.28,offer:0.00,answer:1.88,udp:0.08,ice:12.57,dtls:995.55,srtp:0.02"
+   },
+   "slowmo10_engine_r3": {
+    "total_ms": 1012.53,
+    "phases": "init:2.74,offer:0.01,answer:2.46,udp:0.12,ice:11.14,dtls:996.02,srtp:0.02"
+   },
+   "slowmo10_engine_r4": {
+    "total_ms": 1016.14,
+    "phases": "init:3.63,offer:0.01,answer:3.28,udp:0.17,ice:12.68,dtls:996.31,srtp:0.03"
+   },
+   "slowmo10_engine_r5": {
+    "total_ms": 1012.22,
+    "phases": "init:2.50,offer:0.01,answer:2.12,udp:0.09,ice:12.63,dtls:994.84,srtp:0.02"
+   }
+  }
+ },
+ "latency": {
+  "dec30_engine": {
+   "label": "30 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 9.31,
+    "p90": 21.98,
+    "p99": 67.55,
+    "n": 1250
+   },
+   "decoded_to_decision_ms": {
+    "p50": 30.13,
+    "p90": 71.81,
+    "p99": 131.11,
+    "n": 1197
+   },
+   "capture_to_decision_ms": {
+    "p50": 40.18,
+    "p90": 96.74,
+    "p99": 164.84,
+    "n": 1197
+   },
+   "capture_to_own_position_final_ms": {
+    "p50": 106.84,
+    "p90": 163.41,
+    "p99": 231.51,
+    "n": 1197
+   },
+   "frames_sent": 1250,
+   "frames_processed": 1226,
+   "frames_with_decision": 1197,
+   "not_processed_share": 0.0192,
+   "decision_share_of_sent": 0.9576
+  },
+  "dec30_transport": {
+   "label": "30 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 7.59,
+    "p90": 13.01,
+    "p99": 25.87,
+    "n": 1250
+   }
+  },
+  "dec60_engine": {
+   "label": "60 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 8.11,
+    "p90": 23.63,
+    "p99": 69.89,
+    "n": 2500
+   },
+   "decoded_to_decision_ms": {
+    "p50": 86.73,
+    "p90": 136.21,
+    "p99": 184.85,
+    "n": 1519
+   },
+   "capture_to_decision_ms": {
+    "p50": 96.41,
+    "p90": 148.21,
+    "p99": 218.18,
+    "n": 1519
+   },
+   "capture_to_own_position_final_ms": {
+    "p50": 129.75,
+    "p90": 181.54,
+    "p99": 251.52,
+    "n": 1519
+   },
+   "frames_sent": 2500,
+   "frames_processed": 1774,
+   "frames_with_decision": 1519,
+   "not_processed_share": 0.2904,
+   "decision_share_of_sent": 0.6076
+  },
+  "dec60_transport": {
+   "label": "60 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 4.87,
+    "p90": 8.92,
+    "p99": 28.72,
+    "n": 2500
+   }
+  },
+  "native120_engine": {
+   "label": "120 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 10.02,
+    "p90": 50.01,
+    "p99": 186.93,
+    "n": 5000
+   },
+   "decoded_to_decision_ms": {
+    "p50": 105.21,
+    "p90": 156.25,
+    "p99": 184.65,
+    "n": 1377
+   },
+   "capture_to_decision_ms": {
+    "p50": 116.82,
+    "p90": 190.34,
+    "p99": 330.64,
+    "n": 1377
+   },
+   "capture_to_own_position_final_ms": {
+    "p50": 133.49,
+    "p90": 207.0,
+    "p99": 347.31,
+    "n": 1377
+   },
+   "frames_sent": 5000,
+   "frames_processed": 2057,
+   "frames_with_decision": 1377,
+   "not_processed_share": 0.5886,
+   "decision_share_of_sent": 0.2754
+  },
+  "native120_transport": {
+   "label": "120 fps, real time",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 4.0,
+    "p90": 9.97,
+    "p99": 51.05,
+    "n": 5000
+   }
+  },
+  "slowmo10_engine": {
+   "label": "120 fps content fed at 10 frames/s (engine keeps up)",
+   "runs": 5,
+   "video_leg_ms": {
+    "p50": 7.86,
+    "p90": 13.7,
+    "p99": 26.56,
+    "n": 5000
+   },
+   "decoded_to_decision_ms": {
+    "p50": 37.79,
+    "p90": 42.88,
+    "p99": 52.92,
+    "n": 4990
+   },
+   "capture_to_decision_ms": {
+    "p50": 45.59,
+    "p90": 55.68,
+    "p99": 70.99,
+    "n": 4990
+   },
+   "capture_to_own_position_final_ms": {
+    "p50": 245.59,
+    "p90": 255.68,
+    "p99": 270.99,
+    "n": 4990
+   },
+   "frames_sent": 5000,
+   "frames_processed": 5000,
+   "frames_with_decision": 4990,
+   "not_processed_share": 0.0,
+   "decision_share_of_sent": 0.998,
+   "capture_to_emit_ms": {
+    "p50": 46.04,
+    "p90": 58.07,
+    "p99": 67.27,
+    "n": 55
+   },
+   "decoded_to_emit_ms": {
+    "p50": 39.15,
+    "p90": 44.05,
+    "p99": 49.47,
+    "n": 55
+   },
+   "video_leg_of_call_frames_p50_ms": 7.7,
+   "calls_per_run": [
+    11,
+    11,
+    11,
+    11,
+    11
+   ]
+  }
+ },
+ "latency_excluding_clock_steps": {
+  "dec30_engine": {
+   "video_leg_ms": {
+    "p50": 9.31,
+    "p90": 21.98,
+    "p99": 67.55,
+    "n": 1250
+   },
+   "capture_to_decision_ms": {
+    "p50": 40.18,
+    "p90": 96.74,
+    "p99": 164.84,
+    "n": 1197
+   }
+  },
+  "dec30_transport": {
+   "video_leg_ms": {
+    "p50": 7.59,
+    "p90": 13.01,
+    "p99": 25.87,
+    "n": 1250
+   }
+  },
+  "dec60_engine": {
+   "video_leg_ms": {
+    "p50": 8.11,
+    "p90": 23.63,
+    "p99": 69.89,
+    "n": 2500
+   },
+   "capture_to_decision_ms": {
+    "p50": 96.41,
+    "p90": 148.21,
+    "p99": 218.18,
+    "n": 1519
+   }
+  },
+  "dec60_transport": {
+   "video_leg_ms": {
+    "p50": 4.87,
+    "p90": 8.92,
+    "p99": 28.72,
+    "n": 2500
+   }
+  },
+  "native120_engine": {
+   "video_leg_ms": {
+    "p50": 10.02,
+    "p90": 50.12,
+    "p99": 186.98,
+    "n": 4995
+   },
+   "capture_to_decision_ms": {
+    "p50": 116.82,
+    "p90": 190.34,
+    "p99": 330.64,
+    "n": 1377
+   }
+  },
+  "native120_transport": {
+   "video_leg_ms": {
+    "p50": 4.0,
+    "p90": 9.93,
+    "p99": 51.05,
+    "n": 4998
+   }
+  },
+  "slowmo10_engine": {
+   "video_leg_ms": {
+    "p50": 7.86,
+    "p90": 13.7,
+    "p99": 26.56,
+    "n": 5000
+   },
+   "capture_to_decision_ms": {
+    "p50": 45.59,
+    "p90": 55.68,
+    "p99": 70.99,
+    "n": 4990
+   },
+   "capture_to_emit_ms": {
+    "p50": 46.04,
+    "p90": 58.07,
+    "p99": 67.27,
+    "n": 55
+   }
+  }
+ },
+ "latency_json_check": {
+  "max_abs_diff_ms": 0.0,
+  "all_n_match": true,
+  "items": {
+   "dec30_transport.video_leg_ms": {
+    "latency_json": [
+     7.59,
+     13.01,
+     25.87
+    ],
+    "recomputed": [
+     7.59,
+     13.01,
+     25.87
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec30_engine.video_leg_ms": {
+    "latency_json": [
+     9.31,
+     21.98,
+     67.55
+    ],
+    "recomputed": [
+     9.31,
+     21.98,
+     67.55
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec30_engine.decode_to_model_ms": {
+    "latency_json": [
+     30.13,
+     71.81,
+     131.11
+    ],
+    "recomputed": [
+     30.13,
+     71.81,
+     131.11
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec30_engine.capture_to_decision_ms": {
+    "latency_json": [
+     40.18,
+     96.74,
+     164.84
+    ],
+    "recomputed": [
+     40.18,
+     96.74,
+     164.84
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec60_transport.video_leg_ms": {
+    "latency_json": [
+     4.87,
+     8.92,
+     28.72
+    ],
+    "recomputed": [
+     4.87,
+     8.92,
+     28.72
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec60_engine.video_leg_ms": {
+    "latency_json": [
+     8.11,
+     23.63,
+     69.89
+    ],
+    "recomputed": [
+     8.11,
+     23.63,
+     69.89
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec60_engine.decode_to_model_ms": {
+    "latency_json": [
+     86.73,
+     136.21,
+     184.85
+    ],
+    "recomputed": [
+     86.73,
+     136.21,
+     184.85
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "dec60_engine.capture_to_decision_ms": {
+    "latency_json": [
+     96.41,
+     148.21,
+     218.18
+    ],
+    "recomputed": [
+     96.41,
+     148.21,
+     218.18
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "native120_transport.video_leg_ms": {
+    "latency_json": [
+     4.0,
+     9.97,
+     51.05
+    ],
+    "recomputed": [
+     4.0,
+     9.97,
+     51.05
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "native120_engine.video_leg_ms": {
+    "latency_json": [
+     10.02,
+     50.01,
+     186.93
+    ],
+    "recomputed": [
+     10.02,
+     50.01,
+     186.93
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "native120_engine.decode_to_model_ms": {
+    "latency_json": [
+     105.21,
+     156.25,
+     184.65
+    ],
+    "recomputed": [
+     105.21,
+     156.25,
+     184.65
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "native120_engine.capture_to_decision_ms": {
+    "latency_json": [
+     116.82,
+     190.34,
+     330.64
+    ],
+    "recomputed": [
+     116.82,
+     190.34,
+     330.64
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "slowmo10_engine.video_leg_ms": {
+    "latency_json": [
+     7.86,
+     13.7,
+     26.56
+    ],
+    "recomputed": [
+     7.86,
+     13.7,
+     26.56
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "slowmo10_engine.decode_to_model_ms": {
+    "latency_json": [
+     37.79,
+     42.88,
+     52.92
+    ],
+    "recomputed": [
+     37.79,
+     42.88,
+     52.92
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "slowmo10_engine.capture_to_decision_ms": {
+    "latency_json": [
+     45.59,
+     55.68,
+     70.99
+    ],
+    "recomputed": [
+     45.59,
+     55.68,
+     70.99
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   },
+   "slowmo10_engine.capture_to_emit_ms": {
+    "latency_json": [
+     46.04,
+     58.07,
+     67.27
+    ],
+    "recomputed": [
+     46.04,
+     58.07,
+     67.27
+    ],
+    "max_abs_diff_ms": 0.0,
+    "n_match": true
+   }
+  }
+ },
+ "calls_vs_file_source": {
+  "native120_engine_r1": {
+   "file_source_calls": 11,
+   "webrtc_calls": 0,
+   "same_call_same_flight": 0,
+   "exact_frame": 0,
+   "shifted": []
+  },
+  "native120_engine_r2": {
+   "file_source_calls": 11,
+   "webrtc_calls": 0,
+   "same_call_same_flight": 0,
+   "exact_frame": 0,
+   "shifted": []
+  },
+  "native120_engine_r3": {
+   "file_source_calls": 11,
+   "webrtc_calls": 0,
+   "same_call_same_flight": 0,
+   "exact_frame": 0,
+   "shifted": []
+  },
+  "native120_engine_r4": {
+   "file_source_calls": 11,
+   "webrtc_calls": 0,
+   "same_call_same_flight": 0,
+   "exact_frame": 0,
+   "shifted": []
+  },
+  "native120_engine_r5": {
+   "file_source_calls": 11,
+   "webrtc_calls": 0,
+   "same_call_same_flight": 0,
+   "exact_frame": 0,
+   "shifted": []
+  },
+  "slowmo10_engine_r1": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 10,
+   "shifted": [
+    {
+     "call": "MISS",
+     "file_frame": 2766,
+     "webrtc_frame": 2760,
+     "shift_frames": -6
+    }
+   ]
+  },
+  "slowmo10_engine_r2": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 10,
+   "shifted": [
+    {
+     "call": "MISS",
+     "file_frame": 2766,
+     "webrtc_frame": 2761,
+     "shift_frames": -5
+    }
+   ]
+  },
+  "slowmo10_engine_r3": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 11,
+   "shifted": []
+  },
+  "slowmo10_engine_r4": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 11,
+   "shifted": []
+  },
+  "slowmo10_engine_r5": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 10,
+   "shifted": [
+    {
+     "call": "MISS",
+     "file_frame": 2766,
+     "webrtc_frame": 2760,
+     "shift_frames": -6
+    }
+   ]
+  }
+ }
+}

@@ -111,9 +111,10 @@ def main():
         img = Image.new("RGB", (W, H), BG)
         d = ImageDraw.Draw(img)
         # header
-        d.text((VX, 12), "Our camera -> WebRTC -> CV -> call: per-frame latency, measured", font=F["t"], fill=INK)
-        d.text((VX, 42), "Our own clip (OpenTTGames test_2, CC BY-NC-SA 4.0) streamed by us over loopback WebRTC on one "
-                         "laptop. Not a match feed. Rendered from the run's logs.", font=F["s"], fill=MUTED)
+        d.text((VX, 12), "Our virtual camera -> WebRTC -> CV -> call: per-frame latency, measured", font=F["t"], fill=INK)
+        d.text((VX, 42), f"Our own clip (OpenTTGames test_2, CC BY-NC-SA 4.0), loopback WebRTC on one laptop, fed at "
+                         f"{send_fps:g} frames/s ({120 / send_fps:g}x slow motion) so the CV keeps up. Not a match feed.",
+               font=F["s"], fill=MUTED)
         # video: the frame the engine received, upscaled for display
         fr = Image.fromarray(np.asarray(raw[r["saved"]])).resize((VW, VH), Image.BICUBIC)
         img.paste(fr, (VX, VY))

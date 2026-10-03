@@ -7,6 +7,8 @@ It is **not** a Polymarket match feed. For the legal sources of match video, see
 
 **Repeated measurements (5 runs per setting), the presentation sentence, the figure, the demo video and the
 latency-sweep link are in [`RESULTS.md`](RESULTS.md).** This README documents the pipeline and the first runs.
+The first-run figures below (single runs) are superseded by RESULTS.md. That file's numbers were recomputed
+independently from the raw timestamps by `scripts/webrtc_verify.py` (`results/webrtc/verify.json`).
 
 ## Bottom line of the first runs (2026-10-03, MacBook M4, shared with other jobs)
 

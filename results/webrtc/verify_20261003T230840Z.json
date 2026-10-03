@@ -1,0 +1,173 @@
+{
+ "what": "independent recomputation of the WebRTC campaign from raw per-frame timestamps (our own clip, our own loopback stream; not a match feed)",
+ "campaign": "results/webrtc/run_20261003T230840Z.jsonl",
+ "identity": {
+  "all_clip_frames_received": true,
+  "any_bad_crc": false,
+  "any_arith_mismatch": false,
+  "code_time_vs_sender_log_ms_max": 0.384,
+  "per_run": {
+   "slowmo10_engine_enc120": {
+    "step": 1,
+    "clip_frames_received": 1000,
+    "clip_frames_expected": 1000,
+    "missing_source_frames": [],
+    "duplicate_seqs": 0,
+    "out_of_order": 0,
+    "bad_crc_frames": 0,
+    "src_vs_seq_arithmetic_mismatches": 0,
+    "engine_index_mismatches": 0,
+    "frames_without_sender_row": 0,
+    "code_time_vs_sender_log_ms_max": 0.384
+   }
+  }
+ },
+ "clocks": {
+  "per_run": {},
+  "sender_backward_steps_total": 0,
+  "largest_backward_step_ms": 0.0,
+  "note": "frames whose sender row shows a backward step are excluded in latency_excluding_clock_steps"
+ },
+ "webrtc": {
+  "per_run": {
+   "slowmo10_engine_enc120": {
+    "sdp_answer_h264": "a=rtpmap:101 H264/90000",
+    "whep_connect_s": 0.118,
+    "frames_assembled_from_rtp": 1045,
+    "rtp_packets_per_clip_frame": {
+     "p50": 12.0,
+     "max": 129
+    },
+    "aiortc_patch": {
+     "applied": true,
+     "use_marker": true,
+     "video_capacity": 1024,
+     "loopback_only": true
+    },
+    "sdp_logged": true,
+    "ice_pair": [
+     "CandidatePair(('127.0.0.1', 49934) -> ('127.0.0.1', 8189))"
+    ]
+   }
+  },
+  "mediamtx": {
+   "log": "/var/folders/r7/sc0t4kvj3vd0j6wmby2jjhdw0000gn/T/courtside_webrtc/20261003T230840Z/mediamtx.log",
+   "webrtc_publish_sessions": 1,
+   "webrtc_read_sessions": 1,
+   "paths_read": [
+    "cs_slowmo10_engine_enc120"
+   ],
+   "ice_local_candidates": [
+    "host/udp/127.0.0.1"
+   ],
+   "ice_remote_candidate_types": [
+    "host",
+    "prflx"
+   ],
+   "ice_remote_hosts": [
+    "127.0.0.1"
+   ],
+   "rtsp_sessions": 0
+  },
+  "whip_handshakes": {
+   "slowmo10_engine_enc120": {
+    "total_ms": 1032.44,
+    "phases": "init:4.32,offer:0.01,answer:15.05,udp:0.23,ice:12.56,dtls:999.99,srtp:0.03"
+   }
+  }
+ },
+ "latency": {
+  "slowmo10_engine_enc120": {
+   "label": "120 fps content fed at 10 frames/s (engine keeps up) [enc120]",
+   "runs": 1,
+   "video_leg_ms": {
+    "p50": 10.94,
+    "p90": 26.76,
+    "p99": 74.93,
+    "n": 1000
+   },
+   "decoded_to_decision_ms": {
+    "p50": 40.45,
+    "p90": 52.67,
+    "p99": 82.81,
+    "n": 998
+   },
+   "capture_to_decision_ms": {
+    "p50": 52.23,
+    "p90": 76.21,
+    "p99": 149.02,
+    "n": 998
+   },
+   "capture_to_own_position_final_ms": {
+    "p50": 252.23,
+    "p90": 276.21,
+    "p99": 349.02,
+    "n": 998
+   },
+   "frames_sent": 1000,
+   "frames_processed": 1000,
+   "frames_with_decision": 998,
+   "not_processed_share": 0.0,
+   "decision_share_of_sent": 0.998,
+   "capture_to_emit_ms": {
+    "p50": 60.03,
+    "p90": 62.53,
+    "p99": 64.77,
+    "n": 11
+   },
+   "decoded_to_emit_ms": {
+    "p50": 43.05,
+    "p90": 52.35,
+    "p99": 53.12,
+    "n": 11
+   },
+   "video_leg_of_call_frames_p50_ms": 12.6,
+   "calls_per_run": [
+    11
+   ]
+  }
+ },
+ "latency_excluding_clock_steps": {
+  "slowmo10_engine_enc120": {
+   "video_leg_ms": {
+    "p50": 10.94,
+    "p90": 26.76,
+    "p99": 74.93,
+    "n": 1000
+   },
+   "capture_to_decision_ms": {
+    "p50": 52.23,
+    "p90": 76.21,
+    "p99": 149.02,
+    "n": 998
+   },
+   "capture_to_emit_ms": {
+    "p50": 60.03,
+    "p90": 62.53,
+    "p99": 64.77,
+    "n": 11
+   }
+  }
+ },
+ "latency_json_check": {
+  "max_abs_diff_ms": null,
+  "all_n_match": true,
+  "items": {}
+ },
+ "calls_vs_file_source": {
+  "slowmo10_engine_enc120": {
+   "file_source_calls": 11,
+   "webrtc_calls": 11,
+   "same_call_same_flight": 11,
+   "exact_frame": 10,
+   "shifted": [
+    {
+     "call": "MISS",
+     "file_frame": 2766,
+     "webrtc_frame": 2761,
+     "shift_frames": -5
+    }
+   ]
+  }
+ }
+}

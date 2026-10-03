@@ -1,0 +1,326 @@
+{
+ "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/results/webrtc/run_20261003T230840Z.jsonl",
+ "runs": [
+  {
+   "run": "slowmo10_engine_enc120",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    12.91,
+    13.39,
+    10.77
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.384
+   },
+   "video_leg_ms": {
+    "p50": 10.94,
+    "p90": 26.76,
+    "p99": 74.93,
+    "max": 202.1
+   },
+   "network_ms": {
+    "p50": 9.55,
+    "p90": 23.97,
+    "p99": 69.98
+   },
+   "decode_ms_p50": 0.82,
+   "prep_ms_p50": 4.26,
+   "sender_late_ms_p50": 1.78,
+   "engine_ready_ms": {
+    "p50": 40.45,
+    "p90": 52.67,
+    "p99": 82.81
+   },
+   "capture_to_decision_ms": {
+    "p50": 52.23,
+    "p90": 76.21,
+    "p99": 149.02,
+    "max": 273.51
+   },
+   "engine_fps": 9.11,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9772,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 43.8,
+     "video_leg_ms": 9.0,
+     "engine_ms": 34.8,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 56.2,
+     "video_leg_ms": 18.3,
+     "engine_ms": 37.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 61.0,
+     "video_leg_ms": 12.6,
+     "engine_ms": 48.4,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 43.6,
+     "video_leg_ms": 8.5,
+     "engine_ms": 35.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 49.0,
+     "video_leg_ms": 10.6,
+     "engine_ms": 38.3,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 61.9,
+     "video_leg_ms": 18.8,
+     "engine_ms": 43.0,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 53.7,
+     "video_leg_ms": 10.7,
+     "engine_ms": 42.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 65.0,
+     "video_leg_ms": 12.7,
+     "engine_ms": 52.4,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 62.5,
+     "video_leg_ms": 17.4,
+     "engine_ms": 45.1,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2761,
+     "capture_to_emit_ms": 60.7,
+     "video_leg_ms": 7.5,
+     "engine_ms": 53.2,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 60.0,
+     "video_leg_ms": 15.1,
+     "engine_ms": 44.9,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.5,
+     "latency_ms": 34.75,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.4,
+     "latency_ms": 37.93,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.1141,
+     "lead_pred_ms": 46.3,
+     "latency_ms": 48.42,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0138,
+     "lead_pred_ms": 46.9,
+     "latency_ms": 35.13,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.2059,
+     "lead_pred_ms": 49.8,
+     "latency_ms": 38.34,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.0655,
+     "lead_pred_ms": 47.7,
+     "latency_ms": 43.05,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0352,
+     "lead_pred_ms": 45.2,
+     "latency_ms": 42.91,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0502,
+     "lead_pred_ms": 44.9,
+     "latency_ms": 52.35,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0221,
+     "lead_pred_ms": 43.3,
+     "latency_ms": 45.08,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2761,
+     "p_miss": 0.985,
+     "lead_pred_ms": 12.2,
+     "latency_ms": 53.2,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 108.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.1,
+     "latency_ms": 44.9,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 10,
+    "only_file": [
+     [
+      "MISS",
+      2766,
+      0.9888
+     ]
+    ],
+    "only_webrtc": [
+     [
+      "MISS",
+      2761,
+      0.985
+     ]
+    ],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  }
+ ]
+}

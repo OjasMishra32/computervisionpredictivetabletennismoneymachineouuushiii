@@ -1,4 +1,4 @@
-# Our camera -> WebRTC -> CV -> call pipeline: measured latency (5 runs per setting)
+# Our virtual-camera -> WebRTC -> CV -> call pipeline: measured latency (5 runs per setting)
 
 > **Paper only. Our pipeline on our own stream, not a match feed.** The source is our held-out OpenTTGames clip
 > `data/vision/test_2_copyts.mp4` (test_2 frames 2000-2999, 1920x1080, 120 fps, CC BY-NC-SA 4.0), streamed by us.
@@ -9,22 +9,36 @@
 
 Numbers: `results/webrtc/latency.json` (built by `scripts/webrtc_latency.py`). Per-frame and per-call rows:
 `results/webrtc/run_20261003T221601Z.jsonl` (35 runs; per-run table in `summary_20261003T221601Z.json`).
-Figure: `results/webrtc/fig_webrtc_latency.png`. Video: `results/webrtc/webrtc_demo.mp4`.
+Figure: `results/webrtc/fig_webrtc_latency.png`. Independent check: `results/webrtc/verify.json`
+(`scripts/webrtc_verify.py`, section "Independent check" below). WebRTC session log:
+`results/webrtc/webrtc_sessions_20261003T221601Z.txt`. Video: `results/webrtc/webrtc_demo.mp4`, rendered locally
+and not committed (see "Demo video").
 
 ## Presentation sentence
 
-> **"our camera->WebRTC->CV->call pipeline runs in 63 ms p50 / 75 ms p90 on our own stream; this is our pipeline, not a match feed"**
+> **"Measured on our own clip over loopback WebRTC: 46 ms p50 / 58 ms p90 from a frame leaving our virtual camera
+> to the call, with the CV fed 10 frames/s so it keeps up (63 / 75 ms with an assumed 120 fps camera); at real-time
+> 120 fps this laptop's CV skipped 59% of frames and made no calls. Our pipeline, not a match feed."**
 
-Footnote that has to go with it: 46 ms p50 / 58 ms p90 (p99 67 ms) is **measured**, from the moment the virtual
-camera produced the frame to the CallEvent, over 55 calls in 5 runs. The engine was fed 10 frames/s of wall time
-so it never fell behind. The other 16.7 ms is **assumed**: two frame periods of a 120 fps physical camera, one for
-sampling and one for readout and USB3/GigE transfer. With only measured numbers, say "46 ms p50 / 58 ms p90 from
-frame capture to call". Do not call the 63 ms measured (SUB_SECOND_ROUTES.md §4.4 item 5).
+(Generated into `latency.json` → `headline.sentence`.) Footnote that has to go with it: 46 ms p50 / 58 ms p90
+(p99 67 ms) is **measured**, from the moment the virtual camera (a paced file sender; there is no physical camera)
+produced the frame to the CallEvent. The 55 calls are the same 11 calls in each of 5 runs, so p99 is close to the
+max; over all 4990 decision frames of those runs, capture to decision-ready was 45.6 / 55.7 / 71.0 ms. The engine
+was fed 10 frames/s of wall time (12x slow motion) so it never fell behind. The other 16.7 ms is **assumed**: two
+frame periods of a 120 fps physical camera, one for sampling and one for readout and USB3/GigE transfer. Do not
+call the 63 ms measured (SUB_SECOND_ROUTES.md §4.4 item 5), do not drop "fed 10 frames/s", and do not say "our
+camera" without "virtual".
+
+An earlier version of this file led with "our camera->WebRTC->CV->call pipeline runs in 63 ms p50 / 75 ms p90".
+That sentence put an assumed 16.7 ms inside a "runs in" number, said "camera" where there was none, and left out
+that the 63 ms holds only when the frames arrive 12x slower than real time.
 
 ## Short answer: which source gets us under 1 s?
 
 - **Our own camera streamed with WebRTC.** This is the only source we can run and measure ourselves. Over loopback
-  the video leg (encode, WebRTC, decode) is 4-8 ms p50, and camera to call is about 63 ms (above). On one LAN, a
+  the video leg (encode, WebRTC, decode) is 4-8 ms p50. Frame to call is 46 ms p50 measured (63 ms with an assumed
+  120 fps camera), but only with the CV fed 10 frames/s; at real-time 120 fps this laptop's CV made no calls, so
+  a real-time version needs a GPU host (point 4 below). On one LAN, a
   real camera would add sensor and USB time (assumed here, about 100 ms for a consumer 30 fps webcam per S4) and
   a few ms of network. Through a public relay, other people measured about 0.4 s (S2), and MediaMTX field reports
   give 180 ms LAN-only and 520 ms cross-region (S3). All of these are under 1 s. The catch: it only works for
@@ -62,7 +76,13 @@ Transport-only runs (decode and frame-code read, no engine) measure the video le
 Latencies in ms. "Video leg" = capture (virtual camera) to decoded frame in our process, the glass-to-glass proxy.
 "Decode -> model" = decoded frame to engine decision ready for that frame (prep, queue, detector, tracker, plus
 the call rule when it runs). "Frame-send -> result" = capture to CallEvent emit in the call runs, and capture to
-decision ready elsewhere (detection in track-only runs). Percentiles pool the frames of all 5 runs.
+decision ready elsewhere. Percentiles pool the frames of all 5 runs.
+
+"Decision ready for frame k" means the engine could decide at frame k: the ball positions up to frame k-2 are
+final (the detector averages 3-frame windows, so frame k's own position is final only after frames k+1 and k+2
+have arrived). In the track-only rows this is **not** "frame k's ball detected": that comes two frame periods
+later, measured as "capture -> frame's own position final" below. Percentiles in the real-time rows are over
+the frames that got a decision only (n below); frames the engine skipped have no latency at all.
 
 **Video leg (encode + WebRTC + decode), 5 runs per setting**
 
@@ -75,12 +95,15 @@ decision ready elsewhere (detection in track-only runs). Percentiles pool the fr
 
 **CV engine and end to end, 5 runs per setting**
 
-| setting | decode -> model p50 / p90 | frame-send -> result p50 / p90 / p99 | result | frames not processed (dropped) | calls per run | camera -> result incl. **assumed** capture, p50 / p90 |
-|---|---|---|---|---|---|---|
-| 30 fps, real time | 30.1 / 71.8 | **40.2 / 96.7 / 164.8** (n = 1197) | detection (track-only) | 24 / 1250 (2 %) | 0 (track-only) | 107 / 163 (capture 66.7) |
-| 60 fps, real time | 86.7 / 136.2 | 96.4 / 148.2 / 218.2 (n = 1519) | detection (track-only) | 726 / 2500 (29 %) | 0 (track-only) | 130 / 182 (capture 33.3) |
-| 120 fps, real time | 105.2 / 156.2 | 116.8 / 190.3 / 330.6 (n = 1377) | decision (no call survived) | 2943 / 5000 (59 %) | 0, 0, 0, 0, 0 | 134 / 207 (capture 16.7) |
-| 120 fps content, engine keeps up | 37.8 / 42.9 | **46.0 / 58.1 / 67.3** (n = 55 calls) | **CallEvent emit** | 0 / 5000 | 11 in every run | **63 / 75** (capture 16.7) |
+| setting | decode -> model p50 / p90 | frame-send -> result p50 / p90 / p99 | result | capture -> frame's own position final, p50 / p90 (measured) | frames not processed (dropped) | calls per run | camera -> result incl. **assumed** capture, p50 / p90 |
+|---|---|---|---|---|---|---|---|
+| 30 fps, real time | 30.1 / 71.8 | **40.2 / 96.7 / 164.8** (n = 1197 of 1250 sent) | decision ready (track-only: positions through k-2) | 106.8 / 163.4 | 24 / 1250 (2 %) | 0 (track-only) | 107 / 163 (capture 66.7) |
+| 60 fps, real time | 86.7 / 136.2 | 96.4 / 148.2 / 218.2 (n = 1519 of 2500) | decision ready (track-only: positions through k-2) | 129.7 / 181.5 | 726 / 2500 (29 %) | 0 (track-only) | 130 / 182 (capture 33.3) |
+| 120 fps, real time | 105.2 / 156.2 | 116.8 / 190.3 / 330.6 (n = 1377 of 5000) | decision ready (no call survived) | 133.5 / 207.0 | 2943 / 5000 (59 %) | 0, 0, 0, 0, 0 | 134 / 207 (capture 16.7) |
+| 120 fps content, engine keeps up | 37.8 / 42.9 | **46.0 / 58.1 / 67.3** (n = 55 calls) | **CallEvent emit** | (slow motion: not meaningful) | 0 / 5000 | 11 in every run | **63 / 75** (capture 16.7) |
+
+With the assumed capture added, "frame's own position final" becomes 174 / 163 / 150 ms p50 at 30 / 60 / 120 fps
+real time: the 30 fps row's 107 ms is camera to *decision-ready*, not camera to that frame's detection.
 
 In the keep-up setting, capture to decision ready over all 4990 decision frames (the latency any call would have)
 was 45.6 / 55.7 / 71.0 ms. Per-run p50s were 43.5-50.2 ms.
@@ -112,11 +135,15 @@ against 80.5 / 125.5 ms with 72 / 500 dropped (pool). These are in `latency.json
 ## What the numbers say
 
 1. **The video leg is not the problem.** Over loopback, x264 zerolatency to MediaMTX to aiortc took 4.0-7.6 ms p50
-   when the receiver had nothing else to do. Not one frame was lost in transport in any of the 35 runs. Keyframes cost about 5 ms more
+   when the receiver had nothing else to do. Not one frame was lost in transport in any of the 35 runs of this
+   campaign. That is not a general property: earlier single runs of the same pipeline under heavier load lost up to
+   106 of 1000 frames in engine mode (README.md, run 214101Z). Keyframes cost about 5 ms more
    than P-frames. The p99 tail (26-51 ms) comes from host load: run-level p50 rose from 3-4 ms to 9 ms when the
    load average went from 5 to 11.
 2. **The laptop CV engine is the bottleneck.** At 30 fps the GPU detector (about 24 ms per window) keeps up:
-   2 % of frames were dropped, all in the two runs at load 7.5-8.6, and capture to detection was 40 ms p50. At 60 and
+   2 % of frames were dropped, all in the two runs at load 7.5-8.6. From a frame's capture to the engine being
+   ready to decide at that frame took 40 ms p50, and to that frame's own ball position being final took 107 ms
+   p50 (two 33 ms frame periods of detector look-ahead). At 60 and
    120 fps it does not keep up. The bounded engine skipped 29 % and 59 % of frames to keep its lag near 100 ms,
    and the receive loop, which shares a Python process with the engine, slowed the video leg to 8-10 ms p50 with
    a long tail. Every skip breaks the detector's 3-frame windows, so **no 120 fps real-time run made a call**.
@@ -130,7 +157,7 @@ against 80.5 / 125.5 ms with 72 / 500 dropped (pool). These are in `latency.json
    5.5 ms engine (L4, measured from a file) is about 26 ms p50. These were measured in different setups. Nobody has
    run them end to end.
 
-## Calls are unchanged by the transport
+## Calls survive the transport (same calls, one call's frame moves)
 
 Calls of the five keep-up runs compared with the file-source run of the same clip and model
 (`results/engine/demo_run.json`) and with the offline evaluation on the same frames
@@ -170,6 +197,69 @@ WebRTC runs.
   is missing in the file-source run too. That is the online engine's flight segmentation, not the transport.
 - **At 120 fps in real time the laptop made no calls at all.** The transport delivered every frame. The calls were
   lost because the engine dropped frames to stay current.
+- **The keep-up stream was encoded more generously than a real-time 120 fps stream would be.** At 4 Mb/s and
+  10 frames/s it carried 400 kbit per frame with a keyframe every 5 frames. A real-time 120 fps stream at the
+  12 Mb/s used above carries 100 kbit per frame with a keyframe every 60 frames. So "the calls survive the
+  re-encode" is shown for the generous encode only; see "Encode-parity check" below for one run at 100 kbit per
+  frame.
+
+## Independent check (`scripts/webrtc_verify.py` → `results/webrtc/verify.json`)
+
+Recomputed from the raw per-frame timestamps of `run_20261003T221601Z.jsonl`, without the code that built
+`latency.json`, plus the run's scratch logs (`$TMPDIR/courtside_webrtc/20261003T221601Z/`).
+
+- **Every number in the tables reproduces.** Video leg, decode -> model, capture -> decision and capture -> emit
+  match `latency.json` to 0.00 ms at p50 / p90 / p99 with the same n in all 7 settings. Capture -> emit was rebuilt
+  as `t_emit` of each CallEvent minus `t_due` of the frame with the same source number: 46.04 / 58.07 / 67.27 ms
+  (n = 55). Re-running `scripts/webrtc_latency.py` on the jsonl gives a byte-identical figure.
+- **Frame identity is exact.** In all 35 runs every clip frame arrived once and in order with a valid CRC, the
+  code's source frame equals 2000 + (seq - first clip seq) x step, the engine index equals (source - 2000) / step,
+  and the capture time in the code matches the sender's own log to within 0.5 ms (its ms rounding). The pixels
+  agree too. Each of the 1000 frames that `slowmo10_engine_r1` handed to the CV engine was compared with the clip's
+  frames at offsets -2..+2, on the pixels that move between neighbouring frames. All 996 interior frames match
+  offset 0 best. The clip's own timestamps step by exactly 1/120 s (999 steps of 128 ticks), so the sender's
+  pts -> frame mapping has no gap.
+- **Clocks.** One host, one clock (`time.time()`) for the sender, receiver and engine. No offset needed, but the
+  clock is not monotonic: see Limits. The 8 backward steps (largest 1.6 ms) are all in 120 fps real-time runs.
+  Dropping their frames leaves every headline number unchanged.
+- **It really is WebRTC.** MediaMTX's own log (`results/webrtc/webrtc_sessions_20261003T221601Z.txt`) shows 35
+  WebRTC publishers (ffmpeg WHIP) and 35 WebRTC readers (our aiortc WHEP client), one each per run. Every session's
+  ICE pair is host/udp 127.0.0.1:8189 to a 127.0.0.1 port, and there is no RTSP session. ffmpeg's WHIP muxer logs
+  each handshake: ICE about 12 ms, DTLS about 1 s (during the lead-in, before the clip), then SRTP. On the receiving
+  side, every summary carries the SDP answer's `a=rtpmap:101 H264/90000`, and every clip frame was put together
+  from RTP packets (`n_packets`, up to a few hundred for a 1080p keyframe) by the patched aiortc jitter buffer.
+  The receiver now also stores the full offer and answer SDP, the ICE candidates and nominated pair, and the DTLS
+  state and SRTP profile in `summary.receiver.webrtc`. See "Encode-parity check" for a run that logged them.
+- **The CV loop is the committed one and is causal.** `engine/vision/` and `src/tracking/` have no changes since
+  1bf766a, before the WebRTC work. The receiver only feeds `run_stream` a queue with `FrameSource`'s item layout.
+  It monkeypatches aiortc only, and sets `sys.setswitchinterval(0.001)`, which changes thread scheduling but not
+  results. The decision at frame k uses ball positions up to k-2, which are final once frame k has arrived.
+- **Calls.** Per keep-up run, all 11 file-source calls are found with the same call on the same flight. The frame
+  matches exactly for 10, 10, 11, 11 and 10 of them. The shifts are all the MISS on flight 2760 (file 2766, WebRTC
+  2760, 2761 and 2760).
+
+### Encode-parity check
+
+One run, `run_20261003T230840Z.jsonl` (label `slowmo10_engine_enc120`, verified in
+`verify_20261003T230840Z.json`, sessions in `webrtc_sessions_20261003T230840Z.txt`):
+`MODES=engine SLOWMO_BITRATE=1M GOP_S=6 VBV_BUFSIZE=6M TAG=enc120 scripts/webrtc_demo.sh slowmo10`. This is the
+keep-up setting, but the encoder gets what a real-time 120 fps stream at 12 Mb/s gets: 100 kbit per frame, a
+keyframe every 60 frames (17 in the clip) and a 60-frame VBV buffer.
+
+- **Calls.** The same 11 calls on the same flights as the file source. The frame matches for 10 of them; the MISS
+  on flight 2760 came at 2761 against 2766, as in 3 of the 5 campaign runs. So the calls also survive the thinner
+  real-time encode, in this one run.
+- **SDP / ICE / DTLS, logged by the receiver** (`summary.receiver.webrtc`). The offer is `m=video ... UDP/TLS/RTP/SAVPF`,
+  `a=recvonly`, H264 + rtx, one host candidate 127.0.0.1. The answer (MediaMTX) is `a=sendonly`,
+  `a=rtpmap:101 H264/90000`, candidate 127.0.0.1:8189 typ host, `a=setup:active`. ICE completed (we are the
+  controlling side) with nominated pair 127.0.0.1:49934 -> 127.0.0.1:8189. DTLS connected (we are the server),
+  SRTP profile SRTP_AEAD_AES_256_GCM. 1045 frames were put together from RTP packets (median 12 packets per clip
+  frame, at most 129).
+- **Clock.** Sender and receiver both logged wall minus monotonic time. The two processes agree to 0.000 ms (one
+  system clock), it moved by 0.23 ms over the whole 2-minute run (NTP slew), and no frame-to-frame step exceeded 0.5 ms.
+- **Latency, indicative only.** The load average was 13-16 from other jobs (video renders), against 5-13 in the
+  campaign. Capture to emit was 60.0 / 62.5 ms p50 / p90 over the 11 calls, and capture to decision 52.2 / 76.2 ms
+  over 998 frames. That is higher than the campaign's 46 / 58 and is not used for any headline.
 
 ## How this plugs into the latency sweep (0.5 s and 1 s rows)
 
@@ -196,8 +286,9 @@ Headline timing reading (R drawn per tournament, stamp lag 2.0 s), interpolated 
   -$1.4/day. Including our measured CV, the break-even source delay is **1.07 s IS and 0.99 s OOS**, against 1.09 /
   1.01 s for the 20 ms model.
 - **The own-camera row** is where our measured pipeline would sit (V about 0.04 s, IS about $63/day). That needs a
-  camera at the venue, which we do not have. It is a reference point, not a route. It also needs an engine that
-  keeps up at 120 fps (point 4 above).
+  camera at the venue, which we do not have. It is a reference point, not a route: no such feed exists for any
+  Polymarket match, and the $/day figures are the backtest sweep (paper only), not anything earned. It also needs
+  an engine that keeps up at 120 fps (point 4 above); this laptop made no calls at real-time 120 fps.
 
 ## Limits
 
@@ -213,17 +304,29 @@ Headline timing reading (R drawn per tournament, stamp lag 2.0 s), interpolated 
   real, but a laptop cannot sustain that work at 120 frames/s.
 - **Shared laptop.** Other jobs ran throughout, with run-start load 4.0-12.7. Higher-load runs have higher p90/p99
   (`load_avg_start` per run is in `latency.json`).
-- **30 and 60 fps are detection only.** The detector windows, tracker gates and call model were built for 120 fps.
+- **30 and 60 fps are detection and tracking only, no calls.** The detector windows, tracker gates and call model
+  were built for 120 fps.
+- **Clock.** Every stamp (sender, receiver, engine) is `time.time()` on the one laptop, so there is no offset
+  between machines. That clock is not monotonic: in 8 sender rows (7 of them clip frames, all in 120 fps runs) the
+  frame was written before it was due, which only a backward clock step of up to 1.6 ms can explain. Dropping
+  those frames changes no headline number (`verify.json` → `latency_excluding_clock_steps`). Runs made after this
+  check also log wall minus monotonic time per frame in the sender and receiver (`wm`) and per call (`wm_emit`), so a step shows up directly.
+- **Generous encode in the keep-up runs.** 400 kbit per frame and a keyframe every 5 frames, against 100 kbit and
+  every 60 frames for real-time 120 fps at 12 Mb/s (see the calls section).
 
 ## Demo video
 
 `results/webrtc/webrtc_demo.mp4` (1280x720, 25 s, H.264) is rendered by `scripts/webrtc_render_demo.py` from the
-logs of run `slowmo10_engine_r1` only. It shows the exact 512x288 frames the receiver handed to the CV engine
+logs of run `slowmo10_engine_r1` only. It is **not committed**: it is a 7 MB binary made of OpenTTGames frames
+(data/), and the repo rule is no data and no binaries in git. It was committed once in 3b098ad, which is not pushed;
+removing it from that history is a decision for the owner before any push. Regenerate it with the command under
+"Reproduce" (it needs the saved frames in `$TMPDIR`). The title says "virtual camera" and the subtitle states the
+10 frames/s (12x slow motion) feed; the first render said "Our camera" and kept the slow motion in small print. It shows the exact 512x288 frames the receiver handed to the CV engine
 (saved by `--save-frames`, upscaled 1.75x for display). Over them it draws the engine's own ball track up to frame
 f - 2, which is what the detector had finalised at frame f's decision. The readout per frame shows capture to
 decoded, decoded to decision, and capture to decision, all from the logged timestamps, plus a banner with
-capture-to-emit for each of the 11 CallEvents. Playback is 40 fps (one third of real time). Nothing is
-interpolated or invented.
+capture-to-emit for each of the 11 CallEvents. Playback is 40 fps (one third of the clip's real time; the
+stream itself ran at one twelfth). Nothing is interpolated or invented.
 
 ## Reproduce
 
@@ -232,6 +335,8 @@ brew install mediamtx            # v1.21.1; ffmpeg 8.1 (Homebrew, WHIP muxer); a
 REPS=5 SAVE_FRAMES=1 BACKEND_30=onnx-coreml-gpu16 scripts/webrtc_demo.sh dec30 dec60 native120 slowmo10   # ~18 min
 .venv/bin/python scripts/webrtc_latency.py results/webrtc/run_<ts>.jsonl --md /tmp/tables.md
 .venv/bin/python scripts/webrtc_render_demo.py results/webrtc/run_<ts>.jsonl --run slowmo10_engine_r1
+.venv/bin/python scripts/webrtc_verify.py results/webrtc/run_<ts>.jsonl --work $TMPDIR/courtside_webrtc/<ts> --pixels \
+    --evidence results/webrtc/webrtc_sessions_<ts>.txt
 ```
 
 The saved frames (442 MB per run) stay in `$TMPDIR/courtside_webrtc/<ts>/` and are not committed. Versions:

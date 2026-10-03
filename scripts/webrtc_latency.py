@@ -264,8 +264,24 @@ def setting_block(key, runs_t, runs_e):
         c2x = e["capture_to_emit_ms"] if (calls and m0.get("calls_valid")) else e["capture_to_decision_ms"]
         blk["frame_send_to_result"] = dict(
             what=("frame-send (capture) -> CallEvent emit" if (calls and m0.get("calls_valid"))
-                  else "frame-send (capture) -> detection/decision ready (track-only or no call made)"),
+                  else "frame-send (capture of frame k) -> decision ready for frame k (ball positions final through "
+                       "k-2; NOT frame k's own detection, which needs frames k+1 and k+2)"),
             **{k: c2x[k] for k in ("p50", "p90", "p99", "n")})
+        # frame k's own ball position is final at frame k+2's decision step (the detector's 3-frame windows):
+        # the "capture -> detection of that frame" latency, 2 frame periods more than the decision-ready leg
+        own = []
+        for R in runs_e:
+            step = R["meta"]["step"]
+            by = {r["src"]: r for r in R["frames"]}
+            for r in R["frames"]:
+                g = by.get(r["src"] + 2 * step)
+                if g is not None and g.get("t_decision") is not None and r.get("t_due") is not None:
+                    own.append((g["t_decision"] - r["t_due"]) * 1e3)
+        e["capture_to_own_position_final_ms"] = pct(own)
+        e["capture_to_own_position_final_note"] = (
+            "capture of frame k -> frame k's ball position final (window k, k+1, k+2 run); in the 10 frames/s "
+            "keep-up setting k+1 and k+2 arrive 100 ms apart, so this leg is not meaningful there")
+        e["decision_share_of_sent"] = round(len(dec) / sent, 4) if sent else None
         cap = capture_ms(fps)
         blk["camera_to_result_estimate_ms"] = dict(
             p50=round(cap + c2x["p50"], 1), p90=round(cap + c2x["p90"], 1), p99=round(cap + c2x["p99"], 1),
@@ -555,14 +571,27 @@ def main():
         backend_probes=probes,
     )
     if head and meas:
+        rt = blocks.get("120fps", {}).get("engine", {})
+        rt_drop = rt.get("frames_not_processed_share")
+        rt_calls = sum(rt.get("calls_per_run") or [])
         out["headline"] = dict(
             setting="120fps_keepup", measured_frame_send_to_emit_ms=dict(p50=meas["p50"], p90=meas["p90"], p99=meas["p99"], n=meas["n"]),
+            measured_capture_to_decision_ms=keep["engine"]["capture_to_decision_ms"],
             camera_to_call_estimate_ms=head,
-            sentence=(f"our camera->WebRTC->CV->call pipeline runs in {head['p50']:.0f} ms p50 / {head['p90']:.0f} ms p90 "
-                      f"on our own stream; this is our pipeline, not a match feed"),
-            footnote=(f"{meas['p50']:.0f} / {meas['p90']:.0f} ms measured from frame capture by our virtual camera to the "
-                      f"CallEvent ({meas['n']} calls, {keep['engine']['n_runs']} runs, loopback, engine fed 10 frames/s so it keeps up) plus "
-                      f"{keep['capture_assumed_ms']:.1f} ms assumed 120 fps camera capture (2 frame periods)."))
+            realtime_120fps=dict(frames_not_processed_share=rt_drop, calls_total=rt_calls,
+                                 runs=rt.get("n_runs")),
+            # the measured number leads; the assumed camera time and the slow-motion condition travel with it
+            sentence=(f"Measured on our own clip over loopback WebRTC: {meas['p50']:.0f} ms p50 / {meas['p90']:.0f} ms p90 "
+                      f"from a frame leaving our virtual camera to the call, with the CV fed 10 frames/s so it keeps up "
+                      f"({head['p50']:.0f} / {head['p90']:.0f} ms with an assumed 120 fps camera); at real-time 120 fps this "
+                      f"laptop's CV skipped {100 * (rt_drop or 0):.0f}% of frames and made {rt_calls or 'no'} calls. "
+                      f"Our pipeline, not a match feed."),
+            footnote=(f"{meas['p50']:.0f} / {meas['p90']:.0f} ms measured from frame capture by our virtual camera (a paced "
+                      f"file sender, no physical camera) to the CallEvent ({meas['n']} calls = the same 11 calls in each of "
+                      f"{keep['engine']['n_runs']} runs; p99 of 55 values is close to their max), loopback on one shared "
+                      f"laptop, engine fed 10 frames/s so it keeps up. The {head['p50']:.0f} / {head['p90']:.0f} ms adds "
+                      f"{keep['capture_assumed_ms']:.1f} ms ASSUMED 120 fps camera capture (2 frame periods). No relay, "
+                      f"no network hop, no display."))
         out["latency_sweep"] = sweep_plug(dict(keep, _runs=sorted(byset["120fps_keepup"]["e"],
                                                                    key=lambda R: R["meta"]["label"])), blocks.get("120fps"))
         for r in out["latency_sweep"]["rows"]:

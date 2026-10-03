@@ -1,0 +1,19 @@
+# WebRTC session evidence for campaign 20261003T230840Z (our own clip over loopback; not a match feed)
+# 1. MediaMTX v1.21.1 log, verbatim: every run = one WebRTC (WHIP) publisher + one WebRTC (WHEP) reader,
+#    ICE pair host/udp 127.0.0.1:8189 <-> 127.0.0.1:<ephemeral>; no RTSP session.
+2026/10/03 19:08:40 INF MediaMTX v1.21.1, darwin, arm64
+2026/10/03 19:08:40 INF configuration loaded from /Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/engine/webrtc/mediamtx.yml
+2026/10/03 19:08:40 INF [RTSP] started with listeners on 127.0.0.1:8554 (TCP/RTSP)
+2026/10/03 19:08:40 INF [WebRTC] started with listeners on 127.0.0.1:8889 (TCP/HTTP), 127.0.0.1:8189 (UDP/ICE)
+2026/10/03 19:08:41 INF [WebRTC] [session 0699210e] created by 127.0.0.1:55829
+2026/10/03 19:08:42 INF [WebRTC] [session 0699210e] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/51693
+2026/10/03 19:08:42 INF [path cs_slowmo10_engine_enc120] stream is available and online, 1 track (H264)
+2026/10/03 19:08:42 INF [WebRTC] [session 0699210e] is publishing to path 'cs_slowmo10_engine_enc120'
+2026/10/03 19:08:50 INF [WebRTC] [session a8444895] created by 127.0.0.1:55843
+2026/10/03 19:08:51 INF [WebRTC] [session a8444895] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: host/udp/127.0.0.1/49934
+2026/10/03 19:08:51 INF [WebRTC] [session a8444895] is reading from path 'cs_slowmo10_engine_enc120', 1 track (H264)
+2026/10/03 19:10:35 INF [WebRTC] [session a8444895] closed: peer connection closed
+2026/10/03 19:10:35 INF [WebRTC] [session 0699210e] closed: terminated
+
+# 2. ffmpeg WHIP muxer handshake per run (sender side): ICE, DTLS, SRTP phases in ms
+slowmo10_engine_enc120: elapsed 1032.44 ms (init:4.32,offer:0.01,answer:15.05,udp:0.23,ice:12.56,dtls:999.99,srtp:0.03)

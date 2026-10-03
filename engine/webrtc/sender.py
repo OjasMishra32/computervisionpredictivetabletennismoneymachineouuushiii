@@ -53,16 +53,23 @@ def ffmpeg_version(ff="ffmpeg"):
         return f"unknown ({e})"
 
 
-def encoder_args(enc, fps, bitrate, gop):
+def encoder_args(enc, fps, bitrate, gop, bufsize=None):
+    bufsize = bufsize or _half(bitrate)
     if enc == "x264":
         return ["-c:v", "libx264", "-preset", "ultrafast", "-tune", "zerolatency", "-profile:v", "baseline",
                 "-level:v", "5.2", "-bf", "0", "-g", str(gop), "-keyint_min", str(gop), "-sc_threshold", "0",
-                "-b:v", bitrate, "-maxrate", bitrate, "-bufsize", _half(bitrate)]
+                "-b:v", bitrate, "-maxrate", bitrate, "-bufsize", bufsize]
     if enc == "vt":
         return ["-c:v", "h264_videotoolbox", "-realtime", "1", "-prio_speed", "1", "-allow_sw", "0",
                 "-profile:v", "constrained_baseline", "-level", "5.2", "-bf", "0", "-g", str(gop),
-                "-b:v", bitrate, "-maxrate", bitrate, "-bufsize", _half(bitrate)]
+                "-b:v", bitrate, "-maxrate", bitrate, "-bufsize", bufsize]
     raise SystemExit(f"unknown encoder {enc}")
+
+
+def _bits(rate):
+    s = rate.strip().upper()
+    mult = {"K": 1e3, "M": 1e6}.get(s[-1], 1.0)
+    return str(int((float(s[:-1]) if s[-1] in "KM" else float(s)) * mult))
 
 
 def _half(rate):
@@ -145,6 +152,7 @@ def main():
     ap.add_argument("--encoder", default="x264", choices=["x264", "vt"])
     ap.add_argument("--bitrate", default="12M")
     ap.add_argument("--gop-s", type=float, default=0.5, help="keyframe interval (s)")
+    ap.add_argument("--bufsize", default=None, help="encoder VBV buffer, e.g. 6M (default: bitrate / 2)")
     ap.add_argument("--whip-url", default="http://127.0.0.1:8889/courtside/whip")
     ap.add_argument("--ffmpeg", default="ffmpeg")
     ap.add_argument("--ffmpeg-log", default=None)
@@ -167,12 +175,13 @@ def main():
     gop = max(1, int(round(a.gop_s * fps)))
     cmd = [a.ffmpeg, "-hide_banner", "-loglevel", "info", "-nostats",
            "-f", "rawvideo", "-pix_fmt", "yuv420p", "-video_size", f"{w}x{h + FC.STRIP_H}", "-framerate", f"{fps:g}",
-           "-i", "pipe:0", *encoder_args(a.encoder, fps, a.bitrate, gop), "-an", "-f", "whip", a.whip_url]
+           "-i", "pipe:0", *encoder_args(a.encoder, fps, a.bitrate, gop, _bits(a.bufsize) if a.bufsize else None), "-an", "-f", "whip", a.whip_url]
     logf = open(a.ffmpeg_log, "w") if a.ffmpeg_log else subprocess.DEVNULL
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=logf, stderr=logf, bufsize=0)
     out = open(a.log, "w")
     meta = dict(type="meta", role="sender", clip=str(a.clip), clip_license="OpenTTGames, CC BY-NC-SA 4.0",
                 step=a.step, fps=fps, size=[w, h], strip_h=FC.STRIP_H, encoder=a.encoder, bitrate=a.bitrate,
+                bufsize=(a.bufsize or "bitrate/2"),
                 gop_frames=gop, whip_url=a.whip_url, ffmpeg_cmd=" ".join(shlex.quote(c) for c in cmd),
                 ffmpeg_version=ffmpeg_version(a.ffmpeg), python=sys.version.split()[0],
                 host=platform.node(), machine=platform.machine(), load_avg=[round(x, 2) for x in os.getloadavg()])
@@ -196,8 +205,9 @@ def main():
         tw0 = time.time()
         proc.stdin.write(memoryview(buf))
         tw1 = time.time()
+        wm = tw1 - time.monotonic()     # wall - monotonic: a change between frames = a wall-clock step
         out.write(json.dumps(dict(seq=seq, src=(None if src == FC.NO_SRC else src), flags=flags,
-                                  t_due=round(due, 6), t_w0=round(tw0, 6), t_w1=round(tw1, 6))) + "\n")
+                                  t_due=round(due, 6), t_w0=round(tw0, 6), t_w1=round(tw1, 6), wm=round(wm, 6))) + "\n")
         late.append((tw0 - due) * 1e3)
         seq += 1
 
