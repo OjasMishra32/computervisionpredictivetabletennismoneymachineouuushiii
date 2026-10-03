@@ -1,20 +1,25 @@
-# Final video: team requirements (binding) - REVISED: 60 SECONDS MAX
+# Final video: team requirements (binding) - REVISED: 75-90 SECONDS, VISUAL SYNOPSIS
 
 **The team decided (2026-10-03 evening): the video is at most 60 s. It is NOT the presentation; the paper and deck carry
 the full argument, the IC questions, the pipeline diagram and the latency analysis. The video only shows the model working,
 the test, and the profit, in a really cool way.** Voice: ElevenLabs "Liam", energetic, few words (about 110-140 spoken words
 total). Fast, punchy editing; music bed with hits on the calls.
 
-Purpose: convince a SKEPTIC in about 60 s that the model actually works, with Liam explaining (ElevenLabs).
+Purpose: explain the strategy in ONE sentence, then a very short, highly visual synopsis of the paper that convinces a
+skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertaining, fast cuts, motion graphics), Liam
+(ElevenLabs) narrating about 180-220 words. The paper carries the detail.
 
 | time | content |
 |---|---|
-| 0:00-0:04 | Cold open: one real MISS call in slow motion, "Called 408 ms before contact", title COURTSIDE |
-| 0:04-0:24 | **Proof it works, multiple games**: 2x2 split-screen / fast montage across several held-out real table-tennis games (OpenTTGames test_1..test_7, credited): ball comet trail, predicted arc, live P(miss) gauge, "MISS - n ms early" / "IN" stamps exactly when the model made them (results/engine/online_events_L4.jsonl, cv_showcase logs); live counters with the honest totals (frames tracked, detection accuracy, calls, precision; results/engine/online_vs_offline.json, results/tracking/summary.json) |
-| 0:24-0:34 | **The pipeline**: animated boxes feed -> WebRTC -> GPU CV -> fair value -> risk -> order -> network -> Polymarket 1 s delay -> fill, each with measured ms (results/e2e, results/engine/vision_bench_gpu.json: 120 fps, 4.6 ms; results/webrtc) and the total vs the < 3 s requirement |
-| 0:34-0:46 | **The latency graphs**: returns vs feed latency (log axis, dotted 1 s baseline, source bands, break-even), then the edge-decay panel (edge vs seconds after the move: fast tier vs everyone else) |
-| 0:46-0:57 | **The test and the profit**: today's real Polymarket match replay (orders racing the book; "backtest replay, assumed 1 s licensed feed") then money counters at the simulated 1 s baseline (IS / OOS $/day and Sharpe, both readings compact) with the equity curve drawing in |
-| 0:57-1:00 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
+| 0:00-0:05 | Cold open: one real MISS call in slow motion, "Called 408 ms before contact", title COURTSIDE |
+| 0:05-0:12 | **The strategy in one sentence** (Liam + kinetic type): "Our computer vision calls the point before the ball lands, so we trade the Polymarket match price before it reprices." |
+| 0:12-0:20 | **The edge exists** (paper sec. 2): animated information-tier ladder + fast tier wins 11/11 months vs late traders losing (alpha chart) |
+| 0:20-0:42 | **Proof the model works, multiple games**: 2x2 split-screen / montage across several held-out real table-tennis games (OpenTTGames test_1..7): comet trail, predicted arc, live P(miss) gauge, "MISS - n ms early" / "IN" stamps exactly when the model made them; honest totals as live counters; a 3 s spin-model flash (tennis, "simulated physics") |
+| 0:42-0:52 | **The pipeline**: animated boxes feed -> WebRTC -> GPU CV -> fair value -> risk -> order -> network -> Polymarket 1 s delay -> fill, each with measured ms; total vs < 3 s |
+| 0:52-1:04 | **What speed is worth**: returns vs feed latency (log axis, dotted 1 s baseline, source bands, break-even), then the edge-decay panel |
+| 1:04-1:16 | **The test**: today's real Polymarket match replay (orders racing the book; "backtest replay, assumed 1 s licensed feed") + the rigor strip (pre-registered, blind tests, deflated Sharpe) as quick badges |
+| 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
+| 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
 The material below (presentation structure, IC framing) now applies to the DECK and PAPER, not the video.
 
