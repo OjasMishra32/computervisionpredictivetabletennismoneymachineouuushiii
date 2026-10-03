@@ -10,6 +10,7 @@
 #SBATCH --output=logs/%x_%A_%a.log
 # Ball detection over all rally frames (train + test videos), one chunk per array task.
 # Submit (after `python make_chunks.py`):  sbatch --array=1-$(wc -l < $WORK/chunks.txt)%3 track_detect.sbatch
+# (max 3 GPUs at once: the ai-workshop account is shared)
 set -euo pipefail
 ROOT=${ROOT:-/blue/ai-workshop/$USER/courtside}
 WORK=$ROOT/work/tracking
@@ -18,5 +19,9 @@ source "$ROOT/venv_track/bin/activate"
 read -r VIDEO K < <(sed -n "${SLURM_ARRAY_TASK_ID}p" "$WORK/chunks.txt")
 mkdir -p "$WORK/det"
 cd "$ROOT/src/tracking"
+# BlurBall only (chosen over WASB on game_1/game_2 labelled frames: recall 0.97 vs 0.94 at the
+# same heat threshold). MODELS can list both, e.g. MODELS="blurball=$W/blurball_best,wasb=$W/wasb_midpoint_best"
+W=$ROOT/ext/blurball/weights
+MODELS=${MODELS:-blurball=$W/blurball_best}
 python detect.py --video "$ROOT/openttgames/$VIDEO.mp4" --ranges "$WORK/ranges/${VIDEO}_${K}.txt" \
-    --out "$WORK/det/${VIDEO}_${K}" --fp16 --threads 10 --batch 32
+    --out "$WORK/det/${VIDEO}_${K}" --models "$MODELS" --fp16 --threads 10 --batch 32

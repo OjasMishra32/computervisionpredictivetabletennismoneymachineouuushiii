@@ -14,15 +14,16 @@ C_BOUNCE = "#2e86ab"
 C_GREY = "#6c757d"
 
 
-def plot_precision_vs_lead(cur_te, cur_te_snap, cur_tr, tau, path):
+def plot_precision_vs_lead(cur_te, cur_te_onl, cur_tr, tau, path):
+    """cur_te: test snapshot (primary); cur_te_onl: test online; cur_tr: train LOGO snapshot."""
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), sharex=True)
     ax = axes[0]
     ax.fill_between(cur_te.lead_ms, cur_te.prec_lo95, cur_te.prec_hi95, color=C_MISS, alpha=0.15,
                     lw=0, label="test 95% Wilson CI")
-    ax.plot(cur_te.lead_ms, cur_te.precision, color=C_MISS, lw=2, label="test (online rule)")
-    ax.plot(cur_te_snap.lead_ms, cur_te_snap.precision, color=C_MISS, lw=1.2, ls="--",
-            label="test (snapshot rule)")
-    ax.plot(cur_tr.lead_ms, cur_tr.precision, color=C_GREY, lw=1.5, label="train, leave-one-game-out")
+    ax.plot(cur_te.lead_ms, cur_te.precision, color=C_MISS, lw=2, label="test (snapshot rule, primary)")
+    ax.plot(cur_te_onl.lead_ms, cur_te_onl.precision, color=C_MISS, lw=1.2, ls="--",
+            label="test (online first call)")
+    ax.plot(cur_tr.lead_ms, cur_tr.precision, color=C_GREY, lw=1.5, label="train, leave-one-game-out (snapshot)")
     ax.axhline(0.95, color="k", lw=0.8, ls=":")
     ax.axvline(50, color="k", lw=0.8, ls=":")
     ax.set_ylim(0, 1.02)
@@ -31,8 +32,8 @@ def plot_precision_vs_lead(cur_te, cur_te_snap, cur_tr, tau, path):
     ax.set_title("Precision of the MISS call vs lead")
     ax.legend(fontsize=8, loc="lower left", frameon=False)
     ax = axes[1]
-    ax.plot(cur_te.lead_ms, cur_te.recall, color=C_MISS, lw=2, label="test (online rule)")
-    ax.plot(cur_te_snap.lead_ms, cur_te_snap.recall, color=C_MISS, lw=1.2, ls="--", label="test (snapshot)")
+    ax.plot(cur_te.lead_ms, cur_te.recall, color=C_MISS, lw=2, label="test (snapshot rule, primary)")
+    ax.plot(cur_te_onl.lead_ms, cur_te_onl.recall, color=C_MISS, lw=1.2, ls="--", label="test (online first call)")
     ax.plot(cur_tr.lead_ms, cur_tr.recall, color=C_GREY, lw=1.5, label="train, leave-one-game-out")
     ax.axvline(50, color="k", lw=0.8, ls=":")
     ax.set_ylim(0, 1.02)

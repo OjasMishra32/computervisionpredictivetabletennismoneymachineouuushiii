@@ -19,8 +19,8 @@ import pandas as pd
 
 from common import ALL, WORK
 
-MIN_PEAK = 0.5      # blob must reach this heat to be considered at all
-REACQ_PEAK = 0.7    # a blob outside the gate is accepted only if this strong
+MIN_PEAK = 0.3      # blob must reach this heat to be considered at all (chosen on game_1)
+REACQ_PEAK = 0.6    # a blob outside the gate is accepted only if this strong
 GATE0 = 60.0        # px, gate radius for one frame step (+ GATE_V per frame of gap)
 GATE_V = 60.0
 MAX_GAP = 8         # frames without a ball after which the motion model is reset

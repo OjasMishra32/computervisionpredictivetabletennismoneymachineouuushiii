@@ -30,7 +30,7 @@ def _call(args):
         return [{"cond": r.cond, "error": repr(e)}]
 
 
-def stats(tr: pd.DataFrame, n_boot: int = 2000, seed: int = 0) -> dict:
+def stats(tr: pd.DataFrame, n_boot: int = 2000, seed: int = 0, capital: float = CAPITAL) -> dict:
     if "error" in tr:
         errs = int(tr.error.notna().sum())
         tr = tr[tr.error.isna()]
@@ -41,8 +41,8 @@ def stats(tr: pd.DataFrame, n_boot: int = 2000, seed: int = 0) -> dict:
     daily = tr.groupby("date").pnl.sum()
     idx = pd.date_range(daily.index.min(), daily.index.max(), freq="D", tz="UTC")
     daily = daily.reindex(idx, fill_value=0.0)
-    ret = daily / CAPITAL
-    eq = CAPITAL + daily.cumsum()
+    ret = daily / capital
+    eq = capital + daily.cumsum()
     dd = (eq / eq.cummax() - 1).min()
     years = max(len(idx) / 365.0, 1e-9)
     # cluster bootstrap over matches for mean P&L per share
@@ -63,7 +63,8 @@ def stats(tr: pd.DataFrame, n_boot: int = 2000, seed: int = 0) -> dict:
         "mean_fee_c": float(tr.fee.mean() * 100),
         "total_pnl_usd": float(tr.pnl.sum()),
         "sharpe_ann": float(ret.mean() / ret.std() * np.sqrt(365)) if ret.std() > 0 else float("nan"),
-        "max_dd": float(dd), "turnover_x_per_yr": float(tr.usd_in.sum() * (2 if (tr.get("exit") == "tape").any() else 1) / CAPITAL / years),
+        "max_dd": float(dd), "turnover_x_per_yr": float(tr.usd_in.sum() * (2 if (tr.get("exit") == "tape").any() else 1) / capital / years),
+        "capital": float(capital),
         "skew_daily": float(ret.skew()), "worst_day_pct": float(ret.min() * 100),
         "worst_month_usd": float(monthly.min()), "best_month_share": float(monthly.max() / max(monthly.sum(), 1e-9)),
         "days": int(len(idx)),

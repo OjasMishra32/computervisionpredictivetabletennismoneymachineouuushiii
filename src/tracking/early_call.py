@@ -6,20 +6,27 @@ averages heatmaps of the triplets that contain a frame, so frame t's position ne
 Features (all in table-normalised image coordinates so that different cameras are comparable:
 u = position along the table in table lengths, 0 at the hitter's end line, 0.5 at the net, 1 at
 the target end line; w = height above the table mid-line in table lengths):
-  a robust quadratic fit u(tau), w(tau) to the last <= 30 prefix points, then
+  a robust quadratic fit u(tau), w(tau) to the last <= 30 prefix points (u then extrapolated
+  linearly with the fitted velocity, w with its quadratic), then
   - predicted landing position u where the extrapolated arc reaches the far-edge, mid and
     near-edge table level (the true bounce level lies between them, depending on depth),
     measured relative to the end line (> 0 = beyond the end = long)
   - predicted height at the net plane (if the net is still ahead), whether the net is passed
+  - predicted height above the far-edge level when the ball reaches the end line (w_end > 0:
+    the arc clears the whole table) and the time until then
   - current u, w, velocities, vertical acceleration, fit residual, #points, time since t0
 Models (chosen on game_1..5 only, leave-one-game-out CV):
   'physics'  : logistic regression on the 3 landing features + net-height + passed-net (6 coef.)
   'logreg'   : logistic regression on all features
   'hgb'      : sklearn HistGradientBoosting on all features
-Call rule ('online', primary): a MISS is called by lead L if the score reached tau at any decision
-frame t <= T_ref - L. 'snapshot' (secondary): score at exactly t = T_ref - L.
-tau = smallest threshold whose out-of-fold train precision at the 50 ms lead is >= 95% and stays
->= 95% for every higher threshold that still makes >= 5 calls.
+Call rules:
+  'snapshot' (primary, the literal "precision at a 50 ms lead"): MISS is called at lead L if the
+             score at decision frame t = T_ref - L is >= tau.
+  'online'   (secondary, what a trader acting on the first call experiences): MISS is called by
+             lead L if, at some decision frame t <= T_ref - L, the score was >= tau on PERSIST = 3
+             consecutive frames. The first such frame gives the per-flight call lead.
+tau = smallest threshold whose out-of-fold train precision (snapshot, 50 ms lead) is >= 95% and
+stays >= 95% for every higher threshold that still makes >= 5 calls.
 
 Usage:
   python early_call.py --dev            # train-only model selection + LOGO CV, never reads test
@@ -43,10 +50,14 @@ NFIT = 30
 MAX_LEAD = 36            # frames (300 ms) for the curves
 LEADS_MS = [0, 25, 50, 100, 150, 200]
 PREC_TARGET = 0.95
+PERSIST = 3              # consecutive decision frames >= tau for an online call
+GATE_H = float(os.environ.get("GATE_H", "0.10"))  # s; a call is allowed only when the ball is
+                         # predicted to reach the net or end line within GATE_H (short extrapolation);
+                         # chosen on game_1..5 (LOGO) from {inf, 0.25, 0.15, 0.10}
 HORIZON = 1.0            # s, extrapolation horizon
-FEATS_PHYS = ["u_far", "u_mid", "u_near", "w_net", "passed_net", "no_land"]
+FEATS_PHYS = ["u_far", "u_mid", "u_near", "w_net", "passed_net", "no_land", "w_end", "tau_end"]
 FEATS_ALL = FEATS_PHYS + ["u_now", "w_now", "du", "dw", "ddw", "ddu", "tau_mid", "resid",
-                          "npts", "t_since", "hb", "speed"]
+                          "npts", "t_since", "hb", "speed", "dir", "w_max", "u_wmax"]
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RES = os.environ.get("TRACK_RESULTS", os.path.join(REPO, "results", "tracking"))
 
@@ -120,24 +131,38 @@ class Flight:
         cw, ww = robust_quadfit(tau, w)
         res = np.sqrt(np.mean((w - np.polyval(cw, tau))[ww > 0] ** 2)) if (ww > 0).any() else 0.0
         f = {}
+        # along the table the ball moves at nearly constant speed (drag is small over 0.3 s), so the
+        # landing position is extrapolated linearly from the fitted position and velocity at tau=0;
+        # the height keeps its quadratic (gravity + spin) term
+        u_now, du_now = cu[2], cu[1]
+        ulin = lambda t: u_now + du_now * t
         no_land = 0
         for name, lev in (("u_far", self.hb / 2), ("u_mid", 0.0), ("u_near", -self.hb / 2)):
             tc = first_cross(cw, lev)
-            if tc is None:
-                tc, no_land = HORIZON, 1
-            f[name] = float(np.clip(np.polyval(cu, tc) - 1.0, -1.5, 1.5))
+            if tc is None:          # the fitted arc does not come down within the horizon
+                no_land = 1
+                f[name] = 0.0
+                if name == "u_mid":
+                    f["tau_mid"] = HORIZON
+                continue
+            f[name] = float(np.clip(ulin(tc) - 1.0, -1.5, 1.5))
             if name == "u_mid":
                 f["tau_mid"] = tc
         f["no_land"] = no_land
-        u_now = np.polyval(cu, 0.0)
         f["passed_net"] = float(u_now >= 0.5)
-        tn = None
-        if u_now < 0.5 and cu[1] > 0:
-            r = np.roots([cu[0], cu[1], cu[2] - 0.5])
-            r = [x.real for x in r if abs(x.imag) < 1e-9 and 0 < x.real <= HORIZON]
-            tn = min(r) if r else None
+        tn = (0.5 - u_now) / du_now if (u_now < 0.5 and du_now > 0) else None
+        tn = tn if (tn is not None and tn <= HORIZON) else None
         f["w_net"] = float(np.clip(np.polyval(cw, tn), -0.5, 0.5)) if tn is not None else 0.5
-        f.update(u_now=u_now, w_now=np.polyval(cw, 0.0), du=cu[1], dw=cw[1], ddw=2 * cw[0],
+        f["tau_net"] = tn if tn is not None else HORIZON
+        # predicted height (relative to the far-edge level) when the ball reaches the end line
+        te = 0.0 if u_now >= 1.0 else ((1.0 - u_now) / du_now if du_now > 0 else None)
+        te = te if (te is not None and te <= HORIZON) else None
+        f["tau_end"] = te if te is not None else HORIZON
+        f["w_end"] = float(np.clip(np.polyval(cw, te) - self.hb / 2, -0.5, 0.5)) if te is not None else -0.5
+        allw = self.w[m]
+        j = int(np.argmax(allw))
+        f.update(dir=float(self.row.dir), w_max=float(allw[j]), u_wmax=float(self.u[m][j]))
+        f.update(u_now=u_now, w_now=cw[2], du=cu[1], dw=cw[1], ddw=2 * cw[0],
                  ddu=2 * cu[0], resid=res, npts=len(fr), t_since=(t_dec - self.row.t0) / FPS,
                  hb=self.hb, speed=abs(cu[1]) * 2.74)
         return f
@@ -175,6 +200,14 @@ def feats_of(name):
     return FEATS_PHYS if name == "physics" else FEATS_ALL
 
 
+def gated(score, S):
+    """Zero the score unless the ball is predicted to reach the net (if still ahead) or the end
+    line within GATE_H seconds, i.e. only short extrapolations may trigger a call."""
+    out = np.asarray(score, float).copy()
+    out[(np.minimum(S.tau_end, S.tau_net) > GATE_H).values] = 0.0
+    return out
+
+
 def fit_predict(name, tr, te):
     m = make_model(name)
     X = feats_of(name)
@@ -184,14 +217,16 @@ def fit_predict(name, tr, te):
         m.fit(tr[X].values, tr.y.values, sample_weight=sw)
     else:
         m.fit(tr[X].values, tr.y.values, logisticregression__sample_weight=sw)
-    return m.predict_proba(te[X].values)[:, 1], m
+    return gated(m.predict_proba(te[X].values)[:, 1], te), m
 
 
 def score_matrices(samples, score, flights):
     """Per flight (rows = flights.index order) and lead k = 0..MAX_LEAD:
-       ON[i, k]   = max score over decision frames with lead >= k (online rule)
-       SNAP[i, k] = score at lead exactly k (snapshot rule); -inf where no decision possible.
-       FIRST[i]   = sorted (lead_frames, score) arrays for the first-call lead."""
+       SNAP[i, k] = score at lead exactly k (snapshot rule)
+       ON[i, k]   = max over decision frames with lead >= k of the PERSIST-frame rolling minimum
+                    of the score (online rule: called iff ON >= tau)
+       first[i]   = (lead_frames, persistent score) arrays for the first-call lead.
+       -inf where no decision is possible."""
     pos = {fid: i for i, fid in enumerate(flights.index)}
     n = len(flights)
     ON = np.full((n, MAX_LEAD + 1), -np.inf)
@@ -200,22 +235,25 @@ def score_matrices(samples, score, flights):
     first = {}
     for fid, g in s.groupby("fid"):
         i = pos[fid]
-        ks, ss = g.k.values, g.s.values
-        first[i] = (ks, ss)
-        for k, v in zip(ks, ss):
-            if k <= MAX_LEAD:
-                SNAP[i, k] = v
-        # online: max over leads >= k
-        order = np.argsort(-ks)
-        ks_o, ss_o = ks[order], np.maximum.accumulate(ss[order])
-        for k in range(MAX_LEAD + 1):
-            j = np.searchsorted(-ks_o, -k, side="right") - 1  # last index with ks_o >= k
-            if j >= 0:
-                ON[i, k] = ss_o[j]
+        kmax = int(g.k.max())
+        arr = np.full(kmax + 1, -np.inf)       # index = lead in frames
+        arr[g.k.values] = g.s.values
+        for k in range(min(kmax, MAX_LEAD) + 1):
+            SNAP[i, k] = arr[k]
+        # persistent score at lead k: min over leads k, k+1, ..., k+PERSIST-1 (this frame and the
+        # PERSIST-1 frames before it)
+        pers = np.full(kmax + 1, -np.inf)
+        for k in range(kmax + 1):
+            if k + PERSIST - 1 <= kmax:
+                pers[k] = arr[k:k + PERSIST].min()
+        first[i] = (np.arange(kmax + 1), pers)
+        run = np.maximum.accumulate(pers[::-1])[::-1]   # run[k] = max over leads >= k
+        for k in range(min(kmax, MAX_LEAD) + 1):
+            ON[i, k] = run[k]
     return ON, SNAP, first
 
 
-def per_flight_calls(samples, score, flights, tau, mode="online", mats=None):
+def per_flight_calls(samples, score, flights, tau, mode="snapshot", mats=None):
     """-> DataFrame (fid, k, called, y) for k = 0..MAX_LEAD, and first-call lead (ms) per flight."""
     ON, SNAP, first = mats if mats is not None else score_matrices(samples, score, flights)
     M = ON if mode == "online" else SNAP
@@ -256,7 +294,7 @@ def wilson(k, n, z=1.96):
     return (c - h, c + h)
 
 
-def choose_tau(samples, score, flights, k50, mode="online"):
+def choose_tau(samples, score, flights, k50, mode="snapshot"):
     ON, SNAP, _ = score_matrices(samples, score, flights)
     M = (ON if mode == "online" else SNAP)[:, k50]
     y = flights.label.values == "MISS"
@@ -303,7 +341,28 @@ def summarize_curve(c):
     return pd.DataFrame(rows)
 
 
+def curves(S, score, fl, tau):
+    mats = score_matrices(S, score, fl)
+    out = {}
+    for mode in ("snapshot", "online"):
+        c, lead = per_flight_calls(S, score, fl, tau, mode, mats=mats)
+        out[mode] = (c, lead, summarize_curve(c))
+    return out
+
+
+def stats_at(cur, lead_ms):
+    r = cur.loc[(cur.lead_ms - lead_ms).abs() < 1e-6].iloc[0]
+    nan = lambda x: None if not np.isfinite(x) else round(float(x), 4)
+    return dict(precision=nan(r.precision), recall=nan(r.recall), tp=int(r.tp), fp=int(r.fp),
+                fn=int(r.fn), precision_wilson95=[nan(r.prec_lo95), nan(r.prec_hi95)])
+
+
+def lead_table(cur):
+    return {f"{l}ms": stats_at(cur, ms(k_of(l))) for l in LEADS_MS}
+
+
 def dev(args):
+    from sklearn.metrics import average_precision_score
     fl = pd.read_csv(os.path.join(WORK, "flights.csv"))
     fl = fl[fl.split == "train"].reset_index(drop=True)
     geo = geometry_all()
@@ -314,18 +373,18 @@ def dev(args):
     for name in args.models:
         oof = logo_oof(name, S)
         tau, grid = choose_tau(S, oof, fl, k50)
-        c, lead = per_flight_calls(S, oof, fl, tau)
-        cur = summarize_curve(c)
-        p50 = cur.loc[cur.lead_ms.round() == 50].iloc[0]
-        from sklearn.metrics import average_precision_score
-        sel = S.k == k50
-        ap = average_precision_score(S.y[sel], oof[sel.values])
-        rep[name] = dict(tau=tau, prec50=p50.precision, rec50=p50.recall, tp=int(p50.tp),
-                         fp=int(p50.fp), ap_snapshot50=ap)
-        print(f"{name:8s} tau={tau:.3f}  OOF@50ms prec={p50.precision:.3f} rec={p50.recall:.3f} "
-              f"tp={int(p50.tp)} fp={int(p50.fp)}  AP(snapshot@50)={ap:.3f}")
-        print(cur.iloc[[0, 3, 6, 12, 18, 24, 36]][["lead_ms", "precision", "recall", "tp", "fp"]]
-              .round(3).to_string(index=False))
+        cv = curves(S, oof, fl, tau)
+        sel = (S.k == k50).values
+        ap = average_precision_score(S.y[sel], oof[sel])
+        snap, onl = cv["snapshot"][2], cv["online"][2]
+        rep[name] = dict(tau=round(tau, 4), ap_snapshot_50ms=round(ap, 4),
+                         snapshot=lead_table(snap), online=lead_table(onl))
+        p = stats_at(snap, ms(k50))
+        q = stats_at(onl, ms(k50))
+        print(f"{name:8s} tau={tau:.3f} AP@50={ap:.3f} | snapshot@50 prec={p['precision']} "
+              f"rec={p['recall']} tp={p['tp']} fp={p['fp']} | online@50 prec={q['precision']} "
+              f"rec={q['recall']} tp={q['tp']} fp={q['fp']}")
+        print(grid[grid.ncalls >= 1].iloc[::60].round(3).to_string(index=False))
     json.dump(rep, open(os.path.join(WORK, "dev_report.json"), "w"), indent=1)
 
 
@@ -340,8 +399,7 @@ def final(args):
     geo = geometry_all()
     tr_fl = fl[fl.split == "train"].reset_index(drop=True)
     te_fl = fl[fl.split == "test"].reset_index(drop=True)
-    vids = sorted(fl.video.unique())
-    tracks = load_tracks(vids)
+    tracks = load_tracks(sorted(fl.video.unique()))
     S_tr, _ = build_samples(tr_fl, tracks, geo)
     S_te, objs_te = build_samples(te_fl, tracks, geo)
     k50 = k_of(50)
@@ -349,67 +407,62 @@ def final(args):
     # threshold frozen from leave-one-game-out predictions on the training games
     oof = logo_oof(name, S_tr)
     tau, _ = choose_tau(S_tr, oof, tr_fl, k50)
-    c_tr, lead_tr = per_flight_calls(S_tr, oof, tr_fl, tau)
+    cv_tr = curves(S_tr, oof, tr_fl, tau)
     # final model on all training games, applied once to test
     s_te, model = fit_predict(name, S_tr, S_te)
-    out = {}
-    for mode in ("online", "snapshot"):
-        c_te, lead_te = per_flight_calls(S_te, s_te, te_fl, tau, mode)
-        cur_te = summarize_curve(c_te)
-        cur_te.to_csv(os.path.join(RES, f"test_precision_vs_lead_{mode}.csv"), index=False)
-        out[mode] = (c_te, lead_te, cur_te)
-    cur_tr = summarize_curve(c_tr)
-    cur_tr.to_csv(os.path.join(RES, "train_oof_precision_vs_lead_online.csv"), index=False)
-    c_te, lead_te, cur_te = out["online"]
-
-    # per-flight table for test (lead, speed, landing distance)
-    te_fl["lead_call_ms"] = te_fl.index.map(lead_te)
-    tr_fl["lead_call_ms"] = tr_fl.index.map(lead_tr)
-    for df, S in ((te_fl, S_te), (tr_fl, S_tr)):
-        sp = S.groupby("fid").apply(lambda g: g.sort_values("k").speed.iloc[0] if len(g) else np.nan)
-        df["speed_mps"] = df.index.map(sp)
+    cv_te = curves(S_te, s_te, te_fl, tau)
+    for mode in ("snapshot", "online"):
+        cv_te[mode][2].to_csv(os.path.join(RES, f"test_precision_vs_lead_{mode}.csv"), index=False)
+        cv_tr[mode][2].to_csv(os.path.join(WORK, f"train_oof_precision_vs_lead_{mode}.csv"), index=False)
+    lead_te = cv_te["online"][1]
+    # per-flight table for test (first-call lead, speed, landing distance)
+    te_fl["p_miss_at_50ms"] = np.nan
+    s50 = pd.Series(s_te[(S_te.k == k50).values], index=S_te.fid[(S_te.k == k50).values].values)
+    te_fl.loc[s50.index, "p_miss_at_50ms"] = s50.values
+    te_fl["first_call_lead_ms"] = te_fl.index.map(lead_te)
+    sp_ = S_te.groupby("fid").apply(lambda g: g.sort_values("k").speed.iloc[0])
+    te_fl["speed_mps"] = te_fl.index.map(sp_)
     te_fl["dist_out_m"] = [hindsight_landing(objs_te[i]) for i in te_fl.index]
     te_fl.to_csv(os.path.join(RES, "test_flights.csv"), index=False)
 
-    def stats_at(cur, lead):
-        r = cur.loc[(cur.lead_ms - lead).abs() < 1e-6].iloc[0]
-        return dict(precision=None if np.isnan(r.precision) else round(float(r.precision), 4),
-                    recall=None if np.isnan(r.recall) else round(float(r.recall), 4),
-                    tp=int(r.tp), fp=int(r.fp), fn=int(r.fn),
-                    precision_wilson95=[None if np.isnan(x) else round(float(x), 4)
-                                        for x in (r.prec_lo95, r.prec_hi95)])
-    leads_test = {f"{l}ms": stats_at(cur_te, ms(k_of(l))) for l in LEADS_MS}
-    leads_snap = {f"{l}ms": stats_at(out["snapshot"][2], ms(k_of(l))) for l in LEADS_MS}
-    leads_train = {f"{l}ms": stats_at(cur_tr, ms(k_of(l))) for l in LEADS_MS}
-    p50 = leads_test["50ms"]["precision"]
+    snap_te = lead_table(cv_te["snapshot"][2])
+    p50 = snap_te["50ms"]["precision"]
     verdict = "PASS" if (p50 is not None and p50 >= PREC_TARGET) else "FAIL"
     miss_te = te_fl[te_fl.label == "MISS"]
-    lc = miss_te.lead_call_ms.dropna()
-    outs = miss_te[(miss_te.miss_type == "out") & miss_te.lead_call_ms.notna()]
+    lc = miss_te.first_call_lead_ms.dropna()
     def sp(a, b):
-        if len(a) < 4:
+        ok = np.isfinite(a.values) & np.isfinite(b.values)
+        if ok.sum() < 4:
             return None
-        r = spearmanr(a, b)
-        return dict(rho=round(float(r.statistic), 3), p=round(float(r.pvalue), 4), n=int(len(a)))
+        r = spearmanr(a.values[ok], b.values[ok])
+        return dict(rho=round(float(r.statistic), 3), p=round(float(r.pvalue), 4), n=int(ok.sum()))
+    called = miss_te[miss_te.first_call_lead_ms.notna()]
+    outs = called[called.miss_type == "out"]
+    # lead at which snapshot precision on test stays >= 95% (largest lead L such that precision
+    # >= 0.95 for every lead in [0, L] with at least one call)
+    cur = cv_te["snapshot"][2]
+    okL = [r.lead_ms for r in cur.itertuples() if (r.tp + r.fp) > 0 and r.precision >= PREC_TARGET]
     summary = dict(
-        hypothesis="H3", model=name, tau=round(tau, 4), call_rule="online (primary)",
-        decision_lag_frames=LAG,
-        precision_recall_test_online=leads_test,
-        precision_recall_test_snapshot=leads_snap,
-        precision_recall_train_oof_online=leads_train,
+        hypothesis="H3", model=name, tau=round(tau, 4), primary_rule="snapshot",
+        decision_lag_frames=LAG, online_persistence_frames=PERSIST,
+        precision_recall_test_snapshot=snap_te,
+        precision_recall_test_online=lead_table(cv_te["online"][2]),
+        precision_recall_train_oof_snapshot=lead_table(cv_tr["snapshot"][2]),
+        precision_recall_train_oof_online=lead_table(cv_tr["online"][2]),
         verdict=verdict,
-        verdict_rule="PASS iff test precision of MISS calls at the 50 ms lead (online rule) >= 0.95",
-        miss_lead_test_ms=dict(
+        verdict_rule="PASS iff test precision of MISS calls at the 50 ms lead (snapshot rule) >= 0.95",
+        miss_first_call_lead_test_ms=dict(
             n_miss=int(len(miss_te)), n_called=int(len(lc)),
             median=None if lc.empty else round(float(lc.median()), 1),
             p10=None if lc.empty else round(float(lc.quantile(0.1)), 1),
             p90=None if lc.empty else round(float(lc.quantile(0.9)), 1)),
-        lead_vs_speed_spearman=sp(miss_te.dropna(subset=["lead_call_ms"]).speed_mps,
-                                  miss_te.dropna(subset=["lead_call_ms"]).lead_call_ms),
-        lead_vs_dist_out_spearman=sp(outs.dist_out_m, outs.lead_call_ms),
+        test_snapshot_leads_with_precision_ge_95=okL,
+        lead_vs_speed_spearman=sp(called.speed_mps, called.first_call_lead_ms),
+        lead_vs_dist_out_spearman=sp(outs.dist_out_m, outs.first_call_lead_ms),
     )
     json.dump(summary, open(os.path.join(WORK, "early_call_final.json"), "w"), indent=1)
-    plot_precision_vs_lead(cur_te, out["snapshot"][2], cur_tr, tau, os.path.join(RES, "precision_vs_lead.png"))
+    plot_precision_vs_lead(cv_te["snapshot"][2], cv_te["online"][2], cv_tr["snapshot"][2], tau,
+                           os.path.join(RES, "precision_vs_lead.png"))
     plot_examples(te_fl, objs_te, model, name, geo, os.path.join(RES, "example_trajectories.png"))
     print(json.dumps(summary, indent=1))
 

@@ -38,13 +38,35 @@ def calibration(df: pd.DataFrame, n_boot=500, seed=0) -> pd.DataFrame:
     return out
 
 
-def shadow_stats(sh: pd.DataFrame) -> dict:
+MATCH_CAP_USD = 3_000  # most capital the shadow book commits to one match
+CAPITAL_BUFFER = 3     # capital = 3x the peak dollars locked in open positions
+
+
+def shadow_book(sh: pd.DataFrame, u: pd.DataFrame) -> tuple[pd.DataFrame, float]:
+    """Apply the per-match cap; capital = peak dollars locked in open positions (held to resolution)."""
+    if sh.empty:
+        return sh, 0.0
+    sh = sh.sort_values("ts", kind="stable").copy()
+    sh["cum"] = sh.groupby("cond").usd_in.cumsum()
+    sh = sh[sh.cum <= MATCH_CAP_USD]
+    end = u.set_index("cond").end.map(lambda t: int(t.timestamp()) if pd.notna(t) else None)
+    sh["end_ts"] = sh.cond.map(end).fillna(sh.ts + 4 * 3600).astype(int)
+    ev = pd.concat([pd.DataFrame({"t": sh.ts, "d": sh.usd_in}), pd.DataFrame({"t": sh.end_ts, "d": -sh.usd_in})])
+    peak = float(ev.sort_values("t", kind="stable").d.cumsum().max())
+    return sh, peak
+
+
+def shadow_stats(sh: pd.DataFrame, u: pd.DataFrame) -> dict:
+    sh, peak = shadow_book(sh, u)
     if sh.empty:
         return {}
-    tr = pd.DataFrame({"cond": sh.cond, "pnl_ps": sh.net_res, "pnl": sh.pnl, "fee": sh.fee,
+    tr = pd.DataFrame({"cond": sh.cond, "pnl_ps": sh.net_res, "pnl": sh.shares * sh.net_res, "fee": sh.fee,
                        "usd_in": sh.usd_in, "exit": "resolution",
                        "date": pd.to_datetime(sh.ts, unit="s", utc=True).dt.floor("D")})
-    return bt.stats(tr)
+    out = bt.stats(tr, capital=CAPITAL_BUFFER * peak)
+    out["peak_locked_usd"] = peak
+    out["trades_per_day"] = out["n_trades"] / max(out["days"], 1)
+    return out
 
 
 def run_split(u: pd.DataFrame, label: str, plateau: bool) -> dict:
@@ -76,7 +98,7 @@ def main(oos: bool):
     wf, sh, by_bucket = fasttier.walk_forward(p_is)
     wf.to_csv(RES / "fasttier_walkforward_is.csv", index=False)
     summary["is"]["h6_walkforward"] = wf.round(4).to_dict("records")
-    summary["is"]["h6_shadow"] = shadow_stats(sh)
+    summary["is"]["h6_shadow"] = shadow_stats(sh, u)
     summary["is"]["h6_months_positive"] = float((wf.net30_c > 0).mean())
     order = ["0-3s", "3-6s", "6-10s", "10-20s", "20-40s", "40-120s", ">120s"]
     report.tiers_figure(by_bucket.reindex(order))
@@ -89,7 +111,7 @@ def main(oos: bool):
         summary["oos"] = run_split(u[u.oos], "OOS", plateau=False)
         summary["oos"]["h6_walkforward"] = wf2[wf2.month >= str(oos_m)].round(4).to_dict("records")
         sh_oos = sh2[pd.to_datetime(sh2.ts, unit="s", utc=True) >= pd.Timestamp(summary["universe"]["oos_start"])]
-        summary["oos"]["h6_shadow"] = shadow_stats(sh_oos)
+        summary["oos"]["h6_shadow"] = shadow_stats(sh_oos, u)
         summary["oos"]["calibration"] = calibration(po).round(4).to_dict("records")
         sh, oos_start = sh2, pd.Timestamp(summary["universe"]["oos_start"]).tz_localize(None)
     report.walkforward_figure(wf, sh, oos_start)

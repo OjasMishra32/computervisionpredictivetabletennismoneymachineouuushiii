@@ -56,3 +56,16 @@ their 0–3 s post-jump prints in month m, and in the locked OOS period.
   30 s and to resolution, clustered by match.
 - Follow test: a copier entering at +delay+3 s (venue delay, our latency, on-chain indexing).
 - **Fails if** month-m net markout ≤ 0 in more than a third of months, or ≤ 0 OOS.
+
+## D6 — shadow-book accounting and OOS freeze (before opening OOS)
+- Shadow book: size per trade = min(wallet's own print, $1,000); at most $3,000 committed per
+  match; held to resolution; net of each match's taker fee. Capital = 3× the peak dollars locked in
+  open positions (the first version used a flat $50k and overstated the drawdown denominator's
+  relevance; fixed before OOS).
+- In-sample, by venue regime, net-to-resolution edge per share: 3 s/no fee 1.51¢; 3 s/3% 1.64¢;
+  1 s/3% 1.19¢; 1 s/5% 0.54¢. OOS is entirely 1 s/5%, so the relevant IS comparator is 0.54¢.
+- H5 in sample (full IS): primary J=0.04/W=30 +0.22¢ (CI −0.01…0.43) vs always-on +0.13¢ (CI
+  −0.06…0.32). That passes the stated IS condition on the point estimate only.
+- Frozen for OOS: H1 J0.04/H30, H2 0.85–0.97, H5 J0.04/W30 + always-on, H6 selection rule and
+  shadow sizing as above. OOS is evaluated once via `run_all.py --oos`; peeks are logged in
+  `results/oos_peeks.log`.

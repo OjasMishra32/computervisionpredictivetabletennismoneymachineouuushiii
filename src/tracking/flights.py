@@ -13,7 +13,8 @@ positions f_n-4..f_n+8):
   MISS    otherwise (no bounce follows: the next event is >= 80 frames later, i.e. the next rally,
           or the ball came back to the hitter's side).
           miss_type = 'net' if the ball never gets 25 px past the net-crossing x in the labelled /
-          tracked frames f_n..f_n+12 (it hit the net); T_ref = f_n.
+          tracked frames f_n..f_n+12, or its along-table speed collapses at the net (x distance in
+          the 8 frames after f_n < 40% of that in the 8 frames before): it hit the net; T_ref = f_n.
           miss_type = 'out' otherwise; T_ref = first tracked frame after f_n at which the ball
           passes the table end line (mean x of the two end corners), or drops below the near
           table edge (y > near edge + 10 px), or is lost for >= 6 frames (T_ref = last seen + 1).
@@ -44,6 +45,16 @@ def pos(f, ball, trk):
     """Position at frame f: label if available, else track."""
     p = ball.get(f)
     return p if p is not None else trk.get(f)
+
+
+def net_stop(f_n, d, ball, trk, k=8):
+    """True if the ball's along-table speed collapses at the net (net hit): the x distance covered
+    in the k frames after f_n is < 40% of that covered in the k frames before."""
+    a, b, c = pos(f_n - k, ball, trk), pos(f_n, ball, trk), pos(f_n + k, ball, trk)
+    if a is None or b is None or c is None:
+        return False
+    before, after = (b[0] - a[0]) * d, (c[0] - b[0]) * d
+    return before > 0 and after < 0.4 * before
 
 
 def flight_start(f_n, d, trk, b_prev):
@@ -108,7 +119,7 @@ def build(videos):
                 label = "MISS"
                 past = [(pos(t, ball, trk)[0] - x_cross) * d for t in range(f_n + 1, f_n + 13)
                         if pos(t, ball, trk) is not None]
-                if not past or max(past) < 25:
+                if not past or max(past) < 25 or net_stop(f_n, d, ball, trk):
                     mtype, t_ref = "net", f_n
                 else:
                     mtype = "out"
@@ -146,7 +157,7 @@ if __name__ == "__main__":
     df, dr = build(videos)
     df.to_csv(os.path.join(WORK, "flights.csv"), index=False)
     dr.to_csv(os.path.join(WORK, "flights_dropped.csv"), index=False)
-    for s in ["train", "test"]:
+    for s in ["train"]:  # test counts are reported only by the final evaluation
         sub = df[df.split == s]
         if len(sub):
             print(s, sub.groupby(["label", "miss_type"], dropna=False).size().to_dict(),
