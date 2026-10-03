@@ -74,7 +74,12 @@ def main():
                 ("COURTSIDE engine: vision → execution (paper)", "results/engine/demo_run.json", "engine"),
                 ("Spin-aware CV (tennis filter + table-tennis Magnus fit)", "results/spin/tennis/RESULTS.md", "results/spin"),
                 ("Rigor pack: deflated Sharpe, PBO, bootstrap", "results/rigor/rigor.json", "research/rigor"),
-                ("Tier-0 v3: optimise → freeze → blind test", "results/tier0_v3/blind.json", "research/v2/tier0_v3")):
+                ("Tier-0 v3: optimise → freeze → blind test", "results/tier0_v3/blind.json", "research/v2/tier0_v3"),
+                ("Side-market maker: blind OOS test", "results/maker/oos.json", "research/v2/maker"),
+                ("Live paper session on real markets (until 11:30 UTC)", "results/live/FINAL", "results/live"),
+                ("Table tennis: every Polymarket match, blind test", "results/tt/results.json", "research/tt"),
+                ("Signal decay vs latency", "results/decay/decay.json", "research/decay"),
+                ("Financials + risk register", "results/financials/financials.json", "research/financials")):
             act = max(tree_mtime(work_dir), newest([done_file]))
             wf.append({"name": name, "done": os.path.exists(done_file), "last_activity_s": round(now - act) if act else None})
         c = jload("results/v2/causal.json") or {}
@@ -101,9 +106,15 @@ def main():
         t0 = jload("results/tier0/results.json")
         if t0:
             pi, po = t0["primary"]["IS"], t0["primary"].get("burned_OOS", {})
-            hl["CV-edge (assumed data)"] = f"Sharpe IS {pi['sharpe_ann']:.0f} · OOS {po.get('sharpe_ann', float('nan')):.0f} (being verified)"
+            hl["CV-edge (assumed data)"] = (f"Sharpe IS {pi['sharpe_ann']:.0f} · OOS {po.get('sharpe_ann', float('nan')):.0f} (verified)"
+                                            if os.path.exists("results/tier0/VERIFIED") else
+                                            "first result refuted by verifier (fill price); revised numbers pending")
         rg = jload("results/rigor/rigor.json")
-        hl["Rigor pack"] = "done: see results/rigor" if rg else "running"
+        hl["Rigor pack"] = "OOS PSR vs 0: 0.987 · PBO ~9–24% (verified)" if rg else "running"
+        cs = jload("results/v2/cost_stress.json")
+        if cs:
+            hl["Costs doubled"] = (f"IS {cs['is_eval/fee_x2']['per_share_c']:+.2f}¢ · "
+                                   f"OOS {cs['burned_oos/fee_x2']['per_share_c']:+.2f}¢ (fees ×2)")
         git = subprocess.run(["git", "log", "-6", "--format=%cr|%s"], capture_output=True, text=True).stdout.splitlines()
         du = shutil.disk_usage(os.path.expanduser("~"))
         OUT.write_text(json.dumps({"t": now, "recorders": rec, "hpg": hpg, "workflows": wf, "headline": hl,
