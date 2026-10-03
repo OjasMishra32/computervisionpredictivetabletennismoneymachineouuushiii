@@ -17,7 +17,7 @@ skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertain
 | 0:20-0:42 | **Proof the model works, multiple games**: 2x2 split-screen / montage across several held-out real table-tennis games (OpenTTGames test_1..7): comet trail, predicted arc, live P(miss) gauge, "MISS - n ms early" / "IN" stamps exactly when the model made them; honest totals as live counters; a 3 s spin-model flash (tennis, "simulated physics") |
 | 0:42-0:52 | **The pipeline**: animated boxes feed -> WebRTC -> GPU CV -> fair value -> risk -> order -> network -> Polymarket 1 s delay -> fill, each with measured ms; total vs < 3 s |
 | 0:52-1:04 | **What speed is worth**: returns vs feed latency (log axis, dotted 1 s baseline, source bands, break-even), then the edge-decay panel |
-| 1:04-1:16 | **The test**: today's real Polymarket match replay (orders racing the book; "backtest replay, assumed 1 s licensed feed") + the rigor strip (pre-registered, blind tests, deflated Sharpe) as quick badges |
+| 1:04-1:16 | **The test**: the multi-month backtest at the simulated 1 s licensed-feed baseline drawing in (cumulative P&L, in-sample then out-of-sample, months positive), plus a few more model calls on additional held-out games as cutaways; rigor badges (pre-registered, blind tests, deflated Sharpe, OOS looks logged). Do NOT use the 2026-10-03 match replay in the video (it lives in the paper). |
 | 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
 | 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
@@ -70,7 +70,7 @@ Voice: ElevenLabs "Liam" (scripts/tts_elevenlabs.py). Length about 3:00-3:30. St
 5. **The alpha**: fast traders profit every month, the late ones lose; edge decays within ~1-2 s.
 6. **Pipeline and speed** (organizer concern: prove we can trade inside the window): WebRTC frame -> CV call -> decision -> order-ready -> measured network -> 1 s venue delay -> fill against a live Polymarket book, stage timings in ms (results/e2e), GPU 120 fps / 4.6 ms (results/engine/vision_bench_gpu.json).
 7. **Results at the simulated 1 s licensed-feed baseline**: returns-vs-latency curve with the dotted 1 s line and source bands; both readings (calibrated and pre-registered); money counters.
-8. **A match from today**: the real Polymarket match recorded live on 2026-10-03 (results/replay): real book, real points, our orders at the assumed 1 s feed racing the reprice, P&L counter. Label: "backtest replay; we have no video of this match; assumed 1 s licensed feed".
+8. (deck/paper only) **A match from today** replay (results/replay): not in the video.
 9. **Risk and capacity** (organizer concern): capital capacity in $ (results/capacity), limits and kill switches, stress tests.
 10. **How it goes live**: license a low-latency feed (Polymarket itself buys official data from Genius Sports); faster feed = further left on the curve.
 11. **Close**: repo URL, one command, "Voice: AI (ElevenLabs). Paper trading only."
