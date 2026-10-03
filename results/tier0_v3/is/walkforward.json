@@ -1,0 +1,213 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA - assumed: licensed live feed + courtside camera, not purchased; parameters from our measurements. In-sample (IS) optimisation only; no live ATP/WTA data was used.",
+ "rule": "GRID.md: month m uses argmax pooled-seed Sortino over months < m among variants with mean daily P&L >= 0.5 x default's (>= default's if the default's is <= 0); May = default",
+ "default": "th0.85|lock5s|flat|z0.05-0.95|X2c",
+ "months": {
+  "2026-05": {
+   "chosen": "th0.85|lock5s|flat|z0.05-0.95|X2c",
+   "why": "pre-declared default (no prior month)"
+  },
+  "2026-06": {
+   "chosen": "th0.95|lock30s|lev|z0.05-0.95|X2c",
+   "selection_months": [
+    "2026-05"
+   ],
+   "default_pnl_per_day_past": -18.599649759760577,
+   "eligibility_bar_usd_per_day": -18.599649759760577,
+   "n_eligible": 338,
+   "chosen_sortino_past": 31.880342927407806,
+   "chosen_pnl_per_day_past": 24.793330483347596,
+   "default_sortino_past": -9.363948019438384,
+   "top10": [
+    {
+     "variant": "th0.95|lock30s|lev|z0.05-0.95|X2c",
+     "sortino": 31.880342927407806,
+     "pnl_per_day": 24.793330483347596
+    },
+    {
+     "variant": "th0.9|lock30s|lev|z0.05-0.95|X2c",
+     "sortino": 31.496936653701,
+     "pnl_per_day": 26.13083001379344
+    },
+    {
+     "variant": "th0.85|hold|lev|z0.05-0.95|X2c",
+     "sortino": 30.80830678738743,
+     "pnl_per_day": 72.469119504862
+    },
+    {
+     "variant": "th0.9|hold|lev|z0.05-0.95|X2c",
+     "sortino": 30.55340153008253,
+     "pnl_per_day": 73.15182184637344
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.05-0.95|X2c",
+     "sortino": 30.237941995463586,
+     "pnl_per_day": 89.63396364090602
+    },
+    {
+     "variant": "th0.95|lock30s|flat|z0.05-0.95|X2c",
+     "sortino": 29.360194425325073,
+     "pnl_per_day": 25.558960683288223
+    },
+    {
+     "variant": "th0.9|hold|flat|z0.05-0.95|X2c",
+     "sortino": 29.268996745071437,
+     "pnl_per_day": 88.90456225654918
+    },
+    {
+     "variant": "th0.9|lock30s|flat|z0.05-0.95|X2c",
+     "sortino": 28.977922399116643,
+     "pnl_per_day": 26.904693165907815
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.1-0.9|X2c",
+     "sortino": 28.431919123838025,
+     "pnl_per_day": 84.41459766947325
+    },
+    {
+     "variant": "th0.95|lock30s|lev|z0.1-0.9|X2c",
+     "sortino": 28.276090044052513,
+     "pnl_per_day": 22.104030445174324
+    }
+   ]
+  },
+  "2026-07": {
+   "chosen": "th0.9|hold|lev|z0.05-0.95|X2c",
+   "selection_months": [
+    "2026-05",
+    "2026-06"
+   ],
+   "default_pnl_per_day_past": -12.874765929630367,
+   "eligibility_bar_usd_per_day": -12.874765929630367,
+   "n_eligible": 338,
+   "chosen_sortino_past": 24.74192515654524,
+   "chosen_pnl_per_day_past": 56.6036134831846,
+   "default_sortino_past": -8.077202283604297,
+   "top10": [
+    {
+     "variant": "th0.9|hold|lev|z0.05-0.95|X2c",
+     "sortino": 24.74192515654524,
+     "pnl_per_day": 56.6036134831846
+    },
+    {
+     "variant": "th0.85|hold|lev|z0.05-0.95|X2c",
+     "sortino": 24.121586297313623,
+     "pnl_per_day": 56.42375734259695
+    },
+    {
+     "variant": "th0.9|hold|flat|z0.05-0.95|X2c",
+     "sortino": 23.827252868323512,
+     "pnl_per_day": 65.64518791445052
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.05-0.95|X2c",
+     "sortino": 23.759066399402382,
+     "pnl_per_day": 66.70685947572657
+    },
+    {
+     "variant": "th0.9|hold|lev|z0.1-0.9|X2c",
+     "sortino": 23.409763373552693,
+     "pnl_per_day": 53.56948059988631
+    },
+    {
+     "variant": "th0.95|hold|flat|z0.05-0.95|X2c",
+     "sortino": 23.232641314639242,
+     "pnl_per_day": 61.74325214273296
+    },
+    {
+     "variant": "th0.95|hold|lev|z0.05-0.95|X2c",
+     "sortino": 23.13827458670059,
+     "pnl_per_day": 52.27442424868528
+    },
+    {
+     "variant": "th0.9|hold|flat|z0.1-0.9|X2c",
+     "sortino": 22.995340967053842,
+     "pnl_per_day": 63.37626674218627
+    },
+    {
+     "variant": "th0.85|hold|lev|z0.1-0.9|X2c",
+     "sortino": 22.781450372258195,
+     "pnl_per_day": 53.24133197662733
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.1-0.9|X2c",
+     "sortino": 22.770258146048395,
+     "pnl_per_day": 64.03849679472339
+    }
+   ]
+  },
+  "2026-08": {
+   "chosen": "th0.9|hold|lev|z0.05-0.95|X2c",
+   "selection_months": [
+    "2026-05",
+    "2026-06",
+    "2026-07"
+   ],
+   "default_pnl_per_day_past": -27.91787094394725,
+   "eligibility_bar_usd_per_day": -27.91787094394725,
+   "n_eligible": 343,
+   "chosen_sortino_past": 21.044443014760407,
+   "chosen_pnl_per_day_past": 50.093215098038144,
+   "default_sortino_past": -10.743496037129717,
+   "top10": [
+    {
+     "variant": "th0.9|hold|lev|z0.05-0.95|X2c",
+     "sortino": 21.044443014760407,
+     "pnl_per_day": 50.093215098038144
+    },
+    {
+     "variant": "th0.85|hold|lev|z0.05-0.95|X2c",
+     "sortino": 20.773967517221056,
+     "pnl_per_day": 50.3574273972897
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.05-0.95|X2c",
+     "sortino": 19.832395702621195,
+     "pnl_per_day": 57.75722270798202
+    },
+    {
+     "variant": "th0.9|hold|lev|z0.1-0.9|X2c",
+     "sortino": 19.803128905610134,
+     "pnl_per_day": 47.391898432646315
+    },
+    {
+     "variant": "th0.9|hold|flat|z0.05-0.95|X2c",
+     "sortino": 19.77920355734152,
+     "pnl_per_day": 56.89909759174585
+    },
+    {
+     "variant": "th0.95|hold|lev|z0.05-0.95|X2c",
+     "sortino": 19.632714659467027,
+     "pnl_per_day": 46.62036082795146
+    },
+    {
+     "variant": "th0.85|hold|lev|z0.1-0.9|X2c",
+     "sortino": 19.540172716688453,
+     "pnl_per_day": 47.55274540780897
+    },
+    {
+     "variant": "th0.9|hold|flat|z0.1-0.9|X2c",
+     "sortino": 18.883370858276194,
+     "pnl_per_day": 54.54162186959617
+    },
+    {
+     "variant": "th0.85|hold|flat|z0.1-0.9|X2c",
+     "sortino": 18.786139749707107,
+     "pnl_per_day": 55.03624294292923
+    },
+    {
+     "variant": "th0.95|hold|flat|z0.05-0.95|X2c",
+     "sortino": 18.52027071455901,
+     "pnl_per_day": 52.97947732760614
+    }
+   ]
+  }
+ },
+ "chosen": {
+  "2026-05": "th0.85|lock5s|flat|z0.05-0.95|X2c",
+  "2026-06": "th0.95|lock30s|lev|z0.05-0.95|X2c",
+  "2026-07": "th0.9|hold|lev|z0.05-0.95|X2c",
+  "2026-08": "th0.9|hold|lev|z0.05-0.95|X2c"
+ },
+ "frozen_v3": "th0.9|hold|lev|z0.05-0.95|X2c"
+}
