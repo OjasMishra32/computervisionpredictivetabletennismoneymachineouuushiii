@@ -51,3 +51,5 @@
 2026-10-03T20:25:01.366241+00:00 tier0 v3 blind test (a) burned OOS START (scripts/tier0_v3_blind.py; PREREG research/v2/tier0_v3/PREREG.md section 5; non-blind window seen by v1/v2/tier-0 v2; v3 chosen on IS only; COUNTERFACTUAL): reproduction gate with V2_HEADLINE, then frozen v3 once (seeds 1000-1019)
 2026-10-03T20:26:40.510770+00:00 tier0 v3 blind test (b) U2 START (scripts/tier0_v3_blind.py; PREREG research/v2/tier0_v3/PREREG.md section 4; first tier-0 table on U2: jump tables + pre-start volumes from data/expand_prints.parquet and cached raw U2 tapes, then frozen v3 once per period, seeds 2000-2019 / 3000-3019; COUNTERFACTUAL)
 2026-10-03T20:28:47.478005+00:00 tier0 v3 blind tests (a)+(b) DONE: burned OOS FAIL, U2-IS FAIL, U2-OOS FAIL -> results/tier0_v3/blind.json
+2026-10-03T20:16:07.225280+00:00 tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen)
+2026-10-03T20:24:49.725021+00:00 tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen)
