@@ -1,0 +1,9 @@
+# Optional: ball tracking (src/tracking, src/tennis_tracking) and the deck (docs/deck/build_deck.py).
+# Versions are the ones in our local venv. The HiPerGator jobs install into the cluster's pytorch
+# module instead (hpg/*_setup.sbatch); see src/tracking/README.md and src/tennis_tracking/README.md.
+-r requirements.txt
+scikit-learn==1.9.1
+torch==2.14.1
+opencv-python-headless==5.0.0.93
+av==19.0.1
+python-pptx==1.0.2

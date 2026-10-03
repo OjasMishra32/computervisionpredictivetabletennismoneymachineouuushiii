@@ -1,7 +1,7 @@
 # COURTSIDE
 
 **Who gets paid in the seconds after a tennis point, and what it takes to be first.**
-Gator Quant Hacks 2026 · Systematic Trading track · Quant note: [`docs/NOTE.pdf`](docs/NOTE.pdf)
+Gator Quant Hacks 2026 · Systematic Trading track · Quant note: [`docs/NOTE.pdf`](docs/NOTE.pdf) (5 pages, 11 pt, 1 in margins)
 
 Every tennis point moves a prediction market. We measured, on every resolved Polymarket ATP/WTA
 singles moneyline from Oct 2025 to Oct 2026 (13,084 matches, $2.84B traded), who makes and who loses
@@ -12,31 +12,60 @@ tracking can know a point is over.
 |---|---|
 | Chasing the move after a point (H1) | loses 1.5–2.1¢/share in and out of sample |
 | Live prices | calibrated within ~1¢ (H2: no slow-money edge) |
-| **Fast tier** (wallets trading ≤3 s after a point) | beat the market in **11/11 months**, walk-forward; everyone else loses ~1¢ |
-| **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months** (still +0.38¢ at +1 tick slippage); burned OOS +0.60¢ [0.09, 1.13] (match-clustered; wallet-clustered CI includes 0), Sharpe 6.7, ≈0 at +½ tick: profitable only at the front of the queue. Blind test on 11,307 unseen markets: +2.02¢ in-sample period (pass), +1.22¢ out-of-sample period (CI includes 0: fail). Blind forward test: `results/v2/forward.json` |
-| Ball tracking | Hawk-Eye-class physics: ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11 of 11 calls correct (recall 27%) |
-| Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind; Kalshi leads Polymarket ~2 s |
+| **Fast tier** (wallets trading ≤3 s after a point) | beat the market in **11/11 months** (8 in sample, 3 out of sample), walk-forward; everyone else loses ~1¢ |
+| v1 (copy the fast tier, $ sizing) | +1.16¢/share in sample; **lost $36k** on the held-out window (opened once, blind) |
+| **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample** +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months, +0.38¢ at +1 tick. **Burned OOS (non-blind, v2 was designed after v1's result):** +0.60¢ [0.09, 1.13], Sharpe 6.7; ≈0 at +½ tick; **negative with costs doubled** (fees ×2: −0.34¢; all costs ×2: −0.84¢) |
+| Blind test of frozen v2 on 11,307 unseen markets | in-sample period +2.02¢ (pass); out-of-sample period +1.22¢ [−0.19, 2.65] (**fail**) |
+| Blind forward test of v2 | pre-registered (`HYPOTHESIS_V2.md`); runs once on Oct 4 → `results/v2/forward.json` (not yet created) |
+| Ball tracking | Hawk-Eye-class physics (assumed 340 fps): ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11 of 11 calls correct (recall 27%) |
+| Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind |
 
-Rules checklist: [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md). Integrity trail: `HYPOTHESIS.md` (pre-registered, commit `7232986`) → `DEVIATIONS.md` (every change,
+Rules checklist, item by item against the track page: [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md).
+Integrity trail: `HYPOTHESIS.md` (pre-registered, commit `7232986`) → `DEVIATIONS.md` (every change,
 including failed hypotheses) → `HYPOTHESIS_V2.md` (v2 frozen before its forward test) →
-`results/oos_peeks.log` and `results/forward_peeks.log` (every look at held-out data).
+`results/oos_peeks.log` (every look at held-out data; the note lists them) and `results/forward_peeks.log`
+(created by the one forward run).
 
 ## Reproduce
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # Python 3.14
 .venv/bin/python scripts/fetch_polymarket.py   # public Polymarket APIs, no keys; ~1-2 h, cached in data/
-bash reproduce.sh                               # every number and figure in the note -> results/
+bash reproduce.sh                               # every number and figure in the note -> results/, docs/NOTE.pdf
+.venv/bin/pytest tests                          # unit tests
 ```
 
-`reproduce.sh` runs `run_all.py --oos` (H1–H6, calibration, tiers, the walk-forward fast tier),
-`scripts/v2_causal.py` (v2 on in-sample + burned OOS, with slippage stress) and the figures. The v2 forward test is a one-shot:
-`python scripts/forward_test.py` (pre-registered window; logs every run). Tests: `pytest tests`.
+`reproduce.sh` runs, in order:
+
+| Step | Produces |
+|---|---|
+| `run_all.py --oos` | H1–H6, calibration, tiers, walk-forward fast tier, v1 (Table 1) → `results/summary.json` |
+| `scripts/v2_causal.py` | v2 on in-sample + burned OOS with ½- and 1-tick slippage (Table 2) → `results/v2/causal.json` |
+| `scripts/v2_cost_stress.py` | v2 with fees doubled and all costs doubled (Table 2) → `results/v2/cost_stress.json` |
+| `scripts/note_metrics.py` | annualised return and volatility, turnover, skew, worst month, cost and edge in bps, holdout share, data gaps → `results/v2/note_metrics.json` |
+| `scripts/v2_figures.py`, `factor_regression.py`, `leverage_stats.py` | Fig. 1, the factor regression, Markov leverage |
+| `scripts/make_pdf.py` | `docs/NOTE.pdf` (needs Chrome or Chromium; skipped without failing if neither is installed) |
+
+Things to know before running it:
+- **Peek log.** On a fresh clone the first step builds the locked out-of-sample prints and appends one
+  line to `results/oos_peeks.log`. That line records your run. Re-running on the same checkout appends
+  nothing. `scripts/v2_burned_oos.py` (the superseded onset-window v2) appends a line on every run; it is
+  not part of `reproduce.sh`.
+- **Not regenerated by `reproduce.sh`** (outputs are committed): the rigor pack
+  (`scripts/rigor_pack.py`, ~25 s; DSR, PBO, block bootstrap, daily sd and skew → `results/rigor/`; it
+  rewrites `research/rigor/RESULTS.md`, whose verifier-corrections header is hand-written), the six v2
+  lenses and verifiers (`research/v2/<lens>/`), the blind out-of-universe tests (`scripts/expand_test.py`,
+  `scripts/lowloss_test.py`), and ball tracking on HiPerGator.
+- **Live data cannot be re-downloaded.** The order-book and score-feed recordings of 2026-10-03 behind the
+  latency and depth numbers (note §6) were made with `src/live_recorder.py` and live in `data/live*`
+  (gitignored). The derived numbers are in `results/` and `research/v2/{latency,livefill,blocklag}/`.
+- The v2 forward test is a one-shot: `python scripts/forward_test.py` (pre-registered window; logs every run).
 
 Other pieces:
 
 | Command | What |
 |---|---|
+| `pip install -r requirements-extra.txt` | optional extras: tracking (torch, OpenCV, PyAV, scikit-learn) and the deck (python-pptx) |
 | `bash scripts/serve_live.sh` then open http://localhost:8765 | COURTSIDE Live: order-book scoreboard vs ESPN |
 | `python -m src.live_recorder --hours 6` | record live order books + Polymarket's sports feed (read-only) |
 | `python -m src.h4_live` · `python scripts/live_books.py` | book-vs-feed latency · live depth, tennis vs table tennis |
@@ -53,20 +82,31 @@ Other pieces:
 
 | path | what |
 |---|---|
-| `src/polymarket.py`, `src/tape.py` | public API client; universe, locked 80/20 split, side-of-book classification |
+| `src/polymarket.py`, `src/tape.py` | public API client; universe, locked 80/20 split (by match count), side-of-book classification |
 | `src/strategies.py`, `src/backtest.py` | H1, H2, H5 and portfolio statistics |
 | `src/tiers.py`, `src/fasttier.py` | markouts by seconds since the score event; walk-forward fast tier (H6) |
 | `src/v2.py` | the frozen v2 rule, runnable on any period |
 | `src/markov.py` | exact point-level tennis Markov model (fair value, leverage) |
-| `src/hawkeye.py` | drag + Magnus ball flight, 340 fps tracking noise, early out calls |
+| `src/hawkeye.py` | drag + Magnus ball flight, 340 fps tracking noise (assumed), early out calls |
 | `src/paper.py` | replays recorded live books; orders wait the venue delay + latency, then walk the book |
+| `engine/` | paper-only engine: v2 risk limits, $1,000 daily stop, kill switches (`engine/risk/limits.py`) |
 | `src/tracking/`, `src/tennis_tracking/` | ball tracking on real footage (HiPerGator) |
-| `results/` | every reported number (`summary.json`, `v2/`), figures, demo videos |
+| `results/` | every reported number (`summary.json`, `v2/`, `rigor/`), figures, demo videos |
 
-## Data and licences
+## Data, sources and licences
 
-Polymarket Gamma/Data/CLOB APIs and the Kalshi public market-data API (no keys). OpenTTGames (OSAI,
-CC BY-NC-SA 4.0); the demo clips in `results/tracking/demo/` are derived from it under the same
-licence. The TrackNet tennis dataset and pretrained detectors are cited in `src/tennis_tracking/README.md`
-(no broadcast frames are included). No API keys or licensed raw data are committed; raw data lives in
-`data/` (gitignored). The code only reads public data and never places an order.
+- **Market data:** Polymarket Gamma, Data and CLOB APIs and its sports websocket; the Kalshi public
+  market-data API. Public, no keys. Score feeds for the latency study: ESPN's public scoreboard and the
+  WTA public API, read live; only derived timings (scores and timestamps) are committed.
+- **Factors:** Kenneth R. French Data Library (Fama–French market, size, value; momentum).
+- **Video:** OpenTTGames (OSAI, CC BY-NC-SA 4.0); the demo clips in `results/tracking/demo/` are derived
+  from it under the same licence. The TrackNet tennis dataset (Huang et al. 2019) is used for evaluation
+  only; no broadcast frames are included.
+- **Pre-existing components** (not built during the event; disclosed per the Terms §14.2): BlurBall
+  pretrained weights and code (MIT) on WASB-SBDT (MIT), used zero-shot for table-tennis ball detection;
+  TrackNet weights and TennisProject / TennisCourtDetector code (no licence file; used unmodified for
+  evaluation, not vendored or redistributed). Details in `src/tracking/README.md` and
+  `src/tennis_tracking/README.md`. Everything else was written during the event, with AI coding
+  assistants; commits carry a `Co-Authored-By` line.
+- No API keys or licensed raw data are committed; raw data lives in `data/` (gitignored). The code only
+  reads public data and never places an order.

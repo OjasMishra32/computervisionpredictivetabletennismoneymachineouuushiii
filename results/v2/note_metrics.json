@@ -1,0 +1,97 @@
+{
+  "inputs": [
+    "results/v2/causal.json",
+    "results/v2/cost_stress.json",
+    "results/rigor/rigor.json"
+  ],
+  "is": {
+    "days": 206,
+    "capital_usd": 28302.367701375268,
+    "ann_return_pct": 253.0816341588461,
+    "ann_vol_pct": 17.474207770698847,
+    "sharpe_ann": 14.483153541485253,
+    "max_dd_pct": -2.0120402719953496,
+    "turnover_x_per_year": 92.62680087253777,
+    "usd_traded_per_day": 7182.350074785291,
+    "skew": 0.5345103599734671,
+    "kurtosis_pearson": 4.295491038665969,
+    "worst_day_pct": -1.9460007935673853,
+    "worst_month_usd": 2542.5647262976495,
+    "avg_price_per_share": 0.5056052228956524,
+    "fee_c_per_share": 0.6065108671211178,
+    "fee_bps_of_notional": 119.95739752203679,
+    "half_spread_0.5c_bps_of_notional": 98.89138350597909,
+    "net_edge_bps_of_notional": 273.22722125220287,
+    "fees_x2_per_share_c": 0.7749402339026797,
+    "fees_x2_ci_c": [
+      0.5651649237351738,
+      0.9844242457493877
+    ],
+    "fees_x2_months_positive": "7/7",
+    "costs_x2_per_share_c": 0.27494023390267935,
+    "costs_x2_ci_c": [
+      0.06516492373517342,
+      0.4844242457493873
+    ],
+    "costs_x2_sharpe": 2.9935076476264633,
+    "v2_usd_traded_share_of_match_volume": 0.0007174413723413251
+  },
+  "burned_oos": {
+    "days": 40,
+    "capital_usd": 22754.046251146858,
+    "ann_return_pct": 147.88035894965816,
+    "ann_vol_pct": 22.17910889859161,
+    "sharpe_ann": 6.667551867200974,
+    "max_dd_pct": -2.0630607174176805,
+    "turnover_x_per_year": 129.32751283733995,
+    "usd_traded_per_day": 8062.2581058811575,
+    "skew": 0.3256376673081488,
+    "kurtosis_pearson": 3.259698998705011,
+    "worst_day_pct": -2.0630607174176805,
+    "worst_month_usd": -434.1530679579675,
+    "avg_price_per_share": 0.5236197807061158,
+    "fee_c_per_share": 0.9373773843418809,
+    "fee_bps_of_notional": 179.0187114546745,
+    "half_spread_0.5c_bps_of_notional": 95.48913513651759,
+    "net_edge_bps_of_notional": 114.34562971581524,
+    "fees_x2_per_share_c": -0.3386410487769019,
+    "fees_x2_ci_c": [
+      -0.8573447664816245,
+      0.19138938435173888
+    ],
+    "fees_x2_months_positive": "0/3",
+    "costs_x2_per_share_c": -0.8386410487769022,
+    "costs_x2_ci_c": [
+      -1.357344766481625,
+      -0.30861061564826164
+    ],
+    "costs_x2_sharpe": -9.046534166184372
+  },
+  "fee_formula_bps_today": {
+    "q=0.5": 250.0,
+    "q=0.9": 49.999999999999986
+  },
+  "oos_peeks_log": {
+    "lines": 19,
+    "non_blind_lines": 12,
+    "tier0_lines": 7
+  },
+  "holdout": {
+    "matches": 13084,
+    "oos_matches": 2617,
+    "oos_start": "2026-08-25 14:15:00+00:00",
+    "first_start": "2025-10-08 02:00:00+00:00",
+    "last_start": "2026-10-03 07:10:00+00:00",
+    "span_days": 360.21527777777777,
+    "oos_days": 38.704861111111114,
+    "oos_share_of_time": 0.10744924909872569,
+    "oos_share_of_volume": 0.2120194595154718,
+    "time_based_20pct_start": "2026-07-23 06:08:00+00:00"
+  },
+  "data_gaps": {
+    "tapes_missing": 0,
+    "tapes_at_offset_cap_10500_rows": 6,
+    "no_fee_schedule_matches": 2889,
+    "no_fee_schedule_last_start": "2026-03-31 07:05:00+00:00"
+  }
+}

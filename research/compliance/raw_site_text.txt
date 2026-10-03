@@ -1,0 +1,3069 @@
+RAW EXTRACTED TEXT: Gator Quant Hacks 2026, Systematic Trading track + general event rules
+Fetched (read-only GET/render) at 2026-10-03T14:06:32-04:00.
+Sources: https://www.gqhacks.com (SPA: index.html -> /assets/index-CNWGO2eT.js -> lazy route chunks), gqhacks.devpost.com (home, /rules, /details/dates, /resources, /updates, /forum_topics), gqhacks.notion.site/hacker-guide (rendered in a browser, toggles expanded), github.com/dominickdupuy/gatorqh TERMS.md (linked from the site footer and Devpost).
+JS strings are every human-readable string literal in the bundle, in source order, de-duplicated; CSS blocks, class names and SVG paths removed. Line breaks inside a string are shown as ⏎.
+No Systematic Trading Participant Brief PDF is linked anywhere in the live bundles (only Quant and Hardware PDFs exist); the track page says it 'summarizes the Systematic Trading Track Participant Brief'.
+
+====================================================================================================
+0. index.html (live) <head> metadata
+====================================================================================================
+width=device-width, initial-scale=1.0
+Gator Quant Hacks 2026 | Quantitative Finance Competition
+Gator Quant Hacks (GQH) is an in-person quantitative finance competition hosted on campus at the University of Florida in Gainesville, October 2-4, 2026. Florida students and competitors from across the country are welcome. Compete in Quantitative Puzzles, Systematic Trading, or Hardware.
+quantitative finance competition, quant hackathon, GQH 2026, Gator Quant Hacks, UF finance competition, University of Florida quant, algorithmic trading competition, quant puzzles, systematic trading, alpha discovery, QuantED, AlgoGators, Florida finance competition
+QuantED x AlgoGators, University of Florida
+https://www.gqhacks.com/
+Gator Quant Hacks 2026 | Quantitative Finance Competition
+An in-person quantitative finance competition at the University of Florida in Gainesville, October 2-4, 2026. Open to students everywhere - Florida roots, open doors.
+script: /assets/index-CNWGO2eT.js
+
+====================================================================================================
+1. SYSTEMATIC TRADING TRACK PAGE  /assets/SystematicTrackPage-tcbiXROm.js
+sha256[:16]=bc984ddcd83814bd bytes=169985 strings=725
+====================================================================================================
+700 11px "Space Mono", monospace
+RISK PREMIUM
+You are paid for holding a risk that other investors would rather not hold.
+Investors who pay to shed the risk: hedgers, insurance buyers, holders who can’t stomach drawdowns.
+Value and momentum premia show up across stocks, bonds, currencies and commodities.
+Asness, Moskowitz & Pedersen, Value and Momentum Everywhere (2013); Ilmanen, Expected Returns (2011)
+The risk arrives all at once, or the trade gets crowded and the premium shrinks.
+leverage-constrained investors overpay for safe-looking assets
+BEHAVIORAL BIAS
+Other traders make systematic mistakes, and those mistakes leave patterns in prices.
+Investors who underreact to news, then chase the move late, or who anchor on old prices.
+Time-series momentum: an asset’s own past 12-month return predicts its next month across futures markets.
+Moskowitz, Ooi & Pedersen, Time Series Momentum (2012)
+The bias is arbitraged away, or the pattern reverses sharply in a crash.
+nearby lookbacks fail (a lone spike, not a plateau)
+the out-of-sample Sharpe is near zero
+STRUCTURAL CONSTRAINT
+Rules, mandates or institutional habits force some players to trade regardless of price.
+Index funds rebalancing on a set date, funds that must sell downgraded bonds, products rolling futures on a schedule.
+Predictable, mandated flows such as index rebalances and futures rolls.
+The rule changes, or enough traders front-run the flow that its price impact disappears.
+LIQUIDITY PROVISION
+You are paid for supplying immediacy: taking the other side when someone needs to trade now.
+Hurried sellers and buyers who pay you, through the price, to trade right now.
+Short-term reversal: buying what was sold hard yesterday and selling what was bought hard.
+Costs eat the edge, or the hurried trader knew something you didn’t.
+stronger reversals after larger, high-volume moves
+large-cap US equities
+liquid sector ETFs
+major FX pairs
+large-cap crypto
+UNIVERSE
+BEHAVIOR
+HORIZON
+WHO’S ON THE OTHER SIDE
+WHY IT PERSISTS
+TESTABLE PREDICTION
+IT FAILS IF
+We expect ${t.universe||"[universe]"} to ${t.behavior||"[behavior]"} over ${t.horizon||"[horizon]"} because ${t.counterparty||"[counterparty]"}, and the edge persists because ${t.persistence||"[persistence]"}. If true, we should see ${t.prediction||"[prediction]"}; it fails if ${t.falsifier||"[falsifier]"}.
+HYPOTHESIS BUILDER · WHO IS ON THE OTHER SIDE?
+PICK AN EDGE SOURCE · FILL THE BLANKS
+Edge sources
+THE OTHER SIDE
+CLASSIC EXAMPLE
+WHAT WOULD KILL IT
+HYPOTHESIS ·
+WRITTEN BEFORE RESULTS ·
+We expect
+. If true, we should see
+; it fails if
+COPIED ✓
+COPY HYPOTHESIS
+Choose a blank to edit
+· PICK ONE OR WRITE YOUR OWN
+Write your own…
+DAILY
+DAILY BARS
+HOURLY
+HOURLY BARS
+1-MIN
+MINUTE BARS
+JAN
+FEB
+MAR
+APR
+MAY
+JUN
+JUL
+AUG
+SEP
+OCT
+NOV
+DEC
+HOLDOUT PLANNER · WHERE YOUR TEST SET STARTS
+RULE: MOST RECENT 20% OR 2 YEARS, WHICHEVER IS SHORTER
+HISTORY STARTS
+History start year
+--fill
+Bar frequency
+FREQUENCY
+WALK-FORWARD
+ON
+OFF
+Number of folds
+FOLDS
+IN-SAMPLE · BUILD & TUNE HERE
+OOS
+FOLD
+TRAIN
+PURGE GAP
+VALIDATE
+LOCKED · NEVER TOUCHED
+NOW
+WHICH RULE BINDS
+2-YEAR CAP BINDS
+20% BINDS
+20% of ${Ne(c)} would be ${Ne(c*.2)}. The 2-year cap is shorter, so hold out 2 years.
+20% of ${Ne(c)} is ${Ne(c*.2)}, shorter than 2 years, so hold out 20%.
+IN-SAMPLE
+OUT-OF-SAMPLE
+IN-SAMPLE BARS
+OOS BARS
+LOCK IT
+Tune with walk-forward folds inside the in-sample period: always train on the past and validate on what comes next. Leave a purge gap so overlapping labels don’t leak across the boundary. The locked period stays untouched.
+Evaluate it once, at the end. If you look at it and then go back and change things, it isn’t out-of-sample anymore.
+ANN. RETURN
+VOLATILITY
+SHARPE
+MAX DRAWDOWN
+TURNOVER
+WORST MONTH
+SKEW
+Each day: if the last ${t} days’ return is above zero, hold long, otherwise short.${d?" Scale the position to target 12% volatility.":""} ${c===1?"Trade at the next bar.":"Trade on the same bar the signal used."}
+VS 1×
+RED FLAG: INVESTIGATE
+BACKTEST LAB · TIME-SERIES MOMENTUM
+SYNTHETIC MARKET · ILLUSTRATIVE ONLY
+Market history
+MARKET
+LOOKBACK
+BARS
+COST
+BPS / TRADE
+BPS
+COSTS ×2
+Signal timing
+SIGNAL
+LAG 1 BAR ✓
+SAME BAR ✗ (LOOKAHEAD)
+Position sizing
+SIZING
+SIGN ±1
+VOL TARGET
+RULE
+LOOKAHEAD BIAS
+The signal now uses today’s return and also trades on it. You can’t know a bar’s close before it closes, so this backtest is using information it wouldn’t have had. The Sharpe goes up even though the strategy is the same.
+NET OF COSTS
+GROSS
+BUY & HOLD
+LOG SCALE · GROWTH OF $1
+Equity curve for a ${t}-bar momentum rule${a?", including out-of-sample years":", in-sample years only"}.
+OUT-OF-SAMPLE · EVALUATED
+OUT-OF-SAMPLE · LOCKED
+LAST
+EVALUATE ONCE ▸
+TEST SET LEAKED
+You changed the rule after seeing the out-of-sample years. That is tuning on the test set, and those results now overstate what the strategy would do on data it hasn’t seen. Judges cap criterion 5 at 4 for this.
+PEEKS:
+↺ RELOCK & START OVER
+In real life you can’t un-see a result. Report every peek in your note.
+BY YEAR · NET RETURN
+WHERE DID THE PROFIT COME FROM?
+LOCKED
+These numbers include lookahead. None of them are real.
+The out-of-sample column is no longer out-of-sample.
+Out-of-sample came in well below in-sample. Report it anyway. Judges want to see that.
+Out-of-sample held up. Check the by-year bars to make sure it isn’t all from one good period.
+In-sample Sharpe ${X(f.sharpe)} net of ${I} bps. Settle the rule, then evaluate the held-out years once.
+PLATEAU · IN-SAMPLE SHARPE BY LOOKBACK
+In-sample Sharpe ratio across lookbacks from 5 to 250 bars.
+Lookbacks near ${t} score about the same, which makes this result easier to believe.
+Sharpe moves a lot around ${t}. If you picked this value because it scored best, expect it to do worse out of sample.
+Best in-sample:
+bars (
+). Choosing it after looking is one more trial to disclose.
+).join(" ")} · REBALANCE EVERY ${s.hold} DAY${s.hold===1?"":"S"}
+You tried
+rule on a market with no edge. In sample it scored
+. With only one try there’s nothing to cherry-pick from, so this is just noise.
+rules on a market with no edge. The winner’s Sharpe of
+). Out of sample it made
+That’s also luck. Over two years, noise alone can move a Sharpe by about ±0.7. Try running it again.
+OVERFITTING MACHINE · DATA SNOOPING ON PURE NOISE
+NO STRATEGY HERE HAS AN EDGE
+Number of strategy variants
+VARIANTS TO TRY
+RUN ${t.toLocaleString()} BACKTEST${t===1?"":"S"} ▸
+↻ NEW NOISE
+TRIALS RUN
+BEST IN-SAMPLE SHARPE
+LUCK ALONE PREDICTS
+WINNER OUT OF SAMPLE
+IN-SAMPLE SHARPE OF EVERY VARIANT
+YEARS IN SAMPLE · GROSS OF COSTS · NO LOOKAHEAD
+Histogram of ${n.length} in-sample Sharpe ratios.
+EXPECTED BEST FROM PURE LUCK
+BEST IN-SAMPLE
+PICK A NUMBER OF VARIANTS, THEN RUN
+THE WINNER:
+IN-SAMPLE SHARPE
+→ OUT-OF-SAMPLE
+Equity curve of the best in-sample strategy across the in-sample and out-of-sample periods.
+OUT OF SAMPLE
+IN SAMPLE · WHERE IT WAS PICKED
+IN SAMPLE
+OUT OF SAMPLE
+The more rules you try, the better the best one looks, even when none of them work. The cyan line shows how good the luckiest of N useless strategies should look by chance. Bailey and López de Prado’s fix for this is the
+Deflated Sharpe Ratio
+WHAT TO DO INSTEAD
+Write the hypothesis first
+Report how many variants you tried
+Show that nearby parameter values work too
+SMALL-CAP STOCKS
+LARGE-CAP ETFS
+FAST INTRADAY
+UNDER 1% OF ADV
+Small next to the market. Impact is minor.
+1–5% OF ADV
+Noticeable. Spread trades over the day.
+5–10% OF ADV
+Heavy. Your own orders move the price.
+OVER 10% OF ADV
+You are a big part of the market in these names.
+STRATEGY AUM
+NAMES TRADED
+AVG DAILY $ VOLUME / NAME
+GROSS SHARPE (BEFORE COSTS)
+STRATEGY VOLATILITY
+HALF-SPREAD + FEES
+DAILY VOL OF THE NAMES
+CAPACITY DIAL · HOW BIG BEFORE THE EDGE IS GONE
+SQUARE-ROOT IMPACT LAW · ROUGH MODEL
+Example markets
+Net Sharpe against AUM. At ${le(t)}, net Sharpe is ${m.net.toFixed(2)}. Capacity is about ${le(n)}.
+GROSS SHARPE
+EDGE HALF GONE
+CAPACITY
+CAPACITY ≈
+Fees and spread alone eat the edge at any size.
+Edge half gone near ${le(j)}
+NET SHARPE @
+COST PER TRADE
+FIXED +
+IMPACT
+YEARLY COST DRAG
+DAILY TRADE / NAME
+PARTICIPATION
+% OF ADV
+IN YOUR NOTE
+Size positions as a fraction of average daily volume and estimate capacity in dollars. This dial is a rough model: state your own cost, spread and impact assumptions for your market, and show how results change when costs double.
+SUMMARY
+A few sentences.
+The strategy
+The edge
+The headline out-of-sample results
+Economic Foundation
+Performance & Analytical Evidence
+ECONOMIC HYPOTHESIS
+Who is on the other side of your trade, and why the opportunity persists.
+Risk premium
+Behavioral bias
+Structural or institutional constraint
+Liquidity provision
+Innovation
+DATA & UNIVERSE
+What you traded and where the numbers came from.
+Instruments, frequency and date range
+Sources (cite every one)
+How you handled survivorship, corporate actions and missing data
+METHODOLOGY
+How a signal becomes a trade.
+Signal construction
+Portfolio construction
+Rebalancing frequency
+Execution assumptions
+RESULTS
+In-sample vs out-of-sample performance, net of transaction costs.
+Annualized return
+Volatility
+Sharpe ratio
+Max drawdown
+Turnover
+An equity curve
+RISK MANAGEMENT
+How you limit losses, and when you cut risk.
+Position and exposure limits
+Stop or de-risking rules
+Factor and correlation exposure
+Tail and regime risk
+Risk Management Plan
+LIQUIDITY & CAPACITY
+What it costs to trade, and how big it can get.
+Trading costs
+Slippage
+Market impact
+Roughly how much capital the strategy could run before the edge erodes
+Liquidity & Capital Considerations
+LIMITATIONS & NEXT STEPS
+What didn’t work, and what you’d try next.
+What you would test with more time
+What could break the strategy
+NOTE BLUEPRINT · PDF · MAX 5 PAGES
+CLICK A SECTION · ADJUST ITS BUDGET
+5 PAGES INCL. FIGURES & TABLES
+11PT FONT OR LARGER
+STANDARD MARGINS
+REFERENCES & APPENDIX DON’T COUNT
+Page layout preview
+--c
+PAGE ${b+1} · OVER LIMIT
+REFERENCES
+APPENDIX · OPTIONAL
+DOESN’T COUNT
+OUTSIDE LIMIT
+Less space for ${d.name}
+More space for ${d.name}
+OVER THE LIMIT · CUT SOMETHING
+TOTAL PAGES
+SECTION
+AT MINIMUM
+INCLUDE
+Report in-sample and out-of-sample results separately. Every number net of costs.
+State it before the results, not after.
+FEEDS
+Budgets are a suggested starting point. Judges are not required to read the appendix, so anything that matters belongs in the five pages.
+ECONOMIC FOUNDATION
+Strength of the economic hypothesis behind the strategy
+Hypothesis lacks clarity or logical foundation. No clear rationale for why the strategy should work.
+Moderate understanding of economic drivers, but with weak or incomplete logical support.
+Strong economic rationale with clear articulation of why the strategy should perform. Logical, well-supported arguments.
+Exceptional economic understanding, with highly compelling and well-evidenced reasoning for the strategy's success.
+INNOVATION
+Creativity and distinctiveness of the strategy
+Generic or common strategy with no clear differentiation.
+Some innovative aspects, but relies on established frameworks or ideas.
+Strong differentiation from traditional strategies, with unique or novel elements.
+Highly innovative, groundbreaking approach that is original and distinct from conventional strategies.
+RISK MANAGEMENT PLAN
+Comprehensiveness and effectiveness of risk controls
+Minimal or no risk management outlined. Little understanding of key risks.
+Basic risk management plan, but lacking depth or thoroughness.
+Comprehensive framework with clear plans to mitigate identified risks.
+Highly detailed and effective approach, with multiple contingencies and a thorough understanding of strategy risks.
+LIQUIDITY & CAPITAL
+How well the strategy accounts for liquidity and capital deployment
+No clear analysis of liquidity or capital needs. Strategy might be impractical in real markets.
+Some consideration of liquidity and capital, but with gaps or oversights.
+Strong understanding of liquidity and capital needs, with realistic and practical deployment.
+Excellent, thorough analysis demonstrating deep market knowledge and practical application.
+PERFORMANCE & ANALYTICAL EVIDENCE
+Use of historical data or other evidence to demonstrate the strategy's potential
+Little to no evidence. No meaningful analysis supporting performance.
+Some evidence, but limited depth or rigor. Partial performance analysis.
+Strong use of data and analysis. Well-reasoned performance expectations.
+Exceptional analytical rigor, with thorough and convincing evidence of effectiveness.
+RUBRIC SIMULATOR · 5 CRITERIA × 10 POINTS
+TRY SCORING YOUR OWN DRAFT
+CAPPED
+TOTAL
+THE CAP RULE · CRITERION 5
+JUDGES CAN RUN OUR CODE AND IT MATCHES THE NOTE
+NO LOOKAHEAD, NO TUNING ON OUT-OF-SAMPLE
+Performance & Analytical Evidence is capped at 4, no matter how strong the rest of the analysis is.
+Code is not scored separately, but it backs up criterion 5. If either box breaks, criterion 5 is capped at 4.
+TIES
+Performance & Analytical Evidence first, then Economic Foundation.
+NO LEADERBOARD
+There’s no P&L leaderboard. Returns only count as evidence for your argument.
+/webull/gqh-webull-backtrader-starter.zip
+https://developer.webull.com/apis/docs/authentication/IndividualApplicationAPI/
+https://developer.webull.com/apis/docs
+examples/backtest/main.py
+The backtest entry point
+examples/strategies/
+Two examples, dual_ma and portfolio. Yours goes here too
+webull_bt/
+The WebullData feed and report generator; parameters in feed.py
+docs/USAGE_EN.md
+The full guide: settings, writing a strategy, FAQ
+examples/live/
+Simulated live and order placement. Optional, not scored
+LOG IN
+Log in at webull.com and finish account opening if you haven’t.
+APPLY
+Avatar → Developer Tool → OpenAPI Management → My Application, and submit.
+GENERATE A KEY
+Once approved: API Keys Management → Generate Key, for an App Key and App Secret.
+THE WEBULL STARTER
+Start from the Webull kit
+Webull, the track sponsor, put together a starter that connects the open-source backtrader engine to Webull OpenAPI market data. It fetches bars, runs the backtest, prints return, drawdown and Sharpe, and writes an interactive chart report, so all you have to write is the strategy. Any market the Webull API supports is allowed.
+STARTER KIT · PYTHON 3.11+ · BACKTRADER
+Webull backtesting starter
+Two example strategies, a chart report and the full guide. Bring your own API credentials.
+DOWNLOAD KIT .ZIP ↓
+GET YOUR CREDENTIALS
+APPLY EARLY
+Webull estimates approval at 1 to 2 working days. You also need market data access for what you trade, or requests come back 403. See
+_blank
+Webull’s application guide
+RUN IT, THEN MAKE IT YOURS
+FIRST BACKTEST
+Pick the market, symbols, bar size and date range with
+WEBULL_CATEGORY
+WEBULL_SYMBOLS
+WEBULL_TIMESPAN
+WEBULL_FROMDATE
+TODATE
+. Add a strategy as a file in
+STRATEGY_CLASS = YourClass
+WEBULL_STRATEGY
+Everything else is in
+Webull API docs
+. Never commit
+TRACK RULES STILL APPLY
+NET OF COSTS
+The example trades for free. Add costs before you report anything, and justify the bps for your market.
+ADD COSTS
+HOLD OUT THE END
+The example backtests the whole range it fetches. Set your out-of-sample period with the rule above, develop with
+WEBULL_TODATE
+before it, and run the held-out range once at the end.
+SCORED ON THE NOTE
+The kit’s backtest summary is evidence for your note. Your score comes from the rubric further down. Paper and live trading aren’t scored.
+Systematic Trading Track | Gator Quant Hacks 2026
+https://discord.gg/BNB82dKdf
+https://gqhacks.devpost.com
+https://gqhacks.notion.site/hacker-guide
+gatorquanthacks@gmail.com
+OVERVIEW
+HYPOTHESIS
+DATA
+WEBULL STARTER
+BACKTESTING
+PITFALLS
+RISK & CAPACITY
+QUANT NOTE
+JUDGING
+SUBMITTING
+FIND AN
+EDGE
+PROVE IT HONESTLY
+DELIVERABLES
+NOTE + CODE
+≤ 5 PAGES
+SCORED
+DEVPOST
+SUN 11:00 AM
+FRI 7:15 PM
+HACKING BEGINS
+Pick a market and write down why you think there’s an edge in it. Do this before you run a single backtest.
+FRI NIGHT
+Get clean history from sponsor data or a free public source. Settle on your universe, then set aside the most recent stretch as your out-of-sample period and don’t look at it.
+SATURDAY
+BUILD & TEST
+Build the signal, size positions, add realistic costs, and try to break it. Expect most ideas to fail here. Keep a list of the ones that did, because it goes in your note.
+SAT NIGHT
+EVALUATE ONCE
+Run the out-of-sample period once and report the result, good or bad. Then write the quant note around what you found.
+SIGNALS
+COSTS
+RISK
+A HYPOTHESIS UP FRONT
+An economic reason for the edge, written down before you saw any results.
+A FAIR TEST
+Realistic costs, and an out-of-sample period you never tuned on.
+THE FAILURES TOO
+What didn’t work, and how many variants you tried in total.
+CODE THAT RUNS
+A judge can run it and get the same headline numbers that are in your note.
+BACKTEST
+Running a strategy over historical data as if you’d traded it, bar by bar, using only what you would have known at each point.
+The point is to find out where your idea breaks.
+Data you set aside and never use to design or tune the strategy. It’s as close as you can get to testing on the future.
+For this track: the most recent 20% of your history or the most recent 2 years, whichever is shorter.
+S/σ
+SHARPE RATIO
+Average return divided by volatility, annualized. Roughly, how much return you got for the risk you took.
+A Sharpe above 3 on daily data usually means a bug. Check before you celebrate.
+The biggest drop from a peak in your equity curve to the low that came after it.
+Ask yourself whether you’d have kept running the strategy through it.
+How much you trade per year, as a multiple of your capital. More trading means more costs.
+Plenty of strategies that make money gross lose it once you charge for turnover.
+BASIS POINT
+One hundredth of a percent (0.01%). Trading costs are usually quoted in bps per trade.
+Pick a cost for your market and explain where the number came from.
+DATABENTO
+SPONSOR DATA
+Market data for registered teams. Access instructions are in the Discord.
+https://databento.com/docs
+DOCS ↗
+WEBULL
+SPONSOR DATA · TRACK SPONSOR
+Market data through the Webull OpenAPI, for any market it supports, with a ready-made backtesting starter.
+STARTER KIT ↓
+FRED
+FREE · PUBLIC
+Macro and rates data from the St. Louis Fed.
+https://fred.stlouisfed.org
+FRED ↗
+KEN FRENCH LIBRARY
+Factor returns for benchmarking against market, value and momentum.
+https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+LIBRARY ↗
+EQUITIES
+ETFS
+FUTURES
+FX
+OPTIONS
+CRYPTO
+SURVIVORSHIP
+Today’s index members are the companies that survived. Use a point-in-time universe, or say the bias is there and estimate how much it matters.
+CORPORATE ACTIONS
+Splits and dividends make prices jump overnight. Use adjusted data and say how it was adjusted.
+MISSING DATA
+Gaps, halts and stale prints. Say whether you filled or dropped them, and never fill a gap with data from after it.
+CITE EVERY SOURCE
+Sponsor data is optional. Free public sources are allowed. Every source you use is cited in the note.
+ANY LIQUID MARKET
+Any liquid, publicly traded market works. Pick one you can get clean data for.
+Every reported result is net of transaction costs. State the cost in bps per trade and justify it.
+ORIGINAL
+EXTEND, THEN CITE
+Open-source libraries and published research are fine, cited. Copying a strategy is allowed only if you clearly extend it and say what is new.
+AI
+AI TOOLS ALLOWED
+You’re still responsible for every line of code and every claim, and judges may ask you to explain any of it.
+TEAM
+EVERYONE CAN EXPLAIN
+Every team member should be able to explain the strategy if judges ask follow-up questions.
+P-HACKING
+DATA SNOOPING
+Testing dozens of signals, lookbacks or thresholds and reporting only the best one.
+Write the hypothesis first and report how many variants you tried. Show that nearby parameter values also work; a broad plateau is far more convincing than one sharp peak.
+OVERFITTING
+TOO MANY PARAMETERS
+Many free parameters, complex rules, or ML models tuned on a short history.
+Keep the parameter count low and favor simple rules with an economic reason behind them. Use walk-forward or cross-validation that respects time order.
+USING FUTURE INFORMATION
+Using information not available at decision time: same-bar close for signal and fill, revised economic data, future index membership.
+Lag every signal at least one bar. Trade at the next open or close. Use point-in-time data when it exists.
+SURVIVORSHIP BIAS
+ONLY TODAY’S SURVIVORS
+Backtesting only on today’s index members or tickers that still trade.
+Use a point-in-time universe, or state the bias clearly and estimate its effect.
+IGNORING COSTS
+GROSS RETURNS ONLY
+Reporting gross returns, or assuming a high-turnover strategy trades for free.
+Take commissions, spread and slippage out of every number, and show what happens when costs double.
+LEAKING THE TEST SET
+TUNING ON THE TEST SET
+Looking at out-of-sample results, then going back and changing the strategy.
+Don’t touch the out-of-sample period until the end, then evaluate it once.
+MISLEADING SHARPE
+SHARPE WITHOUT CONTEXT
+Sharpe from too little data, overlapping returns, or a strategy short volatility that hides tail risk.
+Report max drawdown, skew and worst month next to Sharpe. If you get a Sharpe above 3 on daily data, assume something is wrong until you find out what.
+REGIME DEPENDENCE
+ONE GOOD PERIOD
+All the profit comes from one period, such as 2020 or 2022.
+Break results down by year or regime and talk about it in the note.
+UNREALISTIC CAPACITY
+IGNORING MARKET IMPACT
+Trading illiquid names at full size, or ignoring market impact.
+Size positions as a fraction of average daily volume and estimate capacity in dollars.
+LIMITS
+Limits per name, per sector, and on gross and net exposure. What’s the most you can lose on a single position?
+DE-RISKING
+Rules, set in advance, for when you cut size and when you scale back in.
+FACTOR EXPOSURE
+Is the edge really just market beta, momentum or value? Regress your returns on those factors to find out.
+TAIL & REGIME
+What happens in a crash, a volatility spike, or a market that stops trending?
+your-strategy/
+├── README.md
+setup + one command to run
+├── requirements.txt
+├── .env.example
+├── data/
+│   └── download.py
+├── src/
+│   ├── signals.py
+│   ├── backtest.py
+│   └── analysis.py
+└── run_all.py
+A README with setup steps and the single command or notebook that reproduces your headline results
+A dependency file: requirements.txt, environment.yml, or equivalent
+All signal, backtest and analysis code
+Data download scripts, or instructions for getting the data
+Raw licensed data
+API keys
+A zip upload instead of a public GitHub link
+Quant note as a PDF, 5 pages or fewer (excluding references and appendix)
+Hypothesis stated before results
+In-sample and out-of-sample results reported separately, net of costs
+Sharpe, max drawdown, turnover, and an equity curve included
+Risk management and liquidity/capacity sections included
+Number of strategy variants tested disclosed
+Public GitHub repo linked, with a README and dependency file
+One command or notebook reproduces the headline numbers
+No API keys or licensed raw data committed
+All team members listed on Devpost
+BACKTESTING HONESTLY
+Most useful this weekend
+Pseudo-Mathematics and Financial Charlatanism
+Bailey, Borwein, López de Prado & Zhu · Notices of the AMS, 2014
+Why backtest overfitting is so easy
+…and the Cross-Section of Expected Returns
+Harvey, Liu & Zhu · Review of Financial Studies, 2016
+Why a t-stat of 2 is not enough after many tests
+The Deflated Sharpe Ratio
+Bailey & López de Prado, 2014
+Adjusting Sharpe for the number of trials
+Advances in Financial Machine Learning
+Marcos López de Prado, 2018
+Purged cross-validation and backtest pitfalls
+STRATEGY IDEAS & INTUITION
+Time Series Momentum
+Moskowitz, Ooi & Pedersen · Journal of Financial Economics, 2012
+Value and Momentum Everywhere
+Asness, Moskowitz & Pedersen · Journal of Finance, 2013
+Expected Returns
+Antti Ilmanen, 2011
+A survey of where returns come from
+Quantitative Trading and Algorithmic Trading
+Ernest Chan
+Practical and beginner-friendly
+RISK & PORTFOLIO CONSTRUCTION
+Active Portfolio Management
+Grinold & Kahn
+The fundamental law, information ratio, sizing
+Databento documentation
+Kenneth French Data Library
+Quantopian lecture archive
+https://github.com/quantopian/research_public
+> LOAD UNIVERSE · 12Y DAILY BARS
+> LAG SIGNALS · 1 BAR
+> CHARGE COSTS · NET OF 5 BPS
+> LOCK OUT-OF-SAMPLE
+TAP A CARD TO SEE HOW TO AVOID IT
+READ
+FIX
+PROBLEM
+HOW TO AVOID IT
+WHAT IT LOOKS LIKE
+-45% 0px -50% 0px
+TRACK 03 · SYSTEMATIC TRADING
+← ALL TRACKS
+STRATEGY · BACKTEST · QUANT NOTE · SPONSORED BY WEBULL
+OCT 2–4, 2026 · ANY LANGUAGE · NO P&L LEADERBOARD
+Find an edge. Prove it honestly.
++ BONUS PRIZE
+Massive
+TRADE THE 8-K · OPTIONS CHALLENGE
+BACKGROUND: A TREND RULE ON SYNTHETIC PRICES
+Scroll to the overview
+READ THE BRIEF
+What you’re doing this weekend
+Your team designs, builds and backtests a systematic trading strategy, then hands in a quant note (five pages max) and the code behind it. There’s no P&L leaderboard. Judges score your reasoning: why the edge should exist, how carefully you tested it, and whether it would hold up in real trading.
+DEVPOST CLOSES
+Note and repo link due on Devpost. You can keep pushing code until 11:00 AM.
+YOUR TASK
+OCT 2–4
+Start from a
+. Then report what you found, including what didn’t work.
+Judges care more about how you tested than how big the returns are. A modest strategy with a solid rationale will score better than a huge backtest that doesn’t hold up. Use any language; most teams use Python.
+IN SCOPE
++ BONUS PRIZE · SPONSORED BY
+Trade the 8-K
+Massive is running a bonus challenge inside this track. You use Massive’s 8-K disclosure categories as the signal and its options data as the instrument, and argue that certain kinds of corporate filings tell you when to put on one of five options strategies. There’s a starter notebook for the data work, and judging is on the research rather than P&L.
+$500 toward the winning team’s prize, plus a month of Massive data for each member
+Starter notebook and Massive’s judging criteria are on the bonus page. All the normal track rules still apply.
+Workshop: Saturday 1:00 PM, Reitz Room 2355
+BONUS CHALLENGE DETAILS →
+WHAT JUDGES WANT TO SEE
+KEY TERMS
+Returns alone don’t win anything. Judges would rather see a Sharpe of 0.6 you can defend than a 4 you can’t explain.
+Who’s on the other side of your trade?
+Every trade has a counterparty. Before you look at any results, write down who’s taking the other side and why the opportunity hasn’t gone away. That’s the core of your Economic Foundation score, and having it in writing makes it harder to fool yourself once backtests start coming in.
+COMMIT IT FIRST
+Commit your hypothesis to the repo before your first backtest. The commit timestamp shows judges it came before the results.
+Get clean data, then hold some back
+Pick a liquid, publicly traded market you can get clean data for. Registered teams get sponsor data from Databento and Webull, and free public sources are fine too. Once you have your history, set aside the most recent part and leave it alone until the end.
+THE OUT-OF-SAMPLE RULE
+DATA PROBLEMS TO HANDLE (AND EXPLAIN IN THE NOTE)
+THE RULES
+Try to break your own backtest
+Below is a small but complete backtest: a trend-following rule on twelve years of synthetic prices. Change the lookback, raise costs, turn on the lookahead bug, and when you’re done tuning, evaluate the out-of-sample period once to see if the edge holds.
+LAG EVERY SIGNAL
+If a signal uses today’s close, you can’t also trade at today’s close. Trade at the next open or close instead. Switch the lab to
+SAME BAR
+DOUBLE THE COSTS
+Report everything net of commissions, spread and slippage, and show what happens when costs double. If the edge disappears, say so.
+REPORT THE MINIMUM
+For in-sample and out-of-sample separately: annualized return, volatility, Sharpe, max drawdown, turnover, and an equity curve.
+Common ways backtests go wrong
+Judges see these every year. Each one makes a backtest look better without making the strategy any better. Catch them yourself and you’ll do better on Economic Foundation and Performance.
+TRYING MANY VARIANTS ON NOISE
+CHECK THE SIMPLE EXPLANATION
+When a result looks good, look for a simpler reason first. Usually it’s a bug, a bias, or exposure to something well known like market beta, momentum or value.
+What happens with real money
+Two of the five judging criteria are about what comes after the backtest: how you control risk, and how much money the strategy could manage before trading costs and market impact eat the edge.
+ESTIMATING CAPACITY
+Writing the quant note
+The quant note is a PDF of at most five pages, figures and tables included. References and an optional appendix of extra charts don’t count toward the limit, but judges aren’t required to read the appendix. Use 11pt font or larger and standard margins.
+How it’s scored
+Judges score five criteria from 1 to 10, for a total out of 50. Code isn’t scored on its own, but it supports your Performance score, and judges will spot-check that it runs and matches your note.
+SCORE CAP
+If judges can’t run your code, or it gives materially different numbers than your note, your Performance and Analytical Evidence score is capped at 4. The same cap applies if they find lookahead bias or tuning on the out-of-sample period.
+How to submit
+Submit two things on Devpost: your quant note as a PDF and a link to a public GitHub repo. Both are required. A note without code, or code without a note, won’t be judged.
+DEVPOST LINK
+GQHACKS.DEVPOST.COM ↗
+DEADLINE
+SUN OCT 4 · 11:00 AM
+DATA ACCESS & HELP
+PARTICIPANT DISCORD ↗
+EVENT INFO
+HACKER GUIDE ↗
+WHAT GOES IN THE REPO
+NEVER COMMIT
+Judges will spot-check that your code runs and that the numbers in your note match what it produces.
+Example repository layout
+EXAMPLE LAYOUT · YOURS CAN DIFFER
+SUBMISSION CHECKLIST
+ALL CHECKED · SUBMIT ON DEVPOST BEFORE 11:00 AM
+FURTHER READING (OPTIONAL)
+DATA & TOOLS
+SYSTEMATIC TRADING TRACK
+Questions? Ask us.
+Post in the
+Discord
+. Gator Quant Hacks runs October 2–4, 2026.
+JOIN THE DISCORD ↗
+← BACK TO ALL TRACKS
+This page summarizes the Systematic Trading Track Participant Brief. The interactive labs use synthetic data. If anything here conflicts with the brief or an organizer announcement, go with the brief or the announcement.
+
+====================================================================================================
+2. SHARED TRACK-PAGE SHELL (deadline clocks, checklist widget)  /assets/shell-Di37dqBY.js
+sha256[:16]=9c0faf15376646bc bytes=59167 strings=18
+====================================================================================================
+CH
+Page sections
+ON THIS PAGE
+DEVPOST SUBMISSION
+SUN OCT 4 · 11:00 AM
+Late submissions are not judged.
+FINAL CODE PUSH
+Commits after 11:00 AM are not reviewed.
+Closed
+${d} days ${n} hours ${i} minutes left
+CLOSED
+EASTERN TIME
+SUBMISSION CHECKLIST
+SAVED IN THIS BROWSER ONLY
+TO GO
+RESET
+COPIED ✓
+COPY
+
+====================================================================================================
+3. MAIN SITE BUNDLE (home, schedule, FAQ, footer)  /assets/index-CNWGO2eT.js
+sha256[:16]=6c9b5636a6ed5954 bytes=313164 strings=712
+====================================================================================================
+assets/SystematicTrackPage-tcbiXROm.js
+assets/shell-Di37dqBY.js
+assets/MassiveTrackPage-DwIHEOet.js
+link[rel="modulepreload"]
+LINK
+@@iterator
+setState(...): takes an object of state variables to update or a function which returns an object of state variables.
+Objects are not valid as a React child (found:
+[object Object]
+). If you meant to render a collection of children, use an array instead.
+act(...) is not supported in production builds of React.
+React.Children.only expected to receive a single React element child.
+React.cloneElement(...): The argument must be a React element, but you passed
+forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported
+https://reactjs.org/docs/error-decoder.html?invariant=
+&args[]=
+Minified React error #
+; visit
+for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Capture
+xlink:actuate xlink:arcrole xlink:role xlink:show xlink:title xlink:type
+<anonymous>
+Lazy
+Suspense
+SuspenseList
+Fragment
+Portal
+Profiler
+StrictMode
+Context
+.Consumer
+.Provider
+ForwardRef(
+ForwardRef
+Memo
+Cache
+DehydratedFragment
+Root
+Text
+Mode
+Offscreen
+Scope
+TracingMarker
+<svg>
+</svg>
+Webkit
+Moz
+__html
+Escape
+ArrowLeft
+ArrowUp
+ArrowRight
+ArrowDown
+Delete
+OS
+ContextMenu
+ScrollLock
+Unidentified
+Backspace
+Tab
+Clear
+Enter
+Shift
+Control
+Alt
+Pause
+CapsLock
+PageUp
+PageDown
+End
+Home
+Insert
+NumLock
+Meta
+CompositionEvent
+TextEvent
+return;
+Animation
+AnimationEnd
+AnimationIteration
+AnimationStart
+Transition
+TransitionEnd
+AnimationEvent
+TransitionEvent
+__bubble
+_reactListening
+__reactFiber$
+__reactProps$
+__reactContainer$
+__reactEvents$
+__reactListeners$
+__reactHandles$
+Unknown
+DELETED
+⏎ Error generating stack:
+<script><\/script>
+input[name=
+][type="radio"]
+meta[property=csp-nonce]
+[rel="stylesheet"]
+Unable to preload CSS for ${E}
+/assets/WALLIE-CBBpxxA_.jpg
+absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#044a94]/60 to-transparent
+absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FA4616]/50 to-transparent
+Wallie
+hidden md:block
+'Space Mono', monospace
+GQH
+text-[#9A9AA8]
+SYSTEMS NOMINAL
+About
+Tracks
+Schedule
+Sponsors
+Team
+FAQ
+Apply
+BOARD NOW ->
+md:hidden text-white
+shatter-btn__glow absolute inset-0
+relative z-10 w-full
+shatter-shard pointer-events-none absolute
+--shard-x
+--shard-y
+--shard-rotate
+absolute left-0 top-0 h-[2000px] w-full ${y??""}
+star-layer-scroll ${s}s linear infinite
+absolute bg-transparent
+absolute top-[2000px] bg-transparent
+transition-transform duration-700 ease-out
+/assets/bluePlanet-DjApZjcu.webp
+/assets/orangePlanet-CQlt4zSS.webp
+$CYGNUS
+$EMBER
+$GAIA
+xMidYMid meet
+planet__saturn-ring planet__saturn-ring--outer planet__saturn-ring--${f}
+planet__saturn-ring planet__saturn-ring--${f}
+planet__saturn-ring planet__saturn-ring--inner planet__saturn-ring--${f}
+planet__ring-debris planet__ring-debris--${f}
+planet__asteroid-track planet__asteroid-track--${s.lane}
+planet__ring planet__ring--${f}
+planet__moon planet__moon--${f}
+planet__moon-size planet__moon-size--${s}
+(hover: hover) and (pointer: fine)
+--sy
+planet planet--${F.id} ${Xe?"is-active":""}
+--planet-accent
+--planet-hud-border
+--planet-ring
+--planet-ring-active
+planet__corner planet__corner--tl
+planet__corner planet__corner--tr
+planet__corner planet__corner--bl
+planet__corner planet__corner--br
+planet-hud planet-hud--${F.hudAlign}
+SPACE MARKET
+LOCKED
+AUTO-SCAN
+GATOR
+QUANT
+HACKS
+https://forms.gle/qC2C5sS3WHrVZX8j6
+_blank
+hero-space relative min-h-screen overflow-hidden
+absolute inset-0 pointer-events-none
+absolute left-1/2 bottom-[-60px] h-[300px] w-[600px] -translate-x-1/2
+relative mt-6
+hero-panel relative w-full max-w-[680px]
+Gator Quant Hacks 2026
+hero-title-stack mb-8 w-full max-w-[1320px]
+clamp(62px, 9.6vw, 140px)
+clamp(60px, 9.2vw, 134px)
+hero-title-layer absolute select-none uppercase
+'Russo One', sans-serif
+hero-title-main relative uppercase
+translate(0px, 36px) scaleY(-1)
+blur(0.5px)
+'Orbitron', sans-serif
+clamp(27px, 3.3vw, 44px)
+Build the Model.
+Chart the Market.
+mission-console__corner mission-console__corner--tl
+mission-console__corner mission-console__corner--tr
+mission-console__corner mission-console__corner--bl
+mission-console__corner mission-console__corner--br
+mission-console__corner-step mission-console__corner-step--tl
+mission-console__corner-step mission-console__corner-step--tr
+mission-console__corner-step mission-console__corner-step--bl
+mission-console__corner-step mission-console__corner-step--br
+relative z-10 p-1
+text-[#2e86ff]
+'Press Start 2P', monospace
+clamp(10px,0.95vw,15px)
+MISSION BRIEFING
+clamp(13px,1.05vw,16px)
+Choose a track, build your model, and climb the board through 36 hours of open market. A fully in-person event held on the University of Florida campus in Gainesville.
+HACK
+MENTOR
+VOLUNTEER
+SPACE MARKET OPEN // BUILD MODELS // PLOT YOUR COURSE //
+0px 0px -8% 0px
+EVENT FUNDING
+CREW
+DURATION
+36 HOURS
+SPONSORS
+stats-shell absolute inset-0 pointer-events-none
+clamp(9px, 0.9vw, 13px)
+MISSION TELEMETRY
+--track-accent
+--track-glow
+--track-outline
+--track-shadow
+stats-card__corner stats-card__corner--tl
+stats-card__corner stats-card__corner--tr
+stats-card__corner stats-card__corner--bl
+stats-card__corner stats-card__corner--br
+stats-card__corner-step stats-card__corner-step--tl
+stats-card__corner-step stats-card__corner-step--tr
+stats-card__corner-step stats-card__corner-step--bl
+stats-card__corner-step stats-card__corner-step--br
+translateY(16px)
+clamp(17px, 1.9vw, 28px)
+text-[#b8c0cf]
+clamp(10px, 0.8vw, 13px)
+mb-7 md:mb-9
+--ribbon-bg
+--ribbon-text
+--ribbon-border
+--ribbon-shadow
+--ribbon-depth
+clamp(11px, 1.3vw, 13px)
+MISSION DOSSIER: WHAT IS GQH?
+mb-4 md:mb-6
+max-w-[960px]
+typewriter 3s steps(24, end)
+SPACE MARKET OPEN // SECTOR GQH ⏎ 36 hours on the clock. ⏎ Your model is the only instrument you've got.
+text-white mb-6
+The Quantitative Challenge
+text-white mb-5 leading-relaxed
+Gator Quant Hacks is a 36-hour, in-person competitive event held at the University of Florida in Gainesville, where undergraduate and graduate students build algorithmic trading systems, risk analytics platforms, and predictive market models.
+Compete across three tracks and showcase your work to quantitative firms and fintech recruiters.
+track-planet track-planet--${u}
+track-planet__ember-orbit track-planet__ember-orbit--far
+track-planet__ember-orbit track-planet__ember-orbit--near
+FPGA Hardware Trading
+Trade at the speed of silicon.
+Warren B. Nelms Institute
+Teams borrow a Tang Nano 20K FPGA and build a trading core in VHDL. It reads price packets over UART, tracks a 16-price moving average for each item, and answers BUY, SELL or NONE. Judges score correctness, reliability, protocol conformance and latency. Suited to students interested in digital design, embedded systems or low-latency trading.
+FIGHTER PROFILE: SILICON CORE | LOW LATENCY
+FPGA
+VHDL
+UART
+Low Latency
+SILICON
+TANG NANO 20K | 115200 BAUD
+Quantitative Puzzles
+Low barrier, high upside.
+QuantED
+A problem-driven track centered on probability, combinatorics, and game theory. No prior finance experience or datasets required — the most accessible entry point in the event.
+FIGHTER PROFILE: PUZZLE ENGINE | FAST THINKING
+Probability
+Combinatorics
+Game Theory
+No Dataset
+RIDDLE
+LOGIC LOOPS | OPEN ENTRY
+Systematic Trading
+Optimize the full strategy.
+Webull
+Participants build and refine a trading strategy using historical data and quantitative modeling. Performance is evaluated through metrics such as Sharpe ratio, drawdown, and turnover. This track is geared toward students with programming experience who want to apply technical skills to a more realistic trading workflow.
+FIGHTER PROFILE: STRATEGY CORE | RISK-ADJUSTED RUN
+Sharpe Ratio
+Drawdown
+Turnover
+Historical Data
+VECTOR
+BACKTEST LOOP | EXECUTION STACK
+INPUT
+TEXTAREA
+SELECT
+game-modes-scanline absolute inset-0
+absolute inset-0 opacity-40
+mb-5 text-center
+var(--font-body)
+04 / MISSION TRACKS
+Select Your Track
+pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#5db8ff]/60 to-transparent
+pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FA4616]/45 to-transparent
+craft-panel ship-active !min-h-[58px] !min-w-[58px] scale-[0.66]
+--track-panel-glow
+NAV COMPUTER · TRACK SELECT
+< > TO SCAN   •   ENTER TO LOCK
+blink 1s step-end infinite
+group craft-card overflow-hidden cursor-pointer outline-none focus:outline-none focus-visible:outline-none ${y===b?"craft-card--selected":""} ${s===b?"craft-card--focused":""}
+absolute left-0 right-0 top-0 h-[3px]
+absolute bottom-0 left-0 right-0 h-[2px] opacity-60
+craft-card__corner craft-card__corner--tl
+craft-card__corner craft-card__corner--tr
+craft-card__corner craft-card__corner--bl
+craft-card__corner craft-card__corner--br
+craft-card__corner-step craft-card__corner-step--tl
+craft-card__corner-step craft-card__corner-step--tr
+craft-card__corner-step craft-card__corner-step--bl
+craft-card__corner-step craft-card__corner-step--br
+SECTOR 0
+/ TRACK
+SELECTED
+ACTIVE SLOT
+craft-panel transition-transform duration-300 group-hover:scale-105 ${y===b||s===b?"ship-active scale-105":""}
+clamp(25px, 3vw, 34px)
+SPONSORED BY
+craft-metric mb-4
+CALL SIGN
+craft-briefing mt-auto
+OPEN MISSION BRIEF
+mb-4 text-center
+Not sure which track? Teams can pivot during the event.
+text-[#6d83a6]
+ALL FIGHTERS ELIGIBLE FOR THE MAIN PRIZE POOL
+Day 1
+Friday, October 2
+LAUNCH SECTOR
+Check-in Opens
+Grand Ballroom entrance · badge and swag pickup, until 5:30 PM
+Walk-In Check-in
+Grand Ballroom entrance, until 6:00 PM
+Commencement Ceremony
+Reitz Union Grand Ballroom
+Opening Remarks
+Tracks, rules, Discord, and the submission deadline
+Sponsor segment
+MLH Segment
+Major League Hacking presentation
+Rules Recap, Q&A & Team Formation
+Find teammates in the Grand Ballroom
+Hacking Begins
+Data and API access released
+FPGA Board Handout
+Hardware track · IoT Students Club · Reitz Room 2345
+Dinner Served
+Outside Turlington Hall, until 8:30 PM
+Webull Workshop
+Open API & paperTrade · Reitz Room 2365
+Overnight Hacking
+AC Hotel conference rooms (open 24/7) · continues through Saturday morning
+Day 2
+Saturday, October 3
+VOLATILITY CORE
+Breakfast Served
+Outside Turlington Hall, until 9:45 AM
+MLH Workshop
+Hacking with GitHub Copilot · Reitz Room 2355
+IoT Workshop
+Reitz Room 2365
+Lunch Served
+Outside Turlington Hall, until 1:00 PM
+Massive Workshop
+Reitz Room 2355
+Webull & DSI Workshops
+Webull · Reitz Room 2365  |  DSI · Reitz Room 2355
+Webull Networking Event
+Reitz Room 2355 · bring printed resumes
+Track Check-ins
+Grand Ballroom · sign up for a Sunday presentation slot
+Outside Turlington Hall, until 8:15 PM
+MLH Mini-Event
+Grand Ballroom · interactive challenge from Major League Hacking
+AC Hotel conference rooms (open 24/7) · continues through Sunday morning
+Midnight Snack
+AC Hotel conference rooms
+Day 3
+Sunday, October 4
+FINAL BUILD PUSH
+Outside Turlington Hall, until 9:30 AM
+Quant Puzzles Submissions Due
+Quantitative Puzzles & Brainteasers · Devpost closes
+Devpost Submissions Due
+Hardware and Systematic Trading tracks
+Hacking Ends
+Final code pushes close
+FPGA Board Return
+Quant Puzzles Top 5 Announced
+Top 5 teams advance to the Quant Puzzles expo
+Expo & Judging Begins
+Matthews Suite · live presentations: 5 minutes + Q&A · Quant Puzzles top 5 in Reitz Room 2365, 1:00–2:00 PM
+Judging Closes
+Expo concludes
+Closing Ceremony
+Reitz Union Grand Ballroom · Webull segment
+Winners Announced
+Track and sponsor prizes
+Event Ends
+See you next year
+KEY EVENT
+REFUEL
+WAYPOINT
+mb-12 md:mb-16
+'JetBrains Mono', monospace
+36-HOUR MISSION
+mb-4 text-white
+var(--font-heading)
+clamp(18px, 4vw, 40px)
+MISSION TIMELINE
+Three days. One clear schedule through launch, building, and final presentations.
+pixel-soft-pill relative transition-all ${u===_?"text-white":"hover:brightness-110"}
+--soft-bg
+--soft-text
+--soft-border
+--soft-shadow
+--soft-depth
+'Rajdhani', sans-serif
+schedule-shell mx-auto max-w-[980px] overflow-hidden
+h-1 w-full
+clamp(26px, 4vw, 34px)
+'DS-Digital', 'Orbitron', sans-serif
+clamp(24px, 3vw, 30px)
+clamp(24px, 3.2vw, 30px)
+/assets/Celsius-BXjm_G3a.png
+/assets/Citadel-aHOpFylt.png
+/assets/Databento-BNAguQ9e.png
+/assets/ElevenLabs-DoVgP2Mx.png
+/assets/Gemini-CbTslZ-R.png
+/assets/IoTStudentsClub-DKbr2XaG.png
+/assets/MLH-BqVLiHOZ.png
+/assets/jane-street-BlN7XxqU.png
+/assets/Polymarket-5i1nbDYw.png
+/assets/PureButtons-TXEyzYEn.svg
+/assets/Snowflake-BqvEUNOZ.svg
+/assets/Solana-C6cIiemm.png
+/assets/TigerData-NCDEKABt.svg
+/assets/UFMath-DQG45QA4.png
+/assets/UFStats-X-faYhOH.png
+/assets/Vultr-B0YFzx8t.png
+https://www.webull.com/
+Jane Street
+https://www.janestreet.com/
+max-w-[86%] max-h-[76%] md:max-w-[80%] md:max-h-[70%]
+Polymarket
+https://polymarket.com/
+max-w-[76%] max-h-[58%] md:max-w-[70%] md:max-h-[52%]
+Citadel Securities
+https://www.citadelsecurities.com/
+Databento
+https://databento.com/
+max-w-[94%] max-h-[84%] md:max-w-[88%] md:max-h-[78%]
+Massive
+https://massive.com/
+ElevenLabs
+https://elevenlabs.io/
+IoT Students Club
+https://iot.institute.ufl.edu/iot-students-club/
+max-w-[62%] max-h-[88%] md:max-w-[56%] md:max-h-[82%]
+UF Mathematics
+https://math.ufl.edu/
+max-w-[96%] max-h-[96%] md:max-w-[85%] md:max-h-[85%]
+UF Statistics
+https://stat.ufl.edu/
+Celsius
+https://www.celsius.com/
+max-w-[84%] max-h-[70%] md:max-w-[78%] md:max-h-[62%]
+Snowflake
+https://www.snowflake.com/
+max-w-[84%] max-h-[64%] md:max-w-[78%] md:max-h-[58%]
+Pure Buttons
+https://mlh.link/MLH-PureButtons-hackathons
+max-w-[80%] max-h-[64%] md:max-w-[74%] md:max-h-[58%]
+Major League Hacking
+https://mlh.io/
+max-w-[85%] max-h-[76%] md:max-w-[79%] md:max-h-[70%]
+Gemini
+https://gemini.google.com/
+max-w-[82%] max-h-[64%] md:max-w-[76%] md:max-h-[58%]
+Solana
+https://solana.com/
+max-w-[164%] max-h-[128%] md:max-w-[152%] md:max-h-[116%]
+Vultr
+https://www.vultr.com/
+Tiger Data
+https://www.tigerdata.com/
+max-w-[88%] max-h-[68%] md:max-w-[82%] md:max-h-[62%]
+mb-9 text-center md:mb-12
+--pill-bg
+--pill-text
+--pill-border
+--pill-shadow
+--pill-depth
+POWERED BY
+text-white mb-4 text-center
+clamp(10px, 2vw, 16px)
+THESE COMPANIES BUILT THE TREASURE VAULT
+SPONSORS CONFIRMED
+mb-6 md:mb-8
+mb-3 text-center
+LEAD SPONSOR
+max-h-[70%] max-w-[80%] object-contain md:max-h-[75%] md:max-w-[85%]
+GOLD SPONSORS
+LOGO
+text-center mt-8
+INTERESTED IN JOINING THE ROSTER?
+mailto:dominickdupuy@ufl.edu?subject=Power%20Sponsor%20Inquiry
+--arrow-bg-top
+--arrow-bg-bottom
+--arrow-text
+--arrow-border
+--arrow-shadow
+--arrow-depth
+BECOME A POWER SPONSOR
+/assets/dominick-dupuy-pUdbNnqI.jpg
+/assets/anna-claire-skipper-CXDvbl3F.jpg
+/assets/alice-krupitsky-CgcxG4G9.jpg
+/assets/kenzie-kemerson-CoNxuy6c.jpg
+/assets/xander-robbins-BpEktaVZ.jpg
+/assets/jai-patel-DX_ZmNOQ.jpg
+/assets/christophe-muracciole-DdXGRy87.jpg
+/assets/bader-al-saloum-B16hpiJd.jpg
+/assets/oliver-deng-CBQPj28g.jpg
+/assets/cristobal-aguilera-BIhP0qIT.jpg
+/assets/sebastian-luscher-Po6jjIux.jpg
+/assets/eric-schwarz-DcHRtwnO.jpg
+/assets/andria-gonzalez-lopez-BBXPIcgq.jpg
+/assets/salud-avila-Gs2IkliF.jpg
+/assets/alejandro-pose-santana-DR7VpiYN.jpg
+/assets/nicolas-murguia-bkioK5IF.jpg
+/assets/logan-dapp-CUMpWVdm.jpg
+/assets/tasmin-alam-Dv5idDkh.jpg
+Dominick Dupuy
+Co-Founder
+https://www.linkedin.com/in/dominick-dupuy/
+Anna Claire Skipper
+https://www.linkedin.com/in/anna-claire-skipper/
+Xander Robbins
+Vice President
+https://www.linkedin.com/in/xander-robbins/
+Alice Krupitsky
+Head of Marketing
+https://www.linkedin.com/in/alicekrupitsky/
+Kenzie Kemerson
+Digital Designer & Photographer
+https://www.linkedin.com/in/kenzie-kemerson-b2529731b/
+Eric Schwarz
+Judge
+https://www.linkedin.com/in/eric-a-schwarz/
+Andria Gonzalez Lopez
+https://www.linkedin.com/in/andria-gonzalez-lopez-79713b21b/
+Salud Avila
+https://www.linkedin.com/in/saludavila/
+Alejandro Pose Santana
+https://www.linkedin.com/in/alejandro-pose-santana-019452268/
+Nicolas Murguia
+https://www.linkedin.com/in/nicolasmurguia/
+Logan Dapp
+https://www.linkedin.com/in/logandapp/
+Jai Patel
+Volunteer
+https://www.linkedin.com/in/jai-patel-jp/
+Christophe Muracciole
+https://www.linkedin.com/in/christophe-muracciole/
+Bader Al-Saloum
+https://www.linkedin.com/in/bader-al-saloum/
+Oliver Deng
+https://www.linkedin.com/in/oliver-deng/
+Cristobal Aguilera
+https://www.linkedin.com/in/cristobalaguilera14/
+Sebastian Luscher
+https://www.linkedin.com/in/sebastianluscher/
+Tasmin Alam
+https://www.linkedin.com/in/tasmin-alam-0790b1349/
+text-white mb-1
+text-[#00FFB3]
+THE CREW
+MEET THE TEAM BEHIND GATOR QUANT HACKS
+mb-8 mt-16 text-center md:mt-20
+text-white text-center
+VOLUNTEERS
+JUDGES
+WHO CAN PARTICIPATE?
+Open to all university students.
+Gator Quant Hacks is open to all university students, including both undergraduate and graduate students. Students from universities across the United States are welcome. No prior experience in finance is required, but basic programming skills are recommended.
+IS THE EVENT IN PERSON OR VIRTUAL?
+In person only. No remote play.
+Gator Quant Hacks is a fully in-person event held at the Reitz Union on the University of Florida campus in Gainesville, FL. There is no virtual or hybrid option, so plan to be on site for the full weekend, October 2-4, 2026.
+WHAT SHOULD I BRING?
+Laptop, chargers, and your build energy.
+Bring a photo ID (student or government), your laptop and chargers, headphones, a water bottle, a jacket, and printed resumes for Saturday's Webull networking event. The AC Hotel conference rooms are open 24/7 for hacking; if you want to sleep, stay with a friendly Gator or book a nearby hotel room. Meals are provided all weekend.
+HOW DO TEAMS WORK?
+No team yet? No problem.
+You don't need a team before you arrive. Find teammates on the Discord, or stay for team formation right after opening remarks on Friday at 6:58 PM. Team-size rules will be published with the track briefs.
+ARE THERE PRIZES?
+Treasure vault is live.
+Yes. Sponsor prizes include Databento data credits, ElevenLabs subscriptions, and MLH partner prizes from Vultr, Solana, Tiger Data, Snowflake, and Gemini. Track prizes are one per team member: Systematic Trading 1st place wins an Acer Nitro 34" curved monitor plus 3 months of ElevenLabs Pro, and 2nd a Samsung Galaxy Watch8; Quantitative Puzzles 1st wins a Logitech MX Master 3S, and 2nd Beats Studio Buds +; Hardware 1st wins a Beats Pill speaker plus 3 months of Apple Music.
+WHAT KIND OF WORKSHOPS ARE OFFERED?
+Power-ups from industry experts.
+Friday night brings an MLH workshop on hacking with GitHub Copilot and a Webull session on its Open API and paperTrade. Saturday adds speaker talks, a sponsor workshop, an advanced technical workshop, and mini-events.
+IS THERE FINANCIAL AID FOR TRAVEL?
+Travel reimbursement offline.
+No, we will not be offering travel reimbursement for participants. Since the event is in person in Gainesville, please plan your own travel and lodging.
+WHAT TECHNOLOGIES CAN I USE?
+Bring your preferred toolkit.
+Allowed tools and data sources will be listed in each track brief. Popular choices include Python (pandas, scikit-learn), R, and sponsor data and APIs such as Databento and Webull.
+HOW ARE PROJECTS JUDGED?
+Boss-fight scoring rubric.
+Submissions are due on Devpost by 11:00 AM Sunday (9:00 AM for the Quantitative Puzzles track), followed by live 5-minute presentations with Q&A from 1:00 to 3:00 PM. Track-specific judging criteria will be published with the track briefs.
+2-digit
+url(#crt)
+pointer-events-none absolute inset-0
+relative z-10
+[ GATOR QUANT ONBOARD COMPUTER ]
+text-[#dce9ff]
+'VT323', monospace
+// HELP_SCREEN ACTIVE // TERMINAL TIME
+text-[#fa4616]
+[ VOLATILITY INDEX: 4,820 PTS ]
+text-[#9cc9ff]
+[ INSERT COIN TO SAVE LOG ]
+text-[#69d7ff]
+COMMAND LIST
+OUTPUT PANE
+text-[#faad94]
+> LOG ENTRY // 0${u+1}
+mailto:gatorquanthacks@gmail.com
+gatorquanthacks@gmail.com
+// TRANSMISSION CHANNEL OPEN
+/assets/trophy-CIhiRnW9.webp
+DAYS
+HOURS
+MINUTES
+SECONDS
+footer-cta-asteroids absolute left-1/2 top-1/2 h-[140vmax] w-[140vmax] opacity-[0.18]
+translate(-50%, -50%)
+asteroidRotate 80s linear infinite
+text-center lg:text-left
+FINAL APPROACH
+mb-5 text-white
+clamp(22px, 2.2vw, 28px)
+LAUNCH WINDOW OPENS OCTOBER 2ND
+36 hours. $25,000 in event funding. One leaderboard. In person at the University of Florida.
+2px solid #294f7d
+transform 180ms ease, box-shadow 180ms ease
+clamp(16px, 2.1vw, 24px)
+LAUNCH SEQUENCE
+clamp(10px, 1vw, 12px)
+APPLY TO CLAIM YOUR SEAT
+clamp(54px, 6vw, 78px)
+relative w-full max-w-[360px]
+PRIZE PAYLOAD
+pointer-events-none absolute inset-x-4 top-4 h-px bg-gradient-to-r from-transparent via-[#1f67be]/60 to-transparent
+pointer-events-none absolute inset-x-6 bottom-5 h-px bg-gradient-to-r from-transparent via-[#1f67be]/35 to-transparent
+orbPulse 2.8s ease-in-out infinite
+trophyFloat 3.4s ease-in-out infinite
+h-[218px] w-[218px] translate-x-[16px] object-contain
+PAYLOAD BAY ONLINE
+GRAND PRIZE TROPHY
+https://discord.gg/kQX9ZtWFHG
+https://github.com/dominickdupuy/gatorqh/blob/main/TERMS.md
+Contact Us
+Join the Discord
+/apply
+Code of Conduct
+https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
+Terms & Conditions
+https://www.instagram.com/gqh_2026/
+Instagram
+https://www.linkedin.com/company/gator-quant-hacks
+LinkedIn
+Discord
+absolute inset-0 opacity-25
+var(--font-title)
+clamp(42px, 4.8vw, 72px)
+© 2026 Gator Quant Hacks. All rights reserved.
+/rocket.webp
+/pixelFires.webp
+--intro-duration
+--launch-delay
+--fire-delay
+--ignition-duration
+--launch-duration
+--overlay-fade-duration
+--rocket-flame-sprite
+intro-pad__mast intro-pad__mast--left
+intro-pad__mast intro-pad__mast--right
+LC-01
+SCROLL DOWN TO LAUNCH
+/interest-form
+/intrest-form
+/tracks/quant-puzzles
+/tracks/hardware
+/tracks/systematic-trading
+/tracks/systematic-trading/massive
+site-shell min-h-screen
+https://mlh.io/na?utm_source=na-hackathon&utm_medium=TrustBadge&utm_campaign=2026-season&utm_content=white
+https://logged-assets.s3.amazonaws.com/trust-badge/2027/mlh-trust-badge-2027-white.svg
+Major League Hacking 2026 Hackathon Season
+hull-frame__vent hull-frame__vent--left
+GQH-01
+ORBIT STABLE
+hull-frame__vent hull-frame__vent--right
+hull-frame__side hull-frame__side--left
+hull-frame__light hull-frame__light--orange
+hull-frame__light hull-frame__light--blue
+hull-frame__side hull-frame__side--right
+hull-frame__dock-light hull-frame__dock-light--blue
+hull-frame__dock-light hull-frame__dock-light--orange
+hull-frame__corner hull-frame__corner--tl
+hull-frame__corner hull-frame__corner--tr
+hull-frame__corner hull-frame__corner--bl
+hull-frame__corner hull-frame__corner--br
+site-ambience__stars site-ambience__stars--far
+site-ambience__stars site-ambience__stars--mid
+site-ambience__stars site-ambience__stars--near
+
+====================================================================================================
+4. MASSIVE BONUS SUBTRACK PAGE ('Trade the 8-K', inside Systematic Trading)  /assets/MassiveTrackPage-DwIHEOet.js
+sha256[:16]=7c080327c1bb4858 bytes=113066 strings=515
+====================================================================================================
+CFO_APPOINTMENT
+BUYBACK
+GUIDANCE_RAISED
+LITIGATION
+M&A_COMPLETED
+CEO_DEPARTURE
+DIVIDEND_INCREASE
+RESTRUCTURING
+700 9px "Space Mono", monospace
+REALIZED > IMPLIED
+INSIDE THE CONE
+700 10px "Space Mono", monospace
+TODAY
+1 · Long call
+HURT
+The option gives back in IV what it gained in direction.
+2 · Covered call
+PAID
+You sold the call, so the collapse is your profit.
+3 · Protective put
+On the hedge leg. A bought put wants IV to rise.
+4 · Collar
+NEUTRAL
+Roughly, being one bought and one sold option.
+5 · Cash-secured put
+You sold the put, so the collapse is your profit.
+The stock moved
+a share. Direction was right; the volatility collapse took more back.
+to the IV collapse
+IMPLIED MOVE LAB · WHAT THE CHAIN CHARGED vs WHAT HAPPENED
+ILLUSTRATIVE NUMBERS
+THE PRE-EVENT SESSION, t_pre
+The session before the filing. Its chain cannot know the news, so it is where the implied move is read.
+SPOT
+ATM CALL
+ATM PUT
+IMPLIED MOVE = (CALL + PUT) ÷ SPOT
+AFTER THE 8-K
+What the stock actually did. Drag it and watch where it lands against the band the chain priced.
+REALIZED MOVE
+Implied range ${(i*(1-j)).toFixed(2)} to ${(i*(1+j)).toFixed(2)}. The stock ended at ${L.toFixed(2)}.
+WHAT THE CHAIN PRICED
+BUYERS OF OPTIONS WIN
+SELLERS OF OPTIONS WIN
+The realized move beat the implied move. The chain under-priced the news, so whoever bought the straddle came out ahead.
+The realized move fell short of the implied move. The chain over-charged for drama that did not arrive, so whoever sold it kept the difference.
+|REALIZED| ÷ IMPLIED
+NEAR 1 · PRICED ABOUT RIGHT
+ABOVE 1 · A MOVE THE CHAIN DID NOT SEE
+BELOW 1 · THE MARKET OVER-PAID
+THE VOLATILITY TRAP
+The most common novice result: the stock moved the right way and the long call still lost money. Implied volatility collapses the moment the uncertainty resolves.
+IV CRUSH AFTER THE NEWS
+ON
+OFF
+DAYS TO EXPIRY
+IV CHANGE AFTER THE NEWS
+LONG ATM CALL · P&L PER SHARE
+IV
+% · COST $
+DIRECTION
+VOLATILITY
+IV falling after the news
+TOTAL
+× 100 per contract
+Modelled with Black-Scholes, zero rates, strike at spot. Pre-news IV is set so the model straddle costs your $
+WHICH SIDE OF IT ARE YOU ON?
+State which side you are on in your quant note.
+Long call
+VETERAN
+Up, and soon
+Buy 1 ATM call
+Debit
+Buy 1 call, strike A ≈ spot
+Unlimited
+The premium paid
+A + premium
+Guidance raised, an acquisition completed, a large contract award, a buyback authorized: categories where the disclosure is unambiguously good news and you can argue the move was not already in the price.
+The move must arrive before expiry and be bigger than the premium. A stock that rises 2% when you paid 4% for the call is a loss. Compare your realized move against the implied move, never against zero.
+Exposed. Implied volatility collapses once the news is out, and the call gives back in IV what it gained in direction.
+Covered call
+ROOKIE
+Flat to mildly up
+Own 100 shares, sell 1 call
+Credit
+Own 100 shares, sell 1 call at strike A above spot
+(A − stock price) + premium received
+The stock's own downside, cushioned by the premium
+Stock price − premium
+A dividend increase or a buyback in a name you hold. More interesting here: any category where you can show the market over-pays for the implied move. That over-payment is the premium you collect.
+The tail is opportunity risk: a merger 8-K that gaps the stock 30% above your strike is the disaster case. Also mind early assignment on the short call around dividends.
+Paid by it. You sold the volatility, so the post-news collapse in IV works for you.
+Protective put
+Up, but nervous
+Own 100 shares, buy 1 put
+Own 100 shares, buy 1 put at strike A
+Unlimited, the upside is uncapped
+(Stock price − A) + premium paid
+Stock price + premium
+A regulatory investigation opened, material litigation disclosed, a cybersecurity incident, an impairment: bad-but-ambiguous news where you want to stay long and cap the left tail.
+Insurance has a cost, and paid every event it compounds into a real drag. The honest test is what the full programme cost across all events in the category, winners included.
+Hurt on the hedge leg. The put wants IV to rise after you are in.
+Collar
+Up, but nervous, cheaply
+Own 100 shares, buy put A, sell call B
+Either, often ~zero
+Own 100 shares, buy put A, sell call B, A < spot < B
+(B − stock price), adjusted for the net debit or credit
+(Stock price − A), adjusted the same way
+Stock price + net debit, or stock price − net credit
+Holding through a restructuring, a workforce reduction, a strategic review: an event you must sit through, trading away the upside tail to remove the downside one.
+Two strikes now, so your rule must fix both defensibly. The zero-cost constraint is the cleanest way: it picks B once you have chosen A.
+Roughly neutral, being one of each: long the put, short the call.
+Cash-secured put
+Flat to up, happy to own it
+Sell 1 put, set the cash aside
+Sell 1 put at strike A, hold A × 100 in cash
+The premium received
+Substantial: down to A minus the premium, if the stock goes to zero
+A − premium
+A share repurchase programme announced, an insider purchase, a restructuring you read as a floor: cases where a dip is your entry rather than your risk.
+The largest risk in this list. It is an obligation, not an opportunity, and being American-style you can be assigned early. Show your sizing and your worst single event, not just the average.
+Paid by it. Like the covered call, you sold the volatility.
+This category moves stocks more than the market expects, and I can call the direction.
+Defending the sign is a strong claim and worth real credit if it survives the sealed window.
+This category is over-priced: the market pays up for drama that does not arrive.
+The most novel direction available here, and the one that most needs the placebo control to rule out “you were just short volatility in a calm year.”
+You have to hold this name through the event.
+The question becomes what the protection costs, priced across the whole category rather than cherry-picked on the bad events.
+NET DEBIT ${d.toFixed(2)}
+NET CREDIT ${(-d).toFixed(2)}
+ZERO COST
+PAYOFF EXPLORER · FIVE DEFINED STRATEGIES
+AT EXPIRY · ILLUSTRATIVE PREMIUMS
+Strategies
+FITS YOUR THESIS
+Out-of-the-money distance
+OTM DISTANCE
+ATM ·
+${g.name} payoff at expiry. At a stock price of ${n.toFixed(2)}, profit or loss is ${ne(C)} per share.
+SPOT 100
+STOCK PRICE AT EXPIRY →
+P&L / SHARE
+MAX GAIN
+MAX LOSS
+↙ MAX LOSS
+IF THE STOCK GOES TO ZERO
+UNLIMITED ↗
+BE
+STOCK AT EXPIRY
+Stock price at expiry
+PER CONTRACT
+STOCK ONLY
+BREAK-EVEN
+CONSTRUCTION
+MAX GAIN
+MAX LOSS
+BREAK-EVEN
+YOU PAY / ARE PAID
+THE 8-K SIGNAL
+WATCH OUT FOR
+WHICH SHAPE IS YOUR THESIS?
+CHOOSE ON THE SHAPE OF THE THESIS, NOT ON WHICH STRATEGY SOUNDS MOST ADVANCED
+NO STOCK FEED
+Three of the five start with 100 shares, and this challenge has no stock data. The notebook builds the shares from a synthetic long: a long ATM call plus a short ATM put at the same strike and expiry, which by put-call parity moves one for one with the stock. Payoffs follow
+https://www.optionsplaybook.com/option-strategies/
+_blank
+OptionsPlaybook ↗
+Massive Bonus Challenge: Trade the 8-K | Gator Quant Hacks 2026
+https://discord.gg/BNB82dKdf
+https://gqhacks.devpost.com
+/massive/gqh-massive-8k-options-starter.ipynb
+/massive/gqh-massive-8k-starter-kit.zip
+THE CHALLENGE
+OPTIONS 101
+THE FIVE STRATEGIES
+THE DATA
+THE NOTEBOOK
+JUDGING & PRIZE
+THE WEEKEND
+> GET /stocks/filings/8-K/vX/disclosures
+119 EVENT TYPES · SINCE JAN 2022
+> GET /v3/reference/options/contracts?as_of=t_pre
+> SEAL WINDOW ████-██-██..████-██-██
+TRADE THE
+8-K
+WAS IT PRICED IN?
+SIGNAL
+8-K FILINGS
+INSTRUMENT
+US OPTIONS
+QUANT NOTE
+≤ 5 PAGES
+JUDGED ON
+RESEARCH, NOT P&L
+THE EVENT
+A CFO IS APPOINTED
+Something material happens at a company: a CEO leaves, a merger is signed, guidance is cut, a new CFO is named.
+≤ 4 BUSINESS DAYS
+FORM 8-K FILED
+The company must disclose it on a Form 8-K. Massive’s Filings & Disclosures dataset tags every 8-K since January 2022 with one of 119 event types.
+THE NIGHT BEFORE
+The session before the filing, the option chain has already put a price on how much the stock should move. It can’t know the news yet.
+BASELINE
+EVERY TEAM
+One category, one strategy, one expiry bucket, and a written interpretation.
+Runs end to end: CFO appointments × all five strategies × 3–6 month options, in-sample and out-of-sample.
+STRETCH
+SEPARATES THE TOP TEAMS
+Decay across horizons and expiry buckets, combined categories, a placebo control, timing refinements, a realistic trade specification.
+Sections 7, 10, 11 and the timing stretch.
+SEALED WINDOW
+JUDGES ONLY
+Judges rerun your pipeline on dates you never saw.
+The final section, one function call.
+CALL
+The right to buy 100 shares at the strike, any time before expiry.
+PUT
+The right to sell 100 shares at the strike, any time before expiry.
+STRIKE
+The fixed price in the contract. O:AAPL260116C00150000 is a $150 call expiring 2026-01-16.
+EXPIRY / DTE
+When the contract dies. EXPIRY_BUCKETS picks contracts by days-to-expiry from the pre-event session.
+PREMIUM
+What the contract costs. Quoted per share, so multiply by 100 for one contract.
+AT THE MONEY
+The strike closest to the current stock price.
+DEBIT / CREDIT
+You pay to open (debit) or you are paid to open (credit).
+LONG / SHORT
+You bought the leg (long, a right) or you sold it (short, an obligation). You keep the premium either way.
+COVERED / SECURED
+A short leg backed by what it obliges you to deliver: shares for a short call, cash for a short put.
+Where the stock must be at expiry for the trade to return zero.
+IMPLIED MOVE
+The cost of the ATM call plus the ATM put, divided by spot. What the chain says the event is worth, and the benchmark the whole challenge is built on.
+IV
+Implied volatility. It usually falls once the news is out. That is the volatility trap.
+ASSIGNMENT
+A short leg exercised against you. US equity options are American-style, so it can happen early, especially for a short call the day before a dividend goes ex.
+FILINGS & DISCLOSURES
+/stocks/filings/8-K/vX/disclosures
+The events: 119 AI-tagged 8-K event types, one row per event, coverage from January 2022.
+ENDPOINT DOCS ↗
+https://massive.com/docs/rest/stocks/filings/8-k-disclosures
+TAXONOMY ↗
+https://massive.com/docs/rest/stocks/filings/disclosure-categories
+OPTIONS CONTRACTS
+/v3/reference/options/contracts?as_of=…
+The chain exactly as it existed on the pre-event session, before anyone knew the news.
+https://massive.com/docs/rest/options/contracts/all-contracts
+OPTIONS AGGREGATES
+/v2/aggs/ticker/O:…/range/1/day/…
+Every leg’s daily close and volume from entry to expiry, and the stock price, recovered from the chain by put-call parity.
+https://massive.com/docs/rest/options/aggregates/custom-bars
+NO INDEX MEMBERSHIP FEED
+NO EARNINGS CALENDAR
+ASK IN #MASSIVE
+Ask in the #massive channel on the participant Discord. Massive creates keys with the right entitlements for teams on the challenge.
+KEEP IT OUT OF THE CODE
+Put the key in the environment or a .env file next to the notebook. The notebook reads it from there and never needs it pasted into a cell.
+KEEP IT OUT OF GIT
+Ignore .env and the .massive_cache/ folder. The cache holds raw API responses, and licensed data stays out of public repos.
+The starter notebook
+setup.sh · setup.ps1
+One-step setup for macOS / Linux and Windows
+pandas, numpy, requests, matplotlib, ipykernel, JupyterLab
+Template for your API key
+Keeps .env and .massive_cache/ out of git
+README.md
+These instructions
+INSTALL PYTHON 3.10+
+From python.org if you don’t have it. On Windows, tick “Add python.exe to PATH”. Tested on 3.14.
+RUN THE SETUP SCRIPT
+Unzip the kit and run the script from inside the folder. It creates a .venv, installs requirements.txt, registers the Jupyter kernel and creates .env from .env.example. Safe to re-run.
+ADD YOUR KEY
+Open .env and replace your-key-here with your Massive API key from #massive: no spaces, no quotes.
+PICK THE KERNEL AND RUN ALL
+Start Jupyter (or open the notebook in VS Code), choose the kernel “Python (Gator Quant Hacks .venv)” and run every cell. Section 1 prints “API key loaded (ends xxxx)”. The first run takes about ten minutes; responses are cached in .massive_cache/, so later runs take seconds.
+python3 -m venv .venv ⏎ source .venv/bin/activate          # Windows: .venv\\Scripts\\activate ⏎ python -m pip install -r requirements.txt ⏎ python -m ipykernel install --user --name gator-quant-hacks --display-name "Python (Gator Quant Hacks .venv)" ⏎ cp .env.example .env               # then add your key
+“Kernel not found” when opening the notebook
+Run the setup script, or pick any Python 3.10+ kernel.
+ModuleNotFoundError
+The notebook is on a different kernel from the one you installed into. Run import sys; print(sys.executable) in a cell: it should end in .venv/bin/python.
+Prompted for an API key
+Slow iteration
+Set RUN_PLACEBO = False in section 2 while exploring, which saves about eight minutes a run. Turn it back on before you submit.
+Stale recent data
+The cache never expires. Delete .massive_cache/ to refetch.
+Already in Colab or an existing kernel?
+Skip setup: run the optional %pip install -r requirements.txt cell at the top of the notebook, then restart the kernel.
+SETUP
+Plain requests against the REST API. api_get caches every response on disk by URL and follows next_url pagination. A full run is roughly 6,500 requests and about ten minutes on a fresh cache, most of it the placebo; reruns take seconds.
+CONFIGURATION
+Everything a team may change lives in one cell. The horizons are fixed for every team so submissions are comparable.
+EVENT_TAG · windows · TOP_100 · EXPIRY_BUCKETS · OTM_PCT · ENTRY
+TRADING CALENDAR
+Every horizon counts sessions, and there is no stock feed to read open days from, so the notebook builds the NYSE calendar from holiday rules and checks it against the days options traded.
+EVENTS
+One request per tag across all filers, filtered to the top 100 and collapsed to one event per filer per filing date. Each event gets t_0, the filing session, and t_pre, the session before it.
+Combine tags by building your own event table here
+THE CHAIN & HIDDEN SPOT
+For each event, the chain as of t_pre. Spot is recovered by put-call parity, S = K·e^(−rT) + C − P, iterating to the at-the-money strike. Then pick the expiry per bucket, the strikes, and pull every leg’s bars once for its whole life.
+THE P&L ENGINE
+Five strategies from four legs, marked at entry and every exit, as P&L per $1 of stock at entry so a $60 and a $600 stock compare. The stock leg is the synthetic long.
+SCOREBOARD & PLACEBO
+Mean P&L per strategy and horizon with a 95% bootstrap interval, then the same measurement on ordinary days for the same names. The finding is the gap between the two. Also the yardstick: |realized| ÷ implied move.
+OUT-OF-SAMPLE
+The same pipeline on January to August 2026, which nothing above touched. A dozen or two events: enough to check the sign, not enough for anything stronger. Say so.
+ONE TICKER, END TO END
+Only now does it pick a name, mechanically, and list the real OCC contracts used. One ticker is an illustration, not evidence.
+PARAMETER SENSITIVITY
+The result across OTM distance, expiry bucket and entry session. A finding that lives at one parameter setting is not a finding.
+OTM_GRID · EXPIRY_BUCKETS · ENTRY
+SPECIFYING THE TRADE
+Instrument and entry, exit horizon justified by the decay, costs (a flat haircut stands in for spreads unless your key has quotes), capacity from leg volume, and whether you are in the tradeable "post" regime.
+COST_HAIRCUT
+STRETCH · TIMING
+filing_date has no time of day. EDGAR’s acceptance timestamp tells you whether a filing landed after the bell, which moves its tradeable session to the next day. Optional; pulls from sec.gov.
+FETCH_ACCEPTANCE_TIMES · SEC_USER_AGENT
+Judges set RUN_HOLDOUT = True, put the sealed dates in the configuration cell and run one cell. Your whole pipeline must be a function of a tag, a start date and an end date.
+Judges only
+EVENT_TAG
+"cfo_appointment"
+One tertiary_category from the taxonomy. Yours to change.
+STUDY_START..END
+In-sample. Research here.
+OOS_START..END
+Out-of-sample, run in the notebook. Don’t tune on it.
+HOLDOUT
+Sealed. The judges’ window; the dates in the notebook are placeholders.
+The 100 largest US companies. Static, so mind survivorship.
+EXPIRY_BUCKETS
+1m · 2m · 3–6m
+Days to expiry. The headline bucket is 3–6m.
+HORIZONS
+Sessions after the filing. Fixed for every team. Do not change.
+OTM_PCT / OTM_GRID
+Distance of the sold call and the put.
+ENTRY
+"post"
+"post" is tradeable. "pre" asks whether the market priced it.
+IN-SAMPLE EVENTS
+CFO appointments across 51 of the top 100, 2022 to November 2025.
+BEST EDGE: COLLAR
+Over ordinary days, averaged over the 21-session, 42-session and expiry horizons. No horizon’s interval excluded zero.
+NET AFTER COSTS
+The collar at 21 sessions after a 5%-of-premium haircut each way. The gross edge didn’t survive trading costs.
+OUT-OF-SAMPLE EVENTS
+Enough to check the sign of the in-sample answer, not to prove it.
+HYPOTHESIS AND NOVELTY
+A non-obvious, economically motivated category-to-strategy link. “Guidance up, buy a call” is the floor.
+ANALYTICAL RIGOR
+All fixed horizons reported, a placebo or baseline, an out-of-sample window, uncertainty shown, sensitivity examined.
+SEALED-WINDOW REPLICATION
+The finding holds on the judges’ window, or you predicted its fragility and were right.
+TRADE REALISM
+Entry timing that respects the filing lag, costs and liquidity from the data, stated capacity.
+COMMUNICATION
+A write-up a portfolio manager could act on, and a notebook that runs.
+THE QUANT NOTE · PDF ≤ 5 PAGES
+The track’s note, built around your 8-K finding: the hypothesis (which categories, which strategy, why the market should misprice it), the method, results with uncertainty at every fixed horizon in- and out-of-sample, what would make it break, and how you would trade it.
+THE CODE · PUBLIC GITHUB REPO
+Your notebook, built on the starter, that runs from a clean kernel with only an API key and takes a start date and an end date as inputs: judges will call it on a window you haven’t seen. Plus a README and a dependency file, as for every track submission.
+A SENSITIVITY CHECK
+The result across the neighbouring choices you could have made: expiry bucket, OTM distance, entry session, horizon, category definition. It goes in the note.
+SUN 11:00 AM
+DEVPOST CLOSES
+Submit on Devpost like every project. Code pushes until 11:00 AM.
+SUN 1:00 PM
+TOP 10
+GQH judges send their ten strongest Massive entries to Massive.
+SUN 2:30 PM
+MASSIVE PICKS
+The Massive team chooses the winner from the shortlist.
+SUN 3:35 PM
+CLOSING CEREMONY
+The winner is announced on stage.
+FRI · OCT 2
+MEET MASSIVE
+Commencement · Reitz Union Grand Ballroom
+The Massive team is there from the opening. Find them with questions about the challenge.
+SAT · OCT 3
+MASSIVE WORKSHOP
+Reitz Room 2355
+A walkthrough of the challenge, the 8-K dataset and the starter notebook, then Q&A.
+AFTERNOON
+OPTIONS DATA HELP
+Ask in #massive on Discord
+The Massive team stays on hand for questions on the options data while you’re deep in the research.
+SUN · OCT 4
+WINNER ANNOUNCED
+Closing ceremony
+Massive judges remotely and the winner is announced at closing.
+Notebook runs from a clean kernel with only an API key
+Pipeline takes a start date and an end date as inputs
+Out-of-sample window left untouched until the end, never tuned on
+Hypothesis names the categories, the strategy, and why the market should misprice it
+Every fixed horizon reported, in-sample and out-of-sample, net of costs, with uncertainty
+A placebo or ordinary-day baseline for the same names
+Parameter-sensitivity check across neighbouring choices
+Trade specification: entry vs filing lag, costs in bps, liquidity, capacity
+Quant note as a PDF, 5 pages or fewer
+Public GitHub repo with a README and dependency file
+No API key, .env or .massive_cache committed
+Submitted on Devpost by 11:00 AM
+Options vocabulary
+ONE EVENT ON THE CALENDAR
+Entry rule
+ENTRY = "post" ✓ TRADEABLE
+ENTRY = "pre" · WAS IT PRICED?
+8-K filed
+Exit at expiry
+Exit ${y} sessions after the filing
+EXP
+Buy at the close of
+${t} session${t===1?"":"s"} later
+. This is the rule you could actually trade, provided the filing landed before the bell.
+Enter at the close of
+, before the filing. Nobody could trade this, since the 8-K wasn’t public yet. It answers a different question:
+did the market already price the event?
+Present it as a statement about pricing, not a trade.
+Horizons are fixed for every team:
+sessions plus expiry. Report all of them, so judges see where the edge lives rather than where it looks best.
+YOUR KNOBS
+← PREV
+NEXT →
+-45% 0px -50% 0px
+CHAIN PRICED · BONUS CHALLENGE ONLINE
+← SYSTEMATIC TRADING
+Massive
+BONUS PRIZE · SYSTEMATIC TRADING
+MISSION FILE: 8-K DISCLOSURES × OPTIONS · SPONSORED BY MASSIVE
+8-K FILED · CHAIN PRICED AT t_pre · IMPLIED vs REALIZED · SEALED WINDOW LOCKED
+Trade the 8-K. Was it priced in?
+LIVE MODEL · 8-K EVENTS vs THE IMPLIED-MOVE CONE
+Scroll to the challenge
+READ THE CHALLENGE
+Did the options market see it coming?
+A bonus prize inside the Systematic Trading track, sponsored by Massive. Use Massive’s 8-K disclosure categories as the signal and its options data as the instrument, and make the case that a type of corporate filing tells you when to enter an options strategy.
+YOUR TASK
+OCT 2–4
+Pick one or more
+8-K disclosure categories
+Define the rule: which filings, which contracts, entered when, exited when. Test it on the 100 largest US companies across the fixed horizons, show how it compares with ordinary days for the same names, show it out of sample, and show how sensitive it is to your parameters.
+THREE TIERS
+A SUB-TRACK
+Every Systematic Trading rule applies here too: a hypothesis stated before results, results net of costs, every data source cited, a quant note of at most five pages, and a public GitHub repo. Massive’s challenge adds the data, the strategy menu and the fixed horizons. One exception: the notebook’s own out-of-sample window and the judges’ sealed window replace the track’s 20% holdout rule.
+READ THE TRACK RULES →
+NOT P&L
+You’re judged on the novelty of the category-to-strategy link, the rigor of the analysis, whether it replicates on a sealed window, the realism of the trade, and clarity. A well-argued null result with a clear decay curve beats a lucky backtest.
+One number that matters
+No options experience needed to start. Every strategy here is a bet on one relationship: the implied move the chain charged on the pre-event session against the move the stock actually made. Buying options wins when realized beats implied; selling wins when it doesn’t.
+THE VOCABULARY
+IMPLIED vs REALIZED
+Pick a shape, defend the pairing
+Five standard strategies, each explainable in two sentences and buildable from one option chain: OptionsPlaybook’s four Rookie strategies plus one Veteran, the long call. Finding and defending the link between a filing category and one of these is the challenge.
+LEARN ONE CONTRACT
+The long call teaches what a call costs. The covered call sells that same contract. The protective put buys the insurance instead of selling it, the collar is both at once, and the cash-secured put is the covered call’s payoff without owning the shares. More on each at
+OptionsPlaybook
+Two datasets, one key
+Everything comes from api.massive.com: the 8-K filings that are your events, and the options chains and daily bars that are your instrument. That is the whole list, and the notebook shows how far it goes.
+NOT IN THIS CHALLENGE
+The notebook builds the trading calendar from NYSE holiday rules, reads the stock price off the option chain, and replicates the 100 shares behind three of the five strategies with options.
+GET YOUR KEY
+MASSIVE_API_KEY
+A pipeline you can swap the tag in
+Massive’s data team wrote a starter notebook that runs the whole study end to end. Its worked example asks: if a company appoints a new CFO, which of the five strategies would have worked? Swap the tag, the strategy set or the universe and the same pipeline runs.
+STARTER KIT · PYTHON 3.10+
+Trade the 8-K: starter kit
+The notebook, setup scripts and requirements in one folder. Bring your own API key.
+DOWNLOAD KIT .ZIP ↓
+NOTEBOOK ONLY .IPYNB ↓
+SET UP IN TWO MINUTES
+MACOS / LINUX
+WINDOWS
+BY HAND, ANY OS
+IF SOMETHING BREAKS
+KEEP THE KEY OUT
+Never paste your key into a notebook cell, and don’t submit .env. Judges run your notebook with their own key.
+WALK THE SECTIONS
+t_pre, t_0 AND THE FIXED HORIZONS
+THE CONFIGURATION CELL
+WHAT THE WORKED EXAMPLE FOUND
+THAT’S THE POINT
+The example’s honest answer is that CFO appointments don’t give a tradeable edge on their own. Your job is to find a category, or a combination, where the gap over ordinary days holds up across horizons, out of sample, and after costs. These figures come from an earlier draft run on 2022–2025 windows. The final notebook ships without saved outputs and uses the windows above, so your first run will print its own numbers.
+A finding that replicates wins
+A Massive entry is a Systematic Trading submission, scored on the track’s rubric like every other. GQH judges send their ten strongest Massive entries to Massive, and the Massive team picks the bonus winner using the criteria below.
+WHAT MASSIVE LOOKS FOR · 100 POINTS
+FROM DEVPOST TO THE STAGE
+THE PRIZE
+WINNING TEAM
+toward the winning team’s prize
+One month free
+of any Massive Advanced individual plan for each winning team member: stocks, options or futures, their pick.
+Massive swag
+Massive is in the room
+The Massive team is at the event to help teams get from the starter notebook to a real finding. Questions about the challenge, keys or the data go to #massive on the participant Discord.
+DEADLINES
+BEFORE YOU SUBMIT
+READY · SUBMIT ON DEVPOST BEFORE 11:00 AM
+SUBMIT
+GQHACKS.DEVPOST.COM ↗
+KEYS & HELP
+STARTER KIT
+NOTEBOOK + SETUP .ZIP ↓
+API DOCS
+https://massive.com/docs
+MASSIVE.COM/DOCS ↗
+END OF BONUS FILE
+Find the filing the market misprices
+The Massive bonus challenge runs inside the Systematic Trading Track at Gator Quant Hacks, October 2–4, 2026.
+GET THE STARTER KIT ↓
+← SYSTEMATIC TRADING TRACK
+This page is a plain-language tour of Massive’s starter notebook and challenge brief. As a sub-track, every Systematic Trading rule applies except the 20% holdout rule. The labs use illustrative numbers. Where anything here differs from the notebook or an organizer announcement, those govern.
+
+====================================================================================================
+5. DEVPOST OVERVIEW  https://gqhacks.devpost.com/
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+• Overview
+•
+My projects
+• Participants (77)
+• Resources
+• Rules
+•
+Project gallery
+•
+Updates
+•
+Discussions
+Gator Quant Hacks
+Create the best trading strategy and compete against hundreds of other participants
+Join hackathon
+Who can participate
+• Above legal age of majority in country of residence
+• College students only
+• Team required
+•
+All countries/territories, excluding
+standard exceptions
+View full rules
+October 04 at 11:00am EDT to deadline
+View schedule
+Deadline: Oct 4, 2026 @ 11:00am EDT
+•
+Apple
+•
+Google
+•
+Outlook
+Gainesville, Florida
+Public
+12 non-cash prizes
+77
+participants
+University of Florida
+Fintech
+Machine Learning/AI
+Gator Quant Hacks is a national quantitative finance competition at the University of Florida, held October 2 to 4, 2026 at the Reitz Union . Undergraduate and graduate students from across the country spend the weekend solving quant puzzles, building systematic trading strategies, and working on hardware, with workshops, speakers, and a mixer with firm representatives along the way.
+Tracks
+•
+Quantitative Puzzles & Brainteasers: probability, math, and algorithmic challenges, ranked on a live leaderboard
+•
+Systematic Trading: design, backtest, and evaluate a trading strategy on data from our partners
+•
+Hardware: see the Hacker Guide for the track brief
+Schedule and Track prizes are listed in the Hacker Guide .
+Full event guide: gqhacks.notion.site/hacker-guide
+Discord: discord.gg/9qPMtN4UB
+Requirements
+These rules are provided as a starting point and should be reviewed by counsel before publishing.
+Eligibility
+• Open to students currently enrolled at an accredited U.S. college or university, undergraduate or graduate, who are at least 18 years old as of October 2, 2026.
+• Participants must be able to legally receive prizes. Employees of sponsoring firms, organizers, judges, and their immediate family members are not eligible for prizes but are welcome to attend.
+• Proof of enrollment, such as a valid student ID, may be requested at check-in and before prizes are awarded.
+Teams
+• Solo entries are allowed. Maximum team size is listed in the Hacker Guide .
+• Team members must attend in person.
+• Each participant may join only one team, and each team may submit to only one track.
+• Teams may form and change until hacking begins on Friday. After that, rosters are locked.
+Project rules
+Rules depend per-track. Please view the Hacker Guide for more information.
+Conduct
+• All participants, judges, mentors, sponsors, and organizers must follow the Gator Quant Hacks Terms and the MLH Code of Conduct . These apply in the venue, in Discord, and in all event channels.
+• We are committed to an event free of harassment for everyone, regardless of gender, gender identity and expression, age, sexual orientation, disability, physical appearance, body size, race, ethnicity, nationality, religion, or level of experience.
+• Harassment includes offensive verbal comments, unwelcome sexual attention, deliberate intimidation, stalking, sustained disruption of talks or events, inappropriate physical contact, and unwelcome photography or recording.
+• Participants asked to stop any harassing behavior are expected to comply immediately.
+• Organizers may take any action they deem appropriate, including warning the offender, removal from the event, disqualification from prizes, and removal from event channels.
+• To report an issue, contact any organizer in person, message the organizer team in Discord, or email dominickdupuy@ufl.edu . Reports will be handled discreetly.
+Disqualification
+The organizers may disqualify any submission that plagiarizes, misrepresents original work, uses data not permitted for its track, cannot be reproduced from submitted code, or violates the Code of Conduct.
+General
+• Organizers reserve the right to modify the schedule, format, prizes, or rules at any time. Material changes will be announced in Discord and posted in the Hacker Guide .
+• Judges' decisions are final.
+• Participation is at your own risk. In-person attendees are responsible for their own travel, lodging, and personal belongings.
+Hackathon Sponsors
+Prizes
+12 non-cash prizes
+MLH: Best Use of ElevenLabs - [Wireless Earbuds]
+1 winner
+Deploy natural, human-sounding audio with ElevenLabs. Create realistic, dynamic, and emotionally expressive voices for any project, from interactive AI companions to narrated stories and voice-enabled apps. ElevenLabs will empower you to build rich, immersive experiences without the need for actors or complex audio production, using simply the power of AI.
+Integrate fully autonomous audio experiences into your hack with ElevenLabs and give your project a voice, along with giving your team the chance to win some wireless earbuds!
+MLH: Best Use of Gemini API - [MLH Swag Kits]
+1 winner
+It’s time to push the boundaries of what’s possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
+Understand language like a human and build a chatbot that gives personalized advice
+Analyze info like a supercomputer and create an app that summarizes complex research papers
+Generate creative content like code, scripts, music, and more
+Think of the possibilities… what will you build with the Google Gemini API this weekend?
+MLH: Best Use of Solana - [Ledger Nano S Plus]
+1 winner
+The world of development is evolving fast and Solana is leading the charge with a network built to handle all of your infrastructure needs. Forget high fees and slow confirmations, it’s time to build applications that are fast, efficient, and scalable.
+Harness Solana’s core advantages like blazing fast execution and near-zero transaction costs to make your hackathon ideas become real world projects. With Solana, the possibilities are endless.
+Create a game, social app, or consumer product that relies on instant, high-frequency transactions.
+Design a sophisticated trading, lending, or decentralized exchange (DEX).
+Build a prototype for supply chain, identity, or payments that can handle massive, real-world volume.
+Show us how you can innovate with Solana for a chance to win some cool prizes for you and each member of your team!
+MLH: Best Use of Tiger Data - [Stream Deck Mini]
+1 winner
+Building high-performance apps under hackathon deadlines shouldn't mean spending half your weekend configuring complex databases or learning obscure query languages. Tiger Data extends PostgreSQL to give student developers an ultra-fast foundation for real-time data, time-series metrics, and complex analytics.
+Why build with Tiger Data this weekend?
+Standard SQL Power: Query massive datasets instantly using the SQL you already know, with no complex NoSQL aggregation pipelines required.
+Unified Data Stack: Store relational user profiles and high-frequency metric streams side-by-side in a single database.
+Instant Dashboards: Serve lag-free, real-time frontend charts using pre-computed Continuous Aggregates.
+90%+ Data Compression: Store millions of events on free-tier cloud instances without running out of disk space.
+Whether you’re building real-time IoT monitoring, AI-driven analytics dashboards, or financial prediction engines, show us how Tiger Data powers your project. The team that demonstrates the most innovative, impactful, and performance-driven use of Tiger Data will take home some great prizes!
+MLH: Best Use of Vultr - [Portable Screens]
+1 winner
+Vultr empowers hackers to bring their high-performance projects to life instantly; providing everything from the speed of one-click deployment and scalable cloud compute, to specialized Vultr Cloud GPUs that can power AI-driven applications. We want you to push the limits of what can be built when infrastructure is no longer the bottleneck!
+Sign up for a Vultr account today and claim your free cloud credits! Take your next hack to the cloud with Vultr for a chance to win some awesome portable screens for you and your team!
+MLH: Best Use of Snowflake API - [Raspberry Pi 4]
+1 winner
+Play with industry-leading LLMs on a single account using the Snowflake APIs. Adding AI capabilities into your application can be as simple as a single CURL command to Snowflake’s REST API.
+Build customized applications, RAG powered chat bots, or embed AI-powered features into your app in half the time with half the hassle. Get started for free with a special, student 120-day Snowflake trial and check out this repository for an example of the Snowflake REST API in action.
+Systematic Trading - 1st
+1 winner
+An Acer Nitro ED340CUR 34" curved monitor per member
+Systematic Trading - 2nd
+1 winner
+A Samsung Galaxy Watch8 40mm per member
+Quantitative Puzzles - 1st
+1 winner
+A Logitech MX Master 3S mouse per member
+Quantitative Puzzles - 2nd
+1 winner
+A Beats Studio Buds+ per member
+Massive Track - 1st
+1 winner
+An Apple AirPods 4 per member
+Hardware Track
+1 winner
+A Beat Pill Speaker and Apple Music 3 month subscription per member
+Devpost Achievements
+Submitting to this hackathon could earn you:
+Judges
+Faculty and Sponsors
+University of Florida
+Quant
+Jane Street
+Quant
+Citadel
+SWE
+Databento
+Representative
+MLH
+Judging Criteria
+•
+Notion
+Please look at our notion for more information: https://gqhacks.notion.site/hacker-guide
+Questions?
+Email the hackathon manager
+Invite others to compete
+•
+•
+•
+
+====================================================================================================
+6. DEVPOST RULES  https://gqhacks.devpost.com/rules
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+• Overview
+•
+My projects
+• Participants (77)
+• Resources
+• Rules
+•
+Project gallery
+•
+Updates
+•
+Discussions
+These rules are provided as a starting point and should be reviewed by counsel before publishing.
+Eligibility
+• Open to students currently enrolled at an accredited U.S. college or university, undergraduate or graduate, who are at least 18 years old as of October 2, 2026.
+• Participants must be able to legally receive prizes. Employees of sponsoring firms, organizers, judges, and their immediate family members are not eligible for prizes but are welcome to attend.
+• Proof of enrollment, such as a valid student ID, may be requested at check-in and before prizes are awarded.
+Teams
+• Solo entries are allowed. Maximum team size is listed in the Hacker Guide .
+• Team members must attend in person.
+• Each participant may join only one team, and each team may submit to only one track.
+Conduct
+• All participants, judges, mentors, sponsors, and organizers must follow the Gator Quant Hacks Terms and the MLH Code of Conduct . These apply in the venue, in Discord, and in all event channels.
+• We are committed to an event free of harassment for everyone, regardless of gender, gender identity and expression, age, sexual orientation, disability, physical appearance, body size, race, ethnicity, nationality, religion, or level of experience.
+• Harassment includes offensive verbal comments, unwelcome sexual attention, deliberate intimidation, stalking, sustained disruption of talks or events, inappropriate physical contact, and unwelcome photography or recording.
+• Participants asked to stop any harassing behavior are expected to comply immediately.
+• Organizers may take any action they deem appropriate, including warning the offender, removal from the event, disqualification from prizes, and removal from event channels.
+• To report an issue, contact any organizer in person, message the organizer team in Discord, or email dominickdupuy@ufl.edu . Reports will be handled discreetly.
+Disqualification
+The organizers may disqualify any submission that plagiarizes, misrepresents original work, uses data not permitted for its track, cannot be reproduced from submitted code, or violates the Code of Conduct.
+General
+• Organizers reserve the right to modify the schedule, format, prizes, or rules at any time. Material changes will be announced in Discord and posted in the Hacker Guide .
+• Judges' decisions are final.
+• Prizes are subject to applicable tax reporting requirements. Winners may be asked to complete tax forms before payment.
+• Participation is at your own risk. In-person attendees are responsible for their own travel, lodging, and personal belongings.
+
+====================================================================================================
+7. DEVPOST DATES  https://gqhacks.devpost.com/details/dates
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+• Overview
+•
+My projects
+• Participants (77)
+• Resources
+• Rules
+•
+Project gallery
+•
+Updates
+•
+Discussions
+Schedule
+Schedule timezone
+Period
+Begins
+Ends
+Submissions
+October 02 at 6:45pm EDT
+October 04 at 11:00am EDT
+Judging
+Winners Announced
+October 04 at 6:00pm EDT
+
+====================================================================================================
+8. DEVPOST RESOURCES  https://gqhacks.devpost.com/resources
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+• Overview
+•
+My projects
+• Participants (77)
+• Resources
+• Rules
+•
+Project gallery
+•
+Updates
+•
+Discussions
+•
+Hacker Guide: gqhacks.notion.site/hacker-guide (schedule, rooms, track briefs, prizes, and everything still being finalized)
+•
+Discord: discord.gg/9qPMtN4UB
+•
+Private repo access and puzzle platform link: posted in the Hacker Guide and Discord before hacking begins
+•
+Data and APIs: Databento, Massive, and Webull access is released when hacking begins. Get setup help at office hours, Friday 7:00 to 7:30 PM in the Reitz Union Ballroom.
+•
+ElevenLabs: credit codes are distributed through the ElevenLabs Discord bot
+•
+Terms: Gator Quant Hacks Terms
+•
+MLH Code of Conduct: github.com/MLH/mlh-policies
+•
+Questions: gatorquanthacks@gmail.com (urgent: dominickdupuy@ufl.edu )
+
+====================================================================================================
+9. DEVPOST UPDATES  https://gqhacks.devpost.com/updates
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+Overview
+My projects
+Participants (77)
+Resources
+Rules
+Project gallery
+Updates
+Discussions
+Stay tuned for important announcements. Organizers will post them here and also send an email to registered participants.
+
+====================================================================================================
+10. DEVPOST DISCUSSIONS  https://gqhacks.devpost.com/forum_topics
+====================================================================================================
+Gator Quant Hacks
+Deadline: Oct 4, 2026 @ 11:00am EDT
+Join hackathon
+Gator Quant Hacks
+Descend
+Overview
+My projects
+Participants (77)
+Resources
+Rules
+Project gallery
+Updates
+Discussions
+Post a new discussion topic
+Email me when new discussions are added
+No topics have been created yet.
+If you're looking for a teammate,
+it's over here .
+
+====================================================================================================
+11. HACKER GUIDE (Notion)  https://gqhacks.notion.site/hacker-guide  (rendered; schedule toggles expanded)
+====================================================================================================
+📃 Basic Information 🟢
+Dates: Friday, October 2 - Sunday, October 4, 2026
+Format: In-person, national quantitative finance competition
+Duration: 36-hour competition weekend
+Participants: Undergraduate and graduate students from across the United States; event capacity is up to 500 competitors
+Main Venue: Reitz Union, University of Florida
+Check-In: Outside the Reitz Union entrance, Friday 3:00 PM - 5:30 PM. Walk-in check-in is inside the Reitz Union, outside the Grand Ballroom, 5:30 PM - 6:00 PM
+Opening / Commencement: Reitz Union Grand Ballroom, Friday at 6:30 PM (hacking begins 7:15 PM)
+Closing Ceremony: Reitz Union Grand Ballroom, Sunday at 3:35 PM
+Competition / Hacking Area: Reitz Union meeting rooms (Levels 2 and 3, plus a few others). See Rooms & Building Map for the full list by day
+Website: gqhacks.com
+Discord: Join the Gator Quant Hacks Discord
+General Contact: gatorquanthacks@gmail.com
+Urgent Contact: dominickdupuy@ufl.edu
+Emergency Phone: (352) 665-6965 (Dominick). For life-threatening emergencies, call 911 first.
+⚠️
+Some logistics are still being finalized. Sections marked TBA will be updated as rooms, judging details, and prizes are confirmed.
+🐊 What is Gator Quant Hacks? 🟢
+Gator Quant Hacks is a national quantitative finance competition bringing together undergraduate and graduate students for a weekend of research, mathematical problem solving, quantitative engineering, and systematic trading. Competitors participate in one of three parallel tracks, work through the weekend, attend sponsor and partner programming, and present or submit their work for judging.
+The event is designed to bring together students across finance, economics, mathematics, statistics, computer science, and engineering. Programming throughout the weekend includes sponsor introductions, workshops, mixers, mini-events, meals, and competition time.
+🗺️ Location & Venue 🟨
+🏫 Venue
+Gator Quant Hacks will be held at the Reitz Union at the University of Florida. The Reitz Union will serve as the main competition and hacking area for the weekend.
+🎤 Reitz Union Ballroom
+The Reitz Union Ballroom will be used for:
+Friday walk-in check-in (just outside the ballroom doors)
+Friday commencement / opening programming
+Sunday Quantitative Puzzles expo (top 5 teams, 1:00 - 2:00 PM)
+Closing ceremony
+🚪 Rooms & Building Map
+Grand Ballroom: walk-in check-in (outside the ballroom doors), opening ceremony, team formation, track check-ins, MLH mini-event, Sunday Quantitative Puzzles expo, closing ceremony
+Reitz Rooms 2355 & 2365: workshops and the Webull networking event. These are not hacking rooms
+Reitz Room 2345: FPGA pickup for the Hardware track
+Hacking rooms, Friday (until 11:00 PM): Level 2 Rooms 2315, 2320, 2325, 2330, 2335, 2340, 2350, 2360; Level 3 Rooms 3305, 3310, 3320; Ground level Room G325
+Hacking rooms, Saturday (9:00 AM - 10:45 PM): Level 2 Rooms 2315, 2320, 2325, 2330, 2335, 2340, 2350, 2360; Level 3 Rooms 3305, 3310, 3315, 3320; the Chamber (ground level, until 11:00 PM); Arredondo Cafe (Level 4, until 10:15 PM)
+Outside Turlington Hall: all meals
+Matthews Suite: Sunday expo & judging
+AC Hotel conference rooms (open 24/7): overnight hacking and the midnight snack
+A building map is TBA.
+🌙 Overnight Hacking
+Overnight hacking will be in the conference rooms at the AC Hotel Gainesville Downtown, 151 NW 14th St, Gainesville, FL 32603 (map). Hotel phone: (352) 792-1151.
+We have 24/7 access to the AC Hotel conference rooms for the whole event, so you can keep hacking any time of night.
+Your badge is required to get into the conference rooms.
+The overnight space is meant for competitors coming from outside UF. If you're a UF student, please don't take up space that out-of-town competitors need.
+You're also welcome to keep hacking in the hotel lobby.
+Sleeping: the conference rooms are for hacking. If you want to sleep, we recommend staying with a friendly Gator or booking a room at a nearby hotel.
+🚿 Showers
+Public, gender-neutral showers are on the lower level (LL) of the Reitz Union, near the arts & crafts and printing center. They are private, single-occupant bathrooms with showers. Bring your own towel and toiletries.
+🚗 Parking & Transportation
+Where to park: the Reitz Union Garage (UF Bookstore & Visitor Welcome Center garage), 655 Reitz Union Dr, Gainesville, FL 32611. It connects directly to the Reitz Union.
+Free on the weekend: garage fees and campus permit restrictions lift at 4:30 PM Friday and stay lifted through Sunday.
+Arriving before 4:30 PM Friday? The Reitz garage charges its standard daily visitor fee until 4:30 PM (pay at the stations by the stairs and elevators). Most other campus lots require a UF permit until then.
+If the Reitz garage is full: it's a small garage. Most other campus lots and garages are also free from 4:30 PM Friday through Sunday. Always read the posted sign at each lot, since some spaces (reserved, disabled, service, and 24/7-restricted areas) stay enforced all weekend.
+Overnight: weekend restrictions stay lifted overnight, but check the signage where you park.
+Drop-off / rideshare: use the loop on Reitz Union Drive behind the Reitz Union. Drop-off only, no parking there.
+More info: UF Transportation & Parking Services
+📶 Wi-Fi
+If your school supports eduroam, use it. Otherwise, connect to the free ufguest network, open a browser, and accept the Acceptable Use Policy. Guest Wi-Fi is capped at 10 Mbps, asks you to re-accept after 1 hour idle or 12 hours of use, and blocks VPNs into the UF network. If the login page doesn't appear, browse to www.ufl.edu or use Chrome/Safari. UF Guest Wireless info
+✅ Check-In & Event Access 🟨
+Check-in begins Friday, October 2 at 3:00 PM outside the Reitz Union entrance and runs until 5:30 PM. Walk-in check-in runs 5:30 - 6:00 PM inside the Reitz Union, outside the Grand Ballroom.
+Please read the Gator Quant Hacks Terms before you arrive.
+🪪 What You Need at Check-In
+Your name
+The email you used to apply
+A photo ID
+🏷️ Badges
+You'll get a badge at check-in. Keep it on you all weekend, because it is:
+Your meal pass
+Your access to the opening and closing ceremonies
+Required to enter the overnight hacking space at the AC Hotel
+Important event updates will be distributed through the official Discord and event communications. Competitors should keep an eye on announcements throughout the weekend for room changes, judging instructions, and schedule updates.
+📈 Competition Tracks 🟢
+Gator Quant Hacks will feature three parallel tracks:
+🧩 Quantitative Puzzles & Brainteasers
+Focused on computer science and mathematics. Competitors will solve quantitative reasoning, probability, algorithmic, and mathematical challenges.
+⚙️ Systematic Trading
+Focused on quantitative trading and engineering. Competitors will design, implement, test, and evaluate systematic approaches to trading or market decision-making.
+📊 Massive Subtrack
+The Massive Track is a subtrack of Systematic Trading, sponsored by Massive. To participate, your project must meet all Systematic Trading track requirements. Massive picks the subtrack winner from the top teams.
+🔌 Hardware
+Track instructions are on gqhacks.com. FPGA pickup is in Reitz Room 2345.
+📌
+Track instructions are on the website: gqhacks.com. Full instructions for each track (submission requirements, allowed tools/data, and judging criteria) are released there when hacking starts on Friday.
+🗓️ Event Schedule 🟨
+All times are Eastern Time. Times and room assignments may be updated before the event.
+Friday, October 2, 2026
+🪪 [CHECK-IN] Competitor Check-In - Outside the Reitz Union entrance, 3:00 PM - 5:30 PM
+Meet other competitors. Be ready to confirm your MLH waiver and code of conduct at the desk.
+🚶 [CHECK-IN] Walk-In Check-In - Inside the Reitz Union, outside the Grand Ballroom, 5:30 PM - 6:00 PM
+🎤 [CEREMONY] Commencement - Reitz Union Grand Ballroom, 6:30 PM
+Official start of the event. GQH shirts and Jane Street merch are handed out here (badge required).
+🗣️ [CEREMONY] Opening Remarks - Reitz Union Grand Ballroom, 6:35 PM
+Overview of the tracks, rules, Discord, and the submission deadline.
+🤝 [SPONSOR] Webull - Reitz Union Grand Ballroom, 6:45 PM
+💻 [PARTNER] MLH - Reitz Union Grand Ballroom, 6:50 PM
+❓ [CEREMONY] Rules Recap, Q&A & Team Formation - Reitz Union Grand Ballroom, 6:58 PM
+📈 [COMPETITION] Hacking Begins - Reitz Union Grand Ballroom, 7:15 PM
+Track instructions go live on gqhacks.com. Teams may begin work on their track challenges and head to any of the Reitz hacking rooms (see Rooms & Building Map). Hardware teams pick up FPGAs in Reitz Room 2345. Data and API access is released at the start. Still looking for a team? Stay in the Grand Ballroom and we'll help match you with people who share your interests.
+🍽️ [FOOD] Dinner - Outside Turlington Hall, 7:45 PM - 8:30 PM
+Feel free to bring your food to the 8:00 PM workshop.
+💻 [WORKSHOP] Webull: Open API & paperTrade - Reitz Room 2365, 8:00 PM - 9:00 PM
+Get set up on Webull's API early in the weekend.
+🌙 [COMPETITION] Overnight Hacking - from 10:00 PM
+Hacking continues through Saturday morning at the AC Hotel (151 NW 14th St). Badge required for entry.
+Saturday, October 3, 2026
+🍽️ [FOOD] Breakfast - Outside Turlington Hall, 8:45 AM - 9:45 AM
+💻 [WORKSHOP] MLH: Hacking with GitHub Copilot - Reitz Room 2355, 10:00 AM - 11:00 AM
+🔌 [WORKSHOP] IoT Workshop - Reitz Room 2365, 11:00 AM - 12:00 PM
+🍽️ [FOOD] Lunch - Outside Turlington Hall, 12:00 PM - 1:00 PM
+💻 [WORKSHOP] Massive Workshop - Reitz Room 2355, 1:00 PM - 2:00 PM
+💻 [WORKSHOP] Webull Workshop - Reitz Room 2365, 2:00 PM - 3:00 PM
+💻 [WORKSHOP] DSI Workshop - Reitz Room 2355, 2:00 PM - 3:00 PM
+💻 [WORKSHOP] MLH Workshop - Reitz Room 2365, 3:00 PM - 4:00 PM
+🤝 [SOCIAL] Webull Networking Event - Reitz Room 2355, 4:00 PM - 5:00 PM
+Bring printed resumes. See the tips under Sponsors & Partner Programming.
+📋 [COMPETITION] Track Check-Ins & Presentation Sign-Ups - Reitz Union Grand Ballroom, 5:00 PM - 6:00 PM
+Mid-event team check-ins. Sign up here for a Sunday presentation slot.
+🍽️ [FOOD] Dinner - Outside Turlington Hall, 7:30 PM - 8:15 PM
+🎮 [MINI-EVENT] MLH Mini-Event - Reitz Union Grand Ballroom, 8:30 PM - 9:30 PM
+🌙 [COMPETITION] Overnight Hacking - from 10:00 PM
+Hacking continues through Sunday morning at the AC Hotel (151 NW 14th St). Badge required for entry.
+🍪 [FOOD] Midnight Snack - AC Hotel, 12:00 AM (Saturday night into Sunday)
+Sunday, October 4, 2026
+🌙 [COMPETITION] Overnight Hacking - until 8:30 AM
+At the AC Hotel (151 NW 14th St).
+🍽️ [FOOD] Breakfast - Outside Turlington Hall, 8:30 AM - 9:30 AM
+🧩 [SUBMISSIONS] Hacking Ends: Quantitative Puzzles Track - 9:00 AM
+Quantitative Puzzles & Brainteasers submissions close at 9:00 AM.
+📤 [SUBMISSIONS] Hacking Ends / Submission Deadline: All Other Tracks - 11:00 AM
+All other submissions must be on Devpost by 11:00 AM.
+🍽️ [FOOD] Lunch - Outside Turlington Hall, 12:00 PM - 1:00 PM
+🧩 [JUDGING] Quantitative Puzzles Top 5 Announced - 12:30 PM
+The top 5 Quantitative Puzzles teams are announced by email and on Discord and advance to the Quantitative Puzzles expo.
+⚖️ [JUDGING] Expo & Judging - Matthews Suite, 1:00 PM - 3:00 PM
+Live team presentations (5 minutes + Q&A).
+🧩 [JUDGING] Quantitative Puzzles Expo - Reitz Union Grand Ballroom, 1:00 PM - 2:00 PM
+Top 5 Quantitative Puzzles teams only, before the closing ceremony.
+⏱️ [JUDGING] Judging Closes - 3:00 PM
+🏆 [CEREMONY] Closing Ceremony & Awards - Reitz Union Grand Ballroom, 3:35 PM
+Webull segment, then winners announced at 3:40 PM (track and sponsor prizes).
+👋 [CEREMONY] Event Ends - 4:00 PM
+🕒
+Times and rooms may still shift. Watch #announcements on Discord for changes.
+🤝 Sponsors & Partner Programming 🟢
+Sponsors include Citadel Securities, Jane Street, Webull, Databento, ElevenLabs, and Massive.
+Our partner MLH is bringing programming, mini-events, and partner prizes from Vultr, Solana, Tiger Data, Snowflake, and Gemini. Sponsor workshops, challenges, and prizes are listed in the schedule and prizes sections.
+💼 Webull Networking Event (Saturday, 4:00 PM, Reitz Room 2355)
+This is your chance to meet people from the firms supporting the event. Before you go:
+Bring several printed copies of your resume (more than you think you'll need)
+Have your LinkedIn profile up to date and easy to share
+Prepare a 20 to 30 second introduction about yourself
+Come with a few questions for the firms you want to talk to
+Need to print resumes? Target Copy, 1412 W University Ave Ste C, Gainesville, FL 32603, is just off campus on University Ave
+🎙️ Free ElevenLabs Access
+Every competitor can claim free ElevenLabs access through ElevenLabs' automated Discord system:
+Join the ElevenLabs Discord server: discord.com/invite/VnBvbbcdEC
+Get access to the #│coupon-codes channel
+Click Start Redemption
+Select the Gator Quant Hacks event and fill out the form using the email you used to register
+The bot sends you your unique coupon code
+🎥
+Stuck? Watch the video tutorial. Note this is the ElevenLabs Discord, separate from the Gator Quant Hacks Discord.
+🏆 Prizes 🟨
+🎁 Sponsor Prizes
+ElevenLabs, Best Project Built with ElevenLabs: Wireless earbuds, plus 3 months of ElevenLabs Scale for each team member ($897 value per member, 1.8M credits/month)
+Databento, Best Use of Databento: $4,000 in Databento credits, divided among the team members however the team chooses
+Vultr: Portable screens
+Solana: Ledger Nano S Plus
+Tiger Data: Elgato Stream Deck Mini
+Snowflake: Raspberry Pi 4
+Gemini: MLH swag kits
+🥇 Track Prizes
+Physical prizes are one per team member. Every member of a winning team gets their own item.
+Systematic Trading:
+1st place: Acer Nitro ED340CUR 34" curved monitor for each team member, plus 3 months of ElevenLabs Pro for each team member ($297 value per member, 600k credits/month)
+2nd place: Samsung Galaxy Watch8 (40mm) for each team member
+Quantitative Puzzles & Brainteasers:
+1st place: Logitech MX Master 3S mouse for each team member
+2nd place: Beats Studio Buds + for each team member
+Hardware (IoT Club Hardware Track):
+1st place: Beats Pill speaker for each team member, plus a 3-month Apple Music subscription for each team member
+Massive Subtrack (part of Systematic Trading):
+1st place: Apple AirPods 4 for each team member
+⚖️ Judging & Submissions 🟨
+Submissions are due on Devpost by 11:00 AM on Sunday, October 4. The Quantitative Puzzles & Brainteasers track closes earlier, at 9:00 AM Sunday; its top 5 teams are announced by email and on Discord at 12:30 PM and advance to the Quantitative Puzzles expo in the Reitz Union Grand Ballroom, 1:00 - 2:00 PM, before the closing ceremony. Expo and judging run 1:00 - 3:00 PM, with winners announced at the closing ceremony at 3:40 PM.
+⚖️
+Submission requirements, judging criteria, presentation format, judging rooms, and which teams present live on Sunday are in the track instructions on gqhacks.com.
+Competitors should not rely on unofficial deadlines or room assignments. Final judging instructions will be posted on gqhacks.com and announced through official event channels.
+📜 Eligibility & Competition Rules 🟨
+Gator Quant Hacks is intended for undergraduate and graduate students competing from universities across the country.
+📏 Competition Rules
+Team size: 1 to 4 people
+Solo entries: allowed
+Pre-existing work: not allowed. Everything you submit must be built during the event.
+AI tools: allowed
+Outside data: allowed
+📜
+Track-specific rules, submission requirements, and judging criteria are in the track instructions on gqhacks.com.
+🍽️ Food & Dietary Information 🟨
+Friday dinner (7:45 PM): Domino's pizza (cheese and pepperoni)
+Saturday breakfast (8:45 AM): Panera bagels, cereal, and fruit
+Saturday lunch (12:00 PM): Publix assorted sandwiches
+Saturday dinner (7:30 PM): Domino's pizza (cheese and pepperoni)
+Midnight snack (Saturday night, 12:00 AM, AC Hotel): Ice cream
+Sunday breakfast (8:30 AM): Panera bagels, cereal, and fruit
+Sunday lunch (12:00 PM): Publix assorted sandwiches
+⚠️
+All meals are served outside Turlington Hall, except the midnight snack at the AC Hotel.
+⚠️
+Allergy disclaimer: We share menus ahead of time so you can plan, but we cannot verify that any meal, snack, or drink is free of a specific allergen. If you have an allergy and aren't sure about an item, skip it and plan to bring or buy an alternative.
+🥗
+We do not have dietary accommodations.
+🌯 Nearby Food
+Can't eat the provided meals? These are all close to the Reitz:
+Chipotle: 1432 W University Ave
+CAVA: 1404 W University Ave
+Piesanos Stone Fired Pizza: 1250 W University Ave
+Chick-fil-A (The Standard): 1340 W University Ave
+Chick-fil-A: 1765 Stadium Rd
+🎒 What to Bring 🟢
+Pack for a full weekend. Use this checklist before you leave:
+Photo ID (student or government)
+Laptop and charger
+Phone and charger, plus any cables or adapters you rely on
+Headphones or earplugs
+Reusable water bottle
+Printed copies of your resume (for the Saturday Webull networking event)
+A jacket or hoodie (event rooms can get cold)
+A change of clothes for the weekend
+Toiletries (toothbrush, toothpaste, deodorant, etc.)
+Any medications you take
+A place to sleep: stay with a friendly Gator or book a nearby hotel room
+Notebook and pen
+A little cash, just in case
+⚠️
+Watch your belongings. Gator Quant Hacks is not responsible for lost, stolen, or damaged items. Keep your laptop and valuables with you or secured at all times.
+📣 Official Communication 🟢
+For the fastest event updates, competitors should monitor the official Gator Quant Hacks Discord. Start with the START HERE channels: #welcome, #rules, #announcements (official updates), #roles, #ask-organizers (event questions), and #ask-mentors (technical help).
+Discord: https://discord.gg/kQX9ZtWFHG
+Website: https://gqhacks.com
+General Email: gatorquanthacks@gmail.com
+Urgent Contact: dominickdupuy@ufl.edu
+Emergency Phone: (352) 665-6965 (Dominick)
+👋 Building a Team 🟢
+Don't have a team yet? That's fine.
+Introduce yourself on the Discord and share your skills and what you want to work on
+Stay for team formation in the Reitz Union Grand Ballroom right after opening remarks on Friday (6:58 PM). We'll help match people by interests as hacking begins.
+Ask an organizer if you're still looking for a team, and we'll help you find one
+⁉️ Getting Help 🟨
+For event questions, post in #ask-organizers on Discord or find an organizer in person. For technical help, post in #ask-mentors or grab a mentor in person: mentors will be walking around the competition hacking area wearing mentor badges. For anything urgent, email dominickdupuy@ufl.edu. In an emergency, call Dominick at (352) 665-6965. For life-threatening emergencies, call 911 first.
+🤝 Code of Conduct 🟨
+Everyone at the event, including competitors, sponsors, judges, volunteers, and organizers, is expected to follow:
+The Gator Quant Hacks Terms
+The MLH Code of Conduct
+If you experience or witness a violation, report it to an organizer in person, through Discord, or at dominickdupuy@ufl.edu. Your safety comes first.
+📚 Resources
+GitHub Student Developer Pack: free and discounted developer tools for students
+MLH Resources: tutorials and guides
+MLH Build With: APIs and tools from MLH partners
+ElevenLabs coupon codes: free ElevenLabs access for competitors (see Free ElevenLabs Access above, video tutorial)
+🤔 FAQ
+Where is Gator Quant Hacks?
+Gator Quant Hacks will be held at the Reitz Union at the University of Florida.
+Where do I check in?
+Check-in begins at 3:00 PM on Friday, October 2 outside the Reitz Union entrance (until 5:30 PM). Walk-in check-in is 5:30 - 6:00 PM inside the Reitz Union, outside the Grand Ballroom.
+Where are the opening and closing ceremonies?
+Both are planned for the Reitz Union Ballroom. Friday commencement begins at 6:30 PM; Sunday closing begins at 3:35 PM.
+Where do I park?
+The Reitz Union Garage (655 Reitz Union Dr) is free from 4:30 PM Friday through Sunday. See Parking & Transportation above.
+Where is overnight hacking?
+In the conference rooms at the AC Hotel Gainesville Downtown (151 NW 14th St), open to hackers 24/7. Bring your badge; it's required to get in. If you want to sleep, stay with a friendly Gator or book a room at a nearby hotel.
+What are the competition tracks?
+The three tracks are Quantitative Puzzles & Brainteasers, Systematic Trading, and Hardware. The Massive Track is a subtrack of Systematic Trading, and projects entering it must meet all Systematic Trading requirements.
+Who can compete?
+The competition is intended for undergraduate and graduate students from universities across the United States. Teams can have 1 to 4 people, and solo entries are allowed.
+Do I need a team before I arrive?
+No. Use the Discord to find teammates before the event, and stay for team formation right after opening remarks on Friday (6:58 PM).
+I'm new to quant. Do I belong here?
+Yes. The weekend includes workshops, office hours, and sponsor sessions, and the goal is to learn as much as to win.
+What if my project isn't finished or has bugs?
+Submit it anyway. Nobody expects a polished product after one weekend, and judges want to see what you built and learned.
+Where will schedule changes be announced?
+Updates will be posted through the official event guide and Discord.
+Who should I contact with questions?
+Use gatorquanthacks@gmail.com for general questions. For urgent issues, contact dominickdupuy@ufl.edu.
+📝 TBD
+Venue & overnight
+Building map
+Check-in & policies
+MLH Member Event status, MLH coach, and whether to list MLH's incident reporting line
+
+====================================================================================================
+12. GATOR QUANT HACKS TERMS v1.0 (eff. 2026-09-13)  https://raw.githubusercontent.com/dominickdupuy/gatorqh/main/TERMS.md
+====================================================================================================
+# GATOR QUANT HACKS 2026
+
+## PARTICIPANT TERMS AND CONDITIONS, ASSUMPTION OF RISK, WAIVER AND RELEASE OF LIABILITY
+
+**Version 1.0. Effective as of September 13, 2026.**
+
+These Participant Terms and Conditions, Assumption of Risk, Waiver and Release of Liability (these "Terms") constitute a legally binding agreement between QuantED, an unincorporated nonprofit association organized under the laws of the State of Florida and registered as a General Registered Student Organization at the University of Florida (the "Organizer"), and each individual who registers for, attends, or participates in Gator Quant Hacks 2026 (each, a "Participant").
+
+### RECITALS
+
+A. The Organizer is the sole host and organizer of Gator Quant Hacks 2026, a collegiate quantitative finance competition to be held October 2 through October 4, 2026, at the University of Florida, Gainesville, Florida.
+
+B. The Event is educational in purpose and is intended to develop Participants' skills in quantitative research, programming, and finance, and to provide mentorship and professional exposure.
+
+C. Participation in the Event is entirely voluntary and involves inherent risks, including risks arising from extended concentration, fatigue, sleep loss, travel, and the use of equipment and facilities, which risks cannot be eliminated regardless of the care exercised by the Organizer.
+
+D. In consideration of being permitted to register for and participate in the Event, and of the benefits of participation, each Participant agrees to be bound by these Terms.
+
+NOW, THEREFORE, the parties agree as follows.
+
+---
+
+## ARTICLE 1. DEFINITIONS
+
+1.1 **"Event"** means Gator Quant Hacks 2026, including all competition tracks, workshops, speaker sessions, opening and closing ceremonies, meals, social and networking activities, and any related activity conducted before, during, or after the competition weekend, whether on or off University property and whether in person or online.
+
+1.2 **"Organizer"** means QuantED, together with its officers, executive board members, student organizers, committee members, agents, and volunteers acting in that capacity.
+
+1.3 **"Participant," "you," and "your"** mean any person who registers for, attends, competes in, volunteers at, mentors at, judges, speaks at, or otherwise takes part in the Event.
+
+1.4 **"Sponsor"** means any company, firm, organization, academic department, institute, or individual that provides financial support, in-kind goods, data, software, hardware, prizes, credits, food, beverages, personnel, or promotional support to the Event.
+
+1.5 **"Released Parties"** means, collectively and individually:
+
+(a) QuantED and its officers, directors, executive board members, student organizers, committee members, staff, agents, and volunteers, in both their organizational and individual capacities, whether or not such volunteers are affiliated with any other student organization;
+
+(b) each Sponsor, and each partner, affiliate, judge, mentor, speaker, workshop leader, and vendor of the Event, and each of their respective officers, directors, employees, contractors, and agents;
+
+(c) the University of Florida Board of Trustees, the University of Florida, the J. Wayne Reitz Union, the Division of Student Life, and any other university unit, department, building, or facility used in connection with the Event, and each of their respective trustees, officers, employees, students, and agents; and
+
+(d) any other individual or entity assisting in the planning, funding, staffing, promotion, or operation of the Event.
+
+1.6 **"Track Rules"** means the track-specific rules, deadlines, team size limits, permitted data sources, and scoring criteria published by the Organizer for each competition track, as amended from time to time.
+
+1.7 **"University"** means the University of Florida.
+
+1.8 **"RSVP Form"** means the attendance confirmation form issued by the Organizer to registrants, by which a registrant confirms the registrant's intention to attend the Event and which incorporates the attestation set forth in Section 27.1. Submission of the RSVP Form is a condition of admission to the Event.
+
+1.9 References to a Section or Article are to a Section or Article of these Terms. The words "including" and "includes" mean including without limitation. Headings are for convenience only and shall not affect interpretation.
+
+---
+
+## ARTICLE 2. ACCEPTANCE AND FORMATION OF AGREEMENT
+
+2.1 **Acceptance.** Confirmation of attendance at the Event requires affirmative acceptance of these Terms. A Participant accepts these Terms by checking the acceptance box presented on the RSVP Form and submitting that form. The RSVP Form cannot be submitted without such acceptance.
+
+2.1.1 **Registration distinguished.** Submission of a registration or application alone does not constitute acceptance of these Terms and does not entitle any person to attend the Event. No person shall be admitted to the Event who has not submitted a completed RSVP Form containing the attestation set forth in Section 27.1. Where a person attends the Event without having submitted the RSVP Form, that person's entry upon the premises and participation in the Event shall constitute acceptance of these Terms to the fullest extent permitted by law.
+
+2.2 **Representations upon acceptance.** By accepting these Terms, you represent and warrant that: (a) you have read these Terms in their entirety; (b) you understand their contents, including the assumption of risk in Article 6 and the waiver and release in Article 20; (c) you accept them freely and voluntarily, without any inducement, assurance, or representation other than as set forth herein; (d) you have had an adequate opportunity to seek clarification or independent advice before accepting; and (e) the information supplied in your registration and on your RSVP Form is true and accurate.
+
+2.3 **Electronic signature.** You agree that your electronic acceptance of these Terms constitutes your signature and has the same force and effect as a handwritten signature for all purposes, including under the Uniform Electronic Transaction Act as adopted in Florida, Chapter 668, Florida Statutes, and the federal Electronic Signatures in Global and National Commerce Act, 15 U.S.C. § 7001 et seq.
+
+2.4 **Record of acceptance.** The Organizer shall record, for each RSVP Form submitted, the Participant's name and electronic mail address, the date and time of acceptance, and the version number of these Terms then in effect. Your agreement is to the version in effect at the time of your acceptance.
+
+2.5 **Refusal.** If you do not agree to these Terms, you must not submit an RSVP Form and must not attend the Event.
+
+---
+
+## ARTICLE 3. ELIGIBILITY
+
+3.1 To register as a competing Participant, an individual must: (a) be at least eighteen (18) years of age as of the first day of the Event; (b) be currently enrolled at an accredited college or university, or have graduated from such an institution within the twelve (12) months preceding the Event, unless the Organizer has published a specific exception; (c) provide accurate and complete registration information; and (d) satisfy any additional eligibility requirement published in the applicable Track Rules.
+
+3.2 Employees, contractors, and immediate family members of a Sponsor may attend and participate but may be excluded from eligibility for prizes offered by that Sponsor where that Sponsor's own rules so require.
+
+3.3 The Organizer may verify eligibility at any time and may deny registration, revoke admission, disqualify an entry, or rescind an award where eligibility requirements are not satisfied.
+
+---
+
+## ARTICLE 4. RELATIONSHIP TO THE UNIVERSITY OF FLORIDA
+
+4.1 **Independent status.** QuantED is a General Registered Student Organization. Under its approved constitution and under University policy, a General Registered Student Organization is a separate third-party entity and is not a part of, controlled by, funded by, or an agent of the University. The Event is organized and conducted by students, not by the University.
+
+4.2 **No endorsement or assumption of responsibility.** The University does not sponsor, endorse, supervise, or assume responsibility for the Event or for the acts or omissions of the Organizer, its volunteers, or any Participant. The use of University facilities does not create or imply any such sponsorship, endorsement, supervision, or responsibility.
+
+4.3 **Compliance with University and venue policy.** While present on University property, each Participant remains subject to all applicable University regulations, the Student Honor Code and Student Conduct Code, and the operating, staffing, and building policies of the J. Wayne Reitz Union and any other facility in use.
+
+---
+
+## ARTICLE 5. EDUCATIONAL PURPOSE; NO INVESTMENT ADVICE
+
+5.1 **Purpose.** The Event is an educational and skill-building competition for students. Its purpose is instruction, mentorship, collaborative development, and career exposure.
+
+5.2 **No advice.** Nothing made available at or in connection with the Event, including any dataset, notebook, model, lecture, workshop, mentor discussion, Sponsor presentation, strategy, backtest, result, award, or prize, constitutes: (a) investment, financial, tax, accounting, or legal advice; (b) an offer, solicitation, or recommendation to buy, sell, or hold any security, futures contract, option, digital asset, or other financial instrument; or (c) any representation that a strategy, signal, or result produced at the Event is suitable, profitable, or appropriate for deployment with capital.
+
+5.3 **No trading of real capital.** Competition tracks employ historical data, simulated environments, paper trading, or read-only application programming interfaces. No Participant is asked, expected, or authorized to trade real money as part of the Event. Participants shall not connect a funded brokerage or exchange account to any Event activity. Any decision by a Participant to act upon information obtained at the Event with the Participant's own capital is made solely at the Participant's own risk, is outside the scope of the Event, and is the sole responsibility of that Participant.
+
+5.4 **Performance disclaimer.** Past performance of any strategy, including any strategy demonstrated, awarded, or produced at the Event, is not indicative of future results. Backtested, simulated, and hypothetical results have inherent limitations and do not represent actual trading.
+
+---
+
+## ARTICLE 6. VOLUNTARY PARTICIPATION AND ASSUMPTION OF RISK
+
+6.1 **Voluntary participation.** Participation in the Event is entirely voluntary. Each Participant participates of the Participant's own free will and for the Participant's own benefit.
+
+6.2 **Acknowledgment of inherent risk.** Each Participant acknowledges that attendance at and participation in the Event involves inherent risks of personal injury, illness, property damage, and other loss, some of which cannot be eliminated regardless of the care exercised by the Organizer.
+
+6.3 **Enumerated risks.** WITHOUT LIMITING THE GENERALITY OF SECTION 6.2, EACH PARTICIPANT KNOWINGLY AND FREELY ASSUMES ALL RISKS ASSOCIATED WITH THE EVENT, WHETHER KNOWN OR UNKNOWN, INCLUDING THOSE ARISING FROM:
+
+(a) **Fatigue and exertion:** extended periods of concentration, screen exposure, and sedentary work; mental and physical fatigue; sleep loss, whether elected or incidental; eye strain, headache, repetitive strain injury, and musculoskeletal discomfort; and reduced alertness, impaired judgment, slowed reaction time, and changes in mood or cognition;
+
+(b) **Travel:** all travel to, from, and during the Event by any mode, including operation of a motor vehicle, air travel, carpooling, rideshare, public transit, cycling, use of scooters, and walking, including travel undertaken while fatigued;
+
+(c) **Physical environment:** slips, trips, and falls; cables, cords, and equipment placed on floors; crowded rooms; amplified audio; lighting and visual effects; ambient temperature; stairs, elevators, escalators, and doorways; transit between buildings; and weather conditions, including rain, heat, humidity, lightning, and severe weather;
+
+(d) **Health:** exposure to communicable illness; allergic reaction, including reaction to food, beverages, ingredients, or cleaning products; aggravation of a pre-existing medical or psychological condition; and the effects of caffeine, energy drinks, sugar, irregular eating, dehydration, and irregular sleep;
+
+(e) **Equipment:** use of personal and Event-provided computers, peripherals, batteries, chargers, power distribution equipment, hardware development boards, and other electronics, including risk of electrical shock, burn, laceration, and damage to, loss of, or theft of property;
+
+(f) **Conduct of others:** the acts, omissions, or negligence of other Participants, volunteers, attendees, vendors, or members of the public, including conduct in violation of these Terms; and
+
+(g) **The Participant's own conduct:** injury, illness, loss, or damage caused in whole or in part by the Participant's own negligence, the Participant's own elections regarding sleep, rest, food, hydration, caffeine, medication, or exertion, or the Participant's failure to follow instructions, posted rules, or ordinary precautions.
+
+6.4 **Fitness to participate.** Each Participant represents that the Participant is physically and mentally able to participate in the Event, is not participating contrary to medical advice, and shall cease participation and seek appropriate assistance upon becoming unwell.
+
+---
+
+## ARTICLE 7. FATIGUE, SLEEP, AND PERSONAL WELLBEING
+
+7.1 **No expectation of sleeplessness.** The Event is conducted over approximately forty-eight (48) hours. Participants are neither expected nor encouraged to remain awake for its duration. No element of the judging criteria rewards sleeplessness, and no organizer, volunteer, mentor, judge, or Sponsor is authorized to request that a Participant forgo sleep.
+
+7.2 **Elective nature of sleep decisions.** Any decision by a Participant to work overnight, to shorten the Participant's sleep, or to forgo sleep entirely is the Participant's own personal election, made freely and with full awareness of the risks enumerated in Section 6.3.
+
+7.3 **No accommodations or supervision.** The Organizer does not provide sleeping accommodations, bedding, supervision, wellness monitoring, or any guarantee of a quiet or secure place to rest. Where a rest area or quiet room is made available, it is provided as a courtesy only, is unsupervised, and is used at the Participant's own risk, including the risk of loss of or damage to unattended property.
+
+7.4 **Acknowledged effects of sleep loss.** Each Participant acknowledges that sleep deprivation is known to impair judgment, coordination, reaction time, and the ability to operate a motor vehicle safely, that the Participant has been expressly warned of these effects herein, and that the Participant is solely responsible for managing them.
+
+7.5 **Drowsy operation prohibited.** No Participant shall operate a motor vehicle, bicycle, scooter, or other equipment while drowsy. A Participant who is fatigued should arrange alternative transportation, remain on site, or request assistance from an organizer in identifying a safe option.
+
+7.6 **Assumption of responsibility.** EACH PARTICIPANT ASSUMES FULL AND SOLE RESPONSIBILITY FOR THE CONSEQUENCES OF THE PARTICIPANT'S OWN SLEEP-RELATED DECISIONS, INCLUDING ANY INJURY, ILLNESS, ACCIDENT, PROPERTY DAMAGE, ACADEMIC OR PROFESSIONAL CONSEQUENCE, OR HARM TO THE PARTICIPANT OR TO ANY THIRD PARTY ARISING FROM FATIGUE, DROWSINESS, OR SLEEP LOSS, WHETHER SUCH FATIGUE AROSE BEFORE, DURING, OR AFTER THE EVENT.
+
+7.7 **Assistance.** A Participant who becomes unwell or distressed at any time should notify an organizer or volunteer. In the case of an emergency, the Participant or any person present should contact emergency services by dialing 911 and thereafter notify an organizer.
+
+---
+
+## ARTICLE 8. FOOD, BEVERAGES, AND CAFFEINE
+
+8.1 **Third-party provision.** Meals, snacks, and beverages may be provided at the Event by the Organizer or by Sponsors. All such items are prepared and supplied by third parties. The Organizer does not prepare food and makes no representation as to the accuracy of ingredient information, the absence of allergens, or the avoidance of cross-contamination.
+
+8.2 **Participant responsibility for dietary needs.** Each Participant having a food allergy, intolerance, dietary restriction, or medical dietary requirement is solely responsible for evaluating the suitability of items consumed and for supplying the Participant's own food where necessary, and shall carry any required medication, including epinephrine auto-injectors, and inform a teammate or organizer of its location.
+
+8.3 **Caffeinated beverages.** Energy drinks and other caffeinated beverages may be made available in self-serve quantities. Consumption is entirely voluntary and self-limited. Each Participant acknowledges that excessive caffeine intake, particularly in combination with sleep loss, dehydration, or certain medical conditions or medications, may cause serious adverse effects, and each Participant is solely responsible for the Participant's own intake.
+
+8.4 **Prohibited substances.** Alcohol, cannabis, and controlled substances are prohibited at the Event and on University property. Any Participant under the influence of such substances shall be removed from the Event.
+
+8.5 **No liability.** The Released Parties shall have no liability for any allergic reaction, illness, adverse effect, or injury arising from food or beverages consumed at or in connection with the Event.
+
+---
+
+## ARTICLE 9. MEDICAL CARE, INSURANCE, AND EMERGENCY CONSENT
+
+9.1 **No medical services.** The Organizer does not provide medical care, first aid staffing beyond that provided by the venue, or medical monitoring of any kind.
+
+9.2 **Insurance.** Each Participant is solely responsible for maintaining adequate health insurance. Neither the Organizer nor any other Released Party provides accident, health, travel, or property insurance for Participants, and no such coverage exists by reason of participation in the Event.
+
+9.3 **Emergency consent.** Each Participant consents to the summoning of emergency medical services on the Participant's behalf and to emergency medical treatment and transport in the event that the Participant is unable to give contemporaneous consent, and agrees that all costs of such services, treatment, and transport are the sole responsibility of the Participant.
+
+9.4 **Pre-existing conditions and medication.** Each Participant is solely responsible for managing the Participant's own medication and pre-existing conditions and for informing a teammate or organizer of any information necessary in an emergency.
+
+---
+
+## ARTICLE 10. TRAVEL AND TRANSPORTATION
+
+10.1 Each Participant is solely responsible for arranging, funding, and safely completing the Participant's own travel to, from, and between Event locations, including parking, transit, and overnight accommodation.
+
+10.2 Travel and accommodation costs shall not be reimbursed by the Organizer except pursuant to a prior written agreement.
+
+10.3 The Organizer does not arrange, vet, supervise, or assume responsibility for carpools, rideshares, rental vehicles, buses, air travel, hotels, or accommodation arranged between Participants or by any third party.
+
+10.4 Each Participant assumes all risk associated with travel to, from, and during the Event, including travel undertaken while fatigued, and Section 7.5 applies to all such travel.
+
+---
+
+## ARTICLE 11. PERSONAL PROPERTY
+
+11.1 **No bailment.** The Organizer does not provide secure storage and is not a bailee of any Participant's property. No bailment, express or implied, is created by the presence of property at the Event, by the designation of a storage area, or by the acceptance of an item at a registration or check-in desk.
+
+11.2 **No liability for loss.** The Released Parties shall not be responsible for the loss, theft, or damage of any computer, telephone, peripheral, bag, garment, vehicle, or other personal property, whether left unattended, stored in a designated area, or otherwise.
+
+11.3 **Unattended property.** Participants shall not leave valuables unattended, including overnight.
+
+11.4 **Work product.** Each Participant is solely responsible for backing up the Participant's own work. The Organizer shall have no liability for lost code, data, or submissions, including loss resulting from network failure, power failure, hardware failure, or Participant error.
+
+---
+
+## ARTICLE 12. EQUIPMENT AND VENUE PROPERTY
+
+12.1 Where a Participant borrows or uses hardware, development boards, peripherals, tools, or other equipment supplied by the Organizer, a Sponsor, a University department, or the venue, the Participant shall: (a) use it only as instructed and only for its intended purpose; (b) return it in the condition received, at the time specified by the Organizer; and (c) not modify, disassemble, or repurpose it without prior permission.
+
+12.2 Each Participant shall be financially responsible for equipment lost or damaged through the Participant's misuse or neglect, or not returned when due.
+
+12.3 Each Participant shall be responsible for any damage the Participant causes to the venue or to its furniture, fixtures, network, or equipment.
+
+12.4 No Participant shall overload electrical outlets, route cabling across walkways, obstruct exits or fire equipment, or tamper with building systems.
+
+---
+
+## ARTICLE 13. CODE OF CONDUCT
+
+13.1 **Standard.** The Event is committed to providing a welcoming environment free from harassment for all persons, without regard to age, race, ethnicity, national origin, religion, sex, gender identity or expression, sexual orientation, disability, physical appearance, body size, level of experience, or field of study.
+
+13.2 **Prohibited conduct.** The following conduct is prohibited at the Event and in all Event-affiliated online spaces, including any Discord server operated for the Event:
+
+(a) harassment, intimidation, discrimination, stalking, unwanted physical contact, unwelcome sexual attention, use of slurs, or deliberate intimidation, in any form;
+
+(b) violence, threats of violence, or possession of weapons;
+
+(c) disruption of talks, workshops, judging, or the work of other Participants;
+
+(d) academic or competitive dishonesty, including submission of work that is not the team's own, misrepresentation of the origin of code or results, appropriation of another team's work, sabotage, and misrepresentation of eligibility or affiliation;
+
+(e) unauthorized access to systems, networks, accounts, or data belonging to the venue, the University, a Sponsor, another Participant, or any third party, provided that security research conducted within an authorized scope expressly designated by the Organizer is permitted;
+
+(f) theft, vandalism, or damage to property;
+
+(g) recording or photographing an individual who has requested not to be recorded; and
+
+(h) any unlawful activity, and any violation of University regulation or venue policy.
+
+13.3 **Incorporation of Major League Hacking Code of Conduct.** Where the Event is registered as a Major League Hacking Member Event, the Major League Hacking Code of Conduct applies to all Participants and is incorporated herein by reference.
+
+13.4 **Reporting.** Concerns should be reported immediately to an organizer in person or by electronic mail to dominickdupuy@ufl.edu. Reports shall be handled with such discretion as the circumstances permit. In an emergency, Participants should contact emergency services by dialing 911 and thereafter notify an organizer.
+
+13.5 **Enforcement.** The Organizer may, in its sole discretion and without refund or compensation, issue a warning, remove a Participant from a track, disqualify a team, revoke an award, remove a Participant from the venue and from Event online spaces, prohibit a Participant from attending future events, and refer conduct to the University or to law enforcement.
+
+---
+
+## ARTICLE 14. TEAMS, SUBMISSIONS, AND COMPETITION RULES
+
+14.1 The Track Rules are incorporated herein by reference and form part of these Terms. In the event of a conflict between the Track Rules and these Terms with respect to competition procedure, the Track Rules shall control; in all other respects these Terms shall control.
+
+14.2 All work submitted must be created by the submitting team during the Event, except for open-source libraries, publicly available datasets, and pre-existing components that the applicable Track Rules permit and that the team discloses at the time of submission.
+
+14.3 Use of artificial intelligence coding assistants and large language models is permitted unless the applicable Track Rules provide otherwise. Failure to make a disclosure required by the Track Rules constitutes a violation of Article 13.
+
+14.4 Each Participant represents and warrants that the Participant's submission does not infringe or misappropriate the intellectual property or privacy rights of any third party and does not violate the license or terms of service of any tool, dataset, or platform used in its creation.
+
+14.5 Any submission containing malicious code, unlawful content, or content violating Article 13 shall be disqualified.
+
+---
+
+## ARTICLE 15. THIRD-PARTY DATA, APPLICATION PROGRAMMING INTERFACES, AND PLATFORMS
+
+15.1 **Scope of access.** Market data, software, credits, and application programming interfaces supplied by Sponsors or other third parties are made available for the Event only and for educational and competition use only.
+
+15.2 **Compliance with third-party terms.** Each Participant shall comply with the license terms and terms of service of each such provider. Those terms constitute an agreement between the Participant and the provider, to which the Organizer is not a party.
+
+15.3 **Restrictions.** No Participant shall redistribute, resell, publish, or retain licensed data beyond the period permitted by the provider, scrape beyond permitted limits, or share any application programming interface key or credential.
+
+15.4 **No warranty of availability.** Access may be limited, rate-limited, delayed, interrupted, or withdrawn. The Organizer makes no warranty as to the availability, accuracy, completeness, or fitness for any purpose of any dataset, platform, or tool, and shall have no liability arising from any outage, error, defect, or access failure, including any resulting inability of a Participant to complete or submit an entry.
+
+15.5 **Overage charges.** Each Participant shall be responsible for any charge incurred by exceeding an allocation of credits or by use of a provider's services outside the allocation made available for the Event.
+
+---
+
+## ARTICLE 16. INTELLECTUAL PROPERTY
+
+16.1 **Ownership retained.** Each Participant retains ownership of the intellectual property the Participant creates at the Event, subject to the rights of any third party in components incorporated therein and to any additional terms of a Sponsor-operated track that the Participant elects to enter.
+
+16.2 **License to Organizer and Sponsors.** By submitting an entry, each Participant grants to the Organizer and to the Sponsors of the track entered a non-exclusive, worldwide, royalty-free, perpetual, irrevocable license to:
+
+(a) access, execute, review, evaluate, score, and reproduce the submission for the purpose of judging and verifying results, including re-execution against held-out data; and
+
+(b) display, describe, reproduce images of, and publicize the submission, the team name, and the names of team members in Event recaps, reports, websites, social media, and Sponsor materials promoting the Event.
+
+16.3 **Additional Sponsor rights.** Where a Sponsor-operated track requires rights broader than those granted in Section 16.2, such requirement shall be disclosed in the applicable Track Rules before entry, and a Participant's election to enter that track constitutes acceptance of those additional terms.
+
+16.4 **No confidential material.** No Participant shall submit or disclose at the Event any material that is confidential to an employer, research group, or other third party. The Organizer does not and cannot guarantee the confidentiality of any submission or of any matter discussed at the Event.
+
+---
+
+## ARTICLE 17. JUDGING, PRIZES, AND AWARDS
+
+17.1 **Judging.** Judging criteria are published in the applicable Track Rules. Judges may include organizers, faculty, volunteers, and Sponsor representatives.
+
+17.2 **Finality.** All judging decisions are final and not subject to appeal, provided that the Organizer reserves the right to correct scoring or administrative errors identified after announcement.
+
+17.3 **Nature of prizes.** Prizes are awarded in the discretion of the Organizer and the applicable Sponsors, are non-transferable, and may not be exchanged for cash. University policy prohibits the award of cash prizes at the Event. Prizes may consist of hardware, software subscriptions, data credits, platform credits, merchandise, or similar items.
+
+17.4 **Sponsor-supplied prizes.** A prize offered by a Sponsor is supplied, fulfilled, and warranted by that Sponsor and not by the Organizer. The Organizer shall have no liability for a Sponsor's failure or delay in delivering a prize or for any defect therein.
+
+17.5 **Substitution.** The Organizer may substitute a prize of comparable value where an announced prize becomes unavailable.
+
+17.6 **Taxes and documentation.** Each recipient is solely responsible for all taxes arising from a prize and for providing any documentation required by a Sponsor for delivery. Recipients may be required to provide their name and electronic mail address to the awarding Sponsor.
+
+17.7 **Post-award disqualification.** The Organizer may disqualify a team and reclaim a prize where a violation of these Terms or the Track Rules is discovered after the award.
+
+---
+
+## ARTICLE 18. PHOTOGRAPHY, RECORDING, AND MEDIA RELEASE
+
+18.1 The Event will be photographed, filmed, and recorded.
+
+18.2 Each Participant grants to the Organizer and to the Sponsors an irrevocable, worldwide, royalty-free, perpetual right and license to photograph, film, record, and livestream the Participant, and to use, reproduce, edit, publish, and distribute the Participant's name, likeness, image, voice, team name, institutional affiliation, and statements made at the Event, in any medium now known or hereafter devised, for purposes of documentation, promotion, recruiting, and reporting in connection with the Event, without further notice, approval, inspection, or compensation.
+
+18.3 A Participant who does not wish to appear in Event media shall so advise an organizer at check-in and avoid designated photography areas. The Organizer shall use reasonable efforts to accommodate such a request but cannot guarantee that the Participant will not appear incidentally in crowd photography, livestream coverage, or media captured by other Participants, Sponsors, or press.
+
+---
+
+## ARTICLE 19. PRIVACY AND INFORMATION SHARING
+
+19.1 **Information collected.** The Organizer collects registration and RSVP information including name, electronic mail address, institution, academic year, dietary requirements, accessibility requirements, and track selections.
+
+19.2 **Permitted disclosures.** Such information may be disclosed: (a) to Sponsors and partners for the purposes of provisioning access to sponsored platforms and credits, fulfilling prizes, and recruiting, which may include disclosure of a Participant's name, electronic mail address, resume, and institution; (b) to vendors as necessary for catering counts, merchandise sizing, and venue requirements; (c) to the University and the venue as required for facility access, event permitting, and safety; and (d) as required by law or in response to an emergency.
+
+19.3 **Sponsor privacy practices.** Information disclosed to a Sponsor is thereafter governed by that Sponsor's privacy policy, over which the Organizer exercises no control and for which the Organizer bears no responsibility.
+
+19.4 **Opt-out.** A Participant may request that the Participant's information not be shared with Sponsors by written notice to dominickdupuy@ufl.edu in advance of the Event. Such an election may render certain sponsored platforms, credits, or prizes unavailable to that Participant.
+
+19.5 **Retention.** The Organizer shall retain registration and RSVP records, including the record of acceptance described in Section 2.4, for administrative, legal, and organizational continuity purposes.
+
+---
+
+## ARTICLE 20. WAIVER AND RELEASE OF LIABILITY
+
+**THIS ARTICLE AFFECTS YOUR LEGAL RIGHTS. READ IT CAREFULLY BEFORE ACCEPTING THESE TERMS.**
+
+20.1 IN CONSIDERATION OF BEING PERMITTED TO REGISTER FOR AND PARTICIPATE IN THE EVENT, EACH PARTICIPANT, ON BEHALF OF THE PARTICIPANT AND THE PARTICIPANT'S HEIRS, EXECUTORS, ADMINISTRATORS, ASSIGNS, AND NEXT OF KIN, HEREBY RELEASES, WAIVES, DISCHARGES, AND COVENANTS NOT TO SUE THE RELEASED PARTIES FROM AND AGAINST ANY AND ALL CLAIMS, DEMANDS, ACTIONS, CAUSES OF ACTION, LIABILITIES, LOSSES, DAMAGES, COSTS, AND EXPENSES, INCLUDING ATTORNEYS' FEES, OF ANY KIND OR NATURE, WHETHER KNOWN OR UNKNOWN AND WHETHER FORESEEN OR UNFORESEEN, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE PARTICIPANT'S REGISTRATION FOR, TRAVEL TO OR FROM, ATTENDANCE AT, OR PARTICIPATION IN THE EVENT, INCLUDING ANY CLAIM FOR PERSONAL INJURY, ILLNESS, DISABILITY, EMOTIONAL DISTRESS, DEATH, OR LOSS OF OR DAMAGE TO PROPERTY.
+
+20.2 EACH PARTICIPANT EXPRESSLY ACKNOWLEDGES AND AGREES THAT THIS RELEASE EXTENDS TO CLAIMS ARISING IN WHOLE OR IN PART FROM THE PARTICIPANT'S OWN NEGLIGENCE, THE PARTICIPANT'S OWN VOLUNTARY CONDUCT, AND THE PARTICIPANT'S OWN ELECTIONS REGARDING SLEEP, REST, FATIGUE, FOOD, HYDRATION, CAFFEINE, MEDICATION, EXERTION, AND TRANSPORTATION, AND ALSO TO CLAIMS ARISING FROM THE ORDINARY NEGLIGENCE OF ANY RELEASED PARTY, TO THE FULLEST EXTENT PERMITTED BY THE LAW OF THE STATE OF FLORIDA.
+
+20.3 THIS RELEASE DOES NOT APPLY TO CONDUCT THAT IS GROSSLY NEGLIGENT, INTENTIONAL, WILLFUL, OR WANTON, NOR TO ANY LIABILITY THAT MAY NOT BE RELEASED AS A MATTER OF LAW.
+
+20.4 EACH PARTICIPANT ACKNOWLEDGES HAVING READ THIS ARTICLE 20, UNDERSTANDS THAT SUBSTANTIAL LEGAL RIGHTS ARE BEING RELINQUISHED BY ACCEPTING IT, CONFIRMS THAT NO REPRESENTATION OR INDUCEMENT HAS BEEN MADE OTHER THAN AS SET FORTH IN THESE TERMS, AND ACCEPTS IT FREELY AND VOLUNTARILY.
+
+---
+
+## ARTICLE 21. INDEMNIFICATION
+
+21.1 EACH PARTICIPANT SHALL INDEMNIFY, DEFEND, AND HOLD HARMLESS THE RELEASED PARTIES FROM AND AGAINST ANY CLAIM, DEMAND, LOSS, LIABILITY, DAMAGE, FINE, COST, OR EXPENSE, INCLUDING REASONABLE ATTORNEYS' FEES AND COSTS THROUGH APPEAL, ASSERTED BY ANY THIRD PARTY AND ARISING OUT OF OR RELATING TO:
+
+(a) the Participant's conduct at or in connection with the Event;
+
+(b) the Participant's breach of these Terms, the Track Rules, Article 13, or any third-party license or terms of service;
+
+(c) the Participant's infringement or misappropriation of any intellectual property or privacy right;
+
+(d) damage caused by the Participant to the venue, to equipment, or to the property of another; or
+
+(e) injury caused by the Participant to any other person.
+
+---
+
+## ARTICLE 22. DISCLAIMER OF WARRANTIES AND LIMITATION OF LIABILITY
+
+22.1 **Disclaimer.** THE EVENT IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. THE RELEASED PARTIES DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+22.2 **Exclusion of certain damages.** IN NO EVENT SHALL ANY RELEASED PARTY BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR LOST PROFITS, LOST OPPORTUNITY, LOST DATA, LOST ACADEMIC OR PROFESSIONAL STANDING, OR REPUTATIONAL HARM, ARISING OUT OF OR RELATING TO THE EVENT, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+22.3 **Cap on liability.** THE TOTAL AGGREGATE LIABILITY OF THE RELEASED PARTIES TO ANY PARTICIPANT FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE EVENT SHALL NOT EXCEED THE GREATER OF (a) THE TOTAL AMOUNT ACTUALLY PAID BY THAT PARTICIPANT TO THE ORGANIZER TO REGISTER FOR THE EVENT, AND (b) ONE HUNDRED UNITED STATES DOLLARS (USD $100.00).
+
+22.4 **Basis of the bargain.** Each Participant acknowledges that the limitations in this Article 22 are an essential basis of the agreement between the parties and that the Organizer would not permit participation in the Event absent them.
+
+---
+
+## ARTICLE 23. REMOVAL, DISQUALIFICATION, AND NO REFUND
+
+23.1 The Organizer may remove a Participant from the Event, disqualify a team, revoke access or an award, and prohibit attendance at future events, in its sole discretion, where the Participant violates these Terms, the Track Rules, Article 13, University or venue policy, or applicable law, or engages in conduct that the Organizer reasonably deems unsafe or materially disruptive.
+
+23.2 Removal or disqualification shall not entitle a Participant to any refund, reimbursement, compensation, or credit of any kind.
+
+---
+
+## ARTICLE 24. MODIFICATION, CANCELLATION, AND FORCE MAJEURE
+
+24.1 **Modification of the Event.** The Organizer may modify the schedule, tracks, rules, prizes, venue, format, judging panel, and any other aspect of the Event at any time, including during the Event, and shall communicate material changes by means of the Event website, electronic mail, or the Event Discord server.
+
+24.2 **Force majeure.** The Organizer may postpone, shorten, relocate, convert to an online format, or cancel the Event in whole or in part by reason of weather, facility closure, public health directive, power or network failure, withdrawal of funding, safety concern, act of government, labor action, act of God, or any other cause beyond its reasonable control.
+
+24.3 **No liability for Participant costs.** The Released Parties shall have no liability for any cost incurred by a Participant as a result of any modification, postponement, relocation, or cancellation, including non-refundable travel and accommodation costs and time away from employment or study.
+
+24.4 **Amendment of these Terms.** These Terms may be amended prior to the close of attendance confirmation. A material amendment shall be published with a new version number and effective date. Continued participation following such publication constitutes acceptance of the amended version. A Participant who does not accept an amendment may withdraw from the Event prior to its commencement, and withdrawal shall be that Participant's sole and exclusive remedy.
+
+---
+
+## ARTICLE 25. GOVERNING LAW, VENUE, AND DISPUTE RESOLUTION
+
+25.1 **Governing law.** These Terms shall be governed by and construed in accordance with the laws of the State of Florida, without regard to its conflict of laws principles.
+
+25.2 **Venue and jurisdiction.** The exclusive venue for any action arising out of or relating to these Terms or the Event shall be the state or federal courts located in Alachua County, Florida. Each Participant consents to the personal jurisdiction of such courts and waives any objection based on forum non conveniens.
+
+25.3 **Informal resolution.** Prior to commencing any action, a Participant shall give written notice of the dispute to the Organizer at dominickdupuy@ufl.edu and shall attempt in good faith to resolve the matter informally for a period of not less than thirty (30) days.
+
+---
+
+## ARTICLE 26. GENERAL PROVISIONS
+
+26.1 **Severability.** If any provision of these Terms is held to be invalid or unenforceable, that provision shall be modified to the minimum extent necessary to render it enforceable, or severed if it cannot be so modified, and the remaining provisions shall continue in full force and effect. The parties intend that Article 20 be given the broadest effect permitted by the law of the State of Florida.
+
+26.2 **No waiver.** The failure of the Organizer to enforce any provision shall not constitute a waiver of its right to enforce that or any other provision thereafter.
+
+26.3 **Entire agreement.** These Terms, together with the Track Rules and Article 13, constitute the entire agreement of the parties with respect to the Event and supersede all prior or contemporaneous understandings, representations, and communications, whether oral or written.
+
+26.4 **Assignment.** No Participant may assign or transfer any right or obligation under these Terms. The Organizer may assign these Terms to a successor organization.
+
+26.5 **No agency.** Nothing in these Terms creates a partnership, joint venture, employment, agency, or fiduciary relationship between a Participant and the Organizer, any Sponsor, or the University.
+
+26.6 **Third-party beneficiaries.** Each Released Party that is not a signatory hereto is an intended third-party beneficiary of Articles 20, 21, and 22 and may enforce those provisions directly.
+
+26.7 **Survival.** Articles 5, 6, 7, 15, 16, 17, 18, 19, 20, 21, 22, 25, and 26 shall survive the conclusion of the Event.
+
+26.8 **Notices.** All notices to the Organizer shall be given by electronic mail to dominickdupuy@ufl.edu. Notices to a Participant shall be given to the electronic mail address supplied at registration or on the RSVP Form.
+
+---
+
+## ARTICLE 27. ACCEPTANCE
+
+27.1 Confirmation of attendance requires affirmative acceptance of the attestation set forth below. The attestation is presented as a mandatory checkbox on the RSVP Form, and the RSVP Form cannot be submitted without it.
+
+> ☐ I'm 18 or older, and I agree to the Participant Terms, including the assumption of risk and release of liability.
+
+27.2 The Organizer shall record, for each RSVP Form submitted, the Participant's name and electronic mail address, the date and time of acceptance, and the version of these Terms accepted.
+
+27.3 Admission to the Event shall be limited to persons appearing in the record maintained under Section 27.2 and to volunteers, staff, judges, mentors, speakers, and Sponsor representatives who have accepted these Terms by separate means.
+
+---
+
+*Gator Quant Hacks 2026 is organized by QuantED. Inquiries regarding these Terms may be directed to dominickdupuy@ufl.edu.*
+
+*Version 1.0*
+
+====================================================================================================
+13. OTHER LIVE CHUNKS FETCHED BUT NOT TRANSCRIBED (other tracks / forms)
+====================================================================================================
+QuantTrackPage-Bn49crX6.js, HardwareTrackPage-D2LND4mL.js, ApplicationForm-DaZg6Oyj.js, TradingCompetitionMap-BppeRyS4.js
+
+====================================================================================================
+14. DIFF: LIVE (2026-10-03 afternoon) vs CACHED COPY (docs_cache, 2026-10-03 ~03:44)
+====================================================================================================
+Method: chunk-hash names normalised (index-Cnci7yN8 -> index-CNWGO2eT, SystematicTrackPage-6fAKKEaU -> -tcbiXROm, MassiveTrackPage-Bu14fHKE -> -DwIHEOet, shell-DXlHY2SF -> -Di37dqBY, etc.), then token-level diff of the full JS. Bundle sizes are byte-identical (313218 / 170386 / 113372). The ONLY content changes are deadline times:
+SystematicTrackPage: hero spec "DEVPOST" SUN 10:00 AM -> SUN 11:00 AM; story stamp "SUN 10:00" -> "SUN 11:00"; submit card "DEADLINE SUN OCT 4 · 10:00 AM" -> "SUN OCT 4 · 11:00 AM"; checklist button "ALL CHECKED · SUBMIT ON DEVPOST BEFORE 10:00 AM" -> "... 11:00 AM". (The line "You can keep pushing code until 11:00 AM." was already 11:00 in the cache, so Devpost close and code-push cutoff now coincide.)
+MassiveTrackPage: "SUN 10:00 AM · DEVPOST CLOSES" -> "SUN 11:00 AM"; checklist "Submitted on Devpost by 10:00 AM" -> "11:00 AM"; "READY · SUBMIT ON DEVPOST BEFORE 10:00 AM" -> "11:00 AM".
+index (home): Sunday schedule "08:00 AM Quant Puzzles Submissions Due" -> "09:00 AM"; "10:00 AM Devpost Submissions Due (Hardware and Systematic Trading tracks)" -> "11:00 AM"; FAQ "HOW ARE PROJECTS JUDGED?" "by 10:00 AM Sunday (8:00 AM for the Quantitative Puzzles track)" -> "by 11:00 AM Sunday (9:00 AM for the Quantitative Puzzles track)".
+shell chunk: the cached shell-DXlHY2SF.js was not cached and is no longer served (returns the SPA HTML), so it cannot be diffed; live shell says DEVPOST SUBMISSION and FINAL CODE PUSH are both "SUN OCT 4 · 11:00 AM" = Date.UTC(2026,9,4,15,0,0) = 11:00 EDT, labelled "EASTERN TIME".
+No rubric, rule, checklist, page-limit, holdout or cap text changed.
