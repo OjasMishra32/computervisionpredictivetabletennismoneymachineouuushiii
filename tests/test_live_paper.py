@@ -205,11 +205,12 @@ def test_taker_control_pays_latency_and_delay():
     setup_signal(eng)
     # the ask moves from 0.50 to 0.60 / 0.70 during our latency + the 1 s venue delay
     ws(eng, 3500, ("book", 3500, "s0", [(0.40, 100.0)], [(0.60, 100.0), (0.70, 1000.0)]))
+    ws(eng, 7000, ("pc", 7000, [("s1", 0.30, 10.0, "BUY")]))       # the market's clock passes t_exec
     eng.run()
     f = fills(eng, "CTRL-taker")
     assert len(f) == 1
     x = f[0]
-    assert x["e"] == 3000 + 2 * L + 1000 and x["ask_seen"] == 0.50
+    assert x["e"] == 3000 + 2 * L + 1000 and x["ask_seen"] == 0.50 and x["how"] == "book"
     want_sh = math.floor(250 / x["limit"] * 100) / 100
     vwap = (100 * 0.60 + (want_sh - 100) * 0.70) / want_sh
     assert abs(x["shares"] - want_sh) < 1e-9 and abs(x["px"] - vwap) < 1e-12
@@ -266,3 +267,110 @@ def test_normalize_survives_malformed():
     evs, bad = lp.normalize([{"event_type": "book"}, "x", {"event_type": "last_trade_price", "timestamp": "5",
                                                             "asset_id": "a", "price": "0.5", "size": "2", "side": "BUY"}])
     assert bad == 2 and evs == [("trade", 5, "a", 0.5, 2.0, "BUY")]
+
+
+# ------------------------------------------------------------------ verifier fixes (DEVIATIONS_LIVE.md L11-L13)
+def test_taker_timer_waits_for_venue_clock_under_feed_lag():
+    """A book change stamped before t_exec that we receive late must be in the book the taker order meets."""
+    eng = engine([lp.Variant("CTRL-taker", "taker", "rt", None)])
+    for e, ev in ((100, ("book", 100, "s0", [(0.40, 100.0)], [(0.50, 100.0)])),
+                  (100, ("book", 100, "s1", [(0.50, 100.0)], [(0.60, 100.0)])),
+                  (500, ("trade", 500, "m0", 0.50, 10.0, "BUY")), (1000, ("trade", 1000, "s0", 0.45, 10.0, "BUY")),
+                  (3000, ("trade", 3000, "m0", 0.70, 10.0, "BUY")),
+                  (3500, ("book", 3500, "s0", [(0.40, 100.0)], [(0.60, 100.0), (0.70, 1000.0)]))):
+        eng.push(e + L, "wsc", (0, ev))                                # all on socket 0
+    t_exec = 3000 + 2 * L + 1000
+    # stamped 4000 (< t_exec) but received 20 s late: the venue had a 0.55 ask at t_exec
+    eng.push(24_000, "wsc", (0, ("pc", 4000, [("s0", 0.55, 1000.0, "SELL")])))
+    eng.push(24_001, "wsc", (0, ("pc", t_exec + 999, [("m0", 0.69, 10.0, "BUY")])))   # within the margin
+    eng.run(upto=30_000)
+    assert fills(eng, "CTRL-taker") == []
+    eng.push(30_000, "wsc", (0, ("pc", t_exec + 1000, [("m0", 0.68, 10.0, "BUY")])))  # socket clock passes it
+    eng.run()
+    x = fills(eng, "CTRL-taker")[0]
+    assert x["e"] == t_exec and abs(x["px"] - 0.55) < 1e-12 and x["how"] == "timer"
+    assert eng.cnt["texec_rearm"] > 0
+
+
+def test_taker_timer_live_socket_dead_voids_and_recorder_quiet_executes():
+    eng = engine([lp.Variant("CTRL-taker", "taker", "rt", None)])
+    setup_signal(eng)                     # recorder-style input (no socket id), market quiet after t_exec
+    eng.run()
+    x = fills(eng, "CTRL-taker")[0]
+    assert x["how"] == "timer: market quiet 600 s" and x["px"] == 0.50
+    eng = engine([lp.Variant("CTRL-taker", "taker", "rt", None)])
+    for e, ev in ((100, ("book", 100, "s0", [(0.40, 100.0)], [(0.50, 100.0)])),
+                  (500, ("trade", 500, "m0", 0.50, 10.0, "BUY")), (1000, ("trade", 1000, "s0", 0.45, 10.0, "BUY")),
+                  (3000, ("trade", 3000, "m0", 0.70, 10.0, "BUY"))):
+        eng.push(e + L, "wsc", (0, ev))
+    eng.run()                             # live socket never passes t_exec: void, never priced on a stale book
+    g = eng.ledgers["CTRL-taker"]
+    assert g.fills == [] and g.n_taker_void == 1
+
+
+def test_feed_gap_pulls_quotes_and_voids_takers():
+    eng = engine()
+    setup_signal(eng)
+    eng.run(upto=4500)
+    o = eng.ledgers["B1"].orders["S"][0]
+    assert o.live()
+    pend = [t for t in eng.ledgers["CTRL-taker"].torders["S"] if t.status == "pending"]
+    eng.push(4600, "gap", {"conn": None, "toks": ["s0", "s1", "m0", "m1"], "phase": "socket_error"})
+    eng.run(upto=4700)
+    assert o.c == 3001 and o.why_end == "feed gap" and eng.ledgers["B1"].n_gap_cancel == 1
+    assert all(t.status == "void" for t in pend) and eng.ledgers["CTRL-taker"].n_taker_void == len(pend)
+    assert eng.in_gap("S")
+    # data comes back: the pulled quote is gone, and the next book update re-quotes from the fresh book
+    ws(eng, 9000, ("pc", 9000, [("s0", 0.39, 50.0, "BUY")]), key=9100)
+    eng.run(upto=9150)
+    assert not eng.in_gap("S") and o.status == "cancelled"
+    live = [x for x in eng.ledgers["B1"].orders["S"] if x.live()]
+    assert len(live) == 1 and live[0].P == 0.40 and live[0].oid != o.oid
+    # a trade through our old price fills only the new quote, from its own queue position
+    ws(eng, 12000, ("trade", 12000, "s0", 0.38, 100.0, "SELL"), key=12100)
+    eng.run(upto=20_000)
+    assert all(f["oid"] != o.oid for f in fills(eng, "B1"))
+
+
+def test_gamma_universe_pages_past_a_100_row_cap():
+    """Gamma returns at most 100 rows per page; discovery must read every page."""
+    now = lp.now_ms()
+    allev = []
+    for i in range(455):
+        allev.append({"id": i, "seriesSlug": "atp", "title": f"T: P{i} vs Q{i}",
+                      "startTime": lp.iso(now + 3600_000 if i % 2 else now - 3600_000),
+                      "markets": [{"sportsMarketType": "moneyline", "conditionId": f"c{i}",
+                                   "clobTokenIds": f'["a{i}", "b{i}"]', "outcomes": '["P", "Q"]',
+                                   "outcomePrices": '["0.5", "0.5"]'}]})
+    calls = []
+
+    def get(sess, url, params):
+        calls.append(dict(params))
+        off, lim = params["offset"], min(params["limit"], 100)     # the server-side cap
+        return allev[off:off + lim]
+    st = {}
+    E, M = lp.gamma_universe(None, 8.0, 3.0, get, st)
+    assert len(E) == 455 and len(M) == 455 and st == {"gamma_pages": 5, "gamma_events": 455}
+    assert [c["offset"] for c in calls] == [0, 100, 200, 300, 400, 455]
+
+    def get_dup(sess, url, params):                                # a server that ignores offset
+        return allev[:100]
+    E2, _ = lp.gamma_universe(None, 8.0, 3.0, get_dup, None)
+    assert len(E2) == 100
+
+    def get_fail(sess, url, params):
+        return None if params["offset"] == 200 else allev[params["offset"]:params["offset"] + 100]
+    try:
+        lp.gamma_universe(None, 8.0, 3.0, get_fail, None)
+        assert False, "a failed page must not yield a partial universe"
+    except RuntimeError:
+        pass
+
+
+def test_wsc_socket_clock_and_raw_replay_keep_conn():
+    eng = engine()
+    eng.push(10, "wsc", (3, ("pc", 10, [("s0", 0.40, 5.0, "BUY")])))
+    eng.push(11, "wsc", (3, ("book", 5, "s1", [(0.5, 1.0)], [(0.6, 1.0)])))
+    eng.run()
+    assert eng.tok_conn["s0"] == 3 and eng.e_conn[3] == 10 and eng.server_clock("S") == 10
+    assert eng.e_mkt["S"] == 10

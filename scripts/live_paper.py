@@ -97,6 +97,10 @@ SERIES = {"atp", "wta", "challenger"}
 INPLAY_MAX_MS = 6 * 3600 * 1000
 L_FLOOR_MS = 67                                             # src/paper.py FLORIDA preset
 TRADE_BOOK_WINDOW_MS = 500                                  # DEVIATIONS_LIVE.md L2
+TEXEC_RETRY_MS = 500                                        # DEVIATIONS_LIVE.md L12: taker timer re-arm step
+TEXEC_MAX_WAIT_MS = 600_000                                 # ... and the longest wait for the venue clock
+TEXEC_SOCKET_MARGIN_MS = 1000                               # socket clock must pass t_exec by this much
+LAG_EPISODE_MS, LAG_CLEAR_MS = 2000, 500                    # DEVIATIONS_LIVE.md L13: feed-lag episodes
 EPS = 1e-9
 
 GAMMA = "https://gamma-api.polymarket.com/events"
@@ -385,6 +389,7 @@ class Ledger:
         self.fills: list[dict] = []
         self.used: dict[str, float] = defaultdict(float)
         self.n_place = self.n_cancel = self.n_reject = self.n_taker_miss = 0
+        self.n_gap_cancel = self.n_taker_void = 0
 
 
 # ============================================================================ normalisation of venue messages
@@ -459,6 +464,11 @@ class Engine:
         self.cnt = Counter()
         self.oid = 0
         self.sig_on: dict[str, dict] = {}   # cond -> last lag-view signal (for the dashboard)
+        self.e_conn: dict = {}              # socket -> latest venue (server) timestamp processed from it
+        self.e_mkt: dict[str, int] = {}     # market -> latest venue timestamp of a change or trade on it
+        self.tok_conn: dict[str, object] = {}   # token -> socket it arrives on (None: recorder files, tests)
+        self.gaps: list[dict] = []
+        self.gap_open: dict = {}            # socket -> gap record while no data has come back on it
         self.errors: deque = deque(maxlen=20)
 
     # ------------------------------------------------------------------ queue
@@ -492,6 +502,10 @@ class Engine:
     def _input(self, K, kind, d):
         if kind == "ws":
             self._ws(K, d)
+        elif kind == "wsc":                    # (socket index, normalised item)
+            self._ws(K, d[1], d[0])
+        elif kind == "gap":
+            self._gap(K, d)
         elif kind == "meta":
             self._meta(K, d)
         elif kind == "boot":
@@ -539,12 +553,84 @@ class Engine:
         elif kind == "evalrt":
             self._eval_rt(K, [d["cond"]])
         elif kind == "texec":
+            # Execute against the venue book at t_exec only once the socket carrying this market has delivered a
+            # server timestamp >= t_exec: every book change stamped <= t_exec has then been applied (in-order
+            # delivery per socket). Under feed lag, re-arm instead of pricing on a stale local book (L12).
             g = self.ledgers[d["book"]]
             for o in g.torders.get(d["cond"], []):
-                if o.oid == d["oid"] and o.status == "pending":
+                if o.oid != d["oid"] or o.status != "pending":
+                    continue
+                conn = self.conn_of(o.cond)
+                if conn is not None and self.e_conn.get(conn, 0) >= o.t_exec + TEXEC_SOCKET_MARGIN_MS:
                     self._taker_exec(g, o, "timer")
+                elif K - o.t_exec > TEXEC_MAX_WAIT_MS:
+                    if conn is None:     # recorder files: no socket id; the market was quiet since t_exec
+                        self._taker_exec(g, o, "timer: market quiet 600 s")
+                    else:
+                        self._taker_void(g, o, "no venue timestamp >= t_exec within 600 s")
+                else:
+                    self.cnt["texec_rearm"] += 1
+                    self.timer(K + TEXEC_RETRY_MS, "texec", d)
         elif kind == "stop":
             self._stop(K, "until")
+
+    def in_gap(self, cond) -> bool:
+        m = self.markets.get(cond)
+        return bool(self.gap_open) and m is not None and self.tok_conn.get(m.toks[0], "?") in self.gap_open
+
+    def conn_of(self, cond):
+        m = self.markets.get(cond)
+        return self.tok_conn.get(m.toks[0]) if m else None
+
+    def server_clock(self, cond) -> int:
+        """Latest venue timestamp processed from the socket that carries this market (live and own raw logs).
+        Recorder files carry no socket id and mixed several sockets with different lags, so there the clock is
+        the market's own: a change or trade on it stamped after t_exec executes the order before it is applied."""
+        conn = self.conn_of(cond)
+        return self.e_conn.get(conn, 0) if conn is not None else self.e_mkt.get(cond, 0)
+
+    def _gap(self, K, d):
+        """A market socket dropped (DEVIATIONS_LIVE.md L13). From the last venue timestamp seen on it we cannot
+        observe the book or trades of its markets, so: every live maker quote on those markets is treated as
+        pulled at that timestamp + 1 ms (no fill can be counted from an unobserved queue), and every pending taker
+        order whose t_exec is not yet covered by that socket's clock is voided (the venue book at t_exec is
+        unknown). Both are logged per order. On reconnect the strategy re-quotes from the fresh book."""
+        conn = d.get("conn")
+        toks = set(d.get("toks") or [])
+        conds = {self.tok[t][0] for t in toks if t in self.tok}
+        e0 = self.e_conn.get(conn, 0)
+        c_at = e0 + 1
+        cancelled, voided, executed = [], [], []
+        for g in self.makers:
+            for cond in conds:
+                for o in g.orders.get(cond, []):
+                    if o.live():
+                        o.c, o.why_end = c_at, "feed gap"
+                        g.n_cancel += 1
+                        g.n_gap_cancel += 1
+                        cancelled.append(o.oid)
+                        self.log("cancel", book=g.v.name, oid=o.oid, cond=cond, P=o.P, c=c_at, why="feed gap",
+                                 conn=conn)
+        for g in self.ledgers.values():
+            if g.v.kind != "taker":
+                continue
+            for cond in conds:
+                for o in g.torders.get(cond, []):
+                    if o.status != "pending":
+                        continue
+                    if e0 >= o.t_exec + TEXEC_SOCKET_MARGIN_MS:
+                        self._taker_exec(g, o, "gap: clock covers t_exec")
+                        executed.append(o.oid)
+                    else:
+                        self._taker_void(g, o, "feed gap before t_exec")
+                        voided.append(o.oid)
+        self.gap_open[conn] = {"last_e": e0, "key": K}
+        rec = {"conn": conn, "phase": d.get("phase"), "last_e": e0, "markets": len(conds),
+               "maker_cancelled": cancelled, "taker_voided": voided, "taker_executed": executed,
+               "lo_rt": d.get("lo_rt"), "err": d.get("err")}
+        self.gaps.append(rec)
+        self.cnt["feed_gaps"] += 1
+        self.log("feed_gap", **rec)
 
     # ------------------------------------------------------------------ meta
     def _meta(self, K, d):
@@ -648,10 +734,32 @@ class Engine:
         self.log("boot", cond=cond, n=n, lo=iso(lo), hi=iso(hi))
 
     # ------------------------------------------------------------------ venue messages
-    def _ws(self, K, ev):
+    def _ws(self, K, ev, conn=None):
         t = ev[0]
+        if conn in self.gap_open:
+            g0 = self.gap_open.pop(conn)
+            self.log("feed_gap_end", conn=conn, first_e=ev[1], last_e=g0["last_e"], since_key=g0["key"])
         self.cnt["msg_" + t] += 1
         self.e_max = max(self.e_max, ev[1])
+        if t == "pc":
+            for c in ev[2]:
+                self.tok_conn[c[0]] = conn
+        elif t in ("book", "trade", "tick"):
+            self.tok_conn[ev[2]] = conn
+        try:
+            self._ws_apply(K, ev)
+        finally:
+            if t != "book":            # a book snapshot's timestamp is its last change, not the socket clock
+                self.e_conn[conn] = max(self.e_conn.get(conn, 0), ev[1])
+                if t == "pc":
+                    for cd in {self.tok[c[0]][0] for c in ev[2] if c[0] in self.tok}:
+                        self.e_mkt[cd] = max(self.e_mkt.get(cd, 0), ev[1])
+                elif t == "trade" and ev[2] in self.tok:
+                    cd = self.tok[ev[2]][0]
+                    self.e_mkt[cd] = max(self.e_mkt.get(cd, 0), ev[1])
+
+    def _ws_apply(self, K, ev):
+        t = ev[0]
         if t == "pc":
             by = defaultdict(list)
             for tok, px, sz, side in ev[2]:
@@ -863,6 +971,9 @@ class Engine:
 
     def _place(self, g: Ledger, cond, k, D, T, impl):
         m = self.markets[cond]
+        if self.in_gap(cond):                 # no quote on a market whose socket is down (L13)
+            self.cnt["place_skipped_gap"] += 1
+            return
         bb = self.ob[m.toks[k]].best_bid()
         if bb is None or not (PX_LO < bb < PX_HI):
             return
@@ -996,6 +1107,9 @@ class Engine:
         k = sig["k"] if self._can_quote(cond, K) else None
         if k == st["k"]:
             return
+        if k is not None and self.in_gap(cond):   # the book this order would meet cannot be observed (L13);
+            self.cnt["taker_skipped_gap"] += 1     # the state is left unchanged, so it fires once data is back
+            return
         st["k"], st["since"] = k, K
         if k is None:
             return
@@ -1029,6 +1143,7 @@ class Engine:
             cost += take * px
             fee += take * m.fee_rate * px * (1 - px)
         o.status = "done"
+        self.cnt["taker_exec_" + how.split(":")[0]] += 1
         if got < 1e-6:
             g.n_taker_miss += 1
             self.log("taker_miss", book=g.v.name, oid=o.oid, cond=o.cond, limit=o.limit, ask_seen=o.px_seen,
@@ -1041,9 +1156,15 @@ class Engine:
                 "e": o.t_exec, "K": o.placed, "V": None, "q_ahead": None, "kind": "taker", "impl": o.impl,
                 "rebate_ps": 0.0, "rebate_own_ps": 0.0, "fee_ps": fee / got, "fee_rate": m.fee_rate,
                 "ask_seen": o.px_seen, "slip_c": (vwap - o.px_seen) * 100 if o.px_seen else None,
-                "limit": o.limit, "wanted": o.shares}
+                "limit": o.limit, "wanted": o.shares, "how": how, "clock_e": self.server_clock(o.cond)}
         g.fills.append(fill)
         self.log("fill", **fill)
+
+    def _taker_void(self, g: Ledger, o: TOrder, why):
+        o.status = "void"
+        g.n_taker_void += 1
+        self.log("taker_void", book=g.v.name, oid=o.oid, cond=o.cond, limit=o.limit, ask_seen=o.px_seen,
+                 t_exec=o.t_exec, why=why)
 
     # ------------------------------------------------------------------ resolution and P&L
     def _resolve(self, K, cond, p0, src):
@@ -1103,7 +1224,7 @@ class Engine:
                "realised": real, "unrealised": unreal, "pnl": real + unreal, "rebate": reb, "fees": fee,
                "equity": self.capital + real + unreal, "open_quotes": oq, "open_fills": nopen,
                "resolved_fills": len(res_ps), "placed": g.n_place, "cancels": g.n_cancel, "rejects": g.n_reject,
-               "taker_misses": g.n_taker_miss,
+               "taker_misses": g.n_taker_miss, "gap_cancels": g.n_gap_cancel, "taker_voids": g.n_taker_void,
                "net_c_per_share": (sum(res_ps) / len(res_ps) * 100) if res_ps else None,
                "net_c_share_w": (sum(p * w for p, w in zip(res_ps, res_w)) / sum(res_w) * 100) if res_ps else None}
         out["ci95_c"] = cluster_ci(res_rows) if len(res_rows) >= 2 else None
@@ -1340,18 +1461,36 @@ def render(eng: Engine, info: dict, out: Out) -> str:
 
 
 # ============================================================================ discovery (gamma)
-def gamma_universe(sess, back_h=8.0, fwd_h=3.0) -> tuple[dict, dict]:
-    """Open ATP/WTA/Challenger singles events starting in [now - back_h, now + fwd_h]: meta dicts."""
+GAMMA_PAGE = 100          # Gamma caps /events pages at 100 rows whatever `limit` asks for (DEVIATIONS_LIVE.md L11)
+GAMMA_MAX_PAGES = 100
+
+
+def gamma_universe(sess, back_h=8.0, fwd_h=3.0, get=None, stats=None) -> tuple[dict, dict]:
+    """Open ATP/WTA/Challenger singles events starting in [now - back_h, now + fwd_h]: meta dicts.
+
+    Pages through every open tennis event: offset advances by the rows actually returned, and paging stops only on
+    an empty page (or a page with no new event id), so a server-side cap on the page size cannot truncate the
+    universe. A failed page raises, so discovery never updates from a partial list."""
+    get = get or http_get
     t = time.time() * 1000
-    evs = []
-    for off in range(0, 3000, 200):
-        page = http_get(sess, GAMMA, {"tag_slug": "tennis", "active": "true", "closed": "false",
-                                      "limit": 200, "offset": off})
+    evs, seen, off, pages = [], set(), 0, 0
+    for _ in range(GAMMA_MAX_PAGES):
+        page = get(sess, GAMMA, {"tag_slug": "tennis", "active": "true", "closed": "false",
+                                 "limit": GAMMA_PAGE, "offset": off})
+        if page is None:
+            raise RuntimeError(f"gamma /events page at offset {off} failed")
         if not isinstance(page, list) or not page:
             break
-        evs += page
-        if len(page) < 200:
+        pages += 1
+        new = [e for e in page if str(e.get("id")) not in seen]
+        if not new:
             break
+        for e in new:
+            seen.add(str(e.get("id")))
+        evs += new
+        off += len(page)
+    if stats is not None:
+        stats.update(gamma_pages=pages, gamma_events=len(evs))
     return events_meta(evs, t, back_h, fwd_h)
 
 
@@ -1461,6 +1600,11 @@ class Live:
         self.start_key = None
         self.stop_ms = None
         self.final_ms = None
+        self.lag_win = defaultdict(list)      # socket -> [rt - e] over the current minute (pc and trade only)
+        self.lag_t = time.time()
+        self.lag_ep: dict = {}                # socket -> open lag episode
+        self.lag_stats = {"episodes": 0, "max_ms": 0, "minutes": 0, "p99_max_ms": 0}
+        self.gap_count = 0
 
     def post(self, kind, payload, rt=None, conn=None):
         self.inq.append((rt or now_ms(), kind, payload, conn))
@@ -1474,7 +1618,8 @@ class Live:
         while not self.stopping:
             t0 = time.time()
             try:
-                E, M = await self.hget(gamma_universe)
+                gst = {}
+                E, M = await self.hget(gamma_universe, 8.0, 3.0, None, gst)
                 newE = {k: v for k, v in E.items() if self.meta_E.get(k) != v}
                 newM = {k: v for k, v in M.items() if self.meta_M.get(k) != v}
                 self.meta_E.update(E)
@@ -1488,7 +1633,7 @@ class Live:
                 if toks:
                     self.subscribe(toks)
                 self.out.event({"ev": "discovery", "key": now_ms(), "events": len(E), "markets": len(M),
-                                "new_events": len(newE), "new_tokens": len(toks)})
+                                "new_events": len(newE), "new_tokens": len(toks), **gst})
                 if self.check["passed"]:
                     await self.bootstrap_inplay()
             except Exception as ex:
@@ -1546,6 +1691,7 @@ class Live:
                             continue
                         rt = now_ms()
                         last_msg = time.time()
+                        c["last_rt"] = rt
                         if msg == "PONG":
                             if ping_t:
                                 self.on_rtt((time.time() - ping_t) * 1000)
@@ -1564,6 +1710,11 @@ class Live:
                 self.out.event({"ev": "socket_error", "key": now_ms(), "conn": c["idx"], "err": repr(ex)[:200]})
                 if c["gap_from"] is None:
                     c["gap_from"] = now_ms()
+                    # engine input (raw-logged, so a replay reproduces it): quotes on this socket's markets are
+                    # pulled at the last venue timestamp seen on it; pending taker orders there are voided (L13)
+                    self.gap_count += 1
+                    self.post("gap", {"conn": c["idx"], "toks": list(c["toks"]), "phase": "socket_error",
+                                      "lo_rt": c.get("last_rt"), "err": repr(ex)[:120]})
                 await asyncio.sleep(backoff)
                 backoff = min(30.0, backoff * 2)
 
@@ -1738,6 +1889,46 @@ class Live:
                                            "size": ev[4], "side": (ev[5] or "").upper(), "e": ev[1]})
         return evs
 
+    # -------------------------------------------------------------- feed lag (receive time - venue time)
+    def on_lag(self, conn, lag, rt):
+        """Per-socket feed lag, rt - e, on price changes and trades (L13). Logged as per-minute quantiles and as
+        episodes (lag > 2 s until it is back under 0.5 s), with the paper orders live on that socket's markets."""
+        self.lag_win[conn].append(lag)
+        ep = self.lag_ep.get(conn)
+        if ep is None and lag > LAG_EPISODE_MS:
+            ep = self.lag_ep[conn] = {"conn": conn, "from_rt": rt, "max_ms": lag, "n": 1,
+                                      "live_orders": self.live_orders_on(conn)}
+            self.lag_stats["episodes"] += 1
+            self.out.event({"ev": "lag_episode_start", "key": rt, **ep})
+        elif ep is not None:
+            ep["max_ms"] = max(ep["max_ms"], lag)
+            ep["n"] += 1
+            if lag < LAG_CLEAR_MS:
+                self.out.event({"ev": "lag_episode_end", "key": rt, **ep, "to_rt": rt,
+                                "dur_ms": rt - ep["from_rt"]})
+                del self.lag_ep[conn]
+        self.lag_stats["max_ms"] = max(self.lag_stats["max_ms"], lag)
+
+    def live_orders_on(self, conn):
+        conds = {self.eng.tok[t][0] for t, cc in self.eng.tok_conn.items() if cc == conn and t in self.eng.tok}
+        mk = sum(1 for g in self.eng.makers for cd in conds for o in g.orders.get(cd, []) if o.live())
+        tk = sum(1 for g in self.eng.ledgers.values() if g.v.kind == "taker" for cd in conds
+                 for o in g.torders.get(cd, []) if o.status == "pending")
+        return {"maker": mk, "taker_pending": tk}
+
+    def flush_lag(self, tt):
+        self.lag_t = tt
+        for conn, xs in self.lag_win.items():
+            if not xs:
+                continue
+            xs = sorted(xs)
+            q = lambda f: xs[min(len(xs) - 1, int(f * len(xs)))]
+            self.out.event({"ev": "lag", "key": now_ms(), "conn": conn, "n": len(xs), "p50_ms": q(0.5),
+                            "p90_ms": q(0.9), "p99_ms": q(0.99), "max_ms": xs[-1]})
+            self.lag_stats["p99_max_ms"] = max(self.lag_stats["p99_max_ms"], q(0.99))
+        self.lag_stats["minutes"] += 1
+        self.lag_win = defaultdict(list)
+
     # -------------------------------------------------------------- resolution polls
     async def resolution_loop(self):
         while not self.stopping:
@@ -1786,12 +1977,16 @@ class Live:
                 evs = self.on_drained_ws(payload)
                 self.out.rawrec({"w": w, "rt": rt, "L": self.L_drain, "c": conn, "m": payload})
                 for ev in evs:
-                    eng.push(max(ev[1] + self.L_drain, w), "ws", ev)
+                    eng.push(max(ev[1] + self.L_drain, w), "wsc", (conn, ev))
+                    if ev[0] in ("pc", "trade"):
+                        self.on_lag(conn, rt - ev[1], rt)
             else:
                 self.out.rawrec({"w": w, "kind": kind, "d": payload})
                 eng.push(w, kind, payload)
         eng.run(upto=w)
         tt = time.time()
+        if tt - self.lag_t >= 60:
+            self.flush_lag(tt)
         if tt - self.last_sum > 10:
             self.last_sum = tt
             self.write_summary()
@@ -1827,7 +2022,8 @@ class Live:
     def write_summary(self, final=False):
         info = {"mode": "LIVE", "kind": self.kind, "run": self.run, "status": "final" if final else self.status,
                 "started_process": iso(self.started_ms), "warmup": self.check, "sockets": len(self.conns),
-                "reconnects": self.reconnects, "raw_log": str(self.out.raw_path.relative_to(ROOT)),
+                "reconnects": self.reconnects, "feed_gaps": self.gap_count, "feed_lag": self.lag_stats,
+                "raw_log": str(self.out.raw_path.relative_to(ROOT)),
                 "event_log": str(self.out.path.relative_to(ROOT)), "settle_until": iso(self.final_ms)}
         s = summary(self.eng, info)
         txt = json.dumps(s, indent=1, default=str)
@@ -1977,7 +2173,7 @@ def replay_items(files: list[str], clock: str, L0: int):
                             evs, _ = normalize(d["m"])
                             for ev in evs:
                                 key = ev[1] + d["L"] if clock == "server" else max(ev[1] + d["L"], d["w"])
-                                yield key, "ws", ev
+                                yield key, "wsc", (d.get("c"), ev)
                         else:
                             yield d["w"], d["kind"], d["d"]
                 except (EOFError, OSError, zlib.error):
