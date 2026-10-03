@@ -1,0 +1,737 @@
+{
+ "prereg": "research/v2/maker/PREREG.md (A)",
+ "run": "first",
+ "run_utc": "2026-10-03T18:49:15.058902+00:00",
+ "git_head": "5a75da6db3edcdc9c560cc51e90defe9f8dfe39a",
+ "code_sha256_ok": true,
+ "b_T_sha256": "f40c53f741d23fc911cfb42857af4b59d5c22cc54efa7fbfcc27d57fbd18466c",
+ "parity": {
+  "pass": true,
+  "n": 10171,
+  "pnl_usd": 5326.053215035456,
+  "rel_err": 0.0,
+  "b_T_equals_walkforward_2026_08": true,
+  "diagnostics_ok": true
+ },
+ "frozen": {
+  "b_T": {
+   "tennis_first_set_winner": 1.527875991592811,
+   "tennis_set_winner": 1.0781295500280448,
+   "tennis_set_handicap": 0.8171462571666066,
+   "tennis_match_totals": 1.8243248664803704,
+   "tennis_set_totals": 2.721259317541827,
+   "tennis_first_set_totals": 3.514143233195978
+  },
+  "lambda": 1.0,
+  "min_impl": 0.04,
+  "max_ref_age_s": 600,
+  "share": 0.2,
+  "max_fill_usd": 250.0,
+  "max_match_usd": 2000.0,
+  "rebate": 0.15,
+  "band": [
+   0.02,
+   0.98
+  ]
+ },
+ "sample": {
+  "events_in_window": 2617,
+  "side_markets_catalogue": 35092,
+  "six_type_markets": 23307,
+  "excluded_volume_lt_250": 20191,
+  "excluded_unresolved": 0,
+  "excluded_totals_not_over": 0,
+  "selected_markets": 3116,
+  "selected_by_type": {
+   "tennis_set_handicap": 799,
+   "tennis_match_totals": 734,
+   "tennis_first_set_winner": 664,
+   "tennis_set_winner": 506,
+   "tennis_set_totals": 313,
+   "tennis_first_set_totals": 100
+  },
+  "markets_with_inplay_prints": 2092,
+  "events_with_inplay_side_prints": 869,
+  "inplay_side_prints": 33585,
+  "intervals": 26353,
+  "regimes_selected": {
+   "1s/5%": 3116
+  }
+ },
+ "maker_fee_check": {
+  "takerOnly_false": 0,
+  "makerBaseFee_gt_0": 3116,
+  "selected": 3116,
+  "makerBaseFee_values": {
+   "1000": 3116
+  },
+  "rebateRate_values": {
+   "0.15": 3116
+  },
+  "triggered": true
+ },
+ "variants_evaluated": [
+  "1 maker v1 (primary)",
+  "2 stress (i) queue share 10%",
+  "3 stress (ii) trade-through",
+  "4 stress (iii) no rebate",
+  "5 stress (iv) all three",
+  "6 diagnostic: unconditional maker",
+  "7 diagnostic: anti-lean placebo",
+  "8 conditional stress: maker fee = makerBaseFee/1e4 * px * (1 - px) (see DEVIATIONS.md D1)"
+ ],
+ "signal_candidates": {
+  "prints_with_signal_inputs": 27916,
+  "lean_contrary_ge_4c": 2388
+ },
+ "primary": {
+  "statistic": "mean_pnl_per_share_c (fill-weighted, held to resolution)",
+  "value_c": 1.8654493548710172,
+  "ci95_c": [
+   -0.1397399233597994,
+   3.8600603441293164
+  ],
+  "ci_method": "match-clustered bootstrap (clusters = event_id), 2,000 draws, seed 0 (src.backtest.stats)",
+  "n_fills": 2207,
+  "n_matches": 524,
+  "verdict": "FAILURE",
+  "underpowered": false
+ },
+ "headline": {
+  "n_trades": 2207,
+  "n_matches": 524,
+  "errors": 0,
+  "mean_pnl_per_share_c": 1.8654493548710172,
+  "ci95_pnl_per_share_c": [
+   -0.1397399233597994,
+   3.8600603441293164
+  ],
+  "hit_rate": 0.5949252378794744,
+  "mean_fee_c": -0.15560078333499497,
+  "total_pnl_usd": -379.03157735159306,
+  "sharpe_ann": -1.4226705434874918,
+  "max_dd": -0.4673971005641149,
+  "turnover_x_per_yr": 130.00683595332464,
+  "capital": 2021.693133563061,
+  "skew_daily": 0.6802033943718022,
+  "worst_day_pct": -10.244616544114663,
+  "worst_month_usd": -367.0125381858962,
+  "best_month_share": 172604535780.00006,
+  "days": 40,
+  "share_weighted_net_c": -0.7515759157743973,
+  "share_weighted_ci": [
+   -4.924243740322453,
+   3.5602416367677123
+  ],
+  "notional_usd": 28803.718089106376,
+  "mean_fill_usd": 13.051072990079916,
+  "median_fill_usd": 3.036,
+  "max_dd_usd": -1156.1205034625928,
+  "max_dd_pct_capital": -46.73971005641149,
+  "worst_day_usd": -207.11470923223152,
+  "first_fill_utc": "2026-08-25 15:43:40+00:00",
+  "last_fill_utc": "2026-10-03 08:35:03+00:00",
+  "monthly": [
+   {
+    "month": "2026-08",
+    "label": "partial (Aug 25-31)",
+    "n": 395,
+    "matches": 116,
+    "net_c": 0.08692710632518108,
+    "pnl_usd": -367.01253818589623,
+    "usd_in": 4766.210589606989
+   },
+   {
+    "month": "2026-09",
+    "label": "full",
+    "n": 1620,
+    "matches": 362,
+    "net_c": 1.7709055173059696,
+    "pnl_usd": -184.62357494569687,
+    "usd_in": 21895.31176528734
+   },
+   {
+    "month": "2026-10",
+    "label": "partial (Oct 1-3)",
+    "n": 192,
+    "matches": 46,
+    "net_c": 6.322101985240717,
+    "pnl_usd": 172.6045357800001,
+    "usd_in": 2142.1957342120445
+   }
+  ],
+  "months_positive_usd": 1,
+  "months_positive_per_share": 3,
+  "months_total": 3
+ },
+ "by_regime": [
+  {
+   "regime": "1s/5%",
+   "n": 2207,
+   "matches": 524,
+   "net_c": 1.8654493548710172,
+   "ci": [
+    -0.1397399233597994,
+    3.8600603441293164
+   ],
+   "share_w_net_c": -0.7515759157743973,
+   "share_w_ci": [
+    -4.924243740322453,
+    3.5602416367677123
+   ],
+   "pnl_usd": -379.03157735159306,
+   "usd_in": 28803.718089106376,
+   "hit_rate": 0.5949252378794744
+  }
+ ],
+ "by_type": [
+  {
+   "smt": "tennis_first_set_totals",
+   "n": 1,
+   "matches": 1,
+   "net_c": -17.889300000000006,
+   "ci": [
+    -17.889300000000006,
+    -17.889300000000006
+   ],
+   "share_w_net_c": -17.889300000000006,
+   "share_w_ci": [
+    -17.889300000000006,
+    -17.889300000000006
+   ],
+   "pnl_usd": -31.476223350000012,
+   "usd_in": 31.67100000000001,
+   "hit_rate": 0.0
+  },
+  {
+   "smt": "tennis_first_set_winner",
+   "n": 898,
+   "matches": 316,
+   "net_c": 1.6954445931699642,
+   "ci": [
+    -1.4246475600137058,
+    4.744681465282538
+   ],
+   "share_w_net_c": 0.5299278879078734,
+   "share_w_ci": [
+    -5.15814799319151,
+    6.314126572390992
+   ],
+   "pnl_usd": 136.38669735138507,
+   "usd_in": 14614.645971916358,
+   "hit_rate": 0.589086859688196
+  },
+  {
+   "smt": "tennis_match_totals",
+   "n": 136,
+   "matches": 96,
+   "net_c": 2.5831471111457427,
+   "ci": [
+    -6.144948269748207,
+    11.294744032390042
+   ],
+   "share_w_net_c": -6.353769819877251,
+   "share_w_ci": [
+    -25.276490514414856,
+    12.744787131338489
+   ],
+   "pnl_usd": -152.97168624949933,
+   "usd_in": 1343.7073861931872,
+   "hit_rate": 0.5882352941176471
+  },
+  {
+   "smt": "tennis_set_handicap",
+   "n": 225,
+   "matches": 115,
+   "net_c": 4.475307981357244,
+   "ci": [
+    -0.8899580151887047,
+    9.894479741175115
+   ],
+   "share_w_net_c": 1.9051175261374242,
+   "share_w_ci": [
+    -11.576080677316389,
+    15.6475032017374
+   ],
+   "pnl_usd": 83.47014621727048,
+   "usd_in": 2448.8939064050846,
+   "hit_rate": 0.6044444444444445
+  },
+  {
+   "smt": "tennis_set_totals",
+   "n": 88,
+   "matches": 47,
+   "net_c": 6.222154720870413,
+   "ci": [
+    -3.252013215158748,
+    15.53482500481233
+   ],
+   "share_w_net_c": 20.85442570901531,
+   "share_w_ci": [
+    -14.336596383805917,
+    44.79954404376368
+   ],
+   "pnl_usd": 250.6270148474785,
+   "usd_in": 549.1661782000905,
+   "hit_rate": 0.5909090909090909
+  },
+  {
+   "smt": "tennis_set_winner",
+   "n": 859,
+   "matches": 287,
+   "net_c": 0.8226133447915127,
+   "ci": [
+    -2.2133970213405454,
+    3.979018322707169
+   ],
+   "share_w_net_c": -4.023870811965584,
+   "share_w_ci": [
+    -10.458313502919097,
+    2.2366395499268954
+   ],
+   "pnl_usd": -665.0675261682277,
+   "usd_in": 9815.633646391652,
+   "hit_rate": 0.6006984866123399
+  }
+ ],
+ "consistency": {
+  "is_1s5_net_c": 2.01667311588643,
+  "is_1s5_ci": [
+   0.525350871768348,
+   3.4842750187222
+  ],
+  "point_inside_is_1s5_ci": true
+ },
+ "stresses": {
+  "i_queue10": {
+   "value_c": 1.8654493548710172,
+   "ci95_c": [
+    -0.1397399233597994,
+    3.8600603441293164
+   ],
+   "lower_bound_gt_0": false,
+   "headline": {
+    "n_trades": 2207,
+    "n_matches": 524,
+    "errors": 0,
+    "mean_pnl_per_share_c": 1.8654493548710172,
+    "ci95_pnl_per_share_c": [
+     -0.1397399233597994,
+     3.8600603441293164
+    ],
+    "hit_rate": 0.5949252378794744,
+    "mean_fee_c": -0.15560078333499497,
+    "total_pnl_usd": -106.80922348044717,
+    "sharpe_ann": -0.7960166564848135,
+    "max_dd": -0.34593120019055257,
+    "turnover_x_per_yr": 117.36111548144288,
+    "capital": 1165.238517585141,
+    "skew_daily": 0.7533941999468649,
+    "worst_day_pct": -9.033798733888819,
+    "worst_month_usd": -183.5062690929481,
+    "best_month_share": 59576460027.21982,
+    "days": 40,
+    "share_weighted_net_c": -0.40699541811548295,
+    "share_weighted_ci": [
+     -4.96389044723047,
+     4.163321992092066
+    ],
+    "notional_usd": 14986.705997340825,
+    "mean_fill_usd": 6.790532848817773,
+    "median_fill_usd": 1.518,
+    "max_dd_usd": -487.9173229684236,
+    "max_dd_pct_capital": -34.593120019055256,
+    "worst_day_usd": -105.26530244839131,
+    "first_fill_utc": "2026-08-25 15:43:40+00:00",
+    "last_fill_utc": "2026-10-03 08:35:03+00:00",
+    "monthly": [
+     {
+      "month": "2026-08",
+      "label": "partial (Aug 25-31)",
+      "n": 395,
+      "matches": 116,
+      "net_c": 0.08692710632518108,
+      "pnl_usd": -183.50626909294812,
+      "usd_in": 2383.1052948034944
+     },
+     {
+      "month": "2026-09",
+      "label": "full",
+      "n": 1620,
+      "matches": 362,
+      "net_c": 1.7709055173059696,
+      "pnl_usd": 17.120585585281106,
+      "usd_in": 11293.651324732367
+     },
+     {
+      "month": "2026-10",
+      "label": "partial (Oct 1-3)",
+      "n": 192,
+      "matches": 46,
+      "net_c": 6.322101985240717,
+      "pnl_usd": 59.57646002721981,
+      "usd_in": 1309.9493778049618
+     }
+    ],
+    "months_positive_usd": 2,
+    "months_positive_per_share": 3,
+    "months_total": 3
+   }
+  },
+  "ii_trade_through": {
+   "value_c": -3.9885070825865627,
+   "ci95_c": [
+    -13.282668611843846,
+    5.704860711800638
+   ],
+   "lower_bound_gt_0": false,
+   "headline": {
+    "n_trades": 98,
+    "n_matches": 76,
+    "errors": 0,
+    "mean_pnl_per_share_c": -3.9885070825865627,
+    "ci95_pnl_per_share_c": [
+     -13.282668611843846,
+     5.704860711800638
+    ],
+    "hit_rate": 0.46938775510204084,
+    "mean_fee_c": -0.16197262863792686,
+    "total_pnl_usd": 98.82280718559656,
+    "sharpe_ann": 1.2003516348810859,
+    "max_dd": -0.1383276652913471,
+    "turnover_x_per_yr": 15.106053179143593,
+    "capital": 938.8569623150208,
+    "skew_daily": 2.315658676881302,
+    "worst_day_pct": -6.464009643175663,
+    "worst_month_usd": -39.61896482229926,
+    "best_month_share": 1.6624442763232379,
+    "days": 40,
+    "share_weighted_net_c": 3.0153225119550258,
+    "share_weighted_ci": [
+     -12.071417321521897,
+     14.150891149657099
+    ],
+    "notional_usd": 1554.2381589413608,
+    "mean_fill_usd": 15.859573050422048,
+    "median_fill_usd": 2.5781075447769206,
+    "max_dd_usd": -139.17351392515582,
+    "max_dd_pct_capital": -13.83276652913471,
+    "worst_day_usd": -60.68780457966904,
+    "first_fill_utc": "2026-08-25 17:35:07+00:00",
+    "last_fill_utc": "2026-10-03 05:45:24+00:00",
+    "monthly": [
+     {
+      "month": "2026-08",
+      "label": "partial (Aug 25-31)",
+      "n": 15,
+      "matches": 11,
+      "net_c": 1.063815261192443,
+      "pnl_usd": -39.61896482229927,
+      "usd_in": 212.94977340032804
+     },
+     {
+      "month": "2026-09",
+      "label": "full",
+      "n": 74,
+      "matches": 57,
+      "net_c": -4.630056509664835,
+      "pnl_usd": 164.2874101758899,
+      "usd_in": 1298.731609120315
+     },
+     {
+      "month": "2026-10",
+      "label": "partial (Oct 1-3)",
+      "n": 9,
+      "matches": 8,
+      "net_c": -7.134082366241336,
+      "pnl_usd": -25.845638167994093,
+      "usd_in": 42.55677642071789
+     }
+    ],
+    "months_positive_usd": 1,
+    "months_positive_per_share": 1,
+    "months_total": 3
+   }
+  },
+  "iii_no_rebate": {
+   "value_c": 1.7098485715360217,
+   "ci95_c": [
+    -0.2949166465357794,
+    3.703226998720796
+   ],
+   "lower_bound_gt_0": false,
+   "headline": {
+    "n_trades": 2207,
+    "n_matches": 524,
+    "errors": 0,
+    "mean_pnl_per_share_c": 1.7098485715360217,
+    "ci95_pnl_per_share_c": [
+     -0.2949166465357794,
+     3.703226998720796
+    ],
+    "hit_rate": 0.5926597190756683,
+    "mean_fee_c": 0.0,
+    "total_pnl_usd": -457.0406182736172,
+    "sharpe_ann": -1.7184696636663352,
+    "max_dd": -0.4868382482785939,
+    "turnover_x_per_yr": 130.00683595332464,
+    "capital": 2021.693133563061,
+    "skew_daily": 0.6739058335316024,
+    "worst_day_pct": -10.33546652162741,
+    "worst_month_usd": -379.3324604069886,
+    "best_month_share": 166073190828.3872,
+    "days": 40,
+    "share_weighted_net_c": -0.9062588495270838,
+    "share_weighted_ci": [
+     -5.081005007284675,
+     3.4085110203089597
+    ],
+    "notional_usd": 28803.718089106376,
+    "mean_fill_usd": 13.051072990079916,
+    "median_fill_usd": 3.036,
+    "max_dd_usd": -1183.8599699764306,
+    "max_dd_pct_capital": -48.68382482785939,
+    "worst_day_usd": -208.9514169894503,
+    "first_fill_utc": "2026-08-25 15:43:40+00:00",
+    "last_fill_utc": "2026-10-03 08:35:03+00:00",
+    "monthly": [
+     {
+      "month": "2026-08",
+      "label": "partial (Aug 25-31)",
+      "n": 395,
+      "matches": 116,
+      "net_c": -0.06428435516455634,
+      "pnl_usd": -379.3324604069886,
+      "usd_in": 4766.210589606989
+     },
+     {
+      "month": "2026-09",
+      "label": "full",
+      "n": 1620,
+      "matches": 362,
+      "net_c": 1.614416215796297,
+      "pnl_usd": -243.7813486950157,
+      "usd_in": 21895.31176528734
+     },
+     {
+      "month": "2026-10",
+      "label": "partial (Oct 1-3)",
+      "n": 192,
+      "matches": 46,
+      "net_c": 6.164967958750001,
+      "pnl_usd": 166.07319082838717,
+      "usd_in": 2142.1957342120445
+     }
+    ],
+    "months_positive_usd": 1,
+    "months_positive_per_share": 2,
+    "months_total": 3
+   }
+  },
+  "iv_all": {
+   "value_c": -4.150479711224489,
+   "ci95_c": [
+    -13.447629677855305,
+    5.540709840048592
+   ],
+   "lower_bound_gt_0": false,
+   "headline": {
+    "n_trades": 98,
+    "n_matches": 76,
+    "errors": 0,
+    "mean_pnl_per_share_c": -4.150479711224489,
+    "ci95_pnl_per_share_c": [
+     -13.447629677855305,
+     5.540709840048592
+    ],
+    "hit_rate": 0.46938775510204084,
+    "mean_fee_c": 0.0,
+    "total_pnl_usd": 110.1353512843195,
+    "sharpe_ann": 1.9097005112333165,
+    "max_dd": -0.09283148550808373,
+    "turnover_x_per_yr": 10.886796422662384,
+    "capital": 721.8958529425106,
+    "skew_daily": 4.019909959685814,
+    "worst_day_pct": -4.269682678514377,
+    "worst_month_usd": -20.24340585016403,
+    "best_month_share": 1.3021516649510234,
+    "days": 40,
+    "share_weighted_net_c": 6.165491880211674,
+    "share_weighted_ci": [
+     -12.122068324491602,
+     18.230939522027075
+    ],
+    "notional_usd": 861.2748700656805,
+    "mean_fill_usd": 8.788519082302862,
+    "median_fill_usd": 1.2890537723884603,
+    "max_dd_usd": -70.01120006711017,
+    "max_dd_pct_capital": -9.283148550808374,
+    "worst_day_usd": -30.822662189999996,
+    "first_fill_utc": "2026-08-25 17:35:07+00:00",
+    "last_fill_utc": "2026-10-03 05:45:24+00:00",
+    "monthly": [
+     {
+      "month": "2026-08",
+      "label": "partial (Aug 25-31)",
+      "n": 15,
+      "matches": 11,
+      "net_c": 0.8988377906666668,
+      "pnl_usd": -20.243405850164034,
+      "usd_in": 106.47488670016402
+     },
+     {
+      "month": "2026-09",
+      "label": "full",
+      "n": 74,
+      "matches": 57,
+      "net_c": -4.794853235135136,
+      "pnl_usd": 143.4129310448425,
+      "usd_in": 733.5215951551576
+     },
+     {
+      "month": "2026-10",
+      "label": "partial (Oct 1-3)",
+      "n": 9,
+      "matches": 8,
+      "net_c": -7.2678265733333305,
+      "pnl_usd": -13.034173910358943,
+      "usd_in": 21.278388210358944
+     }
+    ],
+    "months_positive_usd": 1,
+    "months_positive_per_share": 1,
+    "months_total": 3
+   }
+  },
+  "viii_maker_base_fee": {
+   "value_c": -0.20922775626224924,
+   "ci95_c": [
+    -2.1951609252115167,
+    1.7865517105328799
+   ],
+   "lower_bound_gt_0": false,
+   "headline": {
+    "n_trades": 2207,
+    "n_matches": 524,
+    "errors": 0,
+    "mean_pnl_per_share_c": -0.20922775626224924,
+    "ci95_pnl_per_share_c": [
+     -2.1951609252115167,
+     1.7865517105328799
+    ],
+    "hit_rate": 0.587675577707295,
+    "mean_fee_c": 1.919076327798271,
+    "total_pnl_usd": -1419.152122978582,
+    "sharpe_ann": -5.419808710775903,
+    "max_dd": -0.8039857618382824,
+    "turnover_x_per_yr": 130.00683595332464,
+    "capital": 2021.693133563061,
+    "skew_daily": 0.5820517823202951,
+    "worst_day_pct": -11.455949577617922,
+    "worst_month_usd": -973.3938916032828,
+    "best_month_share": 85519936425.16292,
+    "days": 40,
+    "share_weighted_net_c": -2.814015032476884,
+    "share_weighted_ci": [
+     -7.014393966485432,
+     1.49798416552192
+    ],
+    "notional_usd": 28803.718089106376,
+    "mean_fill_usd": 13.051072990079916,
+    "median_fill_usd": 3.036,
+    "max_dd_usd": -1600.6560182407611,
+    "max_dd_pct_capital": -80.39857618382824,
+    "worst_day_usd": -231.60414599514803,
+    "first_fill_utc": "2026-08-25 15:43:40+00:00",
+    "last_fill_utc": "2026-10-03 08:35:03+00:00",
+    "monthly": [
+     {
+      "month": "2026-08",
+      "label": "partial (Aug 25-31)",
+      "n": 395,
+      "matches": 116,
+      "net_c": -1.9292257135379873,
+      "pnl_usd": -531.2781678004626,
+      "usd_in": 4766.210589606989
+     },
+     {
+      "month": "2026-09",
+      "label": "full",
+      "n": 1620,
+      "matches": 362,
+      "net_c": -0.3156185028230022,
+      "pnl_usd": -973.3938916032824,
+      "usd_in": 21895.31176528734
+     },
+     {
+      "month": "2026-10",
+      "label": "partial (Oct 1-3)",
+      "n": 192,
+      "matches": 46,
+      "net_c": 4.226981632031166,
+      "pnl_usd": 85.51993642516283,
+      "usd_in": 2142.1957342120445
+     }
+    ],
+    "months_positive_usd": 1,
+    "months_positive_per_share": 1,
+    "months_total": 3
+   }
+  }
+ },
+ "diagnostics": [
+  {
+   "book": "unconditional maker (every print, both sides, no lean)",
+   "regime": "all",
+   "n": 25938,
+   "matches": 782,
+   "net_c": 0.10486382086155012,
+   "ci": [
+    -1.0361558031033642,
+    1.2734184005453024
+   ],
+   "share_w_net_c": -0.12735573231852365
+  },
+  {
+   "book": "unconditional maker (every print, both sides, no lean)",
+   "regime": "1s/5%",
+   "n": 25938,
+   "matches": 782,
+   "net_c": 0.10486382086155012,
+   "ci": [
+    -1.0361558031033642,
+    1.2734184005453024
+   ],
+   "share_w_net_c": -0.12735573231852365
+  },
+  {
+   "book": "anti-lean placebo (filled by takers trading WITH the implied move, |impl| >= 0.04)",
+   "regime": "all",
+   "n": 2839,
+   "matches": 555,
+   "net_c": 0.7137541004015757,
+   "ci": [
+    -1.296607967053815,
+    2.6446513579961444
+   ],
+   "share_w_net_c": 1.6613299866934887
+  },
+  {
+   "book": "anti-lean placebo (filled by takers trading WITH the implied move, |impl| >= 0.04)",
+   "regime": "1s/5%",
+   "n": 2839,
+   "matches": 555,
+   "net_c": 0.7137541004015757,
+   "ci": [
+    -1.296607967053815,
+    2.6446513579961444
+   ],
+   "share_w_net_c": 1.6613299866934887
+  }
+ ],
+ "derived": {
+  "breakeven_maker_fee_rate": 0.08991516534599638,
+  "note": "rate r at which mean(pnl_ps - r*px*(1-px)) = 0 on book 1; derived from book 1, not a variant"
+ },
+ "cost_label": "cost-fragile"
+}

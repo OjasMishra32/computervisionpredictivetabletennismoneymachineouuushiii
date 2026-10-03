@@ -10,3 +10,10 @@
 2026-10-03T17:45:17.819645+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
 2026-10-03T17:48:08.518292+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
 2026-10-03T18:00:45.264394+00:00 v2 cost stress (fees/costs doubled, book fixed) on burned OOS (non-blind, no parameter change)
+2026-10-03T18:06:59.609644+00:00 tier0 corrections: OOS post-jump prices built (burned OOS, non-blind, labelled)
+2026-10-03T18:13:42.037708+00:00 tier0 counterfactual (verifier corrections) evaluated on burned OOS (non-blind, labelled)
+2026-10-03T18:27:17.849636+00:00 maker venue rules: descriptive in-play book spread/depth + tick changes read from data/live_v2 forward recordings (no strategy, no P&L, no parameter chosen)
+2026-10-03T18:42:50.878006+00:00 financials: v2 / v2-safe size-scaled variants (0.5x, 2x, 5x, all prints) evaluated on burned OOS (non-blind, capacity curve only)
+2026-10-03T18:47:03.904091+00:00 maker live engine plumbing: data/live_v2 clob_17/clob_13 read for message ordering only (price_change vs last_trade_price timestamps, trade dedupe); no strategy, no P&L, no parameter chosen
+2026-10-03T18:49:10.064212+00:00 maker v1 blind OOS evaluated (first run) (PREREG research/v2/maker/PREREG.md (A); first use of OOS side-market tapes; burned OOS moneyline tapes used only as the signal input)
+2026-10-03T18:49:54.369676+00:00 maker v1 OOS reproduction (recompute committed results.json; no parameter change)
