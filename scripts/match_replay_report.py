@@ -5,8 +5,10 @@
     purchased); bounce time = official point stamp - assumed stamp lag; fills priced against the real
     recorded order book; paper only.
 
-Reads results/replay/{replay.json, points.csv, seed_robustness.csv, selected_match_book.csv}; writes
-results/replay/fig_*.png and research/replay/RESULTS.md. Every number in RESULTS.md is read from those files.
+Reads results/replay/{replay.json, points.csv, seed_robustness.csv, selected_match_book.csv} and, when present,
+results/replay/audit.json (scripts/match_replay_check.py); writes results/replay/fig_*.png and
+research/replay/RESULTS.md. Every number in RESULTS.md is read from those files, except the protocol-literal
+numbers of deviation D1, which are the committed values of c6c728d.
 """
 from __future__ import annotations
 
@@ -27,6 +29,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results" / "replay"
 DOC = ROOT / "research" / "replay"
 M1 = ROOT / "research/v2/latency/out/m1_points.csv"
+SWEEP = "research/v2/feed_latency/LATENCY_SWEEP.md"   # moved from research/v2/tier0/ in 84c3898
+# protocol-literal headline (60 s rule only, before deviation D1), committed in c6c728d
+LITERAL = {"V0": (174, -0.61, -181, -213), "V0.5": (169, -0.65, -174, -226), "V1": (151, -0.92, -229, -387)}
 
 # reference palette (dataviz skill, light mode): categorical slots 1-3 + neutrals
 SURF, INK, INK2, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#8a8984", "#e4e3df"
@@ -55,6 +60,11 @@ def load():
     sr = pd.read_csv(OUT / "seed_robustness.csv")
     tl = pd.read_csv(OUT / "selected_match_book.csv", comment="#")
     return res, pts, sr, tl
+
+
+def load_audit():
+    f = OUT / "audit.json"
+    return json.loads(f.read_text()) if f.exists() else None
 
 
 def fill_class(g: pd.DataFrame) -> pd.Series:
@@ -303,8 +313,171 @@ def headline_table(res) -> str:
     return s
 
 
-def write_md(res, pts, sr, dec, ex):
+def _c(x):
+    return f"{x:+.2f}c"
+
+
+def consistency_bullet(res, aud) -> str:
+    ref = res["sweep_reference"]
+    t = ("* **Consistency with the latency sweep:** same mechanism and same direction (the edge needs the order to "
+         "beat the reprice, and it shrinks with V), but a lower level than the sweep's in-sample curve "
+         f"({ref['headline_reading_IS_c']['V0']:+.2f} / {ref['headline_reading_IS_c']['V0.5']:+.2f} / "
+         f"{ref['headline_reading_IS_c']['V1']:+.2f}c), and the gap at V = 0 is larger than sampling noise. ")
+    if aud is None:
+        return t
+    d = aud["sweep_diagnostics"]
+    v = d["variants"]["D>=3c_and_limit_at_ref"]
+    return t + ("The audit explains it (§6): the sweep times the book's reprice on the recorder's receive clock, "
+                f"{aud['recv_latency_ms']} ms late, and a third of reprices sit at a whole server second, which "
+                f"alone lifts the share of calls before the reprice from {d['V0']['replay_convention_share_before_reprice']:.0%} "
+                f"to {d['V0']['sweep_convention']['lat10ms']:.0%} at V = 0 on these same points; and on the sweep's own "
+                f"trade set (moves ≥ 3c, limit at the stale ask) the replay is {_c(v['V0']['per_share_mark_c'])} / "
+                f"{_c(v['V0.5']['per_share_mark_c'])} / {_c(v['V1']['per_share_mark_c'])} per share, about the "
+                "sweep's burned-OOS reading, not its in-sample curve. ")
+
+
+def sweep_gap_text(aud, H=None) -> str:
+    if aud is None:
+        return "(Run `scripts/match_replay_check.py` for the decomposition.)\n"
+    d = aud["sweep_diagnostics"]
+    sw = d["real_book_at_sweep_timing_12ms_receive_clock_beat"]
+    v = d["variants"]
+    out = []
+    out.append(
+        f"1. **Clock convention of the reprice (explains the share of calls before the reprice).** The sweep's R is "
+        f"`book_vs_T_s` from `m1_points.csv`, i.e. the reprice on the recorder's *receive* clock; the venue repriced "
+        f"{aud['recv_latency_ms']} ms earlier. The sweep also uses a 10-140 ms venue network (Europe 10 ms) where the "
+        f"replay uses 67 ms (Florida). That would not matter if reprices were spread evenly, but "
+        f"{d['reprice_server_ms_of_second_in_[-20,+40)']:.0%} of the matched reprices fall within 40 ms after a whole "
+        f"server second (6 % if uniform), right where a V = 0 order lands (stamp − 2 s + 1.087 s). On the same 461 "
+        f"points the share of calls before the reprice is {d['V0']['replay_convention_share_before_reprice']:.0%} / "
+        f"{d['V0.5']['replay_convention_share_before_reprice']:.0%} / {d['V1']['replay_convention_share_before_reprice']:.0%} "
+        f"(V = 0 / 0.5 / 1 s) with the replay's convention and "
+        f"{d['V0']['sweep_convention']['lat10ms']:.0%} / {d['V0.5']['sweep_convention']['lat10ms']:.0%} / "
+        f"{d['V1']['sweep_convention']['lat10ms']:.0%} with the sweep's (10 ms; 40 ms gives "
+        f"{d['V0']['sweep_convention']['lat40ms']:.0%} / {d['V0.5']['sweep_convention']['lat40ms']:.0%} / "
+        f"{d['V1']['sweep_convention']['lat40ms']:.0%}), which reproduces the sweep's 44 / 19 / 14 %. The 66 ms is a "
+        f"credit the real book does not give: executing at the sweep's earlier instants against the recorded book "
+        f"gives {_c(sw['V0']['per_share_mark_c'])} / {_c(sw['V0.5']['per_share_mark_c'])} / "
+        f"{_c(sw['V1']['per_share_mark_c'])} per share marked, about the replay's own. This is an optimistic bias in "
+        f"the sweep (`src/tier0.py` uses R as is), flagged to its owners; it is outside this replay's files.\n")
+    a, b, c = v["limit_at_ref_ask"], v["D>=3c_points"], v["D>=3c_and_limit_at_ref"]
+    out.append(
+        f"2. **Trade set (explains most of the level).** Same replay, same books, as labelled variants: limit at the "
+        f"stale ask instead of +1c: {_c(a['V0']['per_share_mark_c'])} / {_c(a['V0.5']['per_share_mark_c'])} / "
+        f"{_c(a['V1']['per_share_mark_c'])}; only points whose matched book move is ≥ 3c (the sweep's live pool): "
+        f"{_c(b['V0']['per_share_mark_c'])} / {_c(b['V0.5']['per_share_mark_c'])} / {_c(b['V1']['per_share_mark_c'])}; "
+        f"both, i.e. the sweep's trade set: {_c(c['V0']['per_share_mark_c'])} / {_c(c['V0.5']['per_share_mark_c'])} / "
+        f"{_c(c['V1']['per_share_mark_c'])} on {c['V0']['fills']} / {c['V0.5']['fills']} / {c['V1']['fills']} fills "
+        f"({usd(c['V0']['pnl_mark_usd'])} / {usd(c['V0.5']['pnl_mark_usd'])} / {usd(c['V1']['pnl_mark_usd'])} marked). "
+        + (f"Against the headline ({_c(H[0.0]['per_share_mark_c'])} / {_c(H[0.5]['per_share_mark_c'])} / "
+           f"{_c(H[1.0]['per_share_mark_c'])}), calling every point instead of the ≥ 3c moves costs "
+           f"{b['V0']['per_share_mark_c'] - H[0.0]['per_share_mark_c']:.2f} / "
+           f"{b['V0.5']['per_share_mark_c'] - H[0.5]['per_share_mark_c']:.2f} / "
+           f"{b['V1']['per_share_mark_c'] - H[1.0]['per_share_mark_c']:.2f}c per share and the +1c limit "
+           f"{a['V0']['per_share_mark_c'] - H[0.0]['per_share_mark_c']:.2f} / "
+           f"{a['V0.5']['per_share_mark_c'] - H[0.5]['per_share_mark_c']:.2f} / "
+           f"{a['V1']['per_share_mark_c'] - H[1.0]['per_share_mark_c']:.2f}c. " if H else "")
+        + "The move filter uses the realised move (hindsight), as the sweep's historical jump table does.\n")
+    out.append(
+        "3. **What is left is the sweep's pricing model.** On its own trade set the replay is near zero at V ≤ 0.5 s and "
+        "negative at 1 s, below the sweep's in-sample curve (+1.10 / +0.61 / +0.40c) and close to its burned-OOS reading "
+        "(+0.58 [−0.08, +1.21] / −0.02 / −0.38c). The sweep prices fills from a measured edge curve and a 50 % share of "
+        "the stale depth; the replay walks the recorded book. The variants are a few dozen fills on 7 matches, so they "
+        "locate the gap but do not measure it precisely.\n")
+    return "\n".join(out) + "\n"
+
+
+def batch_caveat(aud) -> str:
+    if aud is None:
+        return "see §9."
+    d = aud["sweep_diagnostics"]
+    bb, ab = d["whole_second_batch_variant"]["before_batch"], d["whole_second_batch_variant"]["after_batch"]
+    return (f"{d['prints_ms_of_second_first_100ms_share']:.0%} of the {d['prints_n']:,} recorded prints of these 9 "
+            f"markets carry a server time in the first 100 ms of a second ({d['prints_ms_of_second_first_50ms_share']:.0%} "
+            "in the first 50 ms; 10 % and 5 % if uniform), while book updates are spread evenly. Delayed marketable "
+            "orders appear to be matched in whole-second batches, which the venue does not document. If our order "
+            "matched at the first whole second at or after arrival + 1 s, the replay would be worse: "
+            f"{_c(bb['V0']['per_share_mark_c'])} to {_c(ab['V0']['per_share_mark_c'])} per share at V = 0 and "
+            f"{_c(bb['V1']['per_share_mark_c'])} to {_c(ab['V1']['per_share_mark_c'])} at 1 s (our order first or last "
+            f"in the batch), and V = 0 and 0.5 s would mostly land in the same batch. The headline keeps the "
+            "protocol's continuous 1 s delay; a live test order is the only way to settle this.")
+
+
+def deviation_text(res) -> str:
+    ro = res["model"].get("recorder_outages")
+    if not ro:
+        return "None in the trading rule, the cells, the seeds or the statistics.\n"
+    rows = "\n".join(f"| V = {k[1:]} s | {LITERAL[k][0]} | {f2(LITERAL[k][1])}c | {usd(LITERAL[k][2])} | {usd(LITERAL[k][3])} | "
+                     f"{res['headline_by_V'][k]['all']['fills']} | {f2(res['headline_by_V'][k]['all']['per_share_mark_c'])}c | "
+                     f"{usd(res['headline_by_V'][k]['all']['pnl_mark_usd'])} | {usd(res['headline_by_V'][k]['all']['pnl_hold_usd'])} |"
+                     for k in ("V0", "V0.5", "V1"))
+    return ("**D1 (after the audit; data validity, not a trading rule).** The protocol's replayability rule (a "
+            "recorded message for the market within 60 s before execution) let orders execute while the recorder was "
+            f"disconnected. The recorder's own receive stream has {ro['n']} gaps longer than 1 s ({ro['total_s']:.0f} s "
+            "in all: a 2.0-2.6 s resubscribe every 10 minutes and a 47 s outage at 11:12:51-11:13:39 UTC); "
+            "the next-longest gap is 0.22 s at the 99.99th percentile. Inside a gap the book is not observed. In the "
+            "protocol-literal run, 2 fills per V executed inside the 47 s outage on a book 7-19 s old (Sun v Bucsa "
+            "point 76, Jovic v Dart point 174), 4 reference prices were read inside gaps, and 3-4 fills were marked at a "
+            "+30 s mid inside a gap. Now a point whose reference or execution instant falls inside a gap is "
+            "`no book recorded` (`no_book_reason` in `points.csv`), and a +30 s mark inside a gap is not taken (the fill "
+            "is held, not marked). 7 of 500 replayable points drop out. The effect is small and does not change any "
+            "sign:\n\n| | literal fills | literal c/share marked | literal $ marked | literal $ held | fills | "
+            "c/share marked | $ marked | $ held |\n|---|---|---|---|---|---|---|---|---|\n" + rows + "\n\n"
+            "Nothing else in the trading rule, the cells, the seeds or the statistics changed.\n")
+
+
+def audit_text(aud) -> str:
+    if aud is None:
+        return ""
+    rc = aud["row_checks"]
+    pc = aud["pooled_vs_replay_json"]
+    hc = aud["hand_check"]
+    sb = aud["server_bbo_check"]
+    out = ["## 9. Independent audit\n",
+           "`scripts/match_replay_check.py` does not import the replay. It re-reads the raw recording with its own "
+           "parser, rebuilds both tokens' books with its own code from the text of `PROTOCOL.md` §4, re-runs the three "
+           "headline cells, and writes `results/replay/audit.json` and `audit_handcheck.csv`.\n",
+           f"* **Rebuilt book vs the server's own top of book:** after {sb['agree']:,} of {sb['checked']:,} price_change "
+           f"messages ({sb['share']:.2%}) the rebuilt best bid and ask equal the `best_bid` / `best_ask` the server put "
+           "in the message; the rest sit at reconnect snapshots and same-millisecond bursts.\n",
+           "* **Row by row:** status, reference ask, ask at execution, shares, VWAP, fee, held and marked P&L are "
+           "identical to `points.csv` on all 994 points at V = 0, 0.5 and 1 s; pooled fills and $ match "
+           f"`replay.json` exactly (largest difference {max(v['max_abs_diff'] for v in pc.values()):.1g}). Timing arithmetic is identical: "
+           "reference instant ≤ call − 67 ms and ≤ the landing frame (no look-ahead), execution = call + 67 ms + "
+           "1.000 s.\n",
+           "* **Fills:** none above its limit, none below the best ask at execution; the ask at execution equals the "
+           f"server's own best ask (last `best_bid_ask` / `price_change` field at or before the instant) on every fill "
+           f"and on {min(v['ask_at_exec_equals_server_bbo_share'] for v in rc.values()):.1%}+ of orders. Oldest book "
+           f"at an execution instant: {max(v['book_age_at_exec_s']['max'] for v in rc.values()):.2f} s (after D1). "
+           "One fill per V executes on a rebuilt book whose token-0 bid equals its ask (Sun v Bucsa point 67, a stale "
+           "0.40 bid); the server's best ask confirms the 0.40 fill price.\n",
+           f"* **Wrong calls:** {rc['V1']['wrong_calls_in_calls']} of the calls are simulated wrong calls (seed 0), "
+           f"traded like any other: {rc['V0']['wrong_call_fills']} / {rc['V0.5']['wrong_call_fills']} / "
+           f"{rc['V1']['wrong_call_fills']} fills at V = 0 / 0.5 / 1 s.\n",
+           f"* **Hand check of 10 points** (rule: {hc['rule']}): {hc['agree']} of 10 agree "
+           "on the reference ask, the ask at execution and the fill, by the rebuilt book and by the server's own "
+           "best ask. `audit_handcheck.csv` lists each with the raw ask messages around the execution instant.\n",
+           "* **Protocol before P&L:** `PROTOCOL.md` was committed at 17:14:49 EDT (0e083ed) and is unchanged since; "
+           "the first parse of the recording is 17:18:59 and the first outputs 17:27:45. The selection rule applied to "
+           "`m1_points.csv` gives Sun v Bucsa (125 of 128 matched; next Jovic v Dart, 110). `PROTOCOL.md` cites the "
+           "sweep at `research/v2/tier0/LATENCY_SWEEP.md`; the file moved to `research/v2/feed_latency/` in 84c3898 "
+           "(the protocol is left as committed).\n",
+           "* **Labels:** every output carries the BACKTEST REPLAY label: a `label` column (`points.csv`, "
+           "`seed_robustness.csv`, `audit_handcheck.csv`), a `label` key (`replay.json`, `audit.json`), a `#` header "
+           "line (the other CSVs), a footer on every figure, and the ribbon, title card and footer of the video.\n",
+           "* **Not fixed here (outside this replay's files):** the sweep's receive-clock reprice time (§6, item 1) "
+           "and the whole-second batch question (§7) belong to `src/tier0.py` and "
+           f"`{SWEEP}`; numbers quoted elsewhere from the protocol-literal run (−0.92c, −$229, −$387, 6 of 121) "
+           "are superseded by the D1 table above.\n"]
+    return "\n".join(out) + "\n"
+
+
+def write_md(res, pts, sr, dec, ex, aud=None):
     H = {V: res["headline_by_V"][f"V{V:g}"]["all"] for V in (0.0, 0.5, 1.0)}
+    s1 = pts[(pts.slug == res["selected_match"]) & (pts.V == 1.0) & (pts.beat_book == True)  # noqa: E712
+             & ~pts.status.str.startswith(("no book", "skipped"))]
+    n_beat_blocked = int((s1.status == "blocked (net cap)").sum())
     st = res["selected_story"]
     sel = res["selected_match"]
     m = next(x for x in res["matches"] if x["slug"] == sel)
@@ -316,7 +489,7 @@ def write_md(res, pts, sr, dec, ex):
               "Polymarket order books and trades recorded live today, the venue's 1 s taker delay, the fee and the match "
               "results. No order was sent. Protocol, committed before any P&L: `PROTOCOL.md`. **One day, 9 matches, a "
               "small sample: this is an illustration and a consistency check against the latency sweep "
-              "(`research/v2/tier0/LATENCY_SWEEP.md`), not new evidence.**\n")
+              f"(`{SWEEP}`), not new evidence.**\n")
     a1, a0, a5 = H[1.0], H[0.0], H[0.5]
     cb = dec[dec["class"] == "correct, before the reprice"].set_index("V")
     g_lo, g_hi = sorted([float(cb.loc[0.0, "gross_c"]), float(cb.loc[0.5, "gross_c"])])
@@ -338,18 +511,14 @@ def write_md(res, pts, sr, dec, ex):
         f"see §2). They are outnumbered by correct calls that land just after a ≤ 1c reprice (the 1c limit lets them "
         f"through at a roughly fair price, so they pay the fee) and by the simulated wrong calls, which always fill "
         f"because the loser's price is falling. Because every point is called, the 100-share net cap blocks "
-        f"{a1['blocked_net_cap']} of {a1['calls']} calls at 1 s, including 5 of the 6 that beat the book in the "
-        f"selected match.\n"
+        f"{a1['blocked_net_cap']} of {a1['calls']} calls at 1 s, including {n_beat_blocked} of the {len(s1)} that beat "
+        f"the book in the selected match.\n"
         f"* **Selected match** ({m['n0']} v {m['n1']}, {m['matched']} matched points; chosen by the pre-committed rule): "
         f"at V = 1.0 s the order beats the book on **{st['V1']['beat_book']} of {st['V1']['calls_with_reprice']}** calls "
         f"and fills on **{st['V1']['fills_beat_book']}** of them; at V = 0.5 s {st['V0.5']['beat_book']} "
         f"({st['V0.5']['fills_beat_book']} filled); at V = 0, {st['V0']['beat_book']} ({st['V0']['fills_beat_book']} filled).\n"
-        "* **Consistency with the latency sweep:** same mechanism and same direction (the edge needs the order to "
-        "beat the reprice, and it shrinks with V). The level is lower than the sweep's in-sample curve, because this "
-        "replay calls every point (the sweep trades only ≥ 4c jumps), lets ≤ 1c post-reprice fills through, and binds "
-        "the net cap. It is closer to the sweep's burned-OOS reading (+0.58c at V = 0 with a CI that includes zero, "
-        "-0.38c at 1 s) than to its in-sample curve, but still below it at V = 0. Every one of the 36 sensitivity "
-        "cells is negative marked; the best is stamp lag 3.0 s at V = 0 (§5).\n")
+        + consistency_bullet(res, aud) +
+        "Every one of the 36 sensitivity cells is negative marked; the best is stamp lag 3.0 s at V = 0 (§5).\n")
     md.append("![selected match](../../results/replay/fig_selected_match.png)\n")
     md.append("`results/replay/fig_selected_match.png`: the recorded mid of the selected match, every official point, "
               "and the replayed V = 1.0 s trader's fills (blue: correct call; orange: simulated wrong call; grey x: "
@@ -372,7 +541,7 @@ def write_md(res, pts, sr, dec, ex):
         md.append(f"| {nm} | " + " | ".join(fmt.format(S[f'V{V:g}'][k]['mean'], S[f'V{V:g}'][k]['sd'])
                                              for V in (0.0, 0.5, 1.0)) + " |")
     md.append(f"\nSeed 0 (the replay shown everywhere) drew {a0['wrong_calls']} wrong calls out of {a0['calls']} "
-              f"(7 %, against 5 % expected), so it sits on the unlucky side of the seed spread; the sign does not change "
+              f"({a0['wrong_calls'] / a0['calls']:.0%}, against 5 % expected), so it sits on the unlucky side of the seed spread; the sign does not change "
               f"in any of the 20 seeds at any V (marked $ range: "
               + ", ".join(f"V = {V:g}: {S[f'V{V:g}']['pnl_mark_usd']['min']:+.0f} to {S[f'V{V:g}']['pnl_mark_usd']['max']:+.0f}"
                           for V in (0.0, 0.5, 1.0)) + ").\n")
@@ -422,7 +591,8 @@ def write_md(res, pts, sr, dec, ex):
                                                   for V in (0.0, 0.5, 1.0)) + " |")
     md.append("| median execution - reprice, s | " + " | ".join(f"{st[f'V{V:g}']['median_exec_minus_book_s']:+.2f}"
                                                                for V in (0.0, 0.5, 1.0)) + " |")
-    g1 = pts[(pts.slug == sel) & (pts.V == 1.0) & (pts.beat_book == True)]  # noqa: E712
+    g1 = pts[(pts.slug == sel) & (pts.V == 1.0) & (pts.beat_book == True)  # noqa: E712
+             & ~pts.status.str.startswith(("no book", "skipped"))]
     md.append(f"\n**The {len(g1)} calls that beat the book at V = 1.0 s:**\n")
     md.append("| point | score after | point winner | called | execution - reprice (s) | ask at bounce → at execution | status |\n|---|---|---|---|---|---|---|")
     for r in g1.itertuples():
@@ -430,7 +600,7 @@ def write_md(res, pts, sr, dec, ex):
                   f"{'' if r.correct_call else ' (wrong call)'} | {r.exec_minus_book_s:+.2f} | "
                   f"{r.ref_ask:.2f} → {('-' if not np.isfinite(r.ask_at_exec) else f'{r.ask_at_exec:.2f}')} | {r.status} |")
     md.append("\nThe large leads (8-18 s) are points where the book's matched reprice comes long after the stamp; the "
-              "latency write-up flags those as probable mismatches (`research/v2/tier0/LATENCY_SWEEP.md` §3). "
+              f"latency write-up flags those as probable mismatches (`{SWEEP}` §3). "
               f"Without those, the 1 s trader beats the book on {len(g1[g1.exec_minus_book_s > -5])} points of the "
               f"whole match.\n")
     (na, Da, _), (nb, Db, _) = ex
@@ -481,13 +651,16 @@ def write_md(res, pts, sr, dec, ex):
     md.append("| sweep, in sample: calls before the reprice | 44 % | 19 % | 14 % |")
     md.append("| replay: calls that beat the reprice | " + " | ".join(
         f"{H[V]['share_calls_beat_book']:.0%}" for V in (0.0, 0.5, 1.0)) + " |")
+    md.append("| sweep, in sample: fill rate (filled correct calls / calls; all before the reprice) | 25 % | 11 % | 8 % |")
+    md.append("| replay: correct-call fills before the reprice / calls | " + " | ".join(
+        f"{H[V]['correct_fills_before_reprice'] / H[V]['calls']:.0%}" for V in (0.0, 0.5, 1.0)) + " |")
+    md.append("| replay: all correct-call fills / calls (incl. ≤ 1c after the reprice) | " + " | ".join(
+        f"{(H[V]['fills'] - H[V]['fills_wrong']) / H[V]['calls']:.0%}" for V in (0.0, 0.5, 1.0)) + " |")
     md.append("\n**Consistent:** in both, money is made only by correct calls that execute before the reprice; the share "
-              "of such calls falls with V; the stamp lag dominates. **Different on purpose:** the sweep trades the "
-              "historical ≥ 4c jumps and lets a correct call fill only before the reprice (a limit at the stale price), "
-              "so its trades have bigger moves and no post-reprice fills; this replay calls every official point with "
-              "a 1c-wider limit and the same net cap, which makes the cap bind on about half the calls. The replay's "
-              "negative level is therefore not a contradiction of the sweep's in-sample curve; it is closer to the "
-              "sweep's burned-OOS reading (CI including zero at V = 0), though still below it at V = 0.\n")
+              "of such calls falls with V; the stamp lag dominates. **Not consistent in level, and not within sampling "
+              "noise:** at V = 0 the replay's CI lies below the sweep's in-sample CI (+0.82 to +1.38c). The audit "
+              "(`scripts/match_replay_check.py`, `results/replay/audit.json`) splits the gap into three parts.\n")
+    md.append(sweep_gap_text(aud, H))
     md.append("## 7. What this does not show\n")
     md.append("* **No video.** No feed was bought, received or watched. V, the CV call, its lead and its 95 % precision "
               "are assumptions from the tier-0 model.\n"
@@ -498,6 +671,8 @@ def write_md(res, pts, sr, dec, ex):
               "* **Our orders do not move the book.** The real fast tier is already in the recording; we take what it "
               "left. We do not model being seen by makers.\n"
               "* **Costs not deducted:** a feed licence, colocation, data.\n"
+              "* **The venue's matching clock is assumed continuous.** The recorded prints say otherwise: "
+              + batch_caveat(aud) + "\n"
               "* **Same data as the sweep's inputs.** The reprice times and books that parameterise the sweep come from "
               "this day, so agreement is a consistency check, not an independent test.\n")
     md.append("## 8. How to describe this in the paper\n")
@@ -510,14 +685,18 @@ def write_md(res, pts, sr, dec, ex):
               "the trader made money. A faster licensed feed is the stated limitation: the replay shows what a "
               "faster feed would have to beat (the reprice), not that one exists at a price that pays.\n")
     md.append("## Deviations from the protocol\n")
-    md.append("None in the trading rule, the cells, the seeds or the statistics. Additions after P&L was seen, all "
-              "descriptive: the accounting split of §2 (uses `t_book`, which is hindsight), the figures (the example "
-              "points in `fig_point_race.png` are chosen by stated display rules, one of them on the replay's outcome), "
-              "and the "
-              "per-match V = 0 column in §4.\n")
+    md.append(deviation_text(res))
+    md.append("Additions after P&L was seen, all descriptive: the accounting split of §2 (uses `t_book`, which is "
+              "hindsight), the figures (the example points in `fig_point_race.png` are chosen by stated display rules, "
+              "one of them on the replay's outcome), the per-match V = 0 column in §4, and the audit diagnostics of §6 "
+              "and §9 (variants, not choices: none of them replaces the headline).\n")
+    md.append(audit_text(aud))
     md.append("## Reproduce\n")
     md.append("```bash\n.venv/bin/python scripts/match_replay.py          # ~2-3 min: parses the recording, replays 93 cells, "
-              "writes everything\n.venv/bin/python scripts/match_replay.py --figures-only   # redraw figures + this file\n```\n")
+              "writes everything\n.venv/bin/python scripts/match_replay_check.py    # ~1 min: independent audit -> "
+              "results/replay/audit.json, audit_handcheck.csv\n.venv/bin/python scripts/match_replay.py --figures-only   "
+              "# redraw figures + this file (reads audit.json)\n.venv/bin/python scripts/match_replay_extras.py && "
+              ".venv/bin/python scripts/match_replay_figs.py && .venv/bin/python scripts/match_replay_video.py\n```\n")
     md.append(f"Recording lines scanned: {res['inputs']['lines_scanned']:,}. Receive latency (local receive - server "
               f"timestamp) median {res['model']['recv_latency_ms_median']} ms (p10-p90 "
               f"{res['model']['recv_latency_ms_p10_p90'][0]:.0f}-{res['model']['recv_latency_ms_p10_p90'][1]:.0f} ms); "
@@ -540,7 +719,7 @@ def main():
     ex = fig_point(res, pts, tl)
     fig_race(res, pts)
     fig_pnl(res, dec)
-    write_md(res, pts, sr, dec, ex)
+    write_md(res, pts, sr, dec, ex, load_audit())
     print("wrote research/replay/RESULTS.md and results/replay/fig_*.png")
 
 

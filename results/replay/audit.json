@@ -1,0 +1,1492 @@
+{
+ "label": "BACKTEST REPLAY on a real match recorded live on 2026-10-03 \u2014 assumed 1 s licensed video feed (not purchased); bounce time = official point stamp - assumed stamp lag; fills priced against the real recorded order book; paper only",
+ "independent_of": "scripts/match_replay.py (not imported)",
+ "lines_scanned": 5637459,
+ "recv_latency_ms": 66,
+ "recorder_outages": {
+  "n": 33,
+  "total_s": 115.447,
+  "longest_s": 32.411
+ },
+ "server_bbo_check": {
+  "checked": 3117394,
+  "agree": 3111836,
+  "share": 0.9982171005654081,
+  "by_match": {
+   "wta-rybakin-charaev-2026-10-01": {
+    "checked": 470684,
+    "agree": 468528,
+    "share": 0.9954194321455584,
+    "examples": [
+     {
+      "ts": 1791029012406,
+      "tok": 0,
+      "server": [
+       0.92,
+       0.94
+      ],
+      "rebuilt": [
+       0.93,
+       0.94
+      ]
+     },
+     {
+      "ts": 1791029012406,
+      "tok": 1,
+      "server": [
+       0.06,
+       0.08
+      ],
+      "rebuilt": [
+       0.06,
+       0.07
+      ]
+     },
+     {
+      "ts": 1791030123090,
+      "tok": 1,
+      "server": [
+       0.05,
+       0.07
+      ],
+      "rebuilt": [
+       0.06,
+       0.07
+      ]
+     },
+     {
+      "ts": 1791030123090,
+      "tok": 0,
+      "server": [
+       0.93,
+       0.95
+      ],
+      "rebuilt": [
+       0.93,
+       0.94
+      ]
+     },
+     {
+      "ts": 1791030600835,
+      "tok": 0,
+      "server": [
+       0.93,
+       0.95
+      ],
+      "rebuilt": [
+       0.93,
+       0.94
+      ]
+     }
+    ]
+   },
+   "wta-kartal-wa-2026-10-01": {
+    "checked": 470188,
+    "agree": 469764,
+    "share": 0.9990982330472067,
+    "examples": [
+     {
+      "ts": 1791028800136,
+      "tok": 1,
+      "server": [
+       0.47,
+       0.5
+      ],
+      "rebuilt": [
+       0.49,
+       0.5
+      ]
+     },
+     {
+      "ts": 1791028800136,
+      "tok": 0,
+      "server": [
+       0.5,
+       0.53
+      ],
+      "rebuilt": [
+       0.5,
+       0.51
+      ]
+     },
+     {
+      "ts": 1791028800136,
+      "tok": 1,
+      "server": [
+       0.47,
+       0.5
+      ],
+      "rebuilt": [
+       0.49,
+       0.5
+      ]
+     },
+     {
+      "ts": 1791028800136,
+      "tok": 0,
+      "server": [
+       0.5,
+       0.53
+      ],
+      "rebuilt": [
+       0.5,
+       0.51
+      ]
+     },
+     {
+      "ts": 1791028800136,
+      "tok": 1,
+      "server": [
+       0.47,
+       0.5
+      ],
+      "rebuilt": [
+       0.49,
+       0.5
+      ]
+     }
+    ]
+   },
+   "wta-bouzkov-birrell-2026-10-01": {
+    "checked": 336584,
+    "agree": 335822,
+    "share": 0.997736077769591,
+    "examples": [
+     {
+      "ts": 1791024300047,
+      "tok": 1,
+      "server": [
+       0.32,
+       1.0
+      ],
+      "rebuilt": [
+       0.32,
+       0.33
+      ]
+     },
+     {
+      "ts": 1791024300047,
+      "tok": 0,
+      "server": [
+       0.0,
+       0.68
+      ],
+      "rebuilt": [
+       0.67,
+       0.68
+      ]
+     },
+     {
+      "ts": 1791024300047,
+      "tok": 1,
+      "server": [
+       0.32,
+       1.0
+      ],
+      "rebuilt": [
+       0.32,
+       0.33
+      ]
+     },
+     {
+      "ts": 1791024300047,
+      "tok": 0,
+      "server": [
+       0.0,
+       0.68
+      ],
+      "rebuilt": [
+       0.67,
+       0.68
+      ]
+     },
+     {
+      "ts": 1791024300047,
+      "tok": 1,
+      "server": [
+       0.32,
+       1.0
+      ],
+      "rebuilt": [
+       0.32,
+       0.33
+      ]
+     }
+    ]
+   },
+   "wta-zhen-kalinsk-2026-10-01": {
+    "checked": 213160,
+    "agree": 212818,
+    "share": 0.9983955714017639,
+    "examples": [
+     {
+      "ts": 1791020819697,
+      "tok": 0,
+      "server": [
+       0.34,
+       0.38
+      ],
+      "rebuilt": [
+       0.36,
+       0.38
+      ]
+     },
+     {
+      "ts": 1791020819697,
+      "tok": 1,
+      "server": [
+       0.62,
+       0.66
+      ],
+      "rebuilt": [
+       0.62,
+       0.64
+      ]
+     },
+     {
+      "ts": 1791020846289,
+      "tok": 1,
+      "server": [
+       0.56,
+       0.59
+      ],
+      "rebuilt": [
+       0.58,
+       0.59
+      ]
+     },
+     {
+      "ts": 1791020846289,
+      "tok": 0,
+      "server": [
+       0.41,
+       0.44
+      ],
+      "rebuilt": [
+       0.41,
+       0.42
+      ]
+     },
+     {
+      "ts": 1791020856005,
+      "tok": 1,
+      "server": [
+       0.55,
+       0.57
+      ],
+      "rebuilt": [
+       0.55,
+       0.56
+      ]
+     }
+    ]
+   },
+   "wta-bencic-zakharo-2026-10-01": {
+    "checked": 20924,
+    "agree": 20710,
+    "share": 0.9897725100363219,
+    "examples": [
+     {
+      "ts": 1791020827003,
+      "tok": 1,
+      "server": [
+       0.027,
+       0.029
+      ],
+      "rebuilt": [
+       0.027,
+       0.027
+      ]
+     },
+     {
+      "ts": 1791020827003,
+      "tok": 0,
+      "server": [
+       0.971,
+       0.973
+      ],
+      "rebuilt": [
+       0.973,
+       0.973
+      ]
+     },
+     {
+      "ts": 1791020852003,
+      "tok": 1,
+      "server": [
+       0.045,
+       0.05
+      ],
+      "rebuilt": [
+       0.045,
+       0.047
+      ]
+     },
+     {
+      "ts": 1791020852003,
+      "tok": 0,
+      "server": [
+       0.95,
+       0.955
+      ],
+      "rebuilt": [
+       0.953,
+       0.955
+      ]
+     },
+     {
+      "ts": 1791020852003,
+      "tok": 0,
+      "server": [
+       0.95,
+       0.955
+      ],
+      "rebuilt": [
+       0.952,
+       0.955
+      ]
+     }
+    ]
+   },
+   "wta-su-bucsa-2026-10-02": {
+    "checked": 628322,
+    "agree": 627722,
+    "share": 0.999045075614096,
+    "examples": [
+     {
+      "ts": 1791022500041,
+      "tok": 0,
+      "server": [
+       0.3,
+       1.0
+      ],
+      "rebuilt": [
+       0.31,
+       0.32
+      ]
+     },
+     {
+      "ts": 1791022500041,
+      "tok": 1,
+      "server": [
+       0.0,
+       0.7
+      ],
+      "rebuilt": [
+       0.68,
+       0.69
+      ]
+     },
+     {
+      "ts": 1791022500041,
+      "tok": 1,
+      "server": [
+       0.0,
+       0.7
+      ],
+      "rebuilt": [
+       0.68,
+       0.69
+      ]
+     },
+     {
+      "ts": 1791022500041,
+      "tok": 0,
+      "server": [
+       0.3,
+       1.0
+      ],
+      "rebuilt": [
+       0.31,
+       0.32
+      ]
+     },
+     {
+      "ts": 1791022500041,
+      "tok": 0,
+      "server": [
+       0.3,
+       1.0
+      ],
+      "rebuilt": [
+       0.31,
+       0.32
+      ]
+     }
+    ]
+   },
+   "wta-jovic-dart-2026-10-02": {
+    "checked": 415450,
+    "agree": 415086,
+    "share": 0.9991238416175232,
+    "examples": [
+     {
+      "ts": 1791021107865,
+      "tok": 0,
+      "server": [
+       0.62,
+       0.65
+      ],
+      "rebuilt": [
+       0.64,
+       0.65
+      ]
+     },
+     {
+      "ts": 1791021107865,
+      "tok": 1,
+      "server": [
+       0.35,
+       0.38
+      ],
+      "rebuilt": [
+       0.35,
+       0.36
+      ]
+     },
+     {
+      "ts": 1791021112408,
+      "tok": 0,
+      "server": [
+       0.61,
+       0.65
+      ],
+      "rebuilt": [
+       0.63,
+       0.65
+      ]
+     },
+     {
+      "ts": 1791021112408,
+      "tok": 1,
+      "server": [
+       0.35,
+       0.39
+      ],
+      "rebuilt": [
+       0.35,
+       0.37
+      ]
+     },
+     {
+      "ts": 1791021114000,
+      "tok": 0,
+      "server": [
+       0.64,
+       0.68
+      ],
+      "rebuilt": [
+       0.64,
+       0.66
+      ]
+     }
+    ]
+   },
+   "wta-rakhimo-fernand-2026-10-01": {
+    "checked": 79130,
+    "agree": 78958,
+    "share": 0.997826361683306,
+    "examples": [
+     {
+      "ts": 1791020874001,
+      "tok": 1,
+      "server": [
+       0.38,
+       0.39
+      ],
+      "rebuilt": [
+       0.38,
+       0.38
+      ]
+     },
+     {
+      "ts": 1791020874001,
+      "tok": 0,
+      "server": [
+       0.61,
+       0.62
+      ],
+      "rebuilt": [
+       0.62,
+       0.62
+      ]
+     },
+     {
+      "ts": 1791020883000,
+      "tok": 0,
+      "server": [
+       0.58,
+       0.67
+      ],
+      "rebuilt": [
+       0.61,
+       0.67
+      ]
+     },
+     {
+      "ts": 1791020883000,
+      "tok": 1,
+      "server": [
+       0.33,
+       0.42
+      ],
+      "rebuilt": [
+       0.33,
+       0.39
+      ]
+     },
+     {
+      "ts": 1791020883000,
+      "tok": 0,
+      "server": [
+       0.58,
+       0.67
+      ],
+      "rebuilt": [
+       0.6,
+       0.67
+      ]
+     }
+    ]
+   },
+   "wta-andree-boisson-2026-10-03": {
+    "checked": 482952,
+    "agree": 482428,
+    "share": 0.9989150060461495,
+    "examples": [
+     {
+      "ts": 1791028802370,
+      "tok": 1,
+      "server": [
+       0.69,
+       0.71
+      ],
+      "rebuilt": [
+       0.69,
+       0.7
+      ]
+     },
+     {
+      "ts": 1791028802370,
+      "tok": 0,
+      "server": [
+       0.29,
+       0.31
+      ],
+      "rebuilt": [
+       0.3,
+       0.31
+      ]
+     },
+     {
+      "ts": 1791028802370,
+      "tok": 0,
+      "server": [
+       0.29,
+       0.31
+      ],
+      "rebuilt": [
+       0.3,
+       0.31
+      ]
+     },
+     {
+      "ts": 1791028802370,
+      "tok": 1,
+      "server": [
+       0.69,
+       0.71
+      ],
+      "rebuilt": [
+       0.69,
+       0.7
+      ]
+     },
+     {
+      "ts": 1791028802370,
+      "tok": 1,
+      "server": [
+       0.69,
+       0.71
+      ],
+      "rebuilt": [
+       0.69,
+       0.7
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "row_checks": {
+  "V0": {
+   "rows": 994,
+   "orders": 251,
+   "fills": 172,
+   "status_identical": true,
+   "status_mismatches": 0,
+   "timing_arithmetic_identical": true,
+   "no_lookahead_and_delays_applied": true,
+   "ref_ask_identical": true,
+   "ask_at_exec_identical": true,
+   "ask_at_exec_equals_server_bbo_share": 0.9920318725099602,
+   "server_bbo_age_at_exec_s_median": 0.006,
+   "shares_identical": true,
+   "vwap_identical": true,
+   "pnl_mark_identical": true,
+   "pnl_hold_identical": true,
+   "fills_above_limit": 0,
+   "fills_below_best_ask_at_exec": 0,
+   "fills_with_crossed_book_at_exec": 1,
+   "orders_with_crossed_book_at_exec": 2,
+   "fills_where_server_bbo_ask_differs": 0,
+   "book_age_at_exec_s": {
+    "median": 0.005,
+    "p99": 0.496,
+    "max": 0.589,
+    "orders_older_than_10s": 0
+   },
+   "wrong_calls_in_calls": 34,
+   "wrong_call_fills": 24
+  },
+  "V0.5": {
+   "rows": 994,
+   "orders": 265,
+   "fills": 167,
+   "status_identical": true,
+   "status_mismatches": 0,
+   "timing_arithmetic_identical": true,
+   "no_lookahead_and_delays_applied": true,
+   "ref_ask_identical": true,
+   "ask_at_exec_identical": true,
+   "ask_at_exec_equals_server_bbo_share": 0.9962264150943396,
+   "server_bbo_age_at_exec_s_median": 0.011,
+   "shares_identical": true,
+   "vwap_identical": true,
+   "pnl_mark_identical": true,
+   "pnl_hold_identical": true,
+   "fills_above_limit": 0,
+   "fills_below_best_ask_at_exec": 0,
+   "fills_with_crossed_book_at_exec": 1,
+   "orders_with_crossed_book_at_exec": 1,
+   "fills_where_server_bbo_ask_differs": 0,
+   "book_age_at_exec_s": {
+    "median": 0.011,
+    "p99": 0.4139600000000001,
+    "max": 0.569,
+    "orders_older_than_10s": 0
+   },
+   "wrong_calls_in_calls": 34,
+   "wrong_call_fills": 23
+  },
+  "V1": {
+   "rows": 994,
+   "orders": 261,
+   "fills": 149,
+   "status_identical": true,
+   "status_mismatches": 0,
+   "timing_arithmetic_identical": true,
+   "no_lookahead_and_delays_applied": true,
+   "ref_ask_identical": true,
+   "ask_at_exec_identical": true,
+   "ask_at_exec_equals_server_bbo_share": 0.9961685823754789,
+   "server_bbo_age_at_exec_s_median": 0.01,
+   "shares_identical": true,
+   "vwap_identical": true,
+   "pnl_mark_identical": true,
+   "pnl_hold_identical": true,
+   "fills_above_limit": 0,
+   "fills_below_best_ask_at_exec": 0,
+   "fills_with_crossed_book_at_exec": 1,
+   "orders_with_crossed_book_at_exec": 1,
+   "fills_where_server_bbo_ask_differs": 0,
+   "book_age_at_exec_s": {
+    "median": 0.01,
+    "p99": 0.32819999999999994,
+    "max": 1.069,
+    "orders_older_than_10s": 0
+   },
+   "wrong_calls_in_calls": 34,
+   "wrong_call_fills": 21
+  }
+ },
+ "pooled_vs_replay_json": {
+  "V0": {
+   "independent": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 251,
+    "fills": 172,
+    "fills_wrong": 24,
+    "shares": 29560.52,
+    "pnl_mark_usd": -178.59692520000004,
+    "pnl_hold_usd": -228.65897519999982,
+    "per_share_mark_c": -0.6124613868339798,
+    "per_share_hold_c": -0.7735282572837008,
+    "calls_beat_book": 139,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.30151843817787416,
+    "correct_fills_before_reprice": 56,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.31157894736842107,
+    "correct_fills_before_reprice_over_calls": 0.11789473684210526
+   },
+   "replay_json": {
+    "calls": 475,
+    "orders": 251,
+    "fills": 172,
+    "fills_wrong": 24,
+    "shares": 29560.52,
+    "pnl_mark_usd": -178.59692520000004,
+    "pnl_hold_usd": -228.65897519999982,
+    "per_share_mark_c": -0.6124613868339798,
+    "per_share_hold_c": -0.7735282572837008,
+    "calls_beat_book": 139,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.30151843817787416,
+    "correct_fills_before_reprice": 56
+   },
+   "max_abs_diff": 0.0
+  },
+  "V0.5": {
+   "independent": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 265,
+    "fills": 167,
+    "fills_wrong": 23,
+    "shares": 26217.239999999998,
+    "pnl_mark_usd": -170.4977978,
+    "pnl_hold_usd": -241.12304779999988,
+    "per_share_mark_c": -0.662970823463171,
+    "per_share_hold_c": -0.9197117919353825,
+    "calls_beat_book": 89,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.19305856832971802,
+    "correct_fills_before_reprice": 39,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.3031578947368421,
+    "correct_fills_before_reprice_over_calls": 0.08210526315789474
+   },
+   "replay_json": {
+    "calls": 475,
+    "orders": 265,
+    "fills": 167,
+    "fills_wrong": 23,
+    "shares": 26217.239999999998,
+    "pnl_mark_usd": -170.4977978,
+    "pnl_hold_usd": -241.12304779999988,
+    "per_share_mark_c": -0.662970823463171,
+    "per_share_hold_c": -0.9197117919353825,
+    "calls_beat_book": 89,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.19305856832971802,
+    "correct_fills_before_reprice": 39
+   },
+   "max_abs_diff": 0.0
+  },
+  "V1": {
+   "independent": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 261,
+    "fills": 149,
+    "fills_wrong": 21,
+    "shares": 24397.7,
+    "pnl_mark_usd": -223.5011068999999,
+    "pnl_hold_usd": -402.1249568999998,
+    "per_share_mark_c": -0.9352410771747905,
+    "per_share_hold_c": -1.6482084659619545,
+    "calls_beat_book": 33,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.07158351409978309,
+    "correct_fills_before_reprice": 8,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.2694736842105263,
+    "correct_fills_before_reprice_over_calls": 0.016842105263157894
+   },
+   "replay_json": {
+    "calls": 475,
+    "orders": 261,
+    "fills": 149,
+    "fills_wrong": 21,
+    "shares": 24397.7,
+    "pnl_mark_usd": -223.5011068999999,
+    "pnl_hold_usd": -402.1249568999998,
+    "per_share_mark_c": -0.9352410771747905,
+    "per_share_hold_c": -1.6482084659619545,
+    "calls_beat_book": 33,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.07158351409978309,
+    "correct_fills_before_reprice": 8
+   },
+   "max_abs_diff": 0.0
+  }
+ },
+ "hand_check": {
+  "rule": "rng(20261003) draw within strata: V=1 3 correct fills, 2 wrong fills, 3 misses, 1 net-cap block; V=0 1 correct fill before the reprice",
+  "points": [
+   {
+    "V": 1.0,
+    "stratum": "filled correct",
+    "slug": "wta-bouzkov-birrell-2026-10-01",
+    "n": 72,
+    "called": "Kimberly Birrell",
+    "correct_call": true,
+    "T_utc": "2026-10-03T12:40:16.000Z",
+    "ref_utc": "2026-10-03T12:40:14+00:00",
+    "exec_utc": "2026-10-03T12:40:16.087Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.06,
+    "ref_ask_rebuilt": 0.06,
+    "ref_ask_server_bbo": 0.06,
+    "limit": 0.07,
+    "ask_exec_replay": 0.07,
+    "ask_exec_rebuilt": 0.07,
+    "ask_exec_server_bbo": 0.07,
+    "server_bbo_msg_age_ms": 110.0,
+    "ladder_at_exec_rebuilt": "[(0.07, 29497.46), (0.08, 57985.75), (0.09, 7365.09), (0.1, 6160.03)]",
+    "size_sent": 200.0,
+    "shares_replay": 200.0,
+    "vwap_replay": 0.07,
+    "mid30_replay": 0.065,
+    "mid30_server_bbo": 0.065,
+    "t_book_srv_utc": "2026-10-03T12:40:15.328Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "+11ms ask 0.09 -> 7315.09 (server best ask 0.07) | +46ms ask 0.07 -> 28846.5 (server best ask 0.07) | +70ms ask 0.08 -> 58035.8 (server best ask 0.07) | +119ms ask 0.08 -> 57985.8 (server best ask 0.07) | +169ms ask 0.09 -> 7365.09 (server best ask 0.07) | +196ms ask 0.07 -> 26481.5 (server best ask 0.07) | +198ms ask 0.07 -> 24630.5 (server best ask 0.07) | +238ms ask 0.08 -> 60350.8 (server best ask 0.07)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "filled correct",
+    "slug": "wta-kartal-wa-2026-10-01",
+    "n": 56,
+    "called": "Xinyu Wang",
+    "correct_call": true,
+    "T_utc": "2026-10-03T12:37:18.000Z",
+    "ref_utc": "2026-10-03T12:37:16+00:00",
+    "exec_utc": "2026-10-03T12:37:18.087Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.22,
+    "ref_ask_rebuilt": 0.22,
+    "ref_ask_server_bbo": 0.22,
+    "limit": 0.23,
+    "ask_exec_replay": 0.23,
+    "ask_exec_rebuilt": 0.23,
+    "ask_exec_server_bbo": 0.23,
+    "server_bbo_msg_age_ms": 19.0,
+    "ladder_at_exec_rebuilt": "[(0.23, 2162.69), (0.24, 59619.49), (0.25, 9802.31), (0.26, 6377.7)]",
+    "size_sent": 200.0,
+    "shares_replay": 200.0,
+    "vwap_replay": 0.23,
+    "mid30_replay": 0.225,
+    "mid30_server_bbo": 0.225,
+    "t_book_srv_utc": "2026-10-03T12:37:17.009Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "+125ms ask 0.24 -> 59663.5 (server best ask 0.23) | +139ms ask 0.24 -> 59643.5 (server best ask 0.23) | +151ms ask 0.23 -> 1715.53 (server best ask 0.23) | +162ms ask 0.23 -> 1760.33 (server best ask 0.23) | +175ms ask 0.23 -> 1537.2 (server best ask 0.23) | +177ms ask 0.25 -> 9046.31 (server best ask 0.23) | +202ms ask 0.25 -> 10651.3 (server best ask 0.23) | +237ms ask 0.25 -> 12251.3 (server best ask 0.23)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "filled correct",
+    "slug": "wta-su-bucsa-2026-10-02",
+    "n": 109,
+    "called": "Xinran Sun",
+    "correct_call": true,
+    "T_utc": "2026-10-03T11:37:20.000Z",
+    "ref_utc": "2026-10-03T11:37:18+00:00",
+    "exec_utc": "2026-10-03T11:37:20.087Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.65,
+    "ref_ask_rebuilt": 0.65,
+    "ref_ask_server_bbo": 0.65,
+    "limit": 0.66,
+    "ask_exec_replay": 0.65,
+    "ask_exec_rebuilt": 0.65,
+    "ask_exec_server_bbo": 0.65,
+    "server_bbo_msg_age_ms": 6.0,
+    "ladder_at_exec_rebuilt": "[(0.65, 8806.77), (0.66, 24911.06), (0.67, 53706.82), (0.68, 635.65)]",
+    "size_sent": 200.0,
+    "shares_replay": 200.0,
+    "vwap_replay": 0.65,
+    "mid30_replay": 0.715,
+    "mid30_server_bbo": 0.715,
+    "t_book_srv_utc": "2026-10-03T11:37:17.092Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-452ms ask 0.67 -> 53706.8 (server best ask 0.65) | -346ms ask 0.65 -> 9243.77 (server best ask 0.65) | -340ms ask 0.66 -> 24911.1 (server best ask 0.65) | -152ms ask 0.65 -> 8806.77 (server best ask 0.65) | -7ms ask 0.68 -> 485.65 (server best ask 0.65) | -6ms ask 0.68 -> 635.65 (server best ask 0.65) | +253ms ask 0.65 -> 3945.77 (server best ask 0.65) | +296ms ask 0.66 -> 27366.1 (server best ask 0.65)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "filled wrong",
+    "slug": "wta-bouzkov-birrell-2026-10-01",
+    "n": 1,
+    "called": "Kimberly Birrell",
+    "correct_call": false,
+    "T_utc": "2026-10-03T11:46:43.000Z",
+    "ref_utc": "2026-10-03T11:46:41+00:00",
+    "exec_utc": "2026-10-03T11:46:43.087Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.36,
+    "ref_ask_rebuilt": 0.36,
+    "ref_ask_server_bbo": 0.36,
+    "limit": 0.37,
+    "ask_exec_replay": 0.33,
+    "ask_exec_rebuilt": 0.33,
+    "ask_exec_server_bbo": 0.33,
+    "server_bbo_msg_age_ms": 3.0,
+    "ladder_at_exec_rebuilt": "[(0.33, 545.1), (0.34, 3670.52), (0.35, 764.0), (0.36, 2349.1)]",
+    "size_sent": 100.0,
+    "shares_replay": 100.0,
+    "vwap_replay": 0.33,
+    "mid30_replay": 0.315,
+    "mid30_server_bbo": 0.315,
+    "t_book_srv_utc": "2026-10-03T11:46:41.837Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-42ms ask 0.34 -> 3670.52 (server best ask 0.33) | -32ms ask 0.36 -> 2349.1 (server best ask 0.33) | -32ms ask 0.33 -> 45.1 (server best ask 0.33) | -4ms ask 0.35 -> 764 (server best ask 0.33) | -3ms ask 0.33 -> 545.1 (server best ask 0.33) | +16ms ask 0.35 -> 689 (server best ask 0.33) | +32ms ask 0.34 -> 670.52 (server best ask 0.33) | +163ms ask 0.33 -> 620.1 (server best ask 0.33)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "filled wrong",
+    "slug": "wta-su-bucsa-2026-10-02",
+    "n": 118,
+    "called": "Xinran Sun",
+    "correct_call": false,
+    "T_utc": "2026-10-03T11:43:23.000Z",
+    "ref_utc": "2026-10-03T11:43:21+00:00",
+    "exec_utc": "2026-10-03T11:43:23.087Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.6,
+    "ref_ask_rebuilt": 0.6,
+    "ref_ask_server_bbo": 0.6,
+    "limit": 0.61,
+    "ask_exec_replay": 0.51,
+    "ask_exec_rebuilt": 0.51,
+    "ask_exec_server_bbo": 0.51,
+    "server_bbo_msg_age_ms": 20.0,
+    "ladder_at_exec_rebuilt": "[(0.51, 55.0), (0.52, 13561.73), (0.53, 44489.2), (0.54, 4438.89)]",
+    "size_sent": 200.0,
+    "shares_replay": 200.0,
+    "vwap_replay": 0.51725,
+    "mid30_replay": 0.555,
+    "mid30_server_bbo": 0.5549999999999999,
+    "t_book_srv_utc": "2026-10-03T11:43:21.830Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "+123ms ask 0.51 -> 512.74 (server best ask 0.51) | +179ms ask 0.51 -> 11766.1 (server best ask 0.51) | +206ms ask 0.55 -> 587 (server best ask 0.51) | +251ms ask 0.52 -> 16761.7 (server best ask 0.51) | +265ms ask 0.54 -> 1868.89 (server best ask 0.51) | +280ms ask 0.52 -> 13821.7 (server best ask 0.51) | +286ms ask 0.53 -> 44793.2 (server best ask 0.51) | +299ms ask 0.51 -> 12336.1 (server best ask 0.51)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "missed",
+    "slug": "wta-bouzkov-birrell-2026-10-01",
+    "n": 3,
+    "called": "Marie Bouzkova",
+    "correct_call": true,
+    "T_utc": "2026-10-03T11:48:17.000Z",
+    "ref_utc": "2026-10-03T11:48:15+00:00",
+    "exec_utc": "2026-10-03T11:48:17.087Z",
+    "replay_status": "missed (book already moved)",
+    "ref_ask_replay": 0.68,
+    "ref_ask_rebuilt": 0.68,
+    "ref_ask_server_bbo": 0.68,
+    "limit": 0.69,
+    "ask_exec_replay": 0.7,
+    "ask_exec_rebuilt": 0.7,
+    "ask_exec_server_bbo": 0.7,
+    "server_bbo_msg_age_ms": 4.0,
+    "ladder_at_exec_rebuilt": "[(0.7, 8018.47), (0.71, 8546.7), (0.72, 1080.39), (0.73, 1344.1)]",
+    "size_sent": 200.0,
+    "shares_replay": 0.0,
+    "vwap_replay": NaN,
+    "mid30_replay": NaN,
+    "mid30_server_bbo": 0.69,
+    "t_book_srv_utc": "2026-10-03T11:48:16.396Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-171ms ask 0.71 -> 10440.1 (server best ask 0.7) | -171ms ask 0.7 -> 10307.5 (server best ask 0.7) | -130ms ask 0.71 -> 10490.1 (server best ask 0.7) | -119ms ask 0.7 -> 10018.5 (server best ask 0.7) | -54ms ask 0.71 -> 8546.7 (server best ask 0.7) | -51ms ask 0.7 -> 8018.47 (server best ask 0.7) | +2ms ask 0.71 -> 8496.7 (server best ask 0.7) | +33ms ask 0.7 -> 8181.4 (server best ask 0.7)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "missed",
+    "slug": "wta-su-bucsa-2026-10-02",
+    "n": 97,
+    "called": "Xinran Sun",
+    "correct_call": true,
+    "T_utc": "2026-10-03T11:29:19.000Z",
+    "ref_utc": "2026-10-03T11:29:16.950000+00:00",
+    "exec_utc": "2026-10-03T11:29:19.037Z",
+    "replay_status": "missed (book already moved)",
+    "ref_ask_replay": 0.6,
+    "ref_ask_rebuilt": 0.6,
+    "ref_ask_server_bbo": 0.6,
+    "limit": 0.61,
+    "ask_exec_replay": 0.65,
+    "ask_exec_rebuilt": 0.65,
+    "ask_exec_server_bbo": 0.65,
+    "server_bbo_msg_age_ms": 0.0,
+    "ladder_at_exec_rebuilt": "[(0.65, 1740.58), (0.66, 25078.49), (0.67, 13996.62), (0.68, 971.1)]",
+    "size_sent": 200.0,
+    "shares_replay": 0.0,
+    "vwap_replay": NaN,
+    "mid30_replay": NaN,
+    "mid30_server_bbo": 0.635,
+    "t_book_srv_utc": "2026-10-03T11:29:19.003Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-854ms ask 0.63 -> 118.97 (server best ask 0.6) | -824ms ask 0.63 -> 94 (server best ask 0.6) | -818ms ask 0.63 -> 77.7 (server best ask 0.6) | -816ms ask 0.62 -> 0 (server best ask 0.6) | -807ms ask 0.63 -> 35 (server best ask 0.6) | -753ms ask 0.63 -> 25 (server best ask 0.6) | -35ms ask 0.6 -> 0 (server best ask 0.63) | -30ms ask 0.63 -> 0 (server best ask 0.64)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "missed",
+    "slug": "wta-zhen-kalinsk-2026-10-01",
+    "n": 168,
+    "called": "Qinwen Zheng",
+    "correct_call": true,
+    "T_utc": "2026-10-03T10:29:49.000Z",
+    "ref_utc": "2026-10-03T10:29:47+00:00",
+    "exec_utc": "2026-10-03T10:29:49.087Z",
+    "replay_status": "missed (book already moved)",
+    "ref_ask_replay": 0.89,
+    "ref_ask_rebuilt": 0.89,
+    "ref_ask_server_bbo": 0.89,
+    "limit": 0.9,
+    "ask_exec_replay": 0.91,
+    "ask_exec_rebuilt": 0.91,
+    "ask_exec_server_bbo": 0.91,
+    "server_bbo_msg_age_ms": 26.0,
+    "ladder_at_exec_rebuilt": "[(0.91, 712.0), (0.92, 3511.44), (0.93, 1744.35), (0.94, 7344.08)]",
+    "size_sent": 200.0,
+    "shares_replay": 0.0,
+    "vwap_replay": NaN,
+    "mid30_replay": NaN,
+    "mid30_server_bbo": 0.945,
+    "t_book_srv_utc": "2026-10-03T10:29:47.290Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-1797ms ask 0.9 -> 0 (server best ask 0.91) | -1791ms ask 0.91 -> 712 (server best ask 0.91) | -1540ms ask 0.92 -> 3511.44 (server best ask 0.91) | -816ms ask 0.92 -> 3506.44 (server best ask 0.91) | -771ms ask 0.92 -> 3401.44 (server best ask 0.91) | -503ms ask 0.92 -> 3406.44 (server best ask 0.91) | -460ms ask 0.92 -> 3511.44 (server best ask 0.91) | +28ms ask 0.91 -> 722 (server best ask 0.91)"
+   },
+   {
+    "V": 1.0,
+    "stratum": "blocked",
+    "slug": "wta-jovic-dart-2026-10-02",
+    "n": 113,
+    "called": "Iva Jovic",
+    "correct_call": true,
+    "T_utc": "2026-10-03T10:19:13.000Z",
+    "ref_utc": "2026-10-03T10:19:10.975000+00:00",
+    "exec_utc": "2026-10-03T10:19:13.062Z",
+    "replay_status": "blocked (net cap)",
+    "ref_ask_replay": 0.78,
+    "ref_ask_rebuilt": 0.78,
+    "ref_ask_server_bbo": 0.78,
+    "limit": 0.79,
+    "ask_exec_replay": NaN,
+    "ask_exec_rebuilt": 0.79,
+    "ask_exec_server_bbo": 0.79,
+    "server_bbo_msg_age_ms": 24.0,
+    "ladder_at_exec_rebuilt": "[(0.79, 13253.4), (0.8, 24318.47), (0.81, 40969.0), (0.82, 5683.11)]",
+    "size_sent": 0.0,
+    "shares_replay": 0.0,
+    "vwap_replay": NaN,
+    "mid30_replay": NaN,
+    "mid30_server_bbo": 0.795,
+    "t_book_srv_utc": "2026-10-03T10:19:12.007Z",
+    "beat_book": false,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-647ms ask 0.81 -> 41014 (server best ask 0.79) | -585ms ask 0.81 -> 40964 (server best ask 0.79) | -579ms ask 0.79 -> 13253.4 (server best ask 0.79) | -577ms ask 0.8 -> 24124.5 (server best ask 0.79) | -560ms ask 0.8 -> 24268.5 (server best ask 0.79) | -480ms ask 0.8 -> 24318.5 (server best ask 0.79) | -118ms ask 0.81 -> 40969 (server best ask 0.79) | +300ms ask 0.8 -> 26141.5 (server best ask 0.79)"
+   },
+   {
+    "V": 0.0,
+    "stratum": "filled correct before reprice",
+    "slug": "wta-andree-boisson-2026-10-03",
+    "n": 31,
+    "called": "Lois Boisson",
+    "correct_call": true,
+    "T_utc": "2026-10-03T12:30:59.000Z",
+    "ref_utc": "2026-10-03T12:30:56.903000+00:00",
+    "exec_utc": "2026-10-03T12:30:58.037Z",
+    "replay_status": "filled",
+    "ref_ask_replay": 0.83,
+    "ref_ask_rebuilt": 0.83,
+    "ref_ask_server_bbo": 0.83,
+    "limit": 0.84,
+    "ask_exec_replay": 0.83,
+    "ask_exec_rebuilt": 0.83,
+    "ask_exec_server_bbo": 0.83,
+    "server_bbo_msg_age_ms": 4.0,
+    "ladder_at_exec_rebuilt": "[(0.83, 58.99), (0.84, 11085.75), (0.85, 45992.63), (0.86, 7426.0)]",
+    "size_sent": 200.0,
+    "shares_replay": 200.0,
+    "vwap_replay": 0.837051,
+    "mid30_replay": 0.84,
+    "mid30_server_bbo": 0.84,
+    "t_book_srv_utc": "2026-10-03T12:30:58.419Z",
+    "beat_book": true,
+    "raw_ask_messages_exec_-2s_to_+0.3s": "-1949ms ask 0.85 -> 45992.6 (server best ask 0.83) | -1227ms ask 0.85 -> 47974.6 (server best ask 0.83) | -1036ms ask 0.83 -> 58.99 (server best ask 0.83) | -53ms ask 0.84 -> 11085.8 (server best ask 0.83) | -18ms ask 0.85 -> 45992.6 (server best ask 0.83) | +171ms ask 0.84 -> 9802.7 (server best ask 0.83)"
+   }
+  ],
+  "all_agree": true,
+  "agree": 10
+ },
+ "sweep_diagnostics": {
+  "reprice_server_ms_of_second_in_[-20,+40)": 0.3506224066390041,
+  "reprice_server_ms_of_second_expected_if_uniform": 0.06,
+  "note": "a third of the matched reprices land within 40 ms after a whole server second",
+  "V0": {
+   "replay_convention_share_before_reprice": 0.3008298755186722,
+   "sweep_convention": {
+    "lat10ms": 0.4460580912863071,
+    "lat40ms": 0.43568464730290457,
+    "lat100ms": 0.31742738589211617
+   }
+  },
+  "V0.5": {
+   "replay_convention_share_before_reprice": 0.19294605809128632,
+   "sweep_convention": {
+    "lat10ms": 0.2053941908713693,
+    "lat40ms": 0.1991701244813278,
+    "lat100ms": 0.1970954356846473
+   }
+  },
+  "V1": {
+   "replay_convention_share_before_reprice": 0.07261410788381743,
+   "sweep_convention": {
+    "lat10ms": 0.14730290456431536,
+    "lat40ms": 0.14522821576763487,
+    "lat100ms": 0.07883817427385892
+   }
+  },
+  "real_book_at_sweep_timing_12ms_receive_clock_beat": {
+   "V0": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 250,
+    "fills": 177,
+    "fills_wrong": 24,
+    "shares": 30808.1,
+    "pnl_mark_usd": -163.50779079999998,
+    "pnl_hold_usd": -235.52019079999997,
+    "per_share_mark_c": -0.5377113032382819,
+    "per_share_hold_c": -0.7644748971861295,
+    "calls_beat_book": 208,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.4511930585683297,
+    "correct_fills_before_reprice": 71,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.32210526315789473,
+    "correct_fills_before_reprice_over_calls": 0.14947368421052631
+   },
+   "V0.5": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 259,
+    "fills": 164,
+    "fills_wrong": 23,
+    "shares": 26169.14,
+    "pnl_mark_usd": -166.15021015000002,
+    "pnl_hold_usd": -245.57476015,
+    "per_share_mark_c": -0.6472761072244727,
+    "per_share_hold_c": -0.9384135670870345,
+    "calls_beat_book": 95,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.20607375271149675,
+    "correct_fills_before_reprice": 42,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.2968421052631579,
+    "correct_fills_before_reprice_over_calls": 0.08842105263157894
+   },
+   "V1": {
+    "replayable": 493,
+    "calls": 475,
+    "orders": 263,
+    "fills": 152,
+    "fills_wrong": 22,
+    "shares": 25093.96,
+    "pnl_mark_usd": -231.08535719999992,
+    "pnl_hold_usd": -395.3444072,
+    "per_share_mark_c": -0.9396020697764814,
+    "per_share_hold_c": -1.5754564333409313,
+    "calls_beat_book": 69,
+    "calls_with_reprice": 461,
+    "share_calls_beat_book": 0.14967462039045554,
+    "correct_fills_before_reprice": 20,
+    "sweep_def_fill_rate_correct_fills_over_calls": 0.2736842105263158,
+    "correct_fills_before_reprice_over_calls": 0.042105263157894736
+   }
+  },
+  "variants": {
+   "limit_at_ref_ask": {
+    "V0": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 276,
+     "fills": 121,
+     "fills_wrong": 28,
+     "shares": 17097.18,
+     "pnl_mark_usd": -82.36283945000002,
+     "pnl_hold_usd": -212.46513944999995,
+     "per_share_mark_c": -0.49327395075096525,
+     "per_share_hold_c": -1.242691130642597,
+     "calls_beat_book": 139,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.30151843817787416,
+     "correct_fills_before_reprice": 49,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.1957894736842105,
+     "correct_fills_before_reprice_over_calls": 0.1031578947368421
+    },
+    "V0.5": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 278,
+     "fills": 100,
+     "fills_wrong": 28,
+     "shares": 14691.380000000001,
+     "pnl_mark_usd": -77.40517409999998,
+     "pnl_hold_usd": -96.73567410000001,
+     "per_share_mark_c": -0.5416214116481401,
+     "per_share_hold_c": -0.6584519228282163,
+     "calls_beat_book": 89,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.19305856832971802,
+     "correct_fills_before_reprice": 27,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.15157894736842106,
+     "correct_fills_before_reprice_over_calls": 0.056842105263157895
+    },
+    "V1": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 266,
+     "fills": 74,
+     "fills_wrong": 24,
+     "shares": 10885.64,
+     "pnl_mark_usd": -84.38740855000003,
+     "pnl_hold_usd": -207.21830855000005,
+     "per_share_mark_c": -0.8047902517156801,
+     "per_share_hold_c": -1.903593252670491,
+     "calls_beat_book": 33,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.07158351409978309,
+     "correct_fills_before_reprice": 7,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.10526315789473684,
+     "correct_fills_before_reprice_over_calls": 0.014736842105263158
+    }
+   },
+   "D>=3c_points": {
+    "V0": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 155,
+     "fills": 78,
+     "fills_wrong": 11,
+     "shares": 11069.96,
+     "pnl_mark_usd": -31.46544780000002,
+     "pnl_hold_usd": -45.22727979999997,
+     "per_share_mark_c": -0.2844048895432867,
+     "per_share_hold_c": -0.408558656038504,
+     "calls_beat_book": 58,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.22924901185770752,
+     "correct_fills_before_reprice": 29,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.2648221343873518,
+     "correct_fills_before_reprice_over_calls": 0.11462450592885376
+    },
+    "V0.5": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 155,
+     "fills": 70,
+     "fills_wrong": 10,
+     "shares": 8982.529999999999,
+     "pnl_mark_usd": -28.02006114999995,
+     "pnl_hold_usd": 45.609356850000005,
+     "per_share_mark_c": -0.31216019676521584,
+     "per_share_hold_c": 0.5077562429515962,
+     "calls_beat_book": 42,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.16600790513833993,
+     "correct_fills_before_reprice": 23,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.23715415019762845,
+     "correct_fills_before_reprice_over_calls": 0.09090909090909091
+    },
+    "V1": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 153,
+     "fills": 50,
+     "fills_wrong": 10,
+     "shares": 7425.42,
+     "pnl_mark_usd": -52.93765015000005,
+     "pnl_hold_usd": -192.07645015000003,
+     "per_share_mark_c": -0.7326584496126184,
+     "per_share_hold_c": -2.586741896754662,
+     "calls_beat_book": 11,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.043478260869565216,
+     "correct_fills_before_reprice": 3,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.15810276679841898,
+     "correct_fills_before_reprice_over_calls": 0.011857707509881422
+    }
+   },
+   "D>=3c_and_limit_at_ref": {
+    "V0": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 156,
+     "fills": 59,
+     "fills_wrong": 11,
+     "shares": 7279.63,
+     "pnl_mark_usd": -4.875410350000006,
+     "pnl_hold_usd": -18.667710350000014,
+     "per_share_mark_c": -0.06697332625421905,
+     "per_share_hold_c": -0.2564376259507697,
+     "calls_beat_book": 58,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.22924901185770752,
+     "correct_fills_before_reprice": 25,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.18972332015810275,
+     "correct_fills_before_reprice_over_calls": 0.09881422924901186
+    },
+    "V0.5": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 163,
+     "fills": 49,
+     "fills_wrong": 11,
+     "shares": 6106.74,
+     "pnl_mark_usd": -5.312124549999975,
+     "pnl_hold_usd": 32.708075449999896,
+     "per_share_mark_c": -0.08993327199097938,
+     "per_share_hold_c": 0.5356061572950526,
+     "calls_beat_book": 42,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.16600790513833993,
+     "correct_fills_before_reprice": 16,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.15019762845849802,
+     "correct_fills_before_reprice_over_calls": 0.06324110671936758
+    },
+    "V1": {
+     "replayable": 261,
+     "calls": 253,
+     "orders": 162,
+     "fills": 32,
+     "fills_wrong": 11,
+     "shares": 4139.05,
+     "pnl_mark_usd": -26.711502700000022,
+     "pnl_hold_usd": -87.11410270000009,
+     "per_share_mark_c": -0.6781204275142488,
+     "per_share_hold_c": -2.1046883391116338,
+     "calls_beat_book": 11,
+     "calls_with_reprice": 253,
+     "share_calls_beat_book": 0.043478260869565216,
+     "correct_fills_before_reprice": 3,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.08300395256916997,
+     "correct_fills_before_reprice_over_calls": 0.011857707509881422
+    }
+   }
+  },
+  "prints_ms_of_second_first_100ms_share": 0.8973174366616989,
+  "prints_ms_of_second_first_50ms_share": 0.7597615499254844,
+  "prints_n": 6710,
+  "whole_second_batch_variant": {
+   "before_batch": {
+    "V0": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 268,
+     "fills": 167,
+     "fills_wrong": 23,
+     "shares": 26467.239999999998,
+     "pnl_mark_usd": -191.08908049999997,
+     "pnl_hold_usd": -322.3282804999999,
+     "per_share_mark_c": -0.7358852172968708,
+     "per_share_hold_c": -1.2178386582809537,
+     "calls_beat_book": 68,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.1475054229934924,
+     "correct_fills_before_reprice": 32,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.3031578947368421,
+     "correct_fills_before_reprice_over_calls": 0.06736842105263158
+    },
+    "V0.5": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 265,
+     "fills": 166,
+     "fills_wrong": 23,
+     "shares": 26467.379999999997,
+     "pnl_mark_usd": -188.3802054,
+     "pnl_hold_usd": -313.0015053999999,
+     "per_share_mark_c": -0.7254494115309285,
+     "per_share_hold_c": -1.182593461838686,
+     "calls_beat_book": 66,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.14316702819956617,
+     "correct_fills_before_reprice": 30,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.30105263157894735,
+     "correct_fills_before_reprice_over_calls": 0.06315789473684211
+    },
+    "V1": {
+     "replayable": 492,
+     "calls": 474,
+     "orders": 263,
+     "fills": 143,
+     "fills_wrong": 22,
+     "shares": 23165.88,
+     "pnl_mark_usd": -222.9273457,
+     "pnl_hold_usd": -404.1669456999998,
+     "per_share_mark_c": -0.9835371302592268,
+     "per_share_hold_c": -1.7446647642999091,
+     "calls_beat_book": 23,
+     "calls_with_reprice": 460,
+     "share_calls_beat_book": 0.05,
+     "correct_fills_before_reprice": 6,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.2552742616033755,
+     "correct_fills_before_reprice_over_calls": 0.012658227848101266
+    }
+   },
+   "after_batch": {
+    "V0": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 265,
+     "fills": 151,
+     "fills_wrong": 21,
+     "shares": 24397.559999999998,
+     "pnl_mark_usd": -232.7280444999999,
+     "pnl_hold_usd": -414.0375944999999,
+     "per_share_mark_c": -0.9738569314189394,
+     "per_share_hold_c": -1.6970450918042623,
+     "calls_beat_book": 33,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.07158351409978309,
+     "correct_fills_before_reprice": 10,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.2736842105263158,
+     "correct_fills_before_reprice_over_calls": 0.021052631578947368
+    },
+    "V0.5": {
+     "replayable": 493,
+     "calls": 475,
+     "orders": 263,
+     "fills": 150,
+     "fills_wrong": 21,
+     "shares": 24397.7,
+     "pnl_mark_usd": -228.28637439999994,
+     "pnl_hold_usd": -403.6980244,
+     "per_share_mark_c": -0.9552650439163599,
+     "per_share_hold_c": -1.6546560716788876,
+     "calls_beat_book": 32,
+     "calls_with_reprice": 461,
+     "share_calls_beat_book": 0.06941431670281996,
+     "correct_fills_before_reprice": 9,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.27157894736842103,
+     "correct_fills_before_reprice_over_calls": 0.018947368421052633
+    },
+    "V1": {
+     "replayable": 492,
+     "calls": 474,
+     "orders": 263,
+     "fills": 138,
+     "fills_wrong": 21,
+     "shares": 22896.0,
+     "pnl_mark_usd": -228.76081969999996,
+     "pnl_hold_usd": -427.46141969999974,
+     "per_share_mark_c": -1.021436058671191,
+     "per_share_hold_c": -1.8669698624213824,
+     "calls_beat_book": 16,
+     "calls_with_reprice": 460,
+     "share_calls_beat_book": 0.034782608695652174,
+     "correct_fills_before_reprice": 5,
+     "sweep_def_fill_rate_correct_fills_over_calls": 0.2468354430379747,
+     "correct_fills_before_reprice_over_calls": 0.010548523206751054
+    }
+   }
+  }
+ }
+}

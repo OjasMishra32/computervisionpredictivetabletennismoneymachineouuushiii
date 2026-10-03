@@ -60,6 +60,9 @@ FEE_RATE = 0.05
 MAX_SPREAD = 0.05
 ZONE = (0.05, 0.95)
 GAP_MS = 60_000                   # need a recorded message for the market within 60 s before exec
+OUTAGE_MS = 1_000                 # audit fix (RESULTS.md, deviation D1): a gap in the recorder's own receive stream
+#                                   (all markets, ~300 messages/s, p99.99 gap 0.22 s) longer than this is an outage;
+#                                   the book is unobserved inside it. All 33 such gaps are > 2 s.
 MARK_MS = 30_000
 P_OUT_WOMEN = None                # filled from tier0.point_mix()
 HEADLINE = {"lag": 2.0, "V": 1.0, "lead": "model", "net": "florida"}
@@ -101,7 +104,10 @@ def parse_recording(M: pd.DataFrame, cache: str | None) -> dict:
     2 trade (tok, price, size, side), 3 resolved (winning tok)."""
     if cache and Path(cache).exists():
         with open(cache, "rb") as f:
-            return pickle.load(f)
+            out = pickle.load(f)
+        if "outages_rt" not in out:          # caches written before the audit fix
+            out["outages_rt"] = recorder_outages()
+        return out
     tokidx = {}
     for r in M.itertuples():
         tokidx[r.tok0] = (r.cond, 0)
@@ -110,11 +116,17 @@ def parse_recording(M: pd.DataFrame, cache: str | None) -> dict:
     ev = {c: [] for c in M.cond}
     lat = []
     n_lines = 0
+    gaps, prev = [], None
     for fn in MARKET_FILES:
         try:
             with gzip.open(ROOT / fn, "rb") as fh:
                 for line in fh:
                     n_lines += 1
+                    if line.startswith(b'{"rt":'):
+                        rt_ = int(line[6:19])
+                        if prev is not None and rt_ - prev > OUTAGE_MS:
+                            gaps.append((prev, rt_))
+                        prev = rt_ if prev is None else max(prev, rt_)
                     i = line.find(b'"market":"', 0, 80)
                     if i < 0:
                         continue
@@ -138,11 +150,37 @@ def parse_recording(M: pd.DataFrame, cache: str | None) -> dict:
                 c = r.get("market")
                 if c in ev and r.get("event_type") == "market_resolved":
                     _add(ev, c, r, tokidx, lat)
-    out = {"events": ev, "recv_latency_ms": lat, "n_lines": n_lines}
+    out = {"events": ev, "recv_latency_ms": lat, "n_lines": n_lines, "outages_rt": gaps}
     if cache:
         with open(cache, "wb") as f:
             pickle.dump(out, f, protocol=pickle.HIGHEST_PROTOCOL)
     return out
+
+
+def recorder_outages() -> list:
+    """(last receive time before, first receive time after) of every gap > OUTAGE_MS in the recorder's own
+    receive stream, over the market files in recording order."""
+    gaps, prev = [], None
+    for fn in MARKET_FILES:
+        try:
+            with gzip.open(ROOT / fn, "rb") as fh:
+                for line in fh:
+                    if line.startswith(b'{"rt":'):
+                        rt_ = int(line[6:19])
+                        if prev is not None and rt_ - prev > OUTAGE_MS:
+                            gaps.append((prev, rt_))
+                        prev = rt_ if prev is None else max(prev, rt_)
+        except (EOFError, OSError):
+            pass
+    return gaps
+
+
+def in_outage(t: int, win: np.ndarray) -> bool:
+    """True if server instant t lies strictly inside a recorder outage window (server clock)."""
+    if not len(win):
+        return False
+    i = int(np.searchsorted(win[:, 0], t, "right")) - 1
+    return i >= 0 and win[i, 0] < t < win[i, 1]
 
 
 def _add(ev, c, r, tokidx, lat):
@@ -250,7 +288,7 @@ def cell_times(P: pd.DataFrame, lead: np.ndarray, lag: float, V: float, net_ms: 
             "exec": exe, "mark": exe + MARK_MS}
 
 
-def simulate(P, M, snaps, times, dr, lead, winners, l_recv, cell) -> pd.DataFrame:
+def simulate(P, M, snaps, times, dr, lead, winners, l_recv, cell, outages=None) -> pd.DataFrame:
     rows = []
     net = {}
     cidx = dict(zip(M.slug, M.cond))
@@ -274,13 +312,21 @@ def simulate(P, M, snaps, times, dr, lead, winners, l_recv, cell) -> pd.DataFram
                "called_side": c, "correct_call": correct, "ref_ask": np.nan, "limit": np.nan,
                "ask_at_exec": np.nan, "status": "", "size_sent": 0.0, "shares": 0.0, "vwap": np.nan,
                "fee": 0.0, "payout": np.nan, "pnl_hold": 0.0, "mid_30s": np.nan, "pnl_mark": 0.0,
-               "net0_after": net.get(cond, 0.0)}
+               "net0_after": net.get(cond, 0.0), "no_book_reason": ""}
         s_ref, s_exe, s_mark = S.get(tr), S.get(te), S.get(tm)
         ok = (s_ref is not None and s_ref[7] and s_ref[8] and s_exe is not None and s_exe[6] >= te - GAP_MS)
         if not ok:
             row["status"] = "no book recorded"
+            row["no_book_reason"] = "outside the recording"
             rows.append(row)
             continue
+        if outages is not None and (in_outage(tr, outages) or in_outage(te, outages)):
+            row["status"] = "no book recorded"          # deviation D1: the book is unobserved at that instant
+            row["no_book_reason"] = "recorder outage at the reference or execution instant"
+            rows.append(row)
+            continue
+        if outages is not None and in_outage(tm, outages):
+            s_mark = None                                # no observed +30 s mid: the fill is held but not marked
         bb, ba = (s_ref[0], s_ref[1]) if c == 0 else (s_ref[2], s_ref[3])
         row["ref_ask"] = ba
         if not (np.isfinite(bb) and np.isfinite(ba) and ba - bb <= MAX_SPREAD + 1e-9):
@@ -403,6 +449,10 @@ def run(cache: str | None) -> dict:
     print(f"  receive latency rt - server ts: median {l_recv} ms (p10 {np.percentile(lat, 10):.0f}, "
           f"p90 {np.percentile(lat, 90):.0f}; n {len(lat):,})")
     rows = {c: effective_events(e, l_recv) for c, e in R["events"].items()}
+    outages = np.array([(a - l_recv, b - l_recv) for a, b in R["outages_rt"]], dtype=np.int64).reshape(-1, 2)
+    print(f"  recorder outages (receive gaps > {OUTAGE_MS} ms): {len(outages)}, "
+          f"{(outages[:, 1] - outages[:, 0]).sum() / 1000:.1f} s in all; longest "
+          f"{(outages[:, 1] - outages[:, 0]).max() / 1000:.1f} s")
     winners = {}
     for c, e in R["events"].items():
         w = [d for _, _, k, d in e if k == 3]
@@ -445,7 +495,7 @@ def run(cache: str | None) -> dict:
 
     res_cells, frames, seed_rows = {}, [], []
     for seed, c, dr, lead, tm in plan:
-        D = simulate(P, M, snaps, tm, dr, lead, winners, l_recv, {**c, "seed": seed})
+        D = simulate(P, M, snaps, tm, dr, lead, winners, l_recv, {**c, "seed": seed}, outages)
         if seed == 0:
             nm = cell_name(c)
             res_cells[nm] = {"cell": c, "all": stats(D),
@@ -476,7 +526,8 @@ def run(cache: str | None) -> dict:
     pts.insert(0, "label", LABEL)
     pts["selected_match"] = pts.slug == sel.slug
     cols = ["label", "V", "lag", "lead", "net", "seed", "slug", "selected_match", "n", "set", "game", "score_after",
-            "game_end", "point_winner_name", "called_player", "correct_call", "lead_ms", "T_utc", "bounce_utc",
+            "game_end", "point_winner_name", "called_player", "correct_call", "no_book_reason", "lead_ms", "T_utc",
+            "bounce_utc",
             "call_utc", "arrive_utc", "exec_utc", "t_book_srv_utc", "exec_minus_book_s", "beat_book", "ref_ask",
             "limit", "ask_at_exec", "status", "size_sent", "shares", "vwap", "fee", "payout", "pnl_hold", "mid_30s",
             "pnl_mark", "net0_after", "winner_name", "T_ms", "bounce_ms", "frame_ms", "call_ms", "ref_ms",
@@ -500,7 +551,13 @@ def run(cache: str | None) -> dict:
                   "precision": PRECISION, "fee": "0.05*q*(1-q) per share", "spread_max": MAX_SPREAD, "zone": ZONE,
                   "headline": HEADLINE, "recv_latency_ms_median": l_recv,
                   "recv_latency_ms_p10_p90": [float(np.percentile(lat, 10)), float(np.percentile(lat, 90))],
-                  "mirror_check_tok1_ask_eq_1_minus_tok0_bid": mirror},
+                  "mirror_check_tok1_ask_eq_1_minus_tok0_bid": mirror,
+                  "recorder_outages": {"rule": f"gap > {OUTAGE_MS} ms in the recorder's receive stream (all markets); "
+                                               "reference or execution instant inside one -> no book recorded; +30 s "
+                                               "mark inside one -> not marked (deviation D1, after the audit)",
+                                       "n": int(len(outages)),
+                                       "total_s": float((outages[:, 1] - outages[:, 0]).sum() / 1000),
+                                       "windows_utc": [[iso(a), iso(b)] for a, b in outages]}},
         "matches": M.assign(first_T=M.first_T.map(iso), last_T=M.last_T.map(iso)).drop(columns=["tok0", "tok1"])
                     .to_dict("records"),
         "selected_match": sel.slug,

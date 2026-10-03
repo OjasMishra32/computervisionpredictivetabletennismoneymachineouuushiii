@@ -6,7 +6,8 @@
 >
 > No match video was received, bought or watched. The figures and the video show the recorded Polymarket order
 > book, the official point stamps and the simulated orders. Numbers are from `results/replay/replay.json` and
-> `points.csv` (the committed replay, c6c728d); nothing below changes a result.
+> `points.csv` (the replay after audit deviation D1, `RESULTS.md`: points whose reference or execution instant
+> falls inside a recorder outage are dropped); nothing below changes a result.
 
 | file | made by | what |
 |---|---|---|
@@ -15,8 +16,8 @@
 | `results/replay/replay_match.mp4` | `scripts/match_replay_video.py` | 1920x1080, 30 fps, 44.4 s demo of the selected match |
 | `results/replay/selected_match_tob_events.csv.gz`, `selected_match_trades.csv`, `seed_fills.csv` | `scripts/match_replay_extras.py` | event-level book and prints of the selected match; fills of seeds 0-19. The script checks that seed 0 reproduces `points.csv` fill by fill, that every seed reproduces `seed_robustness.csv`, and that the event book matches the 250 ms grid and every `ask_at_exec` |
 
-The paper figures use Source Sans 3 from `docs/paper/fonts/` when the paper build has committed it, otherwise
-Helvetica Neue (this build). Every text span in the PDFs is 11 pt.
+The paper figures use Source Sans 3 from `docs/paper/fonts/` when it is present (this build), otherwise
+Helvetica Neue. Every text span in the PDFs is 11 pt.
 
 ## Captions (for the paper)
 
@@ -38,13 +39,15 @@ real recorded order book; paper only. Source: `results/replay/points.csv`,
 
 **Figure B. The replayed trader loses money at every feed delay, and loses the most at the 1 s headline.**
 (a) Cumulative P&L over the 9 matches, marked at the +30 s mid and plotted by execution time. Lines are seed
-0; bands are the range over 20 seeds (V = 0 and 1 s). End values: −$181 (V = 0), −$174 (0.5 s), −$229 (1 s).
+0; bands are the range over 20 seeds (V = 0 and 1 s). End values: −$179 (V = 0), −$170 (0.5 s), −$224 (1 s).
 (b) Net cents per share with a match-clustered 95 % CI (10,000 resamples), marked (filled) and held to the
-match result (open). Marked: −0.61 [−0.90, −0.37], −0.65 [−0.96, −0.39], −0.92 [−1.29, −0.57]. Stamp lag
+match result (open). Marked: −0.61 [−0.90, −0.38], −0.66 [−0.96, −0.41], −0.94 [−1.28, −0.58]. Stamp lag
 2.0 s, model lead, Florida 67 ms. BACKTEST REPLAY on a real match recorded live on 2026-10-03 — assumed 1 s
 licensed video feed (not purchased); bounce time = official point stamp - assumed stamp lag; fills priced
 against the real recorded order book; paper only. Source: `results/replay/points.csv`, `seed_fills.csv`,
 `replay.json`.
+
+**Caveat for both captions (audit, `RESULTS.md` §7 and §9).** The figures draw the venue's 1 s delay as continuous, as the protocol does. The recorded prints cluster in the first 100 ms of each server second, so delayed orders probably match in whole-second batches; under that reading the replay loses more, not less. Points inside a recorder outage are not drawn as orders (deviation D1).
 
 ## Demo video (`replay_match.mp4`)
 
@@ -61,8 +64,8 @@ feed · fills vs the real order book · paper only". A two-line footer gives the
    recorded reprice. Faint lanes show what a 0.5 s and a 0 s feed would have done. A tape lists the last nine
    orders. Three points play in real time, picked by the rules above: point 3 (the first simulated wrong call
    that filled), point 72 (the typical race) and point 90 (picked on outcome, flagged as not representative on
-   screen). At the end: match over, Sun wins 6–4 7–5. At 1 s this match gives −$8 marked and +$26 held, and
-   its orders beat the book on 6 of 121 calls.
+   screen). At the end: match over, Sun wins 6–4 7–5. At 1 s this match gives −$6 marked and −$2 held, and
+   its orders beat the book on 5 of 120 calls.
 3. **All 9 matches (8.0 s).** Cumulative P&L at V = 0 / 0.5 / 1 s with 20-seed bands. A stat grid shows calls
    that beat the reprice (30 / 19 / 7 %), net per share with CI, P&L marked and held, and fills. The limitation
    box says the following. No licensed feed was bought. A faster feed lifts the share of calls that beat the

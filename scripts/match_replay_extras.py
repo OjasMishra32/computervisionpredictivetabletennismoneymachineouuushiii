@@ -101,6 +101,7 @@ def main(cache: str | None) -> None:
     l_recv = int(round(float(np.median(lat))))
     assert l_recv == res["model"]["recv_latency_ms_median"], (l_recv, res["model"]["recv_latency_ms_median"])
     rows = {c: MR.effective_events(e, l_recv) for c, e in R["events"].items()}
+    outages = np.array([(a - l_recv, b - l_recv) for a, b in R["outages_rt"]], dtype=np.int64).reshape(-1, 2)
     winners = {}
     for c, e in R["events"].items():
         w = [d for _, _, k, d in e if k == 3]
@@ -129,7 +130,7 @@ def main(cache: str | None) -> None:
     fills = []
     for seed, V, dr, lead, tm in plan:
         cell = {"V": V, "lag": MR.HEADLINE["lag"], "lead": MR.HEADLINE["lead"], "net": MR.HEADLINE["net"], "seed": seed}
-        D = MR.simulate(P, M, snaps, tm, dr, lead, winners, l_recv, cell)
+        D = MR.simulate(P, M, snaps, tm, dr, lead, winners, l_recv, cell, outages)
         s = MR.stats(D, ci=False)
         ref = sr[(sr.seed == seed) & (sr.V == V)].iloc[0]
         assert abs(s["pnl_mark_usd"] - ref.pnl_mark_usd) < 1e-2 and s["fills"] == ref.fills, (seed, V)
