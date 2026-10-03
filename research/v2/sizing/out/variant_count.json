@@ -1,0 +1,9 @@
+{
+  "policies": 55,
+  "policy_x_measure_x_feemode_runs": 234,
+  "configs_including_inner_walkforward_grids": 108,
+  "inner_grids": {
+    "zone_wf": 16,
+    "fill_wf": 5
+  }
+}

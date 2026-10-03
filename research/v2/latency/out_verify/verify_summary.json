@@ -1,0 +1,317 @@
+{
+ "matches_mapped": {
+  "1020|LS032": "wta-rybakin-charaev-2026-10-01",
+  "1020|LS033": "wta-kartal-wa-2026-10-01",
+  "1020|LS034": "wta-bouzkov-birrell-2026-10-01",
+  "1020|LS035": "wta-zhen-kalinsk-2026-10-01",
+  "1020|LS036": "wta-bencic-zakharo-2026-10-01",
+  "1020|LS041": "wta-su-bucsa-2026-10-02",
+  "1020|LS044": "wta-jovic-dart-2026-10-02",
+  "1020|LS045": "wta-rakhimo-fernand-2026-10-01",
+  "1179|LS003": "wta-andree-boisson-2026-10-03"
+ },
+ "ws_receive_minus_server_ts_ms": {
+  "n": 1041202,
+  "median": 66.0,
+  "p10": 63.0,
+  "p90": 107.0,
+  "min": 60.0,
+  "max": 13769.0,
+  "share_gt_1p3": 1.0,
+  "n_gt_1p3": 1041202,
+  "share_gt_0": 1.0
+ },
+ "book_vs_T": {
+  "own_rule_rt": {
+   "n": 449,
+   "median": -1.26,
+   "p10": -2.932,
+   "p90": 0.076,
+   "min": -7.94,
+   "max": 6.162,
+   "share_gt_1p3": 0.0223,
+   "n_gt_1p3": 10,
+   "share_gt_0": 0.1247
+  },
+  "own_rule_server_ts": {
+   "n": 449,
+   "median": -1.346,
+   "p10": -2.997,
+   "p90": 0.001,
+   "min": -7.586,
+   "max": 6.096,
+   "share_gt_1p3": 0.0134,
+   "n_gt_1p3": 6,
+   "share_gt_0": 0.1024
+  },
+  "own_rule_min_move_0.5c": {
+   "n": 451,
+   "median": -1.26,
+   "p10": -2.934,
+   "p90": 0.076,
+   "min": -7.94,
+   "max": 6.162,
+   "share_gt_1p3": 0.0222,
+   "n_gt_1p3": 10,
+   "share_gt_0": 0.1242
+  },
+  "game_end_points": {
+   "n": 70,
+   "median": -1.623,
+   "p10": -3.924,
+   "p90": 0.081,
+   "min": -7.94,
+   "max": 6.073,
+   "share_gt_1p3": 0.0286,
+   "n_gt_1p3": 2,
+   "share_gt_0": 0.1143
+  },
+  "D_ge_3c": {
+   "n": 229,
+   "median": -1.341,
+   "p10": -2.927,
+   "p90": 0.068,
+   "min": -7.932,
+   "max": 5.685,
+   "share_gt_1p3": 0.0218,
+   "n_gt_1p3": 5,
+   "share_gt_0": 0.1048
+  },
+  "n_points_evaluated": 479,
+  "share_with_reprice": 0.937,
+  "share_net_move_to_loser": 0.029,
+  "by_match_median": {
+   "wta-andree-boisson-2026-10-03": -0.92,
+   "wta-bencic-zakharo-2026-10-01": -2.54,
+   "wta-bouzkov-birrell-2026-10-01": -1.01,
+   "wta-jovic-dart-2026-10-02": -1.33,
+   "wta-kartal-wa-2026-10-01": -0.93,
+   "wta-rakhimo-fernand-2026-10-01": -1.93,
+   "wta-su-bucsa-2026-10-02": -1.59,
+   "wta-zhen-kalinsk-2026-10-01": -1.9
+  },
+  "by_match_n": {
+   "wta-andree-boisson-2026-10-03": 32,
+   "wta-bencic-zakharo-2026-10-01": 2,
+   "wta-bouzkov-birrell-2026-10-01": 68,
+   "wta-jovic-dart-2026-10-02": 106,
+   "wta-kartal-wa-2026-10-01": 55,
+   "wta-rakhimo-fernand-2026-10-01": 16,
+   "wta-su-bucsa-2026-10-02": 122,
+   "wta-zhen-kalinsk-2026-10-01": 48
+  }
+ },
+ "event_study": {
+  "n_points": 463,
+  "mean_move_at_+8s_c": 2.917,
+  "mean_move_at_T_c": 2.276,
+  "mean_move_at_T-1s_c": 1.417,
+  "mean_move_at_T-2s_c": 0.454,
+  "share_of_move_done_by_T": 0.78,
+  "mean_curve_half_crossing_s": -0.9
+ },
+ "sources_no_2s_filter": {
+  "espn:game": {
+   "delay_vs_official_T_s": {
+    "n": 42,
+    "median": 27.672,
+    "p10": 20.221,
+    "p90": 31.743,
+    "min": 15.858,
+    "max": 292.516,
+    "share_gt_1p3": 1.0,
+    "n_gt_1p3": 42,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 38,
+    "median": -28.194,
+    "p10": -34.383,
+    "p90": -21.781,
+    "min": -293.762,
+    "max": -16.228,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees": 1.0,
+   "incl_post_outage_lead_vs_book": {
+    "n": 38,
+    "median": -28.194,
+    "p10": -34.383,
+    "p90": -21.781,
+    "min": -293.762,
+    "max": -16.228,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "n_before_official_T": 0
+  },
+  "pm_sports:game": {
+   "delay_vs_official_T_s": {
+    "n": 64,
+    "median": 29.289,
+    "p10": 16.313,
+    "p90": 42.434,
+    "min": -109.787,
+    "max": 298.729,
+    "share_gt_1p3": 0.9844,
+    "n_gt_1p3": 63,
+    "share_gt_0": 0.9844
+   },
+   "lead_vs_book_s": {
+    "n": 60,
+    "median": -30.947,
+    "p10": -43.312,
+    "p90": -17.708,
+    "min": -299.975,
+    "max": 107.866,
+    "share_gt_1p3": 0.0167,
+    "n_gt_1p3": 1,
+    "share_gt_0": 0.0167
+   },
+   "winner_agrees": 0.984,
+   "incl_post_outage_lead_vs_book": {
+    "n": 61,
+    "median": -31.072,
+    "p10": -44.067,
+    "p90": -17.765,
+    "min": -299.975,
+    "max": 107.866,
+    "share_gt_1p3": 0.0164,
+    "n_gt_1p3": 1,
+    "share_gt_0": 0.0164
+   },
+   "n_before_official_T": 1
+  },
+  "wta_api:game": {
+   "delay_vs_official_T_s": {
+    "n": 41,
+    "median": 44.678,
+    "p10": 25.817,
+    "p90": 67.546,
+    "min": 3.901,
+    "max": 302.982,
+    "share_gt_1p3": 1.0,
+    "n_gt_1p3": 41,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 37,
+    "median": -44.233,
+    "p10": -69.686,
+    "p90": -26.566,
+    "min": -304.228,
+    "max": -3.336,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees": 1.0,
+   "incl_post_outage_lead_vs_book": {
+    "n": 37,
+    "median": -44.233,
+    "p10": -69.686,
+    "p90": -26.566,
+    "min": -304.228,
+    "max": -3.336,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "n_before_official_T": 0
+  },
+  "wta_api:point": {
+   "delay_vs_official_T_s": {
+    "n": 177,
+    "median": 43.06,
+    "p10": 26.338,
+    "p90": 61.733,
+    "min": 10.536,
+    "max": 88.543,
+    "share_gt_1p3": 1.0,
+    "n_gt_1p3": 177,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 170,
+    "median": -44.65,
+    "p10": -63.129,
+    "p90": -27.57,
+    "min": -90.672,
+    "max": -10.849,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees": 1.0,
+   "incl_post_outage_lead_vs_book": {
+    "n": 171,
+    "median": -44.95,
+    "p10": -63.117,
+    "p90": -27.62,
+    "min": -90.672,
+    "max": -10.849,
+    "share_gt_1p3": 0.0,
+    "n_gt_1p3": 0,
+    "share_gt_0": 0.0
+   },
+   "n_before_official_T": 0
+  }
+ },
+ "sources_total": {
+  "n_with_book": 305,
+  "n_lead_gt_1p3": 1,
+  "max_lead_s": 107.87,
+  "n_any_source_before_official_T": 1
+ },
+ "leakage_scan": {
+  "forbidden_path_hits_in_lens_code": {},
+  "earliest_first_record_rt_utc": "2026-10-03T09:46:22.135000",
+  "all_recordings_after_oos_start_i.e._forward_data": true
+ },
+ "cross_market_audit": {
+  "n_pairs": 4184,
+  "n_rows_with_pnl": 587,
+  "pnl_rows_require_future_side_move_and_lag_gt_1p3": true,
+  "share_pairs_that_moved": 0.206,
+  "pnl_hold_by_dir_known": {
+   "false": 153.2,
+   "true": 454.0
+  },
+  "pnl_exit_by_dir_known": {
+   "false": -2566.9,
+   "true": -679.2
+  },
+  "pnl_hold_by_smt": {
+   "tennis_first_set_winner": 47.3,
+   "tennis_game_handicap": -0.9,
+   "tennis_match_totals": 153.2,
+   "tennis_set_handicap": 29.3,
+   "tennis_set_totals": 0.0,
+   "tennis_set_winner": 378.3
+  },
+  "pnl_exit_by_smt": {
+   "tennis_first_set_winner": -291.0,
+   "tennis_game_handicap": -7.2,
+   "tennis_match_totals": -2566.9,
+   "tennis_set_handicap": -47.4,
+   "tennis_set_totals": 0.0,
+   "tennis_set_winner": -333.7
+  },
+  "set_winner_rows_dir_known_share": 1.0
+ },
+ "lens_matcher_filter_audit": {
+  "units_on_pbp_matches": {
+   "espn": 43,
+   "pm_sports": 67,
+   "wta": 213
+  },
+  "matched_into_m1_source_leads": {
+   "espn": 40,
+   "pm_sports": 62,
+   "wta": 200
+  }
+ }
+}

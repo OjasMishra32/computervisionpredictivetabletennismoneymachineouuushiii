@@ -1,0 +1,260 @@
+{
+ "fee_now": {
+  "2025-10": 0.0,
+  "2025-11": 0.0,
+  "2025-12": 0.0,
+  "2026-01": 0.0,
+  "2026-02": 0.0,
+  "2026-03": 0.0,
+  "2026-04": 0.03,
+  "2026-05": 0.03,
+  "2026-06": 0.03,
+  "2026-07": 0.03,
+  "2026-08": 0.05,
+  "2026-09": 0.05
+ },
+ "nested_choice_mine": {
+  "2025-12": "all|t3|mm10",
+  "2026-01": "all|t3|mm10",
+  "2026-02": "all|t3|mm10",
+  "2026-03": "2m|top10|mm5",
+  "2026-04": "2m|top10|mm5",
+  "2026-05": "ew2|eb0.5c|mm5",
+  "2026-06": "ew3|eb0.5c|mm5",
+  "2026-07": "3m|tnet2|mm5",
+  "2026-08": "ew2|eb0.5c|mm5"
+ },
+ "headline_recomputed": {
+  "nested_all": {
+   "n": 90143,
+   "net30_c": 1.45,
+   "net30_ci": [
+    1.406,
+    1.495
+   ],
+   "net_res_c": 1.759,
+   "net_res_ci": [
+    1.364,
+    2.16
+   ],
+   "net30_share_wtd_c": 1.222,
+   "pnl_usd": 328272,
+   "pnl30_usd": 170168,
+   "usd_in": 6344702,
+   "sharpe": 5.62
+  },
+  "baseline_all": {
+   "n": 131414,
+   "net30_c": 0.908,
+   "net30_ci": [
+    0.871,
+    0.947
+   ],
+   "net_res_c": 1.157,
+   "net_res_ci": [
+    0.788,
+    1.537
+   ],
+   "net30_share_wtd_c": 1.063,
+   "pnl_usd": 316272,
+   "pnl30_usd": 159155,
+   "usd_in": 7072963,
+   "sharpe": 5.34
+  },
+  "nested_1s5": {
+   "n": 25929,
+   "net30_c": 1.167,
+   "net30_ci": [
+    1.095,
+    1.238
+   ],
+   "net_res_c": 1.338,
+   "net_res_ci": [
+    0.547,
+    2.143
+   ],
+   "net30_share_wtd_c": 0.932,
+   "pnl_usd": 125038,
+   "pnl30_usd": 41112,
+   "usd_in": 2003785,
+   "sharpe": 7.15
+  },
+  "baseline_1s5": {
+   "n": 36757,
+   "net30_c": 0.621,
+   "net30_ci": [
+    0.564,
+    0.682
+   ],
+   "net_res_c": 0.544,
+   "net_res_ci": [
+    -0.201,
+    1.244
+   ],
+   "net30_share_wtd_c": 0.603,
+   "pnl_usd": 117306,
+   "pnl30_usd": 31120,
+   "usd_in": 2383594,
+   "sharpe": 6.6
+  },
+  "paired_1s5_net30": [
+   0.546,
+   [
+    0.503,
+    0.59
+   ]
+  ],
+  "paired_1s5_net_res": [
+   0.795,
+   [
+    0.344,
+    1.279
+   ]
+  ],
+  "paired_all_net30": [
+   0.542,
+   [
+    0.517,
+    0.565
+   ]
+  ]
+ },
+ "adversarial": {
+  "grid_variants_below_baseline_net30_1s5": 32,
+  "grid_variants_below_baseline_pnl_res_1s5": 208,
+  "grid_variants_below_baseline_pnl30_1s5": 53,
+  "per_month_1s5": [
+   {
+    "series": "nested",
+    "month": "2026-07",
+    "n": 14132,
+    "net30_c": 1.026,
+    "net_res_c": 1.827,
+    "pnl": 69706,
+    "pnl30": 16570
+   },
+   {
+    "series": "nested",
+    "month": "2026-08",
+    "n": 11797,
+    "net30_c": 1.336,
+    "net_res_c": 0.753,
+    "pnl": 55332,
+    "pnl30": 24543
+   },
+   {
+    "series": "baseline",
+    "month": "2026-07",
+    "n": 19629,
+    "net30_c": 0.468,
+    "net_res_c": 0.675,
+    "pnl": 61642,
+    "pnl30": 11913
+   },
+   {
+    "series": "baseline",
+    "month": "2026-08",
+    "n": 17128,
+    "net30_c": 0.797,
+    "net_res_c": 0.393,
+    "pnl": 55664,
+    "pnl30": 19207
+   }
+  ],
+  "nested_1s5_pnl_share_px_lt_0.15": 0.259,
+  "nested_1s5_pnl_share_usd_ge_1k": 0.422,
+  "nested_1s5_pnl30_share_usd_ge_1k": 0.257,
+  "nested_1s5_top20_matches_pnl_share": 0.867,
+  "no_hindsight_trade_sets": {
+   "all_buckets": {
+    "nested_1s5": {
+     "n": 83756,
+     "net30_c": 0.51,
+     "net_res_c": 0.695,
+     "pnl30": 65737
+    },
+    "baseline_1s5": {
+     "n": 117962,
+     "net30_c": 0.015,
+     "net_res_c": -0.859,
+     "pnl30": 31946
+    },
+    "paired_1s5_net30": [
+     0.495,
+     [
+      0.472,
+      0.518
+     ]
+    ],
+    "nested_all_net30_c": 0.775,
+    "baseline_all_net30_c": 0.331
+   },
+   "det_0_3s": {
+    "nested_1s5": {
+     "n": 23681,
+     "net30_c": 0.923,
+     "net_res_c": 0.943,
+     "pnl30": 34129
+    },
+    "baseline_1s5": {
+     "n": 34337,
+     "net30_c": 0.398,
+     "net_res_c": 0.353,
+     "pnl30": 21296
+    },
+    "paired_1s5_net30": [
+     0.525,
+     [
+      0.48,
+      0.569
+     ]
+    ],
+    "nested_all_net30_c": 1.183,
+    "baseline_all_net30_c": 0.662
+   },
+   "not_0_3s_onset": {
+    "nested_1s5": {
+     "n": 80266,
+     "net30_c": 0.454,
+     "net_res_c": 0.519,
+     "pnl30": 61316
+    },
+    "baseline_1s5": {
+     "n": 114561,
+     "net30_c": -0.019,
+     "net_res_c": -0.886,
+     "pnl30": 28018
+    },
+    "paired_1s5_net30": [
+     0.473,
+     [
+      0.45,
+      0.497
+     ]
+    ],
+    "nested_all_net30_c": 0.712,
+    "baseline_all_net30_c": 0.283
+   }
+  }
+ },
+ "checks": {
+  "A1 universe_is: every match starts before OOS": true,
+  "A2 0-3s prints: every cond in IS universe": true,
+  "A3 0-3s prints: every match start < OOS": true,
+  "A4 is_prints.parquet (used by decay.all_buckets): conds subset of IS universe": true,
+  "A5 lens code: no reference to data/locked, OOS prints, live data or API fetches outside docstrings": false,
+  "B1 print fee_rate == its own match's universe fee_rate": true,
+  "B2 print delay == its own match's universe delay": true,
+  "B3 dir in {-1,+1}": true,
+  "B4 mo_res == dir*(res0 - p) (outcome-0 frame; NaN for 50/50)": true,
+  "B5 since in [0,3) for the 0-3 s file": true,
+  "C1 baseline wallet sets == src.fasttier.qualify for every month": true,
+  "C2 baseline shadow trades == 131,414 (lens/H6 claim)": true,
+  "D1 re-derived nested choices == lens's": true,
+  "D2 frozen next-month rule (all IS months, 5% fee) == ew2|eb0.5c|mm5": true,
+  "D3 truncation test: data >= m deleted gives identical choice and wallets for every m": true,
+  "E1 headline per-share numbers reproduce to 0.005c": true,
+  "E2 nested trade count == 90,143": true,
+  "F1 claim 'all 288 variants beat the baseline on net30 in 1s/5%'": false
+ }
+}

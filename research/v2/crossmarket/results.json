@@ -1,0 +1,1728 @@
+{
+ "lens": "crossmarket",
+ "is_only": true,
+ "n_variants": 68,
+ "variants": [
+  "beta model: logit (primary)",
+  "beta model: linear dq=beta*dp (diagnostic only)",
+  "beta model: local0.05 (in-match beta shrunk to type b)",
+  "beta model: local0.25 (in-match beta shrunk to type b)",
+  "beta model: local1.0 (in-match beta shrunk to type b)",
+  "event study min_impl=0.01",
+  "event study min_impl=0.02",
+  "backtest k=0.0 min_impl=0.01 exit=res",
+  "backtest k=0.0 min_impl=0.02 exit=res",
+  "backtest k=0.0 min_impl=0.04 exit=res",
+  "backtest k=0.25 min_impl=0.01 exit=res",
+  "backtest k=0.25 min_impl=0.02 exit=res",
+  "backtest k=0.25 min_impl=0.04 exit=res",
+  "backtest k=0.5 min_impl=0.01 exit=res",
+  "backtest k=0.5 min_impl=0.02 exit=res",
+  "backtest k=0.5 min_impl=0.04 exit=res",
+  "backtest k=0.75 min_impl=0.01 exit=res",
+  "backtest k=0.75 min_impl=0.02 exit=res",
+  "backtest k=0.75 min_impl=0.04 exit=res",
+  "backtest k=1.0 min_impl=0.01 exit=res",
+  "backtest k=1.0 min_impl=0.02 exit=res",
+  "backtest k=1.0 min_impl=0.04 exit=res",
+  "backtest k=0.0 min_impl=0.01 exit=taker60",
+  "backtest k=0.0 min_impl=0.01 exit=passive",
+  "backtest k=0.0 min_impl=0.02 exit=taker60",
+  "backtest k=0.0 min_impl=0.02 exit=passive",
+  "backtest k=0.0 min_impl=0.04 exit=taker60",
+  "backtest k=0.0 min_impl=0.04 exit=passive",
+  "backtest k=0.25 min_impl=0.01 exit=taker60",
+  "backtest k=0.25 min_impl=0.01 exit=passive",
+  "backtest k=0.25 min_impl=0.02 exit=taker60",
+  "backtest k=0.25 min_impl=0.02 exit=passive",
+  "backtest k=0.25 min_impl=0.04 exit=taker60",
+  "backtest k=0.25 min_impl=0.04 exit=passive",
+  "backtest k=0.5 min_impl=0.01 exit=taker60",
+  "backtest k=0.5 min_impl=0.01 exit=passive",
+  "backtest k=0.5 min_impl=0.02 exit=taker60",
+  "backtest k=0.5 min_impl=0.02 exit=passive",
+  "backtest k=0.5 min_impl=0.04 exit=taker60",
+  "backtest k=0.5 min_impl=0.04 exit=passive",
+  "backtest k=0.75 min_impl=0.01 exit=taker60",
+  "backtest k=0.75 min_impl=0.01 exit=passive",
+  "backtest k=0.75 min_impl=0.02 exit=taker60",
+  "backtest k=0.75 min_impl=0.02 exit=passive",
+  "backtest k=0.75 min_impl=0.04 exit=taker60",
+  "backtest k=0.75 min_impl=0.04 exit=passive",
+  "backtest k=1.0 min_impl=0.01 exit=taker60",
+  "backtest k=1.0 min_impl=0.01 exit=passive",
+  "backtest k=1.0 min_impl=0.02 exit=taker60",
+  "backtest k=1.0 min_impl=0.02 exit=passive",
+  "backtest k=1.0 min_impl=0.04 exit=taker60",
+  "backtest k=1.0 min_impl=0.04 exit=passive",
+  "backtest wf(k,min_impl) + wf type filter, exit=res",
+  "maker window=always h=0.0",
+  "maker window=always h=0.01",
+  "maker window=always h=0.02",
+  "maker window=post_jump60 h=0.0",
+  "maker window=post_jump60 h=0.01",
+  "maker window=post_jump60 h=0.02",
+  "lean diagnostic: unconditional maker (all prints, |impl| any)",
+  "lean diagnostic: anti-lean placebo (|impl|>=0.04)",
+  "lean diagnostic: lean (|impl|>=0.04)",
+  "lean maker window=always min_impl=0.01",
+  "lean maker window=always min_impl=0.02",
+  "lean maker window=always min_impl=0.04",
+  "lean maker window=post_jump60 min_impl=0.01",
+  "lean maker window=post_jump60 min_impl=0.02",
+  "lean maker window=post_jump60 min_impl=0.04"
+ ],
+ "stated_lens_taker": {
+  "rule": "after a moneyline jump (detect_ts), send IOC orders on each side market of the match from detect+1 s for 30 s; fill at the first print on our side at >= send+delay whose move since the side's last print is < k * model-implied move and |implied| >= min_impl; k, min_impl walk-forward (max past $ P&L); size min($1k, 50% of print), <= $3k/match; hold to resolution",
+  "wf": {
+   "n_trades": 675,
+   "n_matches": 538,
+   "mean_pnl_per_share_c": 0.9298201463934104,
+   "ci95_pnl_per_share_c": [
+    -2.812941052323187,
+    4.673515960148163
+   ],
+   "total_pnl_usd": 471.6503798434319,
+   "sharpe_ann": 0.7673133353374137,
+   "max_dd": -0.30622193428062083,
+   "months_positive": 5,
+   "months_total": 6
+  },
+  "wf_taker60": {
+   "mean_pnl_per_share_c": 1.2791746718519026,
+   "ci95_pnl_per_share_c": [
+    -0.9686769333802127,
+    3.6427901272929915
+   ],
+   "total_pnl_usd": -123.63616362315989
+  },
+  "wf_passive": {
+   "mean_pnl_per_share_c": -6.784295807973939,
+   "ci95_pnl_per_share_c": [
+    -9.252378969441907,
+    -4.3299030260455815
+   ],
+   "total_pnl_usd": -796.5943799314848
+  },
+  "by_regime": {
+   "1s/3%": {
+    "regime": "1s/3%",
+    "n": 125,
+    "net_c": -4.898457976259099,
+    "ci": [
+     -13.069788156708704,
+     3.262441837944543
+    ],
+    "pnl_usd": 33.74055251679654,
+    "usd_in": 2212.748928000654
+   },
+   "1s/5%": {
+    "regime": "1s/5%",
+    "n": 192,
+    "net_c": 0.6451510420309399,
+    "ci": [
+     -6.008696383719694,
+     7.181346838003859
+    ],
+    "pnl_usd": 538.5242445852421,
+    "usd_in": 2702.4689540211784
+   },
+   "3s/0%": {
+    "regime": "3s/0%",
+    "n": 26,
+    "net_c": 1.3687001369230754,
+    "ci": [
+     -14.763164246274194,
+     20.92385779548323
+    ],
+    "pnl_usd": 140.30597949897958,
+    "usd_in": 322.0287940010204
+   },
+   "3s/3%": {
+    "regime": "3s/3%",
+    "n": 332,
+    "net_c": 3.254459765716864,
+    "ci": [
+     -1.9786055790089951,
+     8.608028208362157
+    ],
+    "pnl_usd": -240.92039675758645,
+    "usd_in": 5200.102616191263
+   }
+  },
+  "monthly": [
+   {
+    "month": "2026-03",
+    "n": 49,
+    "net_c": 9.620652832303739,
+    "pnl_usd": 207.99514654467876,
+    "usd_in": 478.5057604790966
+   },
+   {
+    "month": "2026-04",
+    "n": 214,
+    "net_c": 2.777472013812146,
+    "pnl_usd": 179.28209193697643,
+    "usd_in": 3648.5574167174877
+   },
+   {
+    "month": "2026-05",
+    "n": 155,
+    "net_c": -5.026695522032189,
+    "pnl_usd": -701.591038414399,
+    "usd_in": 2934.2967399968543
+   },
+   {
+    "month": "2026-06",
+    "n": 44,
+    "net_c": 4.809914003359559,
+    "pnl_usd": 223.65208950511254,
+    "usd_in": 558.7847729982154
+   },
+   {
+    "month": "2026-07",
+    "n": 87,
+    "net_c": 3.3002124573358076,
+    "pnl_usd": 265.0823755825834,
+    "usd_in": 702.8919825075493
+   },
+   {
+    "month": "2026-08",
+    "n": 126,
+    "net_c": -1.252216626541088,
+    "pnl_usd": 297.2297146884797,
+    "usd_in": 2114.312619514914
+   }
+  ],
+  "choices": [
+   {
+    "month": "2026-03",
+    "k": 0.75,
+    "min_impl": 0.04,
+    "past_pnl_usd": 359.13376075470387,
+    "n": 49
+   },
+   {
+    "month": "2026-04",
+    "k": 0.75,
+    "min_impl": 0.02,
+    "past_pnl_usd": 608.0776552814409,
+    "n": 214
+   },
+   {
+    "month": "2026-05",
+    "k": 0.75,
+    "min_impl": 0.02,
+    "past_pnl_usd": 787.3597472184174,
+    "n": 155
+   },
+   {
+    "month": "2026-06",
+    "k": 0.25,
+    "min_impl": 0.04,
+    "past_pnl_usd": 499.84161140912875,
+    "n": 44
+   },
+   {
+    "month": "2026-07",
+    "k": 0.25,
+    "min_impl": 0.04,
+    "past_pnl_usd": 723.4937009142412,
+    "n": 87
+   },
+   {
+    "month": "2026-08",
+    "k": 0.75,
+    "min_impl": 0.04,
+    "past_pnl_usd": 1417.4745434285524,
+    "n": 126
+   }
+  ]
+ },
+ "lean_maker": {
+  "rule": "rest only on the side of each side market that gains from the moneyline-implied move since the side's last print (|implied| >= min_impl, info strictly before print time - delay); filled by takers trading against it at the print price, 20% of the print, <= $250/fill, <= $2k/match; hold to resolution; 0 fee + 15% rebate; window and min_impl walk-forward (max past $ P&L)",
+  "wf": {
+   "n_trades": 8905,
+   "n_matches": 2556,
+   "mean_pnl_per_share_c": 2.72515891883029,
+   "ci95_pnl_per_share_c": [
+    1.7306352370349454,
+    3.700135428910939
+   ],
+   "share_weighted_net_c": 2.593740005037715,
+   "hit_rate": 0.5759685569904548,
+   "total_pnl_usd": 4161.51828824161,
+   "sharpe_ann": 2.490862709740792,
+   "max_dd": -0.44347345285873885,
+   "capital": 2779.310963325458,
+   "months_positive": 5,
+   "months_total": 7,
+   "worst_month_usd": -561.4416001551249
+  },
+  "months_positive_per_share": 7,
+  "by_regime": {
+   "1s/3%": {
+    "regime": "1s/3%",
+    "n": 2079,
+    "net_c": 2.5563255753225005,
+    "ci": [
+     0.3242567493110912,
+     4.882589896089592
+    ],
+    "share_w_net_c": 2.414249299968017,
+    "pnl_usd": 786.4206767564482,
+    "usd_in": 17837.67121479356,
+    "months": 3
+   },
+   "1s/5%": {
+    "regime": "1s/5%",
+    "n": 4159,
+    "net_c": 2.01667311588643,
+    "ci": [
+     0.525350871768348,
+     3.4842750187222
+    ],
+    "share_w_net_c": 3.353803976076433,
+    "pnl_usd": 3268.9078135309665,
+    "usd_in": 54324.662623815064,
+    "months": 2
+   },
+   "3s/0%": {
+    "regime": "3s/0%",
+    "n": 1062,
+    "net_c": 5.540230270903955,
+    "ci": [
+     2.522174396269781,
+     8.606819664576394
+    ],
+    "share_w_net_c": 2.1400433921947517,
+    "pnl_usd": 219.6342622812108,
+    "usd_in": 5235.900470418789,
+    "months": 2
+   },
+   "3s/3%": {
+    "regime": "3s/3%",
+    "n": 1605,
+    "net_c": 2.9170537473000553,
+    "ci": [
+     0.5687223809495088,
+     5.396759943020876
+    ],
+    "share_w_net_c": -0.5633120265974362,
+    "pnl_usd": -113.4444643270142,
+    "usd_in": 10088.206754367395,
+    "months": 3
+   }
+  },
+  "monthly": [
+   {
+    "month": "2026-02",
+    "n": 525,
+    "net_c": 8.895201997066666,
+    "pnl_usd": 249.7877127933194,
+    "usd_in": 1979.2755174066808
+   },
+   {
+    "month": "2026-03",
+    "n": 876,
+    "net_c": 2.0951641133557786,
+    "pnl_usd": -561.4416001551249,
+    "usd_in": 5195.151642118
+   },
+   {
+    "month": "2026-04",
+    "n": 941,
+    "net_c": 3.302694933651032,
+    "pnl_usd": -187.0851680390209,
+    "usd_in": 5670.721361653686
+   },
+   {
+    "month": "2026-05",
+    "n": 830,
+    "net_c": 2.342504353110616,
+    "pnl_usd": 535.3280376812301,
+    "usd_in": 6589.308043800041
+   },
+   {
+    "month": "2026-06",
+    "n": 1187,
+    "net_c": 4.18899411424956,
+    "pnl_usd": 801.3192395357468,
+    "usd_in": 11520.48977281433
+   },
+   {
+    "month": "2026-07",
+    "n": 2607,
+    "net_c": 0.6163791848880353,
+    "pnl_usd": 330.2150466770903,
+    "usd_in": 32834.68419378252
+   },
+   {
+    "month": "2026-08",
+    "n": 1939,
+    "net_c": 3.1618588273126873,
+    "pnl_usd": 2993.3950197483705,
+    "usd_in": 23696.81053181955
+   }
+  ],
+  "choices": [
+   {
+    "month": "2026-02",
+    "window": "post_jump60",
+    "min_impl": 0.04,
+    "past_pnl_usd": -38.83729219759808,
+    "n": 525
+   },
+   {
+    "month": "2026-03",
+    "window": "always",
+    "min_impl": 0.01,
+    "past_pnl_usd": 418.9101587047695,
+    "n": 876
+   },
+   {
+    "month": "2026-04",
+    "window": "post_jump60",
+    "min_impl": 0.02,
+    "past_pnl_usd": 287.7995870907261,
+    "n": 941
+   },
+   {
+    "month": "2026-05",
+    "window": "always",
+    "min_impl": 0.04,
+    "past_pnl_usd": 618.2356211949655,
+    "n": 830
+   },
+   {
+    "month": "2026-06",
+    "window": "always",
+    "min_impl": 0.04,
+    "past_pnl_usd": 1153.5636588761952,
+    "n": 1187
+   },
+   {
+    "month": "2026-07",
+    "window": "always",
+    "min_impl": 0.04,
+    "past_pnl_usd": 1954.882898411942,
+    "n": 2607
+   },
+   {
+    "month": "2026-08",
+    "window": "always",
+    "min_impl": 0.04,
+    "past_pnl_usd": 2285.0979450890327,
+    "n": 1939
+   }
+  ],
+  "diagnostics": [
+   {
+    "book": "unconditional maker (all prints, |impl| any)",
+    "regime": "all",
+    "n": 142989,
+    "net_c": 0.10349536203133883,
+    "ci": [
+     -0.45397654791117903,
+     0.6486049466162256
+    ],
+    "share_w_net_c": -0.7179484294655887,
+    "flow_usd_per_month": 891284.2717031786,
+    "months": 7
+   },
+   {
+    "book": "unconditional maker (all prints, |impl| any)",
+    "regime": "1s/3%",
+    "n": 26622,
+    "net_c": -0.011459064662953414,
+    "ci": [
+     -1.1185897380594414,
+     0.9490504659688035
+    ],
+    "share_w_net_c": -0.21231497798749294,
+    "flow_usd_per_month": 436767.8703344153,
+    "months": 3
+   },
+   {
+    "book": "unconditional maker (all prints, |impl| any)",
+    "regime": "1s/5%",
+    "n": 36355,
+    "net_c": -0.12477008644896942,
+    "ci": [
+     -1.2639531940574742,
+     0.948889994559223
+    ],
+    "share_w_net_c": -1.7628817611695557,
+    "flow_usd_per_month": 1228548.8128831661,
+    "months": 2
+   },
+   {
+    "book": "unconditional maker (all prints, |impl| any)",
+    "regime": "3s/0%",
+    "n": 41938,
+    "net_c": 1.8489404571689159,
+    "ci": [
+     1.0024851601096139,
+     2.672018261385687
+    ],
+    "share_w_net_c": -1.4767333214120826,
+    "flow_usd_per_month": 489224.0493324913,
+    "months": 2
+   },
+   {
+    "book": "unconditional maker (all prints, |impl| any)",
+    "regime": "3s/3%",
+    "n": 38074,
+    "net_c": -1.5207513489242386,
+    "ci": [
+     -2.8063302847791594,
+     -0.2416143609399749
+    ],
+    "share_w_net_c": 1.094476461403437,
+    "flow_usd_per_month": 373285.1416219224,
+    "months": 4
+   },
+   {
+    "book": "anti-lean placebo (|impl|>=0.04)",
+    "regime": "all",
+    "n": 15083,
+    "net_c": -1.832955204943761,
+    "ci": [
+     -2.6401222313322905,
+     -1.011686241763585
+    ],
+    "share_w_net_c": -0.2841874740144567,
+    "flow_usd_per_month": 108826.61771848553,
+    "months": 7
+   },
+   {
+    "book": "anti-lean placebo (|impl|>=0.04)",
+    "regime": "1s/3%",
+    "n": 3192,
+    "net_c": -2.852861327756443,
+    "ci": [
+     -4.684437873897526,
+     -1.004207211900721
+    ],
+    "share_w_net_c": 0.8220563826189325,
+    "flow_usd_per_month": 44942.27563013439,
+    "months": 3
+   },
+   {
+    "book": "anti-lean placebo (|impl|>=0.04)",
+    "regime": "1s/5%",
+    "n": 4674,
+    "net_c": -1.289634795809543,
+    "ci": [
+     -2.7531187374865174,
+     0.11559480517270679
+    ],
+    "share_w_net_c": 0.8535556445170153,
+    "flow_usd_per_month": 155018.59910085055,
+    "months": 2
+   },
+   {
+    "book": "anti-lean placebo (|impl|>=0.04)",
+    "regime": "3s/0%",
+    "n": 2476,
+    "net_c": -0.8469282814458804,
+    "ci": [
+     -2.761174689126975,
+     1.035914859054086
+    ],
+    "share_w_net_c": -1.1102583637812167,
+    "flow_usd_per_month": 45100.07458047944,
+    "months": 2
+   },
+   {
+    "book": "anti-lean placebo (|impl|>=0.04)",
+    "regime": "3s/3%",
+    "n": 4741,
+    "net_c": -2.196874612422353,
+    "ci": [
+     -3.610027306008063,
+     -0.756907394654364
+    ],
+    "share_w_net_c": -2.3353458400677023,
+    "flow_usd_per_month": 75574.04992544519,
+    "months": 3
+   },
+   {
+    "book": "lean (|impl|>=0.04)",
+    "regime": "all",
+    "n": 10171,
+    "net_c": 3.059703560598031,
+    "ci": [
+     2.109381772388055,
+     4.013196173198127
+    ],
+    "share_w_net_c": 2.3586791366546267,
+    "flow_usd_per_month": 62013.4112900943,
+    "months": 7
+   },
+   {
+    "book": "lean (|impl|>=0.04)",
+    "regime": "1s/3%",
+    "n": 2079,
+    "net_c": 2.5563255753225005,
+    "ci": [
+     0.3242567493110912,
+     4.882589896089592
+    ],
+    "share_w_net_c": 2.4142492999680174,
+    "flow_usd_per_month": 25225.20083134291,
+    "months": 3
+   },
+   {
+    "book": "lean (|impl|>=0.04)",
+    "regime": "1s/5%",
+    "n": 4159,
+    "net_c": 2.01667311588643,
+    "ci": [
+     0.5253508717683479,
+     3.4842750187222
+    ],
+    "share_w_net_c": 2.2130233331484397,
+    "flow_usd_per_month": 122147.30063306114,
+    "months": 2
+   },
+   {
+    "book": "lean (|impl|>=0.04)",
+    "regime": "3s/0%",
+    "n": 1605,
+    "net_c": 3.978603237190031,
+    "ci": [
+     1.3429210165906722,
+     6.637541326278325
+    ],
+    "share_w_net_c": 0.3750670806069047,
+    "flow_usd_per_month": 16644.340595422447,
+    "months": 2
+   },
+   {
+    "book": "lean (|impl|>=0.04)",
+    "regime": "3s/3%",
+    "n": 2328,
+    "net_c": 4.739107542562469,
+    "ci": [
+     2.6497429397461283,
+     6.724726631690768
+    ],
+    "share_w_net_c": 3.620676294124029,
+    "flow_usd_per_month": 26944.998026554735,
+    "months": 3
+   }
+  ],
+  "lean_maker_1s5_days": 46,
+  "lean_maker_1s5_notional_usd_per_30d": 35429.12779814026,
+  "lean_maker_1s5_pnl_usd_per_30d": 2131.896400128891,
+  "taker_1s5_days": 46,
+  "taker_1s5_notional_usd_per_30d": 1762.4797526225077,
+  "taker_1s5_pnl_usd_per_30d": 351.21146385994047,
+  "capacity_1s5_contrary_flow_usd_per_month_upper_bound": 122147.30063306114
+ },
+ "event_study": {
+  "rows": [
+   {
+    "bucket": "all in-play side takers",
+    "side": "all",
+    "n": 250380,
+    "matches": 6197,
+    "usd": 17320495.876853924,
+    "net_res_c": -0.5710257768191045,
+    "ci": [
+     -0.9084909816298478,
+     -0.21677346482004367
+    ],
+    "net60_c": -0.8852024248180259,
+    "fee_c": 0.3587711123671913
+   },
+   {
+    "bucket": "1-3s",
+    "side": "implied",
+    "n": 374,
+    "matches": 227,
+    "usd": 22775.190576937548,
+    "net_res_c": 4.414400345508617,
+    "ci": [
+     -1.6713439595962098,
+     11.133717919880567
+    ],
+    "net60_c": 0.9860320861904357,
+    "net300_c": 4.564941540562094,
+    "fee_c": 0.7209885014699923,
+    "mean_abs_impl_c": 8.89265786095993
+   },
+   {
+    "bucket": "1-3s",
+    "side": "contrary",
+    "n": 132,
+    "matches": 108,
+    "usd": 3531.7514490168323,
+    "net_res_c": -9.12394456840764,
+    "ci": [
+     -17.124633648324497,
+     -0.6063870769414427
+    ],
+    "net60_c": -1.0702180802258239,
+    "net300_c": -2.5280183765515827,
+    "fee_c": 0.8449774387864298,
+    "mean_abs_impl_c": 7.5839272056910865
+   },
+   {
+    "bucket": "3-6s",
+    "side": "implied",
+    "n": 1300,
+    "matches": 697,
+    "usd": 60463.26012520769,
+    "net_res_c": 1.0832379662134937,
+    "ci": [
+     -2.4545961976795985,
+     4.736207382461415
+    ],
+    "net60_c": 0.8051266853096468,
+    "net300_c": 1.8255496573211853,
+    "fee_c": 0.6381325705018912,
+    "mean_abs_impl_c": 7.993033695537062
+   },
+   {
+    "bucket": "3-6s",
+    "side": "contrary",
+    "n": 700,
+    "matches": 499,
+    "usd": 35063.7873621888,
+    "net_res_c": -6.864885206753686,
+    "ci": [
+     -10.602776176570123,
+     -3.07473385261788
+    ],
+    "net60_c": -1.6039983803751139,
+    "net300_c": -1.985358707917971,
+    "fee_c": 0.6870944821965423,
+    "mean_abs_impl_c": 7.733816922223959
+   },
+   {
+    "bucket": "6-10s",
+    "side": "implied",
+    "n": 1406,
+    "matches": 767,
+    "usd": 76434.58984755486,
+    "net_res_c": 2.838658727511124,
+    "ci": [
+     -0.3901182882524482,
+     5.871380768728061
+    ],
+    "net60_c": -1.3423551153800564,
+    "net300_c": 1.4817418238269133,
+    "fee_c": 0.5683713119767848,
+    "mean_abs_impl_c": 8.401921692807012
+   },
+   {
+    "bucket": "6-10s",
+    "side": "contrary",
+    "n": 984,
+    "matches": 634,
+    "usd": 34504.16251000733,
+    "net_res_c": -4.330323639248624,
+    "ci": [
+     -7.805309078833081,
+     -1.0442225365243571
+    ],
+    "net60_c": -1.300367416047403,
+    "net300_c": -1.527406029548419,
+    "fee_c": 0.6105435168705735,
+    "mean_abs_impl_c": 8.157852431097202
+   },
+   {
+    "bucket": "10-20s",
+    "side": "implied",
+    "n": 2706,
+    "matches": 1189,
+    "usd": 109111.91406752319,
+    "net_res_c": -0.21211061268899897,
+    "ci": [
+     -2.648786086308144,
+     2.3026472405019227
+    ],
+    "net60_c": -1.7377052148785777,
+    "net300_c": -1.3012801928238846,
+    "fee_c": 0.523739229592177,
+    "mean_abs_impl_c": 8.331979133836683
+   },
+   {
+    "bucket": "10-20s",
+    "side": "contrary",
+    "n": 1873,
+    "matches": 980,
+    "usd": 81625.39602311041,
+    "net_res_c": -5.4933980737190105,
+    "ci": [
+     -8.452817999792417,
+     -2.4409002710564955
+    ],
+    "net60_c": -1.6587150278620966,
+    "net300_c": -2.432729711217676,
+    "fee_c": 0.5327655330356151,
+    "mean_abs_impl_c": 7.289003701996255
+   },
+   {
+    "bucket": "20-60s",
+    "side": "implied",
+    "n": 11644,
+    "matches": 2375,
+    "usd": 611357.4067923999,
+    "net_res_c": 2.008044157096622,
+    "ci": [
+     0.5091908950233126,
+     3.6067609539315795
+    ],
+    "net60_c": -1.422764677368339,
+    "net300_c": 0.14729750520766588,
+    "fee_c": 0.5183301182185621,
+    "mean_abs_impl_c": 9.656453743550529
+   },
+   {
+    "bucket": "20-60s",
+    "side": "contrary",
+    "n": 7971,
+    "matches": 2070,
+    "usd": 373700.86222356674,
+    "net_res_c": -2.7010716690126473,
+    "ci": [
+     -4.597517363111934,
+     -0.870987959983464
+    ],
+    "net60_c": -1.6856322890076294,
+    "net300_c": -2.123213553855829,
+    "fee_c": 0.5072474630071275,
+    "mean_abs_impl_c": 8.322659813148055
+   },
+   {
+    "bucket": "60-300s",
+    "side": "implied",
+    "n": 21018,
+    "matches": 2937,
+    "usd": 1088696.6749868232,
+    "net_res_c": -0.10046916703485025,
+    "ci": [
+     -1.8942333364970074,
+     1.4928674732216773
+    ],
+    "net60_c": -1.0488795907956743,
+    "net300_c": -0.744888109099747,
+    "fee_c": 0.466014904500356,
+    "mean_abs_impl_c": 9.844690169369038
+   },
+   {
+    "bucket": "60-300s",
+    "side": "contrary",
+    "n": 16298,
+    "matches": 2770,
+    "usd": 1016697.3834329988,
+    "net_res_c": -1.9503167846792377,
+    "ci": [
+     -3.532243485794622,
+     -0.25541401595159335
+    ],
+    "net60_c": -1.3142180597390611,
+    "net300_c": -0.863255646505842,
+    "fee_c": 0.44546944503510955,
+    "mean_abs_impl_c": 9.24328510908766
+   },
+   {
+    "bucket": ">300s",
+    "side": "implied",
+    "n": 17657,
+    "matches": 2553,
+    "usd": 1142167.3148799932,
+    "net_res_c": 1.8791048704885511,
+    "ci": [
+     -0.10386928228408342,
+     3.6828808812918536
+    ],
+    "net60_c": -0.9896429976260775,
+    "net300_c": -0.7080805617292663,
+    "fee_c": 0.3312818880474402,
+    "mean_abs_impl_c": 13.458325182247247
+   },
+   {
+    "bucket": ">300s",
+    "side": "contrary",
+    "n": 14665,
+    "matches": 2532,
+    "usd": 1316830.525897504,
+    "net_res_c": -3.2808637671655405,
+    "ci": [
+     -5.686365157119664,
+     -1.0237572682432816
+    ],
+    "net60_c": -1.2409114710779166,
+    "net300_c": -1.170966407625138,
+    "fee_c": 0.3344020815378552,
+    "mean_abs_impl_c": 12.825709601522236
+   }
+  ],
+  "catchup": [
+   {
+    "bucket": "1-3s",
+    "size": 387.0,
+    "median": 0.9729831810326777,
+    "mean": 1.1241717019114215
+   },
+   {
+    "bucket": "3-6s",
+    "size": 1589.0,
+    "median": 0.9298851149609668,
+    "mean": 0.9455863232868178
+   },
+   {
+    "bucket": "6-10s",
+    "size": 1803.0,
+    "median": 0.9891114987949309,
+    "mean": 0.9963930245615559
+   },
+   {
+    "bucket": "10-20s",
+    "size": 3423.0,
+    "median": 0.945180450540167,
+    "mean": 0.9729468158769571
+   },
+   {
+    "bucket": "20-60s",
+    "size": 14787.0,
+    "median": 1.1029488173610509,
+    "mean": 1.0954955579590282
+   },
+   {
+    "bucket": "60-300s",
+    "size": 27277.0,
+    "median": 1.2416881306100729,
+    "mean": 1.2074591246984994
+   },
+   {
+    "bucket": ">300s",
+    "size": 22613.0,
+    "median": 1.287736205544855,
+    "mean": 1.2097747538947012
+   }
+  ],
+  "by_regime": [
+   {
+    "regime": "1s/3%",
+    "side": "contrary",
+    "n": 2483,
+    "matches": 546,
+    "net_res_c": -0.28745124013255624,
+    "ci": [
+     -3.2963030210961737,
+     2.7089883597005717
+    ],
+    "net60_c": -0.7159513133967528
+   },
+   {
+    "regime": "1s/3%",
+    "side": "implied",
+    "n": 4319,
+    "matches": 622,
+    "net_res_c": 1.2315607657509837,
+    "ci": [
+     -1.1891705232463534,
+     3.6369915043390306
+    ],
+    "net60_c": -0.03952481449444367
+   },
+   {
+    "regime": "1s/5%",
+    "side": "contrary",
+    "n": 3826,
+    "matches": 834,
+    "net_res_c": -4.841808051968547,
+    "ci": [
+     -6.723438411656849,
+     -2.9676623014805
+    ],
+    "net60_c": -1.3027463354473767
+   },
+   {
+    "regime": "1s/5%",
+    "side": "implied",
+    "n": 4941,
+    "matches": 836,
+    "net_res_c": 1.5445517042997121,
+    "ci": [
+     -0.8626944130612957,
+     3.9532051422337413
+    ],
+    "net60_c": -1.3305171394748274
+   },
+   {
+    "regime": "3s/0%",
+    "side": "contrary",
+    "n": 3028,
+    "matches": 429,
+    "net_res_c": -5.666712425330251,
+    "ci": [
+     -10.801477365941578,
+     -0.815596647891488
+    ],
+    "net60_c": -2.6303334365505284
+   },
+   {
+    "regime": "3s/0%",
+    "side": "implied",
+    "n": 3726,
+    "matches": 475,
+    "net_res_c": 1.3361748923617818,
+    "ci": [
+     -2.8430192777120453,
+     5.948095109719457
+    ],
+    "net60_c": -2.2660761167431565
+   },
+   {
+    "regime": "3s/3%",
+    "side": "contrary",
+    "n": 2671,
+    "matches": 656,
+    "net_res_c": -2.585387576548448,
+    "ci": [
+     -4.875156376227166,
+     -0.5151128672633637
+    ],
+    "net60_c": -1.8594849316046067
+   },
+   {
+    "regime": "3s/3%",
+    "side": "implied",
+    "n": 4882,
+    "matches": 848,
+    "net_res_c": 2.631530397671255,
+    "ci": [
+     0.3281276931653229,
+     4.900243912093446
+    ],
+    "net60_c": -1.3268652141681556
+   }
+  ],
+  "by_type": [
+   {
+    "smt": "tennis_first_set_totals",
+    "side": "contrary",
+    "n": 689,
+    "matches": 208,
+    "net_res_c": -2.9744840737255736,
+    "ci": [
+     -10.117283344575577,
+     3.7598789148009395
+    ],
+    "net60_c": -4.717719253754602
+   },
+   {
+    "smt": "tennis_first_set_totals",
+    "side": "implied",
+    "n": 731,
+    "matches": 182,
+    "net_res_c": -1.6844126195233975,
+    "ci": [
+     -15.178315060130437,
+     10.553599513750825
+    ],
+    "net60_c": -3.894420920111631
+   },
+   {
+    "smt": "tennis_first_set_winner",
+    "side": "contrary",
+    "n": 6145,
+    "matches": 1692,
+    "net_res_c": -3.5242057871028014,
+    "ci": [
+     -5.44752208010146,
+     -1.6603429394023201
+    ],
+    "net60_c": -1.2419568657325815
+   },
+   {
+    "smt": "tennis_first_set_winner",
+    "side": "implied",
+    "n": 8516,
+    "matches": 2009,
+    "net_res_c": 1.2526300821161418,
+    "ci": [
+     -0.21503393192079057,
+     2.700393097401964
+    ],
+    "net60_c": -0.9562824568833889
+   },
+   {
+    "smt": "tennis_match_totals",
+    "side": "contrary",
+    "n": 1197,
+    "matches": 415,
+    "net_res_c": -5.0716813803073695,
+    "ci": [
+     -13.82051566134872,
+     2.4227241831351742
+    ],
+    "net60_c": -0.9965600248144697
+   },
+   {
+    "smt": "tennis_match_totals",
+    "side": "implied",
+    "n": 1844,
+    "matches": 494,
+    "net_res_c": 6.907212353834659,
+    "ci": [
+     0.50393077113458,
+     13.4024019126674
+    ],
+    "net60_c": -1.5513940668567716
+   },
+   {
+    "smt": "tennis_set_handicap",
+    "side": "contrary",
+    "n": 1406,
+    "matches": 606,
+    "net_res_c": -6.232273214224661,
+    "ci": [
+     -10.019308085798553,
+     -2.6350601034257064
+    ],
+    "net60_c": -2.080535324359796
+   },
+   {
+    "smt": "tennis_set_handicap",
+    "side": "implied",
+    "n": 2736,
+    "matches": 814,
+    "net_res_c": 2.266763057056028,
+    "ci": [
+     -0.5833744900359497,
+     4.9848240243815
+    ],
+    "net60_c": -1.2076043241738699
+   },
+   {
+    "smt": "tennis_set_totals",
+    "side": "contrary",
+    "n": 1484,
+    "matches": 524,
+    "net_res_c": -0.8326824058498226,
+    "ci": [
+     -5.016503243838944,
+     4.356827979328206
+    ],
+    "net60_c": -2.0875811489461835
+   },
+   {
+    "smt": "tennis_set_totals",
+    "side": "implied",
+    "n": 2431,
+    "matches": 688,
+    "net_res_c": -0.3989334422671186,
+    "ci": [
+     -3.964419099164425,
+     2.7727641232794245
+    ],
+    "net60_c": -1.6812267239372136
+   },
+   {
+    "smt": "tennis_set_winner",
+    "side": "contrary",
+    "n": 1087,
+    "matches": 325,
+    "net_res_c": -3.2457506409283727,
+    "ci": [
+     -7.117943509976168,
+     1.1469602898419995
+    ],
+    "net60_c": -1.4672764877866986
+   },
+   {
+    "smt": "tennis_set_winner",
+    "side": "implied",
+    "n": 1610,
+    "matches": 320,
+    "net_res_c": 2.0940445389689093,
+    "ci": [
+     -2.0775999714320954,
+     6.305040976468708
+    ],
+    "net60_c": -0.26309757451245763
+   }
+  ],
+  "who_takes_early": [
+   {
+    "side": "contrary",
+    "ml_fast_tier": false,
+    "n": 1694,
+    "usd": 65718.4017405565,
+    "matches": 934,
+    "net_res_c": -5.695856553429572,
+    "ci": [
+     -8.131661436504011,
+     -3.164482861206624
+    ],
+    "net60_c": -1.5265174987542476
+   },
+   {
+    "side": "contrary",
+    "ml_fast_tier": true,
+    "n": 122,
+    "usd": 7381.299580656458,
+    "matches": 100,
+    "net_res_c": -5.098670387445388,
+    "ci": [
+     -13.525548598905267,
+     2.8122044503970467
+    ],
+    "net60_c": 0.34665125120215334
+   },
+   {
+    "side": "implied",
+    "ml_fast_tier": false,
+    "n": 2546,
+    "usd": 117242.25619334354,
+    "matches": 1117,
+    "net_res_c": 1.0975964617568332,
+    "ci": [
+     -1.5308882026543802,
+     3.643660385872581
+    ],
+    "net60_c": -0.5614132818448956
+   },
+   {
+    "side": "implied",
+    "ml_fast_tier": true,
+    "n": 534,
+    "usd": 42430.78435635656,
+    "matches": 356,
+    "net_res_c": 7.96979150663953,
+    "ci": [
+     3.8722879221985194,
+     12.063454317770939
+    ],
+    "net60_c": 1.7929730608436487
+   }
+  ]
+ },
+ "capacity_by_type": [
+  {
+   "smt": "tennis_first_set_totals",
+   "markets": 28968,
+   "lifetime_vol_usd": 11791246.455573,
+   "inplay_prints": 42551,
+   "inplay_usd": 4558577.028843894,
+   "median_print_usd": 16.983,
+   "p90_print_usd": 209.788399995552,
+   "matches": 2950,
+   "inplay_share_of_lifetime": 0.3866068821493705
+  },
+  {
+   "smt": "tennis_first_set_winner",
+   "markets": 9630,
+   "lifetime_vol_usd": 14568601.97101,
+   "inplay_prints": 95512,
+   "inplay_usd": 6728508.990464806,
+   "median_print_usd": 9.08091,
+   "p90_print_usd": 144.8377380073212,
+   "matches": 5178,
+   "inplay_share_of_lifetime": 0.46185001167948975
+  },
+  {
+   "smt": "tennis_game_handicap",
+   "markets": 110,
+   "lifetime_vol_usd": 32365.274020999997,
+   "inplay_prints": 35,
+   "inplay_usd": 1900.5553779849915,
+   "median_print_usd": 9.999999002474873,
+   "p90_print_usd": 182.41599900369238,
+   "matches": 8,
+   "inplay_share_of_lifetime": 0.05872205428422539
+  },
+  {
+   "smt": "tennis_match_totals",
+   "markets": 28958,
+   "lifetime_vol_usd": 15400129.927672999,
+   "inplay_prints": 54801,
+   "inplay_usd": 4355835.263114062,
+   "median_print_usd": 9.8,
+   "p90_print_usd": 141.57,
+   "matches": 3655,
+   "inplay_share_of_lifetime": 0.28284405934049417
+  },
+  {
+   "smt": "tennis_set_games_totals",
+   "markets": 10868,
+   "lifetime_vol_usd": 140460.452812,
+   "inplay_prints": 412,
+   "inplay_usd": 14564.157816955272,
+   "median_print_usd": 9.9,
+   "p90_print_usd": 99.99999800009911,
+   "matches": 42,
+   "inplay_share_of_lifetime": 0.10368867197408756
+  },
+  {
+   "smt": "tennis_set_handicap",
+   "markets": 9900,
+   "lifetime_vol_usd": 23452609.787978,
+   "inplay_prints": 56391,
+   "inplay_usd": 4936310.960708133,
+   "median_print_usd": 9.999998998571453,
+   "p90_print_usd": 158.55999899688373,
+   "matches": 3264,
+   "inplay_share_of_lifetime": 0.2104802410194249
+  },
+  {
+   "smt": "tennis_set_totals",
+   "markets": 9926,
+   "lifetime_vol_usd": 10174214.556201,
+   "inplay_prints": 48095,
+   "inplay_usd": 3340416.3357861503,
+   "median_print_usd": 7.5,
+   "p90_print_usd": 111.87198401808088,
+   "matches": 3077,
+   "inplay_share_of_lifetime": 0.3283217900835625
+  },
+  {
+   "smt": "tennis_set_winner",
+   "markets": 3622,
+   "lifetime_vol_usd": 2206439.3761549997,
+   "inplay_prints": 14761,
+   "inplay_usd": 983682.4390419939,
+   "median_print_usd": 7.3,
+   "p90_print_usd": 113.11999900437014,
+   "matches": 797,
+   "inplay_share_of_lifetime": 0.4458234609446579
+  }
+ ],
+ "capacity_by_month": [
+  {
+   "month": "2025-10",
+   "side_inplay_usd": 0.0,
+   "ml_inplay_usd": 17644567.360901944,
+   "side_over_ml": 0.0
+  },
+  {
+   "month": "2025-11",
+   "side_inplay_usd": 302017.91810138896,
+   "ml_inplay_usd": 11182168.27561149,
+   "side_over_ml": 0.027008886886463288
+  },
+  {
+   "month": "2025-12",
+   "side_inplay_usd": 435117.7301255798,
+   "ml_inplay_usd": 673484.2049452661,
+   "side_over_ml": 0.6460696879460472
+  },
+  {
+   "month": "2026-01",
+   "side_inplay_usd": 6155315.988015109,
+   "ml_inplay_usd": 37752308.7631671,
+   "side_over_ml": 0.16304475645792874
+  },
+  {
+   "month": "2026-02",
+   "side_inplay_usd": 3584180.397943614,
+   "ml_inplay_usd": 57393485.43802995,
+   "side_over_ml": 0.06244925483421977
+  },
+  {
+   "month": "2026-03",
+   "side_inplay_usd": 1166114.6659194638,
+   "ml_inplay_usd": 26547857.595589247,
+   "side_over_ml": 0.043925000792275085
+  },
+  {
+   "month": "2026-04",
+   "side_inplay_usd": 3995750.2842708663,
+   "ml_inplay_usd": 138407203.5860385,
+   "side_over_ml": 0.028869525434685742
+  },
+  {
+   "month": "2026-05",
+   "side_inplay_usd": 2647158.244511871,
+   "ml_inplay_usd": 153119177.99944118,
+   "side_over_ml": 0.01728822136520046
+  },
+  {
+   "month": "2026-06",
+   "side_inplay_usd": 2010956.8626273621,
+   "ml_inplay_usd": 104400633.4494302,
+   "side_over_ml": 0.01926192204189483
+  },
+  {
+   "month": "2026-07",
+   "side_inplay_usd": 2697717.244070541,
+   "ml_inplay_usd": 139768560.55103216,
+   "side_over_ml": 0.01930131664399272
+  },
+  {
+   "month": "2026-08",
+   "side_inplay_usd": 1925466.3955681825,
+   "ml_inplay_usd": 140621019.11270705,
+   "side_over_ml": 0.013692593096803905
+  }
+ ],
+ "beta_walkforward": [
+  {
+   "month": "2025-12",
+   "smt": "tennis_set_totals",
+   "b": 0.9511920750983384,
+   "n": 31,
+   "b_fit_month_m": 2.4331063540652216,
+   "corr_pred_actual": 0.3021861290368087,
+   "r2_oos_month": 0.05388335304578595
+  },
+  {
+   "month": "2026-01",
+   "smt": "tennis_set_totals",
+   "b": 1.374407586567191,
+   "n": 3961,
+   "b_fit_month_m": 3.037000758007338,
+   "corr_pred_actual": 0.5547779638352466,
+   "r2_oos_month": 0.2146283133635759
+  },
+  {
+   "month": "2026-02",
+   "smt": "tennis_first_set_totals",
+   "b": 4.949441163527951,
+   "n": 4332,
+   "b_fit_month_m": 3.291570979248318,
+   "corr_pred_actual": 0.3039241065850405,
+   "r2_oos_month": 0.06818511508124103
+  },
+  {
+   "month": "2026-02",
+   "smt": "tennis_first_set_winner",
+   "b": 1.436411370506053,
+   "n": 11074,
+   "b_fit_month_m": 1.3564799782050025,
+   "corr_pred_actual": 0.5280481666079982,
+   "r2_oos_month": 0.27780389839022435
+  },
+  {
+   "month": "2026-02",
+   "smt": "tennis_match_totals",
+   "b": 2.24944280545943,
+   "n": 2899,
+   "b_fit_month_m": 1.513476109846009,
+   "corr_pred_actual": 0.1805257176772406,
+   "r2_oos_month": 0.02487443914171028
+  },
+  {
+   "month": "2026-02",
+   "smt": "tennis_set_handicap",
+   "b": 0.6728030383523761,
+   "n": 9315,
+   "b_fit_month_m": 0.8290679260439364,
+   "corr_pred_actual": 0.43668151314981357,
+   "r2_oos_month": 0.18390918993486727
+  },
+  {
+   "month": "2026-02",
+   "smt": "tennis_set_totals",
+   "b": 2.9596481456983565,
+   "n": 7485,
+   "b_fit_month_m": 2.3824192282954,
+   "corr_pred_actual": 0.4180152569066247,
+   "r2_oos_month": 0.1637334783056137
+  },
+  {
+   "month": "2026-03",
+   "smt": "tennis_first_set_totals",
+   "b": 3.48526525300105,
+   "n": 359,
+   "b_fit_month_m": 7.929641555943502,
+   "corr_pred_actual": 0.4905432556826622,
+   "r2_oos_month": 0.15976138372613813
+  },
+  {
+   "month": "2026-03",
+   "smt": "tennis_first_set_winner",
+   "b": 1.3992472229452357,
+   "n": 2029,
+   "b_fit_month_m": 1.5010656074974944,
+   "corr_pred_actual": 0.5637790429102829,
+   "r2_oos_month": 0.31627935347196834
+  },
+  {
+   "month": "2026-03",
+   "smt": "tennis_match_totals",
+   "b": 2.0744538980007547,
+   "n": 365,
+   "b_fit_month_m": 1.586112148823336,
+   "corr_pred_actual": 0.18905195337021782,
+   "r2_oos_month": 0.028575103287474923
+  },
+  {
+   "month": "2026-03",
+   "smt": "tennis_set_handicap",
+   "b": 0.7807926706898975,
+   "n": 1062,
+   "b_fit_month_m": 0.8557557479686942,
+   "corr_pred_actual": 0.4363219495487773,
+   "r2_oos_month": 0.18886445098882054
+  },
+  {
+   "month": "2026-03",
+   "smt": "tennis_set_totals",
+   "b": 2.725825089224533,
+   "n": 1004,
+   "b_fit_month_m": 2.801916888217067,
+   "corr_pred_actual": 0.39947700765538785,
+   "r2_oos_month": 0.15942269154543365
+  },
+  {
+   "month": "2026-04",
+   "smt": "tennis_first_set_totals",
+   "b": 4.001479838747239,
+   "n": 1448,
+   "b_fit_month_m": 5.111828105276653,
+   "corr_pred_actual": 0.34208527266596617,
+   "r2_oos_month": 0.11086492692494465
+  },
+  {
+   "month": "2026-04",
+   "smt": "tennis_first_set_winner",
+   "b": 1.41473723170328,
+   "n": 9422,
+   "b_fit_month_m": 1.603647984668359,
+   "corr_pred_actual": 0.5995047102192594,
+   "r2_oos_month": 0.3543283571154664
+  },
+  {
+   "month": "2026-04",
+   "smt": "tennis_match_totals",
+   "b": 1.9891837054523342,
+   "n": 2341,
+   "b_fit_month_m": 1.5178971533932817,
+   "corr_pred_actual": 0.19806044754783553,
+   "r2_oos_month": 0.03472056303185855
+  },
+  {
+   "month": "2026-04",
+   "smt": "tennis_set_handicap",
+   "b": 0.790297673241105,
+   "n": 3720,
+   "b_fit_month_m": 0.9357276931685855,
+   "corr_pred_actual": 0.4655619059900704,
+   "r2_oos_month": 0.21148254158216762
+  },
+  {
+   "month": "2026-04",
+   "smt": "tennis_set_totals",
+   "b": 2.7346476539287528,
+   "n": 4185,
+   "b_fit_month_m": 2.932998628620995,
+   "corr_pred_actual": 0.498394615675549,
+   "r2_oos_month": 0.24399514705925152
+  },
+  {
+   "month": "2026-05",
+   "smt": "tennis_first_set_totals",
+   "b": 4.235078429344542,
+   "n": 2054,
+   "b_fit_month_m": 0.636176269187597,
+   "corr_pred_actual": 0.0959290491505268,
+   "r2_oos_month": -0.281961984960448
+  },
+  {
+   "month": "2026-05",
+   "smt": "tennis_first_set_winner",
+   "b": 1.485338541271959,
+   "n": 4802,
+   "b_fit_month_m": 1.372048945631564,
+   "corr_pred_actual": 0.5577283301848855,
+   "r2_oos_month": 0.30880408582058827
+  },
+  {
+   "month": "2026-05",
+   "smt": "tennis_match_totals",
+   "b": 1.8206741135516367,
+   "n": 2253,
+   "b_fit_month_m": 0.6648545242022172,
+   "corr_pred_actual": 0.10290399489898633,
+   "r2_oos_month": -0.02130707232688911
+  },
+  {
+   "month": "2026-05",
+   "smt": "tennis_set_handicap",
+   "b": 0.844676158661781,
+   "n": 2366,
+   "b_fit_month_m": 0.306154626825894,
+   "corr_pred_actual": 0.15230449736877802,
+   "r2_oos_month": -0.04960384919477079
+  },
+  {
+   "month": "2026-05",
+   "smt": "tennis_set_totals",
+   "b": 2.812145695215548,
+   "n": 1753,
+   "b_fit_month_m": 1.2180091282983596,
+   "corr_pred_actual": 0.1996793880029751,
+   "r2_oos_month": -0.028636622354325292
+  },
+  {
+   "month": "2026-06",
+   "smt": "tennis_first_set_totals",
+   "b": 3.59175010402788,
+   "n": 292,
+   "b_fit_month_m": 3.191121828902137,
+   "corr_pred_actual": 0.11667421317161528,
+   "r2_oos_month": 0.007336282179451592
+  },
+  {
+   "month": "2026-06",
+   "smt": "tennis_first_set_winner",
+   "b": 1.466832869922086,
+   "n": 6446,
+   "b_fit_month_m": 1.5536872859904025,
+   "corr_pred_actual": 0.7107927426581021,
+   "r2_oos_month": 0.5035614127715776
+  },
+  {
+   "month": "2026-06",
+   "smt": "tennis_match_totals",
+   "b": 1.6086328366983282,
+   "n": 2078,
+   "b_fit_month_m": 2.141570758938393,
+   "corr_pred_actual": 0.3139450055352643,
+   "r2_oos_month": 0.09228060162453344
+  },
+  {
+   "month": "2026-06",
+   "smt": "tennis_set_handicap",
+   "b": 0.7723348056976527,
+   "n": 3408,
+   "b_fit_month_m": 0.8973292151753086,
+   "corr_pred_actual": 0.40464644736851263,
+   "r2_oos_month": 0.16052165554062792
+  },
+  {
+   "month": "2026-06",
+   "smt": "tennis_set_totals",
+   "b": 2.711260048542249,
+   "n": 1776,
+   "b_fit_month_m": 2.6978346941801563,
+   "corr_pred_actual": 0.4342857252127589,
+   "r2_oos_month": 0.1876857376985872
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_first_set_totals",
+   "b": 3.58792232039751,
+   "n": 284,
+   "b_fit_month_m": 0.7144298968281579,
+   "corr_pred_actual": 0.038619786733034116,
+   "r2_oos_month": -0.023834509443186436
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_first_set_winner",
+   "b": 1.4799250309091796,
+   "n": 8814,
+   "b_fit_month_m": 1.7184418830619022,
+   "corr_pred_actual": 0.7546867122772746,
+   "r2_oos_month": 0.558577736227247
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_match_totals",
+   "b": 1.747255511306216,
+   "n": 3985,
+   "b_fit_month_m": 2.002323497641785,
+   "corr_pred_actual": 0.3786537672457521,
+   "r2_oos_month": 0.140582404862043
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_set_handicap",
+   "b": 0.7910429899075542,
+   "n": 2659,
+   "b_fit_month_m": 1.0312571999800293,
+   "corr_pred_actual": 0.5441400192872887,
+   "r2_oos_month": 0.2799983874540617
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_set_totals",
+   "b": 2.710010836194458,
+   "n": 1196,
+   "b_fit_month_m": 2.8887552967774788,
+   "corr_pred_actual": 0.5042126623431249,
+   "r2_oos_month": 0.2532437222252437
+  },
+  {
+   "month": "2026-07",
+   "smt": "tennis_set_winner",
+   "b": 1.1172932196183338,
+   "n": 5416,
+   "b_fit_month_m": 1.0697330138088195,
+   "corr_pred_actual": 0.5922470905311146,
+   "r2_oos_month": 0.35001754037795874
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_first_set_totals",
+   "b": 3.514143233195978,
+   "n": 46,
+   "b_fit_month_m": 0.6395785895004399,
+   "corr_pred_actual": -0.0020981234408001433,
+   "r2_oos_month": -0.0857653263137812
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_first_set_winner",
+   "b": 1.527875991592811,
+   "n": 6784,
+   "b_fit_month_m": 1.733111910265002,
+   "corr_pred_actual": 0.7473708876483681,
+   "r2_oos_month": 0.5505483409661669
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_match_totals",
+   "b": 1.8243248664803706,
+   "n": 1771,
+   "b_fit_month_m": 2.031977740553384,
+   "corr_pred_actual": 0.33943626947412237,
+   "r2_oos_month": 0.11390788936802576
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_set_handicap",
+   "b": 0.8171462571666066,
+   "n": 3020,
+   "b_fit_month_m": 0.9247363678976264,
+   "corr_pred_actual": 0.46337000743428813,
+   "r2_oos_month": 0.21176188604722168
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_set_totals",
+   "b": 2.721259317541827,
+   "n": 475,
+   "b_fit_month_m": 2.9929647343687478,
+   "corr_pred_actual": 0.4216798757656355,
+   "r2_oos_month": 0.17528297436464446
+  },
+  {
+   "month": "2026-08",
+   "smt": "tennis_set_winner",
+   "b": 1.0781295500280448,
+   "n": 2546,
+   "b_fit_month_m": 1.0799872929594763,
+   "corr_pred_actual": 0.7010207931193401,
+   "r2_oos_month": 0.4912026255589791
+  }
+ ],
+ "beta_model_choice": {
+  "2026-02": "local0.05",
+  "2026-03": "local1.0",
+  "2026-04": "local1.0",
+  "2026-05": "local1.0",
+  "2026-06": "local1.0",
+  "2026-07": "local1.0",
+  "2026-08": "local1.0"
+ }
+}

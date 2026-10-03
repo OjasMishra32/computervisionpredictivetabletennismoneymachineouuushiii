@@ -1,0 +1,1064 @@
+{
+ "recording": {
+  "book_first_utc": "2026-10-03T09:46:22.135000",
+  "book_last_utc": "2026-10-03T12:45:15.700000",
+  "hours": 2.98,
+  "n_units_by_src": {
+   "espn:game": 76,
+   "pm_sports:game": 156,
+   "wta:game": 43,
+   "wta:point": 163
+  },
+  "n_matches_by_src": {
+   "espn": 10,
+   "pm_sports": 14,
+   "wta": 6
+  },
+  "pm_sports_leagues_msgs": {
+   "atp": 326,
+   "challenger": 369,
+   "wta": 372,
+   "wta challenger": 129
+  },
+  "wta_matches_seen": 6,
+  "n_pbp_points": 994,
+  "n_pbp_matches": 9,
+  "units_dropped_post_outage": {
+   "pm_sports": 1,
+   "wta": 2
+  }
+ },
+ "sources": {},
+ "m1": {
+  "book_vs_official_T_s": {
+   "n": 482,
+   "median": -1.16,
+   "p10": -2.93,
+   "p25": -1.93,
+   "p75": -0.68,
+   "p90": 0.08,
+   "mean": -1.25,
+   "share_gt_1p3": 0.037,
+   "share_gt_0": 0.147
+  },
+  "book_first_tick_vs_official_T_s": {
+   "n": 482,
+   "median": -1.73,
+   "p10": -7.74,
+   "p25": -3.56,
+   "p75": -0.92,
+   "p90": -0.01,
+   "mean": -2.46,
+   "share_gt_1p3": 0.031,
+   "share_gt_0": 0.098
+  },
+  "book_vs_official_T_s_game_end": {
+   "n": 74,
+   "median": -1.53,
+   "p10": -4.21,
+   "p25": -2.43,
+   "p75": -0.76,
+   "p90": 0.08,
+   "mean": -1.58,
+   "share_gt_1p3": 0.054,
+   "share_gt_0": 0.135
+  },
+  "book_vs_official_T_s_D_ge_1c": {
+   "n": 471,
+   "median": -1.18,
+   "p10": -2.94,
+   "p25": -1.93,
+   "p75": -0.7,
+   "p90": 0.08,
+   "mean": -1.28,
+   "share_gt_1p3": 0.036,
+   "share_gt_0": 0.144
+  },
+  "book_vs_official_T_s_D_ge_3c": {
+   "n": 246,
+   "median": -1.3,
+   "p10": -2.93,
+   "p25": -1.93,
+   "p75": -0.88,
+   "p90": 0.07,
+   "mean": -1.33,
+   "share_gt_1p3": 0.02,
+   "share_gt_0": 0.126
+  },
+  "placebo": {
+   "median_max_excursion_winner_dir_c": 3.0,
+   "median_max_excursion_loser_dir_c": 0.0,
+   "share_net_move_toward_winner": 0.963,
+   "share_net_move_toward_loser": 0.016
+  },
+  "by_match": {
+   "wta-andree-boisson-2026-10-03": {
+    "n": 41,
+    "median": -0.66,
+    "p10": -2.85,
+    "p25": -1.42,
+    "p75": 0.07,
+    "p90": 1.07,
+    "mean": -0.27,
+    "share_gt_1p3": 0.073,
+    "share_gt_0": 0.293
+   },
+   "wta-bencic-zakharo-2026-10-01": {
+    "n": 5,
+    "median": -1.88,
+    "p10": -2.66,
+    "p25": -1.93,
+    "p75": -0.78,
+    "p90": -0.39,
+    "mean": -1.58,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "wta-bouzkov-birrell-2026-10-01": {
+    "n": 73,
+    "median": -0.94,
+    "p10": -2.61,
+    "p25": -1.43,
+    "p75": -0.22,
+    "p90": 0.11,
+    "mean": -1.17,
+    "share_gt_1p3": 0.041,
+    "share_gt_0": 0.205
+   },
+   "wta-jovic-dart-2026-10-02": {
+    "n": 110,
+    "median": -1.33,
+    "p10": -3.65,
+    "p25": -2.09,
+    "p75": -0.86,
+    "p90": -0.17,
+    "mean": -1.62,
+    "share_gt_1p3": 0.009,
+    "share_gt_0": 0.1
+   },
+   "wta-kartal-wa-2026-10-01": {
+    "n": 59,
+    "median": -0.92,
+    "p10": -1.9,
+    "p25": -1.24,
+    "p75": -0.54,
+    "p90": 0.49,
+    "mean": -0.6,
+    "share_gt_1p3": 0.068,
+    "share_gt_0": 0.186
+   },
+   "wta-rakhimo-fernand-2026-10-01": {
+    "n": 17,
+    "median": -1.93,
+    "p10": -4.67,
+    "p25": -3.06,
+    "p75": -1.88,
+    "p90": -1.05,
+    "mean": -2.87,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "wta-rybakin-charaev-2026-10-01": {
+    "n": 2,
+    "median": -0.69,
+    "p10": -1.04,
+    "p25": -0.91,
+    "p75": -0.47,
+    "p90": -0.34,
+    "mean": -0.69,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "wta-su-bucsa-2026-10-02": {
+    "n": 125,
+    "median": -1.54,
+    "p10": -2.54,
+    "p25": -1.93,
+    "p75": -0.92,
+    "p90": 0.07,
+    "mean": -1.32,
+    "share_gt_1p3": 0.032,
+    "share_gt_0": 0.112
+   },
+   "wta-zhen-kalinsk-2026-10-01": {
+    "n": 50,
+    "median": -1.66,
+    "p10": -3.82,
+    "p25": -2.93,
+    "p75": -0.73,
+    "p90": 0.12,
+    "mean": -1.38,
+    "share_gt_1p3": 0.06,
+    "share_gt_0": 0.16
+   }
+  },
+  "n_points_with_book_coverage": 492,
+  "share_covered_points_with_reprice": 0.963,
+  "n_matches_with_reprices": 9,
+  "pbp_endpoint_delay_s": {
+   "n": 255,
+   "median": 137.14,
+   "p10": 103.97,
+   "p25": 119.7,
+   "p75": 153.69,
+   "p90": 167.86,
+   "mean": 136.73,
+   "share_gt_1p3": 1.0,
+   "share_gt_0": 1.0
+  },
+  "espn:game": {
+   "source_delay_vs_official_T_s": {
+    "n": 40,
+    "median": 27.46,
+    "p10": 20.14,
+    "p25": 23.91,
+    "p75": 29.02,
+    "p90": 30.02,
+    "mean": 26.05,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 40,
+    "median": -28.19,
+    "p10": -34.33,
+    "p25": -31.03,
+    "p75": -23.91,
+    "p90": -20.43,
+    "mean": -27.35,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees_with_pbp": 1.0
+  },
+  "pm_sports:game": {
+   "source_delay_vs_official_T_s": {
+    "n": 62,
+    "median": 29.1,
+    "p10": 16.7,
+    "p25": 19.89,
+    "p75": 36.35,
+    "p90": 41.83,
+    "mean": 28.82,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 61,
+    "median": -30.04,
+    "p10": -42.64,
+    "p25": -35.63,
+    "p75": -23.82,
+    "p90": -17.77,
+    "mean": -30.28,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees_with_pbp": 1.0
+  },
+  "wta:game": {
+   "source_delay_vs_official_T_s": {
+    "n": 41,
+    "median": 43.11,
+    "p10": 25.82,
+    "p25": 31.61,
+    "p75": 50.34,
+    "p90": 63.97,
+    "mean": 42.3,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 41,
+    "median": -44.21,
+    "p10": -62.9,
+    "p25": -52.33,
+    "p75": -33.55,
+    "p90": -26.34,
+    "mean": -43.6,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees_with_pbp": 1.0
+  },
+  "wta:point": {
+   "source_delay_vs_official_T_s": {
+    "n": 159,
+    "median": 43.34,
+    "p10": 27.35,
+    "p25": 34.09,
+    "p75": 52.72,
+    "p90": 60.6,
+    "mean": 43.6,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 153,
+    "median": -44.07,
+    "p10": -61.48,
+    "p25": -54.01,
+    "p75": -34.0,
+    "p90": -28.24,
+    "mean": -44.15,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   },
+   "winner_agrees_with_pbp": 1.0
+  },
+  "espn:all": {
+   "source_delay_vs_official_T_s": {
+    "n": 40,
+    "median": 27.46,
+    "p10": 20.14,
+    "p25": 23.91,
+    "p75": 29.02,
+    "p90": 30.02,
+    "mean": 26.05,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 40,
+    "median": -28.19,
+    "p10": -34.33,
+    "p25": -31.03,
+    "p75": -23.91,
+    "p90": -20.43,
+    "mean": -27.35,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   }
+  },
+  "pm_sports:all": {
+   "source_delay_vs_official_T_s": {
+    "n": 62,
+    "median": 29.1,
+    "p10": 16.7,
+    "p25": 19.89,
+    "p75": 36.35,
+    "p90": 41.83,
+    "mean": 28.82,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 61,
+    "median": -30.04,
+    "p10": -42.64,
+    "p25": -35.63,
+    "p75": -23.82,
+    "p90": -17.77,
+    "mean": -30.28,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   }
+  },
+  "wta:all": {
+   "source_delay_vs_official_T_s": {
+    "n": 200,
+    "median": 43.23,
+    "p10": 26.58,
+    "p25": 33.61,
+    "p75": 52.41,
+    "p90": 60.71,
+    "mean": 43.33,
+    "share_gt_1p3": 1.0,
+    "share_gt_0": 1.0
+   },
+   "lead_vs_book_s": {
+    "n": 194,
+    "median": -44.17,
+    "p10": -61.8,
+    "p25": -53.59,
+    "p75": -34.0,
+    "p90": -27.23,
+    "mean": -44.04,
+    "share_gt_1p3": 0.0,
+    "share_gt_0": 0.0
+   }
+  }
+ },
+ "m2": {
+  "espn:game": {
+   "n": 70,
+   "median": -56.47,
+   "p10": -85.27,
+   "p25": -71.89,
+   "p75": -24.75,
+   "p90": -7.14,
+   "mean": -48.13,
+   "share_gt_1p3": 0.086,
+   "share_gt_0": 0.086,
+   "n_units": 76,
+   "share_no_book_move": 0.079
+  },
+  "pm_sports:game": {
+   "n": 147,
+   "median": -58.84,
+   "p10": -83.85,
+   "p25": -74.64,
+   "p75": -35.06,
+   "p90": -17.03,
+   "mean": -53.11,
+   "share_gt_1p3": 0.054,
+   "share_gt_0": 0.054,
+   "n_units": 156,
+   "share_no_book_move": 0.058
+  },
+  "wta:game": {
+   "n": 43,
+   "median": -55.0,
+   "p10": -78.18,
+   "p25": -72.56,
+   "p75": -40.05,
+   "p90": -29.15,
+   "mean": -53.87,
+   "share_gt_1p3": 0.047,
+   "share_gt_0": 0.047,
+   "n_units": 43,
+   "share_no_book_move": 0.0
+  },
+  "wta:point": {
+   "n": 163,
+   "median": -38.56,
+   "p10": -75.26,
+   "p25": -57.26,
+   "p75": -16.11,
+   "p90": 13.0,
+   "mean": -35.53,
+   "share_gt_1p3": 0.147,
+   "share_gt_0": 0.16,
+   "n_units": 163,
+   "share_no_book_move": 0.0
+  },
+  "espn:series=atp": {
+   "n": 27,
+   "median": -66.75,
+   "p10": -85.21,
+   "p25": -71.88,
+   "p75": -8.69,
+   "p90": 6.34,
+   "mean": -44.42,
+   "share_gt_1p3": 0.185,
+   "share_gt_0": 0.185
+  },
+  "espn:series=wta": {
+   "n": 43,
+   "median": -53.35,
+   "p10": -84.45,
+   "p25": -71.46,
+   "p75": -28.48,
+   "p90": -22.89,
+   "mean": -50.47,
+   "share_gt_1p3": 0.023,
+   "share_gt_0": 0.023
+  },
+  "pm_sports:series=atp": {
+   "n": 81,
+   "median": -61.49,
+   "p10": -84.93,
+   "p25": -74.93,
+   "p75": -39.64,
+   "p90": -13.12,
+   "mean": -53.93,
+   "share_gt_1p3": 0.074,
+   "share_gt_0": 0.074
+  },
+  "pm_sports:series=wta": {
+   "n": 66,
+   "median": -52.04,
+   "p10": -82.09,
+   "p25": -73.83,
+   "p75": -33.66,
+   "p90": -22.25,
+   "mean": -52.1,
+   "share_gt_1p3": 0.03,
+   "share_gt_0": 0.03
+  },
+  "wta:series=wta": {
+   "n": 206,
+   "median": -43.76,
+   "p10": -76.64,
+   "p25": -61.7,
+   "p75": -23.67,
+   "p90": 6.51,
+   "mean": -39.36,
+   "share_gt_1p3": 0.126,
+   "share_gt_0": 0.136
+  }
+ },
+ "pairs": [
+  {
+   "a": "espn",
+   "b": "pm_sports",
+   "n": 64,
+   "median_b_minus_a_s": -4.48,
+   "p10": -574.22,
+   "p90": 12.32,
+   "share_a_first": 0.375,
+   "share_a_stalled_gt_120s": 0.156,
+   "share_b_stalled_gt_120s": 0.0,
+   "median_excl_stalls": -1.87
+  },
+  {
+   "a": "espn",
+   "b": "wta",
+   "n": 42,
+   "median_b_minus_a_s": 14.96,
+   "p10": -3.88,
+   "p90": 36.67,
+   "share_a_first": 0.81,
+   "share_a_stalled_gt_120s": 0.0,
+   "share_b_stalled_gt_120s": 0.0,
+   "median_excl_stalls": 14.96
+  },
+  {
+   "a": "pm_sports",
+   "b": "wta",
+   "n": 38,
+   "median_b_minus_a_s": 13.6,
+   "p10": -4.88,
+   "p90": 36.2,
+   "share_a_first": 0.737,
+   "share_a_stalled_gt_120s": 0.0,
+   "share_b_stalled_gt_120s": 0.0,
+   "median_excl_stalls": 13.6
+  }
+ ],
+ "cross_market": {
+  "n_ml_jumps": 642,
+  "n_matches": 14,
+  "all_side_markets": {
+   "n_pairs": 4184,
+   "share_side_moved": 0.206,
+   "lag_half_s": {
+    "n": 861,
+    "median": 4.37,
+    "p10": 0.01,
+    "p25": 0.98,
+    "p75": 16.32,
+    "p90": 23.79,
+    "mean": 8.47,
+    "share_gt_1p3": 0.682,
+    "share_gt_0": 0.902
+   },
+   "lag_first_tick_s": {
+    "n": 861,
+    "median": 3.39,
+    "p10": -0.45,
+    "p25": 0.84,
+    "p75": 14.78,
+    "p90": 22.98,
+    "mean": 7.66,
+    "share_gt_1p3": 0.646,
+    "share_gt_0": 0.863
+   }
+  },
+  "hours_covered": 1.56,
+  "ml_jump_ge_3c": {
+   "n_pairs": 326,
+   "share_side_moved": 0.298,
+   "lag_half_s": {
+    "n": 97,
+    "median": 1.28,
+    "p10": -0.0,
+    "p25": 0.51,
+    "p75": 3.25,
+    "p90": 21.11,
+    "mean": 4.79,
+    "share_gt_1p3": 0.485,
+    "share_gt_0": 0.887
+   },
+   "n_lagging_gt_1p3": 47,
+   "sum_net_edge_usd_hold": -28.4,
+   "sum_net_edge_usd_exit": -299.85
+  },
+  "ml_jump_at_wta_point": {
+   "n_pairs": 1444,
+   "share_side_moved": 0.202,
+   "lag_half_s": {
+    "n": 291,
+    "median": 2.06,
+    "p10": 0.17,
+    "p25": 0.9,
+    "p75": 7.05,
+    "p90": 21.26,
+    "mean": 5.92,
+    "share_gt_1p3": 0.646,
+    "share_gt_0": 0.928
+   },
+   "n_lagging_gt_1p3": 188,
+   "sum_net_edge_usd_hold": -11.95,
+   "sum_net_edge_usd_exit": -342.13
+  },
+  "all_lagging_gt_1p3_stale_at_ml+1.3s": {
+   "n": 587,
+   "share_with_stale_depth": 0.123,
+   "sum_usd": 54364.0,
+   "sum_net_edge_usd_hold": 607.18,
+   "sum_net_edge_usd_exit": -3246.14,
+   "per_hour_net_edge_usd_hold": 388.43,
+   "per_hour_net_edge_usd_exit": -2076.65
+  },
+  "tennis_first_set_totals": {
+   "n_pairs": 563,
+   "share_side_moved": 0.0,
+   "lag_half_s": {
+    "n": 0
+   },
+   "lag_first_tick_s": {
+    "n": 0
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 0,
+    "share_with_stale_depth": null,
+    "sum_net_edge_usd": 0.0,
+    "sum_net_exit_usd": 0.0,
+    "mean_net_edge_usd": null,
+    "median_usd": null
+   }
+  },
+  "tennis_first_set_winner": {
+   "n_pairs": 358,
+   "share_side_moved": 0.377,
+   "lag_half_s": {
+    "n": 135,
+    "median": 2.96,
+    "p10": -0.84,
+    "p25": 0.18,
+    "p75": 9.81,
+    "p90": 19.87,
+    "mean": 6.2,
+    "share_gt_1p3": 0.607,
+    "share_gt_0": 0.83
+   },
+   "lag_first_tick_s": {
+    "n": 135,
+    "median": 1.42,
+    "p10": -1.76,
+    "p25": 0.06,
+    "p75": 7.24,
+    "p90": 16.66,
+    "mean": 4.94,
+    "share_gt_1p3": 0.519,
+    "share_gt_0": 0.77
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 82,
+    "share_with_stale_depth": 0.159,
+    "sum_net_edge_usd": 47.32,
+    "sum_net_exit_usd": -291.02,
+    "mean_net_edge_usd": 0.58,
+    "median_usd": 0.0
+   }
+  },
+  "tennis_game_handicap": {
+   "n_pairs": 357,
+   "share_side_moved": 0.118,
+   "lag_half_s": {
+    "n": 42,
+    "median": 1.75,
+    "p10": -0.58,
+    "p25": 0.9,
+    "p75": 12.74,
+    "p90": 24.29,
+    "mean": 6.93,
+    "share_gt_1p3": 0.548,
+    "share_gt_0": 0.857
+   },
+   "lag_first_tick_s": {
+    "n": 42,
+    "median": 1.14,
+    "p10": -1.66,
+    "p25": 0.54,
+    "p75": 5.38,
+    "p90": 20.89,
+    "mean": 5.1,
+    "share_gt_1p3": 0.429,
+    "share_gt_0": 0.786
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 23,
+    "share_with_stale_depth": 0.087,
+    "sum_net_edge_usd": -0.87,
+    "sum_net_exit_usd": -7.15,
+    "mean_net_edge_usd": -0.04,
+    "median_usd": 0.0
+   }
+  },
+  "tennis_match_totals": {
+   "n_pairs": 1726,
+   "share_side_moved": 0.29,
+   "lag_half_s": {
+    "n": 500,
+    "median": 6.12,
+    "p10": 0.71,
+    "p25": 1.27,
+    "p75": 17.98,
+    "p90": 24.19,
+    "mean": 9.62,
+    "share_gt_1p3": 0.738,
+    "share_gt_0": 0.952
+   },
+   "lag_first_tick_s": {
+    "n": 500,
+    "median": 5.39,
+    "p10": 0.58,
+    "p25": 1.27,
+    "p75": 17.09,
+    "p90": 23.51,
+    "mean": 9.14,
+    "share_gt_1p3": 0.732,
+    "share_gt_0": 0.942
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 369,
+    "share_with_stale_depth": 0.076,
+    "sum_net_edge_usd": 153.2,
+    "sum_net_exit_usd": -2566.9,
+    "mean_net_edge_usd": 0.42,
+    "median_usd": 0.0
+   }
+  },
+  "tennis_set_handicap": {
+   "n_pairs": 388,
+   "share_side_moved": 0.116,
+   "lag_half_s": {
+    "n": 45,
+    "median": 4.05,
+    "p10": -0.7,
+    "p25": 0.36,
+    "p75": 11.82,
+    "p90": 19.97,
+    "mean": 7.0,
+    "share_gt_1p3": 0.689,
+    "share_gt_0": 0.844
+   },
+   "lag_first_tick_s": {
+    "n": 45,
+    "median": 3.09,
+    "p10": -1.63,
+    "p25": 0.34,
+    "p75": 11.82,
+    "p90": 17.37,
+    "mean": 6.45,
+    "share_gt_1p3": 0.667,
+    "share_gt_0": 0.8
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 31,
+    "share_with_stale_depth": 0.161,
+    "sum_net_edge_usd": 29.26,
+    "sum_net_exit_usd": -47.37,
+    "mean_net_edge_usd": 0.94,
+    "median_usd": 0.0
+   }
+  },
+  "tennis_set_totals": {
+   "n_pairs": 404,
+   "share_side_moved": 0.005,
+   "lag_half_s": {
+    "n": 2,
+    "median": 6.67,
+    "p10": 1.33,
+    "p25": 3.33,
+    "p75": 10.0,
+    "p90": 12.0,
+    "mean": 6.67,
+    "share_gt_1p3": 0.5,
+    "share_gt_0": 0.5
+   },
+   "lag_first_tick_s": {
+    "n": 2,
+    "median": 6.67,
+    "p10": 1.33,
+    "p25": 3.33,
+    "p75": 10.0,
+    "p90": 12.0,
+    "mean": 6.67,
+    "share_gt_1p3": 0.5,
+    "share_gt_0": 0.5
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 1,
+    "share_with_stale_depth": 0.0,
+    "sum_net_edge_usd": 0.0,
+    "sum_net_exit_usd": 0.0,
+    "mean_net_edge_usd": 0.0,
+    "median_usd": 0.0
+   }
+  },
+  "tennis_set_winner": {
+   "n_pairs": 388,
+   "share_side_moved": 0.353,
+   "lag_half_s": {
+    "n": 137,
+    "median": 2.74,
+    "p10": -0.8,
+    "p25": 0.19,
+    "p75": 16.57,
+    "p90": 24.34,
+    "mean": 7.48,
+    "share_gt_1p3": 0.591,
+    "share_gt_0": 0.832
+   },
+   "lag_first_tick_s": {
+    "n": 137,
+    "median": 1.67,
+    "p10": -1.94,
+    "p25": -0.07,
+    "p75": 10.06,
+    "p90": 23.39,
+    "mean": 6.12,
+    "share_gt_1p3": 0.518,
+    "share_gt_0": 0.715
+   },
+   "stale_at_ml+1.3s": {
+    "n_lagging_gt_1p3": 81,
+    "share_with_stale_depth": 0.296,
+    "sum_net_edge_usd": 378.28,
+    "sum_net_exit_usd": -333.7,
+    "mean_net_edge_usd": 4.67,
+    "median_usd": 0.0
+   }
+  }
+ },
+ "stale_depth": {
+  "pre2s_D_ge_3c": {
+   "n": 246,
+   "median_usd": 854.4,
+   "mean_net_edge_usd": 50.58,
+   "median_net_edge_usd": 0.01
+  },
+  "pre2s": {
+   "median_shares": 1247.7,
+   "median_usd": 564.5,
+   "mean_usd": 3116.4,
+   "median_net_edge_usd": -0.62,
+   "mean_net_edge_usd": 20.94,
+   "mean_net_exit_usd": -71.15,
+   "sum_net_edge_usd": 10094.0,
+   "share_events_any_stale": 0.959,
+   "n": 482
+  },
+  "pre1s_D_ge_3c": {
+   "n": 246,
+   "median_usd": 645.4,
+   "mean_net_edge_usd": 42.49,
+   "median_net_edge_usd": -0.01
+  },
+  "pre1s": {
+   "median_shares": 870.0,
+   "median_usd": 378.6,
+   "mean_usd": 1865.5,
+   "median_net_edge_usd": -0.4,
+   "mean_net_edge_usd": 18.17,
+   "mean_net_exit_usd": -37.71,
+   "sum_net_edge_usd": 8760.0,
+   "share_events_any_stale": 0.944,
+   "n": 482
+  },
+  "pre_D_ge_3c": {
+   "n": 246,
+   "median_usd": 435.4,
+   "mean_net_edge_usd": 38.38,
+   "median_net_edge_usd": -0.01
+  },
+  "pre": {
+   "median_shares": 457.8,
+   "median_usd": 222.2,
+   "mean_usd": 1253.6,
+   "median_net_edge_usd": -0.11,
+   "mean_net_edge_usd": 17.55,
+   "mean_net_exit_usd": -20.51,
+   "sum_net_edge_usd": 8457.0,
+   "share_events_any_stale": 0.925,
+   "n": 482
+  },
+  "post_D_ge_3c": {
+   "n": 246,
+   "median_usd": 0.0,
+   "mean_net_edge_usd": -1.14,
+   "median_net_edge_usd": 0.0
+  },
+  "post": {
+   "median_shares": 0.0,
+   "median_usd": 0.0,
+   "mean_usd": 113.0,
+   "median_net_edge_usd": 0.0,
+   "mean_net_edge_usd": -0.8,
+   "mean_net_exit_usd": -4.04,
+   "sum_net_edge_usd": -388.0,
+   "share_events_any_stale": 0.29,
+   "n": 482
+  }
+ },
+ "trades_around_reprice": {
+  "(-5.0, -3.0]": {
+   "n_prints": 126,
+   "usd": 15664.0,
+   "share_usd_with_move": 0.483,
+   "with_move_net_edge_c_per_share": -0.0
+  },
+  "(-3.0, -2.0]": {
+   "n_prints": 54,
+   "usd": 5768.0,
+   "share_usd_with_move": 0.619,
+   "with_move_net_edge_c_per_share": 2.82
+  },
+  "(-2.0, -1.0]": {
+   "n_prints": 91,
+   "usd": 8424.0,
+   "share_usd_with_move": 0.571,
+   "with_move_net_edge_c_per_share": 1.05
+  },
+  "(-1.0, -0.5]": {
+   "n_prints": 134,
+   "usd": 30590.0,
+   "share_usd_with_move": 0.62,
+   "with_move_net_edge_c_per_share": 1.27
+  },
+  "(-0.5, 0.0]": {
+   "n_prints": 107,
+   "usd": 12944.0,
+   "share_usd_with_move": 0.979,
+   "with_move_net_edge_c_per_share": 0.91
+  },
+  "(0.0, 0.5]": {
+   "n_prints": 576,
+   "usd": 101031.0,
+   "share_usd_with_move": 0.964,
+   "with_move_net_edge_c_per_share": -0.33
+  },
+  "(0.5, 1.0]": {
+   "n_prints": 123,
+   "usd": 13135.0,
+   "share_usd_with_move": 0.877,
+   "with_move_net_edge_c_per_share": -0.07
+  },
+  "(1.0, 2.0]": {
+   "n_prints": 310,
+   "usd": 27369.0,
+   "share_usd_with_move": 0.737,
+   "with_move_net_edge_c_per_share": -0.52
+  },
+  "(2.0, 3.0]": {
+   "n_prints": 162,
+   "usd": 14364.0,
+   "share_usd_with_move": 0.482,
+   "with_move_net_edge_c_per_share": -0.8
+  },
+  "(3.0, 5.0]": {
+   "n_prints": 277,
+   "usd": 107046.0,
+   "share_usd_with_move": 0.347,
+   "with_move_net_edge_c_per_share": -2.48
+  }
+ },
+ "cadence": {
+  "pm_sports_msg_gap_s": {
+   "n": 1152,
+   "median": 32.76,
+   "p10": 21.78,
+   "p25": 32.17,
+   "p75": 59.17,
+   "p90": 85.69,
+   "mean": 52.27,
+   "share_gt_1p3": 1.0,
+   "share_gt_0": 1.0
+  },
+  "espn_atp": {
+   "n_polls": 2912,
+   "ok_share": 0.996,
+   "resp_ms_median": 30.0,
+   "cdn_age_s_median": null,
+   "cache_control": "max-age=1",
+   "x_cache_hit_share": 0.0
+  },
+  "espn_wta": {
+   "n_polls": 2910,
+   "ok_share": 0.996,
+   "resp_ms_median": 32.0,
+   "cdn_age_s_median": null,
+   "cache_control": "max-age=1",
+   "x_cache_hit_share": 0.0
+  },
+  "wta_list": {
+   "n_polls": 8724,
+   "ok_share": 0.997,
+   "resp_ms_median": 18.0,
+   "cdn_age_s_median": 14.0,
+   "cache_control": "max-age=30",
+   "x_cache_hit_share": 0.953
+  },
+  "wta_pbp": {
+   "n_polls": 788,
+   "ok_share": 0.986,
+   "resp_ms_median": 32.0,
+   "cdn_age_s_median": 15.0,
+   "cache_control": "max-age=30",
+   "x_cache_hit_share": 0.766
+  },
+  "wta_score": {
+   "n_polls": 2982,
+   "ok_share": 0.998,
+   "resp_ms_median": 18.0,
+   "cdn_age_s_median": 16.0,
+   "cache_control": "max-age=30",
+   "x_cache_hit_share": 0.893
+  }
+ },
+ "side_market_spreads_live": {
+  "moneyline": {
+   "n_markets": 14,
+   "median_spread": 0.01,
+   "median_quote_updates": 151622.5
+  },
+  "tennis_completed_match": {
+   "n_markets": 8,
+   "median_spread": 0.88,
+   "median_quote_updates": 43.5
+  },
+  "tennis_first_set_totals": {
+   "n_markets": 28,
+   "median_spread": 0.44,
+   "median_quote_updates": 46.5
+  },
+  "tennis_first_set_winner": {
+   "n_markets": 10,
+   "median_spread": 0.08,
+   "median_quote_updates": 5135.5
+  },
+  "tennis_game_handicap": {
+   "n_markets": 10,
+   "median_spread": 0.295,
+   "median_quote_updates": 729.5
+  },
+  "tennis_match_totals": {
+   "n_markets": 37,
+   "median_spread": 0.13,
+   "median_quote_updates": 498.0
+  },
+  "tennis_set_games_totals": {
+   "n_markets": 15,
+   "median_spread": 0.98,
+   "median_quote_updates": 6.0
+  },
+  "tennis_set_handicap": {
+   "n_markets": 14,
+   "median_spread": 0.13,
+   "median_quote_updates": 1975.5
+  },
+  "tennis_set_totals": {
+   "n_markets": 12,
+   "median_spread": 0.185,
+   "median_quote_updates": 2441.0
+  },
+  "tennis_set_winner": {
+   "n_markets": 12,
+   "median_spread": 0.115,
+   "median_quote_updates": 3495.0
+  }
+ }
+}

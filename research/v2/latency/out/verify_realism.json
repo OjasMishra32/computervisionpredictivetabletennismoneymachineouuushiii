@@ -1,0 +1,623 @@
+{
+ "cutoff_utc": "2026-10-03T12:45:15.700000",
+ "repro_seconds": 107.3,
+ "reproduction": {
+  "m1/book_vs_official_T_s/n": {
+   "claimed": 482,
+   "reproduced": 488
+  },
+  "m1/book_vs_official_T_s/median": {
+   "claimed": -1.16,
+   "reproduced": -1.15
+  },
+  "m1/book_vs_official_T_s/share_gt_1p3": {
+   "claimed": 0.037,
+   "reproduced": 0.041
+  },
+  "m1/espn:all/lead_vs_book_s/n": {
+   "claimed": 40,
+   "reproduced": 42
+  },
+  "m1/espn:all/lead_vs_book_s/median": {
+   "claimed": -28.19,
+   "reproduced": -27.77
+  },
+  "m1/espn:all/lead_vs_book_s/share_gt_1p3": {
+   "claimed": 0.0,
+   "reproduced": 0.0
+  },
+  "m1/pm_sports:all/lead_vs_book_s/n": {
+   "claimed": 61,
+   "reproduced": 63
+  },
+  "m1/pm_sports:all/lead_vs_book_s/median": {
+   "claimed": -30.04,
+   "reproduced": -30.04
+  },
+  "m1/wta:all/lead_vs_book_s/n": {
+   "claimed": 194,
+   "reproduced": 199
+  },
+  "m1/wta:all/lead_vs_book_s/median": {
+   "claimed": -44.17,
+   "reproduced": -44.07
+  },
+  "m1/wta:all/lead_vs_book_s/share_gt_1p3": {
+   "claimed": 0.0,
+   "reproduced": 0.0
+  },
+  "cross_market/all_lagging_gt_1p3_stale_at_ml+1.3s/sum_net_edge_usd_hold": {
+   "claimed": 607.18,
+   "reproduced": 617.6
+  },
+  "cross_market/all_lagging_gt_1p3_stale_at_ml+1.3s/sum_net_edge_usd_exit": {
+   "claimed": -3246.14,
+   "reproduced": -3519.17
+  },
+  "cross_market/tennis_set_winner/stale_at_ml+1.3s/sum_net_edge_usd": {
+   "claimed": 378.28,
+   "reproduced": 378.28
+  },
+  "cross_market/tennis_set_winner/stale_at_ml+1.3s/sum_net_exit_usd": {
+   "claimed": -333.7,
+   "reproduced": -333.7
+  },
+  "stale_depth/pre/mean_net_edge_usd": {
+   "claimed": 17.55,
+   "reproduced": 17.33
+  },
+  "stale_depth/pre/median_usd": {
+   "claimed": 222.2,
+   "reproduced": 222.2
+  }
+ },
+ "reproduction_all_match": false,
+ "m1_shift_placebo": {
+  "shift_-4s": {
+   "n": 487,
+   "median_book_minus_true_T_s": -1.176
+  },
+  "shift_-2s": {
+   "n": 487,
+   "median_book_minus_true_T_s": -1.176
+  },
+  "shift_-1s": {
+   "n": 487,
+   "median_book_minus_true_T_s": -1.143
+  },
+  "shift_+0s": {
+   "n": 488,
+   "median_book_minus_true_T_s": -1.155
+  },
+  "shift_+1s": {
+   "n": 486,
+   "median_book_minus_true_T_s": -1.127
+  },
+  "shift_+2s": {
+   "n": 484,
+   "median_book_minus_true_T_s": -1.105
+  },
+  "shift_+4s": {
+   "n": 457,
+   "median_book_minus_true_T_s": -0.933
+  }
+ },
+ "m1_median_cluster_bootstrap_95ci_s": [
+  -1.447,
+  -0.921
+ ],
+ "m1_matches": 9,
+ "m1_points_per_match": {
+  "wta-andree-boisson-2026-10-03": 43,
+  "wta-bencic-zakharo-2026-10-01": 5,
+  "wta-bouzkov-birrell-2026-10-01": 74,
+  "wta-jovic-dart-2026-10-02": 110,
+  "wta-kartal-wa-2026-10-01": 60,
+  "wta-rakhimo-fernand-2026-10-01": 17,
+  "wta-rybakin-charaev-2026-10-01": 4,
+  "wta-su-bucsa-2026-10-02": 125,
+  "wta-zhen-kalinsk-2026-10-01": 50
+ },
+ "zero_latency_official_feed_share_lead_gt_1p3": 0.041,
+ "official_stamp_plus_3.5s_feed_share_lead_gt_1p3": 0.018,
+ "official_stamp_plus_5.0s_feed_share_lead_gt_1p3": 0.014,
+ "official_stamp_plus_10.0s_feed_share_lead_gt_1p3": 0.008,
+ "source_minus_official_T_min_s": {
+  "espn:game": 15.86,
+  "pm_sports:game": 7.7,
+  "wta:game": 3.9,
+  "wta:point": 3.56
+ },
+ "share_source_before_official_T": 0.0,
+ "poll_cadence": {
+  "espn_atp": {
+   "median_poll_gap_s": 2.001,
+   "p90_poll_gap_s": 2.033,
+   "median_cdn_age_s": 0.0
+  },
+  "espn_wta": {
+   "median_poll_gap_s": 2.001,
+   "p90_poll_gap_s": 2.038,
+   "median_cdn_age_s": 0.0
+  },
+  "wta_list": {
+   "median_poll_gap_s": 2.001,
+   "p90_poll_gap_s": 2.031,
+   "median_cdn_age_s": 14.0
+  },
+  "wta_score": {
+   "median_poll_gap_s": 4.001,
+   "p90_poll_gap_s": 4.036,
+   "median_cdn_age_s": 12.0
+  }
+ },
+ "optimistic_leads": {
+  "espn": {
+   "lead_s": {
+    "n": 42,
+    "median": -27.774,
+    "p10": -34.154,
+    "p90": -20.798,
+    "max": -14.794,
+    "share_gt_1p3": 0.0
+   },
+   "lead_origin_upper_bound_s": {
+    "n": 42,
+    "median": -25.774,
+    "p10": -32.154,
+    "p90": -18.798,
+    "max": -12.794,
+    "share_gt_1p3": 0.0
+   },
+   "first_seen_poll_cache_status": {
+    "n/a": 42
+   },
+   "first_seen_poll_age_s_median": 0.0
+  },
+  "pm_sports": {
+   "lead_s": {
+    "n": 63,
+    "median": -30.039,
+    "p10": -42.544,
+    "p90": -17.773,
+    "max": -14.772,
+    "share_gt_1p3": 0.0
+   },
+   "lead_origin_upper_bound_s": {
+    "n": 63,
+    "median": -30.039,
+    "p10": -42.544,
+    "p90": -17.773,
+    "max": -14.772,
+    "share_gt_1p3": 0.0
+   },
+   "first_seen_poll_cache_status": {
+    "n/a": 63
+   },
+   "first_seen_poll_age_s_median": 0.0
+  },
+  "wta": {
+   "lead_s": {
+    "n": 199,
+    "median": -44.069,
+    "p10": -61.786,
+    "p90": -26.721,
+    "max": -3.324,
+    "share_gt_1p3": 0.0
+   },
+   "lead_origin_upper_bound_s": {
+    "n": 199,
+    "median": -12.607,
+    "p10": -31.314,
+    "p90": 5.167,
+    "max": 28.678,
+    "share_gt_1p3": 0.161
+   },
+   "first_seen_poll_cache_status": {
+    "Miss from cloudfront": 199
+   },
+   "first_seen_poll_age_s_median": 0.0
+  }
+ },
+ "exact_0_of_n": {
+  "n": 304,
+  "n_gt_1p3": 0,
+  "cp95_upper_share": 0.0098,
+  "max_lead_s": -3.324
+ },
+ "m2_placebo": {
+  "espn:atp": {
+   "n": 34,
+   "right_dir_share_gt_1p3": 0.147,
+   "wrong_dir_share_gt_1p3": 0.118,
+   "right_dir_median_lead_s": -66.75,
+   "wrong_dir_median_lead_s": -65.164,
+   "right_median_move_c": 0.55,
+   "wrong_median_move_c": 0.27
+  },
+  "espn:wta": {
+   "n": 43,
+   "right_dir_share_gt_1p3": 0.023,
+   "wrong_dir_share_gt_1p3": 0.14,
+   "right_dir_median_lead_s": -53.349,
+   "wrong_dir_median_lead_s": -64.853,
+   "right_median_move_c": 3.0,
+   "wrong_median_move_c": 2.0
+  },
+  "pm_sports:atp": {
+   "n": 90,
+   "right_dir_share_gt_1p3": 0.067,
+   "wrong_dir_share_gt_1p3": 0.122,
+   "right_dir_median_lead_s": -61.489,
+   "wrong_dir_median_lead_s": -61.489,
+   "right_median_move_c": 1.5,
+   "wrong_median_move_c": 1.0
+  },
+  "pm_sports:wta": {
+   "n": 66,
+   "right_dir_share_gt_1p3": 0.03,
+   "wrong_dir_share_gt_1p3": 0.182,
+   "right_dir_median_lead_s": -52.043,
+   "wrong_dir_median_lead_s": -55.765,
+   "right_median_move_c": 3.0,
+   "wrong_median_move_c": 1.5
+  },
+  "wta:wta": {
+   "n": 211,
+   "right_dir_share_gt_1p3": 0.128,
+   "wrong_dir_share_gt_1p3": 0.237,
+   "right_dir_median_lead_s": -43.943,
+   "wrong_dir_median_lead_s": -33.555,
+   "right_median_move_c": 3.0,
+   "wrong_median_move_c": 2.5
+  }
+ },
+ "cross_market_audit": {
+  "tennis_first_set_winner": {
+   "n_lagging": 83,
+   "n_with_stale": 13,
+   "n_matches_with_stale": 3,
+   "hold_usd": 47.3,
+   "exit_usd": -291.0,
+   "hold_c_per_share": 0.691,
+   "exit_c_per_share": -4.251
+  },
+  "tennis_game_handicap": {
+   "n_lagging": 24,
+   "n_with_stale": 2,
+   "n_matches_with_stale": 2,
+   "hold_usd": -0.9,
+   "exit_usd": -7.2,
+   "hold_c_per_share": -0.746,
+   "exit_c_per_share": -6.141
+  },
+  "tennis_match_totals": {
+   "n_lagging": 378,
+   "n_with_stale": 31,
+   "n_matches_with_stale": 6,
+   "hold_usd": 163.6,
+   "exit_usd": -2839.9,
+   "hold_c_per_share": 0.185,
+   "exit_c_per_share": -3.218
+  },
+  "tennis_set_handicap": {
+   "n_lagging": 31,
+   "n_with_stale": 5,
+   "n_matches_with_stale": 1,
+   "hold_usd": 29.3,
+   "exit_usd": -47.4,
+   "hold_c_per_share": 2.544,
+   "exit_c_per_share": -4.119
+  },
+  "tennis_set_totals": {
+   "n_lagging": 1,
+   "n_with_stale": 0,
+   "n_matches_with_stale": 0,
+   "hold_usd": 0.0,
+   "exit_usd": 0.0,
+   "hold_c_per_share": null,
+   "exit_c_per_share": null
+  },
+  "tennis_set_winner": {
+   "n_lagging": 82,
+   "n_with_stale": 24,
+   "n_matches_with_stale": 1,
+   "hold_usd": 378.3,
+   "exit_usd": -333.7,
+   "hold_c_per_share": 2.363,
+   "exit_c_per_share": -2.085
+  },
+  "ALL": {
+   "hold_c_per_share": 0.55,
+   "exit_c_per_share": -3.132,
+   "shares": 112369.0
+  },
+  "set_winner_detail": {
+   "matches": [
+    "wta-su-bucsa-2026-10-02"
+   ],
+   "top_event_share_of_hold": 0.681,
+   "top_event": {
+    "lag_s": 24.408,
+    "ml_move_c": 1.0,
+    "stale_usd": 7115.0,
+    "stale_shares": 10702.0,
+    "hold_usd": 257.7,
+    "exit_usd": -181.7
+   },
+   "hold_usd_excl_top_event": 120.6,
+   "hold_usd_lag_le_5s": 11.8,
+   "n_lag_le_5s": 6,
+   "hold_usd_lag_gt_10s": 347.0,
+   "n_lag_gt_10s": 16,
+   "share_events_ml_move_1c": 0.875,
+   "per_event_hold_t_stat": 1.459,
+   "per_event_hold_t_stat_excl_top": 2.047,
+   "expected_max_z_of_7_null": 1.347,
+   "expected_max_z_of_42_null": 2.177
+  },
+  "all_types_lag_bucket_hold_usd": {
+   "lag_le_3s": 12.9,
+   "lag_3_10s": 26.6,
+   "lag_gt_10s": 578.1
+  },
+  "share_pairs_side_never_moved": 0.796
+ },
+ "cross_market_resim": {
+  "n_ml_jumps": 1481,
+  "t_det_minus_t_half_s": {
+   "n": 1481,
+   "median": 0.0,
+   "p10": 0.0,
+   "p90": 0.592,
+   "max": 1.995,
+   "share_gt_1p3": 0.045
+  },
+  "replicated_n_lagging": 599,
+  "set_winner": {
+   "exec_1.3": {
+    "hold_usd": 378.3,
+    "exit_usd": -333.7,
+    "shares": 16008.0,
+    "hold_c_ps": 2.363,
+    "exit_c_ps": -2.085
+   },
+   "exec_1.6": {
+    "hold_usd": 377.4,
+    "exit_usd": -319.0,
+    "shares": 15715.0,
+    "hold_c_ps": 2.401,
+    "exit_c_ps": -2.03
+   },
+   "exec_2.0": {
+    "hold_usd": 585.0,
+    "exit_usd": -295.2,
+    "shares": 19240.0,
+    "hold_c_ps": 3.04,
+    "exit_c_ps": -1.534
+   },
+   "exec_2.5": {
+    "hold_usd": 598.7,
+    "exit_usd": -296.5,
+    "shares": 19573.0,
+    "hold_c_ps": 3.059,
+    "exit_c_ps": -1.515
+   },
+   "exec_causal": {
+    "hold_usd": 610.7,
+    "exit_usd": -275.7,
+    "shares": 19400.0,
+    "hold_c_ps": 3.148,
+    "exit_c_ps": -1.421
+   }
+  },
+  "all": {
+   "exec_1.3": {
+    "hold_usd": 617.6,
+    "exit_usd": -3519.2,
+    "shares": 112369.0,
+    "hold_c_ps": 0.55,
+    "exit_c_ps": -3.132
+   },
+   "exec_1.6": {
+    "hold_usd": 623.4,
+    "exit_usd": -3502.8,
+    "shares": 112138.0,
+    "hold_c_ps": 0.556,
+    "exit_c_ps": -3.124
+   },
+   "exec_2.0": {
+    "hold_usd": 820.4,
+    "exit_usd": -3961.1,
+    "shares": 131938.0,
+    "hold_c_ps": 0.622,
+    "exit_c_ps": -3.002
+   },
+   "exec_2.5": {
+    "hold_usd": 2879.6,
+    "exit_usd": -3388.0,
+    "shares": 186379.0,
+    "hold_c_ps": 1.545,
+    "exit_c_ps": -1.818
+   },
+   "exec_causal": {
+    "hold_usd": 916.5,
+    "exit_usd": -3651.0,
+    "shares": 124138.0,
+    "hold_c_ps": 0.738,
+    "exit_c_ps": -2.941
+   }
+  },
+  "causal_touch_rule": {
+   "ALL": {
+    "n_trades": 973,
+    "n_matches": 12,
+    "shares": 693724.0,
+    "median_spread_proxy_px": 0.47,
+    "hold10_c_c_ps_sizew": -8.85,
+    "exit10_c_c_ps_sizew": -17.051,
+    "hold60_c_c_ps_sizew": -8.527,
+    "exit60_c_c_ps_sizew": -16.492,
+    "hold10_c_mean_c": -10.33,
+    "exit10_c_mean_c": -19.646,
+    "hold60_c_mean_c": -10.048,
+    "hold10_c_ps_cluster_ci95": [
+     -10.051,
+     -6.251
+    ]
+   },
+   "tennis_first_set_winner": {
+    "n_trades": 241,
+    "n_matches": 10,
+    "shares": 84499.0,
+    "median_spread_proxy_px": 0.46,
+    "hold10_c_c_ps_sizew": -8.19,
+    "exit10_c_c_ps_sizew": -15.044,
+    "hold60_c_c_ps_sizew": -7.73,
+    "exit60_c_c_ps_sizew": -14.75,
+    "hold10_c_mean_c": -9.089,
+    "exit10_c_mean_c": -16.667,
+    "hold60_c_mean_c": -8.539
+   },
+   "tennis_game_handicap": {
+    "n_trades": 85,
+    "n_matches": 7,
+    "shares": 12680.0,
+    "median_spread_proxy_px": 0.42,
+    "hold10_c_c_ps_sizew": -9.973,
+    "exit10_c_c_ps_sizew": -17.845,
+    "hold60_c_c_ps_sizew": -10.456,
+    "exit60_c_c_ps_sizew": -19.203,
+    "hold10_c_mean_c": -12.931,
+    "exit10_c_mean_c": -26.39,
+    "hold60_c_mean_c": -12.914
+   },
+   "tennis_set_handicap": {
+    "n_trades": 321,
+    "n_matches": 10,
+    "shares": 145843.0,
+    "median_spread_proxy_px": 0.41,
+    "hold10_c_c_ps_sizew": -8.821,
+    "exit10_c_c_ps_sizew": -16.709,
+    "hold60_c_c_ps_sizew": -8.732,
+    "exit60_c_c_ps_sizew": -16.898,
+    "hold10_c_mean_c": -12.21,
+    "exit10_c_mean_c": -22.44,
+    "hold60_c_mean_c": -11.913
+   },
+   "tennis_set_winner": {
+    "n_trades": 326,
+    "n_matches": 6,
+    "shares": 450703.0,
+    "median_spread_proxy_px": 0.52,
+    "hold10_c_c_ps_sizew": -8.952,
+    "exit10_c_c_ps_sizew": -17.516,
+    "hold60_c_c_ps_sizew": -8.555,
+    "exit60_c_c_ps_sizew": -16.611,
+    "hold10_c_mean_c": -8.717,
+    "exit10_c_mean_c": -17.339,
+    "hold60_c_mean_c": -8.581
+   }
+  }
+ },
+ "ml_oracle_audit": {
+  "n_points": 488,
+  "n_points_with_stale_pre": 451,
+  "median_ratio_printed_to_stale_pre": 0.004,
+  "share_points_printed_ge_stale_pre": 0.208,
+  "total_stale_usd_pre": 605565.0,
+  "total_with_move_printed_usd_m0p25_p0p5": 108347.0,
+  "pre2s": {
+   "hold_c_per_share": 0.343,
+   "exit_c_per_share": -1.168,
+   "hold_usd_total": 10095.0
+  },
+  "pre1s": {
+   "hold_c_per_share": 0.481,
+   "exit_c_per_share": -1.004,
+   "hold_usd_total": 8761.0,
+   "gross_c_per_share_no_fee": 1.455,
+   "D_ge_3c": {
+    "n": 246,
+    "hold_c_per_share": 0.824,
+    "exit_c_per_share": -0.685,
+    "hold_usd_by_match": {
+     "wta-andree-boisson-2026-10-03": -51.0,
+     "wta-bouzkov-birrell-2026-10-01": 12.0,
+     "wta-jovic-dart-2026-10-02": 4110.0,
+     "wta-kartal-wa-2026-10-01": -678.0,
+     "wta-rakhimo-fernand-2026-10-01": 1677.0,
+     "wta-rybakin-charaev-2026-10-01": 6.0,
+     "wta-su-bucsa-2026-10-02": 5643.0,
+     "wta-zhen-kalinsk-2026-10-01": -260.0
+    }
+   }
+  },
+  "pre": {
+   "hold_c_per_share": 0.677,
+   "exit_c_per_share": -0.8,
+   "hold_usd_total": 8457.0,
+   "gross_c_per_share_no_fee": 1.643,
+   "D_ge_3c": {
+    "n": 246,
+    "hold_c_per_share": 1.039,
+    "exit_c_per_share": -0.469,
+    "hold_usd_by_match": {
+     "wta-andree-boisson-2026-10-03": -30.0,
+     "wta-bouzkov-birrell-2026-10-01": 15.0,
+     "wta-jovic-dart-2026-10-02": 4033.0,
+     "wta-kartal-wa-2026-10-01": -325.0,
+     "wta-rakhimo-fernand-2026-10-01": 279.0,
+     "wta-rybakin-charaev-2026-10-01": 6.0,
+     "wta-su-bucsa-2026-10-02": 5549.0,
+     "wta-zhen-kalinsk-2026-10-01": -80.0
+    }
+   }
+  },
+  "post": {
+   "hold_c_per_share": -0.366,
+   "exit_c_per_share": -1.839,
+   "hold_usd_total": -388.0
+  },
+  "pre_hold_usd_by_match": {
+   "wta-su-bucsa-2026-10-02": 5236.0,
+   "wta-jovic-dart-2026-10-02": 3804.0,
+   "wta-rakhimo-fernand-2026-10-01": 278.0,
+   "wta-rybakin-charaev-2026-10-01": 11.0,
+   "wta-bencic-zakharo-2026-10-01": 4.0,
+   "wta-andree-boisson-2026-10-03": -53.0,
+   "wta-bouzkov-birrell-2026-10-01": -67.0,
+   "wta-zhen-kalinsk-2026-10-01": -156.0,
+   "wta-kartal-wa-2026-10-01": -600.0
+  },
+  "pre_hold_usd_excl_top2_matches": -583.0,
+  "pre_top5_points_share_of_hold": 1.191
+ },
+ "clob_rt_minus_server_ts_ms": {
+  "n": 1499361,
+  "median": 64.0,
+  "p10": 62.0,
+  "p90": 115.0,
+  "p99": 9134.4
+ },
+ "variant_recount": {
+  "claimed": 16,
+  "items_not_counted": [
+   "M1 forward window before vs after the -4 s trim (2 runs; outcome-informed change)",
+   "4 stale-depth snapshots (-2/-1/-0.25/+0.5 s) counted as 1",
+   "hold vs exit valuation for every P&L table (x2)",
+   "7 side-market types x 3 jump cuts reported separately in the cross-market P&L (21 cells) counted as 3",
+   "post-outage drop rules (60 s push / 10 s poll), 5c/10c spread filters, 1c/2 s/10 s jump detector",
+   "Gamma REST score source tested and dropped"
+  ],
+  "reviewer_count_lower_bound": 39,
+  "note": "For the measurement claims this barely matters (effects are 20-40 s); it matters for the set_winner P&L, which is the best of >= 42 cells (7 types x 3 cuts x hold/exit)."
+ },
+ "repro_hygiene": {
+  "data_dir_gitignored": true,
+  "git_check_ignore_live_v2": true,
+  "analyze_has_time_cutoff": false,
+  "fetch_pbp_default_date_is_today": true,
+  "consequence": "Inputs (data/live_v2, data/live, data/v2_latency/pbp) are not in the public repo, analyze.py has no snapshot cutoff (re-running adds hours of data), and fetch_pbp.py defaults to the current UTC date, so the stated commands do not reproduce the numbers from a clone or on 2026-10-04."
+ }
+}

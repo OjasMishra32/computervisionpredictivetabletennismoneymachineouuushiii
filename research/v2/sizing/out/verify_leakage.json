@@ -1,0 +1,366 @@
+{
+  "integrity": {
+    "shadow_rows": 138691,
+    "all_conds_in_universe_is": true,
+    "max_match_start": "2026-08-25 14:05:00+00:00",
+    "max_print_ts": "2026-08-25 15:37:28+00:00",
+    "month_col_equals_month_of_ts": true,
+    "fee_rate_matches_universe": true,
+    "delay_matches_universe": true,
+    "res_matches_universe": true,
+    "res_half_rows": 8
+  },
+  "wallet_requalification": [
+    {
+      "month": "2025-12",
+      "shadow_wallets": 2,
+      "requalified": 4,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 71,
+      "requalified_rows": 71
+    },
+    {
+      "month": "2026-01",
+      "shadow_wallets": 3,
+      "requalified": 4,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 4464,
+      "requalified_rows": 4464
+    },
+    {
+      "month": "2026-02",
+      "shadow_wallets": 9,
+      "requalified": 10,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 8808,
+      "requalified_rows": 8808
+    },
+    {
+      "month": "2026-03",
+      "shadow_wallets": 11,
+      "requalified": 12,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 3380,
+      "requalified_rows": 3380
+    },
+    {
+      "month": "2026-04",
+      "shadow_wallets": 13,
+      "requalified": 16,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 14532,
+      "requalified_rows": 14532
+    },
+    {
+      "month": "2026-05",
+      "shadow_wallets": 20,
+      "requalified": 30,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 35899,
+      "requalified_rows": 35899
+    },
+    {
+      "month": "2026-06",
+      "shadow_wallets": 34,
+      "requalified": 52,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 23760,
+      "requalified_rows": 23760
+    },
+    {
+      "month": "2026-07",
+      "shadow_wallets": 49,
+      "requalified": 72,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 28906,
+      "requalified_rows": 28906
+    },
+    {
+      "month": "2026-08",
+      "shadow_wallets": 72,
+      "requalified": 101,
+      "shadow_subset_of_requalified": true,
+      "shadow_rows": 18871,
+      "requalified_rows": 18871
+    }
+  ],
+  "R_usd_by_month": {
+    "2026-01": 71.7052513251983,
+    "2026-02": 72.33131664524339,
+    "2026-03": 87.61165462861689,
+    "2026-04": 92.67903380781846,
+    "2026-05": 100.07027149182952,
+    "2026-06": 91.95342204804027,
+    "2026-07": 97.759266179996,
+    "2026-08": 101.25789435101119
+  },
+  "recomputed_headline": {
+    "label": "G_50pct_net100 (independent)",
+    "n": 67485,
+    "matches": 7783,
+    "per_share_c": 1.5843483740618929,
+    "ci_c": [
+      1.3529384126206168,
+      1.7979061687235647
+    ],
+    "pnl_usd": 43267.59265493266,
+    "usd_traded": 1368596.0225628722,
+    "sharpe_ann": 16.768582682899808,
+    "max_dd_usd": -922.2643393447652,
+    "capital_usd": 23198.950196098518,
+    "max_dd_pct": -3.975457214869434,
+    "months_pos": "7/7",
+    "monthly_per_share_c": {
+      "2026-02": 1.8980086492940411,
+      "2026-03": 1.7995152676387955,
+      "2026-04": 2.261776877761051,
+      "2026-05": 1.8854290691388067,
+      "2026-06": 1.748623296329821,
+      "2026-07": 1.0255567775817374,
+      "2026-08": 0.7777407715801771
+    },
+    "r1s5_per_share_c": 0.8879367313883961,
+    "r1s5_ci_c": [
+      0.4502089840741062,
+      1.330125230561633
+    ],
+    "r1s5_pnl_usd": 6876.5548049984245,
+    "r1s5_n": 18036
+  },
+  "claimed": {
+    "per_share_c": 1.58,
+    "ci": [
+      1.36,
+      1.8
+    ],
+    "sharpe": 16.77,
+    "pnl": 43268,
+    "max_dd_pct": -3.98,
+    "months_pos": "7/7",
+    "r1s5_per_share_c": 0.89,
+    "r1s5_ci": [
+      0.47,
+      1.31
+    ]
+  },
+  "within_second_shuffle": [
+    {
+      "per_share_c": 1.5961260132667325,
+      "pnl_usd": 43539.42100482106,
+      "sharpe_ann": 16.94733896397304,
+      "r1s5_per_share_c": 0.9000100863365266
+    },
+    {
+      "per_share_c": 1.6051061676681657,
+      "pnl_usd": 43846.16165243561,
+      "sharpe_ann": 16.738168532776353,
+      "r1s5_per_share_c": 0.8975778630082522
+    },
+    {
+      "per_share_c": 1.5995751501540818,
+      "pnl_usd": 43696.66040513721,
+      "sharpe_ann": 16.915659506977796,
+      "r1s5_per_share_c": 0.9112386470421242
+    },
+    {
+      "per_share_c": 1.5978809593535301,
+      "pnl_usd": 43655.97398475134,
+      "sharpe_ann": 16.948190819645717,
+      "r1s5_per_share_c": 0.8718965372852638
+    },
+    {
+      "per_share_c": 1.601901197912841,
+      "pnl_usd": 43724.31186397842,
+      "sharpe_ann": 17.100323258084394,
+      "r1s5_per_share_c": 0.8964208779551928
+    }
+  ],
+  "prints_sharing_a_second_with_same_match": 0.45871447121627473,
+  "jump_window_lookahead": {
+    "jump_matched_share": 1.0,
+    "share_of_book_prints_before_detect": 0.38257390531229163,
+    "share_of_book_shares_before_detect": 0.347686915707952,
+    "book_pnl_from_prints_before_detect_usd": 18661.665364806297,
+    "book_pnl_total_usd": 43267.59265493266,
+    "r1s5_share_of_book_prints_before_detect": 0.35312707917498337,
+    "r1s5_pnl_before_detect_usd": 2557.7257587289123,
+    "r1s5_pnl_at_or_after_detect_usd": 4318.829046269513,
+    "policy_on_post_detect_prints_only": {
+      "label": "post-detect only",
+      "n": 42187,
+      "matches": 7344,
+      "per_share_c": 1.5113540547807351,
+      "ci_c": [
+        1.1724841207656163,
+        1.850972469542761
+      ],
+      "pnl_usd": 27353.085273065,
+      "usd_traded": 926595.5920683473,
+      "sharpe_ann": 11.96045217036953,
+      "max_dd_usd": -1218.989009214878,
+      "capital_usd": 15938.516826125959,
+      "max_dd_pct": -7.6480705357524,
+      "months_pos": "7/7",
+      "monthly_per_share_c": {
+        "2026-02": 2.3635532241509893,
+        "2026-03": 1.8818873560698064,
+        "2026-04": 1.2097579897949953,
+        "2026-05": 1.8598652847843653,
+        "2026-06": 1.7805934333244702,
+        "2026-07": 1.086370028715892,
+        "2026-08": 0.8669468109758333
+      },
+      "r1s5_per_share_c": 1.0032900092426582,
+      "r1s5_ci_c": [
+        0.3893501355903292,
+        1.617098958269935
+      ],
+      "r1s5_pnl_usd": 5402.853197152441,
+      "r1s5_n": 11778
+    }
+  },
+  "clean_opportunity_set": {
+    "rows_all_buckets": 1687457,
+    "rows_0_3s": 138620,
+    "all_buckets": {
+      "label": "all prints of WF fast-tier wallets (same R, gate, caps)",
+      "n": 582848,
+      "matches": 8338,
+      "per_share_c": 0.7191873023834016,
+      "ci_c": [
+        0.6903894667724031,
+        0.7478216224071665
+      ],
+      "pnl_usd": 181372.02198855346,
+      "usd_traded": 12385043.754943687,
+      "sharpe_ann": 25.421972768911644,
+      "max_dd_usd": -173.48989933548728,
+      "capital_usd": 217829.4503610308,
+      "max_dd_pct": -0.07964483179292098,
+      "months_pos": "7/7",
+      "monthly_per_share_c": {
+        "2026-02": 0.8724830725601429,
+        "2026-03": 1.374993775693357,
+        "2026-04": 1.0553048717302174,
+        "2026-05": 0.6983656095557937,
+        "2026-06": 0.6486451320889538,
+        "2026-07": 0.524618200582007,
+        "2026-08": 0.4333302150597327
+      },
+      "r1s5_per_share_c": 0.45874024598616114,
+      "r1s5_ci_c": [
+        0.40849210096065924,
+        0.5110424699987035
+      ],
+      "r1s5_pnl_usd": 33120.54592703053,
+      "r1s5_n": 144102
+    },
+    "outside_0_3s_only": {
+      "label": "outside 0-3 s only",
+      "n": 542354,
+      "matches": 8337,
+      "per_share_c": 0.6918635134518438,
+      "ci_c": [
+        0.661334731781448,
+        0.7220952171131503
+      ],
+      "pnl_usd": 164410.07576493302,
+      "usd_traded": 11674044.571274158,
+      "sharpe_ann": 25.044615459931126,
+      "max_dd_usd": -295.16799664872815,
+      "capital_usd": 203487.44151535083,
+      "max_dd_pct": -0.1450546502775018,
+      "months_pos": "7/7",
+      "monthly_per_share_c": {
+        "2026-02": 0.8978948331270024,
+        "2026-03": 1.3548705442982727,
+        "2026-04": 1.0079362739330326,
+        "2026-05": 0.6656470625856756,
+        "2026-06": 0.6108680581109527,
+        "2026-07": 0.5091713229670334,
+        "2026-08": 0.39717064120622075
+      },
+      "r1s5_per_share_c": 0.4354331979010303,
+      "r1s5_ci_c": [
+        0.3800719457583067,
+        0.4916696251581279
+      ],
+      "r1s5_pnl_usd": 29558.44989791351,
+      "r1s5_n": 132740
+    },
+    "r1s5_unweighted_gross30_c": {
+      "outside": 1.02659650180257,
+      "in_0_3s": 1.6935738031566159
+    },
+    "r1s5_unweighted_net_res_c": {
+      "outside": 0.023672752368406876,
+      "in_0_3s": 0.8507209635229244
+    }
+  },
+  "units_usd_over_q": {
+    "r1s5_rows": 40446,
+    "matched_to_tape": 1.0,
+    "share_taker_SELL": 0.09827918706423379,
+    "usd_over_q_div_true_size_median_SELL": 0.923076923076923,
+    "usd_over_q_div_true_size_p90_SELL": 3.7619047619047628,
+    "usd_over_q_div_true_size_max_BUY_abs_dev": 2.1094237467877974e-15,
+    "book_trades_exceeding_true_print_size": 840,
+    "book_trades_r1s5": 18036,
+    "r1s5_per_share_c_corrected": 0.9030266133089512,
+    "r1s5_ci_c_corrected": [
+      0.4712527481048499,
+      1.350097846484823
+    ],
+    "r1s5_pnl_corrected": 6943.349621833118
+  },
+  "net_cap_grid_edge": [
+    {
+      "net_cap": 500,
+      "sharpe": 10.83022570989219,
+      "pnl": 87980.23867098993,
+      "per_share_c": 1.6970765325679409,
+      "r1s5_per_share_c": 0.9016794568402656,
+      "max_dd_pct": -17.312607269388316
+    },
+    {
+      "net_cap": 250,
+      "sharpe": 13.864466037734903,
+      "pnl": 70568.69431682315,
+      "per_share_c": 1.6707184766870626,
+      "r1s5_per_share_c": 0.8037069507115503,
+      "max_dd_pct": -9.732419231413271
+    },
+    {
+      "net_cap": 100,
+      "sharpe": 16.768582682899808,
+      "pnl": 43267.59265493266,
+      "per_share_c": 1.5843483740618929,
+      "r1s5_per_share_c": 0.8879367313883961,
+      "max_dd_pct": -3.975457214869434
+    },
+    {
+      "net_cap": 50,
+      "sharpe": 19.515278129024754,
+      "pnl": 27685.676170480947,
+      "per_share_c": 1.5841667837644668,
+      "r1s5_per_share_c": 1.0547803018137663,
+      "max_dd_pct": -1.5233117920039407
+    },
+    {
+      "net_cap": 25,
+      "sharpe": 21.524140177939472,
+      "pnl": 16564.11486795651,
+      "per_share_c": 1.5306184955203999,
+      "r1s5_per_share_c": 1.1592827627429108,
+      "max_dd_pct": -1.0699698831013016
+    },
+    {
+      "net_cap": 10,
+      "sharpe": 22.34215262703055,
+      "pnl": 7951.401980097355,
+      "per_share_c": 1.461274112419808,
+      "r1s5_per_share_c": 1.188215844917426,
+      "max_dd_pct": -0.5738031890761476
+    }
+  ]
+}

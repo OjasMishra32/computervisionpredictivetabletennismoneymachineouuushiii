@@ -150,3 +150,14 @@ by `early_call.py --final` (logged in `results/tracking/test_peeks.log`).
   7/7. The verdict is the same under every labelling, but with 7–11 calls the 95% Wilson lower bound is only
   0.68–0.74. `results/tracking/label_audit.json` has the numbers. The pre-specified result is still the one of
   record.
+
+## D8 — v2 optimisation round (2026-10-03, after the single OOS run)
+- Six optimisation lenses ran on IS data only (research/v2/*), each checked by two adversarial
+  verifiers. Kept: risk-parity sizing + fee-aware wallet filter + 100-share net cap per match, held to
+  resolution (sizing lens; verified, reproduced twice). Refuted: maker exits (wrong tick, and live data
+  shows adverse selection). Too small: side-market leaning maker (~$2k/month). Not deployable
+  remotely: Kalshi→Polymarket laggard (Kalshi leads ~69% of repricings, but the real lead is ~1.6–2 s
+  once Polymarket's ~2 s block-time lag is removed). Latency audit: no public score source beats the
+  book.
+- v2 is frozen in HYPOTHESIS_V2.md and tested blind on a forward window starting 2026-10-03 13:00 UTC.
+  The burned OOS figure for v2 is reported as non-blind.
