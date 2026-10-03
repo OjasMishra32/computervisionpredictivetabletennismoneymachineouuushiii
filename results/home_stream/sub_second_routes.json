@@ -10,24 +10,29 @@
   "1_to_3s": "best at 1-3 s",
   "unknown": "latency unpublished",
   "not_video": "data feed, not video",
-  "gt_3s_reference": "slower public routes for scale"
+  "gt_3s_reference": "slower public routes for scale",
+  "le_1s_measured_own_footage": "<= 1 s measured by others on own-footage setups (not a Polymarket match)",
+  "le_1s_claimed": "<= 1 s by vendor claim only (no independent measurement found)",
+  "le_1s_hypothetical": "<= 1 s by inference only; route not available"
  },
  "bottom_line": {
   "le_1s_tonight_from_home_polymarket_match": false,
-  "le_1s_tonight_from_home_own_footage": true,
-  "why_not_match": "measured: the fastest public feed of a Polymarket-listed match found (Setka Cup's own WebRTC/WHEP stream) is a median 12.2 s behind the burned-in arena clock (preliminary; LL-HLS 13.0 s, HLS 19.4 s, YouTube 20.2 s); other public streams claim YouTube ULL <5 s, Twitch LL 2-4 s; sub-second match video is sold only to licensed sportsbooks or needs a venue camera, which ATP/WTA/ITF/WTT terms ban for betting/prediction-market use and private TT leagues allow only with consent; Polymarket US in-app ATP stream needs KYC and its latency is unpublished",
-  "cheapest_legal_le_1s_demo": "A1 self-hosted WebRTC on own camera, $0, tonight",
-  "cheapest_legal_le_1s_real_match": "A8 written consent from a private TT rights holder (TT Elite Series, Czech Liga Pro, TT Cup) for raw feed or camera; price: no public source",
-  "even_le_1s_is_breakeven": "break-even video delay 1.09 s IS / 1.01 s OOS (headline reading); 0.34 / 0.30 s (calibrated reading); negative at all V (stamp-noise reading)"
+  "le_1s_tonight_from_home_own_footage": "possible_not_done",
+  "we_have_a_sub_second_feed": false,
+  "why_not_match": "measured: fastest public feed of a Polymarket-listed match (Setka Cup's own WebRTC/WHEP) is a median 12.2 s behind the burned-in arena clock (preliminary; LL-HLS 13.0 s, HLS 19.4 s, YouTube 20.2 s via yt-dlp); sub-second match video is sold only to licensed sportsbooks (A9) or needs a venue camera, which ITF regulations and ticket terms bar for betting/prediction-market use by spectators (A10; TACP binds players and accredited staff, A11) and which private TT leagues allow only with consent (A8); Polymarket US in-app ATP stream is for 'registered' US exchange users, account tier, capture terms and latency unpublished (B2)",
+  "own_footage": "others measured self-hosted WebRTC at 42 ms local (ind, method not described), ~0.4 s via public relay (ind, stopwatch), 130-740 ms (vendor/consultancy); OUR pipeline is not measured yet; hosted A2-A7 are vendor claims only",
+  "cheapest_legal_le_1s_demo": "A1 self-hosted WebRTC on own camera, $0, once measured",
+  "cheapest_legal_le_1s_real_match": "A8 written consent from a private TT rights holder for non-trading research; price: no public source; not tonight",
+  "even_le_1s_is_breakeven": "break-even video delay 1.09 s IS / 1.01 s OOS (headline reading); 0.34 / 0.30 s (calibrated reading); negative at all V (stamp-noise reading); OOS per-share CI includes 0 even at V = 0"
  },
  "correction_to_sweeps": "webrtc-platforms reported WebRTC 0.58/0.69/2.34 s as a protocol baseline; S5 re-fetch shows that is one vendor (with TURN); the other WebRTC vendor measured 1.07/1.30/2.20 s; three-network averages 1.25-1.30 s",
  "routes": [
   {
    "rank": "A1",
    "id": "selfhost_webrtc_own_camera",
-   "band": "le_1s",
-   "route": "Self-hosted WebRTC on own camera (OBS>=30 WHIP -> MediaMTX/Broadcast Box -> WHEP viewer/CV)",
-   "what_we_get": "own footage only",
+   "band": "le_1s_measured_own_footage",
+   "route": "Self-hosted WebRTC on own camera (OBS>=30 WHIP -> MediaMTX/Broadcast Box -> WHEP browser viewer; CV reads the same stream as RTSP from MediaMTX, since engine/vision cannot read WebRTC)",
+   "what_we_get": "own footage only; not a Polymarket match",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
@@ -35,39 +40,44 @@
      "lo": 0.042,
      "hi": 0.74
     },
-    "measured_note": "42 ms local OBS->Broadcast Box [S1]; 130 ms local / 170 ms remote [S4]; MediaMTX p50 180 ms LAN (p95 240), 310-740 ms p50 other deployments [S3]; ~0.4 s via public Broadcast Box [S2]",
+    "measured_note": "M-ind: 42 ms local OBS 30 beta -> Broadcast Box, method not described [S1]; M-ind: ~0.4 s via public Broadcast Box server, stopwatch [S2]; M-vendor: 130 ms local / 170 ms remote (30 ms RTT CA-OR, 30 fps webcam) [S4]; M-vendor consultancy field report: MediaMTX p50 180 ms LAN-only, 310 industrial LAN, 520 cross-region, 740 4G [S3]. Our own pipeline NOT measured yet",
+    "measurement_independence": "S1,S2 independent; S3,S4 vendor/consultancy",
+    "our_own_measurement_s": null,
     "claimed_s": null,
     "claimed_note": null,
     "span": "glass_to_glass"
    },
-   "cost": "$0 (open source; licences not checked: assumption)",
+   "cost": "$0: MediaMTX MIT [S44]; OBS free; Broadcast Box licence not checked",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "own footage",
-   "usable_tonight": "yes",
+   "usable_tonight": "possible_not_done",
    "path_to_obtain": "install OBS + MediaMTX; measure with ms counter + 240 fps phone (SUB_SECOND_ROUTES.md 4.4)",
    "sources": [
     "S1",
     "S2",
     "S3",
     "S4",
-    "S6"
-   ]
+    "S6",
+    "S44"
+   ],
+   "usable_tonight_note": "nothing installed or measured yet",
+   "second_pass_2026_10_03": "verified S1-S4, S6, S44; 'home network 180 ms' wording corrected to LAN-only consultancy report"
   },
   {
    "rank": "A1b",
    "id": "camera_direct_to_cv",
-   "band": "le_1s",
+   "band": "le_1s_measured_own_footage",
    "route": "Camera straight into the CV process (no streaming hop)",
    "what_we_get": "own footage only",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": {
-     "lo": 0.008,
-     "hi": 0.1
+     "lo": 0.1,
+     "hi": 0.132
     },
-    "measured_note": "~100 ms of the 130 ms local total is camera+USB [S4]; 8.3 ms frame interval at 120 fps (I decay.json)",
+    "measured_note": "M-vendor: camera+USB ~100 ms of a ~132 ms webcam-to-monitor loop, 30 fps camera [S4]. 8.3 ms is only the 120 fps frame interval (I decay.json camera_s), not g2g; owning a 120 fps camera: assumption. CV leg 84 ms p50 / 127 ms p90 measured on a video file, stand-in classifier, calls disabled, does not keep up with 120 fps (I decay.json cv_measured_s)",
     "claimed_s": null,
     "claimed_note": null,
     "span": "glass_to_glass"
@@ -76,118 +86,139 @@
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "own footage",
-   "usable_tonight": "yes",
-   "path_to_obtain": "already how engine/vision runs",
+   "usable_tonight": "possible_not_done",
+   "path_to_obtain": "python -m engine.vision.stream --source 0 --corners ...; log call timestamps",
    "sources": [
     "S4",
-    "I_decay"
-   ]
+    "I_decay",
+    "I_vision_bench"
+   ],
+   "usable_tonight_note": "stream.py accepts a webcam index, but every in-repo vision run read a video file (results/engine/vision_bench.json)",
+   "second_pass_2026_10_03": "corrected: lower bound 0.008 s was a frame interval, not g2g; 'already how engine/vision runs' was untrue for a live camera"
   },
   {
    "rank": "A2",
    "id": "cloudflare_stream_webrtc",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "Cloudflare Stream WebRTC (WHIP/WHEP, GA)",
    "what_we_get": "own footage via CDN",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": null,
-    "measured_note": null,
-    "claimed_s": null,
-    "claimed_note": "'less than 500 milliseconds of latency' [S7]",
+    "measured_note": "no independent measurement found",
+    "claimed_s": {
+     "lo": null,
+     "hi": 0.5
+    },
+    "claimed_note": "vendor claim: 'less than 500 milliseconds of latency' [S7]",
     "span": "glass_to_glass"
    },
-   "cost": "$1 per 1,000 min delivered; billing starts 2026-10-15 (free tonight: inference)",
+   "cost": "$1 per 1,000 min delivered; WebRTC billing begins 2026-10-15 [S7]; Stream storage prepaid in $5/month increments [S7b]; whether WebRTC live needs a paid Stream subscription is not stated -> 'free tonight' unsupported",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "Cloudflare account (not a betting account)",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "only_after_user_signup_possibly_paid",
    "path_to_obtain": "user creates account; WHIP from OBS",
    "sources": [
-    "S7"
-   ]
+    "S7",
+    "S7b"
+   ],
+   "second_pass_2026_10_03": "verified quote; 'free tonight' downgraded from inference to unsupported"
   },
   {
    "rank": "A3",
    "id": "amazon_ivs_realtime",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "Amazon IVS Real-Time",
    "what_we_get": "own footage",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": null,
-    "measured_note": null,
-    "claimed_s": null,
-    "claimed_note": "under 300 ms [S8b]",
+    "measured_note": "no independent measurement found",
+    "claimed_s": {
+     "lo": null,
+     "hi": 0.3
+    },
+    "claimed_note": "vendor showcase claim: 'latency that can be under 300 milliseconds from host to viewer' [S8b]",
     "span": "glass_to_glass"
    },
-   "cost": "$0.072/participant-hour NA/EU; 20 free participant-hours/month for 12 months (new accounts)",
+   "cost": "$0.0720/participant-hour NA/EU; new customers '20 participant hours per month' for 'the first 12 months' [S8]; payment card at AWS sign-up: assumption",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "AWS account",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "only_after_user_signup",
    "path_to_obtain": "user creates account",
    "sources": [
     "S8",
     "S8b"
-   ]
+   ],
+   "second_pass_2026_10_03": "verified S8, S8b (claim)"
   },
   {
    "rank": "A4",
    "id": "red5_cloud",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "Red5 Cloud",
    "what_we_get": "own footage",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": null,
-    "measured_note": null,
-    "claimed_s": null,
-    "claimed_note": "under 250 ms [S9]",
+    "measured_note": "no independent measurement found",
+    "claimed_s": {
+     "lo": null,
+     "hi": 0.25
+    },
+    "claimed_note": "vendor claim: 'sub-250 ms latency' [S9]",
     "span": "glass_to_glass"
    },
-   "cost": "50 GB/month free, no card (vendor)",
+   "cost": "vendor: '50 GB For Free Monthly'; 'No credit card is required to sign up' [S9]",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "account",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "only_after_user_signup",
    "path_to_obtain": "user creates account",
    "sources": [
     "S9"
-   ]
+   ],
+   "second_pass_2026_10_03": "verified S9 (claim)"
   },
   {
    "rank": "A5",
    "id": "phenix",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "Phenix (customers include betting-video suppliers SIS, RMG)",
    "what_we_get": "own footage",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": null,
-    "measured_note": null,
-    "claimed_s": null,
-    "claimed_note": "'< 1/2 second of latency' [S10]",
+    "measured_note": "no independent measurement found",
+    "claimed_s": {
+     "lo": null,
+     "hi": 0.5
+    },
+    "claimed_note": "vendor claim: '< 1/2 second of latency' [S10]",
     "span": "glass_to_glass"
    },
-   "cost": "free trial (terms not shown)",
+   "cost": "free trial via marketing request form; terms not shown [S10]",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "own content",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "unlikely",
    "path_to_obtain": "user requests trial",
    "sources": [
     "S10"
-   ]
+   ],
+   "usable_tonight_note": "trial is a request form; turnaround unknown (assumption)",
+   "second_pass_2026_10_03": "verified S10; usable tonight downgraded from yes_after_signup"
   },
   {
    "rank": "A6",
    "id": "agora_ils_premium",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "Agora Interactive Live Streaming (Premium)",
    "what_we_get": "own footage",
    "covers_polymarket_match": false,
@@ -195,62 +226,67 @@
    "latency": {
     "measured_s": null,
     "measured_note": null,
-    "claimed_s": {
-     "lo": 0.4,
-     "hi": 0.8
-    },
-    "claimed_note": "400-800 ms Premium, 1.5-2 s Standard (docs-legacy snippet; page 404)",
-    "span": "glass_to_glass"
+    "claimed_s": null,
+    "claimed_note": "NO VERIFIED FIGURE: earlier 400-800 ms Premium / 1.5-2 s Standard came from a search snippet of a 404'd docs page; current product overview says only 'ultra-low latency' [S11b]",
+    "span": "unknown"
    },
-   "cost": "first 10,000 min/month free, then from $0.59/1,000 min",
+   "cost": "'First 10,000 combined RTC minutes free every month', then $0.59 per 1,000 min [S11]",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "account",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "only_after_user_signup",
    "path_to_obtain": "user creates account",
    "sources": [
-    "S11"
-   ]
+    "S11",
+    "S11b"
+   ],
+   "second_pass_2026_10_03": "latency downgraded to unsourced"
   },
   {
    "rank": "A7",
    "id": "nanocosmos",
-   "band": "le_1s",
+   "band": "le_1s_claimed",
    "route": "nanocosmos nanoStream (H5Live / MoQ)",
    "what_we_get": "own footage",
    "covers_polymarket_match": false,
    "is_video": true,
    "latency": {
     "measured_s": null,
-    "measured_note": null,
-    "claimed_s": null,
-    "claimed_note": "under 1 s camera to viewer [S12]",
+    "measured_note": "no independent measurement found",
+    "claimed_s": {
+     "lo": null,
+     "hi": 1.0
+    },
+    "claimed_note": "vendor claim: 'delivers video from camera to viewer in under one second' [S12]",
     "span": "glass_to_glass"
    },
-   "cost": "free start; rates unknown",
+   "cost": "vendor: 'Start for Free'; no prices on the page [S12]",
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "account",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "only_after_user_signup",
    "path_to_obtain": "user creates account",
    "sources": [
     "S12"
-   ]
+   ],
+   "second_pass_2026_10_03": "verified S12 (claim)"
   },
   {
    "rank": "A8",
    "id": "organiser_consented_tt_feed",
-   "band": "le_1s",
+   "band": "le_1s_hypothetical",
    "route": "Organiser-consented venue camera or raw contribution feed (TT Elite Series, Czech Liga Pro, TT Cup)",
    "what_we_get": "real Polymarket-listed match",
    "covers_polymarket_match": true,
    "is_video": true,
    "latency": {
-    "measured_s": {
+    "measured_s": null,
+    "measured_note": "nobody has measured this route",
+    "inferred_s": {
      "lo": 0.15,
      "hi": 0.5
     },
-    "measured_note": "inference from A1 physics [S3,S4] + venue->London 14-50 ms one-way [S4]; SRT default buffer 120 ms [S16]",
+    "inferred_note": "A1-type physics [S3,S4] + venue->server network (no public source; assumption); SRT contribution receive latency default '125 ms' on Haivision sources [S16]",
     "claimed_s": null,
     "claimed_note": null,
     "span": "glass_to_glass"
@@ -258,16 +294,17 @@
    "cost": "no public source",
    "legal": "conditional",
    "eligible_for_us": "unknown",
-   "legal_note": "legal only with written rights-holder consent; TT Elite names Sportradar as technology partner (exclusivity possible: assumption); Setka excluded ('Only three people can be present in a room')",
+   "legal_note": "legal only with written rights-holder consent. TT Elite names 'technology partner \u2013 Sportradar' in its integrity (anti-match-fixing) policy, not as a stated video/data deal (exclusivity: assumption); the same policy bars associated persons from enabling 'third parties to engage in such betting', so consent for a trading purpose looks unlikely; non-trading research consent untested. Czech Liga Pro / TT Cup rights holders: no public source. Setka excluded: 'Only three people can be present in a room during the game' (BETER 2021)",
    "usable_tonight": "no",
-   "path_to_obtain": "email organiser for research access to raw feed (SRT/WebRTC) or a camera position; only legal <=1 s route to a real match found",
+   "path_to_obtain": "email organiser for non-trading research access to raw feed or camera position; hypothetical",
    "sources": [
     "S3",
     "S4",
     "S16",
     "S23",
     "S24"
-   ]
+   ],
+   "second_pass_2026_10_03": "corrected: 'measured_s' was an inference; London 14-50 ms was not in S4; SRT default 125 ms not 120; Sportradar partnership context is integrity"
   },
   {
    "rank": "A9",
@@ -281,13 +318,13 @@
     "measured_s": null,
     "measured_note": null,
     "claimed_s": null,
-    "claimed_note": "no absolute g2g published; Sportradar 'eight seconds faster than any TV signal' (relative); Stats Perform WTA page gives no video latency; a 'sub-second video' claim reported by the betting-video sweep lost its URL (unverified)",
+    "claimed_note": "no absolute g2g published; Sportradar 'up to eight seconds faster than any TV signal' (relative to TV) [S30]; Stats Perform WTA page: no video latency, only 'low latency' for its data feed [S34]; 'sub-second video' claim from sweep: URL lost, unverified, do not cite",
     "span": "relative_to_tv"
    },
-   "cost": "third-party estimate '$10,000+/month'; no public price",
+   "cost": "no public price; '$10,000+/month' is a competitor's (SharpAPI) sales-page estimate for Sportradar DATA contracts, not video [S32]",
    "legal": "yes_for_licensees",
    "eligible_for_us": "no",
-   "legal_note": "video for 'licensed sportsbooks' only; no research licence published",
+   "legal_note": "Stats Perform: 'Premium Live WTA video streams to licensed sportsbooks' [S34]; Sportradar sells to operators, retail, trading desks [S30]; no research licence published; IMG Arena acquisition [S31] not re-verified",
    "usable_tonight": "no",
    "path_to_obtain": "operator contract only",
    "sources": [
@@ -295,7 +332,8 @@
     "S31",
     "S32",
     "S34"
-   ]
+   ],
+   "second_pass_2026_10_03": "quote corrected ('up to'); cost recharacterised as competitor estimate for data"
   },
   {
    "rank": "A10",
@@ -307,10 +345,10 @@
    "is_video": true,
    "latency": {
     "measured_s": {
-     "lo": 0.11,
+     "lo": 0.13,
      "hi": 0.17
     },
-    "measured_note": "physics only [S4]",
+    "measured_note": "physics only: S4 webcam-to-monitor test, not a venue (earlier 0.11 lower bound had no source)",
     "claimed_s": null,
     "claimed_note": null,
     "span": "glass_to_glass"
@@ -318,7 +356,7 @@
    "cost": "ticket",
    "legal": "no",
    "eligible_for_us": "no",
-   "legal_note": "ticket terms (US Open: betting or prediction markets activity), ITF regs XI.B, WTT ticket policy 6.2/6.3/9.1; 2016 US Open 20 spectators caught; fails hackathon ToS rule",
+   "legal_note": "spectators are bound by event/ticket rules; TACP D.1.p courtsiding binds only Covered Persons (players, related persons, tournament/accredited personnel) [S36]; ITF World Tennis Tour regs XI.B: tournaments must ban spectator-area devices for Tournament Data 'for Betting or any other commercial purposes' [S37]; 2026 Stars of the Open (US Open exhibition) ticket terms: 'betting, gambling or prediction markets activity' [S38]; WTT Europe Smash 2025 ticket T&Cs 6.2/6.3/9.1 [S39]; ATP/WTA tour-level ticket terms not fetched (assumed similar); 2016 US Open 20 spectators caught [S40]; fails hackathon ToS rule",
    "usable_tonight": "no",
    "path_to_obtain": "none (excluded)",
    "sources": [
@@ -328,7 +366,8 @@
     "S38",
     "S39",
     "S40"
-   ]
+   ],
+   "second_pass_2026_10_03": "corrected: anti-corruption code does not bind spectators; scope of S37/S38/S39 stated"
   },
   {
    "rank": "A11",
@@ -348,13 +387,14 @@
    "cost": "n/a",
    "legal": "no",
    "eligible_for_us": "no",
-   "legal_note": "Monte-Carlo charter bans betting; accredited media are Covered Persons",
+   "legal_note": "Monte-Carlo media charter bans 'any form of gambling or betting activity whatsoever' [S41]; under TACP B.37/B.9 accredited persons are Tournament Support Personnel, hence Covered Persons bound by D.1.p [S36]",
    "usable_tonight": "no",
    "path_to_obtain": "none (excluded)",
    "sources": [
-    "S37",
+    "S36",
     "S41"
-   ]
+   ],
+   "second_pass_2026_10_03": "citation corrected from S37 to S36"
   },
   {
    "rank": "B1",
@@ -369,7 +409,7 @@
      "lo": 0.58,
      "hi": 2.34
     },
-    "measured_note": "normal network: WebRTC 0.58 / 1.07 s (two vendors), WebSockets 0.97 / 1.17 s, HESP 1.12 s; 5G 0.69-1.63 s; 4G 1.78-2.34 s; LL-HLS 18.91 s [S5]",
+    "measured_note": "normal network: WebRTC 0.58 / 1.07 s (two vendors), WebSockets 0.97 / 1.17 s, HESP 1.12 s; 5G 0.69-1.63 s; 4G 1.78-2.34 s; LL-HLS 18.91 s [S5] (M-ind; timestamps read by hand)",
     "claimed_s": null,
     "claimed_note": null,
     "span": "glass_to_glass"
@@ -378,7 +418,7 @@
    "legal": "yes",
    "eligible_for_us": "yes",
    "legal_note": "own content",
-   "usable_tonight": "yes_after_signup",
+   "usable_tonight": "own_footage_only_after_user_signup",
    "path_to_obtain": "uplink (not protocol) decides <1 s",
    "sources": [
     "S5",
@@ -403,13 +443,14 @@
    "cost": "assumption: free to registered users",
    "legal": "conditional",
    "eligible_for_us": "unknown",
-   "legal_note": "US only, CFTC-regulated app; KYC (US address, ID, SSN per third-party guide); unfunded viewing: no public source; screen capture into CV: no public source",
-   "usable_tonight": "maybe",
+   "legal_note": "US only: 'Registered Polymarket users in the U.S.' can watch (release 2026-08-03) [S29]; verified/funded requirement not stated. Earlier 'KYC needs US address, ID, SSN' WITHDRAWN: S29c mentions SSN only for Kalshi. Capture into CV: no public source. Creating an exchange account is outside what we may do",
+   "usable_tonight": "unknown_treat_as_no",
    "path_to_obtain": "check Polymarket US terms; only if a member already has an unfunded account; then measure vs book",
    "sources": [
     "S29",
     "S29c"
-   ]
+   ],
+   "second_pass_2026_10_03": "S29c claim withdrawn; usable tonight downgraded from maybe"
   },
   {
    "rank": "B3",
@@ -658,35 +699,35 @@
     "leg": "bounce -> frame captured",
     "lo": 0.0,
     "hi": 0.1,
-    "type": "measured",
+    "type": "assumption (120 fps frame interval) / measured-vendor (30 fps webcam+USB ~100 ms)",
     "src": "I_decay camera_s 0.0083 (120 fps); S4 camera+USB ~0.100"
    },
    {
     "leg": "encode",
     "lo": 0.01,
     "hi": 0.01,
-    "type": "measured",
+    "type": "measured-vendor",
     "src": "S4"
    },
    {
     "leg": "venue -> London network",
     "lo": 0.01,
     "hi": 0.1,
-    "type": "assumption/measured",
-    "src": "tier0 RESULTS s8 item 9; S4 14-50 ms"
+    "type": "assumption",
+    "src": "tier0 RESULTS s8 item 9 (model assumption); no public source; earlier 'S4 14-50 ms' withdrawn (S4 has only a 30 ms RTT California-Oregon)"
    },
    {
     "leg": "jitter buffer + decode",
     "lo": 0.01,
     "hi": 0.01,
-    "type": "measured",
+    "type": "measured-vendor",
     "src": "S4"
    },
    {
     "leg": "video subtotal g2g",
     "lo": 0.13,
     "hi": 0.52,
-    "type": "measured",
+    "type": "measured-vendor on other setups / inference for this route",
     "src": "S4 130-170 ms; S3 p50 180 ms LAN, 520 ms cross-region"
    },
    {
@@ -694,7 +735,7 @@
     "lo": 0.02,
     "hi": 0.127,
     "type": "assumed 0.020 / measured p50 0.084 p90 0.127",
-    "src": "I_decay cv_measured_s (laptop M4, stand-in classifier)"
+    "src": "I_decay cv_measured_s (laptop M4, stand-in classifier); measured on a video file, calls disabled, frames skipped"
    },
    {
     "leg": "order -> matching engine",
@@ -729,14 +770,15 @@
    "D_youtube_ull_3_to_5s": ">=4.1",
    "E_setka_public_webrtc_12.2s_prelim": 13.3
   },
-  "note": "a third of reprices land 50-100 ms after a whole UTC second (consistent with a 1 s release clock; not verified): latency_sweep.json timing_diagnostics"
+  "note": "a third of reprices land 50-100 ms after a whole UTC second (consistent with a 1 s release clock; not verified): latency_sweep.json timing_diagnostics",
+  "status": "hypothetical (A8); no leg measured on this route"
  },
  "backtest_at_video_delay": {
   "label": "COUNTERFACTUAL WITH ASSUMED DATA: licensed feed/video not purchased; parameters measured",
   "never_claim": "We did not buy a licensed feed or licensed video, we have no camera at any court, and no live ATP/WTA data was used. The tier-0 trader is simulated; its timing and fill inputs are our measurements.",
-  "source": "results/tier0/latency_sweep.json (uncommitted at time of writing; regenerated 2026-10-03 16:39 EDT); model scripts/tier0_latency_sweep.py",
+  "source": "results/tier0/latency_sweep.json (committed in f5ff9ff, regenerated 2026-10-03 16:39 EDT; doc research/v2/tier0/LATENCY_SWEEP.md); model scripts/tier0_latency_sweep.py",
   "definition_V": "call = bounce - CV lead + V + 20 ms inference; + venue->London network + 2 ms gateway + the venue's order delay (1 s). V = 0 is the revised primary.",
-  "oos_note": "burned OOS, not blind",
+  "oos_note": "burned OOS, not blind; OOS per-share CI includes 0 at every V including V = 0",
   "headline_reading_own120": {
    "0": {
     "IS": {
@@ -982,23 +1024,31 @@
  "sources": {
   "S1": {
    "url": "https://webrtchacks.com/webrtc-cracks-the-whip-on-obs/",
-   "quote_or_note": "glass-to-glass latency was only 42 ms",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "my glass-to-glass latency was only 42 ms (OBS 30 Beta 2, local; method not described)",
+   "type": "independent",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S2": {
    "url": "https://gigazine.net/gsc_news/en/20260117-broadcast-box-webrtc/",
-   "quote_or_note": "paraphrase: about 0.4 s via public Broadcast Box server",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "lag between the streamer and the viewer is about 0.4 seconds (stopwatch, public server)",
+   "type": "independent",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S3": {
    "url": "https://www.adaptnxt.com/blogs/mediamtx-whip-whep-latency-benchmarks-4-deployments",
-   "quote_or_note": "240 fps phone camera (method); p50/p95 180/240 ms LAN",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "p50/p95 180/240 ms LAN-only; 310/480; 520/890; 740/1,180 (4G); '240 fps phone camera'",
+   "type": "vendor (consultancy field report)",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S4": {
    "url": "https://transitiverobotics.com/blog/webrtc-latency-breakdown/",
-   "quote_or_note": "local 130 ms, remote 170 ms; camera+USB ~100 ms",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "local 130 ms, remote 170 ms; 'the camera itself and the USB bus (~100 ms)'; no London/14-50 ms figure",
+   "type": "vendor (own product)",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified; London citation withdrawn"
   },
   "S5": {
    "url": "https://www.streamingmedia.com/Producer/Articles/Editorial/Featured-Articles/Glass-to-Glass-Report-Comparing-Low-Latency-Streaming-Providers-161238.aspx",
@@ -1007,43 +1057,73 @@
   },
   "S6": {
    "url": "https://www.rfc-editor.org/rfc/rfc9725.html",
-   "quote_or_note": "paraphrase: WHIP is RFC 9725 (March 2025)",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "WebRTC-HTTP Ingestion Protocol (WHIP), Standards Track, March 2025",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S7": {
    "url": "https://developers.cloudflare.com/stream/webrtc-beta/",
-   "quote_or_note": "less than 500 milliseconds of latency",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "less than 500 milliseconds of latency (claim); billing 'will begin on October 15th, 2026'",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
+  },
+  "S7b": {
+   "url": "https://developers.cloudflare.com/stream/pricing/",
+   "quote_or_note": "storage 'is a prepaid pricing dimension'; $5/month per 1,000 min; no free tier stated",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S8": {
    "url": "https://aws.amazon.com/ivs/pricing/",
-   "quote_or_note": "20 participant hours per month",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "$0.0720 per participant-hour; '20 participant hours per month' for 'the first 12 months'",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S8b": {
    "url": "https://ivs.rocks/real-time/",
-   "quote_or_note": "paraphrase: can be under 300 ms",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "latency that can be under 300 milliseconds from host to viewer (claim)",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S9": {
    "url": "https://www.red5.net/webrtc-server/",
-   "quote_or_note": "paraphrase: under 250 ms; 50 GB free",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "sub-250 ms latency (claim); '50 GB For Free Monthly'; 'No credit card is required to sign up'",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S10": {
    "url": "https://phenixrts.com/",
-   "quote_or_note": "< 1/2 second of latency",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "< 1/2 second of latency (claim); SIS 'Watch & Bet'; FREE TRIAL is a marketing form",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S11": {
    "url": "https://www.agora.io/en/pricing/",
-   "quote_or_note": "paraphrase: 10,000 free min; latency from 404'd docs-legacy snippet",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "First 10,000 combined RTC minutes free every month; $0.59 per 1,000 min; no latency figure",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
+  },
+  "S11b": {
+   "url": "https://docs.agora.io/en/interactive-live-streaming/overview/product-overview",
+   "quote_or_note": "only 'ultra-low latency'; no Premium/Standard ms figures",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S12": {
    "url": "https://www.nanocosmos.net/ultra-low-latency/",
-   "quote_or_note": "paraphrase: under 1 s camera to viewer",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "delivers video from camera to viewer in under one second (claim); 'Start for Free'",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S13": {
    "url": "https://optiview.dolby.com/docs/theolive/",
@@ -1062,8 +1142,10 @@
   },
   "S16": {
    "url": "https://doc.haivision.com/SRT/1.5.3/Haivision/srt",
-   "quote_or_note": "paraphrase: default receive buffer 120 ms",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "The default latency value on the source is 125 ms.",
+   "type": "vendor docs",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified; 120 -> 125 ms"
   },
   "S17": {
    "url": "https://support.google.com/youtube/answer/7444635",
@@ -1102,13 +1184,17 @@
   },
   "S23": {
    "url": "https://www.tt-series.com/wp-content/uploads/2026/07/TT-ELITE-SERIES-integrity-2.pdf",
-   "quote_or_note": "technology partner – Sportradar",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "technology partner \u2013 Sportradar (integrity context); bars enabling 'third parties to engage in such betting'",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S24": {
    "url": "https://beter.co/setka-cup-opens-new-location-in-ukraine/",
-   "quote_or_note": "Only three people can be present in a room during the game",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "Only three people can be present in a room during the game (2021-02-09)",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S25": {
    "url": "https://tabletennis.setkacup.com",
@@ -1117,7 +1203,7 @@
   },
   "S26": {
    "url": "https://en.wikipedia.org/wiki/China_Smash_2026",
-   "quote_or_note": "1–11 October",
+   "quote_or_note": "1\u201311 October",
    "rechecked_2026_10_03": false
   },
   "S27": {
@@ -1132,38 +1218,52 @@
   },
   "S29": {
    "url": "https://www.prnewswire.com/news-releases/polymarket-secures-exclusive-atp-tour-streaming-rights-for-prediction-markets-302841534.html",
-   "quote_or_note": "Registered Polymarket users in the U.S. can watch live ATP matches",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "Registered Polymarket users in the U.S. (release 2026-08-03); no account-tier or latency detail",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S29c": {
    "url": "https://www.newspoly.net/blog/polymarket-kyc-verification",
-   "quote_or_note": "US address, US-issued ID, and US Social Security Number (third party)",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "mentions SSN only for Kalshi; says Polymarket needs no ID -> does not support the earlier KYC claim",
+   "type": "third party",
+   "rechecked_2026_10_03": true,
+   "second_pass": "re-checked; claim withdrawn"
   },
   "S30": {
    "url": "https://sportradar.com/betting-gaming/products/live-streams/",
-   "quote_or_note": "eight seconds faster than any TV signal",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "up to eight seconds faster than any TV signal (claim, relative)",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified; 'up to' restored"
   },
   "S31": {
    "url": "https://www.openbet.com/news/sportradar-announces-close-of-acquisition-of-img-arena-and-its-strategic-portfolio-of-global-sports-betting-rights",
    "quote_or_note": "paraphrase: closed 2025-11-03",
-   "rechecked_2026_10_03": false
+   "rechecked_2026_10_03": false,
+   "second_pass": "not_re_verified",
+   "type": "vendor news"
   },
   "S32": {
    "url": "https://sharpapi.io/compare/sportradar-alternative",
-   "quote_or_note": "enterprise contracts starting at $10,000+/month",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "Sportradar pricing starts at $10,000+/month with enterprise contracts (data, not video)",
+   "type": "competitor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified; recharacterised"
   },
   "S33": {
    "url": "https://docs.sportradar.com/live-data/latency-indicator-beta",
-   "quote_or_note": "~0–<4 seconds",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "Low band ~0\u2013<4 seconds for live data updates",
+   "type": "vendor docs",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S34": {
    "url": "https://www.statsperform.com/products/official-wta-data-streaming/",
-   "quote_or_note": "32% of points more than 1 second faster",
-   "rechecked_2026_10_03": true
+   "quote_or_note": "32% of points more than 1 second faster (claim); 'Premium Live WTA video streams to licensed sportsbooks'",
+   "type": "vendor",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S35": {
    "url": "https://regensports.substack.com/p/i-attended-sportradars-game-set-tech",
@@ -1172,51 +1272,72 @@
   },
   "S36": {
    "url": "https://www.itia.tennis/media/3tihxdff/tennis-anti-corruption-program-2026.pdf",
-   "quote_or_note": "No Covered Person shall, while on site at an Event, make transmissions of",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "D.1.p 'No Covered Person shall, while on site at an Event, make transmissions of'; binds Covered Persons only",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified (PDF text)"
   },
   "S37": {
    "url": "https://www.itftennis.com/media/15546/2026-wtt-regulations.pdf",
-   "quote_or_note": "shall not allow or authorise the collection, creation, dissemination, transmission",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "XI.B devices in spectator areas for Tournament Data 'for Betting or any other commercial purposes' prohibited (ITF World Tennis Tour)",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified (PDF text)"
   },
   "S38": {
    "url": "https://www.usopen.org/pdf/Stars-of-the-Open-Ticket-Terms-and-Conditions.pdf",
-   "quote_or_note": "including betting or gambling or prediction markets activity (search snippet)",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "including, without limitation, betting, gambling or prediction markets activity (2026 Stars of the Open exhibition)",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified (PDF downloaded)"
   },
   "S39": {
    "url": "https://wttwebcmsprod.blob.core.windows.net/imagedocuments/2025%2005%2020%20WTT%20EU%20Smash%20-%20Event%20Ticket%20Policy_v1%20clean%20.pdf_1748403514039",
-   "quote_or_note": "6.2/6.3/9.1 recording and Court-siding bans (paraphrase)",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "6.2 'Video and audio recording devices ... are prohibited'; 6.3; 9.1 Court-siding (WTT Europe Smash 2025)",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified (PDF text)"
   },
   "S40": {
    "url": "https://en.wikipedia.org/wiki/Courtsiding",
    "quote_or_note": "20 spectators were caught courtsiding",
-   "rechecked_2026_10_03": false
+   "type": "encyclopedia",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S41": {
    "url": "https://montecarlotennismasters.com/en/medias-en/charte-accreditation/",
    "quote_or_note": "any form of gambling or betting activity whatsoever",
-   "rechecked_2026_10_03": false
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S42": {
    "url": "https://docs.polymarket.com/api-reference/geoblock",
-   "quote_or_note": "Primary Servers: eu-west-2",
-   "rechecked_2026_10_03": false
+   "quote_or_note": "eu-west-2; US and UK 'Close-Only on Frontend and API'",
+   "type": "official",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "S43": {
    "url": "https://docs.polymarket.com/concepts/order-lifecycle",
    "quote_or_note": "waits for the market's configured delay window before matching",
    "rechecked_2026_10_03": true
   },
-  "I_latency": {
-   "url": "research/v2/latency/RESULTS.md",
-   "quote_or_note": "internal measurement",
-   "rechecked_2026_10_03": null
+  "S44": {
+   "url": "https://github.com/bluenviron/mediamtx",
+   "quote_or_note": "Streams are automatically converted from a protocol to another; MIT licence",
+   "type": "open source",
+   "rechecked_2026_10_03": true,
+   "second_pass": "verified"
   },
   "I_decay": {
    "url": "results/decay/decay.json latency_inputs",
+   "quote_or_note": "internal measurement",
+   "rechecked_2026_10_03": null
+  },
+  "I_latency": {
+   "url": "research/v2/latency/RESULTS.md",
    "quote_or_note": "internal measurement",
    "rechecked_2026_10_03": null
   },
@@ -1226,9 +1347,51 @@
    "rechecked_2026_10_03": null
   },
   "I_sweep": {
-   "url": "results/tier0/latency_sweep.json (uncommitted at time of writing)",
+   "url": "results/tier0/latency_sweep.json (committed in f5ff9ff)",
    "quote_or_note": "internal simulation",
    "rechecked_2026_10_03": null
+  },
+  "I_vision_bench": {
+   "url": "results/engine/vision_bench.json (video-file input, laptop M4)",
+   "quote_or_note": "internal measurement",
+   "rechecked_2026_10_03": null
   }
+ },
+ "presentation_rules": {
+  "X_placeholder": "[X] = our own camera->WebRTC->screen g2g; NOT MEASURED. Until measured, use the 'not measured' variants in SUB_SECOND_ROUTES.md 4.3 and delete every sentence containing [X]; never substitute an estimate or another party's figure",
+  "never_say": [
+   "that we received live video of any Polymarket match at <= 1 s or at any latency into CV",
+   "'sub-second', '<= 1 s' or '1-second' about anything we have, except our own measured own-footage pipeline",
+   "real-time match feed / sub-second match stream / we traded / live P&L",
+   "'WebRTC is sub-second' without the qualifier",
+   "vendor claims (A2-A7, A9) as measurements",
+   "that a 1 s feed is profitable (break-even)",
+   "that a courtside camera is an option for us"
+  ],
+  "caption_not_measured": "ASSUMED-DATA SCENARIO \u00b7 no sub-second match feed \u00b7 1 s / 0.5 s video simulated, not received",
+  "caption_measured": "ASSUMED-DATA SCENARIO \u00b7 no sub-second match feed \u00b7 1 s / 0.5 s video simulated \u00b7 own-footage WebRTC: [X] ms"
+ },
+ "second_pass_check": {
+  "date": "2026-10-03",
+  "scope": "every source cited for A1-A11 and B2 re-opened with WebFetch; legal PDFs downloaded and text extracted; web-search budget exhausted, so no replacement sources were searched",
+  "not_re_verified": [
+   "S31 (HTTP 403/429)",
+   "S29 X post",
+   "Band B/C sources outside the top routes: S13-S15, S17-S22, S25-S28, S35"
+  ],
+  "corrections": [
+   "A2-A7 moved to band le_1s_claimed (vendor claims only); independent S5 test found no managed service under 0.58 s on a normal network",
+   "A2 'free tonight' unsupported (Stream storage prepaid; subscription requirement not stated)",
+   "A5 usable tonight -> unlikely (trial is a request form)",
+   "A6 latency figure unsourced (docs page 404; overview gives no figure)",
+   "A1b lower bound 0.008 s was a frame interval; CV never run on a live camera in repo",
+   "A8 latency is inference, not measurement; S4 has no London 14-50 ms figure; SRT default 125 ms per S16; TT Elite-Sportradar link is integrity, and its policy bars enabling third-party betting",
+   "A9 Sportradar quote is 'up to eight seconds'; $10k+/month is a competitor's estimate for data, not video",
+   "A10 110 ms lower bound unsourced -> 130 ms; TACP binds Covered Persons, not spectators; S37 is ITF World Tennis Tour only; S38 is the Stars of the Open exhibition; S39 is WTT Europe Smash 2025",
+   "A11 Covered Person citation is TACP (S36), not S37",
+   "B2 'KYC needs SSN' withdrawn (S29c says SSN only for Kalshi); usable tonight -> unknown, treat as no",
+   "own-footage <= 1 s is possible but NOT measured; presentation wording made conditional on measuring [X]",
+   "latency sweep is committed (f5ff9ff), not uncommitted"
+  ]
  }
 }
