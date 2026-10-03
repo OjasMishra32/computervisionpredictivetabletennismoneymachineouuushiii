@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COURTSIDE Mission Control</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* One dark ops screen: what is running, how fast, and what it has found so far. */
+:root { color-scheme: dark; --bg: #07111b; --panel: #0d1b29; --line: #1c2e40; --ink: #e8eef4; --muted: #8fa2b5;
+  --good: #3fb67f; --bad: #f06a52; --amber: #f2b33d; --fast: #3987e5;
+  --display: "Saira Condensed", "Arial Narrow", sans-serif; --body: "Public Sans", Arial, sans-serif; --mono: "IBM Plex Mono", Menlo, monospace; }
+* { box-sizing: border-box }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--body) }
+.wrap { max-width: 1300px; margin: 0 auto; padding-inline: 18px; padding-block: 16px 40px }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px }
+h1 { font: 700 2.1rem/1 var(--display); text-transform: uppercase; margin: 0; letter-spacing: .02em }
+h1 span { color: var(--fast) }
+a { color: var(--fast) }
+.clock { font: 500 .85rem/1 var(--mono); color: var(--muted) }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 12px; margin-top: 14px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0 }
+.card h2 { font: 600 1.05rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 10px; color: var(--muted) }
+.item { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line) }
+.item:last-child { border-bottom: 0 }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); margin-top: 4px }
+.dot.run { background: var(--amber); box-shadow: 0 0 0 0 rgba(242,179,61,.7); animation: pulse 1.6s infinite }
+.dot.ok { background: var(--good) } .dot.bad { background: var(--bad) }
+@keyframes pulse { 70% { box-shadow: 0 0 0 7px rgba(242,179,61,0) } 100% { box-shadow: 0 0 0 0 rgba(242,179,61,0) } }
+.meta { font: 400 .78rem/1.3 var(--mono); color: var(--muted); text-align: right; white-space: nowrap }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: .9rem }
+.kv b { font: 500 .88rem/1.3 var(--mono); text-align: right }
+.big { font: 700 2rem/1 var(--display); font-variant-numeric: tabular-nums }
+iframe { width: 100%; height: 640px; border: 1px solid var(--line); border-radius: 10px; margin-top: 14px; background: var(--bg) }
+@media (prefers-reduced-motion: reduce) { .dot.run { animation: none } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Courtside <span>Mission Control</span></h1><span class="clock" id="clock">—</span>
+    <a href="index.html" target="_blank" rel="noopener">open the live scoreboard in its own tab ↗</a></header>
+  <div class="grid">
+    <div class="card"><h2>Strategy, so far</h2><div class="kv" id="hl"></div></div>
+    <div class="card"><h2>Research running now</h2><div id="wf"></div></div>
+    <div class="card"><h2>Live data capture</h2><div id="rec"></div><div class="kv" style="margin-top:8px"><span>Disk free</span><b id="disk">—</b></div></div>
+    <div class="card"><h2>HiPerGator queue</h2><div id="hpg"></div></div>
+    <div class="card"><h2>Latest commits</h2><div id="git"></div></div>
+  </div>
+  <iframe src="index.html" title="COURTSIDE Live scoreboard"></iframe>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const ago = s => s == null ? "—" : s < 60 ? `${s.toFixed ? s.toFixed(0) : s}s ago` : s < 3600 ? `${Math.round(s / 60)}m ago` : `${(s / 3600).toFixed(1)}h ago`;
+function row(dotClass, label, meta) {
+  const d = document.createElement("div"); d.className = "item";
+  const a = document.createElement("span"); a.className = "dot " + dotClass;
+  const b = document.createElement("span"); b.textContent = label;
+  const c = document.createElement("span"); c.className = "meta"; c.textContent = meta;
+  d.append(a, b, c); return d;
+}
+async function tick() {
+  let s; try { s = await (await fetch("status.json?" + Date.now())).json(); } catch (_) { $("#clock").textContent = "status daemon not running"; return; }
+  $("#clock").textContent = new Date(s.t * 1000).toLocaleTimeString() + " · updates every 5 s";
+  const hl = $("#hl"); hl.innerHTML = "";
+  for (const [k, v] of Object.entries(s.headline || {})) { const a = document.createElement("span"); a.textContent = k; const b = document.createElement("b"); b.textContent = v; hl.append(a, b); }
+  const wf = $("#wf"); wf.innerHTML = "";
+  for (const w of s.workflows || []) wf.append(row(w.done ? "ok" : "run", w.name, w.done ? "done" : `working · last write ${ago(w.last_activity_s)}`));
+  const rec = $("#rec"); rec.innerHTML = "";
+  for (const r of s.recorders || []) rec.append(row(r.running ? (r.last_write_s < 30 ? "ok" : "run") : "bad", r.name, `${r.running ? "running" : "stopped"} · ${r.file_mb} MB · ${r.kb_per_s} kB/s`));
+  $("#disk").textContent = s.disk_free_gb + " GB";
+  const h = $("#hpg"); h.innerHTML = "";
+  if (!(s.hpg || []).length) h.append(row("ok", "No jobs queued", "idle"));
+  for (const j of s.hpg || []) h.append(row(j.state === "RUNNING" ? "run" : "", `${j.name} (${j.id})`, `${j.state} · ${j.time}`));
+  const g = $("#git"); g.innerHTML = "";
+  for (const [when, subj] of s.git || []) g.append(row("ok", subj, when));
+}
+tick(); setInterval(tick, 3000);
+</script>
+</body>
+</html>
