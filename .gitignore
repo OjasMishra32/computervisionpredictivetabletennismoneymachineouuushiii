@@ -5,3 +5,5 @@ __pycache__/
 .env
 .pytest_cache/
 research/**/*.parquet
+!results/*peeks.log
+!results/tracking/test_peeks.log
