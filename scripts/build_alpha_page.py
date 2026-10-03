@@ -8,7 +8,8 @@ failure-panel counts) are written back into alpha.json under "page_derived", eac
 under "sources", so every number on the page has a source key.
 
 Page contract: <title> Courtside Alpha; no external requests except Google Fonts; all data
-inline; dark-first colour tokens with a light override; charts are inline SVG drawn by the
+inline; light colour tokens on :root, redefined for dark under prefers-color-scheme: dark (guarded by
+:root:not([data-theme="light"])) and under :root[data-theme="dark"]; charts are inline SVG drawn by the
 inline script, each with axis labels, units, a one-line takeaway and a table view.
 
     .venv/bin/python scripts/build_alpha_page.py
@@ -37,15 +38,18 @@ def derive(d: dict) -> tuple[dict, dict]:
     der: dict = {}
     src: dict = {}
 
-    c = d["C_factor_neutral"]["committed"]
     der["C_beta_ci95"] = {}
-    for f in ("MktRF", "SMB", "HML", "Mom"):
-        b, t = c["betas"][f], c["betas_t"][f]
-        se = abs(b / t)
-        der["C_beta_ci95"][f] = [round(b - 1.96 * se, 4), round(b + 1.96 * se, 4)]
+    for spec in ("IS_committed_spec", "committed"):
+        c = d["C_factor_neutral"][spec]
+        der["C_beta_ci95"][spec] = {}
+        for f in ("MktRF", "SMB", "HML", "Mom"):
+            b, t = c["betas"][f], c["betas_t"][f]
+            se = abs(b / t)
+            der["C_beta_ci95"][spec][f] = [round(b - 1.96 * se, 4), round(b + 1.96 * se, 4)]
     src["page_derived.C_beta_ci95"] = (
-        f"{ME}: beta +/- 1.96*|beta/t| from C_factor_neutral.committed.(betas, betas_t); normal "
-        "approximation; t is rounded to 2 dp in the source, so the interval is approximate")
+        f"{ME}: beta +/- 1.96*|beta/t| from C_factor_neutral.(IS_committed_spec|committed).(betas, betas_t); "
+        "normal approximation; t is rounded in the sources (4 dp IS spec, 2 dp committed file), so the "
+        "interval is approximate")
 
     der["D_counts"] = {}
     for p in ("IS", "OOS"):
@@ -62,17 +66,18 @@ def derive(d: dict) -> tuple[dict, dict]:
         f"{ME}: per period and split of D_where, the number of groups with net_c_per_share > 0 and "
         "with a match-clustered 95% CI wholly above / below zero")
 
-    o = d["E_decay"]["over_calendar_time"]["IS_plus_OOS_rows"]
-    months = [m["month"] for p in ("IS", "OOS") for m in d["A_source"][p]["months"]]
+    o = d["E_decay"]["over_calendar_time"]["IS_months"]
+    months = [m["month"] for m in d["A_source"]["IS"]["months"]]
     i0, i1 = min(map(month_index, months)), max(map(month_index, months))
     der["E_trend_line"] = {
+        "fit": "IS months only",
         "month_index_origin": "2025-12",
         "month_index": [i0, i1],
         "fitted_c": [round(o["intercept_c"] + o["slope_c_per_month"] * i, 4) for i in (i0, i1)],
     }
     src["page_derived.E_trend_line"] = (
-        f"{ME}: intercept_c + slope_c_per_month x month index at the first and last month, from "
-        "E_decay.over_calendar_time.IS_plus_OOS_rows (drawn as the trend line)")
+        f"{ME}: intercept_c + slope_c_per_month x month index at the first and last IS month, from "
+        "E_decay.over_calendar_time.IS_months (drawn as the IS trend line; the pooled fit is not drawn)")
 
     rows = d["I_failures"]["rows"]
     pend = sum("pending" in r["verdict"].lower() for r in rows)
@@ -115,30 +120,30 @@ TEMPLATE = r"""<!doctype html>
    sections A-I keyed to alpha.json, each = takeaway headline, chart with a table twin, source
    keys; footer = definitions, checks, every source, the command. Mission Control palette. */
 :root{
-  color-scheme:dark;
-  --bg:#07111b; --panel:#0c1a28; --band:#14283c; --line:#1d3044; --grid:#172a3d;
-  --ink:#e8eef4; --ink2:#bccad7; --muted:#8fa2b5;
-  --fast:#3987e5; --loss:#e45f48; --copy:#9a78e8; --amber:#f2b33d;
-  --shadow:0 8px 28px rgba(0,0,0,.5);
-  --display:"Saira Condensed","Arial Narrow",sans-serif;
-  --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    color-scheme:light;
-    --bg:#eef2f6; --panel:#ffffff; --band:#e9eff5; --line:#d3dce5; --grid:#e6ecf2;
-    --ink:#0b1a29; --ink2:#2f4256; --muted:#5a6d80;
-    --fast:#1f6fd1; --loss:#d9452b; --copy:#8a5cd6; --amber:#b7791f;
-    --shadow:0 8px 24px rgba(11,26,41,.16);
-  }
-}
-:root[data-theme="light"]{
   color-scheme:light;
   --bg:#eef2f6; --panel:#ffffff; --band:#e9eff5; --line:#d3dce5; --grid:#e6ecf2;
   --ink:#0b1a29; --ink2:#2f4256; --muted:#5a6d80;
   --fast:#1f6fd1; --loss:#d9452b; --copy:#8a5cd6; --amber:#b7791f;
   --shadow:0 8px 24px rgba(11,26,41,.16);
+  --display:"Saira Condensed","Arial Narrow",sans-serif;
+  --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#07111b; --panel:#0c1a28; --band:#14283c; --line:#1d3044; --grid:#172a3d;
+    --ink:#e8eef4; --ink2:#bccad7; --muted:#8fa2b5;
+    --fast:#3987e5; --loss:#e45f48; --copy:#9a78e8; --amber:#f2b33d;
+    --shadow:0 8px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#07111b; --panel:#0c1a28; --band:#14283c; --line:#1d3044; --grid:#172a3d;
+  --ink:#e8eef4; --ink2:#bccad7; --muted:#8fa2b5;
+  --fast:#3987e5; --loss:#e45f48; --copy:#9a78e8; --amber:#f2b33d;
+  --shadow:0 8px 28px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
@@ -550,11 +555,11 @@ const stepAt = (p, re) => B[p].waterfall.find(s => re.test(s.step));
 const feeRow = I.rows.find(r => /fees x2/.test(r.test));
 
 (function hero() {
-  const nIS = netStep('IS'), nO = netStep('OOS'), cm = C.committed;
+  const nIS = netStep('IS'), nO = netStep('OOS'), cm = C.committed, ci_ = C.IS_committed_spec, ow = cm.oos_weekdays_in_window;
   const f4 = (lab, chip, val, sub, href) => h('div', {class: 'f4'},
     h('div', {class: 'lab'}, h('a', {href, style: 'text-decoration:none'}, lab), chip),
     h('div', {class: 'val'}, val), h('div', {class: 'sub'}, sub));
-  const trend = E.over_calendar_time.IS_plus_OOS_rows;
+  const trend = E.over_calendar_time.IS_months, pooled = E.over_calendar_time.IS_plus_OOS_rows;
   document.getElementById('hero').append(
     h('div', {class: 'kicker'}, h('span', {class: 'sq', 'aria-hidden': 'true'}), h('span', null, 'Courtside · Polymarket tennis match-winner markets'),
       h('span', {class: 'gen'}, 'alpha.json ' + D.generated_utc.replace('T', ' ').replace('Z', ' UTC') + ' · git ' + D.git_head)),
@@ -571,18 +576,18 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
       f4('v2 net, burned OOS', h('span', {class: 'chip oos'}, 'non-blind'),
         [sg(nO.c_per_share), h('small', null, 'c/share')],
         `95% CI ${ci(nO.ci95_c_match_clustered)} · ${fx(nO.bps_of_notional, 0)} bps · ${n0(B.OOS.n_trades)} trades over ${B.OOS.days} days. Same fills caveat.`, '#B'),
-      f4('Factor alpha t-stat', h('span', {class: 'chip'}, 'FF3 + Mom'),
-        [fx(cm.alpha_t, 1), h('small', null, 't')],
-        `Alpha ${sg(cm.alpha_pct_per_day, 2)}%/day; largest factor |t| ${fx(cm.max_abs_factor_t, 2)}, R² ${pc(cm.r2)}. ${cm.n_days} weekdays, the last 7 burned OOS; IS-only spec t = ${fx(C.IS_only_calendar_days.alpha_t, 2)}.`, '#C'),
-      f4('Months the fast tier won', h('span', {class: 'chip h6'}, 'IS + H6 OOS'),
+      f4('Factor alpha t-stat, in sample', h('span', {class: 'chip'}, 'IS'),
+        [fx(ci_.alpha_t, 1), h('small', null, 't')],
+        `FF3 + momentum, IS matches only: alpha ${sg(ci_.alpha_pct_per_day, 2)}%/day, largest factor |t| ${fx(ci_.max_abs_factor_t, 2)}, R² ${pc(ci_.r2)}, ${ci_.n_days} weekdays. v2 daily returns at the fast tier's fills. Committed file t = ${fx(cm.alpha_t, 2)} includes ${ow.n_weekdays_with_oos_pnl} burned-OOS weekdays; IS calendar-day spec t = ${fx(C.IS_only_calendar_days.alpha_t, 2)}.`, '#C'),
+      f4('Months the fast tier was net positive', h('span', {class: 'chip h6'}, 'IS + H6 OOS'),
         [A.IS.months_fast_positive, h('small', null, 'IS'), A.OOS.months_fast_positive, h('small', null, 'OOS')],
-        `Net 30 s markout above zero after the fee. Everyone else: ${A.IS.months_others_positive} IS, ${A.OOS.months_others_positive} OOS. Trend ${sg(trend.slope_c_per_month)} c/month.`, '#A')),
+        `Net 30 s markout after the fee (the fast tier's own prints, not v2). Held to resolution: ${A.IS.months_fast_positive_to_resolution} IS, ${A.OOS.months_fast_positive_to_resolution} OOS. Everyone else: ${A.IS.months_others_positive} IS, ${A.OOS.months_others_positive} OOS.`, '#A')),
     h('div', {class: 'caveats'}, h('h3', null, 'Read it with'),
       h('ul', null,
         h('li', null, h('span', null, h('a', {href: '#I'}, 'Costs'), `: with taker fees doubled, OOS v2 nets ${sg(HD.fees_x2_OOS_c)} c/share (${feeRow ? feeRow.OOS.months_positive : '—'} months positive). A 1 c worse entry gives ${sg(stepAt('OOS', /\+1c/).c_per_share)}.`)),
         h('li', null, h('span', null, h('a', {href: '#F'}, 'Concentration'), `: the top 5 copied wallets carry ${pc(HD.top5_wallet_share_of_pnl.OOS, 0)} of OOS P&L (IS ${pc(HD.top5_wallet_share_of_pnl.IS, 0)}).`)),
-        h('li', null, h('span', null, h('a', {href: '#E'}, 'Decay'), `: the fast tier's monthly edge trends ${sg(trend.slope_c_per_month)} c/month (t = ${fx(trend.slope_t)}) as wallets grew ${E.over_calendar_time.wallets_first_to_last.join(' → ')}.`)),
-        h('li', null, h('span', null, h('a', {href: '#B'}, 'Luck'), `: OOS deflated Sharpe ${fx(B.luck.OOS_deflated_sharpe_N3386, 3)} at N = 3,386 trials (IS ${fx(B.luck.IS_deflated_sharpe_N3386, 3)}); ${B.OOS.days} OOS days.`)))),
+        h('li', null, h('span', null, h('a', {href: '#E'}, 'Decay'), `: in sample the fast tier's monthly edge trends ${sg(trend.slope_c_per_month)} c/month (t = ${fx(trend.slope_t)}, ${trend.n_points} IS months; pooled with the 3 H6 OOS rows ${sg(pooled.slope_c_per_month)}) as wallets grew ${E.over_calendar_time.wallets_first_to_last.join(' → ')}.`)),
+        h('li', null, h('span', null, h('a', {href: '#B'}, 'Luck'), `: OOS deflated Sharpe ${fx(B.luck.OOS_deflated_sharpe_N3386, 3)} at N = 3,386 trials, the lowest of three variance assumptions (${Object.values(B.luck.dsr_N3386_by_variance_assumption.OOS).map(v => fx(v, 3)).join(', ')}); IS ${fx(B.luck.IS_deflated_sharpe_N3386, 3)}; ${B.OOS.days} OOS days.`)))),
     h('nav', {class: 'toc', 'aria-label': 'Sections'},
       [['A', 'Source'], ['B', 'Size'], ['C', 'Factor-neutral'], ['D', 'Where in the book'], ['E', 'Decay'], ['F', 'Concentration'], ['G', 'Tier ladder'], ['H', 'Capacity'], ['I', 'What fails'], ['sources', 'Sources']]
         .map(([k, n]) => h('a', {href: '#' + k}, h('b', null, k.length === 1 ? k : '→'), n))));
@@ -633,13 +638,14 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
     table: () => ({cols: ['Month', 'Period', 'Fast tier net 30 s', 'Everyone else net 30 s', 'Fast − others', 'Fast tier to resolution', 'Copy 3 s later to resolution', 'Wallets', 'Fast-tier prints', 'Matches', 'Fast-tier volume'],
       rows: rows.map(r => [monY(r.month), r.p === 'IS' ? 'IS' : 'OOS (H6)', sg(r.fast_net30_c), sg(r.others_net30_c), sg(r.fast_minus_others_c), sg(r.fast_net_to_resolution_c), sg(r.copy_3s_later_net_to_resolution_c), n0(r.n_wallets), n0(r.n_prints), n0(r.n_matches), usdk(r.volume_usd_k * 1000)])}),
     take: `Fast tier positive in ${A.IS.months_fast_positive} IS and ${A.OOS.months_fast_positive} OOS months; everyone else in ${A.IS.months_others_positive} and ${A.OOS.months_others_positive}; a 3 s-late copy in ${A.IS.months_copy_3s_later_positive} and ${A.OOS.months_copy_3s_later_positive}. Values in c/share; table has all columns.`,
-    notes: [pretty(A.note), 'OOS here: ' + A.OOS.label + '.'],
-    keys: ['A.IS.months', 'A.OOS.months', 'A.copy_3s_later_note']
+    notes: [pretty(A.note), 'OOS here: ' + A.OOS.label + '.', pretty(A.note_md_month_count)],
+    keys: ['A.IS.months', 'A.OOS.months', 'A.copy_3s_later_note', 'A.note_md_month_count']
   });
   const u = A.unseen_markets_check, pw = p => A[p].print_weighted;
   const facts = kt('Pooled numbers (c/share)', ['Measure', 'IS', 'OOS (H6 held out)'], [
     ['Fast tier, net 30 s markout, weighted by prints', sg(pw('IS').fast_net30_c), sg(pw('OOS').fast_net30_c)],
     ['Fast tier, net to resolution, weighted by prints', sg(pw('IS').fast_net_to_resolution_c), sg(pw('OOS').fast_net_to_resolution_c)],
+    ['Fast tier, months > 0: net 30 s · held to resolution', A.IS.months_fast_positive + ' · ' + A.IS.months_fast_positive_to_resolution, A.OOS.months_fast_positive + ' · ' + A.OOS.months_fast_positive_to_resolution + Object.entries(A.OOS.fast_to_resolution_c_negative_months).map(([m, v]) => ` (${monY(m)} ${sg(v)})`).join('')],
     ['Everyone else, net 30 s, mean of monthly values', sg(A.IS.unweighted_month_mean.others_net30_c), sg(A.OOS.unweighted_month_mean.others_net30_c)],
     ['Copy 3 s later, net to resolution, weighted by prints', sg(pw('IS').copy_3s_later_net_to_resolution_c), sg(pw('OOS').copy_3s_later_net_to_resolution_c)],
     [u.label + ': fast tier minus others, 95% CI', sg(u.IS_fast_minus_others_c) + ' ' + ci(u.IS_ci95_c), sg(u.OOS_fast_minus_others_c) + ' ' + ci(u.OOS_ci95_c)],
@@ -647,7 +653,7 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
   ], ['Others are averaged over months because the results file has no per-month count of other takers’ prints.']);
   section('A', 'Source · where the edge comes from',
     `The fast tier is up in ${A.IS.months_fast_positive} IS and ${A.OOS.months_fast_positive} OOS months. Everyone else trading the same jumps is up in ${A.IS.months_others_positive} and ${A.OOS.months_others_positive}.`,
-    pretty(A.what), fig, facts, srcLine(['A.IS.print_weighted', 'A.OOS.print_weighted', 'A.unseen.IS', 'A.unseen.OOS']));
+    pretty(A.what), fig, facts, srcLine(['A.IS.print_weighted', 'A.OOS.print_weighted', 'A.months_to_resolution', 'A.unseen.universe', 'A.unseen.IS', 'A.unseen.OOS']));
 })();
 
 /* =====================================================================
@@ -718,12 +724,13 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
     ['Days · capital', P('IS').days + ' · ' + usd(P('IS').capital_usd), P('OOS').days + ' · ' + usd(P('OOS').capital_usd)],
     ['Annual return · annual volatility', fx(P('IS').ann_return_pct, 1) + '% · ' + fx(P('IS').ann_vol_pct, 1) + '%', fx(P('OOS').ann_return_pct, 1) + '% · ' + fx(P('OOS').ann_vol_pct, 1) + '%'],
     ['Sharpe (annual), 95% CI', fx(P('IS').sharpe_ann, 2) + ' ' + ci(lk.IS_sharpe_ci95_block_bootstrap), fx(P('OOS').sharpe_ann, 2) + ' ' + ci(lk.OOS_sharpe_ci95_bootstrap)],
-    ['Deflated Sharpe, N = 3,386 trials', fx(lk.IS_deflated_sharpe_N3386, 3), fx(lk.OOS_deflated_sharpe_N3386, 3)],
+    ['Deflated Sharpe, N = 3,386 trials: lowest of 3 variance assumptions (all 3)', fx(lk.IS_deflated_sharpe_N3386, 3) + ' (' + Object.values(lk.dsr_N3386_by_variance_assumption.IS).map(v => fx(v, 3)).join(', ') + ')', fx(lk.OOS_deflated_sharpe_N3386, 3) + ' (' + Object.values(lk.dsr_N3386_by_variance_assumption.OOS).map(v => fx(v, 3)).join(', ') + ')'],
     ['Max drawdown · worst day', fx(P('IS').max_dd_pct, 2) + '% · ' + fx(P('IS').worst_day_pct, 2) + '%', fx(P('OOS').max_dd_pct, 2) + '% · ' + fx(P('OOS').worst_day_pct, 2) + '%'],
     ['Daily skew · turnover', fx(P('IS').skew, 2) + ' · ' + fx(P('IS').turnover_x_per_year, 1) + '×/yr', fx(P('OOS').skew, 2) + ' · ' + fx(P('OOS').turnover_x_per_year, 1) + '×/yr'],
     ['Fee · net edge, bps of notional', fx(P('IS').fee_bps_of_notional_note_metrics, 0) + ' · ' + fx(P('IS').net_edge_bps_of_notional_note_metrics, 1), fx(P('OOS').fee_bps_of_notional_note_metrics, 0) + ' · ' + fx(P('OOS').net_edge_bps_of_notional_note_metrics, 1)],
     ['Months positive', P('IS').months_positive, P('OOS').months_positive]
   ], [pretty(lk.reading) + ' Expected best Sharpe of 3,386 zero-skill trials: ' + fx(lk.OOS_expected_best_of_3386_null_sharpe, 2) + '.',
+    lk.dsr_note + ' Order: ' + Object.keys(lk.dsr_N3386_by_variance_assumption.OOS).join(', ') + '.',
     'Capital rule: ' + P('IS').capital_rule + '.',
     `Where the IS gross comes from (${gs.label}): ${pc(gs.share_of_gross_from_stale_quote)} of the ${sg(gs.gross_fill_to_resolution_c)} c is the stale quote (fill vs mid 30 s later, ${sg(gs.stale_quote_fill_vs_mid_30s_c)} c: ${sg(gs.of_which_fill_vs_mid_5s_c)} c in the first 5 s, ${sg(gs.of_which_mid_5s_to_mid_30s_c)} c from 5 to 30 s); drift from 30 s to resolution adds ${sg(gs.drift_mid_30s_to_resolution_c)} c ${ci(gs.drift_ci95_c)}.`]);
   section('B', 'Size · how big it is after costs',
@@ -736,34 +743,35 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
    C  FACTOR-NEUTRAL
    ===================================================================== */
 (function secC() {
-  const cm = C.committed, io = C.IS_only_calendar_days, CI = PD.C_beta_ci95;
+  const is = C.IS_committed_spec, cm = C.committed, io = C.IS_only_calendar_days, CI = PD.C_beta_ci95, ow = cm.oos_weekdays_in_window;
   const FAC = [['MktRF', 'Market', 'Mkt − RF'], ['SMB', 'Size', 'SMB'], ['HML', 'Value', 'HML'], ['Mom', 'Momentum', 'Mom']];
   const fig = figure({
-    title: 'Factor betas of v2 daily returns, with 95% CI',
-    legend: [['fast', 'dot', 'Beta (committed regression)'], ['fast', 'line', '95% CI = beta ± 1.96 × |beta / t|']],
+    title: 'Factor betas of v2 daily returns, in sample, with 95% CI',
+    legend: [['fast', 'dot', 'Beta, IS only (committed spec on IS matches)'], ['fast', 'line', '95% CI = beta ± 1.96 × |beta / t|']],
     minW: 300,
     draw: (svg, W) => dotRows(svg, W, {lw: 104, rh: 40, nt: 5,
-      rows: FAC.map(([k, name, code]) => ({label: name, IS: {k: 'fast', v: cm.betas[k], lo: CI[k][0], hi: CI[k][1],
-        tip: `beta ${sg(cm.betas[k], 3)} · ${name} (${code})\nt = ${fx(cm.betas_t[k], 2)} · 95% CI ${ci(CI[k], 3)}\nCommitted spec, ${cm.n_days} weekdays`}})),
+      rows: FAC.map(([k, name, code]) => ({label: name, IS: {k: 'fast', v: is.betas[k], lo: CI.IS_committed_spec[k][0], hi: CI.IS_committed_spec[k][1],
+        tip: `beta ${sg(is.betas[k], 3)} · ${name} (${code})\nt = ${fx(is.betas_t[k], 2)} · 95% CI ${ci(CI.IS_committed_spec[k], 3)}\nIS only, ${is.n_days} weekdays`}})),
       xTitle: 'Beta (per unit of factor return)'}),
-    table: () => ({cols: ['Factor', 'Beta', 't', '95% CI (derived)'], rows: FAC.map(([k, name, code]) => [name + ' (' + code + ')', sg(cm.betas[k], 4), fx(cm.betas_t[k], 2), ci(CI[k], 3)])}),
-    take: `Every factor CI spans zero; the largest |t| is ${fx(cm.max_abs_factor_t, 2)} and R² is ${pc(cm.r2)}.`,
-    notes: [cm.label + '.', 'The CI is derived on this page from beta and its rounded t (normal approximation).'],
-    keys: ['C.committed', 'page_derived.C_beta_ci95']
+    table: () => ({cols: ['Factor', 'IS beta', 'IS t', 'IS 95% CI (derived)', 'File beta (incl. ' + ow.n_weekdays_with_oos_pnl + ' OOS weekdays)', 'File t'],
+      rows: FAC.map(([k, name, code]) => [name + ' (' + code + ')', sg(is.betas[k], 4), fx(is.betas_t[k], 2), ci(CI.IS_committed_spec[k], 3), sg(cm.betas[k], 4), fx(cm.betas_t[k], 2)])}),
+    take: `In sample every factor CI spans zero; the largest |t| is ${fx(is.max_abs_factor_t, 2)} and R² is ${pc(is.r2)}.`,
+    notes: [is.label + '.', 'v2 is ' + L.v2_fills + '. The CI is derived on this page from beta and its rounded t (normal approximation).'],
+    keys: ['C.IS_committed_spec', 'page_derived.C_beta_ci95']
   });
-  const facts = kt('Alpha', ['Measure', 'Committed spec', 'IS only, calendar days'], [
-    ['Alpha, % per day', sg(cm.alpha_pct_per_day, 3), sg(io.alpha_pct_per_day, 3)],
-    ['Alpha t-stat', fx(cm.alpha_t, 2), fx(io.alpha_t, 2)],
-    ['Alpha, annualised', fx(cm.alpha_annualised_pct, 1) + '%', '—'],
-    ['R²', pc(cm.r2), pc(io.r2)],
-    ['Correlation with the market', fx(cm.corr_with_market, 3), fx(io.corr_with_market, 3)],
-    ['Largest factor |t|', fx(cm.max_abs_factor_t, 2), fx(io.max_abs_factor_t, 2)],
-    ['Days', cm.n_days + ' weekdays', io.n_days + ' calendar days']
-  ], ['Committed: ' + cm.label + '.', 'IS only: ' + io.label + '.']);
+  const facts = kt('Alpha', ['Measure', 'IS only, committed spec', 'IS only, calendar days', 'File as committed: IS + ' + ow.n_weekdays_with_oos_pnl + ' burned-OOS weekdays'], [
+    ['Alpha, % per day', sg(is.alpha_pct_per_day, 3), sg(io.alpha_pct_per_day, 3), sg(cm.alpha_pct_per_day, 3)],
+    ['Alpha t-stat', fx(is.alpha_t, 2), fx(io.alpha_t, 2), fx(cm.alpha_t, 2)],
+    ['Alpha, annualised', fx(is.alpha_annualised_pct, 1) + '%', '—', fx(cm.alpha_annualised_pct, 1) + '%'],
+    ['R²', pc(is.r2), pc(io.r2), pc(cm.r2)],
+    ['Correlation with the market', fx(is.corr_with_market, 3), fx(io.corr_with_market, 3), fx(cm.corr_with_market, 3)],
+    ['Largest factor |t|', fx(is.max_abs_factor_t, 2), fx(io.max_abs_factor_t, 2), fx(cm.max_abs_factor_t, 2)],
+    ['Days', is.n_days + ' weekdays', io.n_days + ' calendar days', cm.n_days + ' weekdays']
+  ], [is.label + '.', 'Calendar days: ' + io.label + '.', cm.label + ` (burned-OOS weekdays: ${ow.dates.join(', ')}; ${ow.mixed_dates.join(', ')} also has IS trades).`]);
   section('C', 'Factor-neutral · is it just market exposure',
-    `No equity factor explains the P&L: alpha ${sg(cm.alpha_pct_per_day, 2)}%/day (t = ${fx(cm.alpha_t, 1)}), largest factor |t| = ${fx(cm.max_abs_factor_t, 2)}, R² = ${pc(cm.r2)}.`,
-    'Daily v2 returns regressed on the Fama-French three factors plus momentum. If the P&L were disguised market, size, value or momentum exposure, the betas would be large and their intervals would exclude zero.',
-    h('div', {class: 'grid2 wide-left'}, fig, facts), srcLine(['C.committed', 'C.IS_only_calendar_days']));
+    `In sample no equity factor explains the P&L: alpha ${sg(is.alpha_pct_per_day, 2)}%/day (t = ${fx(is.alpha_t, 1)}), largest factor |t| = ${fx(is.max_abs_factor_t, 2)}, R² = ${pc(is.r2)}.`,
+    'Daily v2 returns regressed on the Fama-French three factors plus momentum. If the P&L were disguised market, size, value or momentum exposure, the betas would be large and their intervals would exclude zero. The committed results file mixes in the first burned-OOS week, so the headline here uses the same spec on IS matches only.',
+    h('div', {class: 'grid2 wide-left'}, fig, facts), srcLine(['C.IS_committed_spec', 'C.IS_only_calendar_days', 'C.committed', 'C.committed.oos_weekdays']));
 })();
 
 /* =====================================================================
@@ -973,17 +981,17 @@ const feeRow = I.rows.find(r => /fees x2/.test(r.test));
   const tr = CT.IS_plus_OOS_rows, ti = CT.IS_months;
   const f2 = figure({
     title: 'Across the calendar: the fast tier’s edge and v2’s net, month by month',
-    legend: [['fast', 'dot', 'IS month'], ['fast', 'ring', 'OOS month (fast tier: H6 held out; v2: burned, non-blind)'], ['loss', 'dot', 'Net < 0'], ['ink', 'line', `OLS trend, all ${tr.n_points} rows: ${sg(tr.slope_c_per_month)} c/month`]],
+    legend: [['fast', 'dot', 'IS month'], ['fast', 'ring', 'OOS month (fast tier: H6 held out; v2: burned, non-blind)'], ['loss', 'dot', 'Net < 0'], ['ink', 'line', `OLS trend, ${ti.n_points} IS months only: ${sg(ti.slope_c_per_month)} c/month`]],
     minW: 320, draw: draw2,
     table: () => ({cols: ['Month', 'Period', 'Fast tier net 30 s', 'Wallets', 'v2 net c/share', 'v2 95% CI'],
       rows: [...new Set([...fastRows, ...v2Rows].map(r => r.month + '|' + r.p))].sort().map(key => { const [mo, p] = key.split('|'); const f = fastRows.find(r => r.month === mo && r.p === p), v = v2Rows.find(r => r.month === mo && r.p === p);
         return [monY(mo), p === 'IS' ? 'IS' : 'OOS', f ? sg(f.fast_net30_c) : '—', f ? n0(f.n_wallets) : '—', v ? sg(v.net_c_per_share) : '—', v ? ci(v.ci95) : '—']; })}),
-    take: `Fitted trend ${sg(tr.slope_c_per_month)} c/month (t = ${fx(tr.slope_t)}) over all ${tr.n_points} rows, ${sg(ti.slope_c_per_month)} c/month (t = ${fx(ti.slope_t)}) over IS months only; qualifying wallets grew from ${CT.wallets_first_to_last[0]} to ${CT.wallets_first_to_last[1]}.`,
-    notes: [pretty(CT.reading), pretty(CT.what) + ' ' + tr.note + '.'],
+    take: `In sample the fitted trend is ${sg(ti.slope_c_per_month)} c/month (t = ${fx(ti.slope_t)}, ${ti.n_points} IS months); pooled with the 3 H6 OOS rows it is ${sg(tr.slope_c_per_month)} c/month (t = ${fx(tr.slope_t)}, descriptive). Qualifying wallets grew from ${CT.wallets_first_to_last[0]} to ${CT.wallets_first_to_last[1]}.`,
+    notes: [pretty(CT.reading), pretty(CT.what) + ' Pooled fit: ' + tr.note + '.'],
     keys: ['E.over_calendar_time', 'page_derived.E_trend_line']
   });
   section('E', 'Decay · within a point and across months',
-    `The edge sits in the detection second, and month by month it is shrinking: ${sg(tr.slope_c_per_month)} c/month (t = ${fx(tr.slope_t)}).`,
+    `The edge sits in the detection second, and month by month it is shrinking: in sample ${sg(CT.IS_months.slope_c_per_month)} c/month (t = ${fx(CT.IS_months.slope_t)}).`,
     null, f1, f2);
 })();
 
@@ -1095,7 +1103,8 @@ function stripRows(rows, axisTitle, axisNote) {
       h('div', {class: 'lname'}, r.tier),
       h('div', {class: 'lsub'}, cf ? h('span', {class: 'chip cf'}, 'Counterfactual') : null, h('span', null, r.label + (r.horizon ? ' · horizon: ' + r.horizon : ''))),
       extra.length ? h('div', {class: 'lvals'}, extra.join(' ')) : null,
-      cf && r.sign_flip ? h('div', {class: 'lwarn'}, h('span', null, pretty(r.sign_flip))) : null);
+      cf && r.sign_flip ? h('div', {class: 'lwarn'}, h('span', null, pretty(r.sign_flip))) : null,
+      cf && r.no_camera_warning ? h('div', {class: 'lwarn'}, h('span', null, pretty(r.no_camera_warning))) : null);
     return {meta, pts, bars: true, aria: r.tier, r,
       empty: r.reading ? pretty(r.reading) + ` Book first on ${pc(r.share_book_first)} of ${r.n_points} points (median lead ${fx(r.book_leads_public_score_median_s, 2)} s); max calibration edge ${fx(r.calibration_max_abs_edge_c.IS, 2)} c IS, ${fx(r.calibration_max_abs_edge_c.OOS, 2)} c OOS.` : 'No per-share figure.'};
   });
@@ -1108,10 +1117,10 @@ function stripRows(rows, axisTitle, axisNote) {
     table: () => ({cols: ['Tier', 'Label', 'Horizon', 'IS or live net', 'IS 95% CI', 'OOS net', 'OOS 95% CI', 'Detail', 'Source'], wrapCols: [1, 7, 8],
       rows: rows.map(o => { const r = o.r, a = o.pts.find(d => d.p !== 'OOS'), b = o.pts.find(d => d.p === 'OOS');
         return [r.tier, r.label, r.horizon || '—', a ? sg(a.v) + (a.p === 'LIVE' ? ' (live day)' : '') : '—', a && a.ci ? ci(a.ci) : '', b ? sg(b.v) : '—', b && b.ci ? ci(b.ci) : '',
-          o.pts.length ? [o.meta.querySelector('.lvals') ? o.meta.querySelector('.lvals').textContent : '', r.sign_flip ? pretty(r.sign_flip) : ''].join(' ').trim() : o.empty, r.sources]; })}),
-    take: `Tier 0 (counterfactual) ${sg(t0.net_c_all_calls.IS)} IS / ${sg(t0.net_c_all_calls.OOS)} OOS and the fast tier ${sg(ft.net_c.IS)} / ${sg(ft.net_c.OOS)} are positive; copying 3 s later is ${sg(copy.net_c.IS)} / ${sg(copy.net_c.OOS)}.`,
+          o.pts.length ? [o.meta.querySelector('.lvals') ? o.meta.querySelector('.lvals').textContent : '', r.sign_flip ? pretty(r.sign_flip) : '', r.no_camera_warning ? pretty(r.no_camera_warning) : ''].join(' ').trim() : o.empty, r.sources]; })}),
+    take: `Tier 0 (counterfactual, needs a courtside camera; OOS CI ${ci(t0.net_ci95_c_all_calls.OOS)}) ${sg(t0.net_c_all_calls.IS)} IS / ${sg(t0.net_c_all_calls.OOS)} OOS and the fast tier ${sg(ft.net_c.IS)} / ${sg(ft.net_c.OOS)} are positive; copying 3 s later is ${sg(copy.net_c.IS)} / ${sg(copy.net_c.OOS)}.`,
     notes: ['Tier 0 is ' + L.tier0 + '. OOS for the tier-0 and v2 rows is the burned, non-blind OOS; for the fast-tier rows it is the H6 held-out read.', pretty(G.what)],
-    keys: G.rows.map((_, i) => 'G.rows[' + i + ']')
+    keys: G.rows.map((_, i) => 'G.rows[' + i + ']').concat(['G.tier0_no_camera'])
   });
   section('G', 'Tier ladder · who earns what',
     `Only the fastest tiers earn. Copying the fast tier 3 s later, which is our speed today, nets ${sg(copy.net_c.IS)} c IS and ${sg(copy.net_c.OOS)} c OOS.`,
@@ -1206,8 +1215,9 @@ function stripRows(rows, axisTitle, axisNote) {
       pts.push({p, v, ci: o.ci95, short: p, tip: `${p === 'IS' ? 'in sample' : 'OOS'}: ${desc(o)}\n${r.test}`});
     }
     const meta = h('div', {class: 'lmeta'}, h('div', {class: 'lname'}, r.test),
-      h('div', {class: 'lsub'}, h('span', {class: 'chip ' + vcls(r.verdict)}, r.verdict)),
-      h('div', {class: 'lvals'}, r.IS ? h('div', null, 'IS: ' + desc(r.IS)) : null, r.OOS ? h('div', null, 'OOS: ' + desc(r.OOS)) : null));
+      h('div', {class: 'lsub'}, h('span', {class: 'chip ' + vcls(r.verdict)}, r.verdict), r.label && /counterfactual/i.test(r.label) ? h('span', {class: 'chip cf'}, 'Counterfactual') : null),
+      h('div', {class: 'lvals'}, r.IS ? h('div', null, 'IS: ' + desc(r.IS)) : null, r.OOS ? h('div', null, 'OOS: ' + desc(r.OOS)) : null),
+      r.note ? h('p', {class: 'lnote'}, pretty(r.note)) : null);
     const empty = r.OOS && ok(r.OOS.dsr) ? `Deflated Sharpe ${fx(r.OOS.dsr, 3)} at N = 3,386 trials; no c/share figure.` : 'Not yet run: ' + r.source + '.';
     return {meta, pts, bars: false, aria: r.test, r, empty};
   });
@@ -1217,13 +1227,13 @@ function stripRows(rows, axisTitle, axisNote) {
     title: 'Stress tests, blind tests and robustness checks that go against the alpha',
     legend: [['fast', 'dot', 'IS, > 0'], ['fast', 'ring', 'OOS, > 0'], ['loss', 'dot', 'IS, < 0'], ['loss', 'ring', 'OOS, < 0'], ['ink', 'line', '95% CI where available']],
     custom: strip,
-    table: () => ({cols: ['Test', 'IS', 'OOS', 'Verdict', 'Source'], wrapCols: [1, 2, 4], rows: I.rows.map(r => [r.test, desc(r.IS), desc(r.OOS), r.verdict, r.source])}),
+    table: () => ({cols: ['Test', 'IS', 'OOS', 'Verdict', 'Note', 'Source'], wrapCols: [1, 2, 4, 5], rows: I.rows.map(r => [r.test, desc(r.IS), desc(r.OOS), r.verdict, r.note ? pretty(r.note) : '', r.source])}),
     take: `${ic.not_pending} of ${ic.n_rows} rows go against the strategy out of sample; ${ic.pending} (the blind forward test) is pending.`,
-    notes: [I.what + ' OOS rows for v2 are the burned, non-blind OOS; the maker v1, v1 and never-examined-market rows are blind tests.'],
+    notes: [I.what + ' OOS rows for v2 and tier 0 are the burned, non-blind OOS; the maker v1, v1 and never-examined-market rows are blind tests. Tier 0 is ' + L.tier0 + '.'],
     keys: I.rows.map((_, i) => 'I.rows[' + i + ']').concat(['page_derived.I_counts'])
   });
   section('I', 'What fails · shown next to the alpha',
-    `Doubling fees, a 1 c worse entry and 5× size all turn the OOS negative; the blind never-examined-market test and maker v1 failed; the OOS cannot rule out luck.`,
+    `Doubling fees, a 1 c worse entry and 5× size all turn the OOS negative; the blind never-examined-market test and maker v1 failed; the OOS cannot rule out luck; and tier 0 without a courtside camera is about zero OOS.`,
     null, fig);
 })();
 

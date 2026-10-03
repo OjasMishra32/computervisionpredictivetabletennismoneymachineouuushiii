@@ -218,6 +218,8 @@ def main() -> dict:
                      "it was opened, so OOS is the H6 out-of-sample read)",
             "months": mrows,
             "months_fast_positive": f"{sum(m['net30_c'] > 0 for m in rows)}/{len(rows)}",
+            "months_fast_positive_to_resolution": f"{sum(m['net_res_c'] > 0 for m in rows)}/{len(rows)}",
+            "fast_to_resolution_c_negative_months": {m["month"]: r(m["net_res_c"]) for m in rows if m["net_res_c"] <= 0},
             "months_others_positive": f"{sum(m['others_net30_c'] > 0 for m in rows)}/{len(rows)}",
             "months_copy_3s_later_positive": f"{sum(m['follow_res_c'] > 0 for m in rows)}/{len(rows)}",
             "fast_net30_c_range": [r(min(m["net30_c"] for m in rows)), r(max(m["net30_c"] for m in rows))],
@@ -240,9 +242,17 @@ def main() -> dict:
     A["copy_3s_later_note"] = ("NOTE.md Table 1 'Copying the fast tier 3 s later: < 0 every month' is the "
                                "follow_res_c column above.")
     SOURCES["A.copy_3s_later_note"] = "docs/NOTE.md Table 1; src/fasttier.py net_cols"
+    SOURCES["A.unseen.universe"] = "results/expand/results.json :: universe.(u2_markets, u2_series.itf)"
+    A["note_md_month_count"] = (f"docs/NOTE.md Table 1 says the fast tier was positive in 8/8 IS months; "
+                                f"{SUM} is.h6_walkforward has {len(A['IS']['months'])} IS rows (it includes "
+                                f"{A['IS']['months'][0]['month']}, {A['IS']['months'][0]['n_prints']} prints), "
+                                f"all positive. This page uses the results file.")
+    SOURCES["A.months_to_resolution"] = f"{SUM} :: (is|oos).h6_walkforward[].net_res_c (count > 0)"
+    SOURCES["A.note_md_month_count"] = f"docs/NOTE.md Table 1 (H6 row) vs {SUM} :: is.h6_walkforward (row count)"
     EXP = "results/expand/results.json"
     A["unseen_markets_check"] = {
-        "label": "11,307 never-examined markets (mostly ITF), pre-registered; per print, net 30 s",
+        "label": (f"{J(EXP)['universe']['u2_markets']:,} never-examined markets "
+                  f"({J(EXP)['universe']['u2_series']['itf']:,} ITF), pre-registered; per print, net 30 s"),
         "IS_fast_minus_others_c": r(pick("A.unseen.IS", EXP, "fast_minus_others_u2", "u2_is", "fast_minus_others_c")),
         "IS_ci95_c": r(J(EXP)["fast_minus_others_u2"]["u2_is"]["ci_c"]),
         "OOS_fast_minus_others_c": r(pick("A.unseen.OOS", EXP, "fast_minus_others_u2", "u2_oos",
@@ -319,9 +329,16 @@ def main() -> dict:
         "IS_deflated_sharpe_N3386": r(rig["v2_is"]["dsr_min_N3386"]),
         "OOS_deflated_sharpe_N3386": r(rig["v2_oos"]["dsr_min_N3386"]),
         "OOS_expected_best_of_3386_null_sharpe": r(rig["v2_oos"]["sr0_ann_max_N3386"], 2),
-        "reading": "40 OOS days cannot rule out luck: the expected best of 3,386 zero-skill trials beats v2's OOS Sharpe.",
+        "dsr_N3386_by_variance_assumption": {
+            p: {k.split("/", 1)[1]: r(v["dsr"]) for k, v in rig[s]["dsr"].items() if k.startswith("N3386/")}
+            for p, s in (("IS", "v2_is"), ("OOS", "v2_oos"))},
+        "dsr_note": "The deflated Sharpe shown is the lowest of three assumptions for the variance of the trials' "
+                    "Sharpe ratios (results/rigor/rigor.json psr_dsr.variance_sources); the other two are listed.",
+        "reading": (f"{J(NM)['burned_oos']['days']} OOS days cannot rule out luck: the expected best of 3,386 zero-skill trials "
+                    "beats v2's OOS Sharpe."),
     }
-    SOURCES["B.luck.dsr"] = f"{RIG} :: psr_dsr.rows[series=v2_is|v2_oos].dsr_min_N3386, sr0_ann_max_N3386"
+    SOURCES["B.luck.dsr"] = (f"{RIG} :: psr_dsr.rows[series=v2_is|v2_oos].dsr_min_N3386, sr0_ann_max_N3386, "
+                             "dsr.N3386/*.dsr")
     PMC = "results/financials/pm_compute.json"
     p26 = pick("B.gross_split_IS", PMC, "p26_gross_edge_split_is")
     Bsec["gross_split_IS_only"] = {
@@ -340,10 +357,32 @@ def main() -> dict:
     FR = "results/v2/factor_regression.json"
     fr = J(FR)
     p24 = J(PMC)["p24_factor_regression_is"]["calendar_days_excess_x365"]
+    p24c = J(PMC)["p24_factor_regression_is"]["committed_spec_is_only"]
+    # which weekdays of the committed regression window carry burned-OOS P&L (descriptive, from the trade file)
+    lo_d, hi_d = pd.Timestamp(fr["period"][0]), pd.Timestamp(fr["period"][1])
+    day = lambda d: pd.to_datetime(d.ts, unit="s").dt.floor("D")
+    oos_days = sorted({x for x in day(P["OOS"]) if lo_d <= x <= hi_d and x.weekday() < 5})
+    is_days = {x for x in day(P["IS"]) if lo_d <= x <= hi_d}
+    mixed = [x for x in oos_days if x in is_days]
+    oos_w = {"n_weekdays_with_oos_pnl": len(oos_days), "n_oos_only": len(oos_days) - len(mixed),
+             "dates": [str(x.date()) for x in oos_days], "mixed_dates": [str(x.date()) for x in mixed]}
+    computed("C.committed.oos_weekdays", f"{TRADES}: weekdays in {FR} period with burned-OOS trades (UTC days)")
+    mix_txt = (f"{oos_w['n_weekdays_with_oos_pnl']} of its weekdays ({oos_w['dates'][0][5:]} to "
+               f"{oos_w['dates'][-1][5:]}) carry burned-OOS P&L, {oos_w['n_oos_only']} of them OOS only")
     out["C_factor_neutral"] = {
+        "IS_committed_spec": {
+            "label": f"IS only: {p24c['spec']}; Newey-West 5 lags; {p24c['period'][0]} to {p24c['period'][1]}",
+            "n_days": p24c["n_days"], "alpha_pct_per_day": r(p24c["coef"]["alpha_daily"] * 100, 3),
+            "alpha_t": r(p24c["t"]["alpha_daily"], 2), "alpha_annualised_pct": r(p24c["alpha_annualised_pct"], 1),
+            "betas": {k: r(v, 6) for k, v in p24c["coef"].items()}, "betas_t": {k: r(v, 4) for k, v in p24c["t"].items()},
+            "r2": r(p24c["r2"]), "corr_with_market": r(p24c["corr_with_market"], 3),
+            "max_abs_factor_t": r(p24c["max_abs_factor_t"], 2),
+        },
         "committed": {
-            "label": "Fama-French 3 + momentum on v2 daily returns, weekdays with factor data; period "
-                     f"{fr['period'][0]} to {fr['period'][1]} (the last 7 days are burned OOS)",
+            "label": "File as committed (results/v2/factor_regression.json): Fama-French 3 + momentum on v2 "
+                     f"daily returns, weekdays with factor data, {fr['period'][0]} to {fr['period'][1]}; NOT IS only: "
+                     + mix_txt,
+            "oos_weekdays_in_window": oos_w,
             "n_days": fr["n_days"], "alpha_pct_per_day": r(fr["coef"]["alpha_daily"] * 100, 3),
             "alpha_t": fr["t"]["alpha_daily"], "alpha_annualised_pct": fr["alpha_annualised_pct"],
             "betas": fr["coef"], "betas_t": fr["t"], "r2": fr["r2"], "corr_with_market": fr["corr_with_market"],
@@ -355,11 +394,13 @@ def main() -> dict:
             "alpha_t": r(p24["t"]["alpha_daily"], 2), "r2": r(p24["r2"]), "corr_with_market": r(p24["corr_with_market"]),
             "max_abs_factor_t": r(p24["max_abs_factor_t"], 2),
         },
-        "reading": (f"No factor explains the P&L: largest factor |t| = "
-                    f"{max(abs(v) for k, v in fr['t'].items() if k != 'alpha_daily'):.2f}, R2 = {fr['r2'] * 100:.1f}% "
-                    f"(IS-only calendar-day spec {p24['r2'] * 100:.1f}%)."),
+        "reading": (f"No factor explains the IS P&L: largest factor |t| = {p24c['max_abs_factor_t']:.2f}, "
+                    f"R2 = {p24c['r2'] * 100:.1f}% (IS-only calendar-day spec {p24['r2'] * 100:.1f}%; committed file, "
+                    f"which includes {oos_w['n_weekdays_with_oos_pnl']} burned-OOS weekdays, "
+                    f"{fr['r2'] * 100:.1f}%)."),
     }
-    SOURCES["C.committed"] = f"{FR} :: (all keys)"
+    SOURCES["C.IS_committed_spec"] = f"{PMC} :: p24_factor_regression_is.committed_spec_is_only"
+    SOURCES["C.committed"] = f"{FR} :: (all keys); OOS weekdays in its window from {TRADES}"
     SOURCES["C.IS_only_calendar_days"] = f"{PMC} :: p24_factor_regression_is.calendar_days_excess_x365"
 
     # ------------------------------------------------------------------- D. WHERE IN THE BOOK
@@ -420,7 +461,8 @@ def main() -> dict:
                            "detection. The requested 0-0.5/0.5-1 s split is not resolvable on these tapes.",
         "empty_bins": dj["empty_by_construction"],
     }}
-    SOURCES["E.within_a_point"] = f"{DEC} :: tennis.subsets.(IS|burned_OOS).curves.(fast|others|all|with_jump).net30"
+    SOURCES["E.within_a_point"] = (f"{DEC} :: tennis.subsets.(IS|burned_OOS).curves.(fast|others|all|with_jump).net30, "
+                                  "prints, matches, decay_test; empty_by_construction")
     for p, sk in (("IS", "IS"), ("OOS", "burned_OOS")):
         sub = dj["tennis"]["subsets"][sk]
         E["within_a_point"][p] = {
@@ -452,7 +494,8 @@ def main() -> dict:
     x_all = np.concatenate([x_is, [mi(m["month"]) for m in rows_oos]])
     y_all = np.concatenate([y_is, [m["net30_c"] for m in rows_oos]])
     E["over_calendar_time"] = {
-        "what": "Fast-tier net 30 s markout by month (A), OLS on month index (0 = 2025-12), unweighted.",
+        "what": "Fast-tier net 30 s markout by month (A), OLS on month index (0 = 2025-12), unweighted. The IS fit "
+                "uses the IS months only; the pooled fit adds the 3 H6 OOS rows and is descriptive, not a test.",
         "IS_months": ols_slope(x_is, y_is),
         "IS_plus_OOS_rows": {**ols_slope(x_all, y_all), "note": "OOS rows appended in calendar order; Aug has an "
                              "IS and an OOS row; Oct is 3 days"},
@@ -461,11 +504,19 @@ def main() -> dict:
         "v2_monthly_net_c": {p: [{"month": g["group"], "net_c_per_share": g["net_c_per_share"],
                                   "ci95": g["net_ci95_c_match_clustered"]} for g in D[p]["by_month"]]
                              for p in ("IS", "OOS")},
-        "reading": (f"The edge is shrinking: the fast tier's net 30 s markout averaged {y_is[:4].mean():.2f}c over "
-                    f"Dec-Mar and {y_all[-4:].mean():.2f}c over the last four rows (Aug IS - Oct), a fitted "
-                    f"{ols_slope(x_all, y_all)['slope_c_per_month']:+.2f}c per month, while qualifying wallets grew "
+        "reading": (f"The edge is shrinking: in sample the fast tier's net 30 s markout averaged "
+                    f"{y_is[:4].mean():.2f}c over Dec-Mar and {y_is[-4:].mean():.2f}c over May-Aug, a fitted "
+                    f"{ols_slope(x_is, y_is)['slope_c_per_month']:+.2f}c per month over the {len(y_is)} IS months "
+                    f"(t = {ols_slope(x_is, y_is)['slope_t']:.2f}); the 3 H6 OOS rows average "
+                    f"{y_all[len(y_is):].mean():.2f}c (pooled fit {ols_slope(x_all, y_all)['slope_c_per_month']:+.2f}c "
+                    f"per month), while qualifying wallets grew "
                     f"from {rows_is[0]['n_wallets']} to {rows_oos[-1]['n_wallets']} and the venue moved from a "
-                    "3 s delay / no fee to 1 s / 5% (docs/NOTE.md section 1). It stayed positive every month."),
+                    "3 s delay / no fee to 1 s / 5% (docs/NOTE.md section 1). The 30 s markout stayed positive "
+                    "every month; held to resolution it was "
+                    + ("below zero in " + ", ".join(f"{m} {p} ({v:+.2f}c)" for p in ("IS", "OOS")
+                                                    for m, v in A[p]["fast_to_resolution_c_negative_months"].items())
+                       if any(A[p]["fast_to_resolution_c_negative_months"] for p in ("IS", "OOS"))
+                       else "also positive every month") + "."),
     }
     computed("E.over_calendar_time", f"OLS of {SUM} (is|oos).h6_walkforward net30_c on month index")
     out["E_decay"] = E
@@ -521,6 +572,27 @@ def main() -> dict:
     cal = J(SUM)["is"]["calibration"]
     cal_o = J(SUM)["oos"]["calibration"]
     inside = lambda rows: sum(1 for b in rows if b["lo"] <= b["mean_price"] <= b["hi"])
+    # committed tier-0 feed-latency sweep (f5ff9ff): the same trader without our own courtside camera
+    LS = "results/tier0/latency_sweep.json"
+    ls = J(LS)
+    lsv = ls["video_own120"]["tournament"]["0.5"]
+    lsb = ls["breakeven_video_delay"]["tournament"]
+    lsc = ls["check_V0_equals_published_headline"]
+    no_cam = {
+        "label": LBL["tier0"] + "; " + ls["label"],
+        "what": "Same tier-0 trader with the courtside camera replaced by licensed betting video delayed V seconds "
+                "(own CV on the video), headline (tournament) timing reading; 20 seeds. A courtside camera is not "
+                "feasible for us (research/v2/tier0/LATENCY_SWEEP.md).",
+        "V0_reproduces_headline": bool(lsc["IS"]["identical"] and lsc["burned_OOS"]["identical"]),
+        "video_0p5s": {p: {"c": r(lsv[k]["net_c_per_share"]), "ci95": r(lsv[k]["net_c_per_share_ci95"]),
+                           "usd_per_day": r(lsv[k]["usd_per_day"], 2)} for p, k in (("IS", "IS"), ("OOS", "burned_OOS"))},
+        "breakeven_video_delay_s": {p: {"s": lsb[k]["breakeven_V_s_seed_mean_curve"],
+                                        "ci95_s": lsb[k]["breakeven_V_s_seed_bootstrap_ci95"]}
+                                    for p, k in (("IS", "IS"), ("OOS", "burned_OOS"))},
+    }
+    SOURCES["G.tier0_no_camera"] = (f"{LS} :: video_own120.tournament.0.5.(IS|burned_OOS); "
+                                    "breakeven_video_delay.tournament; check_V0_equals_published_headline (commit f5ff9ff)")
+    stamp = t0["stresses_corrected"]["reading: R spread = umpire-stamp noise (t_reprice - t_bounce constant)"]
     ladder = [
         {"tier": "Tier-0: courtside camera + own CV + licensed feed + London gateway", "label": LBL["tier0"],
          "horizon": "to resolution",
@@ -532,17 +604,28 @@ def main() -> dict:
          "wrong_call_share_of_trades": {"IS": hi["wrong_call_share_of_trades"], "OOS": ho["wrong_call_share_of_trades"]},
          "usd_per_day": {"IS": hi["pnl_per_day_usd"], "OOS": ho["pnl_per_day_usd"]},
          "sign_flip": "Under the stamp-noise reading of the book's reprice timing, the same trader loses: "
-                      f"{t0['stresses_corrected']['reading: R spread = umpire-stamp noise (t_reprice - t_bounce constant)']['IS']['mean']['per_share_c']}c IS.",
+                      f"{stamp['IS']['mean']['per_share_c']:+.2f}c IS"
+                      + (f", {stamp['burned_OOS']['mean']['per_share_c']:+.2f}c burned OOS."
+                         if "burned_OOS" in stamp else "."),
+         "no_courtside_camera": no_cam,
+         "no_camera_warning": (f"A courtside camera is not feasible for us, and without one the edge needs video "
+                               f"under about 1 s: break-even video delay "
+                               f"{no_cam['breakeven_video_delay_s']['IS']['s']:.2f} s IS / "
+                               f"{no_cam['breakeven_video_delay_s']['OOS']['s']:.2f} s burned OOS; licensed betting "
+                               f"video at 0.5 s nets {no_cam['video_0p5s']['IS']['c']:+.2f}c IS / "
+                               f"{no_cam['video_0p5s']['OOS']['c']:+.2f}c OOS (OOS CI "
+                               f"[{no_cam['video_0p5s']['OOS']['ci95'][0]:.2f}, {no_cam['video_0p5s']['OOS']['ci95'][1]:.2f}])."),
          "sources": f"{T0J} :: headline.(IS|burned_OOS).mean; headline_by_size_and_decomposition.*.decomposition.correct; "
-                    "stresses_corrected; research/v2/tier0/RESULTS.md section 1"},
+                    f"stresses_corrected; research/v2/tier0/RESULTS.md section 1; {LS} (no-camera rows)"},
         {"tier": "Real fast tier, live day: prints landing 0-0.5 s before the book reprices", "label":
          "measured on one live day (482 official WTA points); 52 prints on points with a >= 3c move",
          "horizon": "vs the new mid", "gross_c": ft["D>=3c"]["gross_c"], "net_c": ft["D>=3c"]["net_c"],
          "n_prints": ft["D>=3c"]["n_prints"],
          "all_points": {"gross_c": ft["all_points"]["gross_c"], "net_c": ft["all_points"]["net_c"],
                         "n_prints": ft["all_points"]["n_prints"]},
-         "sources": f"{VR} :: 3c_fast_tier_vs_model.measured_fast_tier_prints_landing_[-0.5,0)_with_move"},
-        {"tier": "Fast tier (walk-forward wallets), 0-3 s after detection", "label": "IS and OOS (H6)",
+         "sources": f"{VR} :: 3c_fast_tier_vs_model.measured_fast_tier_prints_landing_[-0.5,0)_with_move; "
+                    "482 live points: research/v2/tier0/RESULTS.md (intro)"},
+        {"tier": "Fast tier (walk-forward wallets), 0-3 s after detection", "label": "IS and OOS (H6); weighted by prints",
          "horizon": "30 s markout", "net_c": {"IS": A["IS"]["print_weighted"]["fast_net30_c"],
                                               "OOS": A["OOS"]["print_weighted"]["fast_net30_c"]},
          "net_c_to_resolution": {"IS": A["IS"]["print_weighted"]["fast_net_to_resolution_c"],
@@ -560,7 +643,7 @@ def main() -> dict:
                                                "OOS": A["OOS"]["print_weighted"]["copy_3s_later_net_to_resolution_c"]},
          "months_positive": {"IS": A["IS"]["months_copy_3s_later_positive"], "OOS": A["OOS"]["months_copy_3s_later_positive"]},
          "sources": "section A (results/summary.json h6_walkforward follow_res_c)"},
-        {"tier": "Everyone else trading 0-3 s after detection", "label": "IS and OOS", "horizon": "30 s markout",
+        {"tier": "Everyone else trading 0-3 s after detection", "label": "IS and OOS (H6); mean of monthly values, not print-weighted (no per-month print counts in the results file)", "horizon": "30 s markout",
          "net_c": {"IS": A["IS"]["print_weighted"]["others_net30_c_unweighted_month_mean"], "OOS": A["OOS"]["print_weighted"]["others_net30_c_unweighted_month_mean"]},
          "sources": "section A (results/summary.json h6_walkforward others_net30_c)"},
         {"tier": "Chase the jump after the venue delay (H1)", "label": "IS and OOS (pre-registered, failed)",
@@ -590,6 +673,16 @@ def main() -> dict:
     FIN = "results/financials/financials.json"
     fin = J(FIN)["strategies"]["v2"]
     sc = fin["scaling"]
+    sizes = ["0.5x", "1x", "2x", "5x", "all prints"]
+    o_day = {k: sc[k]["OOS"]["pnl_usd_per_day"] for k in sizes}
+    peak = max(sizes, key=o_day.get)
+    pos = [k for k in sizes if o_day[k] > 0]
+    largest_pos = pos[-1] if pos else None
+    k_usd = lambda k: f"${sc[k]['OOS']['capital_usd'] / 1e3:.0f}k"
+    cap_statement = (f"On the burned OOS, $/day peaks at {peak} and the largest size still positive is {largest_pos}; "
+                     + ("every larger size loses. " if all(o_day[k] <= 0 for k in sizes[sizes.index(largest_pos) + 1:])
+                        else "")
+                     + f"Capacity is about {k_usd(peak)}-{k_usd(largest_pos)} of capital.")
     H = {"label": "IS and burned OOS (the size-scaled OOS rows are non-blind evaluations already logged)",
          "what": "Frozen v2 with every size cap scaled by the multiplier, same walk-forward fitting; no price-impact "
                  "model beyond never taking more than the copied print (larger rows would be worse in reality).",
@@ -599,9 +692,9 @@ def main() -> dict:
                                                                       "sharpe_ann", "capital_usd", "max_dd_pct")}
                                  for p in ("IS", "OOS")}} for k in ("0.5x", "1x", "2x", "5x", "all prints")],
          "capacity_estimate": {
-             "OOS_capital_usd_range": [r(sc["1x"]["OOS"]["capital_usd"], 0), r(sc["2x"]["OOS"]["capital_usd"], 0)],
-             "statement": "On the burned OOS, $/day peaks at 1x and the largest size still positive is 2x; every "
-                          "larger size loses. Capacity is about $23k-$34k of capital.",
+             "OOS_capital_usd_range": [r(sc[peak]["OOS"]["capital_usd"], 0), r(sc[largest_pos]["OOS"]["capital_usd"], 0)],
+             "OOS_peak_size": peak, "OOS_largest_positive_size": largest_pos,
+             "statement": cap_statement,
              "superseded": "The sizing lens's '~$100k at Sharpe ~6' (docs/NOTE.md section 6) used onset labels, "
                            "was IS only, and its $102k row was the copy-everything baseline.",
              "outer_ceiling_fast_tier_print_usd_per_day": {"IS": r(fin["ceiling"]["IS"]["fast_tier_qualified_print_usd_per_day"], 0),
@@ -631,7 +724,7 @@ def main() -> dict:
         {"test": "v2, +1c worse entry", "IS": {"c": Bsec["IS"]["waterfall"][5]["c_per_share"]},
          "OOS": {"c": Bsec["OOS"]["waterfall"][5]["c_per_share"]}, "verdict": "OOS negative",
          "source": f"{CAUSAL} :: causal/*/slip0.01"},
-        {"test": "v2 blind test on 11,307 never-examined markets (U2, pre-registered)",
+        {"test": f"v2 blind test on {ex['universe']['u2_markets']:,} never-examined markets (U2, pre-registered)",
          "IS": {"c": r(ex["primary"]["u2_is"]["per_share_c"]), "ci95": r(ex["primary"]["u2_is"]["per_share_ci_c"]), "verdict": ex["primary"]["u2_is"]["label"]},
          "OOS": {"c": r(ex["primary"]["u2_oos"]["per_share_c"]), "ci95": r(ex["primary"]["u2_oos"]["per_share_ci_c"]), "verdict": ex["primary"]["u2_oos"]["label"]},
          "verdict": ex["primary"]["verdict"], "source": f"{EXP} :: primary"},
@@ -639,10 +732,14 @@ def main() -> dict:
          "OOS": {"c_per_fill": r(mk["primary"]["value_c"]), "ci95": r(mk["primary"]["ci95_c"]),
                  "share_weighted_c": r(mk["headline"]["share_weighted_net_c"]), "pnl_usd": r(mk["headline"]["total_pnl_usd"], 2),
                  "n_fills": mk["primary"]["n_fills"]},
-         "verdict": mk["primary"]["verdict"], "source": f"{MK} :: primary, headline"},
+         "verdict": mk["primary"]["verdict"], "source": f"{MK} :: primary, headline",
+         "note": "The plotted value is the pre-registered primary: the unweighted mean per fill. Weighted by "
+                 "shares it is negative and the P&L is a loss."},
         {"test": "v1 (fast-tier trades at full size, <= $1k) out of sample, blind",
          "OOS": {"c": r(J(SUM)["oos"]["h6_shadow"]["mean_pnl_per_share_c"]), "pnl_usd": r(J(SUM)["oos"]["h6_shadow"]["total_pnl_usd"], 0)},
-         "verdict": "lost money", "source": f"{SUM} :: oos.h6_shadow"},
+         "verdict": "lost money", "source": f"{SUM} :: oos.h6_shadow",
+         "note": "The plotted value is the unweighted mean per trade; the dollar P&L is a loss (big tickets on "
+                 "cheap tokens)."},
         {"test": "v2 at 5x size", "OOS": {"c": r(sc["5x"]["OOS"]["per_share_c"]), "usd_per_day": r(sc["5x"]["OOS"]["pnl_usd_per_day"], 1)},
          "IS": {"c": r(sc["5x"]["IS"]["per_share_c"])}, "verdict": "OOS negative", "source": f"{FIN} :: strategies.v2.scaling.5x"},
         {"test": "v2 OOS clustered by copied wallet", "OOS": {"ci95": F["wallet_clustered_ci95_c"]["OOS"]},
@@ -652,6 +749,16 @@ def main() -> dict:
         {"test": "H1 chase the jump after the delay", "IS": {"c": r(J(SUM)["is"]["h1"]["J0.04_H30"]["mean_pnl_per_share_c"])},
          "OOS": {"c": r(J(SUM)["oos"]["h1"]["J0.04_H30"]["mean_pnl_per_share_c"])}, "verdict": "Fails",
          "source": f"{SUM} :: (is|oos).h1.J0.04_H30"},
+        {"test": "Tier-0 without our own courtside camera: licensed betting video at 0.5 s (counterfactual)",
+         "label": LBL["tier0"],
+         "IS": {"c": no_cam["video_0p5s"]["IS"]["c"], "ci95": no_cam["video_0p5s"]["IS"]["ci95"],
+                "usd_per_day": no_cam["video_0p5s"]["IS"]["usd_per_day"]},
+         "OOS": {"c": no_cam["video_0p5s"]["OOS"]["c"], "ci95": no_cam["video_0p5s"]["OOS"]["ci95"],
+                 "usd_per_day": no_cam["video_0p5s"]["OOS"]["usd_per_day"]},
+         "verdict": "OOS about zero, CI includes 0", "source": SOURCES["G.tier0_no_camera"],
+         "note": (f"Break-even video delay {no_cam['breakeven_video_delay_s']['IS']['s']:.2f} s IS, "
+                  f"{no_cam['breakeven_video_delay_s']['OOS']['s']:.2f} s burned OOS (non-blind). Tier-0 rows are "
+                  "counterfactual: assumes licensed feed + courtside camera (not purchased); parameters measured.")},
         {"test": "Forward test (blind, matches from 2026-10-03 14:00 UTC)", "verdict": "pending",
          "source": "results/v2/forward.json (not yet written)"},
     ]}
@@ -674,8 +781,16 @@ def main() -> dict:
         "v2_net_bps": {p: Bsec[p]["waterfall"][3]["bps_of_notional"] for p in ("IS", "OOS")},
         "v2_sharpe": {p: Bsec[p]["sharpe_ann"] for p in ("IS", "OOS")},
         "v2_pnl_usd": {p: Bsec[p]["pnl_usd"] for p in ("IS", "OOS")},
-        "factor_alpha_pct_per_day_t": [out["C_factor_neutral"]["committed"]["alpha_pct_per_day"], fr["t"]["alpha_daily"]],
-        "fast_tier_slope_c_per_month": out["E_decay"]["over_calendar_time"]["IS_plus_OOS_rows"]["slope_c_per_month"],
+        "factor_alpha_IS_committed_spec": {k: out["C_factor_neutral"]["IS_committed_spec"][k]
+                                           for k in ("alpha_pct_per_day", "alpha_t", "n_days")},
+        "factor_alpha_t_committed_file_incl_oos_weekdays": fr["t"]["alpha_daily"],
+        "fast_tier_slope_c_per_month": {
+            "IS": out["E_decay"]["over_calendar_time"]["IS_months"]["slope_c_per_month"],
+            "IS_t": out["E_decay"]["over_calendar_time"]["IS_months"]["slope_t"],
+            "IS_plus_OOS_rows_pooled": out["E_decay"]["over_calendar_time"]["IS_plus_OOS_rows"]["slope_c_per_month"]},
+        "fast_tier_months_positive_to_resolution": {p: A[p]["months_fast_positive_to_resolution"] for p in ("IS", "OOS")},
+        "v2_oos_dsr_N3386_range": [min(Bsec["luck"]["dsr_N3386_by_variance_assumption"]["OOS"].values()),
+                                   max(Bsec["luck"]["dsr_N3386_by_variance_assumption"]["OOS"].values())],
         "top5_wallet_share_of_pnl": {p: F[p]["wallets"]["top5_share_of_pnl"] for p in ("IS", "OOS")},
         "tier0_net_c_counterfactual": {"IS": hi["per_share_c"], "OOS": ho["per_share_c"]},
         "oos_capital_capacity_usd": H["capacity_estimate"]["OOS_capital_usd_range"],
