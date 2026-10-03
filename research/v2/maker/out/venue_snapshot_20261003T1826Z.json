@@ -1,0 +1,1585 @@
+{
+ "snapshot_utc": "2026-10-03T18:26:21.898534+00:00",
+ "repeat": 2,
+ "gap_s": 90.0,
+ "n_events_fetched": 182,
+ "n_open_markets_in_window": 2059,
+ "n_side_markets": {
+  "pre_match": 1738,
+  "in_play": 181
+ },
+ "venue_fields_all_open_tennis_markets": {
+  "seconds_delay": {
+   "1": 2059
+  },
+  "tick": {
+   "0.01": 1994,
+   "0.001": 65
+  },
+  "min_size": {
+   "5": 2059
+  },
+  "fee_rate": {
+   "0.05": 2059
+  },
+  "fee_exp": {
+   "1": 2059
+  },
+  "taker_only": {
+   "True": 2059
+  },
+  "rebate_rate": {
+   "0.15": 2059
+  },
+  "fee_type": {
+   "sports_fees_v3": 2059
+  },
+  "clear_book_on_start": {
+   "True": 2059
+  },
+  "fees_enabled": {
+   "True": 2059
+  },
+  "maker_base_fee": {
+   "1000": 2059
+  },
+  "taker_base_fee": {
+   "1000": 2059
+  },
+  "rewards_min_size": {
+   "50": 2059
+  },
+  "rewards_max_spread": {
+   "4.5": 2059
+  }
+ },
+ "venue_fields_by_state": {
+  "in_play": {
+   "seconds_delay": {
+    "1": 194
+   },
+   "tick": {
+    "0.01": 129,
+    "0.001": 65
+   },
+   "min_size": {
+    "5": 194
+   },
+   "fee_rate": {
+    "0.05": 194
+   },
+   "rebate_rate": {
+    "0.15": 194
+   }
+  },
+  "pre_match": {
+   "seconds_delay": {
+    "1": 1865
+   },
+   "tick": {
+    "0.01": 1865
+   },
+   "min_size": {
+    "5": 1865
+   },
+   "fee_rate": {
+    "0.05": 1865
+   },
+   "rebate_rate": {
+    "0.15": 1865
+   }
+  }
+ },
+ "book_summary": {
+  "by_state": {
+   "in_play": {
+    "n_markets": 362,
+    "n_events": 13,
+    "share_empty": 0.536,
+    "share_one_sided": 0.439,
+    "n_two_sided": 9,
+    "n_two_sided_mid_5_95": 9,
+    "two_sided": {
+     "median_spread_c": 3.0,
+     "p25_spread_c": 3.0,
+     "p75_spread_c": 91.0,
+     "share_spread_1tick": 0.0,
+     "median_top_bid_shares": 3429.55,
+     "median_top_ask_shares": 63.0,
+     "median_top_bid_usd": 1599.998,
+     "median_top_ask_notional_usd": 62.37,
+     "median_shares_within_2c_bid": 3403.57,
+     "median_shares_within_2c_ask": 37.72
+    },
+    "two_sided_mid_5_95": {
+     "median_spread_c": 3.0,
+     "p25_spread_c": 3.0,
+     "p75_spread_c": 91.0,
+     "median_top_bid_shares": 3429.55,
+     "median_top_ask_shares": 63.0,
+     "median_top_bid_usd": 1599.998,
+     "median_top_ask_notional_usd": 62.37,
+     "median_shares_within_2c_bid": 3403.57,
+     "median_shares_within_2c_ask": 37.72,
+     "median_shares_within_5c_bid": 3403.57,
+     "median_shares_within_5c_ask": 3388.66
+    }
+   },
+   "pre_match": {
+    "n_markets": 557,
+    "n_events": 116,
+    "share_empty": 0.0,
+    "share_one_sided": 0.041,
+    "n_two_sided": 534,
+    "n_two_sided_mid_5_95": 534,
+    "two_sided": {
+     "median_spread_c": 94.0,
+     "p25_spread_c": 4.0,
+     "p75_spread_c": 96.0,
+     "share_spread_1tick": 0.045,
+     "median_top_bid_shares": 20.0,
+     "median_top_ask_shares": 100.0,
+     "median_top_bid_usd": 1.0,
+     "median_top_ask_notional_usd": 26.721,
+     "median_shares_within_2c_bid": 0.0,
+     "median_shares_within_2c_ask": 0.0
+    },
+    "two_sided_mid_5_95": {
+     "median_spread_c": 94.0,
+     "p25_spread_c": 4.0,
+     "p75_spread_c": 96.0,
+     "median_top_bid_shares": 20.0,
+     "median_top_ask_shares": 100.0,
+     "median_top_bid_usd": 1.0,
+     "median_top_ask_notional_usd": 26.721,
+     "median_shares_within_2c_bid": 0.0,
+     "median_shares_within_2c_ask": 0.0,
+     "median_shares_within_5c_bid": 0.0,
+     "median_shares_within_5c_ask": 0.0
+    }
+   }
+  },
+  "by_state_tier": {
+   "in_play": {
+    "challenger_other": {
+     "n_markets": 62,
+     "n_events": 2,
+     "share_empty": 0.645,
+     "share_one_sided": 0.21,
+     "n_two_sided": 9,
+     "n_two_sided_mid_5_95": 9,
+     "two_sided": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 91.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 3429.55,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 1599.998,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 3403.57,
+      "median_shares_within_2c_ask": 37.72
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 91.0,
+      "median_top_bid_shares": 3429.55,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 1599.998,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 3403.57,
+      "median_shares_within_2c_ask": 37.72,
+      "median_shares_within_5c_bid": 3403.57,
+      "median_shares_within_5c_ask": 3388.66
+     }
+    },
+    "doubles": {
+     "n_markets": 60,
+     "n_events": 2,
+     "share_empty": 0.85,
+     "share_one_sided": 0.15,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "itf": {
+     "n_markets": 240,
+     "n_events": 9,
+     "share_empty": 0.429,
+     "share_one_sided": 0.571,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    }
+   },
+   "pre_match": {
+    "challenger_other": {
+     "n_markets": 28,
+     "n_events": 10,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 28,
+     "n_two_sided_mid_5_95": 28,
+     "two_sided": {
+      "median_spread_c": 21.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 88.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 16.5,
+      "median_top_ask_shares": 11.5,
+      "median_top_bid_usd": 4.8,
+      "median_top_ask_notional_usd": 9.7,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 21.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 88.0,
+      "median_top_bid_shares": 16.5,
+      "median_top_ask_shares": 11.5,
+      "median_top_bid_usd": 4.8,
+      "median_top_ask_notional_usd": 9.7,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "doubles": {
+     "n_markets": 18,
+     "n_events": 5,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 18,
+     "n_two_sided_mid_5_95": 18,
+     "two_sided": {
+      "median_spread_c": 95.0,
+      "p25_spread_c": 89.0,
+      "p75_spread_c": 97.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 10.0,
+      "median_top_ask_shares": 30.13,
+      "median_top_bid_usd": 0.1,
+      "median_top_ask_notional_usd": 29.226,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 95.0,
+      "p25_spread_c": 89.0,
+      "p75_spread_c": 97.0,
+      "median_top_bid_shares": 10.0,
+      "median_top_ask_shares": 30.13,
+      "median_top_bid_usd": 0.1,
+      "median_top_ask_notional_usd": 29.226,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "itf": {
+     "n_markets": 254,
+     "n_events": 84,
+     "share_empty": 0.0,
+     "share_one_sided": 0.008,
+     "n_two_sided": 252,
+     "n_two_sided_mid_5_95": 252,
+     "two_sided": {
+      "median_spread_c": 95.0,
+      "p25_spread_c": 94.0,
+      "p75_spread_c": 97.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.2,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 95.0,
+      "p25_spread_c": 94.0,
+      "p75_spread_c": 97.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.2,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tour": {
+     "n_markets": 257,
+     "n_events": 17,
+     "share_empty": 0.0,
+     "share_one_sided": 0.082,
+     "n_two_sided": 236,
+     "n_two_sided_mid_5_95": 236,
+     "two_sided": {
+      "median_spread_c": 4.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 43.75,
+      "share_spread_1tick": 0.102,
+      "median_top_bid_shares": 105.0,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 67.5,
+      "median_top_ask_notional_usd": 33.5,
+      "median_shares_within_2c_bid": 100.0,
+      "median_shares_within_2c_ask": 100.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 4.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 43.75,
+      "median_top_bid_shares": 105.0,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 67.5,
+      "median_top_ask_notional_usd": 33.5,
+      "median_shares_within_2c_bid": 100.0,
+      "median_shares_within_2c_ask": 100.0,
+      "median_shares_within_5c_bid": 600.0,
+      "median_shares_within_5c_ask": 100.0
+     }
+    }
+   }
+  },
+  "by_state_type": {
+   "in_play": {
+    "tennis_completed_match": {
+     "n_markets": 26,
+     "n_events": 13,
+     "share_empty": 0.038,
+     "share_one_sided": 0.962,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "tennis_first_set_totals": {
+     "n_markets": 60,
+     "n_events": 10,
+     "share_empty": 0.617,
+     "share_one_sided": 0.383,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "tennis_first_set_winner": {
+     "n_markets": 20,
+     "n_events": 10,
+     "share_empty": 0.6,
+     "share_one_sided": 0.4,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "tennis_game_handicap": {
+     "n_markets": 4,
+     "n_events": 2,
+     "share_empty": 0.75,
+     "share_one_sided": 0.0,
+     "n_two_sided": 1,
+     "n_two_sided_mid_5_95": 1,
+     "two_sided": {
+      "median_spread_c": 98.0,
+      "p25_spread_c": 98.0,
+      "p75_spread_c": 98.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 63.0,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 0.63,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 98.0,
+      "p25_spread_c": 98.0,
+      "p75_spread_c": 98.0,
+      "median_top_bid_shares": 63.0,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 0.63,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_match_totals": {
+     "n_markets": 78,
+     "n_events": 13,
+     "share_empty": 0.487,
+     "share_one_sided": 0.423,
+     "n_two_sided": 7,
+     "n_two_sided_mid_5_95": 7,
+     "two_sided": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 3.5,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 3429.55,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 1629.0,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 3429.55,
+      "median_shares_within_2c_ask": 38.13
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 3.0,
+      "p75_spread_c": 3.5,
+      "median_top_bid_shares": 3429.55,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 1629.0,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 3429.55,
+      "median_shares_within_2c_ask": 38.13,
+      "median_shares_within_5c_bid": 3429.55,
+      "median_shares_within_5c_ask": 3462.5
+     }
+    },
+    "tennis_set_games_totals": {
+     "n_markets": 78,
+     "n_events": 13,
+     "share_empty": 0.615,
+     "share_one_sided": 0.385,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "tennis_set_handicap": {
+     "n_markets": 44,
+     "n_events": 13,
+     "share_empty": 0.568,
+     "share_one_sided": 0.409,
+     "n_two_sided": 1,
+     "n_two_sided_mid_5_95": 1,
+     "two_sided": {
+      "median_spread_c": 91.0,
+      "p25_spread_c": 91.0,
+      "p75_spread_c": 91.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 3726.0,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 298.08,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 91.0,
+      "p25_spread_c": 91.0,
+      "p75_spread_c": 91.0,
+      "median_top_bid_shares": 3726.0,
+      "median_top_ask_shares": 63.0,
+      "median_top_bid_usd": 298.08,
+      "median_top_ask_notional_usd": 62.37,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_set_totals": {
+     "n_markets": 26,
+     "n_events": 13,
+     "share_empty": 0.538,
+     "share_one_sided": 0.462,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    },
+    "tennis_set_winner": {
+     "n_markets": 26,
+     "n_events": 13,
+     "share_empty": 0.615,
+     "share_one_sided": 0.385,
+     "n_two_sided": 0,
+     "n_two_sided_mid_5_95": 0,
+     "two_sided": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "share_spread_1tick": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": null,
+      "p25_spread_c": null,
+      "p75_spread_c": null,
+      "median_top_bid_shares": null,
+      "median_top_ask_shares": null,
+      "median_top_bid_usd": null,
+      "median_top_ask_notional_usd": null,
+      "median_shares_within_2c_bid": null,
+      "median_shares_within_2c_ask": null,
+      "median_shares_within_5c_bid": null,
+      "median_shares_within_5c_ask": null
+     }
+    }
+   },
+   "pre_match": {
+    "tennis_completed_match": {
+     "n_markets": 38,
+     "n_events": 38,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 38,
+     "n_two_sided_mid_5_95": 38,
+     "two_sided": {
+      "median_spread_c": 88.0,
+      "p25_spread_c": 86.0,
+      "p75_spread_c": 88.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 15.0,
+      "median_top_ask_shares": 20.0,
+      "median_top_bid_usd": 1.2,
+      "median_top_ask_notional_usd": 19.8,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 88.0,
+      "p25_spread_c": 86.0,
+      "p75_spread_c": 88.0,
+      "median_top_bid_shares": 15.0,
+      "median_top_ask_shares": 20.0,
+      "median_top_bid_usd": 1.2,
+      "median_top_ask_notional_usd": 19.8,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_first_set_totals": {
+     "n_markets": 107,
+     "n_events": 65,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 107,
+     "n_two_sided_mid_5_95": 107,
+     "two_sided": {
+      "median_spread_c": 96.0,
+      "p25_spread_c": 4.0,
+      "p75_spread_c": 97.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 500.0,
+      "median_top_bid_usd": 2.0,
+      "median_top_ask_notional_usd": 490.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 96.0,
+      "p25_spread_c": 4.0,
+      "p75_spread_c": 97.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 500.0,
+      "median_top_bid_usd": 2.0,
+      "median_top_ask_notional_usd": 490.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_first_set_winner": {
+     "n_markets": 33,
+     "n_events": 33,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 33,
+     "n_two_sided_mid_5_95": 33,
+     "two_sided": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "share_spread_1tick": 0.121,
+      "median_top_bid_shares": 100.0,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 57.0,
+      "median_top_ask_notional_usd": 32.0,
+      "median_shares_within_2c_bid": 100.0,
+      "median_shares_within_2c_ask": 324.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 3.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "median_top_bid_shares": 100.0,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 57.0,
+      "median_top_ask_notional_usd": 32.0,
+      "median_shares_within_2c_bid": 100.0,
+      "median_shares_within_2c_ask": 324.0,
+      "median_shares_within_5c_bid": 1450.0,
+      "median_shares_within_5c_ask": 1332.0
+     }
+    },
+    "tennis_game_handicap": {
+     "n_markets": 17,
+     "n_events": 17,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 17,
+     "n_two_sided_mid_5_95": 17,
+     "two_sided": {
+      "median_spread_c": 2.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 3.0,
+      "share_spread_1tick": 0.176,
+      "median_top_bid_shares": 1000.0,
+      "median_top_ask_shares": 1000.0,
+      "median_top_bid_usd": 510.0,
+      "median_top_ask_notional_usd": 520.0,
+      "median_shares_within_2c_bid": 1395.98,
+      "median_shares_within_2c_ask": 2684.82
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 2.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 3.0,
+      "median_top_bid_shares": 1000.0,
+      "median_top_ask_shares": 1000.0,
+      "median_top_bid_usd": 510.0,
+      "median_top_ask_notional_usd": 520.0,
+      "median_shares_within_2c_bid": 1395.98,
+      "median_shares_within_2c_ask": 2684.82,
+      "median_shares_within_5c_bid": 9677.08,
+      "median_shares_within_5c_ask": 9403.46
+     }
+    },
+    "tennis_match_totals": {
+     "n_markets": 125,
+     "n_events": 74,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 125,
+     "n_two_sided_mid_5_95": 125,
+     "two_sided": {
+      "median_spread_c": 90.0,
+      "p25_spread_c": 4.0,
+      "p75_spread_c": 95.0,
+      "share_spread_1tick": 0.08,
+      "median_top_bid_shares": 10.0,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.567,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 90.0,
+      "p25_spread_c": 4.0,
+      "p75_spread_c": 95.0,
+      "median_top_bid_shares": 10.0,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.567,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_set_games_totals": {
+     "n_markets": 107,
+     "n_events": 65,
+     "share_empty": 0.0,
+     "share_one_sided": 0.215,
+     "n_two_sided": 84,
+     "n_two_sided_mid_5_95": 84,
+     "two_sided": {
+      "median_spread_c": 97.0,
+      "p25_spread_c": 95.0,
+      "p75_spread_c": 97.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 500.0,
+      "median_top_bid_usd": 0.2,
+      "median_top_ask_notional_usd": 490.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 97.0,
+      "p25_spread_c": 95.0,
+      "p75_spread_c": 97.0,
+      "median_top_bid_shares": 20.0,
+      "median_top_ask_shares": 500.0,
+      "median_top_bid_usd": 0.2,
+      "median_top_ask_notional_usd": 490.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_set_handicap": {
+     "n_markets": 56,
+     "n_events": 50,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 56,
+     "n_two_sided_mid_5_95": 56,
+     "two_sided": {
+      "median_spread_c": 94.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "share_spread_1tick": 0.071,
+      "median_top_bid_shares": 25.07,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.752,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 94.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "median_top_bid_shares": 25.07,
+      "median_top_ask_shares": 25.07,
+      "median_top_bid_usd": 0.752,
+      "median_top_ask_notional_usd": 24.318,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    },
+    "tennis_set_totals": {
+     "n_markets": 39,
+     "n_events": 39,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 39,
+     "n_two_sided_mid_5_95": 39,
+     "two_sided": {
+      "median_spread_c": 4.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "share_spread_1tick": 0.077,
+      "median_top_bid_shares": 117.34,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 46.575,
+      "median_top_ask_notional_usd": 27.0,
+      "median_shares_within_2c_bid": 172.5,
+      "median_shares_within_2c_ask": 5.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 4.0,
+      "p25_spread_c": 2.0,
+      "p75_spread_c": 94.0,
+      "median_top_bid_shares": 117.34,
+      "median_top_ask_shares": 100.0,
+      "median_top_bid_usd": 46.575,
+      "median_top_ask_notional_usd": 27.0,
+      "median_shares_within_2c_bid": 172.5,
+      "median_shares_within_2c_ask": 5.0,
+      "median_shares_within_5c_bid": 2563.75,
+      "median_shares_within_5c_ask": 205.0
+     }
+    },
+    "tennis_set_winner": {
+     "n_markets": 35,
+     "n_events": 35,
+     "share_empty": 0.0,
+     "share_one_sided": 0.0,
+     "n_two_sided": 35,
+     "n_two_sided_mid_5_95": 35,
+     "two_sided": {
+      "median_spread_c": 96.0,
+      "p25_spread_c": 14.0,
+      "p75_spread_c": 96.0,
+      "share_spread_1tick": 0.0,
+      "median_top_bid_shares": 307.0,
+      "median_top_ask_shares": 900.0,
+      "median_top_bid_usd": 30.0,
+      "median_top_ask_notional_usd": 450.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0
+     },
+     "two_sided_mid_5_95": {
+      "median_spread_c": 96.0,
+      "p25_spread_c": 14.0,
+      "p75_spread_c": 96.0,
+      "median_top_bid_shares": 307.0,
+      "median_top_ask_shares": 900.0,
+      "median_top_bid_usd": 30.0,
+      "median_top_ask_notional_usd": 450.0,
+      "median_shares_within_2c_bid": 0.0,
+      "median_shares_within_2c_ask": 0.0,
+      "median_shares_within_5c_bid": 0.0,
+      "median_shares_within_5c_ask": 0.0
+     }
+    }
+   }
+  },
+  "moneyline_in_play": {
+   "n_markets": 13,
+   "n_events": 13,
+   "share_empty": 0.154,
+   "share_one_sided": 0.385,
+   "n_two_sided": 6,
+   "n_two_sided_mid_5_95": 6,
+   "two_sided": {
+    "median_spread_c": 1.0,
+    "p25_spread_c": 1.0,
+    "p75_spread_c": 1.75,
+    "share_spread_1tick": 0.667,
+    "median_top_bid_shares": 1208.755,
+    "median_top_ask_shares": 1424.15,
+    "median_top_bid_usd": 464.735,
+    "median_top_ask_notional_usd": 1126.815,
+    "median_shares_within_2c_bid": 2345.415,
+    "median_shares_within_2c_ask": 1900.975
+   },
+   "two_sided_mid_5_95": {
+    "median_spread_c": 1.0,
+    "p25_spread_c": 1.0,
+    "p75_spread_c": 1.75,
+    "median_top_bid_shares": 1208.755,
+    "median_top_ask_shares": 1424.15,
+    "median_top_bid_usd": 464.735,
+    "median_top_ask_notional_usd": 1126.815,
+    "median_shares_within_2c_bid": 2345.415,
+    "median_shares_within_2c_ask": 1900.975,
+    "median_shares_within_5c_bid": 6337.795,
+    "median_shares_within_5c_ask": 5921.22
+   }
+  }
+ },
+ "mirror_check": [
+  {
+   "cond": "0xd6e0139ad3cca46bae0296d21c400bc2d5df2f2b170e9a4d335560e7039f8922",
+   "smt": "tennis_match_totals",
+   "bid0": 0.56,
+   "ask0": 0.6,
+   "bid1": 0.4,
+   "ask1": 0.44,
+   "bid0_sz": 3403.57,
+   "ask1_sz": 3403.57,
+   "mirrors": true
+  },
+  {
+   "cond": "0x7eba55cc61d9f526a7dbacf12cebc5f5e9c65d718a3261001962301c7aba43e3",
+   "smt": "tennis_match_totals",
+   "bid0": 0.49,
+   "ask0": 0.52,
+   "bid1": 0.48,
+   "ask1": 0.51,
+   "bid0_sz": 3663.27,
+   "ask1_sz": 3663.27,
+   "mirrors": true
+  },
+  {
+   "cond": "0x8f7759221dc6799ebff645eed18d731b0330bfa484b0ff86cbe9c29f168e9925",
+   "smt": "tennis_match_totals",
+   "bid0": 0.44,
+   "ask0": 0.48,
+   "bid1": 0.52,
+   "ask1": 0.56,
+   "bid0_sz": 3429.55,
+   "ask1_sz": 3429.55,
+   "mirrors": true
+  },
+  {
+   "cond": "0x65e4b0f4341827f4033d584c02e9063d8c53ad0dcb8c4be36f7815cf1e908040",
+   "smt": "tennis_first_set_winner",
+   "bid0": 0.62,
+   "ask0": 0.65,
+   "bid1": 0.35,
+   "ask1": 0.38,
+   "bid0_sz": 1450.0,
+   "ask1_sz": 1450.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0x9cd34272ecb040fec78474c5a1ff7e841b065bf9d42ad8199ef070f769d80f4f",
+   "smt": "tennis_set_winner",
+   "bid0": 0.5,
+   "ask0": 0.68,
+   "bid1": 0.32,
+   "ask1": 0.5,
+   "bid0_sz": 151.5,
+   "ask1_sz": 151.5,
+   "mirrors": true
+  },
+  {
+   "cond": "0x1ccaa00885d5ca3987c25663ba4b347635706a7e5bfdacef34e839886851d8e2",
+   "smt": "tennis_set_totals",
+   "bid0": 0.37,
+   "ask0": 0.4,
+   "bid1": 0.6,
+   "ask1": 0.63,
+   "bid0_sz": 3318.0,
+   "ask1_sz": 3318.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0xccdbbbc4454f41b24d4a0274dca8489fe7b617a44cbedf04493ded8317a12f74",
+   "smt": "tennis_first_set_totals",
+   "bid0": 0.74,
+   "ask0": 0.77,
+   "bid1": 0.23,
+   "ask1": 0.26,
+   "bid0_sz": 100.0,
+   "ask1_sz": 100.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0x0f563f94d22fc5bfeaf75cf8db03934a6ccf25795d30f219b2cb3a1145cc6e8a",
+   "smt": "tennis_first_set_totals",
+   "bid0": 0.48,
+   "ask0": 0.6,
+   "bid1": 0.4,
+   "ask1": 0.52,
+   "bid0_sz": 5.0,
+   "ask1_sz": 5.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0x9ee1f7b7d66abcf6a20a798661e4091f57dac909f04a6fcaedf8da9050d470ea",
+   "smt": "tennis_first_set_totals",
+   "bid0": 0.25,
+   "ask0": 0.29,
+   "bid1": 0.71,
+   "ask1": 0.75,
+   "bid0_sz": 800.0,
+   "ask1_sz": 800.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0xfdb136fb3b8712ac63e2af6ab7a0dfa6fdb463506b38d193b064504d11c267bf",
+   "smt": "tennis_match_totals",
+   "bid0": 0.53,
+   "ask0": 0.56,
+   "bid1": 0.44,
+   "ask1": 0.47,
+   "bid0_sz": 1210.0,
+   "ask1_sz": 1210.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0x8dbb338f3b5eda544e3b92ec5d4ec07b8de42b4593fd5314077597e0c50cefb6",
+   "smt": "tennis_match_totals",
+   "bid0": 0.46,
+   "ask0": 0.48,
+   "bid1": 0.52,
+   "ask1": 0.54,
+   "bid0_sz": 1284.0,
+   "ask1_sz": 1284.0,
+   "mirrors": true
+  },
+  {
+   "cond": "0x72d5127edc5c0597c992d122c878768a097054c5253ac544f0bef7ac933ad2f4",
+   "smt": "tennis_match_totals",
+   "bid0": 0.4,
+   "ask0": 0.44,
+   "bid1": 0.56,
+   "ask1": 0.6,
+   "bid0_sz": 1907.56,
+   "ask1_sz": 1907.56,
+   "mirrors": true
+  }
+ ],
+ "clob_params_sample": [
+  {
+   "cond": "0xe97d6d0c12ae0c03a84391e8f20f44ed461e85cd830ab5a3cf213314238a93ab",
+   "question": "Heide vs. Dias: Match O/U 23.5",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:15:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:25:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "81190902157413740983229254107747752372863621202859707757198009289071130915865",
+      "o": "Over"
+     },
+     {
+      "t": "67629003506770221369839771455686917848151411482215540175172591179621513613766",
+      "o": "Under"
+     }
+    ],
+    "c": "0xe97d6d0c12ae0c03a84391e8f20f44ed461e85cd830ab5a3cf213314238a93ab",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-02T23:44:14Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0x8a07f2b1c5849979d258ee91dd916489d4003bd319658874f370892161c43fcc",
+   "question": "Set Handicap: Pedro Boscardin Dias (-1.5) vs Gustavo Heide (+1.5)",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:15:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:25:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "92136076791265291893026399236093208754583583212717724680352813852919906528371",
+      "o": "Pedro Boscardin Dias"
+     },
+     {
+      "t": "55135870191096585012620511496389581699750831040130098563129487719469205039795",
+      "o": "Gustavo Heide"
+     }
+    ],
+    "c": "0x8a07f2b1c5849979d258ee91dd916489d4003bd319658874f370892161c43fcc",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-02T23:44:15Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0xe8c571d6ce3f0c3c83687dce4824e86b443c8010779bd5d7f5c57a75de4d5baf",
+   "question": "Game Spread: Gustavo Heide (-4.5) vs Pedro Boscardin Dias (+4.5)",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:15:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:25:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "34223073563661863129118227663063563176112454039822378890379568735444731466631",
+      "o": "Gustavo Heide"
+     },
+     {
+      "t": "114174104409880597525223466297964639748034801656330587014719634735666535775133",
+      "o": "Pedro Boscardin Dias"
+     }
+    ],
+    "c": "0xe8c571d6ce3f0c3c83687dce4824e86b443c8010779bd5d7f5c57a75de4d5baf",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-03T01:44:08Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0xd6e0139ad3cca46bae0296d21c400bc2d5df2f2b170e9a4d335560e7039f8922",
+   "question": "Shelbayh vs. Krueger: Match O/U 21.5",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:20:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:20:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "54933475202454202932472946077187213497697956982094842338913214735289255274065",
+      "o": "Over"
+     },
+     {
+      "t": "38628426261892632771472685353760539335440956675512659026295352752296606472953",
+      "o": "Under"
+     }
+    ],
+    "c": "0xd6e0139ad3cca46bae0296d21c400bc2d5df2f2b170e9a4d335560e7039f8922",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-02T23:44:52Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0x5772a36dd3f702025e81f44fc373d0b6322e0beac0666d073c126258e6d4d0ea",
+   "question": "Set 1 Winner: Kestelboim/Zormann vs Miguel/Ribeiro",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:00:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:00:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "37199325467630342671281115515463328500723169436436086800752676678049451604181",
+      "o": "Kestelboim/Zormann"
+     },
+     {
+      "t": "16160239705090734105616846773561542349796248136040721922443918309651546874422",
+      "o": "Miguel/Ribeiro"
+     }
+    ],
+    "c": "0x5772a36dd3f702025e81f44fc373d0b6322e0beac0666d073c126258e6d4d0ea",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-03T04:44:10Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0xd09523ba64858e28da8750eb7d3035c7abbd02983152b848533ffa2a47ecc75b",
+   "question": "Set 2 Winner: Kestelboim/Zormann vs Miguel/Ribeiro",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-03T18:00:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-03T18:00:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "110578756084754181031446804897278783458091508982174974967381539401798234422443",
+      "o": "Kestelboim/Zormann"
+     },
+     {
+      "t": "110213105051788838555840988599551619195766016554942931674076370672261539515011",
+      "o": "Miguel/Ribeiro"
+     }
+    ],
+    "c": "0xd09523ba64858e28da8750eb7d3035c7abbd02983152b848533ffa2a47ecc75b",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-03T04:44:12Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0x3dd5f8666768f8dcc436d2c6edf6578091763eaa17e4a4127b5d424eead504e5",
+   "question": "China Open: Completed Match: Daniil Medvedev vs Francisco Cerundolo",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-04T08:30:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-04T08:30:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "4804366363392812480200233383752280742346556000625268466065482579407234613251",
+      "o": "Yes"
+     },
+     {
+      "t": "83001438595359716532973239539347821279622239420458327880754486506818401752567",
+      "o": "No"
+     }
+    ],
+    "c": "0x3dd5f8666768f8dcc436d2c6edf6578091763eaa17e4a4127b5d424eead504e5",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-03T17:05:22Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  },
+  {
+   "cond": "0x65e4b0f4341827f4033d584c02e9063d8c53ad0dcb8c4be36f7815cf1e908040",
+   "question": "Set 1 Winner: Daniil Medvedev vs Francisco Cerundolo",
+   "markets": {
+    "minimum_order_size": 5,
+    "minimum_tick_size": 0.01,
+    "seconds_delay": 1,
+    "maker_base_fee": 1000,
+    "taker_base_fee": 1000,
+    "accepting_orders": true,
+    "game_start_time": "2026-10-04T08:30:00Z",
+    "rewards": {
+     "rates": null,
+     "min_size": 50,
+     "max_spread": 4.5
+    }
+   },
+   "clob_markets": {
+    "gst": "2026-10-04T08:30:00Z",
+    "r": {
+     "mi": 50,
+     "ma": 4.5,
+     "moas": 30
+    },
+    "t": [
+     {
+      "t": "111107090625520576903631611959160934672680516219508357319580493249110417937610",
+      "o": "Daniil Medvedev"
+     },
+     {
+      "t": "79972315983351652458123846321507492431335429131910099722354306599405387542646",
+      "o": "Francisco Cerundolo"
+     }
+    ],
+    "c": "0x65e4b0f4341827f4033d584c02e9063d8c53ad0dcb8c4be36f7815cf1e908040",
+    "sd": 1,
+    "mos": 5,
+    "mts": 0.01,
+    "mbf": 1000,
+    "tbf": 1000,
+    "ao": true,
+    "cbos": true,
+    "aot": "2026-10-03T17:44:15Z",
+    "ibce": true,
+    "fd": {
+     "r": 0.05,
+     "e": 1,
+     "to": true
+    },
+    "v": "v1"
+   }
+  }
+ ]
+}
