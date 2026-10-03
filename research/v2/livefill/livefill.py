@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 J = 0.03
+FROM_MS, UNTIL_MS = 1791021780000, 1791030060000   # the published run: 2026-10-03 10:03-12:21 UTC
 WIN_MS = 10_000
 TIMEOUTS = (30, 60, 120, 300)
 OUT = Path(__file__).parent
@@ -51,9 +52,17 @@ def main():
     orders = []                     # open simulated orders
     done = []
     last_sig = {}
-    f = sorted(glob.glob("data/live/market_*.jsonl"))[-1]
-    with open(f) as fh:
-        for line in fh:
+    import gzip
+
+    def lines():  # plain and gzipped recordings in time order; a truncated gzip ends cleanly
+        for f in sorted(glob.glob("data/live/market_*.jsonl*")):
+            with (gzip.open(f, "rt") if f.endswith(".gz") else open(f)) as fh:
+                try:
+                    yield from fh
+                except EOFError:
+                    pass
+    if True:
+        for line in lines():
             try:
                 m = json.loads(line)
             except json.JSONDecodeError:
@@ -62,6 +71,8 @@ def main():
             if e not in ("book", "price_change", "last_trade_price"):
                 continue
             ts = int(m.get("timestamp") or 0)
+            if ts < FROM_MS or ts > UNTIL_MS:
+                continue
             if e == "book":
                 a = m["asset_id"]
                 if a not in twin:

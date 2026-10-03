@@ -20,7 +20,7 @@ import websockets
 GAMMA = "https://gamma-api.polymarket.com/events"
 SPORTS_WS = "wss://sports-api.polymarket.com/ws"
 MARKET_WS = "wss://ws-subscriptions-clob.polymarket.com/ws/market"
-TAGS = ("tennis", "table-tennis")
+TAGS = ("tennis",)  # table tennis books are empty (89c spreads); dropped to save disk
 RACKET_LEAGUES = {"atp", "wta", "challenger", "itf", "tennis", "tt", "tabletennis", "table-tennis", "setka"}
 
 
@@ -125,6 +125,8 @@ async def market_loop(sink: Sink, meta_sink: Sink, stop: float) -> None:
                     except ValueError:
                         continue
                     for it in d if isinstance(d, list) else [d]:
+                        if it.get("event_type") == "new_market":  # every market on the venue: noise
+                            continue
                         sink.write({"rt": rt, **it})
         except Exception as ex:
             sink.write({"rt": now_ms(), "error": repr(ex)})

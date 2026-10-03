@@ -15,13 +15,26 @@ for f in sorted(glob.glob("data/live/tokens_*.jsonl")):
     for line in open(f):
         meta.update(json.loads(line)["tokens"])
 ws = []
-f = sorted(glob.glob("data/live/market_*.jsonl"))[-1]
-with open(f) as fh:
-    for line in fh:
+import gzip
+
+
+def _lines():
+    for f in sorted(glob.glob("data/live/market_*.jsonl*")):
+        with (gzip.open(f, "rt") if f.endswith(".gz") else open(f)) as fh:
+            try:
+                yield from fh
+            except EOFError:  # truncated gzip from the first recorder
+                pass
+
+
+if True:
+    for line in _lines():
         if '"last_trade_price"' not in line:
             continue
         m = json.loads(line)
         if meta.get(m.get("asset_id"), {}).get("tag") != "tennis":
+            continue
+        if not (1791021780000 <= int(m["timestamp"]) <= 1791033000000):  # published run: 10:03-13:10 UTC
             continue
         ws.append({"tx": m.get("transaction_hash"), "ws_ms": int(m["timestamp"]), "rt": m["rt"],
                    "cond": meta[m["asset_id"]]["cond"]})

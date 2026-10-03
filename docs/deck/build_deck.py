@@ -319,7 +319,7 @@ need(NOTE, "Net |exposure| ≤ 100 shares per match; ≤ $1k per order; capital 
 # Fee effect, in-sample shadow book by regime: 1 s/3% -> 1 s/5% is the fee alone (about halved).
 need(DEV, "1 s/3% 1.19¢; 1 s/5% 0.54¢")
 need(NOTE, "commit `7232986`", "opened once", "81% of the first v2 draft's OOS P&L",
-     "filled only 36% of the time within a minute", "Side markets add only ~$2k/month",
+     "filled only 35% of the time within a minute", "Side markets add only ~$2k/month",
      "Kalshi→Polymarket laggard trade nets ≈0 today", "Cloudflare's Miami edge", "67 ms median one-way",
      "saves ~130 ms per round trip", "The expected best Sharpe from luck over this many trials is ~4.8")
 need(XMKT, "+0.93c/share (95% CI −2.8 to +4.7) and $472", "about $2.1k per 30 days")
@@ -332,7 +332,7 @@ need(HYP2, "planned ~2026-10-04 11:30 UTC", "Window start moves to 2026-10-03 14
      "With <1 day of matches a fail may be underpowered", "**Secondary:** v2 resolution P&L",
      "**Price zone:** token price q in [0.05, 0.95]")
 need(DEV, "Burned-OOS v2 fell from +0.75¢ to +0.60¢")
-need(FILL, "| 1 tick inside | 27% | 36% |")
+need(FILL, "| 1 tick inside | 27% | 35% |")
 
 FORWARD_STATUS = "PLACEHOLDER"
 FORWARD_WHEN = "Runs once ~11:30 UTC, Oct 4 2026"

@@ -74,8 +74,8 @@ are frozen as v2 (`HYPOTHESIS_V2.md`, `src/v2.py`):
 5. **Hold to resolution.** No exit orders.
 
 Refuted and dropped: **maker exits**. They looked like Sharpe 10 on the tape, but the verifiers found a
-wrong tick size. On live books a resting exit after a jump filled only 36% of the time within a
-minute. When it did fill, the price kept running another 5.5¢; when it did not, the price fell 5.6¢.
+wrong tick size. On live books a resting exit after a jump filled only 35% of the time within a
+minute. When it did fill, the price kept running another 5.6¢; when it did not, the price fell 5.7¢.
 That is adverse selection.
 
 **Table 2. v2 (causal window), net of fees, held to resolution.** The 0–3 s window is measured from the
