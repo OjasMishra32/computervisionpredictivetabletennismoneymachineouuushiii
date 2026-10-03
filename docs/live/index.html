@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COURTSIDE Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Broadcast truck: one dark screen. Match cards up top, the point log below. */
+:root {
+  color-scheme: dark;
+  --bg: #07111b; --panel: #0d1b29; --line: #1c2e40; --ink: #e8eef4; --muted: #8fa2b5;
+  --court: #27598b; --fast: #3987e5; --out: #f06a52; --good: #3fb67f; --amber: #f2b33d;
+  --display: "Saira Condensed", "Arial Narrow", sans-serif; --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--body) }
+.wrap { max-width: 1400px; margin: 0 auto; padding-inline: 18px; padding-block: 16px 40px }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 22px }
+h1 { font: 700 2.2rem/1 var(--display); letter-spacing: .02em; margin: 0; text-transform: uppercase }
+h1 span { color: var(--out) }
+.sub { color: var(--muted); max-width: 70ch }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; font: 500 .78rem/1 var(--mono) }
+.pill { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: var(--muted) }
+.pill b { color: var(--ink); font-weight: 500 }
+.pill.ok b { color: var(--good) } .pill.bad b { color: var(--out) }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 16px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 6px; position: relative; overflow: hidden }
+.card .lg { font: 500 .7rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted) }
+.row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 8px }
+.name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.px { font: 600 1.5rem/1 var(--display); font-variant-numeric: tabular-nums }
+canvas { width: 100%; height: 46px; display: block }
+.espn { font: 400 .75rem/1.3 var(--mono); color: var(--muted) }
+.flash { position: absolute; inset: 0; border: 2px solid var(--out); border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .6s }
+.flash.on { opacity: 1; transition: none }
+.last { font: 500 .78rem/1.3 var(--mono) }
+.last b { color: var(--out) }
+h2 { font: 600 1.35rem/1.1 var(--display); margin: 26px 0 8px; text-transform: uppercase; letter-spacing: .03em }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font: 400 .82rem/1.35 var(--mono); min-width: 720px }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; font-variant-numeric: tabular-nums }
+th { color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; font-size: .7rem }
+td.win { color: var(--out); font-weight: 500 } td.lag { color: var(--good) }
+.empty { color: var(--muted); padding: 18px; text-align: center }
+footer { margin-top: 22px; color: var(--muted); font-size: .78rem; max-width: 90ch }
+@media (prefers-reduced-motion: reduce) { .flash { transition: none } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Courtside <span>Live</span></h1>
+    <div class="sub">The order book is the fastest public scoreboard. Market makers reprice on the official feed, so a jump in the moneyline calls the point, about 28 s before ESPN.</div>
+  </header>
+  <div class="status">
+    <span class="pill" id="s-ws">websocket <b>connecting</b></span>
+    <span class="pill" id="s-m">matches <b>0</b></span>
+    <span class="pill" id="s-r">updates/s <b>0</b></span>
+    <span class="pill" id="s-l">feed latency <b>—</b></span>
+    <span class="pill" id="s-p">points called <b>0</b></span>
+    <span class="pill" id="s-e">median ESPN lag <b>—</b></span>
+  </div>
+  <div class="grid" id="grid"><div class="empty">Finding live tennis matches…</div></div>
+  <h2>Point calls</h2>
+  <div class="tbl"><table><thead><tr><th>Called at</th><th>Match</th><th>Point to</th><th>Move</th><th>Win prob now</th><th>ESPN caught up</th></tr></thead><tbody id="log"><tr><td colspan="6" class="empty">Waiting for the first point…</td></tr></tbody></table></div>
+  <footer>Read-only: public Polymarket market data (Gamma API + CLOB websocket) and the public ESPN scoreboard, polled every 3 s. A call is made when a player's win probability moves ≥ 2¢ within 3 s; on 482 live points the net move went to the point winner 96% of the time. ESPN reports games, not points, so its lag is measured on game-ending points. Not trading advice; places no orders.</footer>
+</div>
+<script>
+const GAMMA = "https://gamma-api.polymarket.com/events", WS = "wss://ws-subscriptions-clob.polymarket.com/ws/market";
+const ESPN = ["https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard", "https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard"];
+const JUMP = 0.02, WIN_MS = 3000, COOL_MS = 6000;
+const M = new Map();          // slug -> match {slug, title, p0, p1, tok0, tok1, hist:[[t,mid]], el, events:[]}
+const TOK = new Map();        // token -> {m, side}
+const LOG = []; let nMsg = 0, lat = [], ws, pingT;
+const $ = s => document.querySelector(s);
+const norm = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const last = s => norm(s).split(/\s+/).filter(Boolean).slice(-1)[0] || "";
+const hhmmss = t => { const d = new Date(t); return d.toTimeString().slice(0, 8) + "." + String(d.getMilliseconds()).padStart(3, "0"); };
+
+async function discover() {
+  const now = Date.now(), found = [];
+  for (const off of [0, 200, 400]) {
+    let evs = [];
+    try { evs = await (await fetch(`${GAMMA}?tag_slug=tennis&active=true&closed=false&limit=200&offset=${off}`)).json(); } catch (e) { break; }
+    if (!evs.length) break;
+    for (const e of evs) {
+      const st = Date.parse(e.startTime || ""), live = e.live === true;
+      if (!(live || (st && st < now + 10 * 60e3 && st > now - 5 * 3600e3))) continue;
+      if (e.ended) continue;
+      const mk = (e.markets || []).find(m => m.sportsMarketType === "moneyline" && !m.closed);
+      if (!mk) continue;
+      const toks = JSON.parse(mk.clobTokenIds || "[]"), outs = JSON.parse(mk.outcomes || "[]");
+      if (toks.length !== 2) continue;
+      found.push({ slug: e.slug, title: (e.title || "").split(":").slice(-1)[0].trim() || e.slug, league: (e.eventMetadata || {}).league || e.seriesSlug || "", live,
+                   p0: outs[0], p1: outs[1], tok0: toks[0], tok1: toks[1], vol: +e.volume || 0 });
+    }
+  }
+  found.sort((a, b) => (b.live - a.live) || (b.vol - a.vol));
+  return found.slice(0, 40);
+}
+
+function card(m) {
+  const d = document.createElement("div"); d.className = "card";
+  d.innerHTML = `<div class="flash"></div><div class="lg"></div>
+    <div class="row"><span class="name n0"></span><span class="px x0">—</span></div>
+    <div class="row"><span class="name n1"></span><span class="px x1">—</span></div>
+    <canvas width="560" height="92"></canvas><div class="espn">ESPN: —</div><div class="last">No point called yet</div>`;
+  d.querySelector(".lg").textContent = (m.live ? "● live · " : "") + m.league;
+  d.querySelector(".n0").textContent = m.p0; d.querySelector(".n1").textContent = m.p1;
+  return d;
+}
+
+function draw(m) {
+  const c = m.el.querySelector("canvas"), x = c.getContext("2d"), W = c.width, H = c.height, now = Date.now();
+  x.clearRect(0, 0, W, H);
+  const pts = m.hist.filter(h => h[0] > now - 10 * 60e3); if (pts.length < 2) return;
+  const t0 = now - 10 * 60e3, ys = pts.map(p => p[1]), lo = Math.min(...ys) - .01, hi = Math.max(...ys) + .01;
+  x.strokeStyle = "#3987e5"; x.lineWidth = 3; x.beginPath();
+  pts.forEach((p, i) => { const px = (p[0] - t0) / (10 * 60e3) * W, py = H - (p[1] - lo) / (hi - lo) * H; i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.stroke();
+  for (const ev of m.events) { if (ev.t < t0) continue; const px = (ev.t - t0) / (10 * 60e3) * W; x.fillStyle = "#f06a52"; x.fillRect(px - 1.5, 0, 3, H); }
+}
+
+function onMid(tok, t, mid) {
+  const r = TOK.get(tok); if (!r) return;
+  const m = r.m, p0 = r.side === 0 ? mid : 1 - mid;
+  m.hist.push([t, p0]); if (m.hist.length > 4000) m.hist.splice(0, 1000);
+  m.el.querySelector(".x0").textContent = (p0 * 100).toFixed(1) + "%";
+  m.el.querySelector(".x1").textContent = ((1 - p0) * 100).toFixed(1) + "%";
+  const w = m.hist.filter(h => h[0] >= t - WIN_MS).map(h => h[1]);
+  const lo = Math.min(...w), hi = Math.max(...w);
+  if (t - (m.lastEv || 0) > COOL_MS) {
+    let side = null, d = 0;
+    if (p0 - lo >= JUMP) { side = 0; d = p0 - lo; } else if (hi - p0 >= JUMP) { side = 1; d = hi - p0; }
+    if (side !== null) {
+      m.lastEv = t;
+      const ev = { t, m, winner: side ? m.p1 : m.p0, d, p0, espn: null };
+      m.events.push(ev); LOG.unshift(ev); if (LOG.length > 200) LOG.pop();
+      m.el.querySelector(".last").innerHTML = `${hhmmss(t)} · point to <b></b> (${(d * 100).toFixed(1)}¢)`;
+      m.el.querySelector(".last b").textContent = ev.winner;
+      const f = m.el.querySelector(".flash"); f.classList.add("on"); setTimeout(() => f.classList.remove("on"), 400);
+      renderLog();
+    }
+  }
+}
+
+function renderLog() {
+  const tb = $("#log"); tb.innerHTML = "";
+  if (!LOG.length) { tb.innerHTML = `<tr><td colspan="6" class="empty">Waiting for the first point…</td></tr>`; return; }
+  for (const ev of LOG.slice(0, 60)) {
+    const tr = document.createElement("tr");
+    const cells = [hhmmss(ev.t), `${ev.m.p0} v ${ev.m.p1}`, ev.winner, `${(ev.d * 100).toFixed(1)}¢`, `${(ev.p0 * 100).toFixed(1)}% / ${((1 - ev.p0) * 100).toFixed(1)}%`,
+                   ev.espn == null ? "waiting…" : `+${ev.espn.toFixed(1)} s`];
+    cells.forEach((c, i) => { const td = document.createElement("td"); td.textContent = c; if (i === 2) td.className = "win"; if (i === 5 && ev.espn != null) td.className = "lag"; tr.appendChild(td); });
+    tb.appendChild(tr);
+  }
+  const lags = LOG.filter(e => e.espn != null).map(e => e.espn).sort((a, b) => a - b);
+  $("#s-p b").textContent = LOG.length;
+  $("#s-e b").textContent = lags.length ? `${lags[Math.floor(lags.length / 2)].toFixed(1)} s (n=${lags.length})` : "—";
+}
+
+function connect(tokens) {
+  ws = new WebSocket(WS);
+  ws.onopen = () => {
+    $("#s-ws").className = "pill ok"; $("#s-ws b").textContent = "live";
+    ws.send(JSON.stringify({ assets_ids: tokens, type: "market", custom_feature_enabled: true }));
+    clearInterval(pingT); pingT = setInterval(() => ws.readyState === 1 && ws.send("PING"), 9000);
+  };
+  ws.onmessage = e => {
+    if (e.data === "PONG") return; nMsg++;
+    let d; try { d = JSON.parse(e.data); } catch (_) { return; }
+    const now = Date.now();
+    for (const it of Array.isArray(d) ? d : [d]) {
+      if (it.timestamp) { lat.push(now - +it.timestamp); if (lat.length > 200) lat.shift(); }
+      if (it.event_type === "best_bid_ask") {
+        const b = +it.best_bid, a = +it.best_ask; if (a - b <= 0.05 && a > 0) onMid(it.asset_id, +it.timestamp || now, (a + b) / 2);
+      } else if (it.event_type === "book" && it.bids && it.asks && it.bids.length && it.asks.length) {
+        const b = Math.max(...it.bids.map(x => +x.price)), a = Math.min(...it.asks.map(x => +x.price));
+        if (a - b <= 0.05) onMid(it.asset_id, +it.timestamp || now, (a + b) / 2);
+      }
+    }
+  };
+  ws.onclose = () => { $("#s-ws").className = "pill bad"; $("#s-ws b").textContent = "reconnecting"; setTimeout(() => connect(tokens), 2000); };
+}
+
+const ESPN_STATE = new Map();
+async function pollEspn() {
+  for (const url of ESPN) {
+    let d; try { d = await (await fetch(url)).json(); } catch (_) { continue; }
+    const now = Date.now();
+    for (const e of d.events || []) for (const g of e.groupings || []) for (const c of g.competitions || []) {
+      const cs = c.competitors || []; if (cs.length !== 2) continue;
+      const names = cs.map(x => last(x.athlete && x.athlete.displayName));
+      const score = cs.map(x => (x.linescores || []).map(l => l.value).join("-")).join(" | ");
+      const m = [...M.values()].find(mm => { const a = last(mm.p0), b = last(mm.p1); return (names.includes(a) && names.includes(b)); });
+      if (!m) continue;
+      const key = c.id, prev = ESPN_STATE.get(key);
+      m.el.querySelector(".espn").textContent = `ESPN: ${score} · ${(c.status && c.status.type && c.status.type.shortDetail) || ""}`;
+      if (prev !== undefined && prev !== score) {
+        const pend = m.events.filter(ev => ev.espn == null && now - ev.t < 120e3);
+        if (pend.length) { const ev = pend[pend.length - 1]; ev.espn = (now - ev.t) / 1000; renderLog(); }
+      }
+      ESPN_STATE.set(key, score);
+    }
+  }
+}
+
+async function main() {
+  const ms = await discover(), grid = $("#grid"); grid.innerHTML = "";
+  if (!ms.length) { grid.innerHTML = `<div class="empty">No live tennis on Polymarket right now. Leave this open; it rechecks every 5 minutes.</div>`; setTimeout(main, 5 * 60e3); return; }
+  const toks = [];
+  for (const m of ms) { m.hist = []; m.events = []; m.el = card(m); grid.appendChild(m.el); M.set(m.slug, m);
+    TOK.set(m.tok0, { m, side: 0 }); TOK.set(m.tok1, { m, side: 1 }); toks.push(m.tok0, m.tok1); }
+  $("#s-m b").textContent = ms.length;
+  connect(toks);
+  setInterval(() => { $("#s-r b").textContent = nMsg; nMsg = 0;
+    if (lat.length) { const s = [...lat].sort((a, b) => a - b); $("#s-l b").textContent = s[Math.floor(s.length / 2)] + " ms"; }
+    for (const m of M.values()) draw(m); }, 1000);
+  pollEspn(); setInterval(pollEspn, 3000);
+}
+main();
+</script>
+</body>
+</html>
