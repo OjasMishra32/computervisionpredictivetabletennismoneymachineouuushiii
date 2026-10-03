@@ -1,6 +1,6 @@
 # COURTSIDE v2 — frozen rule and forward test, pre-registered
 
-Written 2026-10-03 ~13:10 UTC, before any data for the forward window was fetched or viewed.
+Committed 2026-10-03 13:22 UTC (1f229bc); amended 13:5x UTC (A1 below), before the forward window opens.
 
 ## Why a v2, and why a new test
 The original OOS (matches from 2026-08-25 14:15 UTC) was opened once for v1 and is now burned: v2's
@@ -37,7 +37,7 @@ Every match starting before 13:00 UTC is excluded from the forward test.
 - **Also reported:** the H6 claim that the fast tier keeps beating other takers in the window.
 - **Fails if** the primary is ≤ 0 or its CI includes 0. Reported either way.
 
-## Amendment A1 — written 2026-10-03 ~14:40 UTC, before any forward-window data was fetched
+## Amendment A1 — committed 2026-10-03 ~13:57 UTC, before the forward window opens
 Two adversarial verifiers (research/v2/verify_v2/) found that the "0–3 s after the jump onset" label
 uses hindsight: the onset is the first print of a 10 s window that the detector confirms up to 10 s
 later. On the burned OOS, 81% of v2's P&L came from prints before detection. Changes, all made before
@@ -59,3 +59,6 @@ the forward run:
    - **Primary B (strategy):** the v2 book's share-weighted 30 s net markout > 0, CI excluding 0. With
      <1 day of matches a fail may be underpowered, and it will be reported as such.
    - **Secondary:** v2 resolution P&L, and the same at +½ tick and +1 tick of entry slippage.
+6. **Window start moves to 2026-10-03 14:00 UTC.** The original 13:00 start preceded the original
+   commit (13:22), and live trade timestamps were read at ~13:03 UTC for the block-lag measurement
+   (latency only, no P&L). Starting at 14:00 puts every forward match after this amendment's commit.

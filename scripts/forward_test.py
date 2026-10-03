@@ -24,7 +24,7 @@ import pandas as pd  # noqa: E402
 from src import polymarket as pm, tiers, v2  # noqa: E402
 from src.tape import universe  # noqa: E402
 
-FWD_START = "2026-10-03T13:00"
+FWD_START = "2026-10-03T14:00"
 LOG = Path("results/forward_peeks.log")
 
 
