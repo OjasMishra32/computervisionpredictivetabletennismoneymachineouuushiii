@@ -37,6 +37,7 @@ Other pieces:
 
 | Command | What |
 |---|---|
+| `bash scripts/serve_live.sh` then open http://localhost:8765 | COURTSIDE Live: order-book scoreboard vs ESPN |
 | `python -m src.live_recorder --hours 6` | record live order books + Polymarket's sports feed (read-only) |
 | `python -m src.h4_live` · `python scripts/live_books.py` | book-vs-feed latency · live depth, tennis vs table tennis |
 | `python research/v2/livefill/livefill.py` | do passive exits fill on live books? (no: adversely selected) |
