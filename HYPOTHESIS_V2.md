@@ -62,3 +62,37 @@ the forward run:
 6. **Window start moves to 2026-10-03 14:00 UTC.** The original 13:00 start preceded the original
    commit (13:22), and live trade timestamps were read at ~13:03 UTC for the block-lag measurement
    (latency only, no P&L). Starting at 14:00 puts every forward match after this amendment's commit.
+
+## Amendment A2: v2-safe as a secondary forward-test variant (committed 2026-10-03 ~17:31 UTC)
+**Timing.** This amendment is committed after the forward window opened at 14:00 UTC.
+
+**What it adds.** One secondary variant, **v2-safe**. It is the frozen v2 with the per-match net
+cap lowered from 100 to 50 shares. Everything else is identical.
+- It was chosen on in-sample data only. The grid and selection rule were declared before computing
+  in `research/v2/lowloss/GRID.md`. The frozen rule and its tests are in
+  `research/v2/lowloss/PREREG.md`.
+- No forward-window print, trade or P&L was loaded to choose it.
+
+**What it does not change.** v2's primaries A and B, the window and the pass/fail rules are all
+unchanged. v2 remains the rule under test.
+
+**How v2-safe is evaluated in the forward window.**
+- Same data, same walk-forward and same run as v2, with only the policy swapped.
+- Reported per share held to resolution (match-clustered CI), $ P&L, profitable matches and 30 s
+  net markout.
+- These numbers are **reported, not tested**.
+
+**Blind sub-window.** Matches starting before this amendment were already under way when it was
+written. The blind sub-window for v2-safe is therefore matches starting at or after **2026-10-03
+18:00 UTC**, reported separately. The full-window figure is labelled as including matches that
+started before v2-safe was frozen.
+
+**IS context, honest walk-forward meta-selection, Feb–Aug 2026:**
+
+| | meta-selection | v2 |
+|---|---|---|
+| profitable calendar days | 79.1% | 79.6% |
+| worst day | −$373 | −$551 |
+| $ P&L | $25.5k | $40.4k |
+
+v2-safe lowers the cost of a losing day. It does not reduce how often one happens.
