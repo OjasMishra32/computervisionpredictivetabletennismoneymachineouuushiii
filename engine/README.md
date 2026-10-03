@@ -140,6 +140,33 @@ the 2 s stamp lag. A call therefore has to come at least ~230 ms plus the vision
 median reprice; stale depth starts thinning at the first tick, which is earlier. Most of that is the
 venue's 1 s delay; co-location (67 to 2 ms) barely matters.
 
+## End-to-end timing proof (`engine/e2e`, 2026-10-03)
+
+Paper; order not sent. The CV call is on our own streamed footage, mapped to a live tennis market for timing
+(different sport), and the 1 s feed baseline is simulated (licensed feed not purchased).
+
+`scripts/e2e_proof.sh` runs the whole path on one clock (`time.monotonic()`):
+
+1. Our held-out clip goes over WebRTC (MediaMTX on loopback) into the unchanged vision engine.
+2. Each CallEvent drives `strategy.evaluate` on a live Polymarket book.
+3. `RiskManager.approve` checks it.
+4. An unsigned order payload is built (`order_ready`).
+5. The network leg is added: RTT/2 of a keep-alive `GET https://clob.polymarket.com/time`, measured at that moment.
+6. The market's `secondsDelay` is added.
+7. A `PaperExecutor` fill is priced against the live book at the executable instant.
+
+The run used 12 passes, 132 calls and 24 MISS order traces, on 2 upcoming ATP books (none was in play). Results:
+
+- **Capture to order ready:** 54 ms p50, 72 ms p99.
+- **Network one-way:** 65 ms.
+- **Capture to executable:** 1,119 ms p50.
+- **With the simulated 1 s feed:** the order is executable 2,119 ms after the point (p99 2,218). All 24 calls are
+  under 3 s, but 0.6-1.1 s after the book's typical reprice.
+- **Rule and fills:** the rule skipped every call (pre-match edge -1.3c). All 24 payloads are labelled timing
+  probes, and all filled at the ask on quiet books.
+
+Details: `research/e2e/RESULTS.md`; trace and figures in `results/e2e/`.
+
 ## What the runs showed (2026-10-03)
 
 **(b) Demo** (`results/engine/demo_run.json`, `demo_timeline.png`, `engine_live_demo.mp4`; rerun at 17:12 EDT

@@ -1,0 +1,858 @@
+{
+ "label": "paper; order not sent; CV call on our own streamed footage mapped to a live tennis market for timing (different sport); feed baseline 1 s is simulated (licensed feed not purchased)",
+ "run_id": "20261003T224404Z",
+ "when_utc": "2026-10-03T23:05:57+00:00",
+ "host": "Ojasvas-MacBook-Air-3.local",
+ "what": "End-to-end timing proof: our held-out table-tennis clip streamed over WebRTC (MediaMTX, loopback) into the laptop CV engine; every MISS CallEvent drives the strategy on a LIVE Polymarket tennis book, an unsigned order payload is built, the measured keep-alive RTT/2 to clob.polymarket.com and the market's secondsDelay are added, and the order is paper-filled against the live book at the executable instant. Nothing was signed or sent.",
+ "counts": {
+  "passes": 12,
+  "calls": 132,
+  "miss_calls": 24,
+  "bounce_calls": 108,
+  "complete_order_traces": 24,
+  "markets": {
+   "atp-munar-jacquet-2026-10-03": 12,
+   "atp-hurkacz-khachan-2026-10-03": 12
+  },
+  "orders_sent": 0,
+  "orders_signed": 0
+ },
+ "markets": [
+  {
+   "slug": "atp-munar-jacquet-2026-10-03",
+   "title": "Japan Open Tennis Championships: Jaume Munar vs Kyrian Jacquet",
+   "cond": "0xcbf8dcc36292ae4748c3d237fa6af1ef6b84fac9df367fd025f241ab5b8f577f",
+   "tokens": [
+    "83438463361723578214471102816955878519291219485871404820233476099927259416372",
+    "9264959425090962412202336907554411790920575810726388777109042823047088377021"
+   ],
+   "names": [
+    "Jaume Munar",
+    "Kyrian Jacquet"
+   ],
+   "tour": "atp",
+   "in_play": false,
+   "start": "2026-10-04T02:00:00Z",
+   "liquidity_clob": 134628.3175,
+   "volume24hr": 41290.79648600001,
+   "seconds_delay": 1,
+   "seconds_delay_source": "Gamma market secondsDelay",
+   "tick": 0.01,
+   "neg_risk": false,
+   "rank": 1,
+   "book_check": {
+    "snapshot": true,
+    "bid": 0.57,
+    "ask": 0.58,
+    "two_sided": true,
+    "tick": 0.01
+   }
+  },
+  {
+   "slug": "atp-hurkacz-khachan-2026-10-03",
+   "title": "China Open: Hubert Hurkacz vs Karen Khachanov",
+   "cond": "0x6500d2f9e200a6aed522f3edab7168e77da96816163420acf760dfca1fe9d614",
+   "tokens": [
+    "18199089906361395940016160360455990625317892290220960038402149981890144139321",
+    "96942180426007092534986447112700937498173388229938890756413544702642015104614"
+   ],
+   "names": [
+    "Hubert Hurkacz",
+    "Karen Khachanov"
+   ],
+   "tour": "atp",
+   "in_play": false,
+   "start": "2026-10-04T05:00:00Z",
+   "liquidity_clob": 98097.4468,
+   "volume24hr": 15859.377208000002,
+   "seconds_delay": 1,
+   "seconds_delay_source": "Gamma market secondsDelay",
+   "tick": 0.01,
+   "neg_risk": false,
+   "rank": 2,
+   "book_check": {
+    "snapshot": true,
+    "bid": 0.41,
+    "ask": 0.42,
+    "two_sided": true,
+    "tick": 0.01
+   }
+  }
+ ],
+ "market_rule": "Gamma tennis events; singles moneylines of ATP / WTA / Challenger accepting orders; in play (Gamma live, not ended) first, then upcoming within 24 h, each by Gamma liquidityClob; first markets with a two-sided outcome-0 book on the public websocket; passes alternate between them",
+ "clock": {
+  "clock": "time.monotonic()",
+  "implementation": "mach_absolute_time()",
+  "resolution_s": 4.166666666666666e-08,
+  "wall_offset_samples": 12641,
+  "wall_offset_range_us": 3752.7,
+  "wall_offset_sd_us": 1083.14,
+  "note": "wall-clock stamps (time.time()) from the sender, WHEP reader, vision engine and market feed are mapped onto time.monotonic() with the nearest offset sample (10 Hz)"
+ },
+ "stream": {
+  "step": 1,
+  "fps": 10.0,
+  "encoder": "x264 zerolatency",
+  "bitrate": "4M",
+  "note": "every source frame at 10 frames/s of wall time (slow motion): the laptop engine sustains 9-18 fps, so 120 fps real time would queue; production reference for the CV stage = NVIDIA L4 at 120 fps"
+ },
+ "stage_ms": [
+  {
+   "stage": "sender: frame into encoder",
+   "start": "capture",
+   "end": "frame_sent",
+   "ms": {
+    "p50": 2.223,
+    "p90": 4.529,
+    "p99": 15.153,
+    "mean": 3.275,
+    "min": 0.482,
+    "max": 15.875,
+    "n": 24
+   }
+  },
+  {
+   "stage": "encode + WHIP + MediaMTX + RTP in",
+   "start": "frame_sent",
+   "end": "frame_received",
+   "ms": {
+    "p50": 6.409,
+    "p90": 10.266,
+    "p99": 13.786,
+    "mean": 6.885,
+    "min": 3.305,
+    "max": 13.895,
+    "n": 24
+   }
+  },
+  {
+   "stage": "H.264 decode + handoff",
+   "start": "frame_received",
+   "end": "handoff",
+   "ms": {
+    "p50": 1.088,
+    "p90": 2.053,
+    "p99": 3.715,
+    "mean": 1.268,
+    "min": 0.552,
+    "max": 3.969,
+    "n": 24
+   }
+  },
+  {
+   "stage": "prep + queue + detector",
+   "start": "handoff",
+   "end": "detected",
+   "ms": {
+    "p50": 39.917,
+    "p90": 45.054,
+    "p99": 47.507,
+    "mean": 39.797,
+    "min": 33.599,
+    "max": 47.511,
+    "n": 24
+   }
+  },
+  {
+   "stage": "tracker + features + classifier",
+   "start": "detected",
+   "end": "call_emitted",
+   "ms": {
+    "p50": 2.433,
+    "p90": 4.723,
+    "p99": 5.173,
+    "mean": 2.804,
+    "min": 1.335,
+    "max": 5.25,
+    "n": 24
+   }
+  },
+  {
+   "stage": "strategy rule (fair value, edge)",
+   "start": "call_emitted",
+   "end": "decision",
+   "ms": {
+    "p50": 0.092,
+    "p90": 0.169,
+    "p99": 0.267,
+    "mean": 0.109,
+    "min": 0.05,
+    "max": 0.281,
+    "n": 24
+   }
+  },
+  {
+   "stage": "risk check",
+   "start": "decision",
+   "end": "risk_checked",
+   "ms": {
+    "p50": 0.034,
+    "p90": 0.089,
+    "p99": 0.131,
+    "mean": 0.05,
+    "min": 0.017,
+    "max": 0.138,
+    "n": 24
+   }
+  },
+  {
+   "stage": "unsigned order built",
+   "start": "risk_checked",
+   "end": "order_ready",
+   "ms": {
+    "p50": 0.015,
+    "p90": 0.027,
+    "p99": 0.057,
+    "mean": 0.019,
+    "min": 0.009,
+    "max": 0.066,
+    "n": 24
+   }
+  },
+  {
+   "stage": "network one-way (RTT/2)",
+   "start": "order_ready",
+   "end": "network_arrival",
+   "ms": {
+    "p50": 64.506,
+    "p90": 68.872,
+    "p99": 158.245,
+    "mean": 70.102,
+    "min": 62.224,
+    "max": 181.475,
+    "n": 24
+   }
+  },
+  {
+   "stage": "venue order delay (secondsDelay)",
+   "start": "network_arrival",
+   "end": "executable",
+   "ms": {
+    "p50": 1000.0,
+    "p90": 1000.0,
+    "p99": 1000.0,
+    "mean": 1000.0,
+    "min": 1000.0,
+    "max": 1000.0,
+    "n": 24
+   }
+  }
+ ],
+ "spans_ms": {
+  "capture_to_call": {
+   "p50": 53.977,
+   "p90": 66.551,
+   "p99": 71.455,
+   "mean": 54.029,
+   "min": 40.198,
+   "max": 72.579,
+   "n": 24
+  },
+  "capture_to_decoded": {
+   "p50": 9.368,
+   "p90": 18.431,
+   "p99": 24.772,
+   "mean": 11.428,
+   "min": 4.529,
+   "max": 25.573,
+   "n": 24
+  },
+  "decoded_to_call": {
+   "p50": 43.261,
+   "p90": 48.911,
+   "p99": 50.958,
+   "mean": 42.601,
+   "min": 35.669,
+   "max": 51.162,
+   "n": 24
+  },
+  "call_to_order_ready": {
+   "p50": 0.145,
+   "p90": 0.286,
+   "p99": 0.383,
+   "mean": 0.177,
+   "min": 0.078,
+   "max": 0.387,
+   "n": 24
+  },
+  "capture_to_order_ready": {
+   "p50": 54.13,
+   "p90": 66.755,
+   "p99": 71.701,
+   "mean": 54.207,
+   "min": 40.328,
+   "max": 72.825,
+   "n": 24
+  },
+  "capture_to_network_arrival": {
+   "p50": 118.595,
+   "p90": 136.223,
+   "p99": 218.466,
+   "mean": 124.309,
+   "min": 104.775,
+   "max": 240.607,
+   "n": 24
+  },
+  "capture_to_executable": {
+   "p50": 1118.595,
+   "p90": 1136.223,
+   "p99": 1218.466,
+   "mean": 1124.309,
+   "min": 1104.775,
+   "max": 1240.607,
+   "n": 24
+  },
+  "executable_to_fill_computed": {
+   "p50": 423.049,
+   "p90": 463.649,
+   "p99": 477.379,
+   "mean": 360.967,
+   "min": 124.56,
+   "max": 478.758,
+   "n": 24
+  },
+  "probe_start_lag": {
+   "p50": 0.088,
+   "p90": 0.301,
+   "p99": 4.691,
+   "mean": 0.367,
+   "min": 0.044,
+   "max": 5.925,
+   "n": 24
+  },
+  "rtt": {
+   "p50": 129.01,
+   "p90": 137.744,
+   "p99": 316.489,
+   "mean": 140.204,
+   "min": 124.447,
+   "max": 362.949,
+   "n": 24
+  }
+ },
+ "all_calls_ms": {
+  "capture_to_call": {
+   "p50": 51.799,
+   "p90": 69.738,
+   "p99": 85.924,
+   "mean": 54.466,
+   "min": 39.42,
+   "max": 86.695,
+   "n": 132
+  },
+  "call_to_decision": {
+   "p50": 0.086,
+   "p90": 0.156,
+   "p99": 0.349,
+   "mean": 0.098,
+   "min": 0.044,
+   "max": 0.368,
+   "n": 132
+  },
+  "capture_to_decision": {
+   "p50": 51.889,
+   "p90": 69.838,
+   "p99": 86.023,
+   "mean": 54.564,
+   "min": 39.466,
+   "max": 87.063,
+   "n": 132
+  }
+ },
+ "our_pipeline_frame_to_order_ready_ms": {
+  "p50": 54.13,
+  "p90": 66.755,
+  "p99": 71.701,
+  "mean": 54.207,
+  "min": 40.328,
+  "max": 72.825,
+  "n": 24
+ },
+ "total_frame_to_executable_ms": {
+  "p50": 1118.595,
+  "p90": 1136.223,
+  "p99": 1218.466,
+  "mean": 1124.309,
+  "min": 1104.775,
+  "max": 1240.607,
+  "n": 24
+ },
+ "rtt_background_ms": {
+  "p50": 129.542,
+  "p90": 138.12,
+  "p99": 207.945,
+  "mean": 134.389,
+  "min": 121.424,
+  "max": 1343.34,
+  "n": 1147
+ },
+ "rtt_at_orders_ms": {
+  "p50": 129.01,
+  "p90": 137.744,
+  "p99": 316.489,
+  "mean": 140.204,
+  "min": 124.447,
+  "max": 362.949,
+  "n": 24
+ },
+ "budget_with_1s_simulated_feed": {
+  "feed_simulated_ms": 1000.0,
+  "ours_capture_to_order_ready_ms": {
+   "p50": 54.13,
+   "p90": 66.755,
+   "p99": 71.701,
+   "mean": 54.207,
+   "min": 40.328,
+   "max": 72.825,
+   "n": 24
+  },
+  "network_one_way_ms": {
+   "p50": 64.506,
+   "p90": 68.872,
+   "p99": 158.245,
+   "mean": 70.102,
+   "min": 62.224,
+   "max": 181.475,
+   "n": 24
+  },
+  "venue_delay_ms": {
+   "p50": 1000.0,
+   "p90": 1000.0,
+   "p99": 1000.0,
+   "mean": 1000.0,
+   "min": 1000.0,
+   "max": 1000.0,
+   "n": 24
+  },
+  "total_ms": {
+   "p50": 2118.595,
+   "p90": 2136.223,
+   "p99": 2218.466,
+   "mean": 2124.309,
+   "min": 2104.775,
+   "max": 2240.607,
+   "n": 24
+  },
+  "total_p50_formula": "1000 feed + 54.1 ours + 64.5 network + 1000 venue = 2119 ms",
+  "requirement_ms": 3000.0,
+  "margin_to_requirement_ms": {
+   "p50": 881.406,
+   "p90": 891.853,
+   "p99": 894.807,
+   "mean": 875.691,
+   "min": 759.393,
+   "max": 895.225,
+   "n": 24
+  },
+  "calls_under_requirement": "24/24",
+  "reprice_band_ms": [
+   1000.0,
+   1500.0
+  ],
+  "executable_after_reprice_ms": {
+   "vs_band_start": 1118.6,
+   "vs_band_end": 618.6
+  },
+  "order_arrival_after_point_ms": {
+   "p50": 1118.595,
+   "p90": 1136.223,
+   "p99": 1218.466,
+   "mean": 1124.309,
+   "min": 1104.775,
+   "max": 1240.607,
+   "n": 24
+  },
+  "with_l4_vision": {
+   "ours_ms": 16.4,
+   "total_ms": 2080.9,
+   "basis": "measured video leg (capture -> decoded) + L4 emitted-call latency p50 6.92 ms (120 fps real time) + measured call -> order_ready, p50s"
+  },
+  "without_feed_delay_ms": {
+   "p50": 1118.595,
+   "p90": 1136.223,
+   "p99": 1218.466,
+   "mean": 1124.309,
+   "min": 1104.775,
+   "max": 1240.607,
+   "n": 24
+  },
+  "what_the_budget_means": "With the simulated 1 s feed the order is ready 1054 ms after the point and executable 2119 ms after it (p50): 881 ms inside the < 3 s requirement, but 619-1119 ms after the book's typical reprice (1.0-1.5 s after the point). Our own pipeline is 54 ms of it; the feed (1 s) and the venue's order delay (1000 ms) are 94% of the total."
+ },
+ "production_gpu_reference": {
+  "online_vs_offline": {
+   "file": "results/engine/online_vs_offline.json",
+   "gpu": "NVIDIA L4",
+   "fps": 119.88,
+   "frames": 101628,
+   "dropped": 0,
+   "frame_to_decision_ms": {
+    "p50": 4.62,
+    "p90": 6.94,
+    "p99": 12.19,
+    "p99.9": 17.16,
+    "mean": 5.21,
+    "max": 30.11
+   },
+   "emitted_call_latency_ms": {
+    "p50": 6.92,
+    "p90": 8.54,
+    "p99": 15.8,
+    "mean": 7.54,
+    "max": 22.43
+   },
+   "calls": 169,
+   "note": "whole held-out test set (test_1..7) at 120 fps, first 4 s excluded"
+  },
+  "vision_bench_gpu": {
+   "file": "results/engine/vision_bench_gpu.json",
+   "spec": "torch-cuda-cl-fuse-compile",
+   "job": "44608026",
+   "keeps_up_with_120fps": true,
+   "fps_sustained_max": 131.42,
+   "frame_to_decision_ms": {
+    "arrival_fps": 120.0,
+    "p50": 5.46,
+    "p90": 7.84,
+    "p99": 15.64,
+    "max": 21.02
+   },
+   "emitted_call_latency_ms": {
+    "p50": 7.08,
+    "p90": 11.26,
+    "p99": 11.71,
+    "mean": 7.87,
+    "max": 11.76
+   },
+   "note": "the demo clip (test_2 frames 2000-2999) at a real 120 fps"
+  }
+ },
+ "reprice_reference": {
+  "band_s": [
+   1.0,
+   1.5
+  ],
+  "basis": "the book reprices a median 1.16 s BEFORE the official point stamp (482 live WTA points, measured: research/v2/latency); the stamp's own lag after the physical point end is NOT measured (2.0 s assumed in tier-0, 3.14 s inferred), and the calibrated stamp reading puts the reprice 1.35 s after the bounce (inference). 1.0-1.5 s is the band used here.",
+  "book_vs_official_stamp_s": {
+   "n": 482,
+   "median": -1.16,
+   "p10": -2.93,
+   "p25": -1.93,
+   "p75": -0.68,
+   "p90": 0.08,
+   "mean": -1.25,
+   "share_gt_1p3": 0.037,
+   "share_gt_0": 0.147
+  },
+  "implied_after_point_s": {
+   "stamp_lag_2.0_assumed": 0.84,
+   "stamp_lag_3.14_inferred": 1.98,
+   "calibrated_stamp_reading": 1.35
+  },
+  "tier0_at_1s_video_delay": {
+   "label": "assumed data: licensed feed/video not purchased; parameters measured",
+   "video_own120.tournament_lagcal.V=1.0": {
+    "IS": {
+     "net_c_per_share": 1.113,
+     "net_c_per_share_ci95": [
+      0.849,
+      1.375
+     ],
+     "usd_per_day": 94.35,
+     "usd_per_day_sd": 22.02,
+     "usd_per_day_seed_ci95": [
+      51.3,
+      125.01
+     ],
+     "sharpe_ann": 11.95,
+     "fill_rate": 0.2619,
+     "share_calls_before_reprice": 0.4589,
+     "n_trades": 6689.4,
+     "wrong_call_share_of_trades": 0.1208,
+     "n_seeds_with_trades": 20,
+     "note": null
+    },
+    "burned_OOS": {
+     "net_c_per_share": 0.655,
+     "net_c_per_share_ci95": [
+      0.098,
+      1.189
+     ],
+     "usd_per_day": 56.59,
+     "usd_per_day_sd": 41.25,
+     "usd_per_day_seed_ci95": [
+      0.65,
+      129.52
+     ],
+     "sharpe_ann": 8.85,
+     "fill_rate": 0.233,
+     "share_calls_before_reprice": 0.4073,
+     "n_trades": 2211.9,
+     "wrong_call_share_of_trades": 0.1597,
+     "n_seeds_with_trades": 20,
+     "note": null
+    }
+   },
+   "video_own120.tournament.V=1.0": {
+    "IS": {
+     "net_c_per_share": 0.401,
+     "net_c_per_share_ci95": [
+      -0.324,
+      1.078
+     ],
+     "usd_per_day": 14.78,
+     "usd_per_day_sd": 14.72,
+     "usd_per_day_seed_ci95": [
+      -8.76,
+      43.15
+     ],
+     "sharpe_ann": 2.15,
+     "fill_rate": 0.0789,
+     "share_calls_before_reprice": 0.1377,
+     "n_trades": 2638.8,
+     "wrong_call_share_of_trades": 0.3484,
+     "n_seeds_with_trades": 20,
+     "note": null
+    },
+    "burned_OOS": {
+     "net_c_per_share": -0.383,
+     "net_c_per_share_ci95": [
+      -2.083,
+      1.205
+     ],
+     "usd_per_day": 4.35,
+     "usd_per_day_sd": 29.65,
+     "usd_per_day_seed_ci95": [
+      -36.42,
+      62.49
+     ],
+     "sharpe_ann": 0.34,
+     "fill_rate": 0.0799,
+     "share_calls_before_reprice": 0.1368,
+     "n_trades": 971.4,
+     "wrong_call_share_of_trades": 0.4723,
+     "n_seeds_with_trades": 20,
+     "note": null
+    }
+   },
+   "note": "stored tier-0 counterfactual cells (results/tier0/latency_sweep.json), quoted, not re-run: assumed data, licensed feed/video not purchased; burned OOS is not blind"
+  }
+ },
+ "fills": {
+  "timing_probe": {
+   "n": 24,
+   "status": {
+    "filled": 24
+   },
+   "shares_requested": 2400.0,
+   "shares_filled": 2400.0,
+   "fees": 29.226,
+   "vwap_minus_ask_at_order_ready_c": {
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "n": 24
+   },
+   "ask_move_order_ready_to_fill_c": {
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "n": 24
+   },
+   "via": {
+    "timer (no venue message after t_exec)": 24
+   },
+   "rule_reasons": {
+    "edge_below_cost": 24
+   }
+  }
+ },
+ "webrtc_video_leg_capture_to_decoded_ms": {
+  "p50": 9.368,
+  "p90": 18.431,
+  "p99": 24.772,
+  "mean": 11.428,
+  "min": 4.529,
+  "max": 25.573,
+  "n": 24
+ },
+ "engine_stage_ms_at_call_frames": {
+  "qwait_ms": {
+   "p50": 3.091,
+   "p90": 4.833,
+   "p99": 19.363,
+   "mean": 3.469,
+   "min": 1.424,
+   "max": 26.559,
+   "n": 132
+  },
+  "norm_ms": {
+   "p50": 2.158,
+   "p90": 2.98,
+   "p99": 3.393,
+   "mean": 2.096,
+   "min": 1.16,
+   "max": 3.941,
+   "n": 132
+  },
+  "infer_ms": {
+   "p50": 33.358,
+   "p90": 37.089,
+   "p99": 47.383,
+   "mean": 33.626,
+   "min": 24.872,
+   "max": 54.131,
+   "n": 132
+  },
+  "blobs_ms": {
+   "p50": 0.396,
+   "p90": 0.647,
+   "p99": 1.211,
+   "mean": 0.486,
+   "min": 0.242,
+   "max": 8.377,
+   "n": 132
+  },
+  "track_ms": {
+   "p50": 0.056,
+   "p90": 0.071,
+   "p99": 0.108,
+   "mean": 0.059,
+   "min": 0.031,
+   "max": 0.848,
+   "n": 132
+  },
+  "feat_ms": {
+   "p50": 0.668,
+   "p90": 0.904,
+   "p99": 1.263,
+   "mean": 0.64,
+   "min": 0.337,
+   "max": 1.3,
+   "n": 132
+  },
+  "clf_ms": {
+   "p50": 1.731,
+   "p90": 3.348,
+   "p99": 4.147,
+   "mean": 1.987,
+   "min": 0.909,
+   "max": 4.282,
+   "n": 132
+  },
+  "proc_ms": {
+   "p50": 38.228,
+   "p90": 45.682,
+   "p99": 56.159,
+   "mean": 39.423,
+   "min": 31.957,
+   "max": 64.22,
+   "n": 132
+  }
+ },
+ "pass_engine_fps": [
+  9.32,
+  9.32,
+  9.29,
+  9.29,
+  9.28,
+  9.32,
+  9.32,
+  9.31,
+  9.33,
+  9.32,
+  9.32,
+  9.3
+ ],
+ "pass_frames_lost": [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "pass_load_avg": [
+  [
+   5.27,
+   5.22,
+   5.87
+  ],
+  [
+   4.23,
+   4.85,
+   5.64
+  ],
+  [
+   4.56,
+   4.83,
+   5.55
+  ],
+  [
+   3.09,
+   4.3,
+   5.25
+  ],
+  [
+   4.26,
+   4.25,
+   5.11
+  ],
+  [
+   4.8,
+   4.43,
+   5.07
+  ],
+  [
+   9.43,
+   6.1,
+   5.64
+  ],
+  [
+   18.01,
+   9.87,
+   7.15
+  ],
+  [
+   15.91,
+   11.46,
+   8.09
+  ],
+  [
+   11.38,
+   11.91,
+   8.73
+  ],
+  [
+   14.9,
+   11.98,
+   9.06
+  ],
+  [
+   11.49,
+   11.96,
+   9.42
+  ]
+ ],
+ "pass_errors": [],
+ "caveats": [
+  "Paper only: the order payload is unsigned and was never sent; fills are simulated against the live public book (walk levels, taker fee 0.05*q*(1-q)).",
+  "The CV call is on our own table-tennis footage (OpenTTGames test_2, held out), mapped onto a live tennis market for timing only: different sport, the call has nothing to do with that match's points.",
+  "The 1 s feed is simulated: no licensed feed was purchased. 'capture' is the paced sender's frame time, so camera exposure, a real relay and the feed's own delay are not in the measured part.",
+  "The laptop engine ran on a stream paced at 10 frames/s of wall time (every frame, slow motion) because it cannot keep up with 120 fps; at a real 120 fps the CV stage is the L4 reference.",
+  "Network leg = RTT/2 of a keep-alive GET /time measured at order-ready (Gainesville laptop -> Cloudflare -> venue); an order POST would also carry the venue's matching-engine time, not measured.",
+  "The fill is priced against the venue's book as of its last update stamped <= the executable instant, which assumes our wall clock and the venue's agree (NTP); our process computes it a feed delay later.",
+  "Markets were upcoming / in play as recorded in `markets`; pre-match books are quieter than in-play ones."
+ ]
+}
