@@ -1,0 +1,32 @@
+{
+  "jumps": 391,
+  "tokens": 45,
+  "by_mode": [
+    {
+      "mode": "inside",
+      "n": 391,
+      "median_queue_shares": 0.0,
+      "edge_vs_mid_c": 0.5675,
+      "fill_30s": 0.2685,
+      "fill_60s": 0.3555,
+      "fill_120s": 0.4348,
+      "fill_300s": 0.555,
+      "post_fill_30s_c": -5.5402,
+      "drift_300s_filled_c": 3.6546,
+      "drift_300s_unfilled_c": -5.5625
+    },
+    {
+      "mode": "join",
+      "n": 391,
+      "median_queue_shares": 238.11,
+      "edge_vs_mid_c": 1.0266,
+      "fill_30s": 0.1381,
+      "fill_60s": 0.2097,
+      "fill_120s": 0.2788,
+      "fill_300s": 0.376,
+      "post_fill_30s_c": -7.3132,
+      "drift_300s_filled_c": 4.2627,
+      "drift_300s_unfilled_c": -1.946
+    }
+  ]
+}
