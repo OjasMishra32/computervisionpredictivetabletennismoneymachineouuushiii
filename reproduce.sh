@@ -6,5 +6,6 @@ PY=${PY:-.venv/bin/python}
 $PY run_all.py --oos            # H1-H6, calibration, tiers, fast tier (v1)
 $PY scripts/v2_causal.py        # v2 (causal window) on IS + burned OOS, slippage stress
 $PY scripts/v2_figures.py
+$PY scripts/factor_regression.py
 $PY scripts/leverage_stats.py
 $PY scripts/make_pdf.py

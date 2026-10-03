@@ -97,6 +97,10 @@ labelling put 81% of the first v2 draft's OOS P&L on trades made before detectio
 ![](../results/figures/fig6_v2.png)
 *Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&L by month (\*Aug includes IS days).*
 
+**Not a factor bet.** Regressing v2's daily returns on Fama–French market, size, value and momentum
+(Feb–Aug 2026, 142 days): daily alpha +0.79% (t = 8.5), all factor betas insignificant (largest t = 1.33),
+R² = 3%. The P&L comes from tennis points, not market exposure.
+
 Table 2 is a **paper book on the fast tier's own fills**: it prices the opportunity at their speed, not
 our execution, which needs in-venue tracking plus a co-located gateway. **Reading Table 2.** In sample the edge survives a full tick of slippage in every month. In today's
 regime (1 s delay, 5% fee, 131 qualifying wallets) it is positive only at the fast tier's own fill

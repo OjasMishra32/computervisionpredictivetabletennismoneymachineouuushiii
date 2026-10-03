@@ -1,0 +1,24 @@
+{
+  "n_days": 142,
+  "period": [
+    "2026-02-02",
+    "2026-08-31"
+  ],
+  "coef": {
+    "alpha_daily": 0.007919,
+    "MktRF": 0.168837,
+    "SMB": 0.092071,
+    "HML": 0.060932,
+    "Mom": 0.033704
+  },
+  "t": {
+    "alpha_daily": 8.5,
+    "MktRF": 1.33,
+    "SMB": 0.51,
+    "HML": 0.55,
+    "Mom": 0.48
+  },
+  "r2": 0.0331,
+  "alpha_annualised_pct": 199.6,
+  "corr_with_market": 0.167
+}

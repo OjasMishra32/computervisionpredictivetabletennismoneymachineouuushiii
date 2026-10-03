@@ -17,7 +17,7 @@ tracking can know a point is over.
 | Ball tracking | Hawk-Eye-class physics: ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11 of 11 calls correct (recall 27%) |
 | Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind; Kalshi leads Polymarket ~2 s |
 
-Integrity trail: `HYPOTHESIS.md` (pre-registered, commit `7232986`) → `DEVIATIONS.md` (every change,
+Rules checklist: [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md). Integrity trail: `HYPOTHESIS.md` (pre-registered, commit `7232986`) → `DEVIATIONS.md` (every change,
 including failed hypotheses) → `HYPOTHESIS_V2.md` (v2 frozen before its forward test) →
 `results/oos_peeks.log` and `results/forward_peeks.log` (every look at held-out data).
 
