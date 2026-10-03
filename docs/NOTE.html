@@ -118,60 +118,85 @@ are frozen as v2 (<code>HYPOTHESIS_V2.md</code>, <code>src/v2.py</code>):</p>
 wrong tick size. On live books a resting exit after a jump filled only 36% of the time within a
 minute. When it did fill, the price kept running another 5.5¢; when it did not, the price fell 5.6¢.
 That is adverse selection.</p>
-<p><strong>Table 2. v2, net of fees, held to resolution.</strong></p>
+<p><strong>Table 2. v2 (causal window), net of fees, held to resolution.</strong> The 0–3 s window is measured from the
+moment our detector could fire, not from the onset seen in hindsight. A verifier found the onset
+labelling put 81% of the first v2 draft's OOS P&amp;L on trades made before detection (D9).</p>
 <table>
 <thead>
 <tr>
 <th></th>
 <th>In sample, Feb–Aug 2026</th>
 <th>Burned OOS, Aug 25–Oct 3 (non-blind)</th>
-<th>Forward, from Oct 3 13:00 UTC (blind)</th>
+<th>Forward, from Oct 3 14:00 UTC (blind)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Trades / matches</td>
-<td>67,468 / 7,782</td>
-<td>13,184 / 2,093</td>
+<td>Trades</td>
+<td>55,662</td>
+<td>10,412</td>
 <td><code>[FWD_N]</code></td>
 </tr>
 <tr>
-<td>Net per share</td>
-<td><strong>+1.59¢ [1.35, 1.81]</strong></td>
-<td><strong>+0.75¢ [0.30, 1.20]</strong></td>
+<td><strong>Net per share, at fast-tier fills</strong></td>
+<td><strong>+1.38¢ [1.17, 1.59]</strong></td>
+<td><strong>+0.60¢ [0.09, 1.13]</strong></td>
 <td><code>[FWD_RES]</code></td>
 </tr>
 <tr>
-<td>30 s markout per share (primary forward test)</td>
-<td>+1.18¢</td>
-<td><code>—</code></td>
-<td><code>[FWD_M30]</code></td>
+<td>… with +½ tick (0.5¢) worse entry</td>
+<td>+0.88¢ [0.67, 1.09]</td>
+<td>+0.10¢ [−0.41, 0.63]</td>
+<td></td>
 </tr>
 <tr>
-<td>P&amp;L / capital (3× peak locked)</td>
-<td>+$43.3k / $23.2k</td>
-<td>+$5.2k / $8.6k</td>
+<td>… with +1 tick (1¢) worse entry</td>
+<td>+0.38¢ [0.17, 0.59]</td>
+<td>−0.40¢ [−0.91, 0.13]</td>
+<td></td>
+</tr>
+<tr>
+<td>P&amp;L / capital (4 h lock per position)</td>
+<td>+$40.4k / $28.3k</td>
+<td>+$3.7k / $22.8k</td>
 <td><code>[FWD_PNL]</code></td>
 </tr>
 <tr>
-<td>Sharpe / max DD / worst day</td>
-<td><strong>16.8 / −4.0% / −2.1%</strong></td>
-<td><strong>11.1 / −5.2% / −3.3%</strong></td>
+<td>Sharpe / max DD</td>
+<td><strong>14.5 / −2.0%</strong></td>
+<td><strong>6.7 / −2.1%</strong></td>
 <td></td>
 </tr>
 <tr>
 <td>Months positive</td>
-<td>7/7 (worst month +$2.1k)</td>
-<td>2/3 (Oct = 3 days, −$0.4k)</td>
+<td>7/7 (7/7 even at +1 tick)</td>
+<td>2/3 (Oct = 3 days)</td>
 <td></td>
+</tr>
+<tr>
+<td>Forward primary A: fast tier − others, 30 s net</td>
+<td></td>
+<td></td>
+<td><code>[FWD_A]</code></td>
+</tr>
+<tr>
+<td>Forward primary B: v2 book, 30 s net per share</td>
+<td></td>
+<td></td>
+<td><code>[FWD_B]</code></td>
 </tr>
 </tbody>
 </table>
 <p><img alt="" src="../results/figures/fig6_v2.png" />
 <em>Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&amp;L by month (*Aug includes IS days).</em></p>
-<p>The Sharpe is high because v2 places ~330 small, nearly independent bets a day, each held to an
-exogenous binary outcome, with net exposure capped per match. It is not a single tuned spike. In the
-sizing study, all nine net-cap/deployment settings have per-share CIs above zero, with Sharpe 9.9–16.8, and Sharpe moves smoothly with the cap.</p>
+<p><strong>Reading Table 2.</strong> In sample the edge survives a full tick of slippage in every month. In today's
+regime (1 s delay, 5% fee, 131 qualifying wallets) it is positive only at the fast tier's own fill
+prices and is gone at half a tick. The strategy pays whoever is <em>first</em> to the stale quote, and the
+margin for second place is now under half a tick. That is the case for in-venue ball tracking plus a
+co-located gateway (Section 5), and the reason a remote copy cannot work. The Sharpe is high because
+v2 places ~270 small, nearly independent bets a day, each held to an exogenous binary outcome, with
+net exposure capped per match. All nine net-cap and deployment settings in the sizing study have
+per-share CIs above zero (onset labelling), so this is a plateau, not a tuned spike.</p>
 <h2>5. Latency: who can actually be in the fast tier?</h2>
 <table>
 <thead>
@@ -223,7 +248,7 @@ trip, and that decides queue order behind the 1 s delay.</p>
 <li><strong>Crowding.</strong> Qualifying wallets grew 4 → 131. Edge per share fell from ~2.4¢ to ~0.8¢ but stayed
   positive every month.</li>
 <li><strong>Position limits.</strong> Net |exposure| ≤ 100 shares per match; ≤ $1k per order; capital = 3× peak
-  locked. The worst historical match lost $155 (v1: $3,098); the worst day was −2.1%.</li>
+  locked. The worst historical match lost $206 (v1: $3,098); the worst day was −1.9% in sample and −2.1% out.</li>
 <li><strong>Wrong calls and outages.</strong> Trade only calls with P ≥ 0.95. Kill switch on any feed or tracking
   dropout over 2 s, and on measured order latency beyond its 95th percentile.</li>
 <li><strong>Resolution.</strong> 2.9% of matches settled 50/50 (retirements); this is included in all P&amp;L.</li>
@@ -236,7 +261,7 @@ trip, and that decides queue order behind the 1 s delay.</p>
 <li><strong>Tennis is deep:</strong> median 1¢ spread, $8.1k at the touch and $61k within 2¢ (live sample).
   <strong>Table tennis is not tradable on Polymarket:</strong> 89¢ median spread, $23 at the touch, ~$2 of volume
   per match.</li>
-<li><strong>v2 is small by design.</strong> ~$1.37M traded over 206 days on $23k capital (turnover ~105× a year).
+<li><strong>v2 is small by design.</strong> ~$1.48M traded over 206 days on $28k capital (turnover ~93× a year; peak locked $9.4k).
   Capacity is bounded by the stale quotes resting at each point (a few $k at the touch) and shared
   with the existing fast tier. Fast-tier volume in the 0–3 s window ran $0.3–3.1M a month. Side markets add
   only ~$2k/month.</li>
@@ -244,10 +269,9 @@ trip, and that decides queue order behind the 1 s delay.</p>
 <h2>8. Variants and caveats</h2>
 <p>Strategy variants backtested: 44 (H1–H6) plus 3,342 across the six v2 lenses (exit 902, sizing 111,
 selection 341, cross-market 68, latency 16, Kalshi 1,904). All are reported in <code>results/</code> and
-<code>research/v2/</code>, along with their verifier reports. The expected best Sharpe from luck over this many trials is ~4.8 (Bailey &amp; López de Prado); v2 shows 16.8 in sample and 11.1 on the burned OOS. The v2 forward test is the clean check. <strong>The v2 book trades the fast tier's own
+<code>research/v2/</code>, along with their verifier reports. The expected best Sharpe from luck over this many trials is ~4.8 (Bailey &amp; López de Prado); v2 shows 14.5 in sample and 6.7 on the burned OOS. The v2 forward test is the clean check. <strong>The v2 book trades the fast tier's own
 fills.</strong> It measures the opportunity at that speed, not our execution, which would need in-venue
-tracking plus a co-located gateway. One verifier noted that the "0–3 s after onset" label uses a
-detector that fires up to 10 s later; Section 4's figures include those trades.
-<code>[DETECT_STRESS]</code> References: Bailey &amp; López de Prado (2014); Harvey, Liu &amp; Zhu (2016); Klaassen &amp;
+tracking plus a co-located gateway. H1–H6 use onset-aligned windows as an ex-post event study. Every tradable number (v2) uses the
+causal window. References: Bailey &amp; López de Prado (2014); Harvey, Liu &amp; Zhu (2016); Klaassen &amp;
 Magnus (2001); Voeikov et al. (2020) TTNet/OpenTTGames; Huang et al. (2019) TrackNet; Polymarket and
 Kalshi API docs.</p></body></html>

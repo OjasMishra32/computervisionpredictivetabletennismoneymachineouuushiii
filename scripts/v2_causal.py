@@ -27,8 +27,10 @@ for causal in (True, False):
             print(key, {k: (round(m[k], 3) if isinstance(m[k], float) else m[k]) for k in
                         ("n_trades", "per_share_c", "per_share_ci_c", "total_pnl_usd", "sharpe_ann", "max_dd_pct", "months_positive", "months_total", "capital_usd")})
 Path("results/v2").mkdir(parents=True, exist_ok=True)
+first_time = not Path("results/v2/causal.json").exists()
 Path("results/v2/causal.json").write_text(json.dumps(out, indent=2, default=float))
 B = {"is_eval": out["causal/is_eval/slip0.0"], "burned_oos": out["causal/burned_oos/slip0.0"]}
 Path("results/v2/burned_oos.json").write_text(json.dumps(B, indent=2, default=float))
-with open("results/oos_peeks.log", "a") as f:
+if first_time:  # re-running the same frozen evaluation is not a new peek
+  with open("results/oos_peeks.log", "a") as f:
     f.write(f"{dt.datetime.now(dt.timezone.utc).isoformat()} v2-causal (D9 fix) evaluated on burned OOS (non-blind)\n")

@@ -13,7 +13,7 @@ tracking can know a point is over.
 | Chasing the move after a point (H1) | loses 1.5–2.1¢/share in and out of sample |
 | Live prices | calibrated within ~1¢ (H2: no slow-money edge) |
 | **Fast tier** (wallets trading ≤3 s after a point) | beat the market in **11/11 months**, walk-forward; everyone else loses ~1¢ |
-| **v2 strategy** (risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample +1.59¢/share, Sharpe 16.8, max DD −4.0%, 7/7 months**; burned OOS +0.75¢ [0.30, 1.20], Sharpe 11.1; blind forward test: `results/v2/forward.json` |
+| **v2 strategy** (causal window, risk sizing, fee-aware wallets, 100-share net cap, hold to resolution) | **in sample +1.38¢/share [1.17, 1.59], Sharpe 14.5, max DD −2.0%, 7/7 months** (still +0.38¢ at +1 tick slippage); burned OOS +0.60¢ [0.09, 1.13], Sharpe 6.7, but ≈0 at +½ tick: profitable only at the front of the queue. Blind forward test: `results/v2/forward.json` |
 | Ball tracking | Hawk-Eye-class physics: ±2.4 cm landing call 100 ms before the bounce; real 120 fps video: misses called 50 ms early, 11/11 correct |
 | Latency | the book reprices 1.2 s *before* the official point stamp; ESPN/Polymarket/WTA feeds are 27–43 s behind; Kalshi leads Polymarket ~2 s |
 
@@ -29,8 +29,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 bash reproduce.sh                               # every number and figure in the note -> results/
 ```
 
-`reproduce.sh` runs `run_all.py --oos` (H1–H6, calibration, tiers, the walk-forward fast tier, and v2
-on in-sample + burned OOS) and then `scripts/v2_figures.py`. The v2 forward test is a one-shot:
+`reproduce.sh` runs `run_all.py --oos` (H1–H6, calibration, tiers, the walk-forward fast tier),
+`scripts/v2_causal.py` (v2 on in-sample + burned OOS, with slippage stress) and the figures. The v2 forward test is a one-shot:
 `python scripts/forward_test.py` (pre-registered window; logs every run). Tests: `pytest tests`.
 
 Other pieces:
