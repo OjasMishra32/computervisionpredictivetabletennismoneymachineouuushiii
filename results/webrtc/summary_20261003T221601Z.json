@@ -1,0 +1,3586 @@
+{
+ "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/results/webrtc/run_20261003T221601Z.jsonl",
+ "runs": [
+  {
+   "run": "dec30_transport_r1",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.31,
+    6.23,
+    7.05
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.369
+   },
+   "video_leg_ms": {
+    "p50": 6.4,
+    "p90": 9.03,
+    "p99": 12.17,
+    "max": 13.02
+   },
+   "network_ms": {
+    "p50": 5.62,
+    "p90": 7.99,
+    "p99": 11.06
+   },
+   "decode_ms_p50": 0.63,
+   "prep_ms_p50": 1.61,
+   "sender_late_ms_p50": 0.96,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine_r1",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.79,
+    6.08,
+    6.98
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 250,
+    "skipped_before_prep": 0,
+    "engine_processed": 250,
+    "engine_decisions": 248,
+    "code_time_mismatch_ms_max": 0.387
+   },
+   "video_leg_ms": {
+    "p50": 7.26,
+    "p90": 10.53,
+    "p99": 19.88,
+    "max": 23.36
+   },
+   "network_ms": {
+    "p50": 6.27,
+    "p90": 9.42,
+    "p99": 18.65
+   },
+   "decode_ms_p50": 0.69,
+   "prep_ms_p50": 2.11,
+   "sender_late_ms_p50": 1.17,
+   "engine_ready_ms": {
+    "p50": 26.58,
+    "p90": 28.75,
+    "p99": 42.03
+   },
+   "capture_to_decision_ms": {
+    "p50": 33.64,
+    "p90": 39.01,
+    "p99": 57.04,
+    "max": 62.05
+   },
+   "engine_fps": 16.69,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9481,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport_r1",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.39,
+    6.13,
+    6.98
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.379
+   },
+   "video_leg_ms": {
+    "p50": 4.41,
+    "p90": 5.94,
+    "p99": 9.11,
+    "max": 10.47
+   },
+   "network_ms": {
+    "p50": 3.81,
+    "p90": 5.08,
+    "p99": 8.0
+   },
+   "decode_ms_p50": 0.45,
+   "prep_ms_p50": 1.69,
+   "sender_late_ms_p50": 0.27,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine_r1",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    5.66,
+    6.14,
+    6.96
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 500,
+    "skipped_before_prep": 0,
+    "engine_processed": 444,
+    "engine_decisions": 422,
+    "code_time_mismatch_ms_max": 0.493
+   },
+   "video_leg_ms": {
+    "p50": 6.27,
+    "p90": 7.59,
+    "p99": 13.05,
+    "max": 15.04
+   },
+   "network_ms": {
+    "p50": 5.29,
+    "p90": 6.46,
+    "p99": 11.68
+   },
+   "decode_ms_p50": 0.64,
+   "prep_ms_p50": 2.97,
+   "sender_late_ms_p50": 0.2,
+   "engine_ready_ms": {
+    "p50": 79.72,
+    "p90": 119.77,
+    "p99": 136.38
+   },
+   "capture_to_decision_ms": {
+    "p50": 85.75,
+    "p90": 126.49,
+    "p99": 143.07,
+    "max": 145.22
+   },
+   "engine_fps": 29.84,
+   "engine_skipped": 56,
+   "detection_within_5px": 0.9771,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_r1",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.15,
+    6.0,
+    6.9
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.432
+   },
+   "video_leg_ms": {
+    "p50": 3.31,
+    "p90": 4.12,
+    "p99": 8.22,
+    "max": 9.68
+   },
+   "network_ms": {
+    "p50": 2.9,
+    "p90": 3.62,
+    "p99": 6.67
+   },
+   "decode_ms_p50": 0.3,
+   "prep_ms_p50": 1.61,
+   "sender_late_ms_p50": 0.05,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine_r1",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    5.05,
+    5.92,
+    6.85
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 426,
+    "engine_decisions": 333,
+    "code_time_mismatch_ms_max": 0.402
+   },
+   "video_leg_ms": {
+    "p50": 7.76,
+    "p90": 11.06,
+    "p99": 21.69,
+    "max": 29.7
+   },
+   "network_ms": {
+    "p50": 6.8,
+    "p90": 9.93,
+    "p99": 20.02
+   },
+   "decode_ms_p50": 0.6,
+   "prep_ms_p50": 4.72,
+   "sender_late_ms_p50": 0.13,
+   "engine_ready_ms": {
+    "p50": 84.48,
+    "p90": 130.29,
+    "p99": 143.82
+   },
+   "capture_to_decision_ms": {
+    "p50": 92.69,
+    "p90": 138.34,
+    "p99": 153.59,
+    "max": 162.56
+   },
+   "engine_fps": 28.65,
+   "engine_skipped": 574,
+   "detection_within_5px": 0.9725,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "slowmo10_engine_r1",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.14,
+    5.88,
+    6.81
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 200,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.413
+   },
+   "video_leg_ms": {
+    "p50": 7.28,
+    "p90": 11.85,
+    "p99": 16.08,
+    "max": 93.93
+   },
+   "network_ms": {
+    "p50": 6.52,
+    "p90": 10.63,
+    "p99": 14.97
+   },
+   "decode_ms_p50": 0.55,
+   "prep_ms_p50": 1.75,
+   "sender_late_ms_p50": 1.51,
+   "engine_ready_ms": {
+    "p50": 35.37,
+    "p90": 40.39,
+    "p99": 45.89
+   },
+   "capture_to_decision_ms": {
+    "p50": 43.51,
+    "p90": 50.32,
+    "p99": 58.48,
+    "max": 132.4
+   },
+   "engine_fps": 9.29,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9805,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 41.8,
+     "video_leg_ms": 7.2,
+     "engine_ms": 34.6,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 43.0,
+     "video_leg_ms": 6.5,
+     "engine_ms": 36.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 38.7,
+     "video_leg_ms": 4.7,
+     "engine_ms": 34.0,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 45.4,
+     "video_leg_ms": 8.2,
+     "engine_ms": 37.2,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 51.1,
+     "video_leg_ms": 9.5,
+     "engine_ms": 41.6,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 49.3,
+     "video_leg_ms": 7.2,
+     "engine_ms": 42.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 48.9,
+     "video_leg_ms": 11.9,
+     "engine_ms": 36.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 45.9,
+     "video_leg_ms": 9.2,
+     "engine_ms": 36.8,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 44.0,
+     "video_leg_ms": 9.1,
+     "engine_ms": 34.9,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2760,
+     "capture_to_emit_ms": 45.4,
+     "video_leg_ms": 5.9,
+     "engine_ms": 39.5,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 37.6,
+     "video_leg_ms": 3.8,
+     "engine_ms": 33.7,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.5,
+     "latency_ms": 34.61,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.2,
+     "latency_ms": 36.5,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.12,
+     "lead_pred_ms": 46.1,
+     "latency_ms": 34.0,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0138,
+     "lead_pred_ms": 47.0,
+     "latency_ms": 37.22,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.1971,
+     "lead_pred_ms": 49.7,
+     "latency_ms": 41.62,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.055,
+     "lead_pred_ms": 47.5,
+     "latency_ms": 42.09,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0402,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 36.95,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0528,
+     "lead_pred_ms": 44.5,
+     "latency_ms": 36.75,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0221,
+     "lead_pred_ms": 43.4,
+     "latency_ms": 34.92,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2760,
+     "p_miss": 0.9851,
+     "lead_pred_ms": 20.7,
+     "latency_ms": 39.51,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 116.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.2,
+     "latency_ms": 33.74,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 10,
+    "only_file": [
+     [
+      "MISS",
+      2766,
+      0.9888
+     ]
+    ],
+    "only_webrtc": [
+     [
+      "MISS",
+      2760,
+      0.9851
+     ]
+    ],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "dec30_transport_r2",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    4.81,
+    5.51,
+    6.54
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.361
+   },
+   "video_leg_ms": {
+    "p50": 7.32,
+    "p90": 10.08,
+    "p99": 22.62,
+    "max": 43.08
+   },
+   "network_ms": {
+    "p50": 6.47,
+    "p90": 8.94,
+    "p99": 20.04
+   },
+   "decode_ms_p50": 0.65,
+   "prep_ms_p50": 1.81,
+   "sender_late_ms_p50": 1.53,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine_r2",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    5.36,
+    5.56,
+    6.54
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 250,
+    "skipped_before_prep": 0,
+    "engine_processed": 250,
+    "engine_decisions": 248,
+    "code_time_mismatch_ms_max": 0.444
+   },
+   "video_leg_ms": {
+    "p50": 7.68,
+    "p90": 10.6,
+    "p99": 45.8,
+    "max": 88.67
+   },
+   "network_ms": {
+    "p50": 6.85,
+    "p90": 9.51,
+    "p99": 41.05
+   },
+   "decode_ms_p50": 0.66,
+   "prep_ms_p50": 1.87,
+   "sender_late_ms_p50": 1.95,
+   "engine_ready_ms": {
+    "p50": 29.12,
+    "p90": 34.59,
+    "p99": 105.22
+   },
+   "capture_to_decision_ms": {
+    "p50": 37.89,
+    "p90": 44.79,
+    "p99": 142.52,
+    "max": 152.71
+   },
+   "engine_fps": 16.49,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9481,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport_r2",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.55,
+    5.6,
+    6.53
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.378
+   },
+   "video_leg_ms": {
+    "p50": 4.4,
+    "p90": 5.63,
+    "p99": 9.41,
+    "max": 11.58
+   },
+   "network_ms": {
+    "p50": 3.84,
+    "p90": 4.91,
+    "p99": 8.21
+   },
+   "decode_ms_p50": 0.44,
+   "prep_ms_p50": 1.65,
+   "sender_late_ms_p50": 0.27,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine_r2",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.91,
+    5.45,
+    6.45
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 500,
+    "skipped_before_prep": 0,
+    "engine_processed": 381,
+    "engine_decisions": 339,
+    "code_time_mismatch_ms_max": 0.369
+   },
+   "video_leg_ms": {
+    "p50": 6.96,
+    "p90": 10.48,
+    "p99": 22.42,
+    "max": 30.13
+   },
+   "network_ms": {
+    "p50": 5.96,
+    "p90": 9.14,
+    "p99": 18.53
+   },
+   "decode_ms_p50": 0.69,
+   "prep_ms_p50": 3.17,
+   "sender_late_ms_p50": 0.2,
+   "engine_ready_ms": {
+    "p50": 79.29,
+    "p90": 125.33,
+    "p99": 148.69
+   },
+   "capture_to_decision_ms": {
+    "p50": 86.57,
+    "p90": 133.74,
+    "p99": 159.02,
+    "max": 177.61
+   },
+   "engine_fps": 25.91,
+   "engine_skipped": 119,
+   "detection_within_5px": 0.9655,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_r2",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    4.71,
+    5.38,
+    6.41
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.49
+   },
+   "video_leg_ms": {
+    "p50": 3.11,
+    "p90": 3.64,
+    "p99": 7.99,
+    "max": 10.05
+   },
+   "network_ms": {
+    "p50": 2.71,
+    "p90": 3.17,
+    "p99": 6.86
+   },
+   "decode_ms_p50": 0.29,
+   "prep_ms_p50": 1.6,
+   "sender_late_ms_p50": 0.05,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine_r2",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.61,
+    5.32,
+    6.36
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 410,
+    "engine_decisions": 318,
+    "code_time_mismatch_ms_max": 0.368
+   },
+   "video_leg_ms": {
+    "p50": 7.71,
+    "p90": 12.3,
+    "p99": 21.95,
+    "max": 26.76
+   },
+   "network_ms": {
+    "p50": 6.61,
+    "p90": 10.49,
+    "p99": 18.95
+   },
+   "decode_ms_p50": 0.64,
+   "prep_ms_p50": 4.23,
+   "sender_late_ms_p50": 0.11,
+   "engine_ready_ms": {
+    "p50": 90.72,
+    "p90": 139.4,
+    "p99": 151.95
+   },
+   "capture_to_decision_ms": {
+    "p50": 99.07,
+    "p90": 146.91,
+    "p99": 166.76,
+    "max": 175.68
+   },
+   "engine_fps": 27.85,
+   "engine_skipped": 590,
+   "detection_within_5px": 0.9618,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "slowmo10_engine_r2",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.02,
+    5.36,
+    6.35
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 200,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.184
+   },
+   "video_leg_ms": {
+    "p50": 6.33,
+    "p90": 9.47,
+    "p99": 12.93,
+    "max": 73.11
+   },
+   "network_ms": {
+    "p50": 5.68,
+    "p90": 8.39,
+    "p99": 11.96
+   },
+   "decode_ms_p50": 0.49,
+   "prep_ms_p50": 1.56,
+   "sender_late_ms_p50": 0.43,
+   "engine_ready_ms": {
+    "p50": 37.93,
+    "p90": 40.65,
+    "p99": 44.77
+   },
+   "capture_to_decision_ms": {
+    "p50": 44.29,
+    "p90": 48.62,
+    "p99": 53.7,
+    "max": 129.39
+   },
+   "engine_fps": 9.31,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9805,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 43.5,
+     "video_leg_ms": 8.4,
+     "engine_ms": 35.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 44.3,
+     "video_leg_ms": 5.1,
+     "engine_ms": 39.2,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 44.4,
+     "video_leg_ms": 6.7,
+     "engine_ms": 37.7,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 45.7,
+     "video_leg_ms": 6.2,
+     "engine_ms": 39.4,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 45.0,
+     "video_leg_ms": 5.4,
+     "engine_ms": 39.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 46.0,
+     "video_leg_ms": 5.9,
+     "engine_ms": 40.2,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 44.3,
+     "video_leg_ms": 6.8,
+     "engine_ms": 37.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 47.8,
+     "video_leg_ms": 9.5,
+     "engine_ms": 38.3,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 47.9,
+     "video_leg_ms": 8.8,
+     "engine_ms": 39.2,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2761,
+     "capture_to_emit_ms": 45.4,
+     "video_leg_ms": 6.7,
+     "engine_ms": 38.8,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 44.8,
+     "video_leg_ms": 4.5,
+     "engine_ms": 40.3,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.5,
+     "latency_ms": 35.09,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.2,
+     "latency_ms": 39.23,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.12,
+     "lead_pred_ms": 46.0,
+     "latency_ms": 37.74,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0152,
+     "lead_pred_ms": 47.0,
+     "latency_ms": 39.42,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.1973,
+     "lead_pred_ms": 49.5,
+     "latency_ms": 39.54,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.055,
+     "lead_pred_ms": 47.5,
+     "latency_ms": 40.16,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0438,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 37.5,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0543,
+     "lead_pred_ms": 44.3,
+     "latency_ms": 38.29,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0221,
+     "lead_pred_ms": 43.4,
+     "latency_ms": 39.15,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2761,
+     "p_miss": 0.9802,
+     "lead_pred_ms": 12.5,
+     "latency_ms": 38.77,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 108.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.1,
+     "latency_ms": 40.31,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 10,
+    "only_file": [
+     [
+      "MISS",
+      2766,
+      0.9888
+     ]
+    ],
+    "only_webrtc": [
+     [
+      "MISS",
+      2761,
+      0.9802
+     ]
+    ],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "dec30_transport_r3",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    3.96,
+    4.87,
+    6.04
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.346
+   },
+   "video_leg_ms": {
+    "p50": 6.6,
+    "p90": 10.75,
+    "p99": 55.98,
+    "max": 80.33
+   },
+   "network_ms": {
+    "p50": 5.63,
+    "p90": 9.6,
+    "p99": 47.95
+   },
+   "decode_ms_p50": 0.69,
+   "prep_ms_p50": 1.71,
+   "sender_late_ms_p50": 0.21,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine_r3",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    5.53,
+    5.18,
+    6.12
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 250,
+    "skipped_before_prep": 0,
+    "engine_processed": 250,
+    "engine_decisions": 248,
+    "code_time_mismatch_ms_max": 0.436
+   },
+   "video_leg_ms": {
+    "p50": 9.96,
+    "p90": 14.2,
+    "p99": 22.42,
+    "max": 25.72
+   },
+   "network_ms": {
+    "p50": 8.78,
+    "p90": 12.56,
+    "p99": 21.26
+   },
+   "decode_ms_p50": 0.89,
+   "prep_ms_p50": 2.96,
+   "sender_late_ms_p50": 1.06,
+   "engine_ready_ms": {
+    "p50": 30.12,
+    "p90": 32.7,
+    "p99": 44.15
+   },
+   "capture_to_decision_ms": {
+    "p50": 40.9,
+    "p90": 45.66,
+    "p99": 55.87,
+    "max": 72.72
+   },
+   "engine_fps": 16.92,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.961,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport_r3",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.28,
+    5.15,
+    6.09
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.426
+   },
+   "video_leg_ms": {
+    "p50": 4.62,
+    "p90": 5.57,
+    "p99": 9.11,
+    "max": 10.56
+   },
+   "network_ms": {
+    "p50": 3.9,
+    "p90": 4.82,
+    "p99": 7.93
+   },
+   "decode_ms_p50": 0.49,
+   "prep_ms_p50": 1.71,
+   "sender_late_ms_p50": 0.28,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine_r3",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.72,
+    5.03,
+    6.03
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 500,
+    "skipped_before_prep": 0,
+    "engine_processed": 382,
+    "engine_decisions": 339,
+    "code_time_mismatch_ms_max": 0.387
+   },
+   "video_leg_ms": {
+    "p50": 7.45,
+    "p90": 11.88,
+    "p99": 68.92,
+    "max": 98.94
+   },
+   "network_ms": {
+    "p50": 6.35,
+    "p90": 10.61,
+    "p99": 62.68
+   },
+   "decode_ms_p50": 0.75,
+   "prep_ms_p50": 3.47,
+   "sender_late_ms_p50": 0.18,
+   "engine_ready_ms": {
+    "p50": 81.74,
+    "p90": 126.23,
+    "p99": 148.64
+   },
+   "capture_to_decision_ms": {
+    "p50": 91.74,
+    "p90": 137.97,
+    "p99": 163.14,
+    "max": 178.99
+   },
+   "engine_fps": 25.85,
+   "engine_skipped": 118,
+   "detection_within_5px": 0.9746,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_r3",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    4.65,
+    4.99,
+    6.0
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.4
+   },
+   "video_leg_ms": {
+    "p50": 4.39,
+    "p90": 5.43,
+    "p99": 71.64,
+    "max": 91.15
+   },
+   "network_ms": {
+    "p50": 3.82,
+    "p90": 4.8,
+    "p99": 63.79
+   },
+   "decode_ms_p50": 0.37,
+   "prep_ms_p50": 1.88,
+   "sender_late_ms_p50": 0.06,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine_r3",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.7,
+    4.98,
+    5.96
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 402,
+    "engine_decisions": 305,
+    "code_time_mismatch_ms_max": 0.401
+   },
+   "video_leg_ms": {
+    "p50": 9.23,
+    "p90": 21.5,
+    "p99": 128.51,
+    "max": 143.26
+   },
+   "network_ms": {
+    "p50": 8.18,
+    "p90": 18.06,
+    "p99": 123.68
+   },
+   "decode_ms_p50": 0.66,
+   "prep_ms_p50": 6.0,
+   "sender_late_ms_p50": 0.14,
+   "engine_ready_ms": {
+    "p50": 93.01,
+    "p90": 137.2,
+    "p99": 150.2
+   },
+   "capture_to_decision_ms": {
+    "p50": 105.57,
+    "p90": 154.13,
+    "p99": 239.51,
+    "max": 284.81
+   },
+   "engine_fps": 26.71,
+   "engine_skipped": 598,
+   "detection_within_5px": 0.9577,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "slowmo10_engine_r3",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    7.41,
+    5.56,
+    6.15
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 200,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.393
+   },
+   "video_leg_ms": {
+    "p50": 9.07,
+    "p90": 17.29,
+    "p99": 34.33,
+    "max": 119.29
+   },
+   "network_ms": {
+    "p50": 8.03,
+    "p90": 15.49,
+    "p99": 30.42
+   },
+   "decode_ms_p50": 0.73,
+   "prep_ms_p50": 2.65,
+   "sender_late_ms_p50": 2.04,
+   "engine_ready_ms": {
+    "p50": 40.17,
+    "p90": 47.61,
+    "p99": 57.66
+   },
+   "capture_to_decision_ms": {
+    "p50": 50.22,
+    "p90": 62.2,
+    "p99": 78.12,
+    "max": 202.54
+   },
+   "engine_fps": 9.31,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9739,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 59.8,
+     "video_leg_ms": 8.3,
+     "engine_ms": 51.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 51.7,
+     "video_leg_ms": 8.3,
+     "engine_ms": 43.3,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 52.1,
+     "video_leg_ms": 7.0,
+     "engine_ms": 45.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 46.6,
+     "video_leg_ms": 6.1,
+     "engine_ms": 40.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 67.0,
+     "video_leg_ms": 22.4,
+     "engine_ms": 44.6,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 66.0,
+     "video_leg_ms": 21.4,
+     "engine_ms": 44.6,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 46.7,
+     "video_leg_ms": 7.5,
+     "engine_ms": 39.3,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 51.0,
+     "video_leg_ms": 10.5,
+     "engine_ms": 40.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 49.2,
+     "video_leg_ms": 11.2,
+     "engine_ms": 38.0,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2766,
+     "capture_to_emit_ms": 49.2,
+     "video_leg_ms": 8.6,
+     "engine_ms": 40.6,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 67.6,
+     "video_leg_ms": 23.6,
+     "engine_ms": 44.0,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.6,
+     "latency_ms": 51.53,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 43.34,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.119,
+     "lead_pred_ms": 46.0,
+     "latency_ms": 45.08,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0138,
+     "lead_pred_ms": 47.0,
+     "latency_ms": 40.53,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.1819,
+     "lead_pred_ms": 49.8,
+     "latency_ms": 44.65,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.0599,
+     "lead_pred_ms": 47.2,
+     "latency_ms": 44.57,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0438,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 39.26,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0555,
+     "lead_pred_ms": 44.3,
+     "latency_ms": 40.5,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0209,
+     "lead_pred_ms": 43.5,
+     "latency_ms": 38.01,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2766,
+     "p_miss": 0.9885,
+     "lead_pred_ms": 78.5,
+     "latency_ms": 40.59,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 66.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.1,
+     "latency_ms": 44.0,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 11,
+    "only_file": [],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "dec30_transport_r4",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    8.01,
+    6.18,
+    6.3
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.468
+   },
+   "video_leg_ms": {
+    "p50": 8.84,
+    "p90": 17.45,
+    "p99": 26.84,
+    "max": 28.3
+   },
+   "network_ms": {
+    "p50": 7.5,
+    "p90": 15.24,
+    "p99": 25.79
+   },
+   "decode_ms_p50": 0.77,
+   "prep_ms_p50": 2.56,
+   "sender_late_ms_p50": 0.6,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine_r4",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    8.55,
+    6.46,
+    6.4
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 250,
+    "skipped_before_prep": 0,
+    "engine_processed": 236,
+    "engine_decisions": 223,
+    "code_time_mismatch_ms_max": 0.492
+   },
+   "video_leg_ms": {
+    "p50": 12.98,
+    "p90": 39.44,
+    "p99": 91.12,
+    "max": 115.72
+   },
+   "network_ms": {
+    "p50": 11.36,
+    "p90": 32.9,
+    "p99": 78.91
+   },
+   "decode_ms_p50": 1.03,
+   "prep_ms_p50": 3.63,
+   "sender_late_ms_p50": 1.83,
+   "engine_ready_ms": {
+    "p50": 35.4,
+    "p90": 107.25,
+    "p99": 146.9
+   },
+   "capture_to_decision_ms": {
+    "p50": 52.45,
+    "p90": 140.09,
+    "p99": 187.51,
+    "max": 204.32
+   },
+   "engine_fps": 15.86,
+   "engine_skipped": 14,
+   "detection_within_5px": 0.9459,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport_r4",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    8.14,
+    6.49,
+    6.41
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.475
+   },
+   "video_leg_ms": {
+    "p50": 7.66,
+    "p90": 18.15,
+    "p99": 28.74,
+    "max": 36.9
+   },
+   "network_ms": {
+    "p50": 6.59,
+    "p90": 15.8,
+    "p99": 25.59
+   },
+   "decode_ms_p50": 0.64,
+   "prep_ms_p50": 3.2,
+   "sender_late_ms_p50": 0.13,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine_r4",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    7.72,
+    6.49,
+    6.42
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 499,
+    "skipped_before_prep": 1,
+    "engine_processed": 270,
+    "engine_decisions": 187,
+    "code_time_mismatch_ms_max": 0.496
+   },
+   "video_leg_ms": {
+    "p50": 15.01,
+    "p90": 42.83,
+    "p99": 71.27,
+    "max": 78.72
+   },
+   "network_ms": {
+    "p50": 13.2,
+    "p90": 37.92,
+    "p99": 60.98
+   },
+   "decode_ms_p50": 0.95,
+   "prep_ms_p50": 12.39,
+   "sender_late_ms_p50": 0.22,
+   "engine_ready_ms": {
+    "p50": 116.82,
+    "p90": 171.12,
+    "p99": 209.78
+   },
+   "capture_to_decision_ms": {
+    "p50": 137.85,
+    "p90": 195.47,
+    "p99": 245.6,
+    "max": 261.19
+   },
+   "engine_fps": 18.28,
+   "engine_skipped": 229,
+   "detection_within_5px": 0.9714,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_r4",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    11.41,
+    7.4,
+    6.74
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.479
+   },
+   "video_leg_ms": {
+    "p50": 8.97,
+    "p90": 30.46,
+    "p99": 52.62,
+    "max": 75.62
+   },
+   "network_ms": {
+    "p50": 7.74,
+    "p90": 27.58,
+    "p99": 50.24
+   },
+   "decode_ms_p50": 0.63,
+   "prep_ms_p50": 8.7,
+   "sender_late_ms_p50": 0.14,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine_r4",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    10.73,
+    7.58,
+    6.83
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 806,
+    "skipped_before_prep": 194,
+    "engine_processed": 415,
+    "engine_decisions": 209,
+    "code_time_mismatch_ms_max": 0.437
+   },
+   "video_leg_ms": {
+    "p50": 21.69,
+    "p90": 55.51,
+    "p99": 78.39,
+    "max": 87.93
+   },
+   "network_ms": {
+    "p50": 19.48,
+    "p90": 51.39,
+    "p99": 73.15
+   },
+   "decode_ms_p50": 0.75,
+   "prep_ms_p50": 90.01,
+   "sender_late_ms_p50": 2.28,
+   "engine_ready_ms": {
+    "p50": 146.6,
+    "p90": 172.76,
+    "p99": 206.39
+   },
+   "capture_to_decision_ms": {
+    "p50": 169.7,
+    "p90": 206.35,
+    "p99": 261.52,
+    "max": 327.93
+   },
+   "engine_fps": 28.07,
+   "engine_skipped": 391,
+   "detection_within_5px": 0.7388,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "slowmo10_engine_r4",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    12.74,
+    8.22,
+    7.07
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 200,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.322
+   },
+   "video_leg_ms": {
+    "p50": 9.7,
+    "p90": 17.21,
+    "p99": 27.56,
+    "max": 88.37
+   },
+   "network_ms": {
+    "p50": 8.57,
+    "p90": 15.36,
+    "p99": 25.82
+   },
+   "decode_ms_p50": 0.78,
+   "prep_ms_p50": 3.01,
+   "sender_late_ms_p50": 1.99,
+   "engine_ready_ms": {
+    "p50": 38.14,
+    "p90": 44.37,
+    "p99": 53.76
+   },
+   "capture_to_decision_ms": {
+    "p50": 48.94,
+    "p90": 59.63,
+    "p99": 70.45,
+    "max": 146.52
+   },
+   "engine_fps": 9.3,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9805,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 55.5,
+     "video_leg_ms": 15.0,
+     "engine_ms": 40.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 58.8,
+     "video_leg_ms": 17.6,
+     "engine_ms": 41.2,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 51.0,
+     "video_leg_ms": 9.1,
+     "engine_ms": 41.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 50.2,
+     "video_leg_ms": 7.5,
+     "engine_ms": 42.7,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 40.8,
+     "video_leg_ms": 7.7,
+     "engine_ms": 33.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 50.1,
+     "video_leg_ms": 10.6,
+     "engine_ms": 39.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 64.3,
+     "video_leg_ms": 16.6,
+     "engine_ms": 47.7,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 57.0,
+     "video_leg_ms": 15.8,
+     "engine_ms": 41.2,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 55.7,
+     "video_leg_ms": 11.6,
+     "engine_ms": 44.1,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2766,
+     "capture_to_emit_ms": 51.3,
+     "video_leg_ms": 12.8,
+     "engine_ms": 38.5,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 37.6,
+     "video_leg_ms": 4.7,
+     "engine_ms": 33.0,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.6,
+     "latency_ms": 40.52,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 41.15,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.12,
+     "lead_pred_ms": 46.0,
+     "latency_ms": 41.87,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0152,
+     "lead_pred_ms": 47.0,
+     "latency_ms": 42.69,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.1973,
+     "lead_pred_ms": 49.5,
+     "latency_ms": 33.13,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.0599,
+     "lead_pred_ms": 47.3,
+     "latency_ms": 39.49,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0438,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 47.72,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0555,
+     "lead_pred_ms": 44.3,
+     "latency_ms": 41.24,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0221,
+     "lead_pred_ms": 43.4,
+     "latency_ms": 44.08,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2766,
+     "p_miss": 0.9888,
+     "lead_pred_ms": 78.5,
+     "latency_ms": 38.48,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 66.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.2,
+     "latency_ms": 32.97,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 11,
+    "only_file": [],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "dec30_transport_r5",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    7.6,
+    8.0,
+    7.14
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.425
+   },
+   "video_leg_ms": {
+    "p50": 10.0,
+    "p90": 16.49,
+    "p99": 22.24,
+    "max": 28.41
+   },
+   "network_ms": {
+    "p50": 8.93,
+    "p90": 15.08,
+    "p99": 20.11
+   },
+   "decode_ms_p50": 0.88,
+   "prep_ms_p50": 2.89,
+   "sender_late_ms_p50": 1.72,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine_r5",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    7.53,
+    7.94,
+    7.14
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 250,
+    "skipped_before_prep": 0,
+    "engine_processed": 240,
+    "engine_decisions": 230,
+    "code_time_mismatch_ms_max": 0.45
+   },
+   "video_leg_ms": {
+    "p50": 11.47,
+    "p90": 34.59,
+    "p99": 61.84,
+    "max": 75.47
+   },
+   "network_ms": {
+    "p50": 10.24,
+    "p90": 31.95,
+    "p99": 50.69
+   },
+   "decode_ms_p50": 0.92,
+   "prep_ms_p50": 3.27,
+   "sender_late_ms_p50": 2.13,
+   "engine_ready_ms": {
+    "p50": 35.22,
+    "p90": 99.25,
+    "p99": 149.71
+   },
+   "capture_to_decision_ms": {
+    "p50": 47.04,
+    "p90": 126.88,
+    "p99": 189.76,
+    "max": 210.22
+   },
+   "engine_fps": 16.06,
+   "engine_skipped": 10,
+   "detection_within_5px": 0.9583,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport_r5",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    7.26,
+    7.83,
+    7.12
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.379
+   },
+   "video_leg_ms": {
+    "p50": 5.43,
+    "p90": 8.66,
+    "p99": 133.41,
+    "max": 178.28
+   },
+   "network_ms": {
+    "p50": 4.61,
+    "p90": 7.47,
+    "p99": 132.04
+   },
+   "decode_ms_p50": 0.56,
+   "prep_ms_p50": 2.12,
+   "sender_late_ms_p50": 0.27,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine_r5",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    6.38,
+    7.6,
+    7.05
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 494,
+    "skipped_before_prep": 6,
+    "engine_processed": 297,
+    "engine_decisions": 232,
+    "code_time_mismatch_ms_max": 0.384
+   },
+   "video_leg_ms": {
+    "p50": 10.48,
+    "p90": 32.46,
+    "p99": 80.01,
+    "max": 115.85
+   },
+   "network_ms": {
+    "p50": 9.06,
+    "p90": 27.06,
+    "p99": 78.88
+   },
+   "decode_ms_p50": 0.83,
+   "prep_ms_p50": 4.97,
+   "sender_late_ms_p50": 0.16,
+   "engine_ready_ms": {
+    "p50": 103.04,
+    "p90": 152.7,
+    "p99": 208.5
+   },
+   "capture_to_decision_ms": {
+    "p50": 114.73,
+    "p90": 177.96,
+    "p99": 277.91,
+    "max": 314.29
+   },
+   "engine_fps": 20.06,
+   "engine_skipped": 197,
+   "detection_within_5px": 0.9681,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_r5",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    8.35,
+    7.96,
+    7.19
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.366
+   },
+   "video_leg_ms": {
+    "p50": 4.17,
+    "p90": 6.83,
+    "p99": 90.53,
+    "max": 119.68
+   },
+   "network_ms": {
+    "p50": 3.67,
+    "p90": 5.92,
+    "p99": 87.28
+   },
+   "decode_ms_p50": 0.34,
+   "prep_ms_p50": 2.07,
+   "sender_late_ms_p50": 0.07,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine_r5",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    8.8,
+    8.08,
+    7.25
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 858,
+    "skipped_before_prep": 142,
+    "engine_processed": 404,
+    "engine_decisions": 212,
+    "code_time_mismatch_ms_max": 0.477
+   },
+   "video_leg_ms": {
+    "p50": 26.99,
+    "p90": 159.21,
+    "p99": 223.02,
+    "max": 241.11
+   },
+   "network_ms": {
+    "p50": 24.08,
+    "p90": 155.37,
+    "p99": 219.91
+   },
+   "decode_ms_p50": 0.97,
+   "prep_ms_p50": 83.34,
+   "sender_late_ms_p50": 6.75,
+   "engine_ready_ms": {
+    "p50": 139.79,
+    "p90": 175.01,
+    "p99": 196.01
+   },
+   "capture_to_decision_ms": {
+    "p50": 173.28,
+    "p90": 316.31,
+    "p99": 388.95,
+    "max": 405.83
+   },
+   "engine_fps": 27.37,
+   "engine_skipped": 454,
+   "detection_within_5px": 0.7851,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  },
+  {
+   "run": "slowmo10_engine_r5",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 10.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    9.09,
+    8.19,
+    7.3
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 200,
+    "fed_to_engine": 1000,
+    "skipped_before_prep": 0,
+    "engine_processed": 1000,
+    "engine_decisions": 998,
+    "code_time_mismatch_ms_max": 0.177
+   },
+   "video_leg_ms": {
+    "p50": 7.66,
+    "p90": 12.02,
+    "p99": 22.05,
+    "max": 102.91
+   },
+   "network_ms": {
+    "p50": 6.9,
+    "p90": 10.78,
+    "p99": 20.39
+   },
+   "decode_ms_p50": 0.5,
+   "prep_ms_p50": 1.52,
+   "sender_late_ms_p50": 1.22,
+   "engine_ready_ms": {
+    "p50": 37.14,
+    "p90": 41.1,
+    "p99": 44.74
+   },
+   "capture_to_decision_ms": {
+    "p50": 44.75,
+    "p90": 51.46,
+    "p99": 72.81,
+    "max": 147.53
+   },
+   "engine_fps": 9.3,
+   "engine_skipped": 0,
+   "detection_within_5px": 0.9772,
+   "calls": [
+    {
+     "call": "BOUNCE",
+     "src": 2258,
+     "capture_to_emit_ms": 43.5,
+     "video_leg_ms": 5.0,
+     "engine_ms": 38.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2312,
+     "capture_to_emit_ms": 42.0,
+     "video_leg_ms": 8.9,
+     "engine_ms": 33.1,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2366,
+     "capture_to_emit_ms": 43.2,
+     "video_leg_ms": 6.4,
+     "engine_ms": 36.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2417,
+     "capture_to_emit_ms": 41.8,
+     "video_leg_ms": 6.9,
+     "engine_ms": 34.9,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2466,
+     "capture_to_emit_ms": 44.6,
+     "video_leg_ms": 6.2,
+     "engine_ms": 38.4,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2567,
+     "capture_to_emit_ms": 42.6,
+     "video_leg_ms": 5.2,
+     "engine_ms": 37.4,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2618,
+     "capture_to_emit_ms": 45.9,
+     "video_leg_ms": 5.4,
+     "engine_ms": 40.5,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2668,
+     "capture_to_emit_ms": 44.0,
+     "video_leg_ms": 6.3,
+     "engine_ms": 37.7,
+     "ood": false
+    },
+    {
+     "call": "BOUNCE",
+     "src": 2722,
+     "capture_to_emit_ms": 47.5,
+     "video_leg_ms": 9.4,
+     "engine_ms": 38.1,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2760,
+     "capture_to_emit_ms": 40.8,
+     "video_leg_ms": 5.3,
+     "engine_ms": 35.5,
+     "ood": false
+    },
+    {
+     "call": "MISS",
+     "src": 2819,
+     "capture_to_emit_ms": 52.8,
+     "video_leg_ms": 15.9,
+     "engine_ms": 36.9,
+     "ood": false
+    }
+   ],
+   "events_vs_labels": [
+    {
+     "call": "BOUNCE",
+     "frame": 2258,
+     "p_miss": 0.0035,
+     "lead_pred_ms": 36.6,
+     "latency_ms": 38.53,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2312,
+     "p_miss": 0.0178,
+     "lead_pred_ms": 45.2,
+     "latency_ms": 33.08,
+     "flight": 2296,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2366,
+     "p_miss": 0.1246,
+     "lead_pred_ms": 45.9,
+     "latency_ms": 36.87,
+     "flight": 2358,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2417,
+     "p_miss": 0.0138,
+     "lead_pred_ms": 47.1,
+     "latency_ms": 34.9,
+     "flight": 2402,
+     "label": "MISS",
+     "label_audited": "BOUNCE",
+     "audit": "unannotated_bounce",
+     "actual_lead_ms": 75.0,
+     "correct": false,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2466,
+     "p_miss": 0.1819,
+     "lead_pred_ms": 49.9,
+     "latency_ms": 38.4,
+     "flight": 2457,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2567,
+     "p_miss": 0.0616,
+     "lead_pred_ms": 46.9,
+     "latency_ms": 37.43,
+     "flight": 2559,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 33.3,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2618,
+     "p_miss": 0.0438,
+     "lead_pred_ms": 45.3,
+     "latency_ms": 40.53,
+     "flight": null,
+     "correct": null,
+     "note": "no labelled flight (outside the evaluated population)"
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2668,
+     "p_miss": 0.0543,
+     "lead_pred_ms": 44.4,
+     "latency_ms": 37.74,
+     "flight": 2660,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": 25.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "BOUNCE",
+     "frame": 2722,
+     "p_miss": 0.0221,
+     "lead_pred_ms": 43.5,
+     "latency_ms": 38.09,
+     "flight": 2706,
+     "label": "BOUNCE",
+     "label_audited": "BOUNCE",
+     "audit": null,
+     "actual_lead_ms": -16.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": null
+    },
+    {
+     "call": "MISS",
+     "frame": 2760,
+     "p_miss": 0.9803,
+     "lead_pred_ms": 20.2,
+     "latency_ms": 35.46,
+     "flight": 2760,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": "rally_continues",
+     "actual_lead_ms": 116.7,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 125.0
+    },
+    {
+     "call": "MISS",
+     "frame": 2819,
+     "p_miss": 0.9889,
+     "lead_pred_ms": 7.2,
+     "latency_ms": 36.93,
+     "flight": 2819,
+     "label": "MISS",
+     "label_audited": "MISS",
+     "audit": null,
+     "actual_lead_ms": 325.0,
+     "correct": true,
+     "correct_audited": true,
+     "offline_first_call_lead_ms": 408.3
+    }
+   ],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 11,
+    "same_call_within_2_frames": 10,
+    "only_file": [
+     [
+      "MISS",
+      2766,
+      0.9888
+     ]
+    ],
+    "only_webrtc": [
+     [
+      "MISS",
+      2760,
+      0.9803
+     ]
+    ],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  }
+ ]
+}

@@ -75,13 +75,17 @@ class WhepFrameSource:
     """Drop-in for engine.vision.stream.FrameSource (run_stream reads only `.q`)."""
 
     def __init__(self, url, D, src0=2000, step=1, maxsize=1200, drop_when_full=True, ready_file=None,
-                 warm=None, idle_s=3.0, max_s=900.0, connect_s=60.0, feed=True, stale_ms=None):
+                 warm=None, idle_s=3.0, max_s=900.0, connect_s=60.0, feed=True, stale_ms=None, save_frames=None):
         self.url, self.D, self.src0, self.step = url, D, src0, step
         self.q = queue.Queue(maxsize=maxsize)
         self.drop_when_full = drop_when_full
         self.ready_file, self.warm = ready_file, warm
         self.idle_s, self.max_s, self.connect_s, self.feed = idle_s, max_s, connect_s, feed
         self.stale_ms = stale_ms      # bounded mode: frames already older than this are not prepared at all
+        # --save-frames: the exact 512x288 RGB frames handed to the engine, appended raw (uint8, in arrival
+        # order) for scripts/webrtc_render_demo.py; row["saved"] = index in that file. One memcpy + write.
+        self.save_fh = open(save_frames, "wb") if save_frames else None
+        self.n_saved = 0
         self._pq = queue.Queue()
         self.rows = []
         self.by_k = {}
@@ -220,6 +224,10 @@ class WhepFrameSource:
                     row["t_ready"] = t_r
                     dec_ms = ((st["t_dec1"] - st["t_dec0"]) * 1e3) if st.get("t_dec0") else float("nan")
                     item = (k, np.ascontiguousarray(small), t_h, dec_ms, (t_r - t_h) * 1e3)
+                    if self.save_fh is not None:
+                        self.save_fh.write(item[1].tobytes())
+                        row["saved"] = self.n_saved
+                        self.n_saved += 1
                     try:
                         if self.drop_when_full:
                             self.q.put_nowait(item)
@@ -300,6 +308,9 @@ def main():
     ap.add_argument("--ready-file", default=None)
     ap.add_argument("--sender-log", default=None)
     ap.add_argument("--idle-s", type=float, default=3.0)
+    ap.add_argument("--save-frames", default=None,
+                    help="engine mode: append the 512x288 RGB frames fed to the engine (raw uint8) to this file, "
+                         "and write the engine's per-frame track rows, for scripts/webrtc_render_demo.py")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -338,7 +349,8 @@ def main():
               flush=True)
     warm.set()
     src = WhepFrameSource(a.url, M.D, src0=a.src0, step=a.step, ready_file=a.ready_file, warm=warm,
-                          idle_s=a.idle_s, feed=(a.mode == "engine"), stale_ms=a.max_lag_ms)
+                          idle_s=a.idle_s, feed=(a.mode == "engine"), stale_ms=a.max_lag_ms,
+                          save_frames=(a.save_frames if a.mode == "engine" else None))
     live = src.by_k
     load0 = [round(x, 2) for x in os.getloadavg()]
     src.start()
@@ -352,6 +364,8 @@ def main():
     wall = time.time() - t0
     src.stop()
     src._t_loop.join(timeout=10)
+    if src.save_fh is not None:
+        src.save_fh.close()
     load1 = [round(x, 2) for x in os.getloadavg()]
     if "error" in src.info:
         print(f"receiver error: {src.info['error']}", flush=True)
@@ -368,7 +382,11 @@ def main():
         if k is not None and eng is not None:
             idx = k + offset
             if k in done:
-                r.update(engine_done=True, qwait_ms=round(done[k]["qwait_ms"], 3), proc_ms=round(done[k]["proc_ms"], 3))
+                d = done[k]
+                # engine stage times while processing this frame's arrival (it finalises frame k-2 and makes
+                # the decision for frame k): detector, blob extraction, tracker, call rule (features + classifier)
+                r.update(engine_done=True, **{n: round(d[n], 3) for n in ("qwait_ms", "proc_ms", "infer_ms", "blobs_ms",
+                                                                         "track_ms", "feat_ms", "clf_ms")})
             if idx in eng.ready_ms:
                 r["t_decision"] = r["t_handoff"] + eng.ready_ms[idx] / 1e3
         frames.append(r)
@@ -423,6 +441,13 @@ def main():
                                                       for k, v in r.items()})) + "\n")
         for e in events:
             fh.write(json.dumps(e, default=float) + "\n")
+        if a.save_frames and eng is not None:
+            meta_sf = dict(type="saved_frames", path=a.save_frames, n=src.n_saved, shape=[M.D.INP_H, M.D.INP_W, 3],
+                           dtype="uint8", order="arrival (row 'saved' of each frame row)")
+            fh.write(json.dumps(meta_sf) + "\n")
+            for f, *rest in eng.track_log:      # (source frame, x, y, ...) in full-resolution pixels; NaN = no ball
+                fh.write(json.dumps(dict(type="track", f=int(f), xy=[None if not np.isfinite(v) else round(float(v), 2)
+                                                                        for v in rest[:2]])) + "\n")
         fh.write(json.dumps(dict(type="summary", **summ), default=float) + "\n")
     L = summ["latency_ms"]
 

@@ -1,0 +1,3155 @@
+{
+ "what": "Latency of OUR camera -> WebRTC -> CV -> call pipeline on OUR stream (paper only).",
+ "never_claim": "This is not a Polymarket match feed and not glass-to-glass: the source is our own held-out OpenTTGames clip streamed by us, the camera is virtual (a paced sender), everything ran over loopback on one laptop (no network, no relay). We have no camera at any venue.",
+ "clip": "data/vision/test_2_copyts.mp4 (OpenTTGames test_2 frames 2000-2999, 120 fps, CC BY-NC-SA 4.0)",
+ "campaign_files": [
+  "results/webrtc/run_20261003T221601Z.jsonl"
+ ],
+ "host": "Darwin arm64",
+ "versions": {
+  "python": "3.14.0",
+  "aiortc": "1.15.0",
+  "aioice": "0.10.2",
+  "pyav": "17.1.0",
+  "libav": "8.1.1",
+  "onnxruntime": "1.30.0",
+  "numpy": "2.5.3"
+ },
+ "sender": {
+  "encoder": "x264",
+  "ffmpeg": "ffmpeg version 8.1 Copyright (c) 2000-2026 the FFmpeg developers"
+ },
+ "transport": "libx264 ultrafast zerolatency (no B-frames, GOP 0.5 s) -> WHIP -> MediaMTX v1.21.1 (127.0.0.1) -> WHEP -> aiortc 1.15.0 (marker-bit frame completion patch) -> PyAV decode",
+ "relay": "local only: no second machine or network hop was available (a public relay or a HiPerGator service was not allowed). Others' relay figures: about 0.4 s via a public Broadcast Box server; MediaMTX p50 180 ms LAN-only, 520 ms cross-region (SUB_SECOND_ROUTES.md S2, S3).",
+ "capture_assumption": {
+  "rule": "2 frame periods: 1 for sampling (upper bound; mean 0.5) + 1 for sensor readout and USB3/GigE transfer",
+  "label": "ASSUMED (literature), not measured: our loop starts at a virtual camera",
+  "sources": [
+   "Bachhuber C., Steinbach E., 'A system for high precision glass-to-glass delay measurements in video communication', ICIP 2016, arXiv:1510.01134: camera sampling delay uniform over one frame period; G2G min/mean/max 24.8/50.4/78.7 ms at 25 Hz and 8.1/15.5/23 ms at 300 Hz",
+   "Transitive Robotics, 'WebRTC latency breakdown' (2026-05-06, vendor): 'the camera itself and the USB bus (~100 ms)' for a 30 fps webcam (research/home_stream/SUB_SECOND_ROUTES.md S4)"
+  ],
+  "webcam_30fps_sensitivity_ms": 100.0
+ },
+ "settings": {
+  "30fps": {
+   "label": "30 fps, real time",
+   "preset": "dec30",
+   "camera_fps": 30,
+   "capture_assumed_ms": 66.67,
+   "transport_only": {
+    "runs": [
+     "dec30_transport_r1",
+     "dec30_transport_r2",
+     "dec30_transport_r3",
+     "dec30_transport_r4",
+     "dec30_transport_r5"
+    ],
+    "n_runs": 5,
+    "load_avg_start": [
+     5.31,
+     4.81,
+     3.96,
+     8.01,
+     7.6
+    ],
+    "video_leg_ms": {
+     "p50": 7.59,
+     "p90": 13.01,
+     "p99": 25.87,
+     "mean": 8.65,
+     "max": 80.33,
+     "n": 1250
+    },
+    "video_leg_p50_per_run": [
+     6.4,
+     7.32,
+     6.6,
+     8.84,
+     10.0
+    ],
+    "capture_to_frame_complete_ms": {
+     "p50": 6.6,
+     "p90": 11.5,
+     "p99": 23.54,
+     "mean": 7.57,
+     "max": 74.98,
+     "n": 1250
+    },
+    "decode_ms": {
+     "p50": 0.7,
+     "p90": 1.25,
+     "p99": 2.27,
+     "mean": 0.81,
+     "max": 10.72,
+     "n": 1250
+    },
+    "sender_late_ms": {
+     "p50": 1.06,
+     "p90": 2.11,
+     "p99": 3.82,
+     "mean": 1.14,
+     "max": 11.75,
+     "n": 1250
+    },
+    "video_leg_I_ms": {
+     "p50": 12.34,
+     "p90": 21.63,
+     "p99": 44.54,
+     "mean": 14.44,
+     "max": 52.21,
+     "n": 85
+    },
+    "video_leg_P_ms": {
+     "p50": 7.39,
+     "p90": 12.04,
+     "p99": 22.14,
+     "mean": 8.23,
+     "max": 80.33,
+     "n": 1165
+    },
+    "drops": [
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     }
+    ],
+    "frames_lost_total": "0/1250"
+   },
+   "engine": {
+    "runs": [
+     "dec30_engine_r1",
+     "dec30_engine_r2",
+     "dec30_engine_r3",
+     "dec30_engine_r4",
+     "dec30_engine_r5"
+    ],
+    "n_runs": 5,
+    "backend": "onnx-coreml-gpu16",
+    "calls_on": false,
+    "calls_valid": false,
+    "max_lag_ms": 100.0,
+    "arrival_fps": 30.0,
+    "load_avg_start": [
+     4.79,
+     5.36,
+     5.53,
+     8.55,
+     7.53
+    ],
+    "video_leg_ms": {
+     "p50": 9.31,
+     "p90": 21.98,
+     "p99": 67.55,
+     "mean": 12.71,
+     "max": 115.72,
+     "n": 1250
+    },
+    "video_leg_p50_per_run": [
+     7.26,
+     7.68,
+     9.96,
+     12.98,
+     11.47
+    ],
+    "decode_to_model_ms": {
+     "p50": 30.13,
+     "p90": 71.81,
+     "p99": 131.11,
+     "mean": 38.62,
+     "max": 188.41,
+     "n": 1197
+    },
+    "decode_to_model_parts_ms": {
+     "prep_crop_resize": {
+      "p50": 2.51,
+      "p90": 4.96,
+      "p99": 16.88,
+      "mean": 3.33,
+      "max": 37.51,
+      "n": 1197
+     },
+     "queue_wait": {
+      "p50": 2.63,
+      "p90": 36.25,
+      "p99": 85.59,
+      "mean": 10.1,
+      "max": 113.49,
+      "n": 1197
+     },
+     "detector_call": {
+      "p50": 23.59,
+      "p90": 28.52,
+      "p99": 48.74,
+      "mean": 25.14,
+      "max": 103.62,
+      "n": 1197
+     },
+     "model_excl_call_rule": {
+      "p50": 30.13,
+      "p90": 71.81,
+      "p99": 131.11,
+      "mean": 38.62,
+      "max": 188.41,
+      "n": 1197
+     },
+     "call_rule_on_flight_frames": null
+    },
+    "capture_to_decision_ms": {
+     "p50": 40.18,
+     "p90": 96.74,
+     "p99": 164.84,
+     "mean": 50.66,
+     "max": 210.22,
+     "n": 1197
+    },
+    "capture_to_decision_p50_per_run": [
+     33.64,
+     37.89,
+     40.9,
+     52.44,
+     47.04
+    ],
+    "capture_to_emit_ms": null,
+    "calls_per_run": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "drops": [
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 250,
+      "decisions": 248,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 250,
+      "decisions": 248,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 250,
+      "decisions": 248,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 14,
+      "processed_by_engine": 236,
+      "decisions": 223,
+      "not_processed": 14,
+      "not_processed_share": 0.056
+     },
+     {
+      "sent": 250,
+      "received": 250,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 10,
+      "processed_by_engine": 240,
+      "decisions": 230,
+      "not_processed": 10,
+      "not_processed_share": 0.04
+     }
+    ],
+    "frames_not_processed_total": "24/1250",
+    "frames_not_processed_share": 0.0192
+   },
+   "frame_send_to_result": {
+    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "p50": 40.18,
+    "p90": 96.74,
+    "p99": 164.84,
+    "n": 1197
+   },
+   "camera_to_result_estimate_ms": {
+    "p50": 106.8,
+    "p90": 163.4,
+    "p99": 231.5,
+    "note": "assumed capture 66.7 ms (2 frame periods at 30 fps) + measured frame-send -> result"
+   },
+   "stack_p50_ms": {
+    "capture_assumed": 66.67,
+    "encode_network_decode": 9.31,
+    "model": 30.13,
+    "call_rule": null
+   }
+  },
+  "60fps": {
+   "label": "60 fps, real time",
+   "preset": "dec60",
+   "camera_fps": 60,
+   "capture_assumed_ms": 33.33,
+   "transport_only": {
+    "runs": [
+     "dec60_transport_r1",
+     "dec60_transport_r2",
+     "dec60_transport_r3",
+     "dec60_transport_r4",
+     "dec60_transport_r5"
+    ],
+    "n_runs": 5,
+    "load_avg_start": [
+     5.39,
+     5.55,
+     5.28,
+     8.14,
+     7.26
+    ],
+    "video_leg_ms": {
+     "p50": 4.87,
+     "p90": 8.92,
+     "p99": 28.72,
+     "mean": 6.52,
+     "max": 178.28,
+     "n": 2500
+    },
+    "video_leg_p50_per_run": [
+     4.41,
+     4.4,
+     4.62,
+     7.66,
+     5.43
+    ],
+    "capture_to_frame_complete_ms": {
+     "p50": 4.19,
+     "p90": 7.64,
+     "p99": 25.29,
+     "mean": 5.69,
+     "max": 174.55,
+     "n": 2500
+    },
+    "decode_ms": {
+     "p50": 0.49,
+     "p90": 0.82,
+     "p99": 2.18,
+     "mean": 0.59,
+     "max": 15.71,
+     "n": 2500
+    },
+    "sender_late_ms": {
+     "p50": 0.26,
+     "p90": 0.36,
+     "p99": 8.33,
+     "mean": 0.81,
+     "max": 150.12,
+     "n": 2500
+    },
+    "video_leg_I_ms": {
+     "p50": 9.41,
+     "p90": 21.65,
+     "p99": 36.0,
+     "mean": 11.93,
+     "max": 36.91,
+     "n": 85
+    },
+    "video_leg_P_ms": {
+     "p50": 4.83,
+     "p90": 8.25,
+     "p99": 26.79,
+     "mean": 6.33,
+     "max": 178.28,
+     "n": 2415
+    },
+    "drops": [
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     }
+    ],
+    "frames_lost_total": "0/2500"
+   },
+   "engine": {
+    "runs": [
+     "dec60_engine_r1",
+     "dec60_engine_r2",
+     "dec60_engine_r3",
+     "dec60_engine_r4",
+     "dec60_engine_r5"
+    ],
+    "n_runs": 5,
+    "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+    "calls_on": false,
+    "calls_valid": false,
+    "max_lag_ms": 100.0,
+    "arrival_fps": 60.0,
+    "load_avg_start": [
+     5.66,
+     4.91,
+     4.72,
+     7.72,
+     6.38
+    ],
+    "video_leg_ms": {
+     "p50": 8.11,
+     "p90": 23.63,
+     "p99": 69.89,
+     "mean": 12.26,
+     "max": 115.85,
+     "n": 2500
+    },
+    "video_leg_p50_per_run": [
+     6.27,
+     6.96,
+     7.45,
+     15.01,
+     10.48
+    ],
+    "decode_to_model_ms": {
+     "p50": 86.73,
+     "p90": 136.21,
+     "p99": 184.85,
+     "mean": 89.69,
+     "max": 244.29,
+     "n": 1519
+    },
+    "decode_to_model_parts_ms": {
+     "prep_crop_resize": {
+      "p50": 3.42,
+      "p90": 10.85,
+      "p99": 62.18,
+      "mean": 6.4,
+      "max": 114.56,
+      "n": 1519
+     },
+     "queue_wait": {
+      "p50": 39.56,
+      "p90": 83.36,
+      "p99": 98.51,
+      "mean": 41.52,
+      "max": 115.89,
+      "n": 1519
+     },
+     "detector_call": {
+      "p50": 11.95,
+      "p90": 48.05,
+      "p99": 79.81,
+      "mean": 20.23,
+      "max": 139.91,
+      "n": 1519
+     },
+     "model_excl_call_rule": {
+      "p50": 86.73,
+      "p90": 136.21,
+      "p99": 184.85,
+      "mean": 89.69,
+      "max": 244.29,
+      "n": 1519
+     },
+     "call_rule_on_flight_frames": null
+    },
+    "capture_to_decision_ms": {
+     "p50": 96.41,
+     "p90": 148.21,
+     "p99": 218.18,
+     "mean": 99.97,
+     "max": 314.29,
+     "n": 1519
+    },
+    "capture_to_decision_p50_per_run": [
+     85.75,
+     86.57,
+     91.74,
+     137.85,
+     114.73
+    ],
+    "capture_to_emit_ms": null,
+    "calls_per_run": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "drops": [
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 56,
+      "processed_by_engine": 444,
+      "decisions": 422,
+      "not_processed": 56,
+      "not_processed_share": 0.112
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 119,
+      "processed_by_engine": 381,
+      "decisions": 339,
+      "not_processed": 119,
+      "not_processed_share": 0.238
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 118,
+      "processed_by_engine": 382,
+      "decisions": 339,
+      "not_processed": 118,
+      "not_processed_share": 0.236
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 1,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 229,
+      "processed_by_engine": 270,
+      "decisions": 187,
+      "not_processed": 230,
+      "not_processed_share": 0.46
+     },
+     {
+      "sent": 500,
+      "received": 500,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 6,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 197,
+      "processed_by_engine": 297,
+      "decisions": 232,
+      "not_processed": 203,
+      "not_processed_share": 0.406
+     }
+    ],
+    "frames_not_processed_total": "726/2500",
+    "frames_not_processed_share": 0.2904
+   },
+   "frame_send_to_result": {
+    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "p50": 96.41,
+    "p90": 148.21,
+    "p99": 218.18,
+    "n": 1519
+   },
+   "camera_to_result_estimate_ms": {
+    "p50": 129.7,
+    "p90": 181.5,
+    "p99": 251.5,
+    "note": "assumed capture 33.3 ms (2 frame periods at 60 fps) + measured frame-send -> result"
+   },
+   "stack_p50_ms": {
+    "capture_assumed": 33.33,
+    "encode_network_decode": 8.11,
+    "model": 86.73,
+    "call_rule": null
+   }
+  },
+  "120fps": {
+   "label": "120 fps, real time",
+   "preset": "native120",
+   "camera_fps": 120,
+   "capture_assumed_ms": 16.67,
+   "transport_only": {
+    "runs": [
+     "native120_transport_r1",
+     "native120_transport_r2",
+     "native120_transport_r3",
+     "native120_transport_r4",
+     "native120_transport_r5"
+    ],
+    "n_runs": 5,
+    "load_avg_start": [
+     5.15,
+     4.71,
+     4.65,
+     11.41,
+     8.35
+    ],
+    "video_leg_ms": {
+     "p50": 4.0,
+     "p90": 9.97,
+     "p99": 51.05,
+     "mean": 6.72,
+     "max": 119.68,
+     "n": 5000
+    },
+    "video_leg_p50_per_run": [
+     3.31,
+     3.11,
+     4.39,
+     8.97,
+     4.17
+    ],
+    "capture_to_frame_complete_ms": {
+     "p50": 3.5,
+     "p90": 8.84,
+     "p99": 46.86,
+     "mean": 5.97,
+     "max": 113.17,
+     "n": 5000
+    },
+    "decode_ms": {
+     "p50": 0.34,
+     "p90": 0.73,
+     "p99": 1.86,
+     "mean": 0.46,
+     "max": 21.09,
+     "n": 5000
+    },
+    "sender_late_ms": {
+     "p50": 0.06,
+     "p90": 0.16,
+     "p99": 27.99,
+     "mean": 1.16,
+     "max": 96.44,
+     "n": 5000
+    },
+    "video_leg_I_ms": {
+     "p50": 9.5,
+     "p90": 22.67,
+     "p99": 36.38,
+     "mean": 12.52,
+     "max": 46.12,
+     "n": 80
+    },
+    "video_leg_P_ms": {
+     "p50": 3.97,
+     "p90": 9.6,
+     "p99": 51.06,
+     "mean": 6.62,
+     "max": 119.68,
+     "n": 4920
+    },
+    "drops": [
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0
+     }
+    ],
+    "frames_lost_total": "0/5000"
+   },
+   "engine": {
+    "runs": [
+     "native120_engine_r1",
+     "native120_engine_r2",
+     "native120_engine_r3",
+     "native120_engine_r4",
+     "native120_engine_r5"
+    ],
+    "n_runs": 5,
+    "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+    "calls_on": true,
+    "calls_valid": true,
+    "max_lag_ms": 100.0,
+    "arrival_fps": 120.0,
+    "load_avg_start": [
+     5.05,
+     4.61,
+     4.7,
+     10.73,
+     8.8
+    ],
+    "video_leg_ms": {
+     "p50": 10.02,
+     "p90": 50.01,
+     "p99": 186.93,
+     "mean": 23.46,
+     "max": 241.11,
+     "n": 5000
+    },
+    "video_leg_p50_per_run": [
+     7.76,
+     7.71,
+     9.23,
+     21.69,
+     26.99
+    ],
+    "decode_to_model_ms": {
+     "p50": 105.21,
+     "p90": 156.25,
+     "p99": 184.65,
+     "mean": 104.2,
+     "max": 303.4,
+     "n": 1377
+    },
+    "decode_to_model_parts_ms": {
+     "prep_crop_resize": {
+      "p50": 5.95,
+      "p90": 99.23,
+      "p99": 112.95,
+      "mean": 26.69,
+      "max": 156.88,
+      "n": 1377
+     },
+     "queue_wait": {
+      "p50": 55.94,
+      "p90": 100.44,
+      "p99": 117.16,
+      "mean": 54.87,
+      "max": 157.14,
+      "n": 1377
+     },
+     "detector_call": {
+      "p50": 0.0,
+      "p90": 45.57,
+      "p99": 60.97,
+      "mean": 19.2,
+      "max": 127.86,
+      "n": 1377
+     },
+     "model_excl_call_rule": {
+      "p50": 105.18,
+      "p90": 156.01,
+      "p99": 184.65,
+      "mean": 103.98,
+      "max": 303.4,
+      "n": 1377
+     },
+     "call_rule_on_flight_frames": {
+      "p50": 0.21,
+      "p90": 2.5,
+      "p99": 7.05,
+      "mean": 0.75,
+      "max": 18.36,
+      "n": 417
+     }
+    },
+    "capture_to_decision_ms": {
+     "p50": 116.82,
+     "p90": 190.34,
+     "p99": 330.64,
+     "mean": 123.24,
+     "max": 405.83,
+     "n": 1377
+    },
+    "capture_to_decision_p50_per_run": [
+     92.69,
+     99.07,
+     105.57,
+     169.7,
+     173.28
+    ],
+    "capture_to_emit_ms": null,
+    "calls_per_run": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "drops": [
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 574,
+      "processed_by_engine": 426,
+      "decisions": 333,
+      "not_processed": 574,
+      "not_processed_share": 0.574
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 590,
+      "processed_by_engine": 410,
+      "decisions": 318,
+      "not_processed": 590,
+      "not_processed_share": 0.59
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 598,
+      "processed_by_engine": 402,
+      "decisions": 305,
+      "not_processed": 598,
+      "not_processed_share": 0.598
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 194,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 391,
+      "processed_by_engine": 415,
+      "decisions": 209,
+      "not_processed": 585,
+      "not_processed_share": 0.585
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 142,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 454,
+      "processed_by_engine": 404,
+      "decisions": 212,
+      "not_processed": 596,
+      "not_processed_share": 0.596
+     }
+    ],
+    "frames_not_processed_total": "2943/5000",
+    "frames_not_processed_share": 0.5886
+   },
+   "frame_send_to_result": {
+    "what": "frame-send (capture) -> detection/decision ready (track-only or no call made)",
+    "p50": 116.82,
+    "p90": 190.34,
+    "p99": 330.64,
+    "n": 1377
+   },
+   "camera_to_result_estimate_ms": {
+    "p50": 133.5,
+    "p90": 207.0,
+    "p99": 347.3,
+    "note": "assumed capture 16.7 ms (2 frame periods at 120 fps) + measured frame-send -> result"
+   },
+   "stack_p50_ms": {
+    "capture_assumed": 16.67,
+    "encode_network_decode": 10.02,
+    "model": 105.18,
+    "call_rule": 0.21
+   }
+  },
+  "120fps_keepup": {
+   "label": "120 fps content, engine keeps up (fed 10 frames/s)",
+   "preset": "slowmo10",
+   "camera_fps": 120,
+   "capture_assumed_ms": 16.67,
+   "engine": {
+    "runs": [
+     "slowmo10_engine_r1",
+     "slowmo10_engine_r2",
+     "slowmo10_engine_r3",
+     "slowmo10_engine_r4",
+     "slowmo10_engine_r5"
+    ],
+    "n_runs": 5,
+    "backend": "onnx-coreml-gpu16",
+    "calls_on": true,
+    "calls_valid": true,
+    "max_lag_ms": null,
+    "arrival_fps": 10.0,
+    "load_avg_start": [
+     5.14,
+     5.02,
+     7.41,
+     12.74,
+     9.09
+    ],
+    "video_leg_ms": {
+     "p50": 7.86,
+     "p90": 13.7,
+     "p99": 26.56,
+     "mean": 8.98,
+     "max": 119.29,
+     "n": 5000
+    },
+    "video_leg_p50_per_run": [
+     7.28,
+     6.33,
+     9.07,
+     9.7,
+     7.66
+    ],
+    "decode_to_model_ms": {
+     "p50": 37.79,
+     "p90": 42.88,
+     "p99": 52.92,
+     "mean": 38.13,
+     "max": 83.25,
+     "n": 4990
+    },
+    "decode_to_model_parts_ms": {
+     "prep_crop_resize": {
+      "p50": 1.81,
+      "p90": 3.46,
+      "p99": 7.53,
+      "mean": 2.3,
+      "max": 25.52,
+      "n": 4990
+     },
+     "queue_wait": {
+      "p50": 1.99,
+      "p90": 3.6,
+      "p99": 9.34,
+      "mean": 2.47,
+      "max": 47.22,
+      "n": 4990
+     },
+     "detector_call": {
+      "p50": 32.55,
+      "p90": 36.2,
+      "p99": 43.11,
+      "mean": 32.61,
+      "max": 58.11,
+      "n": 4990
+     },
+     "model_excl_call_rule": {
+      "p50": 36.98,
+      "p90": 41.36,
+      "p99": 51.39,
+      "mean": 37.28,
+      "max": 80.25,
+      "n": 4990
+     },
+     "call_rule_on_flight_frames": {
+      "p50": 1.32,
+      "p90": 2.51,
+      "p99": 3.68,
+      "mean": 1.16,
+      "max": 7.67,
+      "n": 3629
+     }
+    },
+    "capture_to_decision_ms": {
+     "p50": 45.59,
+     "p90": 55.68,
+     "p99": 70.99,
+     "mean": 47.1,
+     "max": 202.54,
+     "n": 4990
+    },
+    "capture_to_decision_p50_per_run": [
+     43.51,
+     44.29,
+     50.22,
+     48.94,
+     44.75
+    ],
+    "capture_to_emit_ms": {
+     "p50": 46.04,
+     "p90": 58.07,
+     "p99": 67.27,
+     "mean": 48.33,
+     "max": 67.55,
+     "n": 55
+    },
+    "calls_per_run": [
+     11,
+     11,
+     11,
+     11,
+     11
+    ],
+    "drops": [
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 1000,
+      "decisions": 998,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 1000,
+      "decisions": 998,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 1000,
+      "decisions": 998,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 1000,
+      "decisions": 998,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     },
+     {
+      "sent": 1000,
+      "received": 1000,
+      "lost_in_transport": 0,
+      "bad_code": 0,
+      "skipped_before_prep": 0,
+      "receiver_queue_full": 0,
+      "skipped_by_engine_bound": 0,
+      "processed_by_engine": 1000,
+      "decisions": 998,
+      "not_processed": 0,
+      "not_processed_share": 0.0
+     }
+    ],
+    "frames_not_processed_total": "0/5000",
+    "frames_not_processed_share": 0.0
+   },
+   "frame_send_to_result": {
+    "what": "frame-send (capture) -> CallEvent emit",
+    "p50": 46.04,
+    "p90": 58.07,
+    "p99": 67.27,
+    "n": 55
+   },
+   "camera_to_result_estimate_ms": {
+    "p50": 62.7,
+    "p90": 74.7,
+    "p99": 83.9,
+    "note": "assumed capture 16.7 ms (2 frame periods at 120 fps) + measured frame-send -> result"
+   },
+   "stack_p50_ms": {
+    "capture_assumed": 16.67,
+    "encode_network_decode": 7.86,
+    "model": 36.98,
+    "call_rule": 1.32
+   }
+  }
+ },
+ "calls_vs_offline": {
+  "slowmo10_engine_r1": {
+   "calls": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2760
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "n_calls": 11,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 10,
+   "identical_to_file_source": false,
+   "only_webrtc": [
+    [
+     "MISS",
+     2760
+    ]
+   ],
+   "only_file": [
+    [
+     "MISS",
+     2766
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 9,
+   "flights_agree_with_offline": 9,
+   "offline_miss_calls_reproduced": 2,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2618
+    ]
+   ],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2312,
+     "agree": true
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2366,
+     "agree": true
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2417,
+     "agree": true
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2466,
+     "agree": true
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2567,
+     "agree": true
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2668,
+     "agree": true
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2722,
+     "agree": true
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": "MISS",
+     "webrtc_frame": 2760,
+     "agree": true
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": "MISS",
+     "webrtc_frame": 2819,
+     "agree": true
+    }
+   ]
+  },
+  "slowmo10_engine_r2": {
+   "calls": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2761
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "n_calls": 11,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 10,
+   "identical_to_file_source": false,
+   "only_webrtc": [
+    [
+     "MISS",
+     2761
+    ]
+   ],
+   "only_file": [
+    [
+     "MISS",
+     2766
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 9,
+   "flights_agree_with_offline": 9,
+   "offline_miss_calls_reproduced": 2,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2618
+    ]
+   ],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2312,
+     "agree": true
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2366,
+     "agree": true
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2417,
+     "agree": true
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2466,
+     "agree": true
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2567,
+     "agree": true
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2668,
+     "agree": true
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2722,
+     "agree": true
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": "MISS",
+     "webrtc_frame": 2761,
+     "agree": true
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": "MISS",
+     "webrtc_frame": 2819,
+     "agree": true
+    }
+   ]
+  },
+  "slowmo10_engine_r3": {
+   "calls": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "n_calls": 11,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 11,
+   "identical_to_file_source": true,
+   "only_webrtc": [],
+   "only_file": [],
+   "labelled_flights": 10,
+   "flights_called": 9,
+   "flights_agree_with_offline": 9,
+   "offline_miss_calls_reproduced": 2,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2618
+    ]
+   ],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2312,
+     "agree": true
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2366,
+     "agree": true
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2417,
+     "agree": true
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2466,
+     "agree": true
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2567,
+     "agree": true
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2668,
+     "agree": true
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2722,
+     "agree": true
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": "MISS",
+     "webrtc_frame": 2766,
+     "agree": true
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": "MISS",
+     "webrtc_frame": 2819,
+     "agree": true
+    }
+   ]
+  },
+  "slowmo10_engine_r4": {
+   "calls": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "n_calls": 11,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 11,
+   "identical_to_file_source": true,
+   "only_webrtc": [],
+   "only_file": [],
+   "labelled_flights": 10,
+   "flights_called": 9,
+   "flights_agree_with_offline": 9,
+   "offline_miss_calls_reproduced": 2,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2618
+    ]
+   ],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2312,
+     "agree": true
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2366,
+     "agree": true
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2417,
+     "agree": true
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2466,
+     "agree": true
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2567,
+     "agree": true
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2668,
+     "agree": true
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2722,
+     "agree": true
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": "MISS",
+     "webrtc_frame": 2766,
+     "agree": true
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": "MISS",
+     "webrtc_frame": 2819,
+     "agree": true
+    }
+   ]
+  },
+  "slowmo10_engine_r5": {
+   "calls": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2760
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "n_calls": 11,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 10,
+   "identical_to_file_source": false,
+   "only_webrtc": [
+    [
+     "MISS",
+     2760
+    ]
+   ],
+   "only_file": [
+    [
+     "MISS",
+     2766
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 9,
+   "flights_agree_with_offline": 9,
+   "offline_miss_calls_reproduced": 2,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2618
+    ]
+   ],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2312,
+     "agree": true
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2366,
+     "agree": true
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2417,
+     "agree": true
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2466,
+     "agree": true
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2567,
+     "agree": true
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2668,
+     "agree": true
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": "BOUNCE",
+     "webrtc_frame": 2722,
+     "agree": true
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": "MISS",
+     "webrtc_frame": 2760,
+     "agree": true
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": "MISS",
+     "webrtc_frame": 2819,
+     "agree": true
+    }
+   ]
+  },
+  "native120_engine_r1": {
+   "calls": [],
+   "n_calls": 0,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 0,
+   "identical_to_file_source": false,
+   "only_webrtc": [],
+   "only_file": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 0,
+   "flights_agree_with_offline": 0,
+   "offline_miss_calls_reproduced": 0,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    }
+   ]
+  },
+  "native120_engine_r2": {
+   "calls": [],
+   "n_calls": 0,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 0,
+   "identical_to_file_source": false,
+   "only_webrtc": [],
+   "only_file": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 0,
+   "flights_agree_with_offline": 0,
+   "offline_miss_calls_reproduced": 0,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    }
+   ]
+  },
+  "native120_engine_r3": {
+   "calls": [],
+   "n_calls": 0,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 0,
+   "identical_to_file_source": false,
+   "only_webrtc": [],
+   "only_file": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 0,
+   "flights_agree_with_offline": 0,
+   "offline_miss_calls_reproduced": 0,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    }
+   ]
+  },
+  "native120_engine_r4": {
+   "calls": [],
+   "n_calls": 0,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 0,
+   "identical_to_file_source": false,
+   "only_webrtc": [],
+   "only_file": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 0,
+   "flights_agree_with_offline": 0,
+   "offline_miss_calls_reproduced": 0,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    }
+   ]
+  },
+  "native120_engine_r5": {
+   "calls": [],
+   "n_calls": 0,
+   "file_source_calls": 11,
+   "same_as_file_source_within_2_frames": 0,
+   "identical_to_file_source": false,
+   "only_webrtc": [],
+   "only_file": [
+    [
+     "BOUNCE",
+     2258
+    ],
+    [
+     "BOUNCE",
+     2312
+    ],
+    [
+     "BOUNCE",
+     2366
+    ],
+    [
+     "BOUNCE",
+     2417
+    ],
+    [
+     "BOUNCE",
+     2466
+    ],
+    [
+     "BOUNCE",
+     2567
+    ],
+    [
+     "BOUNCE",
+     2618
+    ],
+    [
+     "BOUNCE",
+     2668
+    ],
+    [
+     "BOUNCE",
+     2722
+    ],
+    [
+     "MISS",
+     2766
+    ],
+    [
+     "MISS",
+     2819
+    ]
+   ],
+   "labelled_flights": 10,
+   "flights_called": 0,
+   "flights_agree_with_offline": 0,
+   "offline_miss_calls_reproduced": 0,
+   "offline_miss_calls": 2,
+   "calls_outside_labelled_flights": [],
+   "per_flight": [
+    {
+     "f_net": 2296,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2304,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2358,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2363,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2402,
+     "label": "MISS",
+     "offline": "BOUNCE",
+     "offline_frame": 2420,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2457,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2464,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2502,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2507,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2559,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2565,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2660,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2665,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2706,
+     "label": "BOUNCE",
+     "offline": "BOUNCE",
+     "offline_frame": 2714,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2760,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2759,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    },
+    {
+     "f_net": 2819,
+     "label": "MISS",
+     "offline": "MISS",
+     "offline_frame": 2809,
+     "webrtc": null,
+     "webrtc_frame": null,
+     "agree": false
+    }
+   ]
+  }
+ },
+ "calls_vs_offline_summary": {
+  "runs": 10,
+  "identical_to_file_source": {
+   "slowmo10_engine_r1": false,
+   "slowmo10_engine_r2": false,
+   "slowmo10_engine_r3": true,
+   "slowmo10_engine_r4": true,
+   "slowmo10_engine_r5": false,
+   "native120_engine_r1": false,
+   "native120_engine_r2": false,
+   "native120_engine_r3": false,
+   "native120_engine_r4": false,
+   "native120_engine_r5": false
+  },
+  "flights_agree_with_offline": {
+   "slowmo10_engine_r1": "9/10",
+   "slowmo10_engine_r2": "9/10",
+   "slowmo10_engine_r3": "9/10",
+   "slowmo10_engine_r4": "9/10",
+   "slowmo10_engine_r5": "9/10",
+   "native120_engine_r1": "0/10",
+   "native120_engine_r2": "0/10",
+   "native120_engine_r3": "0/10",
+   "native120_engine_r4": "0/10",
+   "native120_engine_r5": "0/10"
+  },
+  "offline_miss_calls_reproduced": {
+   "slowmo10_engine_r1": "2/2",
+   "slowmo10_engine_r2": "2/2",
+   "slowmo10_engine_r3": "2/2",
+   "slowmo10_engine_r4": "2/2",
+   "slowmo10_engine_r5": "2/2",
+   "native120_engine_r1": "0/2",
+   "native120_engine_r2": "0/2",
+   "native120_engine_r3": "0/2",
+   "native120_engine_r4": "0/2",
+   "native120_engine_r5": "0/2"
+  },
+  "offline_flights": [
+   {
+    "f_net": 2296,
+    "dir": 1,
+    "label": "BOUNCE",
+    "t0": 2276,
+    "t_ref": 2310,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2304,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.000 vs tau 0.8854"
+   },
+   {
+    "f_net": 2358,
+    "dir": -1,
+    "label": "BOUNCE",
+    "t0": 2337,
+    "t_ref": 2369,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2363,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.000 vs tau 0.8854"
+   },
+   {
+    "f_net": 2402,
+    "dir": 1,
+    "label": "MISS",
+    "t0": 2381,
+    "t_ref": 2426,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2420,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.089 vs tau 0.8854"
+   },
+   {
+    "f_net": 2457,
+    "dir": -1,
+    "label": "BOUNCE",
+    "t0": 2437,
+    "t_ref": 2470,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2464,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.193 vs tau 0.8854"
+   },
+   {
+    "f_net": 2502,
+    "dir": 1,
+    "label": "BOUNCE",
+    "t0": 2480,
+    "t_ref": 2513,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2507,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.000 vs tau 0.8854"
+   },
+   {
+    "f_net": 2559,
+    "dir": -1,
+    "label": "BOUNCE",
+    "t0": 2540,
+    "t_ref": 2571,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2565,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.063 vs tau 0.8854"
+   },
+   {
+    "f_net": 2660,
+    "dir": -1,
+    "label": "BOUNCE",
+    "t0": 2639,
+    "t_ref": 2671,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2665,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.000 vs tau 0.8854"
+   },
+   {
+    "f_net": 2706,
+    "dir": 1,
+    "label": "BOUNCE",
+    "t0": 2684,
+    "t_ref": 2720,
+    "offline_call": "BOUNCE",
+    "offline_frame": 2714,
+    "offline_rule": "snapshot at T_ref - 50 ms, P(miss) 0.000 vs tau 0.8854"
+   },
+   {
+    "f_net": 2760,
+    "dir": -1,
+    "label": "MISS",
+    "t0": 2744,
+    "t_ref": 2774,
+    "offline_call": "MISS",
+    "offline_frame": 2759,
+    "offline_rule": "online rule, first call"
+   },
+   {
+    "f_net": 2819,
+    "dir": 1,
+    "label": "MISS",
+    "t0": 2782,
+    "t_ref": 2858,
+    "offline_call": "MISS",
+    "offline_frame": 2809,
+    "offline_rule": "online rule, first call"
+   }
+  ],
+  "file_source_reference": "results/engine/demo_run.json"
+ },
+ "backend_probes": {
+  "run_20261003T221413Z.jsonl:dec30_engine": {
+   "backend": "onnx-coreml-gpu16",
+   "fps": 30.0,
+   "capture_to_decision_ms": {
+    "p50": 39.38,
+    "p90": 44.92,
+    "p99": 131.76,
+    "mean": 42.77,
+    "max": 151.42,
+    "n": 248
+   },
+   "drops": {
+    "sent": 250,
+    "received": 250,
+    "lost_in_transport": 0,
+    "bad_code": 0,
+    "skipped_before_prep": 0,
+    "receiver_queue_full": 0,
+    "skipped_by_engine_bound": 0,
+    "processed_by_engine": 250,
+    "decisions": 248,
+    "not_processed": 0,
+    "not_processed_share": 0.0
+   }
+  },
+  "run_20261003T221413Z.jsonl:dec60_engine": {
+   "backend": "onnx-coreml-gpu16",
+   "fps": 60.0,
+   "capture_to_decision_ms": {
+    "p50": 82.65,
+    "p90": 123.56,
+    "p99": 134.21,
+    "mean": 82.4,
+    "max": 140.77,
+    "n": 282
+   },
+   "drops": {
+    "sent": 500,
+    "received": 500,
+    "lost_in_transport": 0,
+    "bad_code": 0,
+    "skipped_before_prep": 0,
+    "receiver_queue_full": 0,
+    "skipped_by_engine_bound": 160,
+    "processed_by_engine": 340,
+    "decisions": 282,
+    "not_processed": 160,
+    "not_processed_share": 0.32
+   }
+  },
+  "run_20261003T221450Z.jsonl:dec30_engine": {
+   "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+   "fps": 30.0,
+   "capture_to_decision_ms": {
+    "p50": 45.34,
+    "p90": 51.78,
+    "p99": 124.12,
+    "mean": 47.71,
+    "max": 145.28,
+    "n": 248
+   },
+   "drops": {
+    "sent": 250,
+    "received": 250,
+    "lost_in_transport": 0,
+    "bad_code": 0,
+    "skipped_before_prep": 0,
+    "receiver_queue_full": 0,
+    "skipped_by_engine_bound": 0,
+    "processed_by_engine": 250,
+    "decisions": 248,
+    "not_processed": 0,
+    "not_processed_share": 0.0
+   }
+  },
+  "run_20261003T221450Z.jsonl:dec60_engine": {
+   "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+   "fps": 60.0,
+   "capture_to_decision_ms": {
+    "p50": 80.49,
+    "p90": 125.46,
+    "p99": 145.09,
+    "mean": 83.12,
+    "max": 157.24,
+    "n": 400
+   },
+   "drops": {
+    "sent": 500,
+    "received": 500,
+    "lost_in_transport": 0,
+    "bad_code": 0,
+    "skipped_before_prep": 0,
+    "receiver_queue_full": 0,
+    "skipped_by_engine_bound": 72,
+    "processed_by_engine": 428,
+    "decisions": 400,
+    "not_processed": 72,
+    "not_processed_share": 0.144
+   }
+  }
+ },
+ "headline": {
+  "setting": "120fps_keepup",
+  "measured_frame_send_to_emit_ms": {
+   "p50": 46.04,
+   "p90": 58.07,
+   "p99": 67.27,
+   "n": 55
+  },
+  "camera_to_call_estimate_ms": {
+   "p50": 62.7,
+   "p90": 74.7,
+   "p99": 83.9,
+   "note": "assumed capture 16.7 ms (2 frame periods at 120 fps) + measured frame-send -> result"
+  },
+  "sentence": "our camera->WebRTC->CV->call pipeline runs in 63 ms p50 / 75 ms p90 on our own stream; this is our pipeline, not a match feed",
+  "footnote": "46 / 58 ms measured from frame capture by our virtual camera to the CallEvent (55 calls, 5 runs, loopback, engine fed 10 frames/s so it keeps up) plus 16.7 ms assumed 120 fps camera capture (2 frame periods)."
+ },
+ "latency_sweep": {
+  "source": "results/tier0/latency_sweep.json",
+  "doc": "research/v2/feed_latency/LATENCY_SWEEP.md",
+  "model": "call = bounce - CV lead + V + 20 ms inference; + venue->London network + 2 ms gateway + the venue's order delay (1 s). V = 0 is the revised primary. Under the tournament reading t_reprice - t_bounce = R + stamp lag (unmeasured), so the curve shifts 1:1 with the stamp lag: video(V, lag L) = video(V - (L - 2), lag 2).",
+  "reading": "tournament (headline), stamp lag 2.0 s; $/day interpolated on the 0.05 s grid",
+  "measured": {
+   "cv_decoded_to_call_s": 0.0392,
+   "cv_beyond_modelled_20ms_s": 0.0192,
+   "webrtc_leg_s": 0.0077,
+   "capture_assumed_s": 0.0167,
+   "from_runs": [
+    "slowmo10_engine_r1",
+    "slowmo10_engine_r2",
+    "slowmo10_engine_r3",
+    "slowmo10_engine_r4",
+    "slowmo10_engine_r5"
+   ],
+   "n_calls": 55
+  },
+  "rows": [
+   {
+    "source": "our own 120 fps camera, our WebRTC on one LAN (no relay)",
+    "V_source_s": 0.024,
+    "basis": "capture 16.7 ms assumed + WebRTC leg 7.7 ms measured (loopback)",
+    "V_effective_s": 0.044,
+    "sweep_at_V_source": {
+     "IS": {
+      "usd_per_day": 74.2,
+      "c_per_share": 1.01
+     },
+     "burned_OOS": {
+      "usd_per_day": 41.2,
+      "c_per_share": 0.48
+     }
+    },
+    "sweep_at_V_effective": {
+     "IS": {
+      "usd_per_day": 62.8,
+      "c_per_share": 0.94
+     },
+     "burned_OOS": {
+      "usd_per_day": 37.1,
+      "c_per_share": 0.4
+     }
+    }
+   },
+   {
+    "source": "our own camera through a public relay",
+    "V_source_s": 0.4,
+    "basis": "about 0.4 s g2g via a public Broadcast Box server (SUB_SECOND_ROUTES.md S2; others' setup, camera included)",
+    "V_effective_s": 0.419,
+    "sweep_at_V_source": {
+     "IS": {
+      "usd_per_day": 31.0,
+      "c_per_share": 0.64
+     },
+     "burned_OOS": {
+      "usd_per_day": 16.9,
+      "c_per_share": 0.04
+     }
+    },
+    "sweep_at_V_effective": {
+     "IS": {
+      "usd_per_day": 30.6,
+      "c_per_share": 0.64
+     },
+     "burned_OOS": {
+      "usd_per_day": 16.2,
+      "c_per_share": 0.01
+     }
+    }
+   },
+   {
+    "source": "0.5 s row: licensed low-latency video at the best vendor claim",
+    "V_source_s": 0.5,
+    "basis": "LATENCY_SWEEP.md row V = 0.5",
+    "V_effective_s": 0.519,
+    "sweep_at_V_source": {
+     "IS": {
+      "usd_per_day": 28.4,
+      "c_per_share": 0.61
+     },
+     "burned_OOS": {
+      "usd_per_day": 15.2,
+      "c_per_share": -0.02
+     }
+    },
+    "sweep_at_V_effective": {
+     "IS": {
+      "usd_per_day": 28.4,
+      "c_per_share": 0.62
+     },
+     "burned_OOS": {
+      "usd_per_day": 14.0,
+      "c_per_share": -0.03
+     }
+    }
+   },
+   {
+    "source": "1 s row: licensed video / satellite TV low end",
+    "V_source_s": 1.0,
+    "basis": "LATENCY_SWEEP.md row V = 1",
+    "V_effective_s": 1.019,
+    "sweep_at_V_source": {
+     "IS": {
+      "usd_per_day": 14.8,
+      "c_per_share": 0.4
+     },
+     "burned_OOS": {
+      "usd_per_day": 4.3,
+      "c_per_share": -0.38
+     }
+    },
+    "sweep_at_V_effective": {
+     "IS": {
+      "usd_per_day": 10.1,
+      "c_per_share": 0.2
+     },
+     "burned_OOS": {
+      "usd_per_day": -1.4,
+      "c_per_share": -0.64
+     }
+    }
+   }
+  ],
+  "breakeven_V_s": {
+   "IS": 1.089,
+   "OOS": 1.014
+  },
+  "breakeven_source_delay_with_our_cv_s": {
+   "IS": 1.07,
+   "OOS": 0.995
+  },
+  "caveats": [
+   "The sweep's own120 CV makes calls at 120 fps. Our laptop engine keeps up only at 30 fps (track-only) or in slow motion; at 120 fps real time it did not process 2943/5000 frames and made no calls. A host that sustains 120 fps is needed (the HiPerGator L4 sustained 194 fps in results/engine/vision_bench_gpu.json).",
+   "We have no camera at any venue: V for a real match is set by whoever owns the camera, not by this pipeline. The first row is a reference point, not an available route."
+  ]
+ }
+}

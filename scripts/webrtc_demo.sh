@@ -24,7 +24,11 @@
 # Env: MODES (default "transport engine"), ENCODER (x264 | vt), BITRATE (12M), SLOWMO_BITRATE (4M = the
 #      30 fps preset's bits per frame at 10 fps), BACKEND (onnx-coreml-gpu16,onnx-coreml-ane16),
 #      BACKEND_SLOWMO (onnx-coreml-gpu16), MAX_FRAMES (all 1000), MAX_LAG_MS (100), STOCK_JITTER=1 (aiortc's
-#      own next-frame completion, for comparison), WORK (scratch dir for logs; default $TMPDIR/courtside_webrtc).
+#      own next-frame completion, for comparison), WORK (scratch dir for logs; default $TMPDIR/courtside_webrtc),
+#      REPS (default 1: repeat the whole preset list REPS times, interleaved; labels get _r<n>),
+#      SAVE_FRAMES=1 (rep 1 of each slowmo run saves the frames fed to the engine for webrtc_render_demo.py),
+#      SIZE (WxH of the sent picture; default the clip's 1920x1080; label suffix _<H>p),
+#      BACKEND_30 / BACKEND_60 / BACKEND_120 (real-time engine backend per preset; default BACKEND).
 # Output: results/webrtc/run_<ts>.jsonl (every run's meta, frame, call and summary rows, tagged by run label)
 #         and results/webrtc/summary_<ts>.json (+ a table on stdout), via scripts/webrtc_summary.py.
 set -euo pipefail
@@ -41,6 +45,8 @@ SLOWMO_BITRATE="${SLOWMO_BITRATE:-4M}"
 BACKEND="${BACKEND:-onnx-coreml-gpu16,onnx-coreml-ane16}"
 BACKEND_SLOWMO="${BACKEND_SLOWMO:-onnx-coreml-gpu16}"
 MAX_LAG_MS="${MAX_LAG_MS:-100}"
+REPS="${REPS:-1}"
+SIZE="${SIZE:-}"
 PRESETS=("$@")
 [ ${#PRESETS[@]} -eq 0 ] && PRESETS=(slowmo10 dec30 dec60 native120)
 mkdir -p "$WORK" "$OUT"
@@ -70,7 +76,7 @@ run_one() {   # label step fps mode bitrate backend [receiver args...]
       --out "$WORK/$label.run.jsonl" ${STOCK_JITTER:+--stock-jitter} "$@" > "$WORK/$label.recv.log" 2>&1 &
   RECV_PID=$!
   "$PY" -m engine.webrtc.sender --whip-url "http://127.0.0.1:8889/$path/whip" --step "$step" --fps "$fps" \
-      --encoder "$ENCODER" --bitrate "$rate" ${MAX_FRAMES:+--max-frames "$MAX_FRAMES"} \
+      --encoder "$ENCODER" --bitrate "$rate" ${MAX_FRAMES:+--max-frames "$MAX_FRAMES"} ${SIZE:+--size "$SIZE"} \
       --log "$WORK/$label.send.jsonl" --ready-file "$WORK/$label.ready" --ffmpeg-log "$WORK/$label.ffmpeg.log" \
       > "$WORK/$label.send.log" 2>&1 || echo "sender failed (see $WORK/$label.send.log)"
   wait "$RECV_PID" || echo "receiver failed (see $WORK/$label.recv.log)"
@@ -80,20 +86,27 @@ run_one() {   # label step fps mode bitrate backend [receiver args...]
       "$WORK/$label.run.jsonl" >> "$OUT/run_${TS}.jsonl"
 }
 
-SFX="${STOCK_JITTER:+_stockjb}"
-[ "$ENCODER" != x264 ] && SFX="${SFX}_$ENCODER"
-for p in "${PRESETS[@]}"; do
-  case "$p" in
-    native120) step=1; fps=120 ;;
-    dec60)     step=2; fps=60 ;;
-    dec30)     step=4; fps=30 ;;
-    slowmo*)   step=1; fps="${p#slowmo}"
-               run_one "${p}_engine$SFX" 1 "$fps" engine "$SLOWMO_BITRATE" "$BACKEND_SLOWMO"; continue ;;
-    *) echo "unknown preset $p"; continue ;;
-  esac
-  for m in $MODES; do
-    if [ "$m" = engine ]; then run_one "${p}_engine$SFX" "$step" "$fps" engine "$BITRATE" "$BACKEND" --max-lag-ms "$MAX_LAG_MS"
-    else run_one "${p}_transport$SFX" "$step" "$fps" transport "$BITRATE" ""; fi
+SFX0="${STOCK_JITTER:+_stockjb}"
+[ "$ENCODER" != x264 ] && SFX0="${SFX0}_$ENCODER"
+[ -n "$SIZE" ] && SFX0="${SFX0}_${SIZE#*x}p"
+for rep in $(seq 1 "$REPS"); do
+  SFX="$SFX0"
+  [ "$REPS" -gt 1 ] && SFX="${SFX0}_r$rep"
+  for p in "${PRESETS[@]}"; do
+    case "$p" in
+      native120) step=1; fps=120; be_rt="${BACKEND_120:-$BACKEND}" ;;
+      dec60)     step=2; fps=60;  be_rt="${BACKEND_60:-$BACKEND}" ;;
+      dec30)     step=4; fps=30;  be_rt="${BACKEND_30:-$BACKEND}" ;;
+      slowmo*)   step=1; fps="${p#slowmo}"
+                 save=()
+                 [ -n "${SAVE_FRAMES:-}" ] && [ "$rep" = 1 ] && save=(--save-frames "$WORK/${p}_engine$SFX.frames.u8")
+                 run_one "${p}_engine$SFX" 1 "$fps" engine "$SLOWMO_BITRATE" "$BACKEND_SLOWMO" ${save[@]+"${save[@]}"}; continue ;;
+      *) echo "unknown preset $p"; continue ;;
+    esac
+    for m in $MODES; do
+      if [ "$m" = engine ]; then run_one "${p}_engine$SFX" "$step" "$fps" engine "$BITRATE" "$be_rt" --max-lag-ms "$MAX_LAG_MS"
+      else run_one "${p}_transport$SFX" "$step" "$fps" transport "$BITRATE" ""; fi
+    done
   done
 done
 

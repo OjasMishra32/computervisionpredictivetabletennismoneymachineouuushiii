@@ -5,7 +5,10 @@ Paper only. This measures **our** pipeline on **our** stream: the held-out OpenT
 through a MediaMTX on 127.0.0.1 and read back over WebRTC. No camera, microphone or third-party stream was used.
 It is **not** a Polymarket match feed. For the legal sources of match video, see `research/home_stream/SUB_SECOND_ROUTES.md`.
 
-## Bottom line (2026-10-03, MacBook M4, shared with other jobs)
+**Repeated measurements (5 runs per setting), the presentation sentence, the figure, the demo video and the
+latency-sweep link are in [`RESULTS.md`](RESULTS.md).** This README documents the pipeline and the first runs.
+
+## Bottom line of the first runs (2026-10-03, MacBook M4, shared with other jobs)
 
 - **Capture to call: about 41 ms**, over loopback WebRTC, when the CV engine keeps up. Run `slowmo10_engine`
   streamed all 1000 clip frames at 10 frames/s of wall time, so the laptop engine was never behind. The 11
@@ -81,6 +84,10 @@ scripts/webrtc_demo.sh slowmo10             # just the valid capture-to-call run
 MODES=transport scripts/webrtc_demo.sh native120
 STOCK_JITTER=1 MODES=transport scripts/webrtc_demo.sh dec30      # stock aiortc frame completion
 ENCODER=vt MODES=transport scripts/webrtc_demo.sh dec30          # VideoToolbox instead of x264
+# the 5-run campaign of RESULTS.md (~20 min), then its tables, figure and video:
+REPS=5 SAVE_FRAMES=1 BACKEND_30=onnx-coreml-gpu16 scripts/webrtc_demo.sh dec30 dec60 native120 slowmo10
+python scripts/webrtc_latency.py results/webrtc/run_<ts>.jsonl --md /tmp/tables.md
+python scripts/webrtc_render_demo.py results/webrtc/run_<ts>.jsonl --run slowmo10_engine_r1
 ```
 
 Output: `results/webrtc/run_<ts>.jsonl` holds the meta, per-frame, call and summary rows of every run, tagged
