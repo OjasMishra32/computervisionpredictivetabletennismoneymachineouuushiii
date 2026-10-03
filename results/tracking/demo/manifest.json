@@ -1,0 +1,69 @@
+{
+ "note": "presentation only; frozen model, audited test labels; see render_demo.py",
+ "tau_online": 0.9799,
+ "tau_snapshot": 0.8854,
+ "clips": [
+  {
+   "file": "01_miss_test_2_f2819_lead408ms.mp4",
+   "poster": "01_miss_test_2_f2819_lead408ms.png",
+   "video": "test_2",
+   "f_net": 2819,
+   "label": "MISS",
+   "actual": "MISS (out)",
+   "call": "MISS",
+   "call_lead_ms": 408.3,
+   "call_rule": "online (tau_online, 3 frames)",
+   "p_miss_at_50ms": 0.9977,
+   "duration_s": 7.88,
+   "size_mb": 1.76
+  },
+  {
+   "file": "02_miss_test_4_f5750_lead83ms.mp4",
+   "poster": "02_miss_test_4_f5750_lead83ms.png",
+   "video": "test_4",
+   "f_net": 5750,
+   "label": "MISS",
+   "actual": "MISS (out)",
+   "call": "MISS",
+   "call_lead_ms": 83.3,
+   "call_rule": "online (tau_online, 3 frames)",
+   "p_miss_at_50ms": 0.9896,
+   "duration_s": 7.52,
+   "size_mb": 1.48
+  },
+  {
+   "file": "03_miss_test_6_f1484_lead25ms.mp4",
+   "poster": "03_miss_test_6_f1484_lead25ms.png",
+   "video": "test_6",
+   "f_net": 1484,
+   "label": "MISS",
+   "actual": "MISS (out)",
+   "call": "MISS",
+   "call_lead_ms": 25.0,
+   "call_rule": "online (tau_online, 3 frames)",
+   "p_miss_at_50ms": 0.9726,
+   "duration_s": 7.48,
+   "size_mb": 1.46
+  },
+  {
+   "file": "04_bounce_test_6_f1299_at50ms.mp4",
+   "poster": "04_bounce_test_6_f1299_at50ms.png",
+   "video": "test_6",
+   "f_net": 1299,
+   "label": "BOUNCE",
+   "actual": "TABLE BOUNCE",
+   "call": "BOUNCE",
+   "call_lead_ms": 50.0,
+   "call_rule": "snapshot at -50 ms (P(miss) < tau_snapshot)",
+   "p_miss_at_50ms": 0.018,
+   "duration_s": 7.6,
+   "size_mb": 1.55
+  }
+ ],
+ "supercut": {
+  "file": "supercut.mp4",
+  "poster": "supercut.png",
+  "duration_s": 15.58,
+  "size_mb": 3.21
+ }
+}

@@ -36,6 +36,7 @@ cd $ROOT/src/tracking                         # 6. POST-HOC (after step 5), CPU,
 python spotcheck.py --audit-test              #    picture of the test flights called MISS at 50 ms
 python audit_labels.py                        #    unannotated-bounce audit, frozen model re-scored
 python summarize.py && python plots.py        #    summary.json; redraw precision_vs_lead.png from saved curves
+cd $ROOT/hpg && sbatch track_demo.sbatch      # 7. presentation demo videos -> results/tracking/demo/ (CPU, ~2 min)
 ```
 
 Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. It was run once.
@@ -52,6 +53,7 @@ Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. I
 | `flights.py` | one flight per shot (anchored at its `net` event); label BOUNCE / MISS(out, net); reference time T_ref; flight start t0 |
 | `early_call.py` | prefix features (robust quadratic arc in table-normalised image coordinates, extrapolated to the table levels, net and end line), models, LOGO CV, threshold, test evaluation |
 | `plots.py`, `spotcheck.py`, `extract_frames.py` | figures |
+| `render_demo.py` | presentation demo MP4s and posters (`results/tracking/demo/`, see below) |
 | `audit_labels.py` | post-hoc: finds test flights labelled MISS whose bounce is missing from the markup, and re-scores the frozen model on corrected labels |
 | `summarize.py` | writes `results/tracking/summary.json` |
 
@@ -82,3 +84,24 @@ Step 5 appends a line to `results/tracking/test_peeks.log` every time it runs. I
   early. Test recall at 50 ms is 7%. The median lead on the 8 called test misses is 25 ms (p10 17 ms,
   p90 210 ms). Train OOF: recall 30% at 50 ms, median lead 83 ms.
 - The lead grows with how far out the ball lands. It does not grow with ball speed. See `summary.json`.
+
+## Demo videos (`results/tracking/demo/`, presentation only)
+
+`hpg/track_demo.sbatch` runs `render_demo.py`. It refits the frozen model exactly as the final evaluation did,
+asserts that it reproduces `test_flights.csv` (the P(miss) at 50 ms and the online first-call leads), and then
+renders H.264 clips at 1280x720 and 60 fps. Each clip plays in real time, then replays the last ~0.6 s before
+contact at 0.25x, holding on the call frame. A `supercut.mp4` and a poster PNG per video are also written;
+`manifest.json` lists the clips.
+
+- The clips are picked automatically from the post-hoc audited test labels, using only flights the audit
+  left unchanged. The 3 MISS clips are the 3 with the longest online first-call lead. The BOUNCE clip is the
+  deepest-landing bounce that the model actually judged (the horizon gate is open at −50 ms) with P(miss) < 0.2.
+- For a MISS, the status box switches to "MISS CALLED −NN ms" at the frame where the online rule fires
+  (τ_online, 3 consecutive frames). This is the rule a live trader would use, and it is stricter than the
+  snapshot rule behind the H3 verdict. For a BOUNCE, the box switches to "BOUNCE −50 ms" at the snapshot
+  decision frame. The P(miss) bar shows the evaluated score, which is 0 while the horizon gate is closed.
+  The white tick on the bar marks τ.
+- The clips show the tracker output unedited. Where the ball leaves the frame (the test_4 out ball goes
+  over the top edge), the trail stops.
+- Only two test misses are called 50 ms or more ahead under the online rule (408 ms and 83 ms). The third
+  MISS clip is called 25 ms ahead, although at −50 ms its snapshot P(miss) is already 0.97.
