@@ -266,7 +266,7 @@ DEMO_LEADS = [c["call_lead_ms"] for c in DEMO["clips"] if c["label"] == "MISS"]
 DEMO_LEADS_TXT = ", ".join(f"{MINUS}{x:.0f}" for x in DEMO_LEADS) + " ms"
 assert DEMO_LEADS_TXT == f"{MINUS}408, {MINUS}83, {MINUS}25 ms"
 assert DEMO["note"].startswith("presentation only")
-need(NOTE, "11/11 correct", "±2.4 cm landing error at 100 ms")
+need(NOTE, "11 of 11 calls correct", "±2.4 cm at 100 ms")
 
 # ---- replay video on slide 1: a real tape beside a simulated shot ----
 TAPE = VIZ["tape"]
@@ -294,7 +294,7 @@ H2_OOS = SUMMARY["oos"]["h2"]["lo0.85_hi0.97"]
 # ---- markdown-only numbers, each checked against its source ----
 need(NOTE, "−1.2 s (reprices before the official stamp)", "n = 482", "+27.5 s / +29.1 s / +43.3 s",
      "0 of 295 changes beat the book by > 1.3 s", "100–300 ms *before the bounce*",
-     "6.1× Polymarket's in-play volume", "hold every marketable order for 1 s (3 s before May 2026)",
+     "6.1× its in-play volume", "hold every marketable order for 1 s (3 s before May 2026)",
      "fair value travels $4.20 per share")
 need(LAT, "median 1.2 s before the official point timestamp", "28.2 s behind the book", "30.0 s behind the book",
      "may sit 1-3 s after the ball actually lands", "reacting about 0-2 s after the real point end",
@@ -1219,7 +1219,7 @@ What is left held on the burned window only at the fast tier's own fills, under 
 9. "Kalshi is 6x bigger; why not trade there?" Kalshi's taker fee is 1.75¢ at p = 0.5, and the hedged laggard trade nets +0.06¢ [−1.17, 1.48] in today's regime (research/v2/kalshi/RESULTS.md).
 10. "Oct OOS fast-tier P&L to resolution?" {signed(WF_OCT['net_res_c'])}¢ over 3 days ({WF_OCT['n_matches']} matches); the 30 s markout was {signed(WF_OCT['net30_c'])}¢.
 Known source inconsistencies (outside the deck): docs/NOTE.md section 2 and DEVIATIONS D8 still give the forward start as 13:00 UTC; HYPOTHESIS_V2.md A1.6 moved it to 14:00 (the deck uses 14:00). HYPOTHESIS.md says "written ~10:15 UTC" while DEVIATIONS dates commit 7232986 at 09:50 UTC: cite the hash only, and check it on GitHub before the talk. results/summary.json "v2" still holds the pre-fix onset numbers (Sharpe 16.8); the deck uses results/v2/causal.json.]
-[Sources: HYPOTHESIS.md (commit 7232986; H1–H4); DEVIATIONS.md D3, D5 (H5, H6 after in-sample); results/oos_peeks.log ({len(PEEKS)} looks: v1 10:42 UTC, v2 13:24, v2-causal 13:53); DEVIATIONS.md D9 and HYPOTHESIS_V2.md A1 (81%); docs/NOTE.md Table 1 and sections 4 and 5; research/v2/livefill/RESULTS.md (36% within 60 s); research/v2/crossmarket/RESULTS.md (sniping +0.93¢ [−2.8, 4.7], $472 over six months; leaning maker ~$2.1k per 30 days); docs/DEVPOST.md Challenges.]
+[Sources: HYPOTHESIS.md (commit 7232986; H1–H4); DEVIATIONS.md D3, D5 (H5, H6 after in-sample); results/oos_peeks.log ({len(PEEKS)} looks: v1 10:42 UTC, v2 13:24, v2-causal 13:53); DEVIATIONS.md D9 and HYPOTHESIS_V2.md A1 (81%); docs/NOTE.md Table 1 and sections 4 and 5; research/v2/livefill/RESULTS.md (35% within 60 s); research/v2/crossmarket/RESULTS.md (sniping +0.93¢ [−2.8, 4.7], $472 over six months; leaning maker ~$2.1k per 30 days); docs/DEVPOST.md Challenges.]
 """)
 
 
