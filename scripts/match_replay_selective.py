@@ -1,0 +1,630 @@
+#!/usr/bin/env python
+"""Match replay, selective variant: the all-points replay of scripts/match_replay.py, trading a point only if
+its EX-ANTE Markov fair-value swing is >= T.
+
+    EXPLORATORY, added after seeing the all-points replay; not pre-registered; one day, 9 matches; backtest
+    replay on real recorded book; assumed feed latency; paper only.
+
+Why: the multi-month latency sweep (src/tier0.py) trades only historical jumps >= 4c, a set selected on the
+realised move. The all-points replay (research/replay/RESULTS.md) calls every official point and loses at every
+feed delay. A live trader who knows the score can compute, before a point is played, how far fair value moves
+between "A wins it" and "B wins it" (src/markov.py, calibrated to the pre-point price as engine/fair/value.py
+does). This script asks whether trading only the points whose ex-ante swing is large changes the replay.
+
+Everything per point is scripts/match_replay.py, imported and unchanged (book replay, recorder-outage rule D1,
+CV lead draws, timing, limit = reference ask + 1c, 100-share net cap per match, fill walk, fee, +30 s mark,
+hold to result, beat-the-book test, statistics, match-clustered bootstrap). The only addition is a filter in
+front of it: points whose ex-ante swing is < T are not called at all (they are removed before the replay, so
+they neither trade nor use the net cap). The per-point random draws are the replay's own (drawn for all 994
+points in the same order, then subset), so every T is a paired comparison with the all-points replay.
+
+    .venv/bin/python scripts/match_replay_selective.py --cache /path/outside/repo.pkl
+    .venv/bin/python scripts/match_replay_selective.py --doc-only      # redraw figure + doc from selective.json
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from engine.fair.value import MatchFair, _serve_pair  # noqa: E402
+from scripts import match_replay as MR  # noqa: E402  (also puts research/v2/latency on the path)
+from src import tier0  # noqa: E402
+from src.markov import TOUR_SERVE, Format, State  # noqa: E402
+
+LABEL = ("EXPLORATORY, added after seeing the all-points replay; not pre-registered; one day, 9 matches; "
+         "backtest replay on real recorded book; assumed feed latency; paper only")
+OUT = ROOT / "results" / "replay" / "selective"
+DOC = ROOT / "research" / "replay" / "SELECTIVE.md"
+
+# ---- DECLARED BEFORE RUNNING (commit of this file precedes the first run; see SELECTIVE.md) -------------------
+THRESHOLDS = (0.02, 0.04, 0.06)   # ex-ante swing threshold T (probability units); 0.04 = reference (src/tier0.py
+#                                   JUMP_MIN, the sweep's >= 4c jump detector)
+REF_T = 0.04
+LAGS = (2.0, 3.0)                 # stamp lag, s; 2.0 primary
+PRIMARY_LAG = 2.0
+VS = (0.0, 0.5, 1.0)              # video feed delay, s
+SEEDS = range(20)                 # seed 0 = the replay shown everywhere (CI); 0-19 = robustness
+LEAD, NET = "model", "florida"    # the replay's headline lead model and network
+# ex-ante swing: score + server belief before the point, (pa, pb) calibrated to the pre-point outcome-0 mid
+TOUR, FMT = "wta", Format()       # women's best of 3, 7-point tiebreaks (engine/run.py uses the same)
+PRE_AFTER_PREV_MS = 2_000         # pre-point price instant = previous point's official stamp + 2 s
+FIRST_PRE_MS = 30_000             # first point of a match: its own stamp - 30 s
+CAL_MAX_SPREAD = 0.10             # a mid is usable for calibration if the spread is <= 10c (engine StrategyConfig)
+# no valid mid at the pre-point instant -> keep the last calibration of this match; none yet -> not eligible
+MOVE_REF = 0.04                   # diagnostic only: realised move >= 4c (the sweep's jump size)
+# --------------------------------------------------------------------------------------------------------------
+
+TCOL = {0.02: "#2a78d6", 0.04: "#eb6834", 0.06: "#1baf7a"}     # dataviz reference palette, slots 1-3
+TMARK = {0.02: "o", 0.04: "s", 0.06: "D"}
+
+
+def tname(T) -> str:
+    return "all" if T is None else f"T{round(T * 100):d}c"
+
+
+# ============================================================================== ex-ante swing per point
+SCORE = {0: "0", 1: "15", 2: "30", 3: "40"}
+
+
+def score_str(s: State) -> tuple[str, str]:
+    """Point score of a State in m1_points' notation (outcome-0 player first)."""
+    if s.ga == 6 and s.gb == 6:
+        return str(s.pa), str(s.pb)
+    if s.pa >= 3 and s.pb >= 3:
+        if s.pa == s.pb:
+            return "40", "40"
+        return ("A", "40") if s.pa > s.pb else ("40", "A")
+    return SCORE[s.pa], SCORE[s.pb]
+
+
+def valid_mid(s, t: int, outages: np.ndarray):
+    """Outcome-0 mid from the book captured at t, or None. Token 0's own book, else 1 - token 1's mid."""
+    if s is None or MR.in_outage(t, outages) or s[6] < t - MR.GAP_MS:
+        return None
+    for tok, (bb, ba) in ((0, (s[0], s[1])), (1, (s[2], s[3]))):
+        if s[7 + tok] and np.isfinite(bb) and np.isfinite(ba) and 0 <= ba - bb <= CAL_MAX_SPREAD + 1e-9:
+            m = (bb + ba) / 2
+            m = m if tok == 0 else 1 - m
+            if 0 < m < 1:
+                return float(m)
+    return None
+
+
+def pre_instants(P: pd.DataFrame) -> np.ndarray:
+    T = P.T_ms.to_numpy().astype(np.int64)
+    prev = P.groupby("key", sort=False).T_ms.shift(1).to_numpy()
+    return np.where(np.isfinite(prev), np.nan_to_num(prev).astype(np.int64) + PRE_AFTER_PREV_MS,
+                    T - FIRST_PRE_MS).astype(np.int64)
+
+
+def exante_swings(P: pd.DataFrame, M: pd.DataFrame, snaps: dict, t_pre: np.ndarray, outages: np.ndarray) -> pd.DataFrame:
+    """Walk every match point by point, as a live engine would: before point n, the score and server belief
+    from points 1..n-1 (official winners), (pa, pb) refit to the outcome-0 mid at t_pre (MatchFair.recalibrate,
+    engine/fair/value.py), swing = |v(A wins the point) - v(B wins it)|. Then apply the official point."""
+    cidx = dict(zip(M.slug, M.cond))
+    mu = TOUR_SERVE[TOUR]
+    rows = []
+    for key, g in P.groupby("key", sort=False):
+        mf = MatchFair(*_serve_pair(mu, 0.0), FMT, State(), 0.5, TOUR)   # tour average until the first price
+        cal = False
+        prev = None
+        for i in g.index:
+            p = P.loc[i]
+            s, p0 = mf.state, mf.p_server0
+            row = {"i": i, "key": key, "slug": p.slug, "n": int(p.n), "t_pre_ms": int(t_pre[i])}
+            if s is None:
+                row.update(source="match already over", swing=np.nan, state="")
+                rows.append(row)
+                continue
+            mid = valid_mid(snaps[cidx[p.slug]].get(int(t_pre[i])), int(t_pre[i]), outages)
+            if mid is not None:
+                mf.recalibrate(mid)
+                cal = True
+                src = "pre-point mid"
+            else:
+                src = "carried from an earlier point" if cal else "no price yet"
+            j = mf.jump()
+            sa_, sb_ = score_str(s)
+            # consistency with the official score columns (set, game, previous point's score)
+            ok = (int(p.set) == s.sa + s.sb + 1) and (int(p.game) == s.ga + s.gb + 1)
+            if prev is not None and not bool(prev.game_end):
+                ok = ok and (str(prev.ga), str(prev.gb)) == (sa_, sb_)
+            row.update(source=src, mid_pre=mid, pa=mf.model.p[0], pb=mf.model.p[1], p_server0=p0,
+                       state=f"sets {s.sa}-{s.sb} games {s.ga}-{s.gb} pts {sa_}-{sb_}", score_ok=ok,
+                       v_now=j.v_now, v_if_a=j.v_if_a, v_if_b=j.v_if_b,
+                       swing=abs(j.v_if_a - j.v_if_b) if cal else np.nan)
+            rows.append(row)
+            mf.apply_point(bool(p.winner == 0))
+            prev = p
+    S = pd.DataFrame(rows).set_index("i").sort_index()
+    return S
+
+
+# ================================================================================================== run
+def sub(d: dict, mask: np.ndarray) -> dict:
+    return {k: v[mask] for k, v in d.items()}
+
+
+def move_diag(D: pd.DataFrame, traded: pd.Series) -> dict:
+    """Realised book move (m1_points.D: mid move in the point winner's direction over the reprice window) of
+    traded vs not-traded replayable points."""
+    out = {}
+    for nm, g in (("traded", D[traded]), ("not_traded", D[~traded])):
+        x = g.D_move.dropna().to_numpy() * 100
+        out[nm] = {"points": int(len(g)), "with_move": int(len(x)),
+                   "mean_c": float(x.mean()) if len(x) else np.nan,
+                   "median_c": float(np.median(x)) if len(x) else np.nan,
+                   "mean_abs_c": float(np.abs(x).mean()) if len(x) else np.nan,
+                   "share_ge_4c": float((x >= MOVE_REF * 100 - 1e-9).mean()) if len(x) else np.nan}
+    return out
+
+
+def run(cache: str | None) -> dict:
+    P, M = MR.load_points()
+    print("parsing the recording ...")
+    R = MR.parse_recording(M, cache)
+    lat = np.array(R["recv_latency_ms"])
+    l_recv = int(round(float(np.median(lat))))
+    rows = {c: MR.effective_events(e, l_recv) for c, e in R["events"].items()}
+    outages = np.array([(a - l_recv, b - l_recv) for a, b in R["outages_rt"]], dtype=np.int64).reshape(-1, 2)
+    winners = {}
+    for c, e in R["events"].items():
+        w = [d for _, _, k, d in e if k == 3]
+        winners[c] = w[-1] if w else None
+    if any(w is None for w in winners.values()):
+        raise SystemExit("no market_resolved for some market")
+
+    cvd = tier0.cv_systems()["own120"]
+    p_out = tier0.point_mix()["women"]["out"]
+    plan = []
+    for seed in SEEDS:
+        dr = MR.draws(len(P), seed)
+        lead = MR.leads_ms(dr, cvd, p_out)
+        for lag in LAGS:
+            for V in VS:
+                plan.append((seed, lag, V, dr, lead, MR.cell_times(P, lead, lag, V, MR.NETS[NET])))
+    t_pre = pre_instants(P)
+    gap_min = float(P.gap_prev_s[P.groupby("key").cumcount() > 0].min())
+    print(f"pre-point instant: previous stamp + {PRE_AFTER_PREV_MS / 1000:g} s; smallest gap between stamps "
+          f"{gap_min:g} s, so it precedes the earliest assumed bounce by >= {gap_min - max(LAGS) - PRE_AFTER_PREV_MS / 1000:g} s")
+    cond_of = P.slug.map(dict(zip(M.slug, M.cond))).to_numpy()
+    need = {c: set() for c in M.cond}
+    for c, t in zip(cond_of, t_pre):
+        need[c].add(int(t))
+    for *_, tm in plan:
+        for k in ("t_ref", "exec", "mark"):
+            for c, t in zip(cond_of, tm[k]):
+                need[c].add(int(t))
+    print(f"capturing books at {sum(len(v) for v in need.values()):,} instants ...")
+    snaps = {c: MR.capture(rows[c], np.array(sorted(need[c]), dtype=np.int64)) for c in M.cond}
+
+    print("ex-ante swings (calibrating to each pre-point mid) ...")
+    S = exante_swings(P, M, snaps, t_pre, outages)
+    n_bad = int((S.score_ok == False).sum())  # noqa: E712
+    print(f"  score reconstruction disagrees with m1's set/game/score columns on {n_bad} of {S.score_ok.notna().sum()} points")
+    print("  swing source:", S.source.value_counts().to_dict())
+    swing = S.swing.to_numpy()
+    elig = {None: np.ones(len(P), bool)}
+    for T in THRESHOLDS:
+        elig[T] = np.nan_to_num(swing, nan=-1.0) >= T - 1e-12
+
+    ref = json.loads((ROOT / "results/replay/replay.json").read_text())
+    res_cells, seed_rows, frames = {}, [], []
+    for seed, lag, V, dr, lead, tm in plan:
+        for T, mask in elig.items():
+            Pm = P[mask].reset_index(drop=True)
+            D = MR.simulate(Pm, M, snaps, sub(tm, mask), sub(dr, mask), lead[mask], winners, l_recv,
+                            {"T": tname(T), "lag": lag, "V": V, "lead": LEAD, "net": NET, "seed": seed}, outages)
+            D["D_move"] = P.D.to_numpy()[mask]
+            D["swing"] = swing[mask]
+            s = MR.stats(D, ci=(seed == 0))
+            rep = D[D.status != "no book recorded"]
+            if seed == 0:
+                frames.append(D)
+                nm = f"{tname(T)}|lag{lag:g}|V{V:g}"
+                res_cells[nm] = {"T": T, "lag": lag, "V": V, "all": s,
+                                 "eligible_points": int(mask.sum()), "eligible_replayable": int(len(rep)),
+                                 "move_traded_vs_not": None,
+                                 "by_match": {m: MR.stats(g, ci=False) for m, g in D.groupby("slug", sort=False)}}
+            seed_rows.append({"T": tname(T), "lag": lag, "V": V, "seed": seed, **{k: s[k] for k in (
+                "calls", "orders", "fills", "fills_wrong", "calls_beat_book", "calls_with_reprice",
+                "share_calls_beat_book", "shares", "pnl_hold_usd", "pnl_mark_usd", "per_share_hold_c",
+                "per_share_mark_c")}})
+    # realised move of traded vs not traded: over ALL replayable points (so the not-traded side includes the
+    # points the filter removed), seed 0
+    for f in frames:
+        T, lag, V = f["T"].iloc[0], float(f["lag"].iloc[0]), float(f["V"].iloc[0])
+        nm = f"{T}|lag{lag:g}|V{V:g}"
+        allp = [g for g in frames if g["T"].iloc[0] == "all" and float(g["lag"].iloc[0]) == lag
+                and float(g["V"].iloc[0]) == V][0]
+        replayable = allp[allp.status != "no book recorded"][["slug", "n", "D_move"]]
+        traded_keys = set(zip(f.slug[f.shares > 1e-9], f.n[f.shares > 1e-9]))
+        tr = pd.Series([(a, b) in traded_keys for a, b in zip(replayable.slug, replayable.n)], index=replayable.index)
+        res_cells[nm]["move_traded_vs_not"] = move_diag(replayable, tr)
+
+    SR = pd.DataFrame(seed_rows)
+    seeds = {}
+    for (T, lag, V), g in SR.groupby(["T", "lag", "V"], sort=False):
+        seeds[f"{T}|lag{lag:g}|V{V:g}"] = {
+            **{k: {"mean": float(g[k].mean()), "sd": float(g[k].std(ddof=1)), "min": float(g[k].min()),
+                   "max": float(g[k].max())} for k in g.columns if k not in ("T", "lag", "V", "seed")},
+            "seeds_marked_positive": int((g.pnl_mark_usd > 0).sum()), "seeds_held_positive": int((g.pnl_hold_usd > 0).sum()),
+            "n_seeds": int(len(g))}
+
+    # ---- does the all-points cell reproduce scripts/match_replay.py's committed replay.json?
+    repro = {}
+    for lag in LAGS:
+        for V in VS:
+            a = res_cells[f"all|lag{lag:g}|V{V:g}"]["all"]
+            b = ref["cells"][f"V{V:g}|lag{lag:g}|lead_{LEAD}|{NET}"]["all"]
+            repro[f"lag{lag:g}|V{V:g}"] = {"fills": [a["fills"], b["fills"]],
+                                            "pnl_mark_usd": [a["pnl_mark_usd"], b["pnl_mark_usd"]],
+                                            "pnl_hold_usd": [a["pnl_hold_usd"], b["pnl_hold_usd"]],
+                                            "identical": bool(a["fills"] == b["fills"] and abs(a["pnl_mark_usd"] - b["pnl_mark_usd"]) < 1e-6
+                                                              and abs(a["pnl_hold_usd"] - b["pnl_hold_usd"]) < 1e-6)}
+    print("all-points cells reproduce replay.json:", all(v["identical"] for v in repro.values()))
+
+    # ---- swing diagnostics over replayable points (primary lag, V = 1, seed 0: replayability is cell-specific
+    # only through the outage rule; use that cell's replayable set)
+    head_all = [g for g in frames if g["T"].iloc[0] == "all" and float(g["lag"].iloc[0]) == PRIMARY_LAG
+                and float(g["V"].iloc[0]) == 1.0][0]
+    rp = head_all.status != "no book recorded"
+    sw = swing[rp.to_numpy()]
+    dm = P.D.to_numpy()[rp.to_numpy()]
+    ok = np.isfinite(sw) & np.isfinite(dm)
+    rs = pd.Series(sw[ok]).corr(pd.Series(np.abs(dm[ok])), method="spearman")
+    rs_signed = pd.Series(sw[ok]).corr(pd.Series(dm[ok]), method="spearman")
+    swd = {"replayable_points": int(rp.sum()), "with_swing": int(np.isfinite(sw).sum()),
+           "swing_c_quantiles": {q: float(np.nanpercentile(sw, q) * 100) for q in (10, 25, 50, 75, 90)},
+           "share_ge": {tname(T): float(np.mean(np.nan_to_num(sw, nan=-1) >= T - 1e-12)) for T in THRESHOLDS},
+           "spearman_swing_vs_abs_realised_move": float(rs), "spearman_swing_vs_signed_realised_move": float(rs_signed),
+           "n_for_correlation": int(ok.sum()),
+           "by_threshold": {}}
+    for T in THRESHOLDS:
+        e = np.nan_to_num(sw, nan=-1) >= T - 1e-12
+        big = np.nan_to_num(dm, nan=-1) >= MOVE_REF - 1e-9
+        x_e, x_n = dm[e & np.isfinite(dm)] * 100, dm[~e & np.isfinite(dm)] * 100
+        swd["by_threshold"][tname(T)] = {
+            "eligible": int(e.sum()), "not_eligible": int((~e).sum()),
+            "realised_move_eligible": {"n": int(len(x_e)), "mean_c": float(x_e.mean()) if len(x_e) else np.nan,
+                                       "median_c": float(np.median(x_e)) if len(x_e) else np.nan,
+                                       "share_ge_4c": float((x_e >= 4 - 1e-9).mean()) if len(x_e) else np.nan},
+            "realised_move_not_eligible": {"n": int(len(x_n)), "mean_c": float(x_n.mean()) if len(x_n) else np.nan,
+                                           "median_c": float(np.median(x_n)) if len(x_n) else np.nan,
+                                           "share_ge_4c": float((x_n >= 4 - 1e-9).mean()) if len(x_n) else np.nan},
+            "realised_ge_4c_points": int(big.sum()),
+            "realised_ge_4c_that_are_eligible": int((big & e).sum()),
+        }
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    pts = P[["key", "slug", "n", "set", "game", "ga", "gb", "winner", "T_ms", "D"]].join(
+        S[["t_pre_ms", "source", "state", "p_server0", "mid_pre", "pa", "pb", "v_now", "v_if_a", "v_if_b", "swing",
+           "score_ok"]])
+    pts = pts.rename(columns={"D": "realised_move_D", "ga": "score_after_a", "gb": "score_after_b"})
+    pts["replayable_lag2_V1"] = rp.to_numpy()
+    for T in THRESHOLDS:
+        pts[f"eligible_{tname(T)}"] = elig[T]
+    pts.insert(0, "label", LABEL)
+    pts.to_csv(OUT / "points_swing.csv", index=False, float_format="%.6g")
+
+    res = {
+        "label": LABEL,
+        "status": "exploratory, post hoc: designed after the all-points replay's P&L was seen; not pre-registered",
+        "declared_before_running": {
+            "thresholds_c": [round(T * 100) for T in THRESHOLDS], "reference_T_c": round(REF_T * 100),
+            "stamp_lags_s": LAGS, "primary_lag_s": PRIMARY_LAG, "V_s": VS, "seeds": list(SEEDS),
+            "lead": LEAD, "net": NET, "net_cap_shares": MR.NET_CAP, "limit": "reference ask + 1c",
+            "precision": MR.PRECISION,
+            "swing": "|P(A wins match | A wins the point) - P(A wins match | B wins it)|, src/markov.py, women's "
+                     "best of 3 (Format()), via engine/fair/value.py MatchFair: score and server belief from the "
+                     "official winners of the earlier points of the match (server unknown, p_server0 = 0.5 at the "
+                     "first point, Bayes-updated after every point), (pa, pb) refit by MatchFair.recalibrate to the "
+                     "outcome-0 mid at the pre-point instant",
+            "pre_point_instant": f"previous point's official stamp + {PRE_AFTER_PREV_MS / 1000:g} s (first point "
+                                 f"of a match: its stamp - {FIRST_PRE_MS / 1000:g} s)",
+            "valid_mid": f"book snapshot seen, spread <= {CAL_MAX_SPREAD:.2f}, a message within "
+                         f"{MR.GAP_MS / 1000:g} s, not inside a recorder outage; else the last calibration of the "
+                         "match is kept; no calibration yet -> not eligible",
+        },
+        "unchanged_from": "scripts/match_replay.py (imported: simulate, stats, cluster_ci, draws, leads, cell_times, "
+                          "capture, outage rule D1)",
+        "pre_point_instant_margin_s": gap_min - max(LAGS) - PRE_AFTER_PREV_MS / 1000,
+        "score_reconstruction_mismatches": n_bad,
+        "swing_source_counts": S.source.value_counts().to_dict(),
+        "swing_diagnostics": swd,
+        "reproduces_all_points_replay": repro,
+        "cells": res_cells,
+        "seeds": seeds,
+    }
+    (OUT / "selective.json").write_text(json.dumps(_clean(res), indent=1, default=MR._js))
+    return res
+
+
+def _clean(o):
+    if isinstance(o, dict):
+        return {str(k): _clean(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_clean(v) for v in o]
+    if isinstance(o, (float, np.floating)):
+        return None if not np.isfinite(o) else float(o)
+    if isinstance(o, np.integer):
+        return int(o)
+    if isinstance(o, np.bool_):
+        return bool(o)
+    return o
+
+
+# =============================================================================================== figure
+def figure(res: dict) -> None:
+    from scripts import match_replay_report as REP
+    REP._style()
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6), sharey=True)
+    off = {None: -0.045, 0.02: -0.015, 0.04: 0.015, 0.06: 0.045}
+    for ax, lag in zip(axes, LAGS):
+        for T in (None, *THRESHOLDS):
+            nm = tname(T)
+            y = [res["cells"][f"{nm}|lag{lag:g}|V{V:g}"]["all"]["pnl_mark_usd"] for V in VS]
+            lo = [res["seeds"][f"{nm}|lag{lag:g}|V{V:g}"]["pnl_mark_usd"]["min"] for V in VS]
+            hi = [res["seeds"][f"{nm}|lag{lag:g}|V{V:g}"]["pnl_mark_usd"]["max"] for V in VS]
+            x = np.array(VS) + off[T]
+            col = REP.INK2 if T is None else TCOL[T]
+            lab = "all points (the replay)" if T is None else f"ex-ante swing ≥ {round(T * 100)}c" + (
+                " (reference)" if T == REF_T else "")
+            ax.vlines(x, lo, hi, color=col, lw=1.0, alpha=0.55)
+            ax.plot(x, y, color=col, lw=2, ls="--" if T is None else "-", marker="o" if T is None else TMARK[T],
+                    ms=8, mec=REP.SURF, mew=1.5, label=lab, zorder=3)
+            ax.annotate(nm.replace("T", "≥ ") if T is not None else "all", (x[-1], y[-1]), xytext=(8, 0),
+                        textcoords="offset points", va="center", fontsize=8.5, color=REP.INK)
+        ax.axhline(0, color=REP.INK2, lw=0.8)
+        ax.set_xticks(VS)
+        ax.set_xticklabels([f"{V:g} s" for V in VS])
+        ax.set_xlim(-0.15, 1.25)
+        ax.set_xlabel("video feed delay V")
+        ax.set_title(f"stamp lag {lag:g} s" + (" (primary)" if lag == PRIMARY_LAG else ""), fontsize=10.5, loc="left")
+        ax.grid(axis="y", color=REP.GRID, lw=0.6)
+    axes[0].set_ylabel("$ P&L, marked at the +30 s mid (9 matches)")
+    axes[0].legend(loc="lower left", fontsize=8.5)
+    fig.suptitle("Trading only points with a large ex-ante Markov swing: marked P&L by feed delay "
+                 "(seed 0; whisker = range over 20 seeds)", x=0.01, ha="left", fontsize=11.5, color=REP.INK)
+    fig.tight_layout(rect=(0, 0.06, 1, 0.95))
+    REP._footer(fig, LABEL)
+    fig.savefig(OUT / "fig_selective.png", dpi=150)
+    plt.close(fig)
+
+
+# ================================================================================================== doc
+def f2(x, nd=2):
+    return "-" if x is None else f"{x:+.{nd}f}"
+
+
+def usd(x):
+    return "-" if x is None else ("−$" if x < 0 else "+$") + f"{abs(x):,.0f}"
+
+
+def ci(c):
+    return "" if not c or c[0] is None else f" [{c[0]:+.2f}, {c[1]:+.2f}]"
+
+
+def main_table(res, lag) -> str:
+    h = ("| T | V | eligible points (replayable) | calls | fills (wrong) | calls beating the book | c/share marked "
+         "[95% CI] | c/share held [95% CI] | $ marked | $ held | realised move c, traded / not (median) |")
+    out = [h, "|" + "---|" * 11]
+    for T in (None, *THRESHOLDS):
+        for V in VS:
+            c = res["cells"][f"{tname(T)}|lag{lag:g}|V{V:g}"]
+            a = c["all"]
+            mv = c["move_traded_vs_not"]
+            share = a["share_calls_beat_book"]
+            tl = "all points" if T is None else f"≥ {round(T * 100)}c" + (" (ref)" if T == REF_T else "")
+            out.append(
+                f"| {tl} | {V:g} s | {c['eligible_points']} ({a['replayable_points']}) | {a['calls']} | "
+                f"{a['fills']} ({a['fills_wrong']}) | {a['calls_beat_book']} of {a['calls_with_reprice']}"
+                f" ({'-' if share is None else f'{share:.0%}'}) | "
+                f"{f2(a['per_share_mark_c'])}{ci(a.get('per_share_mark_ci95_c'))} | "
+                f"{f2(a['per_share_hold_c'])}{ci(a.get('per_share_hold_ci95_c'))} | {usd(a['pnl_mark_usd'])} | "
+                f"{usd(a['pnl_hold_usd'])} | {f2(mv['traded']['median_c'], 1)} / {f2(mv['not_traded']['median_c'], 1)} |")
+    return "\n".join(out)
+
+
+def seed_table(res, lag) -> str:
+    out = ["| T | V | fills | calls beating the book | c/share marked | $ marked | $ held | seeds with $ marked > 0 |",
+           "|" + "---|" * 8]
+    for T in (None, *THRESHOLDS):
+        for V in VS:
+            s = res["seeds"][f"{tname(T)}|lag{lag:g}|V{V:g}"]
+            tl = "all points" if T is None else f"≥ {round(T * 100)}c"
+            m = lambda k, nd=1: f"{s[k]['mean']:+.{nd}f} ± {s[k]['sd']:.{nd}f}"  # noqa: E731
+            out.append(f"| {tl} | {V:g} s | {s['fills']['mean']:.1f} ± {s['fills']['sd']:.1f} | "
+                       f"{s['calls_beat_book']['mean']:.1f} ± {s['calls_beat_book']['sd']:.1f} | "
+                       f"{m('per_share_mark_c', 2)} | {m('pnl_mark_usd', 0)} | {m('pnl_hold_usd', 0)} | "
+                       f"{s['seeds_marked_positive']} of {s['n_seeds']} |")
+    return "\n".join(out)
+
+
+def move_table(res) -> str:
+    sd = res["swing_diagnostics"]
+    out = ["| T | eligible / not (replayable) | realised move, eligible: median c (share ≥ 4c) | realised move, not "
+           "eligible: median c (share ≥ 4c) | realised ≥ 4c points that pass the filter |", "|---|---|---|---|---|"]
+    for T in THRESHOLDS:
+        b = sd["by_threshold"][tname(T)]
+        e, n = b["realised_move_eligible"], b["realised_move_not_eligible"]
+        pct = lambda x: "-" if x is None else f"{x:.0%}"  # noqa: E731
+        out.append(f"| ≥ {round(T * 100)}c | {b['eligible']} / {b['not_eligible']} | {f2(e['median_c'], 1)} "
+                   f"({pct(e['share_ge_4c'])}, n {e['n']}) | {f2(n['median_c'], 1)} ({pct(n['share_ge_4c'])}, n {n['n']}) | "
+                   f"{b['realised_ge_4c_that_are_eligible']} of {b['realised_ge_4c_points']} |")
+    return "\n".join(out)
+
+
+DECLARATION = """\
+Declared in this file and in `scripts/match_replay_selective.py` (constants block) and committed before the
+first run. The design was written after the all-points replay's P&L had been seen, so it is exploratory.
+
+* **Filter.** Trade an official point only if its **ex-ante Markov swing** is ≥ T, **T ∈ {2c, 4c, 6c}**;
+  **4c is the reference** (the latency sweep's ≥ 4c jump detector, `src/tier0.py` `JUMP_MIN`). Points below T
+  are removed before the replay: no call, no order, no use of the net cap.
+* **Swing.** |P(A wins the match | A wins the point) − P(A wins the match | B wins the point)| from
+  `src/markov.py`, women's best of 3 with 7-point tiebreaks (`Format()`, as `engine/run.py`), computed through
+  `engine/fair/value.py` `MatchFair`: the score before the point is rebuilt from the official winners of the
+  match's earlier points; the server is not in the data, so the belief starts at 0.5 and is Bayes-updated
+  after every point (`MatchFair.apply_point`); the serve/return point-win probabilities are refit
+  (`MatchFair.recalibrate`, tour WTA) so that fair value at that score equals the outcome-0 mid at the
+  **pre-point instant = the previous point's official stamp + 2 s** (first point of a match: its stamp − 30 s).
+  A mid is usable if a book snapshot was seen, its spread is ≤ 10c (the engine's `max_spread`), the market had
+  a message in the last 60 s and the instant is not inside a recorder outage; otherwise the match's last
+  calibration is kept, and a point with no calibration yet is not eligible.
+* **Everything else unchanged** from `scripts/match_replay.py` (imported, not copied): stamp lag **2.0 s
+  primary, 3.0 s** also; **V ∈ {0, 0.5, 1.0} s**; model CV lead; Florida 67 ms; **20 seeds** (0-19; seed 0 is
+  the shown replay and carries the CIs); net cap 100 shares per match; limit = stale (reference) ask + 1c;
+  wrong calls 5 % (precision 0.95); 1 s taker delay; fee; +30 s mark; hold to result; outage rule D1.
+* **Reported** per T × V × lag: points eligible, calls, fills, share of calls beating the book, net per share
+  marked and held with the match-clustered 95 % CI, $ P&L marked and held, 20-seed mean ± SD, and as a
+  diagnostic the realised book move (`m1_points.D`) of traded vs not-traded points. The all-points cells are
+  reported alongside and must reproduce `results/replay/replay.json`.
+"""
+
+
+def write_doc(res) -> None:
+    sd = res["swing_diagnostics"]
+    q = sd["swing_c_quantiles"]
+    repro_ok = all(v["identical"] for v in res["reproduces_all_points_replay"].values())
+    src = res["swing_source_counts"]
+    txt = f"""# Match replay, selective variant: trade only points with a large ex-ante swing
+
+> **{LABEL}.**
+>
+> Same caveats as the replay (`RESULTS.md`): no video was received, bought or watched; the feed, its delay V, the
+> CV call and its lead are assumed; the bounce is the official stamp minus an assumed lag. Real: the official WTA
+> point stamps and winners, the Polymarket books recorded live on 2026-10-03, the venue delay, the fee, the results.
+> No order was sent. Use of the forward recording is logged in `results/oos_peeks.log`.
+
+## Conclusion
+
+{conclusion(res)}
+
+![selective](../../results/replay/selective/fig_selective.png)
+
+`results/replay/selective/fig_selective.png`: marked $ P&L over the 9 matches at V = 0, 0.5, 1 s for each T and
+for all points (seed 0; whisker = min to max over the 20 seeds). Left: stamp lag 2.0 s (primary); right: 3.0 s.
+
+## 1. Results, stamp lag 2.0 s (primary), seed 0
+
+{main_table(res, 2.0)}
+
+Eligible points: all points of the 9 matches with swing ≥ T (in brackets, those the replay can price). Calls:
+eligible, replayable, quoted inside 5-95c. Calls beating the book: execution before the book's matched reprice
+(`t_book`), of the calls that have one. CI: match-clustered bootstrap, 10,000 resamples of the matches with a fill
+(`match_replay.cluster_ci`). Realised move: `m1_points.D`, the outcome-0 mid's move in the point winner's direction
+across the point, of the filled points vs every other replayable point (the not-traded side includes the points the
+filter removed). Diagnostic only: it is hindsight.
+
+## 2. Stamp lag 3.0 s, seed 0
+
+{main_table(res, 3.0)}
+
+## 3. 20 seeds (mean ± SD over seeds 0-19)
+
+Stamp lag 2.0 s:
+
+{seed_table(res, 2.0)}
+
+Stamp lag 3.0 s:
+
+{seed_table(res, 3.0)}
+
+## 4. Does the ex-ante swing pick the points the book moves on? (diagnostic)
+
+Replayable points (stamp lag 2.0 s, V = 1 s): {sd['replayable_points']}, of which {sd['with_swing']} have an ex-ante
+swing. Swing quantiles (p10 / p25 / median / p75 / p90): {q['10']:.1f} / {q['25']:.1f} / {q['50']:.1f} /
+{q['75']:.1f} / {q['90']:.1f}c. Spearman correlation of the ex-ante swing with the size of the realised book move
+|D|: {sd['spearman_swing_vs_abs_realised_move']:+.2f} (n {sd['n_for_correlation']}).
+
+{move_table(res)}
+
+## 5. Checks
+
+* **All-points cells reproduce the committed replay** (`results/replay/replay.json`, same fills and $ to the cent at
+  both lags and every V): {'yes' if repro_ok else 'NO'}. The filter is the only change.
+* **Score reconstruction:** the score rebuilt from the official winners disagrees with `m1_points.csv`'s set, game
+  and point-score columns on {res['score_reconstruction_mismatches']} points.
+* **No look-ahead in the filter:** the pre-point instant is ≥ {res['pre_point_instant_margin_s']:g} s before the
+  earliest assumed bounce of the point (smallest gap between consecutive stamps minus 3 s lag minus 2 s); the score and
+  the server belief use only earlier points; the replay's own reference price is read later, at the bounce, as before.
+* **Where the swing's price came from** (all 994 points): {', '.join(f'{k}: {v}' for k, v in src.items())}.
+* **Score knowledge is assumed.** The official point-by-point feed reached our poller 1-2 minutes late on this day
+  (`m1_points.pbp_delay_s`); a live trader would need the score from the video itself or a faster feed. The
+  server is not observed (belief only).
+
+## 6. Declaration (committed before the first run)
+
+{DECLARATION}
+## Reproduce
+
+```bash
+.venv/bin/python scripts/match_replay_selective.py --cache /path/outside/the/repo.pkl   # ~5-8 min
+.venv/bin/python scripts/match_replay_selective.py --doc-only                          # figure + this file
+```
+
+Outputs in `results/replay/selective/`: `selective.json` (label, declaration, every T × lag × V cell at seed 0 with
+CIs and per match, 20-seed summaries, swing diagnostics, reproduction check), `points_swing.csv` (each point's
+pre-point state, server belief, pre-point mid, calibrated serve probabilities, ex-ante swing and eligibility),
+`fig_selective.png`.
+"""
+    DOC.write_text(txt)
+
+
+def conclusion(res) -> str:
+    """Plain conclusion, from the numbers (written after the results were seen; descriptive)."""
+    c = res["cells"]
+    s = res["seeds"]
+    g = lambda T, lag, V: c[f"{tname(T)}|lag{lag:g}|V{V:g}"]["all"]  # noqa: E731
+    gs = lambda T, lag, V: s[f"{tname(T)}|lag{lag:g}|V{V:g}"]  # noqa: E731
+    lines = []
+    for lag in LAGS:
+        neg = [(tname(T), V) for T in (None, *THRESHOLDS) for V in VS if (g(T, lag, V)["pnl_mark_usd"] or 0) < 0]
+        lines.append(f"stamp lag {lag:g} s: {len(neg)} of {4 * len(VS)} cells lose money marked at seed 0")
+    ref1 = g(REF_T, PRIMARY_LAG, 1.0)
+    all1 = g(None, PRIMARY_LAG, 1.0)
+    ref0 = g(REF_T, PRIMARY_LAG, 0.0)
+    all0 = g(None, PRIMARY_LAG, 0.0)
+    out = [
+        f"* **Reference (T = 4c, stamp lag 2.0 s, V = 1 s):** {ref1['fills']} fills, "
+        f"{f2(ref1['per_share_mark_c'])}c per share marked{ci(ref1.get('per_share_mark_ci95_c'))}, "
+        f"{usd(ref1['pnl_mark_usd'])} marked / {usd(ref1['pnl_hold_usd'])} held; all points: {all1['fills']} fills, "
+        f"{f2(all1['per_share_mark_c'])}c, {usd(all1['pnl_mark_usd'])} / {usd(all1['pnl_hold_usd'])}. "
+        f"Positive marked in {gs(REF_T, PRIMARY_LAG, 1.0)['seeds_marked_positive']} of 20 seeds.",
+        f"* **Same at V = 0 (a camera at the venue):** T = 4c {ref0['fills']} fills, "
+        f"{f2(ref0['per_share_mark_c'])}c{ci(ref0.get('per_share_mark_ci95_c'))}, {usd(ref0['pnl_mark_usd'])} marked; "
+        f"all points {f2(all0['per_share_mark_c'])}c, {usd(all0['pnl_mark_usd'])}.",
+        "* **Count of losing cells (marked, seed 0, 4 trade sets × 3 V):** " + "; ".join(lines) + ".",
+    ]
+    return "\n".join(out) + ("\n\n" + READING if READING else "")
+
+
+READING = ""   # plain-language reading, written after the results were seen
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--cache", default=None, help="pickle of the parsed recording (keep it outside the repo)")
+    ap.add_argument("--doc-only", action="store_true")
+    a = ap.parse_args()
+    if a.doc_only:
+        res = json.loads((OUT / "selective.json").read_text())
+    else:
+        res = _clean(run(a.cache))
+        res = json.loads((OUT / "selective.json").read_text())
+    figure(res)
+    write_doc(res)
+    print(f"wrote {OUT.relative_to(ROOT)}/selective.json, fig_selective.png, points_swing.csv and "
+          f"{DOC.relative_to(ROOT)}")
