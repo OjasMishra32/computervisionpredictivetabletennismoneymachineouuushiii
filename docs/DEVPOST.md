@@ -38,8 +38,7 @@ Python on public Polymarket and Kalshi APIs (no keys); an exact point-level tenn
 live websocket recorder for order books and four score feeds; a replay engine that makes paper orders
 wait the venue's delay plus our measured network latency; ball tracking on HiPerGator GPUs; and a
 six-lens optimisation workflow where every claimed improvement was attacked by two independent verifier
-agents before it could enter v2. We wrote the code during the event with AI coding assistants, and every
-commit carries a `Co-Authored-By` line.
+agents before it could enter v2. We wrote the code during the event with AI coding assistants.
 
 ## Pre-existing components (disclosed per Participant Terms §14.2)
 - BlurBall pretrained table-tennis ball-detector weights and model code (Gossard et al., MIT licence),

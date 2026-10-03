@@ -148,6 +148,6 @@ Other pieces:
   TrackNet weights and TennisProject / TennisCourtDetector code (no licence file; used unmodified for
   evaluation, not vendored or redistributed). Details in `src/tracking/README.md` and
   `src/tennis_tracking/README.md`. Everything else was written during the event, with AI coding
-  assistants; commits carry a `Co-Authored-By` line.
+  assistants.
 - No API keys or licensed raw data are committed; raw data lives in `data/` (gitignored). The code only
   reads public data and never places an order.
