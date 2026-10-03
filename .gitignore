@@ -13,3 +13,9 @@ models/
 ext/
 results/spin/tennis/raw/
 results/spin/**/logs/
+
+# 75-90 s video: overlaid footage clips (rebuild: scripts/make_video_60.py overlays)
+results/viz/v60_assets/clips/
+
+# real tennis footage: full-length source download (55 MB, > 20 MB); URL + sha256 in tennis_real/LICENSE.md
+results/viz/v60_assets/tennis_real/source_*.mp4
