@@ -117,6 +117,16 @@ def main(oos: bool):
     sh_capped, _ = shadow_book(sh, u)
     sh_capped = sh_capped.assign(pnl=sh_capped.shares * sh_capped.net_res)
     report.walkforward_figure(wf, sh_capped, oos_start)
+    if oos:  # v2 (HYPOTHESIS_V2.md) on IS + burned OOS, same walk-forward machinery
+        from src import v2
+        trv, _ = v2.run(both, u.set_index("cond").end)
+        o0 = u.loc[u.oos, "start"].min().timestamp()
+        summary["v2"] = {"is_eval": v2.E.metrics(trv[(trv.month >= v2.E.EVAL_START) & (trv.ts < o0)]),
+                         "burned_oos_nonblind": v2.E.metrics(trv[trv.ts >= o0])}
+        Path("results/v2").mkdir(parents=True, exist_ok=True)
+        Path("results/v2/burned_oos.json").write_text(json.dumps(
+            {"is_eval": summary["v2"]["is_eval"], "burned_oos": summary["v2"]["burned_oos_nonblind"]}, indent=2, default=float))
+        trv.to_parquet("data/v2_trades_is_oos.parquet")
 
     hk = RES / "hawkeye_tennis_calls.csv"
     tt = RES / "tracking" / "summary.json"

@@ -23,7 +23,7 @@ def _one(r):
 
 def build(split: str, workers: int = 8) -> pd.DataFrame:
     assert split in ("is", "oos")
-    out = Path(f"data/{split}_prints.parquet")
+    out = Path("data/is_prints.parquet") if split == "is" else Path("data/locked/oos_prints.parquet")
     if out.exists():
         return pd.read_parquet(out)
     u = universe()
@@ -36,5 +36,6 @@ def build(split: str, workers: int = 8) -> pd.DataFrame:
     with ProcessPoolExecutor(workers) as ex:
         parts = [d for d in ex.map(_one, rows.to_dict("records"), chunksize=16) if d is not None]
     df = pd.concat(parts, ignore_index=True)
+    out.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out)
     return df
