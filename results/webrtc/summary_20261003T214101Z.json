@@ -1,0 +1,405 @@
+{
+ "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/results/webrtc/run_20261003T214101Z.jsonl",
+ "runs": [
+  {
+   "run": "dec30_transport",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    4.1,
+    5.99,
+    9.03
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.397
+   },
+   "video_leg_ms": {
+    "p50": 9.02,
+    "p90": 14.14,
+    "p99": 18.04,
+    "max": 19.49
+   },
+   "network_ms": {
+    "p50": 8.04,
+    "p90": 12.47,
+    "p99": 16.25
+   },
+   "decode_ms_p50": 0.82,
+   "prep_ms_p50": 2.4,
+   "sender_late_ms_p50": 1.35,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec30_engine",
+   "mode": "engine",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    4.62,
+    5.98,
+    8.96
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 248,
+    "skipped_before_prep": 2,
+    "engine_processed": 211,
+    "engine_decisions": 189,
+    "code_time_mismatch_ms_max": 0.484
+   },
+   "video_leg_ms": {
+    "p50": 17.11,
+    "p90": 52.68,
+    "p99": 255.68,
+    "max": 306.25
+   },
+   "network_ms": {
+    "p50": 14.74,
+    "p90": 42.71,
+    "p99": 241.26
+   },
+   "decode_ms_p50": 1.43,
+   "prep_ms_p50": 5.26,
+   "sender_late_ms_p50": 0.38,
+   "engine_ready_ms": {
+    "p50": 75.7,
+    "p90": 156.43,
+    "p99": 277.39
+   },
+   "capture_to_decision_ms": {
+    "p50": 89.34,
+    "p90": 186.76,
+    "p99": 456.7,
+    "max": 496.4
+   },
+   "engine_fps": 13.8,
+   "engine_skipped": 37,
+   "detection_within_5px": 0.9455,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_transport",
+   "mode": "transport",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    5.74,
+    6.14,
+    8.94
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 500,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.431
+   },
+   "video_leg_ms": {
+    "p50": 7.85,
+    "p90": 28.56,
+    "p99": 63.27,
+    "max": 79.9
+   },
+   "network_ms": {
+    "p50": 6.9,
+    "p90": 23.36,
+    "p99": 55.06
+   },
+   "decode_ms_p50": 0.67,
+   "prep_ms_p50": 3.55,
+   "sender_late_ms_p50": 0.21,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "dec60_engine",
+   "mode": "engine",
+   "step": 2,
+   "arrival_fps": 60.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    9.71,
+    7.2,
+    9.21
+   ],
+   "frames": {
+    "sent_clip": 500,
+    "received_clip": 412,
+    "lost_clip": 88,
+    "bad_code": 29,
+    "keyframes_clip": 14,
+    "fed_to_engine": 229,
+    "skipped_before_prep": 183,
+    "engine_processed": 148,
+    "engine_decisions": 71,
+    "code_time_mismatch_ms_max": 0.355
+   },
+   "video_leg_ms": {
+    "p50": 307.06,
+    "p90": 525.19,
+    "p99": 774.97,
+    "max": 810.22
+   },
+   "network_ms": {
+    "p50": 291.75,
+    "p90": 489.61,
+    "p99": 753.1
+   },
+   "decode_ms_p50": 1.54,
+   "prep_ms_p50": 78.66,
+   "sender_late_ms_p50": 147.13,
+   "engine_ready_ms": {
+    "p50": 186.37,
+    "p90": 282.09,
+    "p99": 599.41
+   },
+   "capture_to_decision_ms": {
+    "p50": 501.1,
+    "p90": 792.77,
+    "p99": 1118.88,
+    "max": 1203.99
+   },
+   "engine_fps": 9.62,
+   "engine_skipped": 81,
+   "detection_within_5px": 0.74,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    11.76,
+    7.83,
+    9.39
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 1000,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.446
+   },
+   "video_leg_ms": {
+    "p50": 4.58,
+    "p90": 5.53,
+    "p99": 12.24,
+    "max": 14.33
+   },
+   "network_ms": {
+    "p50": 4.07,
+    "p90": 4.96,
+    "p99": 9.9
+   },
+   "decode_ms_p50": 0.36,
+   "prep_ms_p50": 2.2,
+   "sender_late_ms_p50": 0.07,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_engine",
+   "mode": "engine",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": true,
+   "max_lag_ms": 100.0,
+   "load_avg_start": [
+    9.86,
+    7.65,
+    9.28
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 995,
+    "lost_clip": 5,
+    "bad_code": 4,
+    "keyframes_clip": 16,
+    "fed_to_engine": 445,
+    "skipped_before_prep": 550,
+    "engine_processed": 300,
+    "engine_decisions": 129,
+    "code_time_mismatch_ms_max": 0.371
+   },
+   "video_leg_ms": {
+    "p50": 1228.3,
+    "p90": 5442.75,
+    "p99": 6511.24,
+    "max": 6576.31
+   },
+   "network_ms": {
+    "p50": 1220.84,
+    "p90": 5433.35,
+    "p99": 6495.22
+   },
+   "decode_ms_p50": 1.22,
+   "prep_ms_p50": 93.83,
+   "sender_late_ms_p50": 1189.96,
+   "engine_ready_ms": {
+    "p50": 197.28,
+    "p90": 411.75,
+    "p99": 576.93
+   },
+   "capture_to_decision_ms": {
+    "p50": 1485.72,
+    "p90": 5860.8,
+    "p99": 6667.1,
+    "max": 6930.89
+   },
+   "engine_fps": 14.06,
+   "engine_skipped": 145,
+   "detection_within_5px": 0.5517,
+   "calls": [],
+   "events_vs_labels": [],
+   "calls_vs_file_source": {
+    "file_source_calls": 11,
+    "webrtc_calls": 0,
+    "same_call_within_2_frames": 0,
+    "only_file": [
+     [
+      "BOUNCE",
+      2258,
+      0.0035
+     ],
+     [
+      "BOUNCE",
+      2312,
+      0.0178
+     ],
+     [
+      "BOUNCE",
+      2366,
+      0.0812
+     ],
+     [
+      "BOUNCE",
+      2417,
+      0.0138
+     ],
+     [
+      "BOUNCE",
+      2466,
+      0.2059
+     ],
+     [
+      "BOUNCE",
+      2567,
+      0.0604
+     ],
+     [
+      "BOUNCE",
+      2618,
+      0.0453
+     ],
+     [
+      "BOUNCE",
+      2668,
+      0.0555
+     ],
+     [
+      "BOUNCE",
+      2722,
+      0.0221
+     ],
+     [
+      "MISS",
+      2766,
+      0.9888
+     ],
+     [
+      "MISS",
+      2819,
+      0.9889
+     ]
+    ],
+    "only_webrtc": [],
+    "reference": "results/engine/demo_run.json (file source)"
+   }
+  }
+ ]
+}

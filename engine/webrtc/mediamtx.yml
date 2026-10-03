@@ -1,0 +1,47 @@
+# MediaMTX config for the COURTSIDE WebRTC latency demo (engine/webrtc/).
+# Loopback only: nothing listens on a LAN interface. WHIP ingest and WHEP playback on
+#   http://127.0.0.1:8889/<path>/whip   http://127.0.0.1:8889/<path>/whep
+# RTSP (TCP, loopback) stays on so engine/vision/stream.py can read the same stream for comparison:
+#   rtsp://127.0.0.1:8554/<path>
+# Tested with MediaMTX v1.21.1 (Homebrew bottle).
+
+logLevel: info
+logDestinations: [stdout]
+readTimeout: 10s
+writeTimeout: 10s
+# per-reader packet queue. A 1080p keyframe is a few hundred RTP packets; the default 512 can overflow on a burst
+writeQueueSize: 8192
+udpMaxPayloadSize: 1452
+
+api: false
+metrics: false
+pprof: false
+playback: false
+
+rtsp: true
+rtspTransports: [tcp]
+rtspAddress: 127.0.0.1:8554
+rtmp: false
+hls: false
+srt: false
+# MoQ (on by default since v1.21) would listen on all interfaces and write auto.key / auto.crt into the cwd
+moq: false
+
+webrtc: true
+webrtcAddress: 127.0.0.1:8889
+webrtcEncryption: false
+webrtcAllowOrigins: ["*"]
+webrtcLocalUDPAddress: 127.0.0.1:8189
+webrtcLocalTCPAddress: ""
+webrtcIPsFromInterfaces: false
+webrtcAdditionalHosts: [127.0.0.1]
+webrtcICEServers2: []
+webrtcHandshakeTimeout: 10s
+webrtcTrackGatherTimeout: 2s
+
+pathDefaults:
+  source: publisher
+  overridePublisher: true
+
+paths:
+  all_others:

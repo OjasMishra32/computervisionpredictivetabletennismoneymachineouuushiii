@@ -1,0 +1,117 @@
+{
+ "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/results/webrtc/run_20261003T215723Z.jsonl",
+ "runs": [
+  {
+   "run": "dec30_transport_stockjb",
+   "mode": "transport",
+   "step": 4,
+   "arrival_fps": 30.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    6.52,
+    5.72,
+    7.09
+   ],
+   "frames": {
+    "sent_clip": 250,
+    "received_clip": 250,
+    "lost_clip": 0,
+    "bad_code": 0,
+    "keyframes_clip": 17,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.459
+   },
+   "video_leg_ms": {
+    "p50": 41.94,
+    "p90": 44.59,
+    "p99": 51.92,
+    "max": 57.64
+   },
+   "network_ms": {
+    "p50": 40.22,
+    "p90": 42.25,
+    "p99": 49.16
+   },
+   "decode_ms_p50": 1.23,
+   "prep_ms_p50": 2.75,
+   "sender_late_ms_p50": 1.53,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  },
+  {
+   "run": "native120_transport_stockjb",
+   "mode": "transport",
+   "step": 1,
+   "arrival_fps": 120.0,
+   "encoder": "x264",
+   "calls_valid": false,
+   "max_lag_ms": null,
+   "load_avg_start": [
+    7.1,
+    5.89,
+    7.13
+   ],
+   "frames": {
+    "sent_clip": 1000,
+    "received_clip": 932,
+    "lost_clip": 68,
+    "bad_code": 8,
+    "keyframes_clip": 16,
+    "fed_to_engine": 0,
+    "skipped_before_prep": 0,
+    "engine_processed": 0,
+    "engine_decisions": 0,
+    "code_time_mismatch_ms_max": 0.368
+   },
+   "video_leg_ms": {
+    "p50": 415.37,
+    "p90": 1032.78,
+    "p99": 1992.87,
+    "max": 2044.73
+   },
+   "network_ms": {
+    "p50": 388.16,
+    "p90": 973.33,
+    "p99": 1931.7
+   },
+   "decode_ms_p50": 1.18,
+   "prep_ms_p50": 1992.3,
+   "sender_late_ms_p50": 205.15,
+   "engine_ready_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null
+   },
+   "capture_to_decision_ms": {
+    "p50": null,
+    "p90": null,
+    "p99": null,
+    "max": null
+   },
+   "engine_fps": null,
+   "engine_skipped": null,
+   "detection_within_5px": null,
+   "calls": [],
+   "events_vs_labels": null
+  }
+ ]
+}
