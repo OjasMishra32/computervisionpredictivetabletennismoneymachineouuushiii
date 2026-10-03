@@ -1,0 +1,18 @@
+{
+  "atp": {
+    "points_per_match": 161.187,
+    "mean_abs_leverage": 0.057157151176398316,
+    "p90_leverage": 0.12011397843962279,
+    "max_leverage": 0.5554376540357491,
+    "total_abs_move_per_match": 4.212049806155102,
+    "share_of_move_in_top10_points": 0.23104823965121285
+  },
+  "wta": {
+    "points_per_match": 162.11,
+    "mean_abs_leverage": 0.060642491346608166,
+    "p90_leverage": 0.1152894546226087,
+    "max_leverage": 0.5444758242824976,
+    "total_abs_move_per_match": 4.831581719977954,
+    "share_of_move_in_top10_points": 0.168062700788451
+  }
+}
