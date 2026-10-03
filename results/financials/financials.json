@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-10-03T19:42:17Z",
+ "generated_utc": "2026-10-03T20:03:44Z",
  "script": "scripts/financials.py",
- "runtime_s": 21.2,
+ "runtime_s": 44.2,
  "conventions": {
   "daily": "calendar-day zero-filled P&L from first to last trade day (research/v2/sizing/engine.py daily_series)",
   "sharpe_sortino": "x sqrt(365); Sortino denominator = RMS of negative days (scripts/lowloss_test.py)",
@@ -57,7 +57,7 @@
   },
   "hipergator": {
    "name": "HiPerGator (training, backtests)",
-   "label": "STATE: university allocation",
+   "label": "ESTIMATE ($0 marginal: university allocation)",
    "unit": "$/month",
    "low": 0.0,
    "central": 0.0,
@@ -74,7 +74,7 @@
    "low": 36.1,
    "central": 36.1,
    "high": 36.1,
-   "basis": "US median wage, camera operators (television, video and film), May 2025: $74,990/yr, $36.10/h (BLS).",
+   "basis": "BLS Occupational Outlook Handbook: $36.10/h is the 2025 median hourly pay of the combined 'film and video editors and camera operators' group; camera operators (television, video and film) alone earn a median $74,990/yr (May 2025), about $36.05/h at 2,080 h. Wage only: no employer on-costs, travel or agency margin.",
    "sources": [
     "https://www.bls.gov/ooh/media-and-communication/film-and-video-editors-and-camera-operators.htm"
    ]
@@ -113,13 +113,16 @@
   },
   "camera_kit": {
    "name": "120 fps camera kit, amortised over 24 months (tier-0 only)",
-   "label": "ASSUMPTION",
+   "label": "ESTIMATE (low: public list prices) / ASSUMPTION (central, high)",
    "unit": "$/kit",
-   "low": 500.0,
+   "low": 648.0,
    "central": 1000.0,
    "high": 2000.0,
-   "basis": "Hardware per covered court (camera, lens, mount, edge box). No quote obtained; range is ours.",
-   "sources": []
+   "basis": "Hardware per covered court (camera, lens, mount, edge box). Low = public launch list prices of a consumer 120 fps camera (GoPro HERO13 Black, $399) plus an edge inference box (NVIDIA Jetson Orin Nano Super Developer Kit, $249), no mount or cabling. Central and high are ours (no quote for a rugged or machine-vision kit was obtained). An on-venue edge box would replace the cloud GPU hours above, so the stack counts inference twice; that is conservative and small next to the operator.",
+   "sources": [
+    "https://investor.gopro.com/press-releases/press-release-details/2024/GoPro-Announces-Two-New-Cameras-The-399-HERO13-Black-and-the-199-HERO/default.aspx",
+    "https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/"
+   ]
   }
  },
  "cost_of_capital": {
@@ -407,7 +410,7 @@
   },
   {
    "strategy": "Tier-0 CV edge (COUNTERFACTUAL)",
-   "period": "IS",
+   "period": "IS, 1 s-delay matches only (trades from 2026-05-15, 103 d)",
    "status": "ok (summary file only)",
    "trades": 6446.8,
    "net_c_per_share": 1.0978,
@@ -417,12 +420,12 @@
    ],
    "net_trading_usd_per_day": 88.7936067961165,
    "fixed_cost_usd_per_day": {
-    "low": 1150.5280054794523,
+    "low": 1152.555402739726,
     "central": 4149.2273917808225,
     "high": 7215.469983561644
    },
    "net_after_costs_usd_per_day": {
-    "low": -1061.7344054794523,
+    "low": -1063.7618027397261,
     "central": -4060.4337917808225,
     "high": -7126.676383561644
    },
@@ -445,12 +448,12 @@
    ],
    "net_trading_usd_per_day": 46.42577,
    "fixed_cost_usd_per_day": {
-    "low": 1150.5280054794523,
+    "low": 1152.555402739726,
     "central": 4149.2273917808225,
     "high": 7215.469983561644
    },
    "net_after_costs_usd_per_day": {
-    "low": -1104.1022054794523,
+    "low": -1106.1296027397261,
     "central": -4102.8015917808225,
     "high": -7169.044183561644
    },
@@ -582,7 +585,7 @@
   "Forecast-relevant IS row (PM_REVIEW P08): only 2026-07-11 to 2026-08-25 (46 days) ran under today's 1 s delay and 5% fee. There v2 nets +1.02\u00a2 [+0.59, +1.45] and $179.3/day against $166.9/day of central fixed costs: $12.4/day. The full IS row blends fee and delay regimes that no longer exist.",
   "Fees are the binding variable (PM_REVIEW P03). On the burned OOS taker fees are 61.0% of gross (30.5% IS). With the book held fixed, the break-even taker fee rate is 8.2% before fixed costs and 2.4% after central fixed costs; today's rate is 5%.",
   "The maker is the only remote-executable book. It nets $20.2/day IS ($71.1/day in the current 1 s / 5% regime) against $2.55/day of VPS. Its pre-registered blind OOS verdict is FAILURE: per fill +1.87\u00a2 [\u22120.14, +3.86]; in dollars it made \u2212$9.5/day (\u2212$379 over 40 days). The per-fill mean is positive while the share-weighted mean is \u22120.75\u00a2, so the larger fills did worse.",
-  "Tier-0 (counterfactual, verifier-corrected headline in results/tier0/results.json) at the scenario's net cap: IS $88.8/day trading vs $1,151 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 13.0\u00d7 its trading P&L just to cover the low-cost case; OOS $46.4/day trading vs $1,151 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 24.8\u00d7 its trading P&L just to cover the low-cost case. Uneconomic at 10 covered matches a day in every cost case (PM_REVIEW P10).",
+  "Tier-0 (counterfactual, verifier-corrected headline in results/tier0/results.json) at the scenario's net cap: IS, 1 s-delay matches only (trades from 2026-05-15, 103 d) $88.8/day trading vs $1,153 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 13.0\u00d7 its trading P&L just to cover the low-cost case; OOS (burned, non-blind) $46.4/day trading vs $1,153 / $4,149 / $7,215 per day fixed (low / central / high), so it would need 24.8\u00d7 its trading P&L just to cover the low-cost case. Uneconomic at 10 covered matches a day in every cost case (PM_REVIEW P10).",
   "v2-safe's honest IS Sharpe is the stitched walk-forward 14.02, not the frozen variant's 15.70 shown in the headline (research/rigor/RESULTS.md verifier correction 4).",
   "v2 (frozen fast-tier book): covers central fixed costs in IS: yes, from 1x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 2d).",
   "v2-safe (net cap 50): covers central fixed costs in IS: yes, from 2x (central cost $167/day); in the burned OOS: no: not even with every qualifying print (central cost $167/day) (engine re-run at 0.5x\u20135x size and with every qualifying print; section 3d).",
@@ -3317,18 +3320,18 @@
       "high": 208539.1
      },
      "camera_kits_amortised_month": {
-      "low": 208.33333333333334,
+      "low": 270.0,
       "central": 416.6666666666667,
       "high": 833.3333333333334
      }
     },
     "monthly": {
-     "low": 34995.22683333334,
+     "low": 35056.893500000006,
      "central": 126205.66650000002,
      "high": 219470.54533333334
     },
     "daily": {
-     "low": 1150.5280054794523,
+     "low": 1152.555402739726,
      "central": 4149.2273917808225,
      "high": 7215.469983561644
     }
@@ -3359,10 +3362,10 @@
      "return_on_capital_ann_pct": 115.03843203883494,
      "fixed_costs": {
       "low": {
-       "fixed_cost_usd_per_day": 1150.5280054794523,
-       "net_after_costs_usd_per_day": -1061.7344054794523,
-       "breakeven_pnl_usd_per_day": 1150.5280054794523,
-       "breakeven_notional_usd_per_day": 50730.120093787176
+       "fixed_cost_usd_per_day": 1152.555402739726,
+       "net_after_costs_usd_per_day": -1063.7618027397261,
+       "breakeven_pnl_usd_per_day": 1152.555402739726,
+       "breakeven_notional_usd_per_day": 50819.513925142586
       },
       "central": {
        "fixed_cost_usd_per_day": 4149.2273917808225,
@@ -3438,10 +3441,10 @@
      "return_on_capital_ann_pct": 66.1389125,
      "fixed_costs": {
       "low": {
-       "fixed_cost_usd_per_day": 1150.5280054794523,
-       "net_after_costs_usd_per_day": -1104.1022054794523,
-       "breakeven_pnl_usd_per_day": 1150.5280054794523,
-       "breakeven_notional_usd_per_day": 80079.68017255155
+       "fixed_cost_usd_per_day": 1152.555402739726,
+       "net_after_costs_usd_per_day": -1106.1296027397261,
+       "breakeven_pnl_usd_per_day": 1152.555402739726,
+       "breakeven_notional_usd_per_day": 80220.7921866983
       },
       "central": {
        "fixed_cost_usd_per_day": 4149.2273917808225,
@@ -3555,14 +3558,16 @@
      }
     }
    },
-   "extra_md": "**Fixed costs at the scenario's 10 covered matches a day** (low / central / high): per covered match $110 / $397 / $686 (operator and GPU hours plus venue access); camera kits $208 / $417 / $833 a month; plus the feed licence and VPS. Total **$1,151 / $4,149 / $7,215 per day**, which is the trading P&L per day the counterfactual must clear to break even. With venue access at $0 and everything else at its low value it is still $1,151/day.",
+   "extra_md": "**Fixed costs at the scenario's 10 covered matches a day** (low / central / high): per covered match $110 / $397 / $686 (operator and GPU hours plus venue access); camera kits $270 / $417 / $833 a month; plus the feed licence and VPS. Total **$1,153 / $4,149 / $7,215 per day**, which is the trading P&L per day the counterfactual must clear to break even. With venue access at $0 and everything else at its low value it is still $1,153/day.",
    "capacity_md": "IS: reachable stale depth before caps $86,123/day; traded now $3,915/day. IS, corrected grid medians by net cap: net cap 100.0: $75/day, Sharpe 15.5; net cap 1000.0: $202/day, Sharpe 4.8. OOS: reachable stale depth before caps $72,737/day; traded now $3,231/day. OOS, corrected grid medians by net cap: net cap 100.0: $57/day, Sharpe 12.0; net cap 1000.0: $54/day, Sharpe 1.3.\n\nDepth model: fills are priced from the measured live book (the cost of the first n stale shares at the same time before the reprice, src/tier0.py live_edge_curve), depth scaled by match volume, never up. Dollar scale is set by the net cap, not by the edge.",
    "coverage": {
     "IS": "no at the scenario's net cap",
     "OOS": "no at the scenario's net cap"
    },
    "caveats": [
-    "Counterfactual: the feed and the camera were not bought; every number depends on the assumptions in research/v2/tier0/RESULTS.md section 6 and DEVIATIONS.md."
+    "Counterfactual: the feed and the camera were not bought; every number depends on the assumptions in research/v2/tier0/RESULTS.md section 6 and DEVIATIONS.md.",
+    "Tier-0's IS covers only the 1 s-delay matches (trades from 2026-05-15), about half of v2's 206-day IS, so its IS dollars and per-day figures are not directly comparable with v2's IS row.",
+    "A second-round tier-0 workflow (research/v2/tier0_v3, an IS-only optimisation grid plus verification) was still running when this was generated. Nothing from it is used here; the numbers above are the verified revision in results/tier0/results.json and may be superseded."
    ]
   },
   "maker": {
@@ -4179,8 +4184,8 @@
     "live_paper": {
      "status": "pending",
      "expected_file": "results/live/summary.json",
-     "why": "session 20261003T193534Z (session, mode LIVE) status 'warm-up: trade-side check 3/50 matched, agree 3'; primary book B1: 0 fills, 0 resolved. The session books $10,000 of paper capital per book, not the 3 \u00d7 peak-locked convention ($2,022\u2013$2,779 for the maker's IS and OOS books). It checks plumbing only: maker v1 already failed its blind OOS, and any rule change would be maker v2 with its own pre-registration",
-     "snapshot_utc": "2026-10-03T19:42:16.993Z"
+     "why": "session 20261003T193534Z (session, mode LIVE: live public market data, paper fills, no orders sent) status 'QUOTING (paper)'; primary book B1: 0 fills, 0 resolved. The session books $10,000 of paper capital per book, not the 3 \u00d7 peak-locked convention ($2,022\u2013$2,779 for the maker's IS and OOS books). It checks plumbing only: maker v1 already failed its blind OOS, and any rule change would be maker v2 with its own pre-registration",
+     "snapshot_utc": "2026-10-03T20:03:32.351Z"
     }
    },
    "about": "Leaning maker on the same match's side markets (set winner, handicaps, totals): quote only on the side that gains from the moneyline's move, filled by takers trading against it; 0 fee + 15% rebate; 20% of each contrary print, \u2264 $250 per fill, \u2264 $2,000 per match; hold to resolution. Remote-executable with public data. The idea is IS-generated (research/v2/crossmarket/RESULTS.md 5b).",

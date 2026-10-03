@@ -36,11 +36,24 @@ key renamed `v2_onset_superseded`, P16).
 | N15 | P15 | 136, after "(a plateau, not a spike)" | — | `Moving each signal threshold of the frozen rule one step (detector 3/6¢, short and long windows, 2–6 s entry window, qualification counts and t, n₀, price zone; 19 in-sample re-runs) keeps +1.21 to +1.46¢/share, every CI above 0.` | `pm_compute` `p15_sensitivity_is` |
 | N16 | P26 | §1 (after line 34) or §4 | — | `Of the 1.99¢ gross in-sample edge, 1.56¢ [1.50, 1.62] is the fill against the mid 30 s later (the stale quote) and 0.43¢ [0.21, 0.64] is drift to resolution; in today's regime the drift CI includes 0 ([−0.04, 0.81]).` | `pm_compute` `p26_gross_edge_split_is` |
 | N17 | P13 | 121–122 | `Returns are arithmetic, on capital with a 4 h lock per position` | `Returns are arithmetic, on each period's own capital with a 4 h lock per position (on the in-sample $28.3k, the burned-window return is 119% a year, not 148%)` | `FINANCIALS` §2c "on one capital fixed ex ante" row |
-| N18 | P10 | §6 or §7 (new sentence) | — | `A courtside tier-0 counterfactual (feed and camera assumed, not bought) nets $89/day in sample and $46/day on the burned window after the verifier's corrections, against $1,151–7,215/day of fixed costs at 10 covered matches a day: uneconomic.` | `results/tier0/results.json` `headline` (20-seed means; `results/tier0/VERIFIED`); `FINANCIALS` §4 |
+| N18 | P10 | §6 or §7 (new sentence) | — | `A courtside tier-0 counterfactual (feed and camera assumed, not bought) nets $89/day in sample and $46/day on the burned window after the verifier's corrections, against $1,153–7,215/day of fixed costs at 10 covered matches a day: uneconomic.` | `results/tier0/results.json` `headline` (20-seed means; `results/tier0/VERIFIED`); `FINANCIALS` §4 |
 | N19 | P11 | 206–207 | `a side-market leaning maker (blind OOS +1.87¢ [−0.14, 3.86], a fail;` | `a side-market leaning maker (blind OOS +1.87¢ [−0.14, 3.86] per fill, −0.75¢ share-weighted and −$379, a fail;` | `results/maker/oos.json`; `FINANCIALS` §5 |
 | N20 | P22 | 193 | `The book reprices 1.2 s *before* the official WTA point stamp (482 points)` | keep, but use one figure everywhere: 1.16 s (n = 482, `research/v2/latency/RESULTS.md`). Tier-0 uses −1.32 s (`results/tier0/results.json` `timing`) on a different sample; say so where it appears | latency RESULTS; tier-0 results |
 | N21 | P28 | 123 (Table 2 note) | `Derived rows: `scripts/note_metrics.py`.` | `Daily P&L is booked on the entry date (positions resolve a median 1.25 h later). Derived rows: `scripts/note_metrics.py`.` | `FINANCIALS` §2b |
 | N22 | P04 (table item 17) | 192 | `displacing the fast tier ($0.3–3.1M a month in the window)` | `displacing the fast tier ($0.45–2.7M a month over Feb–Aug, $3.1M in September)` | `results/risk/risk_stats.json` `liquidity_capital.fast_tier_0_3s_usd_by_month` (Mar $449,794 to Jul $2,726,479; Sep $3,115,142, onset-labelled). The old low end is the 3-day October |
+| N23 | audit | 120 | `out of sample a handful of the fastest wallets` | `out of sample a handful of the most profitable copied (fast-tier) wallets` | `results/risk/risk_stats.json` `concentration.burned_oos.wallet` ranks wallets by P&L, not by speed |
+| N24 | audit | wherever tier-0 fixed costs are quoted | `$1,151` (low case) | `$1,153` | `FINANCIALS` §1/§4 after the audit: the camera kit's low case is now the public launch list prices (GoPro HERO13 Black $399 + NVIDIA Jetson Orin Nano Super developer kit $249 = $648, ESTIMATE) instead of an unsourced $500. Central ($4,149) and high ($7,215) are unchanged |
+| N25 | audit | wherever tier-0 in-sample dollars are quoted next to v2's | `in sample` | `in sample (1 s-delay matches only, trades from 2026-05-15, 103 days)` | `results/tier0/results.json` `headline.IS.mean.days` = 103 and `headline_scenario.regime` = `delay1`; v2's IS is 206 days |
+
+## Audit pass (about 20:00 UTC Oct 3)
+
+An adversarial audit traced the numbers in `research/financials/FINANCIALS.md` and `docs/RISK.md` to their sources
+and recomputed 20+ of them independently (most from `data/v2_trades_is_oos.parquet` with plain pandas, not the repo's
+metric code). Fixed directly: `scripts/financials.py` (cost labels and sources, tier-0 IS period label, live-session
+wording; re-run, 26 reference checks, 0 failed), `docs/RISK.md` (stale engine-demo, vision, decision-latency, live-session
+and tier-0 pre-registered figures; feed-lag range; fixed-cost table aligned with FINANCIALS §1; capital and period
+conventions stated), this file (N18, N23–N25) and `research/financials/PM_REVIEW.md` ($1,151 → $1,153; feed-lag quote).
+The items N23–N25 above are for the note's owner.
 
 ## README.md (owner: README workstream)
 

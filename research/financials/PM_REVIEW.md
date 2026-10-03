@@ -34,7 +34,7 @@ No new external price was looked up.
 2. **No strategy has passed a blind out-of-sample test.** v1 lost $36k (blind). v2 and v2-safe failed the
    pre-registered U2 test. Maker v1 failed its blind OOS. The v2 forward test is pending. The corrected tier-0
    counterfactual landed at 19:20 UTC (`results/tier0/results.json` `headline`, `VERIFIED` marker present):
-   $88.8/day IS and $46.4/day burned OOS, against $1,151/day of fixed costs even at the low assumption.
+   $88.8/day IS and $46.4/day burned OOS, against $1,153/day of fixed costs even at the low assumption.
 3. **The economics are break-even at best.** In today's fee and delay regime (1 s, 5%), in-sample v2 makes
    $179/day (`pm_checks.json`) against $167/day of central fixed costs (`FINANCIALS.md`): about +$12/day,
    or $65.5k a year against $60.9k a year. On the burned OOS it makes $92/day, which is −$75/day after
@@ -72,7 +72,7 @@ burned-OOS rows; P17 re-ran committed scripts on a clone. Both are logged in `re
 | **P24** factor regression, IS only | Every calendar day (factors and RF 0 off trading days), excess return, ×365: alpha +0.675%/day (t = 9.5), 246% a year; market beta 0.18 (t = 1.54), largest factor t 1.54, R² 2.3%, 206 days. Weekdays only (×252): alpha t 8.1, largest t 1.37, R² 2.7%, 142 days. Same conclusion as the committed file, which included Aug 25–31 burned-OOS days | `pm_compute` `p24_factor_regression_is`; RISK R14; CORRECTIONS N5, O2 |
 | **P25** kill rules on IS | Trailing 30-day edge rule (causal: trades entered in the last 30 days and already resolved): edge min +0.74¢, median +1.47¢, so 206/206 days at full size; the rule never fires. 5% drawdown stop: never (worst −2.01%). $1,000 daily stop: never (worst −$551). Per-book stop at v2's 3.86 σ: v2 $1,000, v2-safe $545, maker $599 (the $1,000 stop is 36% of the maker's $2,779 capital; the scaled stop would fire on 1 IS day). v2 vs maker IS daily correlation −0.04 | `pm_compute` `p25_kill_rules_is`; RISK kill table and R14; CORRECTIONS O4 |
 | **P26** gross edge split, IS | Of +1.99¢ gross: fill vs mid 30 s later (the stale quote) **+1.56¢ [1.50, 1.62]** (79%); 30 s to resolution +0.43¢ [0.21, 0.64]. Finer: fill vs 5 s mid +1.13¢, 5 s→30 s +0.43¢. Fees −0.61¢, net +1.38¢. In the 1 s / 5% slice: stale quote +1.58¢ [1.48, 1.69], drift +0.38¢ [−0.04, 0.81] (CI includes 0) | `pm_compute` `p26_gross_edge_split_is`; CORRECTIONS N16 |
-| **P10** tier-0 bound | Corrected headline (20-seed means): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4; burned OOS +0.58¢ [−0.08, 1.21], $46.4/day, Sharpe 7.3. To cover the low fixed-cost case ($1,151/day) it would need 13.0× (IS) or 24.8× (OOS) its trading P&L. Decision table: **stop** | `FINANCIALS.md` headline and §4 |
+| **P10** tier-0 bound | Corrected headline (20-seed means): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4; burned OOS +0.58¢ [−0.08, 1.21], $46.4/day, Sharpe 7.3. To cover the low fixed-cost case ($1,153/day) it would need 13.0× (IS) or 24.8× (OOS) its trading P&L. Decision table: **stop** | `FINANCIALS.md` headline and §4 |
 
 ## Findings, most severe first
 
@@ -199,7 +199,7 @@ burned-OOS rows; P17 re-ran committed scripts on a clone. Both are logged in `re
 **P10 [DONE: the corrected headline landed; it does not clear its fixed costs] Tier-0 is unlikely to clear its fixed costs.**
 - The pre-registered primary makes $307.9/day IS (`results/tier0/results.json`).
   `research/v2/tier0/DEVIATIONS.md` V1 shows that number **overstates** the fill edge.
-- At the scenario's 10 covered matches a day, fixed costs are $1,151 / $4,149 / $7,215 per day (low /
+- At the scenario's 10 covered matches a day, fixed costs are $1,153 / $4,149 / $7,215 per day (low /
   central / high; `FINANCIALS.md` §4).
 - So the corrected headline would need to be at least 3.7× the overstated primary (1,150.5 / 307.9) just to
   cover the low-cost case, and 13.5× to cover central.
@@ -387,7 +387,7 @@ Everything comes from the Oct 3 recording: 2.98 h of moneyline books, 9 WTA matc
 | 11 | Maker OOS status | RISK table and R14: "pending" | `maker/oos.json`: FAILURE | FAILURE |
 | 12 | Maker IS reference | maker RESULTS: +3.06¢, n = 10,171 (fixed b_T) | crossmarket 5b: +2.73¢, 8,905 (walk-forward) | Label the book each time |
 | 13 | Book reprice vs official stamp | latency RESULTS, RISK R5: −1.16 s (n = 482); NOTE −1.2 s | tier-0 V3: R median −1.32 s; tier-0 inputs: −1.418 s (49 points) | One canonical figure with its sample |
-| 14 | Public feed lag | latency: ESPN +27.5 s after stamp, 28.2 s behind book | `summary.json` h4: median lead 44.5 s (n = 75); RISK: "17–62 s behind the book (p10–p90)"; README: "27–43 s behind" (behind the stamp) | Define against stamp or book |
+| 14 | Public feed lag | latency: ESPN +27.5 s after stamp, 28.2 s behind book | `summary.json` h4: median lead 44.5 s (n = 75); RISK: "18–63 s behind the book (p10–p90)" (was "17–62", corrected in the audit); README: "27–43 s behind" (behind the stamp) | Define against stamp or book |
 | 15 | Factor regression window | IS ends 2026-08-25 | `factor_regression.json`: to 2026-08-31 | IS only |
 | 16 | OOS return on capital | `causal.json`: 148% a year on $22,754 | Same P&L on IS capital $28,302: 119% (derived) | Ex-ante capital |
 | 17 | Fast-tier monthly volume | NOTE §6: $0.3–3.1M "in the window" | RISK R3: $0.45–2.7M IS | NOTE's low end is the 3-day October |
@@ -411,7 +411,7 @@ still open.
 | | fail | H6 persistence fails out of sample in the current regime. v2 and tier-0 lose their reason to exist |
 | v2 forward, primary B (v2 book, 30 s net) | pass | Supporting evidence only: one day of 30 s markouts, not P&L |
 | | fail | Expected even if the edge is real, because B is underpowered (A1.5). Uninformative unless A also fails |
-| Tier-0 revision | corrected P&L < $1,151/day | Uneconomic at 10 matches a day in every cost case (P10). Stop. **This is the outcome: $88.8/day IS, $46.4/day OOS** |
+| Tier-0 revision | corrected P&L < $1,153/day | Uneconomic at 10 matches a day in every cost case (P10). Stop. **This is the outcome: $88.8/day IS, $46.4/day OOS** |
 | | ≥ $4,149/day | Worth a feed-licence quote and a legal review. Still a counterfactual |
 | Maker live paper | any | Maker v1 already failed its blind OOS. A changed rule is maker v2, which needs its own pre-registration (PREREG §5). The live run only checks the plumbing |
 | Table tennis | any | No allocation consequence: the books cannot be traded (P33) |

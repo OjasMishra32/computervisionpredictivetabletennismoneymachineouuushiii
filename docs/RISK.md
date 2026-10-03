@@ -1,6 +1,6 @@
 # COURTSIDE risk register
 
-Written 2026-10-03 (about 18:45 UTC); updated about 19:40 UTC with the PM review's compute items (`scripts/pm_compute.py` → `results/financials/pm_compute.json`, marked `pm_compute`) and the results that landed since (maker blind OOS, corrected tier-0 headline). Paper only: this repo places no orders and holds no keys.
+Written 2026-10-03 (about 18:45 UTC); updated about 19:40 UTC with the PM review's compute items (`scripts/pm_compute.py` → `results/financials/pm_compute.json`, marked `pm_compute`) and the results that landed since (maker blind OOS, corrected tier-0 headline); audited about 20:00 UTC (every number traced to its source; stale engine-demo, vision and live-session figures refreshed; fixed-cost table aligned with `research/financials/FINANCIALS.md` §1). Paper only: this repo places no orders and holds no keys. No live ATP/WTA point feed was bought or used, and no courtside camera was operated: tier-0 is a counterfactual, and the "official stamps" below are the WTA's public point-by-point log, read after the fact.
 
 Every number below comes from a file in this repo or from a public source with its URL. Numbers marked
 `risk_stats` come from `scripts/risk_stats.py`, which writes `results/risk/risk_stats.json` (run:
@@ -10,8 +10,12 @@ nothing. When something has not been measured, this file says "unmeasured".
 
 **Conventions.** IS = Feb 1 to Aug 25 2026 (206 days). Burned OOS = U1 matches starting from 2026-08-25 14:15 UTC
 (40 days). The burned OOS is non-blind (`results/oos_peeks.log`). Capital = 3 × peak locked dollars, with a 4 h
-ex-ante lock per position. Per-share CIs are 95%, match-clustered. Sharpe = daily mean / sd × √365 on zero-filled
-calendar days.
+ex-ante lock per position (v2, v2-safe). The maker's lock runs from entry to the side market's resolution
+(`research/v2/crossmarket/analyze.py` `capital_for`), and tier-0's capital is the 20-seed mean of 3 × its own peak. Each
+period uses its own peak, which a trader cannot know in advance; on one capital fixed ex ante (v2's IS $28,302) the
+burned-OOS return is 119% a year, not 148% (`FINANCIALS.md` §2c). Tier-0's IS covers only the 1 s-delay matches
+(trades from 2026-05-15, 103 days), not the 206-day IS above. Per-share CIs are 95%, match-clustered. Sharpe = daily
+mean / sd × √365 on zero-filled calendar days.
 
 **What each strategy is, and whether it can trade live.**
 
@@ -19,8 +23,8 @@ calendar days.
 |---|---|---|---|
 | **v2** | Frozen fast-tier book (`HYPOTHESIS_V2.md`, `src/v2.py`), priced at the fast tier's own fills | **No.** It measures the opportunity at the fast tier's speed. Copying the fast tier from a remote seat loses money (late-entry stress below: −0.89¢/share IS) | IS +1.38¢ [1.17, 1.59]; burned OOS +0.60¢ [0.09, 1.13]; blind U2-OOS +1.22¢ [−0.19, 2.65], FAIL; forward test `results/v2/forward.json` **pending** (one run, about 11:30 UTC Oct 4) |
 | **v2-safe** | v2 with the net cap at 50 shares (`research/v2/lowloss/`) | Same as v2 | Burned OOS +0.69¢ [0.24, 1.15]; blind U2-OOS FAIL |
-| **tier-0** | Counterfactual: courtside camera + own CV + licensed point feed + London gateway. Not purchased, not built | **No.** Needs a data licence and organiser consent (see R16) | A verifier refuted the pre-registered fill pricing (`research/v2/tier0/DEVIATIONS.md` V1–V10). Corrected headline (`results/tier0/results.json` `headline`, 20-seed means; `results/tier0/VERIFIED` present): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4; burned OOS +0.58¢, $46.4/day, Sharpe 7.3. Fixed costs at 10 covered matches a day are $1,151 / $4,149 / $7,215 per day (low / central / high, `research/financials/FINANCIALS.md` §4), so it is uneconomic in every cost case |
-| **maker v1** | Leaning maker on side markets (`research/v2/crossmarket/RESULTS.md` 5b) | **Technically yes, remotely:** public moneyline feed plus post-only quotes. Live *paper* trading only: a US person cannot open positions on polymarket.com, and the hackathon forbids funded accounts (checklist 1–2) | IS +2.73¢ [1.73, 3.70] per fill (share-weighted +2.59¢ [−0.09, 5.20]). **Blind OOS: FAILURE**, +1.87¢ [−0.14, 3.86] per fill, −$379 (−0.75¢/share share-weighted) (`results/maker/oos.json`). Live paper session (`results/live/summary.json`) running, 0 fills at 19:21 UTC; it checks plumbing only |
+| **tier-0** | Counterfactual: courtside camera + own CV + licensed point feed + London gateway. Not purchased, not built | **No.** Needs a data licence and organiser consent (see R16) | A verifier refuted the pre-registered fill pricing (`research/v2/tier0/DEVIATIONS.md` V1–V10). Corrected headline (`results/tier0/results.json` `headline`, 20-seed means; `results/tier0/VERIFIED` present): IS +1.10¢ [0.82, 1.38], $88.8/day, Sharpe 11.4 (IS = 1 s-delay matches only, 103 days); burned OOS +0.58¢, $46.4/day, Sharpe 7.3. Fixed costs at 10 covered matches a day are $1,153 / $4,149 / $7,215 per day (low / central / high, `research/financials/FINANCIALS.md` §4), so it is uneconomic in every cost case |
+| **maker v1** | Leaning maker on side markets (`research/v2/crossmarket/RESULTS.md` 5b) | **Technically yes, remotely:** public moneyline feed plus post-only quotes. Live *paper* trading only: a US person cannot open positions on polymarket.com, and the hackathon forbids funded accounts (checklist 1–2) | IS +2.73¢ [1.73, 3.70] per fill (share-weighted +2.59¢ [−0.09, 5.20]). **Blind OOS: FAILURE**, +1.87¢ [−0.14, 3.86] per fill, −$379 (−0.75¢/share share-weighted) (`results/maker/oos.json`). Live paper session `20261003T193534Z` (`results/live/summary.json`) started 19:35 UTC, passed its trade-side warm-up and began paper quoting about 20:00 UTC; 0 fills at 20:03 UTC. It books $10,000 of paper capital per book, not the 3 × peak-locked convention ($2,022–2,779), and checks plumbing only |
 | **table tennis** | Out-of-sport test (`HYPOTHESIS_TT.md`) | **No.** Polymarket TT books: 89¢ median spread, $23 at the touch (NOTE §6) | First run 19:23 UTC (`results/tt/results.json`): 27 evaluable matches; TT1 FAIL, TT2 FAIL (no fast tier detected), TT3 FAIL (no trades) |
 
 ---
@@ -31,7 +35,7 @@ Go only if every line is YES. Any NO means no new risk; risk-reducing orders are
 
 | # | Check | Pass condition | Where checked |
 |---|---|---|---|
-| 1 | Operator jurisdiction | Not a resident of a close-only or blocked jurisdiction on the venue used. The US, UK, France, Canada, Australia and Germany are close-only on polymarket.com, including the API ([Polymarket geoblock](https://docs.polymarket.com/api-reference/geoblock)). A US person needs Polymarket US, which is a separate venue and untested here | policy only; legal sign-off |
+| 1 | Operator jurisdiction | Not a resident of a close-only or blocked jurisdiction on the venue used. The US, UK, France, Canada (BC, ON, AB, QC), Australia and Germany are close-only on polymarket.com, including the API ([Polymarket geoblock](https://docs.polymarket.com/api-reference/geoblock)). A US person needs Polymarket US, which is a separate venue and untested here | policy only; legal sign-off |
 | 2 | Competition rules | Hackathon TERMS 5.3: no funded exchange account is connected to any Event activity (`research/compliance/REQUIREMENTS.md` item 44). Paper only during the event | policy only |
 | 3 | Data rights | v2 and maker use only public, keyless Polymarket data. Tier-0 needs a licensed point feed and organiser consent for any courtside capture. **Neither is held, so tier-0 cannot go live** | policy only (R16) |
 | 4 | Venue parameters equal the backtest | Each market's `feeSchedule.rate` = 0.05, `secondsDelay` = 1, tick 0.01, minimum size 5 shares (`research/v2/maker/VENUE_RULES.md`). If anything differs: stop and re-run `scripts/v2_cost_stress.py` | policy only; values are read per market by `src/polymarket.py` |
@@ -54,7 +58,7 @@ Go only if every line is YES. Any NO means no new risk; risk-reducing orders are
 | Recent feed delay (median of last 25) > rolling p95 (floor 150 ms), or > 2 s | Risk-reducing only | `limits.py` `latency_*` |
 | Manual kill | Everything halts, including risk-reducing orders | `limits.py` `kill("manual")` |
 | Any market's fee rate or order delay differs from the frozen backtest | No new risk until the cost stress is re-run at the new values | policy only |
-| Drawdown from equity peak > 5% of capital (2.5 × the worst measured drawdown, 2.06%) | Stop; review before restarting | policy only; never fires on IS (worst −2.01%, `pm_compute` P25) |
+| Drawdown from equity peak > 5% of capital (about 2.4 × the worst measured drawdown, −2.06% on the burned OOS) | Stop; review before restarting | policy only; never fires on IS (worst −2.01%, `pm_compute` P25) |
 | Trailing 30-day net edge < 0.3¢/share; ≤ 0 | Half size; stop | policy only (NOTE §5). IS replay (`pm_compute` P25): the causal trailing edge never fell below +0.74¢ (median +1.47¢), so 206/206 days stay at full size and the rule changes nothing in sample. It is untested on a decline |
 | Any UMA proposal on a market we hold is disputed | Add no risk to that market; earmark its capital for 4–6 days | policy only |
 | Venue incident, matching-engine restart (2 min post-only mode), CLOB upgrade | No taker orders until resolved; makers: cancel and re-check | policy only (`VENUE_RULES.md`) |
@@ -115,7 +119,7 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   Without its top-5 wallets, v2 earns +0.61¢ [0.00, 1.27] IS and **−0.34¢ [−1.24, 0.55] on the burned OOS
   (−$1,552)**. Clustered by copied wallet instead of by match (`pm_compute` P07; 2,000 draws, seed 0), the 95% CI
   is [+0.57, +2.30] IS (80 wallets) and **[−0.45, +2.38] on the burned OOS** (86 wallets), against [1.17, 1.59] and
-  [0.09, 1.13] by match. The effective sample is the wallets, not the matches. Out of sample the whole profit sits on the five fastest wallets. The U2 row confirms the NOTE's
+  [0.09, 1.13] by match. The effective sample is the wallets, not the matches. Out of sample the whole profit sits on the five most profitable copied wallets (ranked by P&L, not by speed). The U2 row confirms the NOTE's
   "98%". Match concentration is low in sample: without the top-5 matches, IS is still +1.35¢ [1.15, 1.57].
 - **(c)** Per-match net cap (R1). No per-wallet cap exists, in the backtest or in `limits.py`. For a live tier-0
   trader the "wallet" is ourselves, so this risk becomes "are we one of the top-5 fastest" (R6).
@@ -156,10 +160,14 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   - Passive exit after a jump, 1 tick inside the ask: filled 27% within 30 s, 35% within 60 s, 56% within 300 s.
     Joining the queue (median 238 shares ahead): 14% / 21% / 37%. After a fill the price kept running +5.6¢;
     unfilled, it fell −5.7¢ (`research/v2/livefill/RESULTS.md`). That is adverse selection.
-  - Chasing after the move: the engine demo sent 0 orders from 45 calls. 3 were skipped because the book had
-    already repriced and 2 because it moved against the call (`results/engine/demo_run.json`).
-  - Tier-0 fill rate: 31.8% IS / 32.6% OOS under the pre-registered model, whose pricing was refuted. Corrected
-    headline (20-seed means, `results/tier0/results.json`): 25.1% IS / 20.3% OOS.
+  - Chasing after the move (`results/engine/demo_run.json` `sensitivity`; an illustrative pairing of table-tennis
+    calls with a recorded WTA book, not a tennis camera and not a backtest): with vision that keeps up and a 2.0 s
+    stamp lag, 72 calls on 8 points sent 11 orders and filled 8. With a 1.0 s stamp lag, 7 orders went out; 4 calls
+    were skipped because the book had already repriced and 2 because it moved against the call. With vision as it
+    actually ran on the shared laptop, all 72 calls were stale and 0 orders went out.
+  - Tier-0 fill rate: 31.9% IS / 31.8% OOS under the pre-registered model, whose pricing was refuted
+    (`results/tier0/results.json` `prereg_record.primary`, 20-seed means). Corrected headline (20-seed means,
+    `headline`): 25.1% IS / 20.3% OOS.
   - v2 worst-quartile fills (every fill at the 75th-percentile price within its 3 s burst; a +1.0¢ add-on for
     singletons): +0.49¢ [0.28, 0.71] IS, **−0.31¢ [−0.83, 0.21] OOS** (`risk_stats` `stress`).
 - **(c)** Hold to resolution, so no exit fills are needed (HYPOTHESIS_V2 rule 6). Taker orders are FAK limits at
@@ -173,10 +181,12 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 - **(a)** The fast tier's edge exists only for the first seconds after a point. Anyone later pays the spread to
   the fast tier.
 - **(b)**
-  - The book reprices a median 1.16 s **before** the official point stamp (n = 482). Stale depth is gone 0.5 s
+  - The book reprices a median 1.16 s **before** the official point stamp (n = 482 points, 9 WTA matches; the
+    stamps are the WTA's public point-by-point log, read after the fact, not a licensed feed). Stale depth is gone 0.5 s
     after the reprice. With the 1 s delay, an order must leave ≥ 1.3 s before the reprice, about 2.5 s before the
     official stamp (latency RESULTS §3, §5).
-  - Every public score feed is 17–62 s behind the book (p10–p90); 0 of 295 observations led by more than 1.3 s.
+  - Every public score feed is 18–63 s behind the book (p10–p90 across ESPN, Polymarket sports and the WTA API; latency
+    RESULTS §3a); 0 of 295 observations led by more than 1.3 s.
   - Decay inside v2's own 0–3 s window, by seconds since detection (`risk_stats` `signal_decay_within_window`):
 
     | | 0 s | 1 s | 2 s |
@@ -186,11 +196,12 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 
   - Late entry (copy at +delay+3 s, `src/fasttier.py` follower): −0.89¢ [−1.10, −0.68] IS, −1.89¢ OOS.
   - Infrastructure: 67 ms one-way from Gainesville; London co-location assumed 2 ms (inferred, not measured).
-    Vision takes 83 ms p50 (p90 115 ms) per frame on a host that keeps up. The laptop sustains only 54 fps, so a
-    120 fps feed queues for seconds (`results/engine/demo_run.json` `latency_budget`).
+    Vision processing takes 100 ms p50 (p90 153 ms) from frame to call on the loaded laptop when frames do not
+    queue (`results/engine/demo_run.json` `latency_budget`). The laptop sustains only 54 fps unloaded
+    (`results/engine/vision_bench.json`), so a 120 fps feed queues for seconds.
   - **Latency ×2 for v2: not computable.** v2 has no own-latency parameter (it fills at the fast tier's
     prices). The decay table and the late-entry row are the measured substitutes.
-- **(c)** The decision path takes 0.02 ms. Size the vision host for 120 fps with headroom (not done). Co-locate
+- **(c)** The decision path takes 0.06 ms p50 (p90 0.13 ms; `demo_run.json` `latency_budget`). Size the vision host for 120 fps with headroom (not done). Co-locate
   near London for a real deployment (not done).
 - **(d)** Latency kill in `limits.py`. Policy only: drop any call whose frame-to-decision time exceeds 1 s
   (`engine/strategy.py` `max_call_latency_ms` = 1,000).
@@ -225,9 +236,9 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   `results/spin/tennis/raw/nominal_s7_m300.parquet`; counts kept in `results/risk/spin_tennis_calls.json`): every method has 0 false calls and precision CI
   [0.97, 1.00]; recall is 0.96 [0.92, 0.98] at 0 ms falling to 0.87–0.92 at 300 ms. On the real video no
   false call has been seen, but the CI is wide: a Wilson lower bound of 0.95 needs **73 correct calls in a row**.
-  Under the pre-registered tier-0 model, wrong calls were 8.7% / 9.0% of trades and cost −$4,565 IS (that
-  model's pricing was refuted). In the corrected headline they are 12.6% IS / 19.1% OOS of trades and cost
-  −$3,942 IS (`results/tier0/results.json`, 20-seed means).
+  Under the pre-registered tier-0 model, wrong calls were 8.9% IS / 8.8% OOS of trades and cost −$4,394 IS (that
+  model's pricing was refuted; `prereg_record.primary`). In the corrected headline they are 12.6% IS / 19.1% OOS of
+  trades and cost −$3,942 IS (`results/tier0/results.json` `headline`; both 20-seed means).
 
   Markov fair value: live prices are calibrated within about 1¢. 3 of 11 price bands have CIs excluding the
   price, with the largest gap 1.01¢ (DEVIATIONS D10; `results/calibration_is.csv`). The engine's limits:
@@ -266,7 +277,7 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   (`src/tape.py`). But **the ≥ $5k volume filter uses each market's final lifetime volume, which is not known at
   match start.** Measured effect: IS P&L by final-volume band is $5–20k +2.55¢ ($1,196), $20–100k +2.15¢,
   $0.1–1M +1.11¢, > $1M +0.95¢. On the burned OOS the $5–20k band is −1.96¢ (−$187) (`risk_stats`
-  `universe_volume_filter`). The blind U2 test covered markets below the filter ($1–5k bands: IS +4.15¢ and
+  `universe_volume_filter`). The blind U2 test covered markets below the filter (`research/v2/expand/RESULTS.md`, $1–2k and $2–5k bands: IS +4.15¢ and
   +3.95¢), so the filter does not flatter the result. Markets never marked closed by Oct 3 are not in the
   sample (unmeasured).
   - **Pre-start volume instead** (`pm_compute` P14; $ traded before the scheduled start, the ex-ante measure
@@ -297,10 +308,10 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
     long window, 2/4/6 s entry window, ≥ 20/40 prints, ≥ 5/15 matches, t > 2/4, n₀ 100/400, zone 0–1/0.1–0.9.
     Every run stays at +1.21 to +1.46¢/share with the CI above 0 (base +1.38¢), Sharpe 9.0–17.6, P&L
     $21.8k–48.0k (base $40.4k). In the 1 s/5% regime the range is +0.66 to +1.39¢, every CI above 0. The
-    print and match counts never bind; the detector threshold moves dollars most (6¢: $21.8k, Sharpe 9.0).
-  - Peeks: `results/oos_peeks.log` had 28 lines at 19:41 UTC Oct 3 (first 10:42 UTC). It grows while the other
-    workstreams run (maker live replays, table tennis, this review's P07 and P17 lines); recount at submission and
-    use one number everywhere (NOTE §4 says 19).
+    print and match counts barely matter (at most 3 trades change); the detector threshold moves dollars most (6¢: $21.8k, Sharpe 9.0).
+  - Peeks: `results/oos_peeks.log` had 28 lines at 19:41 UTC Oct 3 and 32 at 20:04 UTC (first 10:42 UTC). It grows
+    while the other workstreams run (maker live session, table-tennis audits, this review's P07 and P17 lines, the
+    financials audit's reproduction line); recount at submission and use one number everywhere (NOTE §4 says 19).
 - **(c)** Pre-registration (`HYPOTHESIS*.md`), deviations logged, adversarial verifiers for every lens, a blind
   U2 test and a blind forward window.
 - **(d)** If the forward primary (`results/v2/forward.json`) fails, v2 is not traded. Its CI-excludes-0 rule is
@@ -362,7 +373,7 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
     returns net of the risk-free rate, alpha ×365 (`pm_compute` P24): R² 2.3%, no beta significant (largest
     t = 1.54, market beta 0.18), alpha t = 9.5. The committed `results/v2/factor_regression.json` (R² 3.3%, largest
     t = 1.33) also used burned-OOS days to Aug 31, dropped weekends and annualised ×252; the conclusion is the same.
-  - v2 vs v2-safe daily correlation 0.955: they trade the same opportunities, so running both does not
+  - v2 vs v2-safe daily correlation 0.955 IS (0.956 burned OOS): they trade the same opportunities, so running both does not
     diversify. U1 vs U2 OOS: 0.21.
   - v2 vs maker: daily correlation −0.04 IS (206 days, `pm_compute`); OOS not computed (the maker failed its
     blind OOS, so the pair is not a portfolio candidate).
@@ -382,7 +393,7 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 ### R16. Legal, regulatory and compliance
 - **(a)** Jurisdiction, venue terms, data rights, and how courtside data may be collected.
 - **(b)** What the sources say:
-  - **Venue access.** polymarket.com puts the US, UK, France, Canada, Australia, Germany, Italy and others in
+  - **Venue access.** polymarket.com puts the US, UK, France, Canada (BC, ON, AB, QC), Australia, Germany, Italy and others in
     close-only mode, on the API as well as the frontend ([geoblock](https://docs.polymarket.com/api-reference/geoblock)).
     The ToS page (https://polymarket.com/tos) shows US users a notice pointing to polymarket.us. Its full text
     could not be extracted from this environment, so read it before any deployment. Polymarket US runs under
@@ -427,7 +438,8 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 - **(a)** Key leaks, crashed processes, silent sockets, a vision host that falls behind, unattended runs.
 - **(b)**
   - The silent sports socket on Oct 3 (R8).
-  - Vision on the shared laptop queued for seconds: 21 fps sustained against 30 fps arrivals (demo run).
+  - Vision on the shared laptop queued for seconds: 17 fps sustained against 30 fps arrivals (`results/engine/demo_run.json`
+    `vision.timing`).
   - Book-snapshot mismatch 0.02%.
   - Uptime and reconnect counts over a full session: unmeasured.
 - **(c)**
@@ -444,7 +456,8 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
 
 ## Stress table (v2, frozen book; `risk_stats` `stress`; CIs match-clustered)
 
-Max DD is in % of base capital ($28,302 IS / $22,754 OOS).
+Max DD is in % of each period's own base capital ($28,302 IS / $22,754 OOS). On the IS capital fixed ex ante,
+the OOS percentages are 0.80 × those shown (22,754 / 28,302).
 
 | Scenario | IS ¢/share [CI] | IS $ | IS Sharpe | IS max DD | OOS ¢/share [CI] | OOS $ | OOS Sharpe | OOS max DD |
 |---|---|---|---|---|---|---|---|---|
@@ -474,16 +487,23 @@ the tail, but it is the true worst case.
 **Tier-0 stresses (latency ×2, worst-quartile timing).** The pre-registered sensitivities ("all venues at
 100 ms", "stamp lag 1.0 s") use the refuted fill pricing. The corrected stresses, one change at a time over 20
 seeds, are in `research/v2/tier0/RESULTS.md` §3 (revised in commit `a5769c7`) and `results/tier0/results.json`
-`stresses_corrected`. Every row stays far below the counterfactual's fixed costs ($1,151–7,215/day at 10 covered
+`stresses_corrected`. Every row stays far below the counterfactual's fixed costs ($1,153–7,215/day at 10 covered
 matches a day): the headline is $89 ± 21/day IS and $46 ± 39/day burned OOS, and the best of the 27 stresses in either period is $203/day (IS, net cap 1,000 shares).
 
 ## Fixed costs a live tier-0 would carry (not in any backtest)
 
-| Item | Public price? | What we can say |
+The full cost table, with every source URL and label, is `research/financials/FINANCIALS.md` §1 (generated by
+`scripts/financials.py`, sources retrieved 2026-10-03). Summary:
+
+| Item | Public price? | Value used (low / central / high) |
 |---|---|---|
-| Licensed live point feed (Sportradar/TDI for ATP) | **None found.** These are negotiated contracts | **Labelled assumption:** a fee is only affordable below the opportunity it unlocks. At v2's caps that opportunity is $33.6k/yr (burned-OOS rate) to $71.6k/yr (IS rate) (`risk_stats` `fixed_cost_breakeven`). Any fee above $33.6k–71.6k/yr makes the strategy negative at today's caps |
-| Courtside camera + operator, organiser consent | None found | Unmeasured; see R16 |
-| London co-location | Not priced here | Unmeasured |
+| Licensed live point feed (Sportradar/TDI for ATP, Stats Perform for WTA) | **None.** Negotiated contracts | **ASSUMPTION** $1,250 / $5,000 / $10,000 a month, anchored to reported figures (LSports: Sportradar API "from $1,250/month"; SharpAPI, a competitor's claim: starter contracts $5,000–10,000/month). At v2's caps the opportunity a licence unlocks is $33.6k/yr (burned-OOS rate) to $71.6k/yr (IS rate) (`risk_stats` `fixed_cost_breakeven`); the central $60k/yr sits inside that range, so v2 nets +$29/day IS and −$75/day burned OOS after central costs |
+| London gateway VPS (co-location proxy) | Yes | **ESTIMATE** $34 / $77 / $98 a month, AWS EU (London) on-demand list prices (t3.medium / c7i.large / c6in.large) |
+| Courtside camera operator | Yes | **ESTIMATE** $36.10/h, BLS 2025 median pay of film and video editors and camera operators; 3 / 4 / 5 h per covered match (ASSUMPTION) |
+| Cloud GPU for CV inference | Yes | **ESTIMATE** $0.615 / $0.615 / $1.02 per hour, AWS EU (London) g4dn.xlarge / g6.xlarge |
+| 120 fps camera kit, 24-month life | Components only | Low **ESTIMATE** $648 (GoPro HERO13 Black $399 + NVIDIA Jetson Orin Nano Super developer kit $249, launch list prices); central $1,000 and high $2,000 are an **ASSUMPTION** |
+| Organiser consent / camera position | **None** | **ASSUMPTION** $0 / $250 / $500 per covered match; see R16 |
+| **Total at 10 covered matches a day** | | **$1,153 / $4,149 / $7,215 per day**, against $89/day (IS, 1 s-delay matches) and $46/day (burned OOS) of tier-0 trading P&L |
 
 ## What is not measured (plain list)
 

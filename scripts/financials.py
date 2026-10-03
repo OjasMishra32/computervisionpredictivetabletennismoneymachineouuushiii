@@ -71,6 +71,9 @@ AWS_PRICE_LIST = ("https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/ec2/US
 AWS_H = {"t3.medium": 0.0472, "c7i.large": 0.10605, "c6in.large": 0.1344,       # $/h, EU (London), Linux,
          "g4dn.xlarge": 0.615, "g6.xlarge": 1.0216}                              # on demand, list 2026-09-25
 HOURS_PER_MONTH = 730
+# public launch list prices (retrieved 2026-10-03): GoPro press release (Sep 2024), NVIDIA developer blog (Dec 2024)
+KIT_PRICES = {"gopro_hero13_black": 399.0, "jetson_orin_nano_super": 249.0}
+KIT_LOW = sum(KIT_PRICES.values())
 
 COSTS = {
     "feed_licence": {
@@ -107,7 +110,7 @@ COSTS = {
         "sources": ["https://docs.polymarket.com/quickstart/introduction/rate-limits",
                     "https://docs.polymarket.com/polymarket-learn/trading/fees"]},
     "hipergator": {
-        "name": "HiPerGator (training, backtests)", "label": "STATE: university allocation", "unit": "$/month",
+        "name": "HiPerGator (training, backtests)", "label": "ESTIMATE ($0 marginal: university allocation)", "unit": "$/month",
         "low": 0.0, "central": 0.0, "high": 0.0,
         "basis": ("$0 marginal cost to the team (UF allocation). List-price equivalent if bought: $620 per GPU "
                   "(NGU) per year and $44 per CPU core (NCU) per year (UF Research Computing service rates), "
@@ -116,7 +119,10 @@ COSTS = {
     "camera_operator": {
         "name": "Courtside camera operator (tier-0 only)", "label": "ESTIMATE", "unit": "$/hour",
         "low": 36.10, "central": 36.10, "high": 36.10,
-        "basis": "US median wage, camera operators (television, video and film), May 2025: $74,990/yr, $36.10/h (BLS).",
+        "basis": ("BLS Occupational Outlook Handbook: $36.10/h is the 2025 median hourly pay of the combined 'film and video "
+                  "editors and camera operators' group; camera operators (television, video and film) alone earn a median "
+                  "$74,990/yr (May 2025), about $36.05/h at 2,080 h. Wage only: no employer on-costs, travel or "
+                  "agency margin."),
         "sources": ["https://www.bls.gov/ooh/media-and-communication/film-and-video-editors-and-camera-operators.htm"]},
     "gpu_inference": {
         "name": "Cloud GPU for CV inference, per covered event hour (tier-0 only)", "label": "ESTIMATE (public list price)",
@@ -136,10 +142,17 @@ COSTS = {
                   "docs/NOTE.md section 5). No public price exists for that right. Range is ours; low = $0."),
         "sources": []},
     "camera_kit": {
-        "name": "120 fps camera kit, amortised over 24 months (tier-0 only)", "label": "ASSUMPTION",
-        "unit": "$/kit", "low": 500.0, "central": 1_000.0, "high": 2_000.0,
-        "basis": "Hardware per covered court (camera, lens, mount, edge box). No quote obtained; range is ours.",
-        "sources": []},
+        "name": "120 fps camera kit, amortised over 24 months (tier-0 only)",
+        "label": "ESTIMATE (low: public list prices) / ASSUMPTION (central, high)",
+        "unit": "$/kit", "low": KIT_LOW, "central": 1_000.0, "high": 2_000.0,
+        "basis": (f"Hardware per covered court (camera, lens, mount, edge box). Low = public launch list prices of a "
+                  f"consumer 120 fps camera (GoPro HERO13 Black, ${KIT_PRICES['gopro_hero13_black']:.0f}) plus an edge "
+                  f"inference box (NVIDIA Jetson Orin Nano Super Developer Kit, ${KIT_PRICES['jetson_orin_nano_super']:.0f}), "
+                  "no mount or cabling. Central and high are ours (no quote for a rugged or machine-vision kit was "
+                  "obtained). An on-venue edge box would replace the cloud GPU hours above, so the stack counts "
+                  "inference twice; that is conservative and small next to the operator."),
+        "sources": ["https://investor.gopro.com/press-releases/press-release-details/2024/GoPro-Announces-Two-New-Cameras-The-399-HERO13-Black-and-the-199-HERO/default.aspx",
+                    "https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/"]},
 }
 CAMERA_LIFE_MONTHS = 24
 
@@ -672,7 +685,8 @@ def live_block(cost, conv_caps: list[float]) -> dict:
     if not r:
         return pending(path, "live paper session on real markets not started (results/live/)")
     b1 = (r.get("books") or {}).get("B1", {})
-    why = (f"session {r.get('run')} ({r.get('kind')}, mode {r.get('mode')}) status '{r.get('status')}'; primary book B1: "
+    why = (f"session {r.get('run')} ({r.get('kind')}, mode {r.get('mode')}: live public market data, paper fills, no orders "
+           f"sent) status '{r.get('status')}'; primary book B1: "
            f"{b1.get('fills', 0)} fills, {b1.get('resolved_fills', 0)} resolved. The session books "
            f"${r.get('capital_per_book', 0):,.0f} of paper capital per book, not the 3 × peak-locked convention "
            f"({'–'.join(f'${c:,.0f}' for c in sorted(conv_caps)) or 'n/a'} for the maker's IS and OOS books). It checks plumbing only: maker v1 already failed its blind OOS, and any rule "
@@ -858,6 +872,12 @@ PER_NAMES = {"IS": "IS", "OOS": "OOS (burned, non-blind)", "U2_IS_blind": "U2 un
              "U2_OOS_blind": "U2 unseen markets, OOS period (blind)", "forward": "Forward (blind)",
              "IS_1s5": "IS, current 1 s / 5% regime only", "OOS_blind": "OOS (blind)", "live_paper": "Live paper session",
              "results": "Results"}
+# per-strategy overrides where a period means something narrower than the v2 definition (set in main())
+PER_NAMES_STRAT: dict = {}
+
+
+def pname(k: str, p: str) -> str:
+    return PER_NAMES_STRAT.get(k, {}).get(p, PER_NAMES.get(p, p))
 
 
 def headline_rows(S: dict) -> list[dict]:
@@ -869,7 +889,7 @@ def headline_rows(S: dict) -> list[dict]:
             blk = S[k]["periods"].get(p)
             if blk is None:
                 continue
-            r = {"strategy": S[k]["name"], "period": PER_NAMES.get(p, p), "status": blk.get("status")}
+            r = {"strategy": S[k]["name"], "period": pname(k, p), "status": blk.get("status")}
             if blk.get("status", "").startswith("ok"):
                 ue, cr = blk.get("unit_economics", {}), blk.get("capital_returns", {})
                 fc = blk.get("fixed_costs", {})
@@ -957,7 +977,7 @@ def md(S: dict, R: dict) -> str:
         okp = [(p, b) for p, b in s["periods"].items() if b.get("status", "").startswith("ok")]
         pend = [(p, b) for p, b in s["periods"].items() if not b.get("status", "").startswith("ok")]
         for p, b in pend:
-            a(f"- **{PER_NAMES.get(p, p)}: pending.** `{b.get('expected_file')}`: {b.get('why')}")
+            a(f"- **{pname(k, p)}: pending.** `{b.get('expected_file')}`: {b.get('why')}")
         if pend:
             a("")
         if s.get("extra_md"):
@@ -967,7 +987,7 @@ def md(S: dict, R: dict) -> str:
         if full or any(b.get("waterfall") for _, b in summ):
             wfp = [(p, b) for p, b in okp if b.get("waterfall")]
             a(f"### {n}a. P&L waterfall\n")
-            hdr = " | ".join(f"{PER_NAMES.get(p, p)}: ¢/share | $ period | $/day" for p, _ in wfp)
+            hdr = " | ".join(f"{pname(k, p)}: ¢/share | $ period | $/day" for p, _ in wfp)
             a(f"| step | {hdr} |")
             a("|---|" + "---|---|---|" * len(wfp))
             names = [("gross_edge", "Gross edge"), ("taker_fees", "− taker fees"), ("maker_rebates", "+ maker rebates"),
@@ -1007,7 +1027,7 @@ def md(S: dict, R: dict) -> str:
                 now = b.get("capacity", {}).get("notional_usd_per_day_now", b.get("notional_usd_per_day_now"))
                 need = c.get("breakeven_notional_usd_per_day")
                 cov = s.get("coverage", {}).get(p, "n/a")
-                a(f"| {PER_NAMES.get(p, p)} | {f_usd(c.get('fixed_cost_usd_per_day'))} | {f_usd(b['waterfall']['usd_per_day']['net_trading'])} | "
+                a(f"| {pname(k, p)} | {f_usd(c.get('fixed_cost_usd_per_day'))} | {f_usd(b['waterfall']['usd_per_day']['net_trading'])} | "
                   f"{f_usd(now)} | {f_usd(need) if need else 'never (net edge ≤ 0)'} | "
                   f"{f_num(need / now, 1) + '×' if need and now else 'n/a'} | {cov} |")
             a("")
@@ -1023,14 +1043,14 @@ def md(S: dict, R: dict) -> str:
                 a("| period | taker fees as % of gross | rate charged | break-even before fixed costs | after low fixed costs | after central fixed costs | after high fixed costs |")
                 a("|---|---|---|---|---|---|---|")
                 for p, x in bef:
-                    a(f"| {PER_NAMES.get(p, p)} | {f_pct(x['fee_share_of_gross'] * 100, 1)} | "
+                    a(f"| {pname(k, p)} | {f_pct(x['fee_share_of_gross'] * 100, 1)} | "
                       f"{f_pct(x['uniform_rate_charged'] * 100, 0) if x['uniform_rate_charged'] is not None else 'mixed (0–5%)'} | "
                       f"{fee_cell(x, 'before_fixed_costs')} | {fee_cell(x, 'after_low_fixed_costs')} | "
                       f"{fee_cell(x, 'after_central_fixed_costs')} | {fee_cell(x, 'after_high_fixed_costs')} |")
                 a("\nA negative multiple means the book loses money after fixed costs even with zero taker fees.\n")
         if full:
             a(f"### {n}b. Unit economics\n")
-            a("| | " + " | ".join(PER_NAMES.get(p, p) for p, _ in full) + " |")
+            a("| | " + " | ".join(pname(k, p) for p, _ in full) + " |")
             a("|---|" + "---|" * len(full))
             rows = [
                 ("trades / matches / calendar days", lambda u, c, b: f"{u['n_trades']:,} / {u['n_matches']:,} / {u['calendar_days']}"),
@@ -1050,7 +1070,7 @@ def md(S: dict, R: dict) -> str:
                 a(f"| {lab} | " + " | ".join(fn(b["unit_economics"], b["capital_returns"], b) for _, b in full) + " |")
             a(f"\nCapital-model lock: {full[0][1]['unit_economics']['capital_lock_hours_in_capital_model']['rule']}\n")
             a(f"### {n}c. Capital and returns\n")
-            a("| | " + " | ".join(PER_NAMES.get(p, p) for p, _ in full) + " |")
+            a("| | " + " | ".join(pname(k, p) for p, _ in full) + " |")
             a("|---|" + "---|" * len(full))
             rows = [
                 ("capital (3 × peak locked) / peak locked", lambda c: f"{f_usd(c['capital_usd'])} / {f_usd(c['peak_locked_usd'])}"),
@@ -1081,9 +1101,9 @@ def md(S: dict, R: dict) -> str:
             a("")
         for p, b in summ:
             if b.get("text"):
-                a(f"**{PER_NAMES.get(p, p)}** (`{b.get('source')}`): {b['text']}\n")
+                a(f"**{pname(k, p)}** (`{b.get('source')}`): {b['text']}\n")
                 continue
-            a(f"**{PER_NAMES.get(p, p)}** (`{b.get('source')}`; summary file, no trade-level data): "
+            a(f"**{pname(k, p)}** (`{b.get('source')}`; summary file, no trade-level data): "
               f"{b.get('n_trades') or 'n/a'} trades, {f_num(b.get('per_share_c'), 2, True)}¢/share {f_ci(b.get('per_share_ci95_c'))}, "
               f"{f_usd(b.get('pnl_usd'))} ({f_usd(b.get('pnl_usd_per_day'), 1)}/day), capital {f_usd(b.get('capital_usd'))}, "
               f"Sharpe {f_num(b.get('sharpe_ann'), 1)}, max DD {f_usd(b.get('max_dd_usd'))} ({f_pct(b.get('max_dd_pct'), 2)}). "
@@ -1213,6 +1233,11 @@ def main():
                             "Only the verifier-corrected headline is used; the pre-registered primary's fill pricing was "
                             "refuted (DEVIATIONS V1) and is never shown as an estimate."),
                   "tier0_extra": {k: v for k, v in t0b.items() if k not in ("periods", "cost")}}
+    # tier-0's IS is the 1 s-delay part of the IS only (its scenario has regime 'delay1'), not v2's 206-day IS
+    t0is = t0b["periods"].get("IS", {})
+    if t0b.get("scenario", {}).get("regime") == "delay1" and t0is.get("status", "").startswith("ok"):
+        ndays = t0is.get("unit_economics", {}).get("calendar_days") or t0is.get("calendar_days") or t0is.get("days")
+        PER_NAMES_STRAT["tier0"] = {"IS": f"IS, 1 s-delay matches only (trades from 2026-05-15{f', {ndays:.0f} d' if ndays else ''})"}
 
     # ---- maker
     log("maker: walk-forward IS book")
@@ -1446,7 +1471,13 @@ def main():
                 t.setdefault("coverage", {})[p] = ("yes" if b["fixed_costs"]["central"]["net_after_costs_usd_per_day"] >= 0
                                                    else "no at the scenario's net cap")
         t["caveats"] = ["Counterfactual: the feed and the camera were not bought; every number depends on the assumptions in "
-                        "research/v2/tier0/RESULTS.md section 6 and DEVIATIONS.md."]
+                        "research/v2/tier0/RESULTS.md section 6 and DEVIATIONS.md.",
+                        "Tier-0's IS covers only the 1 s-delay matches (trades from 2026-05-15), about half of v2's 206-day IS, "
+                        "so its IS dollars and per-day figures are not directly comparable with v2's IS row."]
+        if (ROOT / "research/v2/tier0_v3").exists() or (ROOT / "results/tier0_v3").exists():
+            t["caveats"].append("A second-round tier-0 workflow (research/v2/tier0_v3, an IS-only optimisation grid plus "
+                                "verification) was still running when this was generated. Nothing from it is used here; the "
+                                "numbers above are the verified revision in results/tier0/results.json and may be superseded.")
 
     # ---- reading notes (computed, not typed)
     reading = []
@@ -1504,7 +1535,7 @@ def main():
         tb = S["tier0"]["periods"]
         cdy = S["tier0"]["cost"]["daily"]
         reading.append("Tier-0 (counterfactual, verifier-corrected headline in results/tier0/results.json) at the scenario's net cap: " + "; ".join(
-            f"{p} {f_usd(b.get('pnl_usd_per_day'), 1)}/day trading vs {f_usd(cdy['low'])} / {f_usd(cdy['central'])} / {f_usd(cdy['high'])} "
+            f"{pname('tier0', p)} {f_usd(b.get('pnl_usd_per_day'), 1)}/day trading vs {f_usd(cdy['low'])} / {f_usd(cdy['central'])} / {f_usd(cdy['high'])} "
             f"per day fixed (low / central / high), so it would need {f_num(cdy['low'] / b['pnl_usd_per_day'], 1)}× its trading P&L "
             f"just to cover the low-cost case"
             for p, b in tb.items() if b.get("status", "").startswith("ok") and b.get("pnl_usd_per_day")) +

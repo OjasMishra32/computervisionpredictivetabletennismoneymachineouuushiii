@@ -1,0 +1,300 @@
+{
+ "generated_utc": "2026-10-03T20:04:03+00:00",
+ "script": "scripts/financials_audit.py",
+ "n_checks": 36,
+ "n_match": 36,
+ "checks": [
+  {
+   "what": "v2 IS net P&L $",
+   "ours": 40425.71919167921,
+   "quoted": 40425.71919167921,
+   "source": "financials.json v2.IS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 IS trades",
+   "ours": 55662.0,
+   "quoted": 55662.0,
+   "source": "financials.json v2.IS",
+   "tolerance": 0,
+   "match": true
+  },
+  {
+   "what": "v2 IS net c/share",
+   "ours": 1.3814511010237975,
+   "quoted": 1.3814511010237975,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 IS Sharpe",
+   "ours": 14.483153541485253,
+   "quoted": 14.483153541485253,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 IS capital $ (3 x peak locked, 4 h lock)",
+   "ours": 28302.367701375268,
+   "quoted": 28302.367701375268,
+   "source": "financials.json v2.IS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 IS max drawdown $",
+   "ours": -569.4550360798748,
+   "quoted": -569.4550360798748,
+   "source": "financials.json v2.IS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 IS taker fees share of gross",
+   "ours": 0.3050917858791278,
+   "quoted": 0.3050917858791278,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 IS trade win rate",
+   "ours": 0.535859293593475,
+   "quoted": 0.535859293593475,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 IS profit factor",
+   "ours": 1.0732960703773067,
+   "quoted": 1.0732960703773067,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 IS median hours entry to resolution",
+   "ours": 1.2537320830424628,
+   "quoted": 1.2537320830424628,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 IS daily sd $",
+   "ours": 258.86529601389145,
+   "quoted": 258.87,
+   "source": "risk_stats stress.is_eval.tail_day",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 IS $1,000 stop in sigma",
+   "ours": 3.8630129855117277,
+   "quoted": 3.86,
+   "source": "risk_stats stress.is_eval.tail_day",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 IS net after central fixed costs $/day",
+   "ours": 29.31259365557804,
+   "quoted": 29.312593655578013,
+   "source": "financials.json v2.IS",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 IS 1 s/5% trades",
+   "ours": 15120.0,
+   "quoted": 15120.0,
+   "source": "financials.json v2.IS_1s5",
+   "tolerance": 0,
+   "match": true
+  },
+  {
+   "what": "v2 IS 1 s/5% net P&L $/day",
+   "ours": 179.3354357011485,
+   "quoted": 179.3354357011485,
+   "source": "financials.json v2.IS_1s5",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 IS 1 s/5% Sharpe",
+   "ours": 11.233499742638212,
+   "quoted": 11.233499742638212,
+   "source": "financials.json v2.IS_1s5",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 OOS net P&L $",
+   "ours": 3687.5359201936667,
+   "quoted": 3687.5359201936667,
+   "source": "financials.json v2.OOS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 OOS net c/share",
+   "ours": 0.598736335564979,
+   "quoted": 0.598736335564979,
+   "source": "financials.json v2.OOS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 OOS Sharpe",
+   "ours": 6.667551867200974,
+   "quoted": 6.667551867200974,
+   "source": "financials.json v2.OOS",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 OOS capital $ (3 x peak locked)",
+   "ours": 22754.04625114686,
+   "quoted": 22754.046251146858,
+   "source": "financials.json v2.OOS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "v2 OOS taker fees share of gross",
+   "ours": 0.6102265556216224,
+   "quoted": 0.6102265556216224,
+   "source": "financials.json v2.OOS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 OOS break-even fee multiple, before fixed costs",
+   "ours": 1.638735631525123,
+   "quoted": 1.638735631525123,
+   "source": "financials.json v2.OOS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 OOS break-even fee multiple, after central fixed costs",
+   "ours": 0.4821546484964099,
+   "quoted": 0.4821546484964099,
+   "source": "financials.json v2.OOS",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "v2 OOS annualised return on IS capital %",
+   "ours": 118.8902837628392,
+   "quoted": 118.8902837628392,
+   "source": "financials.json v2.OOS fixed_capital",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "v2 OOS top-1 wallet share of P&L %",
+   "ours": 48.364393364112374,
+   "quoted": 48.4,
+   "source": "risk_stats concentration",
+   "tolerance": 0.05,
+   "match": true
+  },
+  {
+   "what": "v2 OOS top-5 wallet share of P&L %",
+   "ours": 142.0972178490324,
+   "quoted": 142.1,
+   "source": "risk_stats concentration",
+   "tolerance": 0.05,
+   "match": true
+  },
+  {
+   "what": "v2 OOS wallet-clustered CI low (c)",
+   "ours": -0.45453363092194293,
+   "quoted": -0.45453363092194293,
+   "source": "pm_compute p07",
+   "tolerance": 0.05,
+   "match": true
+  },
+  {
+   "what": "v2 OOS wallet-clustered CI high (c)",
+   "ours": 2.377185320961488,
+   "quoted": 2.377185320961488,
+   "source": "pm_compute p07",
+   "tolerance": 0.05,
+   "match": true
+  },
+  {
+   "what": "v2 central fixed cost $/day",
+   "ours": 166.92876164383563,
+   "quoted": 166.92876164383563,
+   "source": "financials.json v2 cost",
+   "tolerance": 1e-09,
+   "match": true
+  },
+  {
+   "what": "tier-0 fixed cost $/day, low",
+   "ours": 1152.555402739726,
+   "quoted": 1152.555402739726,
+   "source": "financials.json tier0 cost",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "tier-0 fixed cost $/day, central",
+   "ours": 4149.2273917808225,
+   "quoted": 4149.2273917808225,
+   "source": "financials.json tier0 cost",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "tier-0 fixed cost $/day, high",
+   "ours": 7215.469983561643,
+   "quoted": 7215.469983561644,
+   "source": "financials.json tier0 cost",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "maker IS net P&L $",
+   "ours": 4161.51828824161,
+   "quoted": 4161.51828824161,
+   "source": "financials.json maker.IS",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "maker IS per-fill mean c",
+   "ours": 2.72515891883029,
+   "quoted": 2.72515891883029,
+   "source": "financials.json maker.IS",
+   "tolerance": 1e-06,
+   "match": true
+  },
+  {
+   "what": "maker OOS net P&L $",
+   "ours": -379.0314662280003,
+   "quoted": -379.0314662280003,
+   "source": "financials.json maker.OOS_blind",
+   "tolerance": 0.01,
+   "match": true
+  },
+  {
+   "what": "maker OOS share-weighted c",
+   "ours": -0.7515756876079489,
+   "quoted": -0.7515756876079489,
+   "source": "financials.json maker.OOS_blind",
+   "tolerance": 1e-06,
+   "match": true
+  }
+ ],
+ "notes": {
+  "capital_tie_rule": "The engine (research/v2/sizing/engine.py peak_locked) counts a lock and a release at the same second as overlapping (locks first). Releases first would give OOS capital $22,626 instead of $22,754; IS is unchanged ($28,302). src/tier0.py uses releases first. Immaterial, but the two conventions differ.",
+  "oos_cut_universe": "2026-08-25 14:15:00+00:00"
+ }
+}
