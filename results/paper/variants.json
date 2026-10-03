@@ -1,0 +1,57 @@
+{
+ "families": [
+  {
+   "family": "H1-H6 pre-registered and H5/H6 rules",
+   "count": 44,
+   "chose": "frozen primaries (DEVIATIONS D6)",
+   "source": "results/rigor/rigor.json::psr_dsr.N.H1_H6"
+  },
+  {
+   "family": "v2 lenses (exit, sizing, selection, cross-market, latency, Kalshi)",
+   "count": 3342,
+   "chose": "v2 (G_50pct_net100), IS only",
+   "source": "D: psr_dsr.N.all_NOTE_s8 - N.H1_H6"
+  },
+  {
+   "family": "v2-safe grid",
+   "count": 24,
+   "chose": "v2-safe (secondary)",
+   "source": "D: psr_dsr.N.all_plus_v2safe_grid - N.all_NOTE_s8"
+  },
+  {
+   "family": "tier-0 pre-registered scenarios",
+   "count": 432,
+   "chose": "none (sensitivity grid)",
+   "source": "results/tier0/grid.csv rows with period == IS"
+  },
+  {
+   "family": "tier-0 v3 in-sample grid",
+   "count": 360,
+   "chose": "frozen v3 rule (blind: FAIL)",
+   "source": "results/tier0_v3/is/grid.csv rows with kind == grid"
+  },
+  {
+   "family": "maker v1 evaluated variants",
+   "count": 8,
+   "chose": "maker v1 primary (blind: FAIL)",
+   "source": "len(results/maker/oos.json::variants_evaluated)"
+  },
+  {
+   "family": "cost-stress cases",
+   "count": 4,
+   "chose": "none (stress)",
+   "source": "results/v2/cost_stress.json keys minus base"
+  },
+  {
+   "family": "table-tennis tests TT1-TT5",
+   "count": 5,
+   "chose": "none (untestable)",
+   "source": "results/tt/results.json TT1-TT4 + results/decay/decay.json::table_tennis"
+  }
+ ],
+ "total": 4219,
+ "sensitivities_none_chosen": {
+  "latency-sweep cells": 944,
+  "replay cells": 36
+ }
+}

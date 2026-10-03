@@ -1,0 +1,380 @@
+{
+ "n": 69,
+ "counts": {
+  "live": 20,
+  "audit": 22,
+  "descriptive": 5,
+  "non-blind": 13,
+  "blind first run": 7,
+  "other": 2
+ },
+ "rules": [
+  [
+   "live",
+   "REPLAY|live paper|session"
+  ],
+  [
+   "audit",
+   "audit|reproduc|RE-RUN|rebuild|recompute"
+  ],
+  [
+   "descriptive",
+   "descriptive|no strategy|no P&L|plumbing|selection check|provenance"
+  ],
+  [
+   "non-blind",
+   "non-blind"
+  ],
+  [
+   "blind first run",
+   "first run|first use|blind|PREREG"
+  ]
+ ],
+ "lines": [
+  {
+   "utc": "2026-10-03T10:42:28.967743+00:00",
+   "class": "other",
+   "line": "OOS prints built"
+  },
+  {
+   "utc": "2026-10-03T13:24:37.297968+00:00",
+   "class": "non-blind",
+   "line": "v2 evaluated on burned OOS (non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T13:53:01.186962+00:00",
+   "class": "non-blind",
+   "line": "v2-causal (D9 fix) evaluated on burned OOS (non-blind)"
+  },
+  {
+   "utc": "2026-10-03T17:23:41.710383+00:00",
+   "class": "non-blind",
+   "line": "tier0 counterfactual: OOS jump table built (burned OOS, non-blind)"
+  },
+  {
+   "utc": "2026-10-03T17:29:29.198786+00:00",
+   "class": "non-blind",
+   "line": "tier0 counterfactual grid evaluated on burned OOS (non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T17:31:29.130682+00:00",
+   "class": "blind first run",
+   "line": "U2 out-of-universe test evaluated (PREREG research/v2/expand, first run)"
+  },
+  {
+   "utc": "2026-10-03T17:37:16.448743+00:00",
+   "class": "non-blind",
+   "line": "v2-safe (lowloss PREREG) evaluated on burned OOS (non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T17:37:47.784154+00:00",
+   "class": "blind first run",
+   "line": "v2-safe U2 out-of-universe test evaluated (PREREG research/v2/lowloss, first run)"
+  },
+  {
+   "utc": "2026-10-03T17:43:41.266161+00:00",
+   "class": "audit",
+   "line": "tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T17:45:17.819645+00:00",
+   "class": "audit",
+   "line": "tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T17:48:08.518292+00:00",
+   "class": "audit",
+   "line": "tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T18:00:45.264394+00:00",
+   "class": "non-blind",
+   "line": "v2 cost stress (fees/costs doubled, book fixed) on burned OOS (non-blind, no parameter change)"
+  },
+  {
+   "utc": "2026-10-03T18:06:59.609644+00:00",
+   "class": "non-blind",
+   "line": "tier0 corrections: OOS post-jump prices built (burned OOS, non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T18:13:42.037708+00:00",
+   "class": "non-blind",
+   "line": "tier0 counterfactual (verifier corrections) evaluated on burned OOS (non-blind, labelled)"
+  },
+  {
+   "utc": "2026-10-03T18:27:17.849636+00:00",
+   "class": "descriptive",
+   "line": "maker venue rules: descriptive in-play book spread/depth + tick changes read from data/live_v2 forward recordings (no strategy, no P&L, no parameter chosen)"
+  },
+  {
+   "utc": "2026-10-03T18:42:50.878006+00:00",
+   "class": "non-blind",
+   "line": "financials: v2 / v2-safe size-scaled variants (0.5x, 2x, 5x, all prints) evaluated on burned OOS (non-blind, capacity curve only)"
+  },
+  {
+   "utc": "2026-10-03T18:47:03.904091+00:00",
+   "class": "descriptive",
+   "line": "maker live engine plumbing: data/live_v2 clob_17/clob_13 read for message ordering only (price_change vs last_trade_price timestamps, trade dedupe); no strategy, no P&L, no parameter chosen"
+  },
+  {
+   "utc": "2026-10-03T18:49:10.064212+00:00",
+   "class": "blind first run",
+   "line": "maker v1 blind OOS evaluated (first run) (PREREG research/v2/maker/PREREG.md (A); first use of OOS side-market tapes; burned OOS moneyline tapes used only as the signal input)"
+  },
+  {
+   "utc": "2026-10-03T18:49:54.369676+00:00",
+   "class": "audit",
+   "line": "maker v1 OOS reproduction (recompute committed results.json; no parameter change)"
+  },
+  {
+   "utc": "2026-10-03T19:00:28.572831+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_11.jsonl.gz,data/live_v2/clob_20261003_1123_20261003_12.jsonl.gz window=2026-10-03T12:00:00.000Z+60.0min clock=recv: run=20261003T185955Z commit=b694498a8dac577ca93461bf29b0420cff73cf69+dirty (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T19:13:55.009272+00:00",
+   "class": "live",
+   "line": "maker v1 live paper TEST run (not the pre-registered session) START: run=20261003T190317Z commit=56a9c8f77b1aaf7b1306c2f1b06d6a2e05c798a8+dirty until=2026-10-03T19:18:54.925Z (PREREG research/v2/maker/PREREG.md section 3; paper only, public data)"
+  },
+  {
+   "utc": "2026-10-03T19:15:03.000000+00:00",
+   "class": "audit",
+   "line": "P17 clean-clone reproduce.sh (HEAD 56a9c8f, scratch clone, data/ linked, backtest workers=1): re-runs the committed frozen scripts incl. run_all.py --oos and v2_causal.py on burned OOS (non-blind, reproduction only, no parameter change, no new evaluation)"
+  },
+  {
+   "utc": "2026-10-03T19:19:14.670497+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (B2: own raw log) on data/live_maker/raw_20261003T190317Z.jsonl.gz window=-+Nonemin clock=recv: run=20261003T191913Z commit=56a9c8f77b1aaf7b1306c2f1b06d6a2e05c798a8+dirty (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T19:20:24.912939+00:00",
+   "class": "non-blind",
+   "line": "PM review P07: wallet-clustered bootstrap CI of the frozen v2 causal book on burned OOS (non-blind, labelled; the CI the note already quotes, no rule or parameter change; scripts/pm_compute.py)"
+  },
+  {
+   "utc": "2026-10-03T19:23:14.155322+00:00",
+   "class": "blind first run",
+   "line": "table tennis TT1-TT4 evaluated (first run)"
+  },
+  {
+   "utc": "2026-10-03T19:25:45.920153+00:00",
+   "class": "descriptive",
+   "line": "TT5 signal decay (scripts/signal_decay.py, commit a5769c786f935dcc05ff2ab90a1947ad0cde4cb5+dirty(signal_decay.py)): reads table tennis UTT OOS prints (first look, descriptive curve) and tennis burned OOS prints (non-blind); no rule or parameter chosen"
+  },
+  {
+   "utc": "2026-10-03T19:28:49.781129+00:00",
+   "class": "other",
+   "line": "table tennis post-hoc diagnostics after TT1-TT4 (closing-print size, fast-tier distance; not pre-registered, no verdict change)"
+  },
+  {
+   "utc": "2026-10-03T19:28:52.264503+00:00",
+   "class": "live",
+   "line": "maker v1 live paper TEST run (not the pre-registered session) START: run=20261003T191915Z commit=ad164da6da24325afcfdbab8fe24dcf5f0516fed+dirty until=2026-10-03T19:34:52.157Z (PREREG research/v2/maker/PREREG.md section 3; paper only, public data)"
+  },
+  {
+   "utc": "2026-10-03T19:58:42.794323+00:00",
+   "class": "live",
+   "line": "maker v1 live paper session (B) START: run=20261003T193534Z commit=114c722e6b203421d8b4f55a5da2b54a1658b658 until=2026-10-04T11:30:00.000Z (PREREG research/v2/maker/PREREG.md section 3; paper only, public data)"
+  },
+  {
+   "utc": "2026-10-03T20:02:07.854548+00:00",
+   "class": "audit",
+   "line": "audit: independent TT3 reproduction (research/tt/audit_tt3.py; reads UTT IS+OOS tapes/prints, already evaluated in 2195e86) plus labelled post-hoc diagnostics (closest wallet t-stat, copy-every-0-3s-print net-to-resolution IS/OOS); no rule or parameter change, no verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:03:19.605207+00:00",
+   "class": "audit",
+   "line": "audit: table tennis checks (research/tt/audit_checks.py): provenance, fees/delays, voids, counts, liquidity; reproduces TT1 closing bins (IS+OOS, already evaluated) and a labelled post-hoc TT1 in-play bin count with the 12 no-jump IS matches; no rule or parameter change, no verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:04:26.847261+00:00",
+   "class": "audit",
+   "line": "audit: financials/risk audit (scripts/financials_audit.py) re-reads the frozen v2 burned-OOS trades and maker blind-OOS fills to reproduce numbers already published (P&L, Sharpe, capital, fee shares, wallet concentration, the P07 wallet CI); no new statistic, no rule change"
+  },
+  {
+   "utc": "2026-10-03T20:07:08.664182+00:00",
+   "class": "audit",
+   "line": "audit: RE-RUN of research/tt/audit_tt3.py with three added post-hoc counts (closest wallet's share of TT2 others' prints, 0-3 s prints at fav >= 0.95 / outside the v2 zone); same reads, no rule or verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:07:45.552503+00:00",
+   "class": "audit",
+   "line": "audit: RE-RUN of research/tt/audit_tt3.py (traceback location recorded as repo-relative src/v2.py frames only; same reads and numbers, no rule or verdict change)"
+  },
+  {
+   "utc": "2026-10-03T20:09:04.403069+00:00",
+   "class": "descriptive",
+   "line": "alpha breakdown: descriptive splits of existing v2 trades incl. burned OOS (no parameter change)"
+  },
+  {
+   "utc": "2026-10-03T20:10:45.374718+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[12].jsonl.gz window=2026-10-03T12:00:00.000Z+60.0min clock=recv: run=20261003T201006Z commit=d6c7a8b16642b69e2fb0fe4aee33986fde5182e0 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:10:47.906614+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[12].jsonl.gz window=2026-10-03T12:00:00.000Z+60.0min clock=recv: run=20261003T201009Z commit=d6c7a8b16642b69e2fb0fe4aee33986fde5182e0 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:11:37.490460+00:00",
+   "class": "audit",
+   "line": "audit: maker v1 blind OOS (A) independent recompute (own code in scratchpad, no import of scripts/maker_oos.py or research/v2/maker/oos_*.py); reads OOS side tapes already evaluated in a4cce70 and burned OOS moneyline tapes only as the signal input; plus labelled post-hoc sensitivities (stricter information cut +1/+2/+5 s, lean minus anti-lean gap CI, $ concentration, alternative CIs); no rule or parameter change, no verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:13:17.221878+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[123].jsonl.gz window=2026-10-03T13:00:00.000Z+60.0min clock=recv: run=20261003T201221Z commit=f5c2e7794fbd2e3fb20c14a27b0158dc0bbc73d2 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:13:43.241104+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[1234].jsonl.gz window=2026-10-03T14:00:00.000Z+120.0min clock=recv: run=20261003T201223Z commit=f5c2e7794fbd2e3fb20c14a27b0158dc0bbc73d2 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:14:29.129584+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_11.jsonl.gz window=2026-10-03T11:35:00.000Z+25.0min clock=recv: run=20261003T201420Z commit=f5c2e7794fbd2e3fb20c14a27b0158dc0bbc73d2 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:14:37.747932+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[56789].jsonl.gz window=2026-10-03T16:00:00.000Z+240.0min clock=recv: run=20261003T201418Z commit=f5c2e7794fbd2e3fb20c14a27b0158dc0bbc73d2 (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:16:07.225280+00:00",
+   "class": "non-blind",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen)"
+  },
+  {
+   "utc": "2026-10-03T20:16:36.690575+00:00",
+   "class": "audit",
+   "line": "audit: TT5 same-block split and v2 trade join (research/decay/audit_sameblock.py): re-reads tennis U1 IS + burned OOS prints (non-blind, already evaluated in 114c722), UTT prints (already evaluated) and data/v2_trades_is_oos.parquet; post-hoc diagnostics for the verifier's fixes; no rule, parameter or verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:18:15.819704+00:00",
+   "class": "audit",
+   "line": "audit: selection check for maker v1 OOS (A): data-api /trades counts and notional (no prices used, no signal, no P&L) for a random sample of 60 OOS six-type side markets whose Gamma volume field is missing (excluded as $0), plus 20 IS ones; public read-only, <=4 concurrent"
+  },
+  {
+   "utc": "2026-10-03T20:21:44.005503+00:00",
+   "class": "audit",
+   "line": "audit: maker v1 OOS (A) stress (viii) alternative fee reading (makerBaseFee 1000 bps x min(px,1-px), CTF-exchange form) on the already-evaluated book-1 fills; labelled post-hoc, no verdict or label change"
+  },
+  {
+   "utc": "2026-10-03T20:22:27.755077+00:00",
+   "class": "audit",
+   "line": "audit: provenance spot-check of maker v1 OOS cache: re-download 8 cached OOS side tapes (data-api) and 1 Gamma events batch and compare with the cache; no signal, no P&L"
+  },
+  {
+   "utc": "2026-10-03T20:22:28.555748+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (B2: own raw log) on data/live_maker/raw_20261003T191915Z.jsonl.gz window=-+Nonemin clock=recv: run=20261003T202228Z commit=8c89b2e7f8ab4c9072a996e412cb6f234ed7c60c (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:22:30.235431+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (B2: own raw log) on /private/tmp/claude-501/-Users-ojasvamishra32-Library-Application-Support-Claude-scratch-workspaces-7bb77844-b795-43aa-a67b-63736f9e8f62-8080cf91-fcd1-4d20-84cd-23ff24f77beb-scratch-2026-10-03-f34211/ec7c96ab-096e-46da-b14c-14c93f0528c1/scratchpad/raw_20261003T193534Z.jsonl.gz window=-+Nonemin clock=recv: run=20261003T202229Z commit=8c89b2e7f8ab4c9072a996e412cb6f234ed7c60c (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:24:49.725021+00:00",
+   "class": "non-blind",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen)"
+  },
+  {
+   "utc": "2026-10-03T20:25:01.366241+00:00",
+   "class": "audit",
+   "line": "tier0 v3 blind test (a) burned OOS START (scripts/tier0_v3_blind.py; PREREG research/v2/tier0_v3/PREREG.md section 5; non-blind window seen by v1/v2/tier-0 v2; v3 chosen on IS only; COUNTERFACTUAL): reproduction gate with V2_HEADLINE, then frozen v3 once (seeds 1000-1019)"
+  },
+  {
+   "utc": "2026-10-03T20:26:40.510770+00:00",
+   "class": "blind first run",
+   "line": "tier0 v3 blind test (b) U2 START (scripts/tier0_v3_blind.py; PREREG research/v2/tier0_v3/PREREG.md section 4; first tier-0 table on U2: jump tables + pre-start volumes from data/expand_prints.parquet and cached raw U2 tapes, then frozen v3 once per period, seeds 2000-2019 / 3000-3019; COUNTERFACTUAL)"
+  },
+  {
+   "utc": "2026-10-03T20:28:47.478005+00:00",
+   "class": "blind first run",
+   "line": "tier0 v3 blind tests (a)+(b) DONE: burned OOS FAIL, U2-IS FAIL, U2-OOS FAIL -> results/tier0_v3/blind.json"
+  },
+  {
+   "utc": "2026-10-03T20:29:22.230424+00:00",
+   "class": "blind first run",
+   "line": "tier0 v3 blind tests (a)+(b) DONE: burned OOS FAIL, U2-IS FAIL, U2-OOS FAIL -> results/tier0_v3/blind.json"
+  },
+  {
+   "utc": "2026-10-03T20:37:28.471185+00:00",
+   "class": "audit",
+   "line": "audit: tier-0 v3 blind tests adversarial audit (independent code in scratchpad; COUNTERFACTUAL): re-reads saved v3 burned-OOS/U2 outputs (results/tier0_v3, data/derived/tier0_v3_blind) and U2 tables (data/expand_universe/prints) to recompute the published primary, plus labelled post-hoc sensitivities quantifying audit issues on U2; frozen v3 unchanged, no rule chosen, no verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:40:43.820533+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[123].jsonl.gz window=2026-10-03T13:00:00.000Z+60.0min clock=recv: run=20261003T203843Z commit=8e3c92fe2ffed238d64a833b1e83a097b9162052+dirty (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:45:51+00:00",
+   "class": "audit",
+   "line": "independent rebuild: tier-0 frozen v3 re-implemented in scratchpad (no scripts/tier0_v3_* import; COUNTERFACTUAL) reads U2 prints/universe/raw tapes, U1 IS tables and burned-OOS tables to reproduce the published U2 primary, stitched IS and burned OOS, plus stresses (phi 0.25, stamp lag 1.0 s, lock-in exit 1c worse); frozen v3 unchanged, no rule chosen, no verdict change"
+  },
+  {
+   "utc": "2026-10-03T20:46:06.978740+00:00",
+   "class": "live",
+   "line": "maker v1 live paper engine REPLAY (recorded live data) on data/live_v2/clob_20261003_1123_20261003_1[123].jsonl.gz window=2026-10-03T13:00:00.000Z+60.0min clock=recv: run=20261003T204340Z commit=8cd93a74100c7c601693a0a54becf60f881321aa+dirty (engine test / descriptive; maker v1 frozen in PREREG c29734b, no rule change possible)"
+  },
+  {
+   "utc": "2026-10-03T20:52:56.218790+00:00",
+   "class": "live",
+   "line": "maker v1 live paper session (B) DEVIATION L11-L14 (research/v2/maker/DEVIATIONS_LIVE.md): session run=20261003T193534Z PID 65274 stopped by SIGTERM at 2026-10-03T20:48:00.72Z (0 quotes, 0 fills, 0 taker orders in every book; logs kept); fixes committed in 2c63112 (Gamma paging past the 100-row cap; CTRL-taker timer waits for the socket's venue clock; socket gaps pull quotes / void pending taker orders; feed-lag record); restarted with the same command at 2026-10-03T20:48:12Z as run=20261003T204812Z PID 2001 (warm-up repeats; quoting until 2026-10-04T11:30Z). Checks run: two engine REPLAYs of data/live_v2 hour 13 (logged above), Gamma catalogue reads only; no rule or parameter of maker v1 changed"
+  },
+  {
+   "utc": "2026-10-03T21:05:50.913639+00:00",
+   "class": "descriptive",
+   "line": "alpha breakdown: descriptive splits of existing v2 trades incl. burned OOS (no parameter change)"
+  },
+  {
+   "utc": "2026-10-03T20:17:16.256055+00:00",
+   "class": "audit",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen) [HiPerGator job 44606812; line written to the cluster copy of this log, synced by the latency-sweep audit]"
+  },
+  {
+   "utc": "2026-10-03T20:36:47.296842+00:00",
+   "class": "audit",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen) [HiPerGator job 44608194, the run behind commit f5ff9ff; line written to the cluster copy of this log, synced by the latency-sweep audit]"
+  },
+  {
+   "utc": "2026-10-03T20:53:15+00:00",
+   "class": "audit",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen) [audit: independent recompute of sweep cells incl. burned OOS video V = 1.0 s and V = 0.5 s at stamp lag 1.0 s; HiPerGator job 44610105; LOGGED AFTER THE RUN]"
+  },
+  {
+   "utc": "2026-10-03T20:59:19.692455+00:00",
+   "class": "audit",
+   "line": "tier0 latency sweep on burned OOS (non-blind, labelled; no parameter chosen) [HiPerGator job 44610737, audit re-run adding stamp-lag cells; line written to the cluster copy of this log, synced by the latency-sweep audit]"
+  },
+  {
+   "utc": "2026-10-03T21:14:49+00:00",
+   "class": "live",
+   "line": "match replay: forward live recordings of 2026-10-03 used for a labelled 1 s-feed counterfactual replay (no parameter chosen) [logged before the replay was run; protocol research/replay/PROTOCOL.md]"
+  },
+  {
+   "utc": "2026-10-03T21:56:11+00:00",
+   "class": "live",
+   "line": "match replay: forward live recordings of 2026-10-03 used for a labelled 1 s-feed counterfactual replay (no parameter chosen) [visuals: scripts/match_replay_extras.py re-read the same recording for the event-level book, prints and 20-seed fill paths of the committed replay; descriptive only; logged after the extras run]"
+  },
+  {
+   "utc": "2026-10-03T22:18:13+00:00",
+   "class": "non-blind",
+   "line": "capacity study: burned OOS size/cap/coverage grid (non-blind, no parameter chosen) [scripts/capacity_study.py: local v2 1x check, then the HiPerGator grid; logged before either run]"
+  },
+  {
+   "utc": "2026-10-03T22:24:32+00:00",
+   "class": "live",
+   "line": "match replay: forward live recordings of 2026-10-03 used for a labelled 1 s-feed counterfactual replay (no parameter chosen) [audit: scripts/match_replay_check.py re-reads the same recording with its own parser and book, re-runs the headline cells and labelled timing diagnostics; logged before the audit run]"
+  },
+  {
+   "utc": "2026-10-03T23:01:16+00:00",
+   "class": "live",
+   "line": "match replay selective variant: exploratory, post hoc (forward live recordings of 2026-10-03) [scripts/match_replay_selective.py: the replay restricted to points whose ex-ante Markov swing >= T, T in {2c, 4c, 6c} declared before running; added after seeing the all-points replay; not pre-registered; logged before the run]"
+  }
+ ]
+}

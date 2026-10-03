@@ -1,0 +1,53 @@
+{
+ "detector_move_c": {
+  "value": 4,
+  "source": "src/tiers.py:41"
+ },
+ "detector_short_window_s": {
+  "value": 10,
+  "source": "src/tiers.py:41"
+ },
+ "detector_long_window_s": {
+  "value": 60,
+  "source": "src/tiers.py:41"
+ },
+ "qualify_min_prints": {
+  "value": 30,
+  "source": "src/fasttier.py:12"
+ },
+ "qualify_min_matches": {
+  "value": 10,
+  "source": "src/fasttier.py:12"
+ },
+ "qualify_min_t": {
+  "value": 3.0,
+  "source": "src/fasttier.py:12"
+ },
+ "shrinkage_n0": {
+  "value": 200,
+  "source": "HYPOTHESIS_V2.md:18"
+ },
+ "zone": {
+  "value": [
+   0.05,
+   0.95
+  ],
+  "source": "HYPOTHESIS_V2.md:20"
+ },
+ "lock_s": {
+  "value": 14400,
+  "source": "src/v2.py:92"
+ },
+ "trailing_edge_half_c": {
+  "value": 0.3,
+  "source": "docs/RISK.md:62"
+ },
+ "drawdown_stop_pct": {
+  "value": 5,
+  "source": "docs/RISK.md:61"
+ },
+ "rule_changes_after_a_look": {
+  "value": 2,
+  "source": "DEVIATIONS.md:165"
+ }
+}

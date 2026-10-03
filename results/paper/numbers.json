@@ -1,0 +1,2117 @@
+{
+ "generated_utc": "2026-10-03T23:11:41+00:00",
+ "script": "scripts/build_paper.py",
+ "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
+ "numbers": {
+  "univ.matches": {
+   "value": "13,084",
+   "raw": 13084,
+   "source": "results/summary.json::universe.matches"
+  },
+  "univ.volume": {
+   "value": "$2.84B",
+   "raw": 2836481081.542138,
+   "source": "results/summary.json::universe.volume_usd"
+  },
+  "univ.is": {
+   "value": "10,467",
+   "raw": 10467,
+   "source": "results/summary.json::universe.is"
+  },
+  "univ.oos": {
+   "value": "2,617",
+   "raw": 2617,
+   "source": "results/summary.json::universe.oos"
+  },
+  "univ.oosstart": {
+   "value": "2026-08-25 14:15 UTC",
+   "raw": "2026-08-25 14:15:00+00:00",
+   "source": "results/summary.json::universe.oos_start"
+  },
+  "univ.first": {
+   "value": "Oct 8, 2025",
+   "raw": "2025-10-08 02:00:00+00:00",
+   "source": "results/v2/note_metrics.json::holdout.first_start"
+  },
+  "univ.last": {
+   "value": "Oct 3, 2026",
+   "raw": "2026-10-03 07:10:00+00:00",
+   "source": "results/v2/note_metrics.json::holdout.last_start"
+  },
+  "univ.oos_time": {
+   "value": "10.7%",
+   "raw": 0.10744924909872569,
+   "source": "results/v2/note_metrics.json::holdout.oos_share_of_time"
+  },
+  "univ.oos_vol": {
+   "value": "21.2%",
+   "raw": 0.2120194595154718,
+   "source": "results/v2/note_metrics.json::holdout.oos_share_of_volume"
+  },
+  "univ.timesplit": {
+   "value": "Jul 23",
+   "raw": "2026-07-23 06:08:00+00:00",
+   "source": "results/v2/note_metrics.json::holdout.time_based_20pct_start"
+  },
+  "univ.minvol": {
+   "value": "$5,000",
+   "raw": 5000,
+   "source": "src/tape.py:12"
+  },
+  "data.offsetcap": {
+   "value": "6",
+   "raw": 6,
+   "source": "results/v2/note_metrics.json::data_gaps.tapes_at_offset_cap_10500_rows"
+  },
+  "data.nofee": {
+   "value": "2,889",
+   "raw": 2889,
+   "source": "results/v2/note_metrics.json::data_gaps.no_fee_schedule_matches"
+  },
+  "data.res5050": {
+   "value": "2.89%",
+   "raw": 2.89,
+   "source": "results/risk/risk_stats.json::settlement.all.res_50_50_pct"
+  },
+  "data.blocklag": {
+   "value": "1.98",
+   "raw": 1.9760000705718994,
+   "source": "results/decay/decay.json::latency_inputs.block_lag_s.median"
+  },
+  "data.blocklag.n": {
+   "value": "5,472",
+   "raw": 5472,
+   "source": "results/decay/decay.json::latency_inputs.block_lag_s.n"
+  },
+  "markov.points": {
+   "value": "161",
+   "raw": 161.187,
+   "source": "results/leverage_stats.json::atp.points_per_match"
+  },
+  "markov.lev": {
+   "value": "5.7%",
+   "raw": 0.057157151176398316,
+   "source": "results/leverage_stats.json::atp.mean_abs_leverage"
+  },
+  "fee.rate": {
+   "value": "5%",
+   "raw": 0.05,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.breakeven_taker_fee.uniform_rate_charged"
+  },
+  "fee.bps_q05": {
+   "value": "250",
+   "raw": 250.0,
+   "source": "results/v2/note_metrics.json::fee_formula_bps_today.q=0.5"
+  },
+  "u2.markets": {
+   "value": "11,307",
+   "raw": 11307,
+   "source": "results/expand/results.json::universe.u2_markets"
+  },
+  "prereg.hyp.commit": {
+   "value": "7232986",
+   "raw": "7232986",
+   "source": "git log --diff-filter=A -- HYPOTHESIS.md"
+  },
+  "prereg.hyp.time": {
+   "value": "2026-10-03 09:50 UTC",
+   "raw": "2026-10-03T05:50:47-04:00",
+   "source": "git log --diff-filter=A -- HYPOTHESIS.md"
+  },
+  "ft.months.is": {
+   "value": "9/9",
+   "raw": "9/9",
+   "source": "results/alpha/alpha.json::headline.fast_tier_net30_c_months_positive.IS"
+  },
+  "ft.months.oos": {
+   "value": "3/3",
+   "raw": "3/3",
+   "source": "results/alpha/alpha.json::headline.fast_tier_net30_c_months_positive.OOS"
+  },
+  "ft.c.is": {
+   "value": "+0.93",
+   "raw": 0.9309,
+   "source": "results/alpha/alpha.json::headline.fast_tier_net30_c_print_weighted.IS"
+  },
+  "oth.c.is": {
+   "value": "−0.89",
+   "raw": -0.8932,
+   "source": "results/alpha/alpha.json::headline.others_net30_c_month_mean.IS"
+  },
+  "copy3.c.is": {
+   "value": "−1.05",
+   "raw": -1.0528,
+   "source": "results/alpha/alpha.json::headline.copy_3s_later_c.IS"
+  },
+  "ft.c.oos": {
+   "value": "+0.75",
+   "raw": 0.7483,
+   "source": "results/alpha/alpha.json::headline.fast_tier_net30_c_print_weighted.OOS"
+  },
+  "oth.c.oos": {
+   "value": "−1.43",
+   "raw": -1.4269,
+   "source": "results/alpha/alpha.json::headline.others_net30_c_month_mean.OOS"
+  },
+  "copy3.c.oos": {
+   "value": "−1.59",
+   "raw": -1.5856,
+   "source": "results/alpha/alpha.json::headline.copy_3s_later_c.OOS"
+  },
+  "ft.wallets.first": {
+   "value": "4",
+   "raw": 4,
+   "source": "results/summary.json::is.h6_walkforward[0].n_wallets"
+  },
+  "ft.wallets.last": {
+   "value": "131",
+   "raw": 131,
+   "source": "results/summary.json::oos.h6_walkforward[-1].n_wallets"
+  },
+  "ft.slope": {
+   "value": "0.20",
+   "raw": -0.1998,
+   "source": "results/alpha/alpha.json::headline.fast_tier_slope_c_per_month.IS"
+  },
+  "ft.slope.t": {
+   "value": "−3.98",
+   "raw": -3.98,
+   "source": "results/alpha/alpha.json::headline.fast_tier_slope_c_per_month.IS_t"
+  },
+  "h4.lead": {
+   "value": "44.5",
+   "raw": 44.52,
+   "source": "results/summary.json::h4.median_lead_s"
+  },
+  "h4.n": {
+   "value": "75",
+   "raw": 75,
+   "source": "results/summary.json::h4.n"
+  },
+  "v2.is.trades": {
+   "value": "55,662",
+   "raw": 55662,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.n_trades"
+  },
+  "v2.is.matches": {
+   "value": "7,639",
+   "raw": 7639,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.n_matches"
+  },
+  "v2.is.days": {
+   "value": "206",
+   "raw": 206,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.days"
+  },
+  "v2.is.c": {
+   "value": "+1.38",
+   "raw": 1.3814511010237975,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.per_share_c"
+  },
+  "v2.is.ci": {
+   "value": "[1.17, 1.59]",
+   "raw": [
+    1.167847083750991,
+    1.5935130267793969
+   ],
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.per_share_ci_c"
+  },
+  "v2.is.pnl": {
+   "value": "+$40,426",
+   "raw": 40425.71919167921,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.total_pnl_usd"
+  },
+  "v2.is.mpos": {
+   "value": "7/7",
+   "raw": [
+    7,
+    7
+   ],
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.{months_positive,months_total}"
+  },
+  "v2.is.worstday_usd": {
+   "value": "−$551",
+   "raw": -550.764300067122,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.worst_day_usd"
+  },
+  "v2.is.net_bps": {
+   "value": "273",
+   "raw": 273.22722125220287,
+   "source": "results/v2/note_metrics.json::is.net_edge_bps_of_notional"
+  },
+  "v2.is.fee_bps": {
+   "value": "120",
+   "raw": 119.95739752203679,
+   "source": "results/v2/note_metrics.json::is.fee_bps_of_notional"
+  },
+  "v2.is.ret": {
+   "value": "253%",
+   "raw": 253.0816341588461,
+   "source": "results/v2/note_metrics.json::is.ann_return_pct"
+  },
+  "v2.is.vol": {
+   "value": "17.5%",
+   "raw": 17.474207770698847,
+   "source": "results/v2/note_metrics.json::is.ann_vol_pct"
+  },
+  "v2.is.sr": {
+   "value": "14.5",
+   "raw": 14.483153541485253,
+   "source": "results/v2/note_metrics.json::is.sharpe_ann"
+  },
+  "v2.is.sr_ci": {
+   "value": "[11.9, 17.4]",
+   "raw": [
+    11.928853719016487,
+    17.370159740112545
+   ],
+   "source": "results/rigor/rigor.json::bootstrap.v2_is.sharpe_ann_ci95"
+  },
+  "v2.is.dd": {
+   "value": "−2.0%",
+   "raw": -2.0120402719953496,
+   "source": "results/v2/note_metrics.json::is.max_dd_pct"
+  },
+  "v2.is.worstday": {
+   "value": "−1.9%",
+   "raw": -1.9460007935673853,
+   "source": "results/v2/note_metrics.json::is.worst_day_pct"
+  },
+  "v2.is.skew": {
+   "value": "+0.53",
+   "raw": 0.5345103599734671,
+   "source": "results/v2/note_metrics.json::is.skew"
+  },
+  "v2.is.kurt": {
+   "value": "4.30",
+   "raw": 4.295491038665969,
+   "source": "results/v2/note_metrics.json::is.kurtosis_pearson"
+  },
+  "v2.is.worstmonth": {
+   "value": "+$2,543",
+   "raw": 2542.5647262976495,
+   "source": "results/v2/note_metrics.json::is.worst_month_usd"
+  },
+  "v2.is.turnover": {
+   "value": "93",
+   "raw": 92.62680087253777,
+   "source": "results/v2/note_metrics.json::is.turnover_x_per_year"
+  },
+  "v2.is.cap": {
+   "value": "$28,302",
+   "raw": 28302.367701375268,
+   "source": "results/v2/note_metrics.json::is.capital_usd"
+  },
+  "v2.is.slip05": {
+   "value": "+0.88",
+   "raw": 0.8814511010237972,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.005.per_share_c"
+  },
+  "v2.is.slip10": {
+   "value": "+0.38",
+   "raw": 0.3814511010237971,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.01.per_share_c"
+  },
+  "v2.is.fx2.c": {
+   "value": "+0.77",
+   "raw": 0.7749402339026797,
+   "source": "results/v2/cost_stress.json::is_eval/fee_x2.per_share_c"
+  },
+  "v2.is.fx2.ci": {
+   "value": "[0.57, 0.98]",
+   "raw": [
+    0.5651649237351738,
+    0.9844242457493877
+   ],
+   "source": "results/v2/cost_stress.json::is_eval/fee_x2.per_share_ci_c"
+  },
+  "v2.is.fx2.mpos": {
+   "value": "7/7",
+   "raw": [
+    7,
+    7
+   ],
+   "source": "results/v2/cost_stress.json::is_eval/fee_x2.{months_positive,months_total}"
+  },
+  "v2.is.fx2.usd": {
+   "value": "+$22,677",
+   "raw": 22677.253116572145,
+   "source": "results/v2/cost_stress.json::is_eval/fee_x2.total_pnl_usd"
+  },
+  "v2.is.cx2.c": {
+   "value": "+0.27",
+   "raw": 0.27494023390267935,
+   "source": "results/v2/cost_stress.json::is_eval/costs_x2.per_share_c"
+  },
+  "v2.is.cx2.ci": {
+   "value": "[0.07, 0.48]",
+   "raw": [
+    0.06516492373517342,
+    0.4844242457493873
+   ],
+   "source": "results/v2/cost_stress.json::is_eval/costs_x2.per_share_ci_c"
+  },
+  "v2.is.cx2.mpos": {
+   "value": "5/7",
+   "raw": [
+    5,
+    7
+   ],
+   "source": "results/v2/cost_stress.json::is_eval/costs_x2.{months_positive,months_total}"
+  },
+  "v2.is.cx2.usd": {
+   "value": "+$8,046",
+   "raw": 8045.6388807444655,
+   "source": "results/v2/cost_stress.json::is_eval/costs_x2.total_pnl_usd"
+  },
+  "v2.oos.trades": {
+   "value": "10,412",
+   "raw": 10412,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.n_trades"
+  },
+  "v2.oos.matches": {
+   "value": "2,003",
+   "raw": 2003,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.n_matches"
+  },
+  "v2.oos.days": {
+   "value": "40",
+   "raw": 40,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.days"
+  },
+  "v2.oos.c": {
+   "value": "+0.60",
+   "raw": 0.598736335564979,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.per_share_c"
+  },
+  "v2.oos.ci": {
+   "value": "[0.09, 1.13]",
+   "raw": [
+    0.08724550818301618,
+    1.1271958683912837
+   ],
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.per_share_ci_c"
+  },
+  "v2.oos.pnl": {
+   "value": "+$3,688",
+   "raw": 3687.5359201936667,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.total_pnl_usd"
+  },
+  "v2.oos.mpos": {
+   "value": "2/3",
+   "raw": [
+    2,
+    3
+   ],
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.{months_positive,months_total}"
+  },
+  "v2.oos.worstday_usd": {
+   "value": "−$469",
+   "raw": -469.4297898304612,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.worst_day_usd"
+  },
+  "v2.oos.net_bps": {
+   "value": "114",
+   "raw": 114.34562971581524,
+   "source": "results/v2/note_metrics.json::burned_oos.net_edge_bps_of_notional"
+  },
+  "v2.oos.fee_bps": {
+   "value": "179",
+   "raw": 179.0187114546745,
+   "source": "results/v2/note_metrics.json::burned_oos.fee_bps_of_notional"
+  },
+  "v2.oos.ret": {
+   "value": "148%",
+   "raw": 147.88035894965816,
+   "source": "results/v2/note_metrics.json::burned_oos.ann_return_pct"
+  },
+  "v2.oos.vol": {
+   "value": "22.2%",
+   "raw": 22.17910889859161,
+   "source": "results/v2/note_metrics.json::burned_oos.ann_vol_pct"
+  },
+  "v2.oos.sr": {
+   "value": "6.7",
+   "raw": 6.667551867200974,
+   "source": "results/v2/note_metrics.json::burned_oos.sharpe_ann"
+  },
+  "v2.oos.sr_ci": {
+   "value": "[1.9, 12.3]",
+   "raw": [
+    1.8864937179473027,
+    12.346272075261014
+   ],
+   "source": "results/rigor/rigor.json::bootstrap.v2_oos.sharpe_ann_ci95"
+  },
+  "v2.oos.dd": {
+   "value": "−2.1%",
+   "raw": -2.0630607174176805,
+   "source": "results/v2/note_metrics.json::burned_oos.max_dd_pct"
+  },
+  "v2.oos.worstday": {
+   "value": "−2.1%",
+   "raw": -2.0630607174176805,
+   "source": "results/v2/note_metrics.json::burned_oos.worst_day_pct"
+  },
+  "v2.oos.skew": {
+   "value": "+0.33",
+   "raw": 0.3256376673081488,
+   "source": "results/v2/note_metrics.json::burned_oos.skew"
+  },
+  "v2.oos.kurt": {
+   "value": "3.26",
+   "raw": 3.259698998705011,
+   "source": "results/v2/note_metrics.json::burned_oos.kurtosis_pearson"
+  },
+  "v2.oos.worstmonth": {
+   "value": "−$434",
+   "raw": -434.1530679579675,
+   "source": "results/v2/note_metrics.json::burned_oos.worst_month_usd"
+  },
+  "v2.oos.turnover": {
+   "value": "129",
+   "raw": 129.32751283733995,
+   "source": "results/v2/note_metrics.json::burned_oos.turnover_x_per_year"
+  },
+  "v2.oos.cap": {
+   "value": "$22,754",
+   "raw": 22754.046251146858,
+   "source": "results/v2/note_metrics.json::burned_oos.capital_usd"
+  },
+  "v2.oos.slip05": {
+   "value": "+0.10",
+   "raw": 0.09873633556497882,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.005.per_share_c"
+  },
+  "v2.oos.slip10": {
+   "value": "−0.40",
+   "raw": -0.4012636644350215,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.01.per_share_c"
+  },
+  "v2.oos.fx2.c": {
+   "value": "−0.34",
+   "raw": -0.3386410487769019,
+   "source": "results/v2/cost_stress.json::burned_oos/fee_x2.per_share_c"
+  },
+  "v2.oos.fx2.ci": {
+   "value": "[−0.86, 0.19]",
+   "raw": [
+    -0.8573447664816245,
+    0.19138938435173888
+   ],
+   "source": "results/v2/cost_stress.json::burned_oos/fee_x2.per_share_ci_c"
+  },
+  "v2.oos.fx2.mpos": {
+   "value": "0/3",
+   "raw": [
+    0,
+    3
+   ],
+   "source": "results/v2/cost_stress.json::burned_oos/fee_x2.{months_positive,months_total}"
+  },
+  "v2.oos.fx2.usd": {
+   "value": "−$2,086",
+   "raw": -2085.6443099257303,
+   "source": "results/v2/cost_stress.json::burned_oos/fee_x2.total_pnl_usd"
+  },
+  "v2.oos.cx2.c": {
+   "value": "−0.84",
+   "raw": -0.8386410487769022,
+   "source": "results/v2/cost_stress.json::burned_oos/costs_x2.per_share_c"
+  },
+  "v2.oos.cx2.ci": {
+   "value": "[−1.36, −0.31]",
+   "raw": [
+    -1.357344766481625,
+    -0.30861061564826164
+   ],
+   "source": "results/v2/cost_stress.json::burned_oos/costs_x2.per_share_ci_c"
+  },
+  "v2.oos.cx2.mpos": {
+   "value": "0/3",
+   "raw": [
+    0,
+    3
+   ],
+   "source": "results/v2/cost_stress.json::burned_oos/costs_x2.{months_positive,months_total}"
+  },
+  "v2.oos.cx2.usd": {
+   "value": "−$5,165",
+   "raw": -5165.076525037613,
+   "source": "results/v2/cost_stress.json::burned_oos/costs_x2.total_pnl_usd"
+  },
+  "v2.is.start": {
+   "value": "Feb 1",
+   "raw": "2026-02-01",
+   "source": "results/lowloss/daily.csv[a,u1_is,v2].date.min"
+  },
+  "v2.is.end": {
+   "value": "Aug 25",
+   "raw": "2026-08-25",
+   "source": "results/lowloss/daily.csv[a,u1_is,v2].date.max"
+  },
+  "v2.oos.start": {
+   "value": "Aug 25",
+   "raw": "2026-08-25",
+   "source": "results/lowloss/daily.csv[a,u1_oos,v2].date.min"
+  },
+  "v2.oos.end": {
+   "value": "Oct 3",
+   "raw": "2026-10-03",
+   "source": "results/lowloss/daily.csv[a,u1_oos,v2].date.max"
+  },
+  "v2.is.hs_bps": {
+   "value": "99",
+   "raw": 98.89138350597909,
+   "source": "results/v2/note_metrics.json::is.half_spread_0.5c_bps_of_notional"
+  },
+  "v2.is.notional_day": {
+   "value": "$7,182",
+   "raw": 7182.350074785291,
+   "source": "results/v2/note_metrics.json::is.usd_traded_per_day"
+  },
+  "v2.is.share_vol": {
+   "value": "0.07%",
+   "raw": 0.0007174413723413251,
+   "source": "results/v2/note_metrics.json::is.v2_usd_traded_share_of_match_volume"
+  },
+  "v2.trades_per_day": {
+   "value": "270",
+   "raw": 270.20388349514565,
+   "source": "D: causal.json is_eval n_trades / days"
+  },
+  "v2.oos.ci_wallet": {
+   "value": "[−0.45, 2.38]",
+   "raw": [
+    -0.45453363092194293,
+    2.377185320961488
+   ],
+   "source": "results/financials/pm_compute.json::p07_wallet_clustered_ci.burned_oos.ci95_c_wallet_clustered"
+  },
+  "v2.onset.is.sr": {
+   "value": "16.8",
+   "raw": 16.76858268289981,
+   "source": "results/v2/causal.json::onset/is_eval/slip0.0.sharpe_ann"
+  },
+  "v2.reg.3s0": {
+   "value": "+1.96",
+   "raw": 1.9569,
+   "source": "results/risk/risk_stats.json::regime.is_eval.3s/0%.per_share_c"
+  },
+  "v2.reg.3s3": {
+   "value": "+1.36",
+   "raw": 1.3556,
+   "source": "results/risk/risk_stats.json::regime.is_eval.3s/3%.per_share_c"
+  },
+  "v2.reg.1s3": {
+   "value": "+1.45",
+   "raw": 1.451,
+   "source": "results/risk/risk_stats.json::regime.is_eval.1s/3%.per_share_c"
+  },
+  "v2.reg.1s5": {
+   "value": "+1.02",
+   "raw": 1.0192,
+   "source": "results/risk/risk_stats.json::regime.is_eval.1s/5%.per_share_c"
+  },
+  "decay.sameblock.share": {
+   "value": "98%",
+   "raw": 0.984615732199668,
+   "source": "D: results/decay/audit_sameblock.json::v2_backtest_trades.IS+burned_OOS same_block.pnl_usd / all_matched.pnl_usd"
+  },
+  "conc.top5.is": {
+   "value": "81%",
+   "raw": 0.8137,
+   "source": "results/alpha/alpha.json::headline.top5_wallet_share_of_pnl.IS"
+  },
+  "conc.top5.oos": {
+   "value": "142%",
+   "raw": 1.421,
+   "source": "results/alpha/alpha.json::headline.top5_wallet_share_of_pnl.OOS"
+  },
+  "risk.corr_sameday": {
+   "value": "0.0013",
+   "raw": 0.0013,
+   "source": "results/risk/risk_stats.json::correlation.is_eval.implied_mean_pairwise_corr_same_day"
+  },
+  "rig.N": {
+   "value": "3,410",
+   "raw": 3410,
+   "source": "results/rigor/rigor.json::psr_dsr.N.all_plus_v2safe_grid"
+  },
+  "rig.N3386": {
+   "value": "3,386",
+   "raw": 3386,
+   "source": "results/rigor/rigor.json::psr_dsr.N.all_NOTE_s8"
+  },
+  "rig.N44": {
+   "value": "44",
+   "raw": 44,
+   "source": "results/rigor/rigor.json::psr_dsr.N.H1_H6"
+  },
+  "rig.dsr.is": {
+   "value": "0.997",
+   "raw": 0.9969107512828559,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_is].dsr.N3386/sizing_grid_55.dsr"
+  },
+  "rig.dsr.oos": {
+   "value": "0.075–0.839",
+   "raw": [
+    0.0749,
+    0.8388
+   ],
+   "source": "results/alpha/alpha.json::headline.v2_oos_dsr_N3386_range"
+  },
+  "rig.pbo.lowloss": {
+   "value": "15%",
+   "raw": 0.15423465423465424,
+   "source": "results/rigor/rigor.json::pbo_cscv.lowloss_24_sharpe.pbo"
+  },
+  "rig.boot.p": {
+   "value": "0.0023",
+   "raw": 0.0023,
+   "source": "results/rigor/rigor.json::bootstrap.v2_oos.p_sharpe_le_0"
+  },
+  "fac.alpha_t": {
+   "value": "8.48",
+   "raw": 8.48,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.alpha_t"
+  },
+  "fac.max_t": {
+   "value": "1.36",
+   "raw": 1.36,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.max_abs_factor_t"
+  },
+  "fac.r2": {
+   "value": "3.3%",
+   "raw": 0.0334,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.r2"
+  },
+  "fac.n": {
+   "value": "138",
+   "raw": 138,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.n_days"
+  },
+  "cv.tt.n_miss": {
+   "value": "41",
+   "raw": 41,
+   "source": "results/tracking/summary.json::n_flights.test.MISS"
+  },
+  "cv.tt.n_bounce": {
+   "value": "130",
+   "raw": 130,
+   "source": "results/tracking/summary.json::n_flights.test.BOUNCE"
+  },
+  "cv.tt.tp50": {
+   "value": "11",
+   "raw": 11,
+   "source": "results/tracking/summary.json::early_call.precision_recall_test_snapshot.50ms.tp"
+  },
+  "cv.tt.called50": {
+   "value": "11",
+   "raw": 11,
+   "source": "D: tp + fp at 50 ms (snapshot rule)"
+  },
+  "cv.tt.rec50": {
+   "value": "27%",
+   "raw": 0.2683,
+   "source": "results/tracking/summary.json::early_call.precision_recall_test_snapshot.50ms.recall"
+  },
+  "cv.tt.wil50": {
+   "value": "[0.74, 1.00]",
+   "raw": [
+    0.7412,
+    1.0
+   ],
+   "source": "results/tracking/summary.json::early_call.precision_recall_test_snapshot.50ms.precision_wilson95"
+  },
+  "cv.tt.det_recall": {
+   "value": "96.7%",
+   "raw": 0.9671,
+   "source": "results/tracking/summary.json::detection_accuracy_pooled[test,tracked].recall"
+  },
+  "cv.eng.fps": {
+   "value": "119.9",
+   "raw": 119.88,
+   "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.fps"
+  },
+  "cv.eng.dropped": {
+   "value": "0",
+   "raw": 0,
+   "source": "…stream.dropped"
+  },
+  "cv.eng.frames": {
+   "value": "102,120",
+   "raw": 102120,
+   "source": "…stream.frames"
+  },
+  "cv.eng.p50": {
+   "value": "4.6",
+   "raw": 4.62,
+   "source": "…stream.after_startup.call_ready_ms.p50"
+  },
+  "cv.eng.p99": {
+   "value": "12.2",
+   "raw": 12.19,
+   "source": "…stream.after_startup.call_ready_ms.p99"
+  },
+  "cv.laptop.fps": {
+   "value": "50.6",
+   "raw": 50.56,
+   "source": "results/engine/vision_bench.json::summary[0].fps_sustained"
+  },
+  "cv.spin.bls200": {
+   "value": "0.57",
+   "raw": 0.57,
+   "source": "results/spin/tennis/key_numbers.json::bls.sd_cm.200"
+  },
+  "cv.spin.base200": {
+   "value": "5.76",
+   "raw": 5.76,
+   "source": "results/spin/tennis/key_numbers.json::baseline.sd_cm.200"
+  },
+  "cv.inf": {
+   "value": "20",
+   "raw": 0.02,
+   "source": "results/decay/decay.json::latency_inputs.cv_assumed_s"
+  },
+  "cv.webrtc": {
+   "value": "46 ms p50, 67 ms p99",
+   "raw": {
+    "p50": 46.04,
+    "p99": 67.27,
+    "n": 55,
+    "key": "headline.measured_frame_send_to_emit_ms",
+    "setting": "120fps_keepup"
+   },
+   "source": "results/webrtc/latency.json::headline.measured_frame_send_to_emit_ms.{p50,p99}"
+  },
+  "cv.webrtc.n": {
+   "value": "55",
+   "raw": 55,
+   "source": "results/webrtc/latency.json::headline.measured_frame_send_to_emit_ms.n"
+  },
+  "lat.book_vs_stamp": {
+   "value": "1.2",
+   "raw": -1.16,
+   "source": "research/v2/latency/results.json::summary.m1.book_vs_official_T_s.median"
+  },
+  "lat.book_vs_stamp_signed": {
+   "value": "−1.16",
+   "raw": -1.16,
+   "source": "research/v2/latency/results.json::summary.m1.book_vs_official_T_s.median"
+  },
+  "lat.n_points": {
+   "value": "482",
+   "raw": 482,
+   "source": "research/v2/latency/results.json::summary.m1.book_vs_official_T_s.n"
+  },
+  "lat.espn": {
+   "value": "28.2",
+   "raw": 28.19,
+   "source": "research/v2/latency/results.json::summary.m1.espn:game.lead_vs_book_s.median (negated)"
+  },
+  "lat.pmsports": {
+   "value": "30.0",
+   "raw": 30.04,
+   "source": "research/v2/latency/results.json::summary.m1.pm_sports:game.lead_vs_book_s.median (negated)"
+  },
+  "lat.wta": {
+   "value": "44.1",
+   "raw": 44.07,
+   "source": "research/v2/latency/results.json::summary.m1.wta:point.lead_vs_book_s.median (negated)"
+  },
+  "lat.webrtc_public": {
+   "value": "12.2",
+   "raw": 12.2,
+   "source": "results/home_stream/sub_second_routes.json::bottom_line.why_not_match (regex 'median ([0-9.]+) s')"
+  },
+  "lat.net_fl": {
+   "value": "67",
+   "raw": 0.067,
+   "source": "results/decay/decay.json::latency_inputs.net_florida_s"
+  },
+  "lat.net_ldn": {
+   "value": "2",
+   "raw": 0.002,
+   "source": "results/decay/decay.json::latency_inputs.net_london_s"
+  },
+  "lat.feed_p50": {
+   "value": "65",
+   "raw": 65.0,
+   "source": "results/engine/live_market_run.json::feed.latency.p50_ms"
+  },
+  "venue.delay": {
+   "value": "1",
+   "raw": 1.0,
+   "source": "results/tier0/latency_sweep.json::model.video (regex 'order delay (x s)')"
+  },
+  "lat.video_band": {
+   "value": "0.5–8",
+   "raw": [
+    0.5,
+    8.0
+   ],
+   "source": "results/tier0/latency_sweep.json::sources[betting_video].band_s"
+  },
+  "lat.stamp_band": {
+   "value": "1–3",
+   "raw": [
+    1.0,
+    2.0,
+    3.0
+   ],
+   "source": "results/tier0/latency_sweep.json::grids.stamp_lag_s"
+  },
+  "cv.cal.lag": {
+   "value": "3.14",
+   "raw": 3.14,
+   "source": "results/tier0/latency_sweep.json::grids.video_stamp_lag_sensitivity.tournament_lagcal (regex)"
+  },
+  "cv.pre.lag": {
+   "value": "2.0",
+   "raw": 2.0,
+   "source": "results/tier0/latency_sweep.json::model.revised_primary.stamp_lag"
+  },
+  "cv.cal.is.usd": {
+   "value": "+$94",
+   "raw": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  "cv.cal.is.usd_ci": {
+   "value": "[51, 125]",
+   "raw": [
+    51.3,
+    125.01
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day_seed_ci95"
+  },
+  "cv.cal.is.c": {
+   "value": "+1.11",
+   "raw": 1.113,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
+  },
+  "cv.cal.is.c_ci": {
+   "value": "[0.85, 1.38]",
+   "raw": [
+    0.849,
+    1.375
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share_ci95"
+  },
+  "cv.cal.is.sr": {
+   "value": "11.9",
+   "raw": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  "cv.cal.is.wrong": {
+   "value": "12%",
+   "raw": 0.1208,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.wrong_call_share_of_trades"
+  },
+  "cv.cal.is.ret": {
+   "value": "118",
+   "raw": 117.81268269428003,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.cal.is.vol": {
+   "value": "9.9",
+   "raw": 9.85568436881723,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.cal.is.dd": {
+   "value": "−1.6",
+   "raw": -0.015857314667946248,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.cal.is.worstday": {
+   "value": "−$223",
+   "raw": -223.42355,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] worst_day_usd"
+  },
+  "cv.cal.is.tpd": {
+   "value": "65",
+   "raw": 64.94563106796116,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] n_trades/days"
+  },
+  "cv.cal.is.days": {
+   "value": "103",
+   "raw": 103.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] days"
+  },
+  "cv.cal.be.is": {
+   "value": "2.23",
+   "raw": 2.23,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be_ci.is": {
+   "value": "[2.18, 3.39]",
+   "raw": [
+    2.182,
+    3.386
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.cal.oos.usd": {
+   "value": "+$57",
+   "raw": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  "cv.cal.oos.usd_ci": {
+   "value": "[1, 130]",
+   "raw": [
+    0.65,
+    129.52
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "cv.cal.oos.c": {
+   "value": "+0.66",
+   "raw": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
+  },
+  "cv.cal.oos.c_ci": {
+   "value": "[0.10, 1.19]",
+   "raw": [
+    0.098,
+    1.189
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share_ci95"
+  },
+  "cv.cal.oos.sr": {
+   "value": "8.8",
+   "raw": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  "cv.cal.oos.wrong": {
+   "value": "16%",
+   "raw": 0.1597,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.wrong_call_share_of_trades"
+  },
+  "cv.cal.oos.ret": {
+   "value": "91",
+   "raw": 91.49682331148603,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.cal.oos.vol": {
+   "value": "10.3",
+   "raw": 10.339266656287796,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.cal.oos.dd": {
+   "value": "−1.6",
+   "raw": -0.016079028187689064,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.cal.oos.worstday": {
+   "value": "−$192",
+   "raw": -191.88426,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] worst_day_usd"
+  },
+  "cv.cal.oos.tpd": {
+   "value": "55",
+   "raw": 55.2975,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] n_trades/days"
+  },
+  "cv.cal.oos.days": {
+   "value": "40",
+   "raw": 40.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] days"
+  },
+  "cv.cal.be.oos": {
+   "value": "2.14",
+   "raw": 2.14,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be_ci.oos": {
+   "value": "[1.59, 2.19]",
+   "raw": [
+    1.591,
+    2.193
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.cal.be.range": {
+   "value": "2.1–2.2",
+   "raw": [
+    2.14,
+    2.23
+   ],
+   "source": "D: min/max of the IS and OOS break-evens"
+  },
+  "cv.pre.is.usd": {
+   "value": "+$15",
+   "raw": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day"
+  },
+  "cv.pre.is.usd_ci": {
+   "value": "[−9, 43]",
+   "raw": [
+    -8.76,
+    43.15
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day_seed_ci95"
+  },
+  "cv.pre.is.c": {
+   "value": "+0.40",
+   "raw": 0.401,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share"
+  },
+  "cv.pre.is.c_ci": {
+   "value": "[−0.32, 1.08]",
+   "raw": [
+    -0.324,
+    1.078
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share_ci95"
+  },
+  "cv.pre.is.sr": {
+   "value": "2.1",
+   "raw": 2.15,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.sharpe_ann"
+  },
+  "cv.pre.is.wrong": {
+   "value": "35%",
+   "raw": 0.3484,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.wrong_call_share_of_trades"
+  },
+  "cv.pre.is.ret": {
+   "value": "30",
+   "raw": 30.31498104644623,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.pre.is.vol": {
+   "value": "14.1",
+   "raw": 14.082175594803891,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.pre.is.dd": {
+   "value": "−6.6",
+   "raw": -0.06586357490754513,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.pre.is.worstday": {
+   "value": "−$263",
+   "raw": -263.49889,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] worst_day_usd"
+  },
+  "cv.pre.is.tpd": {
+   "value": "26",
+   "raw": 25.618932038834952,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] n_trades/days"
+  },
+  "cv.pre.is.days": {
+   "value": "103",
+   "raw": 103.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] days"
+  },
+  "cv.pre.be.is": {
+   "value": "1.09",
+   "raw": 1.089,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.pre.be_ci.is": {
+   "value": "[1.03, 2.04]",
+   "raw": [
+    1.032,
+    2.039
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.IS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.pre.oos.usd": {
+   "value": "+$4",
+   "raw": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day"
+  },
+  "cv.pre.oos.usd_ci": {
+   "value": "[−36, 62]",
+   "raw": [
+    -36.42,
+    62.49
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "cv.pre.oos.c": {
+   "value": "−0.38",
+   "raw": -0.383,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share"
+  },
+  "cv.pre.oos.c_ci": {
+   "value": "[−2.08, 1.21]",
+   "raw": [
+    -2.083,
+    1.205
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share_ci95"
+  },
+  "cv.pre.oos.sr": {
+   "value": "0.3",
+   "raw": 0.34,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.sharpe_ann"
+  },
+  "cv.pre.oos.wrong": {
+   "value": "47%",
+   "raw": 0.4723,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.wrong_call_share_of_trades"
+  },
+  "cv.pre.oos.ret": {
+   "value": "11",
+   "raw": 11.493020796447542,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.pre.oos.vol": {
+   "value": "33.4",
+   "raw": 33.369202707297895,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.pre.oos.dd": {
+   "value": "−5.3",
+   "raw": -0.052746799763501176,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.pre.oos.worstday": {
+   "value": "−$228",
+   "raw": -228.38482,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] worst_day_usd"
+  },
+  "cv.pre.oos.tpd": {
+   "value": "24",
+   "raw": 24.286250000000003,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] n_trades/days"
+  },
+  "cv.pre.oos.days": {
+   "value": "40",
+   "raw": 40.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] days"
+  },
+  "cv.pre.be.oos": {
+   "value": "1.01",
+   "raw": 1.014,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.pre.be_ci.oos": {
+   "value": "[0.43, 1.05]",
+   "raw": [
+    0.435,
+    1.049
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament.burned_OOS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.pre.be.range": {
+   "value": "1.0–1.1",
+   "raw": [
+    1.014,
+    1.089
+   ],
+   "source": "D: min/max of the IS and OOS break-evens"
+  },
+  "cv.lag1.is.usd": {
+   "value": "−$6",
+   "raw": -6.27,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lag1.1.IS.usd_per_day"
+  },
+  "cv.stamp.is.usd": {
+   "value": "−$17",
+   "raw": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp.1.IS.usd_per_day"
+  },
+  "cv.lag1.oos.usd": {
+   "value": "−$11",
+   "raw": -11.2,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lag1.1.burned_OOS.usd_per_day"
+  },
+  "cv.stamp.oos.usd": {
+   "value": "−$17",
+   "raw": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp.1.burned_OOS.usd_per_day"
+  },
+  "cv.call_before_stamp": {
+   "value": "0.89",
+   "raw": 0.891,
+   "source": "D: cv.pre.lag - cv.pre.be.is - cv.inf"
+  },
+  "cv.cal.oos.net_central": {
+   "value": "−$110",
+   "raw": -110.33876164383562,
+   "source": "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central"
+  },
+  "cv.pre.oos.net_central": {
+   "value": "−$163",
+   "raw": -162.57876164383563,
+   "source": "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central"
+  },
+  "cv.v0.check": {
+   "value": "identical",
+   "raw": true,
+   "source": "results/tier0/latency_sweep.json::check_V0_equals_published_headline"
+  },
+  "cv.seeds": {
+   "value": "20",
+   "raw": 20,
+   "source": "results/tier0/latency_sweep.json::grids.seeds"
+  },
+  "cv.runs": {
+   "value": "18,880",
+   "raw": 18880,
+   "source": "results/tier0/latency_sweep.json::run.n_runs"
+  },
+  "decay.test.oos": {
+   "value": "+0.66 [0.45, 0.87]",
+   "raw": {
+    "stat_c": 0.6601,
+    "ci_c": [
+     0.4512,
+     0.8696
+    ],
+    "decays": true,
+    "a_c": -0.2909,
+    "b_c": -0.951,
+    "n_a": 6936,
+    "n_b": 65482,
+    "matches": 2159,
+    "matches_a": 1550,
+    "matches_b": 2121,
+    "undefined_draws": 0
+   },
+   "source": "results/decay/decay.json::tennis.subsets.burned_OOS.decay_test"
+  },
+  "decay.test.pool": {
+   "value": "+0.19 [−0.26, 0.46]",
+   "raw": {
+    "stat_c": 0.1877,
+    "ci_c": [
+     -0.2602,
+     0.455
+    ],
+    "decays": false,
+    "a_c": -0.4926,
+    "b_c": -0.6803,
+    "n_a": 29872,
+    "n_b": 529611,
+    "matches": 11188,
+    "matches_a": 5414,
+    "matches_b": 11117,
+    "undefined_draws": 0
+   },
+   "source": "results/decay/decay.json::tennis.subsets.IS+burned_OOS.decay_test"
+  },
+  "decay.prints": {
+   "value": "9.56M",
+   "raw": 9556554,
+   "source": "results/decay/decay.json::tennis.meta.prints"
+  },
+  "decay.detections": {
+   "value": "268,345",
+   "raw": 268345,
+   "source": "results/decay/decay.json::tennis.meta.detections"
+  },
+  "decay.fast.0.is": {
+   "value": "+1.18",
+   "raw": 1.1773,
+   "source": "results/decay/decay.json::tennis.subsets.IS.curves.fast.net30.0-0.25.mean_c"
+  },
+  "decay.fast.0.oos": {
+   "value": "+0.75",
+   "raw": 0.7549,
+   "source": "results/decay/decay.json::tennis.subsets.burned_OOS.curves.fast.net30.0-0.25.mean_c"
+  },
+  "decay.others.0.is": {
+   "value": "−0.88",
+   "raw": -0.883,
+   "source": "results/decay/decay.json::tennis.subsets.IS.curves.others.net30.0-0.25.mean_c"
+  },
+  "decay.others.0.oos": {
+   "value": "−1.27",
+   "raw": -1.267,
+   "source": "results/decay/decay.json::tennis.subsets.burned_OOS.curves.others.net30.0-0.25.mean_c"
+  },
+  "rp.v1l2.c": {
+   "value": "−0.94",
+   "raw": -0.9352410771747905,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.per_share_mark_c"
+  },
+  "rp.v1l2.ci": {
+   "value": "[−1.28, −0.58]",
+   "raw": [
+    -1.2798240147980813,
+    -0.5831861549025052
+   ],
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.per_share_mark_ci95_c"
+  },
+  "rp.v1l2.usd_mark": {
+   "value": "−$224",
+   "raw": -223.5011068999999,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.pnl_mark_usd"
+  },
+  "rp.beat": {
+   "value": "33",
+   "raw": 33,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.calls_beat_book"
+  },
+  "rp.of": {
+   "value": "461",
+   "raw": 461,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.calls_with_reprice"
+  },
+  "rp.cells_neg": {
+   "value": "36",
+   "raw": 36,
+   "source": "D: count of replay.json::cells[*].all.per_share_mark_c < 0"
+  },
+  "rp.cells": {
+   "value": "36",
+   "raw": 36,
+   "source": "D: len(replay.json::cells)"
+  },
+  "rp.best": {
+   "value": "−0.05 [−0.37, 0.27]",
+   "raw": "V0|lag3|lead_model|florida",
+   "source": "D: argmax over replay cells"
+  },
+  "rp.best.cell": {
+   "value": "lag 3 s, V = 0 s",
+   "raw": "V0|lag3|lead_model|florida",
+   "source": "D: argmax over replay cells"
+  },
+  "rp.matches": {
+   "value": "9",
+   "raw": 9,
+   "source": "results/replay/replay.json::matches (len)"
+  },
+  "rp.replayable": {
+   "value": "493",
+   "raw": 493,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.replayable_points"
+  },
+  "rp.official": {
+   "value": "994",
+   "raw": 994,
+   "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.official_points"
+  },
+  "h1.is.c": {
+   "value": "−1.61",
+   "raw": -1.610386926524992,
+   "source": "results/summary.json::is.h1.J0.04_H30.mean_pnl_per_share_c"
+  },
+  "h1.is.ci": {
+   "value": "[−1.65, −1.57]",
+   "raw": [
+    -1.6504193919805348,
+    -1.5725699411243073
+   ],
+   "source": "results/summary.json::is.h1.J0.04_H30.ci95_pnl_per_share_c"
+  },
+  "h1.oos.c": {
+   "value": "−2.08",
+   "raw": -2.0764076265981384,
+   "source": "results/summary.json::oos.h1.J0.04_H30.mean_pnl_per_share_c"
+  },
+  "h1.oos.ci": {
+   "value": "[−2.17, −1.98]",
+   "raw": [
+    -2.17038759671977,
+    -1.9809759377736789
+   ],
+   "source": "results/summary.json::oos.h1.J0.04_H30.ci95_pnl_per_share_c"
+  },
+  "h2.is.c": {
+   "value": "−0.41",
+   "raw": -0.40667780764764166,
+   "source": "results/summary.json::is.h2.lo0.85_hi0.97.mean_pnl_per_share_c"
+  },
+  "h2.is.ci": {
+   "value": "[−1.44, 0.59]",
+   "raw": [
+    -1.439724423521266,
+    0.594856016984583
+   ],
+   "source": "results/summary.json::is.h2.lo0.85_hi0.97.ci95_pnl_per_share_c"
+  },
+  "h2.oos.c": {
+   "value": "+0.80",
+   "raw": 0.8026092905915244,
+   "source": "results/summary.json::oos.h2.lo0.85_hi0.97.mean_pnl_per_share_c"
+  },
+  "h2.oos.ci": {
+   "value": "[−1.36, 2.66]",
+   "raw": [
+    -1.3615658304725233,
+    2.6558754139205534
+   ],
+   "source": "results/summary.json::oos.h2.lo0.85_hi0.97.ci95_pnl_per_share_c"
+  },
+  "h5.is.c": {
+   "value": "+0.22",
+   "raw": 0.21772975957672977,
+   "source": "results/summary.json::is.h5.J0.04_W30.mean_pnl_per_share_c"
+  },
+  "h5.is.ci": {
+   "value": "[−0.01, 0.43]",
+   "raw": [
+    -0.007853866908004086,
+    0.4305044914159148
+   ],
+   "source": "results/summary.json::is.h5.J0.04_W30.ci95_pnl_per_share_c"
+  },
+  "h5.oos.c": {
+   "value": "+0.16",
+   "raw": 0.1564634166716387,
+   "source": "results/summary.json::oos.h5.J0.04_W30.mean_pnl_per_share_c"
+  },
+  "h5.oos.ci": {
+   "value": "[−0.49, 0.87]",
+   "raw": [
+    -0.491466548861142,
+    0.8677637780787765
+   ],
+   "source": "results/summary.json::oos.h5.J0.04_W30.ci95_pnl_per_share_c"
+  },
+  "h1.neg": {
+   "value": "20 of 20",
+   "raw": [
+    20,
+    20
+   ],
+   "source": "D: count of summary.json::is.h1.*.mean_pnl_per_share_c < 0"
+  },
+  "v1.is.c": {
+   "value": "+1.16",
+   "raw": 1.1574205595535174,
+   "source": "results/summary.json::is.h6_shadow.mean_pnl_per_share_c"
+  },
+  "v1.oos.usd": {
+   "value": "−$36,056",
+   "raw": -36056.04046266016,
+   "source": "results/summary.json::oos.h6_shadow.total_pnl_usd"
+  },
+  "v1.oos.c": {
+   "value": "+0.57",
+   "raw": 0.5741092749731087,
+   "source": "results/summary.json::oos.h6_shadow.mean_pnl_per_share_c"
+  },
+  "u2.is.c": {
+   "value": "+2.02",
+   "raw": 2.0248787790863743,
+   "source": "results/expand/results.json::primary.u2_is.per_share_c"
+  },
+  "u2.is.ci": {
+   "value": "[1.14, 2.93]",
+   "raw": [
+    1.140615945330067,
+    2.926860089785939
+   ],
+   "source": "results/expand/results.json::primary.u2_is.per_share_ci_c"
+  },
+  "u2.fmo.is": {
+   "value": "+3.09",
+   "raw": 3.086854916286007,
+   "source": "results/expand/results.json::fast_minus_others_u2.u2_is.fast_minus_others_c"
+  },
+  "u2.oos.c": {
+   "value": "+1.22",
+   "raw": 1.2237506660945057,
+   "source": "results/expand/results.json::primary.u2_oos.per_share_c"
+  },
+  "u2.oos.ci": {
+   "value": "[−0.19, 2.65]",
+   "raw": [
+    -0.18634258245445473,
+    2.647924922039621
+   ],
+   "source": "results/expand/results.json::primary.u2_oos.per_share_ci_c"
+  },
+  "u2.fmo.oos": {
+   "value": "+2.16",
+   "raw": 2.15951922248168,
+   "source": "results/expand/results.json::fast_minus_others_u2.u2_oos.fast_minus_others_c"
+  },
+  "u2.verdict": {
+   "value": "FAIL",
+   "raw": "FAIL",
+   "source": "results/expand/results.json::primary.verdict"
+  },
+  "t3.is.c": {
+   "value": "−0.22",
+   "raw": -0.2197,
+   "source": "results/tier0_v3/blind.json::sets.u2_is.primary.per_share_c"
+  },
+  "t3.oos.c": {
+   "value": "−0.52",
+   "raw": -0.5169,
+   "source": "results/tier0_v3/blind.json::sets.u2_oos.primary.per_share_c"
+  },
+  "t3.verdict": {
+   "value": "FAIL",
+   "raw": {
+    "U2 (primary, test b)": {
+     "U2-IS period": "FAIL",
+     "U2-OOS period": "FAIL",
+     "overall": "FAIL (out-of-universe generalisation failure in: U2-IS, U2-OOS)"
+    },
+    "burned OOS (test a; non-blind, cannot by itself confirm v3)": "FAIL",
+    "forward (test c)": "not run here (scripts/tier0_v3_forward.py, not before 2026-10-04 11:30 UTC)"
+   },
+   "source": "results/tier0_v3/blind.json::verdicts"
+  },
+  "mk.is.c": {
+   "value": "+2.02",
+   "raw": 2.01667311588643,
+   "source": "results/maker/oos.json::consistency.is_1s5_net_c"
+  },
+  "mk.oos.c": {
+   "value": "+1.87",
+   "raw": 1.8654493548710172,
+   "source": "results/maker/oos.json::primary.value_c"
+  },
+  "mk.oos.ci": {
+   "value": "[−0.14, 3.86]",
+   "raw": [
+    -0.1397399233597994,
+    3.8600603441293164
+   ],
+   "source": "results/maker/oos.json::primary.ci95_c"
+  },
+  "mk.oos.usd": {
+   "value": "−$379",
+   "raw": -379.03157735159306,
+   "source": "results/maker/oos.json::headline.total_pnl_usd"
+  },
+  "mk.verdict": {
+   "value": "FAILURE",
+   "raw": "FAILURE",
+   "source": "results/maker/oos.json::primary.verdict"
+  },
+  "tt.matches": {
+   "value": "27",
+   "raw": 27,
+   "source": "results/tt/results.json::counts.evaluable_matches"
+  },
+  "tt.spread": {
+   "value": "94",
+   "raw": 94.0,
+   "source": "results/tt/results.json::TT4.book_snapshot.all.spread_c.median"
+  },
+  "tt.qualified": {
+   "value": "none",
+   "raw": false,
+   "source": "results/tt/results.json::TT2.any_wallet_qualified"
+  },
+  "risk.order_usd": {
+   "value": "$1,000",
+   "raw": 1000.0,
+   "source": "results/engine/demo_run_L4.json::risk_config.max_order_usd"
+  },
+  "risk.netcap": {
+   "value": "100",
+   "raw": 100.0,
+   "source": "results/engine/demo_run_L4.json::risk_config.net_cap_shares"
+  },
+  "risk.zone": {
+   "value": "0.05–0.95",
+   "raw": [
+    0.05,
+    0.95
+   ],
+   "source": "results/engine/demo_run_L4.json::risk_config.zone"
+  },
+  "risk.daily_stop": {
+   "value": "$1,000",
+   "raw": 1000.0,
+   "source": "results/engine/demo_run_L4.json::risk_config.daily_stop_usd"
+  },
+  "risk.feed_stale": {
+   "value": "2",
+   "raw": 2000,
+   "source": "results/engine/demo_run_L4.json::risk_config.feed_stale_ms"
+  },
+  "risk.vision_stale": {
+   "value": "1",
+   "raw": 1000,
+   "source": "results/engine/demo_run_L4.json::risk_config.vision_stale_ms"
+  },
+  "risk.daily_stop_sigma": {
+   "value": "3.86",
+   "raw": 3.8630129855117277,
+   "source": "D: daily_stop_usd / results/rigor/rigor.json::sharpe_moments.v2_is.sd_daily_usd"
+  },
+  "risk.cap_realised": {
+   "value": "$34,818",
+   "raw": 34818.12,
+   "source": "results/risk/risk_stats.json::liquidity_capital.is_eval.capital_usd_3x_peak_realised"
+  },
+  "liq.trade_med": {
+   "value": "$11",
+   "raw": 11.17,
+   "source": "results/risk/risk_stats.json::liquidity_capital.is_eval.usd_per_trade_quantiles.0.5"
+  },
+  "risk.trail_min": {
+   "value": "+0.74",
+   "raw": 0.7427599369573765,
+   "source": "results/financials/pm_compute.json::p25_kill_rules_is.trailing_30d_edge_rule_v2_is.trailing_edge_c_min"
+  },
+  "cap.0.5x.is.c": {
+   "value": "+1.31",
+   "raw": 1.309334506118391,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.IS.per_share_c"
+  },
+  "cap.0.5x.is.ci": {
+   "value": "[1.13, 1.49]",
+   "raw": [
+    1.1273789694798995,
+    1.4881801412518976
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.IS.per_share_ci95_c"
+  },
+  "cap.0.5x.is.usd": {
+   "value": "+$110",
+   "raw": 109.64614378884049,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.IS.pnl_usd_per_day"
+  },
+  "cap.0.5x.is.capital": {
+   "value": "$17,465",
+   "raw": 17464.605073401894,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.IS.capital_usd"
+  },
+  "cap.0.5x.oos.c": {
+   "value": "+0.68",
+   "raw": 0.680126215287063,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.OOS.per_share_c"
+  },
+  "cap.0.5x.oos.ci": {
+   "value": "[0.23, 1.15]",
+   "raw": [
+    0.23237721336431238,
+    1.1477194342282897
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.OOS.per_share_ci95_c"
+  },
+  "cap.0.5x.oos.usd": {
+   "value": "+$62",
+   "raw": 62.099981115752676,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.OOS.pnl_usd_per_day"
+  },
+  "cap.0.5x.oos.capital": {
+   "value": "$13,355",
+   "raw": 13355.258359676249,
+   "source": "results/financials/financials.json::strategies.v2.scaling.0.5x.OOS.capital_usd"
+  },
+  "cap.1x.is.c": {
+   "value": "+1.38",
+   "raw": 1.3814511010237975,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.IS.per_share_c"
+  },
+  "cap.1x.is.ci": {
+   "value": "[1.17, 1.59]",
+   "raw": [
+    1.167847083750991,
+    1.5935130267793969
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.IS.per_share_ci95_c"
+  },
+  "cap.1x.is.usd": {
+   "value": "+$196",
+   "raw": 196.24135529941364,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.IS.pnl_usd_per_day"
+  },
+  "cap.1x.is.capital": {
+   "value": "$28,302",
+   "raw": 28302.367701375268,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.IS.capital_usd"
+  },
+  "cap.1x.oos.c": {
+   "value": "+0.60",
+   "raw": 0.598736335564979,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.OOS.per_share_c"
+  },
+  "cap.1x.oos.ci": {
+   "value": "[0.09, 1.13]",
+   "raw": [
+    0.08724550818301618,
+    1.1271958683912837
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.OOS.per_share_ci95_c"
+  },
+  "cap.1x.oos.usd": {
+   "value": "+$92",
+   "raw": 92.18839800484167,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.OOS.pnl_usd_per_day"
+  },
+  "cap.1x.oos.capital": {
+   "value": "$22,754",
+   "raw": 22754.046251146858,
+   "source": "results/financials/financials.json::strategies.v2.scaling.1x.OOS.capital_usd"
+  },
+  "cap.2x.is.c": {
+   "value": "+1.41",
+   "raw": 1.4108635174698407,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.IS.per_share_c"
+  },
+  "cap.2x.is.ci": {
+   "value": "[1.15, 1.67]",
+   "raw": [
+    1.1546401240990236,
+    1.669499151241912
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.IS.per_share_ci95_c"
+  },
+  "cap.2x.is.usd": {
+   "value": "+$316",
+   "raw": 316.19264266923363,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.IS.pnl_usd_per_day"
+  },
+  "cap.2x.is.capital": {
+   "value": "$45,392",
+   "raw": 45392.37937678425,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.IS.capital_usd"
+  },
+  "cap.2x.oos.c": {
+   "value": "+0.34",
+   "raw": 0.33623778047325664,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.OOS.per_share_c"
+  },
+  "cap.2x.oos.ci": {
+   "value": "[−0.30, 0.97]",
+   "raw": [
+    -0.29971178569686335,
+    0.965786185455425
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.OOS.per_share_ci95_c"
+  },
+  "cap.2x.oos.usd": {
+   "value": "+$83",
+   "raw": 82.53780190025725,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.OOS.pnl_usd_per_day"
+  },
+  "cap.2x.oos.capital": {
+   "value": "$33,875",
+   "raw": 33875.475597215365,
+   "source": "results/financials/financials.json::strategies.v2.scaling.2x.OOS.capital_usd"
+  },
+  "cap.5x.is.c": {
+   "value": "+1.39",
+   "raw": 1.3931771223534029,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.IS.per_share_c"
+  },
+  "cap.5x.is.ci": {
+   "value": "[1.04, 1.77]",
+   "raw": [
+    1.0405934627431341,
+    1.7666290000507572
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.IS.per_share_ci95_c"
+  },
+  "cap.5x.is.usd": {
+   "value": "+$529",
+   "raw": 529.3485520030839,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.IS.pnl_usd_per_day"
+  },
+  "cap.5x.is.capital": {
+   "value": "$80,253",
+   "raw": 80252.57423109186,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.IS.capital_usd"
+  },
+  "cap.5x.oos.c": {
+   "value": "−0.06",
+   "raw": -0.06017806299441552,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.OOS.per_share_c"
+  },
+  "cap.5x.oos.ci": {
+   "value": "[−0.91, 0.74]",
+   "raw": [
+    -0.9086371838240634,
+    0.7353953295941449
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.OOS.per_share_ci95_c"
+  },
+  "cap.5x.oos.usd": {
+   "value": "−$25",
+   "raw": -24.54955702034862,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.OOS.pnl_usd_per_day"
+  },
+  "cap.5x.oos.capital": {
+   "value": "$53,816",
+   "raw": 53815.56864412705,
+   "source": "results/financials/financials.json::strategies.v2.scaling.5x.OOS.capital_usd"
+  },
+  "cap.all.is.c": {
+   "value": "+0.37",
+   "raw": 0.3659727858357431,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.IS.per_share_c"
+  },
+  "cap.all.is.ci": {
+   "value": "[−0.83, 1.62]",
+   "raw": [
+    -0.8284828599534553,
+    1.6238916304643445
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.IS.per_share_ci95_c"
+  },
+  "cap.all.is.usd": {
+   "value": "+$491",
+   "raw": 491.2487846028077,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.IS.pnl_usd_per_day"
+  },
+  "cap.all.is.capital": {
+   "value": "$534,207",
+   "raw": 534206.8665152368,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.IS.capital_usd"
+  },
+  "cap.all.oos.c": {
+   "value": "−0.96",
+   "raw": -0.9568149020137369,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.OOS.per_share_c"
+  },
+  "cap.all.oos.ci": {
+   "value": "[−3.58, 1.52]",
+   "raw": [
+    -3.5812156251129323,
+    1.5229879450837143
+   ],
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.OOS.per_share_ci95_c"
+  },
+  "cap.all.oos.usd": {
+   "value": "−$1,282",
+   "raw": -1281.5464618049662,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.OOS.pnl_usd_per_day"
+  },
+  "cap.all.oos.capital": {
+   "value": "$303,724",
+   "raw": 303724.34983278945,
+   "source": "results/financials/financials.json::strategies.v2.scaling.all prints.OOS.capital_usd"
+  },
+  "cap.ceiling.is": {
+   "value": "$82,325",
+   "raw": 82324.54243294417,
+   "source": "results/financials/financials.json::strategies.v2.ceiling.IS.fast_tier_qualified_print_usd_per_day"
+  },
+  "fin.is.gross_edge": {
+   "value": "$282",
+   "raw": 282.39895760575865,
+   "source": "results/financials/financials.json::strategies.v2.periods.IS.waterfall.usd_per_day.gross_edge"
+  },
+  "fin.is.taker_fees": {
+   "value": "−$86",
+   "raw": -86.157602306345,
+   "source": "results/financials/financials.json::strategies.v2.periods.IS.waterfall.usd_per_day.taker_fees"
+  },
+  "fin.is.net_trading": {
+   "value": "+$196",
+   "raw": 196.24135529941364,
+   "source": "results/financials/financials.json::strategies.v2.periods.IS.waterfall.usd_per_day.net_trading"
+  },
+  "cap.ceiling.oos": {
+   "value": "$105,490",
+   "raw": 105489.68496252266,
+   "source": "results/financials/financials.json::strategies.v2.ceiling.OOS.fast_tier_qualified_print_usd_per_day"
+  },
+  "fin.oos.gross_edge": {
+   "value": "$237",
+   "raw": 236.51790375782667,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.waterfall.usd_per_day.gross_edge"
+  },
+  "fin.oos.taker_fees": {
+   "value": "−$144",
+   "raw": -144.32950575298497,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.waterfall.usd_per_day.taker_fees"
+  },
+  "fin.oos.net_trading": {
+   "value": "+$92",
+   "raw": 92.18839800484167,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.waterfall.usd_per_day.net_trading"
+  },
+  "fin.fixed.low": {
+   "value": "$42",
+   "raw": 42.2286904109589,
+   "source": "results/financials/financials.json::strategies.v2.cost.daily.low"
+  },
+  "fin.fixed.central": {
+   "value": "$167",
+   "raw": 166.92876164383563,
+   "source": "results/financials/financials.json::strategies.v2.cost.daily.central"
+  },
+  "fin.fixed.high": {
+   "value": "$332",
+   "raw": 331.9927232876712,
+   "source": "results/financials/financials.json::strategies.v2.cost.daily.high"
+  },
+  "fin.v2.is.net_central": {
+   "value": "+$29",
+   "raw": 29.312593655578013,
+   "source": "results/financials/financials.json::headline[v2,IS].net_after_costs_usd_per_day.central"
+  },
+  "fin.v2.oos.net_central": {
+   "value": "−$75",
+   "raw": -74.74036363899395,
+   "source": "results/financials/financials.json::headline[v2,OOS (burned, non-blind)].net_after_costs_usd_per_day.central"
+  },
+  "fin.be_fee.before": {
+   "value": "8.2%",
+   "raw": 0.08193678157625615,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.breakeven_taker_fee.rate_before_fixed_costs"
+  },
+  "fin.be_fee.central": {
+   "value": "2.4%",
+   "raw": 0.024107732424820495,
+   "source": "results/financials/financials.json::strategies.v2.periods.OOS.breakeven_taker_fee.rate_after_central_fixed_costs"
+  },
+  "fin.feed.central": {
+   "value": "$5,000",
+   "raw": 5000.0,
+   "source": "results/financials/financials.json::cost_assumptions.feed_licence.central"
+  },
+  "fin.feed.low": {
+   "value": "$1,250",
+   "raw": 1250.0,
+   "source": "results/financials/financials.json::cost_assumptions.feed_licence.low"
+  },
+  "fin.feed.high": {
+   "value": "$10,000",
+   "raw": 10000.0,
+   "source": "results/financials/financials.json::cost_assumptions.feed_licence.high"
+  },
+  "liq.stale_pre": {
+   "value": "$222",
+   "raw": 222.2,
+   "source": "research/v2/latency/results.json::summary.stale_depth.pre.median_usd"
+  },
+  "liq.stale_1s": {
+   "value": "$379",
+   "raw": 378.6,
+   "source": "research/v2/latency/results.json::summary.stale_depth.pre1s.median_usd"
+  },
+  "liq.stale_2s": {
+   "value": "$564",
+   "raw": 564.5,
+   "source": "research/v2/latency/results.json::summary.stale_depth.pre2s.median_usd"
+  },
+  "liq.spread": {
+   "value": "1",
+   "raw": 1.0,
+   "source": "research/v2/latency/results.json::summary.side_market_spreads_live.moneyline.median_spread"
+  },
+  "pol.det_c": {
+   "value": "4",
+   "raw": 4,
+   "source": "results/paper/policy.json::detector_move_c <- src/tiers.py:41"
+  },
+  "pol.q_prints": {
+   "value": "30",
+   "raw": 30,
+   "source": "results/paper/policy.json::qualify_min_prints <- src/fasttier.py:12"
+  },
+  "pol.q_matches": {
+   "value": "10",
+   "raw": 10,
+   "source": "results/paper/policy.json::qualify_min_matches <- src/fasttier.py:12"
+  },
+  "pol.q_t": {
+   "value": "3",
+   "raw": 3.0,
+   "source": "results/paper/policy.json::qualify_min_t <- src/fasttier.py:12"
+  },
+  "pol.trail_half": {
+   "value": "0.3",
+   "raw": 0.3,
+   "source": "results/paper/policy.json::trailing_edge_half_c <- docs/RISK.md:62"
+  },
+  "pol.dd_stop": {
+   "value": "5%",
+   "raw": 5,
+   "source": "results/paper/policy.json::drawdown_stop_pct <- docs/RISK.md:61"
+  },
+  "pol.n0": {
+   "value": "200",
+   "raw": 200,
+   "source": "results/paper/policy.json::shrinkage_n0 <- HYPOTHESIS_V2.md:18"
+  },
+  "peeks.rule_changes": {
+   "value": "2",
+   "raw": 2,
+   "source": "results/paper/policy.json::rule_changes_after_a_look <- DEVIATIONS.md:165"
+  },
+  "var.total": {
+   "value": "4,219",
+   "raw": 4219,
+   "source": "results/paper/variants.json (sum of families)"
+  },
+  "var.strategy": {
+   "value": "3,410",
+   "raw": 3410,
+   "source": "results/rigor/rigor.json::psr_dsr.N.all_plus_v2safe_grid"
+  },
+  "var.tier0": {
+   "value": "432",
+   "raw": 432,
+   "source": "results/tier0/grid.csv (period == IS)"
+  },
+  "var.tier0v3": {
+   "value": "360",
+   "raw": 360,
+   "source": "results/tier0_v3/is/grid.csv (kind == grid)"
+  },
+  "var.maker": {
+   "value": "8",
+   "raw": 8,
+   "source": "results/maker/oos.json::variants_evaluated"
+  },
+  "var.sweep": {
+   "value": "944",
+   "raw": 944,
+   "source": "results/tier0/latency_sweep.csv rows"
+  },
+  "peeks.n": {
+   "value": "69",
+   "raw": 69,
+   "source": "results/oos_peeks.log (lines at build time)"
+  },
+  "peeks.blind": {
+   "value": "7",
+   "raw": 7,
+   "source": "D: keyword class 'blind first run' over results/oos_peeks.log"
+  },
+  "peeks.nonblind": {
+   "value": "13",
+   "raw": 13,
+   "source": "D: keyword class 'non-blind' over results/oos_peeks.log"
+  },
+  "peeks.desc": {
+   "value": "5",
+   "raw": 5,
+   "source": "D: keyword class 'descriptive' over results/oos_peeks.log"
+  },
+  "peeks.audit": {
+   "value": "22",
+   "raw": 22,
+   "source": "D: keyword class 'audit' over results/oos_peeks.log"
+  },
+  "peeks.live": {
+   "value": "20",
+   "raw": 20,
+   "source": "D: keyword class 'live' over results/oos_peeks.log"
+  },
+  "peeks.other": {
+   "value": "2",
+   "raw": 2,
+   "source": "D: keyword class 'other' over results/oos_peeks.log"
+  },
+  "fwd.cell": {
+   "value": "pending (runs once, Oct 4)",
+   "raw": null,
+   "source": "results/v2/forward.json (absent at build time)"
+  },
+  "fwd.status": {
+   "value": "pending",
+   "raw": null,
+   "source": "results/v2/forward.json (absent at build time)"
+  },
+  "live.cell": {
+   "value": "pending (paper; 0 fills so far)",
+   "raw": 0,
+   "source": "results/live/summary.json::books.B1.fills (FINAL absent)"
+  },
+  "live.status": {
+   "value": "pending",
+   "raw": null,
+   "source": "results/live/FINAL (absent at build time)"
+  }
+ }
+}

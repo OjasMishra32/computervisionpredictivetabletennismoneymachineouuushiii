@@ -1,0 +1,11 @@
+# tectonic intermediates (scripts/build_paper.py keeps them for the checks); the paper is docs/NOTE.pdf
+note.aux
+note.log
+note.bbl
+note.blg
+note.out
+note.xdv
+note.pdf
+_*.tex
+_*.pdf
+_*.log

@@ -1,0 +1,163 @@
+% courtside.sty: house style for the COURTSIDE research note (docs/paper/STYLE_GUIDE.md (b)).
+% XeLaTeX via tectonic. Fonts are loaded only from docs/paper/fonts/ (OFL), never from the system.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{courtside}[2026/10/04 COURTSIDE research note]
+
+% ---------------------------------------------------------------- page: letter, 1 in margins, 11 pt
+\RequirePackage[letterpaper,margin=1in,headheight=14pt,headsep=12pt,footskip=0.42in]{geometry}
+
+% ---------------------------------------------------------------- fonts
+\RequirePackage{fontspec}
+\RequirePackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+\defaultfontfeatures{Ligatures=TeX}
+% Source Sans 3's word space is narrow (0.2 em) with little stretch; widen it slightly and give it room to justify
+\setmainfont{SourceSans3}[Path=fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Semibold,
+  ItalicFont=*-It, BoldItalicFont=*-SemiboldIt, Numbers=Lining, WordSpace={1.12,2.4,1.25}]
+\setsansfont{SourceSans3}[Path=fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Semibold,
+  ItalicFont=*-It, BoldItalicFont=*-SemiboldIt, Numbers=Lining, WordSpace={1.12,2.4,1.25}]
+% file paths (\texttt): same face, a distinct font instance (Scale) so fontspec's monospace word-space settings,
+% which are global \fontdimen assignments in TeX, never touch the body font
+\setmonofont{SourceSans3}[Path=fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Semibold,
+  ItalicFont=*-It, BoldItalicFont=*-SemiboldIt, Numbers=Lining, Scale=1.0001]
+\newfontfamily\display{Oswald}[Path=fonts/, Extension=.ttf, UprightFont=*-Light, BoldFont=*-Regular]
+\newfontfamily\displayreg{Oswald}[Path=fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Regular]
+\setmathfont{FiraMath-Regular.otf}[Path=fonts/]
+% tabular (monospaced) lining figures inside tables, so columns of numbers align
+\newcommand\tabnums{\addfontfeatures{Numbers={Monospaced,Lining}}}
+
+% Track rule: 11 pt everywhere in the main text. LaTeX's "11pt" is 10.95 TeX pt = 10.91 PostScript pt, so the body
+% is set at 11.04 TeX pt (11.0 pt in the PDF); every smaller size command prints at that size.
+\renewcommand\normalsize{\fontsize{11.04}{13.55}\selectfont
+  \abovedisplayskip 4pt plus 2pt minus 2pt\belowdisplayskip 4pt plus 2pt minus 2pt
+  \abovedisplayshortskip 2pt plus 2pt\belowdisplayshortskip 3pt plus 2pt}
+\normalsize
+\renewcommand\small{\normalsize}
+\renewcommand\footnotesize{\normalsize}
+\renewcommand\scriptsize{\normalsize}
+
+% ---------------------------------------------------------------- packages
+\RequirePackage{amsmath}
+\RequirePackage{microtype}
+\RequirePackage{booktabs,array,tabularx,longtable,multirow,makecell}
+\RequirePackage[group-minimum-digits=4,group-separator={,},input-signs={+-},
+  output-decimal-marker={.},table-align-text-before=false]{siunitx}
+\RequirePackage{graphicx}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{needspace}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage[labelfont=bf,font=normalsize,labelsep=period,justification=justified,
+  singlelinecheck=false,skip=3pt]{caption}
+\RequirePackage{subcaption}
+\RequirePackage[authoryear,round]{natbib}
+\RequirePackage{xurl}
+\RequirePackage{ragged2e}
+
+\definecolor{gator}{HTML}{F26B21}
+\definecolor{linkslate}{HTML}{1F3A5F}
+\definecolor{rulegrey}{HTML}{9A9A9A}
+\definecolor{boxgrey}{HTML}{F5F5F5}
+\RequirePackage[colorlinks=true,linkcolor=linkslate,citecolor=linkslate,urlcolor=linkslate,
+  pdfborder={0 0 0},bookmarks=true,pdfcreator={tectonic (XeTeX)}]{hyperref}
+\urlstyle{same}
+
+% ---------------------------------------------------------------- paragraphs and floats
+\frenchspacing
+\setlength\parindent{1.1em}
+\setlength\parskip{0pt}
+\linespread{1.0}
+\widowpenalty=10000 \clubpenalty=10000 \displaywidowpenalty=10000
+\tolerance=600 \emergencystretch=1.2em \hyphenpenalty=60 \exhyphenpenalty=60
+\brokenpenalty=10000
+\renewcommand\topfraction{0.92}
+\renewcommand\bottomfraction{0.85}
+\renewcommand\textfraction{0.06}
+\renewcommand\floatpagefraction{0.9}
+\renewcommand\dbltopfraction{0.92}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setlength\floatsep{6pt plus 2pt minus 2pt}
+\setlength\textfloatsep{8pt plus 2pt minus 2pt}
+\setlength\intextsep{8pt plus 2pt minus 2pt}
+\setlength\abovedisplayskip{4pt plus 2pt minus 2pt}
+\setlength\belowdisplayskip{4pt plus 2pt minus 2pt}
+\setlength\abovedisplayshortskip{2pt plus 2pt}
+\setlength\belowdisplayshortskip{3pt plus 2pt}
+\setlist{itemsep=1pt,parsep=0pt,topsep=2pt,partopsep=0pt,leftmargin=1.1em}
+
+% ---------------------------------------------------------------- headings (house style: "1   Introduction")
+\titleformat{\section}{\normalfont\fontsize{14}{17}\selectfont}{\thesection}{1.0em}{}
+\titlespacing*{\section}{0pt}{7pt plus 2pt minus 2pt}{2pt plus 1pt}
+\titleformat{\subsection}[runin]{\normalfont\bfseries}{}{0pt}{}[.]
+\titlespacing*{\subsection}{0pt}{3pt plus 2pt minus 1pt}{0.5em}
+\newcommand\para[1]{\textbf{#1.}\enspace}
+
+% ---------------------------------------------------------------- header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand\headrulewidth{0pt}
+\renewcommand\footrulewidth{0pt}
+\fancyhead[R]{\ifnum\value{page}>1 {\displayreg\fontsize{11.04}{13}\selectfont\color{black}COURTSIDE}\fi}
+\newcommand\csfooter{%
+  \parbox[t]{\textwidth}{\centering
+    \begin{tikzpicture}[x=1pt,y=1pt]
+      \fill[gator] (0,3.4) rectangle (\textwidth,6.2);
+      \fill[black] (0,0) rectangle (\textwidth,1.1);
+    \end{tikzpicture}\\[1pt]
+    {\fontsize{11.04}{13}\selectfont\thepage}}}
+\fancyfoot[C]{\csfooter}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\csfooter}}
+
+% ---------------------------------------------------------------- title block (page 1, no cover page)
+\newcommand\cstitle[5]{%
+  \thispagestyle{plain}%
+  \vspace*{-4pt}%
+  {\centering
+    {\display\fontsize{23}{26}\selectfont #1\par}
+    \vspace{3pt}
+    {\displayreg\fontsize{12.5}{14.5}\selectfont #2\par}
+    {\display\fontsize{12}{14}\selectfont #3\par}
+    {\display\fontsize{12}{14}\selectfont #4\par}}
+  \vspace{5pt}}
+
+\newenvironment{csabstract}
+  {\par\noindent\begin{minipage}{\textwidth}\setlength\parindent{0pt}\justifying
+   \leftskip=0.35in \rightskip=0.35in \textbf{Abstract.}\enspace\ignorespaces}
+  {\par\end{minipage}\par\vspace{4pt}}
+
+% key-findings box: thin orange rule above and below
+\newenvironment{keybox}
+  {\par\vspace{2pt}\noindent{\color{gator}\rule{\linewidth}{0.9pt}}\par\vspace{1pt}
+   \begin{itemize}[leftmargin=1.0em,itemsep=1.2pt,topsep=0pt,label={\color{gator}\textbullet}]}
+  {\end{itemize}\par\vspace{1pt}\noindent{\color{gator}\rule{\linewidth}{0.9pt}}\par\vspace{2pt}}
+
+% hypothesis box: grey left bar (track template)
+\RequirePackage[framemethod=default]{mdframed}
+\newmdenv[topline=false,bottomline=false,rightline=false,leftline=true,linecolor=rulegrey,linewidth=2.2pt,
+  innerleftmargin=7pt,innerrightmargin=0pt,innertopmargin=1pt,innerbottommargin=1pt,
+  leftmargin=0pt,rightmargin=0pt,skipabove=4pt,skipbelow=3pt]{hypbox}
+
+% unmarked first-page footnote (P1/P2 style), 11 pt
+\makeatletter
+\newcommand\unmarkedfootnote[1]{\begingroup\renewcommand\thefootnote{}%
+  \long\def\@makefntext##1{\noindent ##1}\footnote{#1}\addtocounter{footnote}{-1}\endgroup}
+\renewcommand\@makefntext[1]{\noindent\makebox[1.1em][l]{\@makefnmark}#1}
+\makeatother
+\setlength\footnotesep{11pt}
+\renewcommand\footnoterule{\vspace*{-3pt}\noindent\rule{1.6in}{0.4pt}\vspace*{2.6pt}}
+
+% table notes in the same 11 pt
+\newcommand\tabnotes[1]{\par\vspace{2pt}{\setlength\parindent{0pt}\justifying #1\par}}
+
+% appendix float numbering A1, A2, ...
+\newcommand\csappendix{%
+  \appendix
+  \setcounter{figure}{0}\setcounter{table}{0}
+  \renewcommand\thefigure{A\arabic{figure}}
+  \renewcommand\thetable{A\arabic{table}}
+  \renewcommand\thesection{A\arabic{section}}}
+
+\endinput

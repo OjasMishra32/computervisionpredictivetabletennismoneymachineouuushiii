@@ -1,9 +1,12 @@
-"""docs/NOTE.md -> docs/NOTE.pdf via headless Chrome or Chromium.
+"""Fallback only: docs/NOTE.md -> docs/NOTE.html (and, with --pdf, docs/NOTE_fallback.pdf via headless Chrome).
 
-Track rule: 11 pt or larger and standard margins. Every text style below is >= 11 pt (text inside figure
-images excepted) and the page has 1 in margins on Letter. Check after a rebuild:
-    .venv/bin/python -c "import pymupdf;d=pymupdf.open('docs/NOTE.pdf');print(len(d), min(s['size'] for p in d for b in p.get_text('dict')['blocks'] for l in b.get('lines',[]) for s in l['spans'] if s['text'].strip()))"
+The paper itself is docs/NOTE.pdf, built from LaTeX by `python scripts/build_paper.py` (tectonic). This script
+exists for machines without tectonic: it renders the readable companion docs/NOTE.md (which build_paper.py writes
+from the same results/paper/numbers.json) as a print-styled HTML page. It never overwrites docs/NOTE.pdf.
+
+Every text style is >= 11 pt with 1 in margins on Letter, as the track requires.
 """
+import argparse
 import shutil
 import subprocess
 import sys
@@ -11,27 +14,28 @@ from pathlib import Path
 
 import markdown
 
+ROOT = Path(__file__).resolve().parents[1]
 CANDIDATES = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
               "/Applications/Chromium.app/Contents/MacOS/Chromium",
               "google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome"]
-CSS = """
-@page { size: Letter; margin: 1in; }
-body { font-family: 'Charter', 'Georgia', serif; font-size: 11.1pt; line-height: 1.15; color: #0b0b0b; }
-h1 { font-family: -apple-system, 'Helvetica Neue', sans-serif; font-size: 16pt; margin: 0 0 2pt; }
-h2 { font-family: -apple-system, 'Helvetica Neue', sans-serif; font-size: 12pt; margin: 7pt 0 2pt;
-     border-bottom: 1px solid #e4e3df; padding-bottom: 1pt; break-after: avoid-page; page-break-after: avoid; }
-p, li { margin: 1.5pt 0; }
-ul, ol { padding-left: 14pt; margin: 2pt 0; }
-blockquote { margin: 3pt 0 3pt 10pt; padding-left: 8pt; border-left: 2px solid #c9c7c0; }
-code { font-family: inherit; font-size: 11.1pt; background: #f1f0ec; padding: 0 1pt; border-radius: 2px; }
-table { border-collapse: collapse; width: 100%; font-size: 11.1pt; line-height: 1.13; margin: 3pt 0;
-        font-family: 'Avenir Next Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif; }
-th, td { border-bottom: 1px solid #e4e3df; padding: 1.5pt 3pt; text-align: left; vertical-align: top; }
-th { color: #3d3c39; font-weight: 600; }
-img { width: 100%; margin: 3pt 0 0; }
-img[alt="fig2"] { width: 62%; display: block; margin: 3pt auto 0; }
-em { color: #3d3c39; }
-p > em:only-child { font-size: 11.1pt; display: block; margin-bottom: 3pt; }
+FONTS = (ROOT / "docs/paper/fonts").as_uri()
+CSS = f"""
+@font-face {{ font-family: 'Source Sans 3'; src: url('{FONTS}/SourceSans3-Regular.ttf'); }}
+@font-face {{ font-family: 'Source Sans 3'; font-weight: 600; src: url('{FONTS}/SourceSans3-Semibold.ttf'); }}
+@font-face {{ font-family: 'Source Sans 3'; font-style: italic; src: url('{FONTS}/SourceSans3-It.ttf'); }}
+@font-face {{ font-family: 'Oswald'; font-weight: 300; src: url('{FONTS}/Oswald-Light.ttf'); }}
+@page {{ size: Letter; margin: 1in; }}
+body {{ font-family: 'Source Sans 3', sans-serif; font-size: 11pt; line-height: 1.3; color: #111;
+       text-align: justify; max-width: 6.5in; margin: 0 auto; }}
+h1 {{ font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 22pt; text-align: center; margin: 0 0 6pt; }}
+h2 {{ font-weight: 400; font-size: 14pt; margin: 10pt 0 3pt; border-bottom: 2px solid #F26B21; }}
+table {{ border-collapse: collapse; width: 100%; font-size: 11pt; margin: 4pt 0; }}
+th, td {{ padding: 1.5pt 4pt; text-align: right; vertical-align: top; }}
+th:first-child, td:first-child {{ text-align: left; }}
+thead th {{ border-top: 1.2px solid #000; border-bottom: 0.6px solid #000; font-weight: 600; }}
+tbody tr:last-child td {{ border-bottom: 1.2px solid #000; }}
+code {{ font-family: inherit; }}
+a {{ color: #1F3A5F; text-decoration: none; }}
 """
 
 
@@ -43,18 +47,25 @@ def chrome() -> str | None:
     return None
 
 
-if __name__ == "__main__":
-    src = Path("docs/NOTE.md")
+def write_html(src: Path = ROOT / "docs/NOTE.md", out: Path = ROOT / "docs/NOTE.html") -> Path:
     html = markdown.markdown(src.read_text(), extensions=["tables"])
-    out_html = Path("docs/NOTE.html")
-    out_html.write_text(f"<!doctype html><html><head><meta charset='utf-8'><title>COURTSIDE</title>"
-                        f"<style>{CSS}</style></head><body>{html}</body></html>")
-    pdf = Path("docs/NOTE.pdf").resolve()
-    exe = chrome()
-    if exe is None:  # judges on Linux without Chrome: the committed PDF stands; don't fail reproduce.sh
-        print("make_pdf: no Chrome/Chromium found; wrote docs/NOTE.html, kept the committed docs/NOTE.pdf")
-        sys.exit(0)
-    subprocess.run([exe, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-                    f"--print-to-pdf={pdf}", out_html.resolve().as_uri()], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print("wrote", pdf)
+    out.write_text(f"<!doctype html><html><head><meta charset='utf-8'><title>COURTSIDE note</title>"
+                   f"<style>{CSS}</style></head><body>{html}</body></html>", encoding="utf-8")
+    return out
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pdf", action="store_true", help="also print docs/NOTE_fallback.pdf with headless Chrome")
+    a = ap.parse_args()
+    html = write_html()
+    print("wrote", html.relative_to(ROOT))
+    if a.pdf:
+        exe = chrome()
+        if exe is None:
+            print("make_pdf: no Chrome/Chromium found; only docs/NOTE.html was written")
+            sys.exit(0)
+        pdf = (ROOT / "docs/NOTE_fallback.pdf").resolve()
+        subprocess.run([exe, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", f"--print-to-pdf={pdf}",
+                        html.resolve().as_uri()], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("wrote", pdf.relative_to(ROOT))
