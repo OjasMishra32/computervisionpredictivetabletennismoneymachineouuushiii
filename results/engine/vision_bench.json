@@ -1,0 +1,2853 @@
+{
+ "runs": {
+  "laptop-M4|onnx-coreml-gpu16,onnx-coreml-ane16|auto": {
+   "load_avg_1_5_15": [
+    4.3,
+    5.47,
+    5.53
+   ],
+   "when": "2026-10-03T13:58:00",
+   "host": "laptop-M4",
+   "machine": "Darwin arm64 arm",
+   "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+   "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/data/vision/test_2_copyts.mp4",
+   "reader": "auto",
+   "video": "test_2",
+   "first_frame": 2000,
+   "frozen_model": null,
+   "calls_enabled": false,
+   "geometry": "local masks (approximate: data/openttgames has a 12-mask sample)",
+   "runs": {
+    "realtime": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 18.418,
+     "fps_sustained": 54.29,
+     "decode_ms": {
+      "p50": 0.1,
+      "p90": 0.2,
+      "p99": 2.51,
+      "mean": 0.18,
+      "max": 17.23
+     },
+     "prep_ms": {
+      "p50": 2.11,
+      "p90": 2.73,
+      "p99": 4.71,
+      "mean": 2.29,
+      "max": 22.49
+     },
+     "infer_ms": {
+      "p50": 5.59,
+      "p90": 30.94,
+      "p99": 32.7,
+      "mean": 15.02,
+      "max": 79.98
+     },
+     "blobs_ms": {
+      "p50": 0.05,
+      "p90": 0.63,
+      "p99": 0.92,
+      "mean": 0.23,
+      "max": 6.57
+     },
+     "track_ms": {
+      "p50": 0.01,
+      "p90": 0.06,
+      "p99": 0.11,
+      "mean": 0.03,
+      "max": 0.33
+     },
+     "feat_ms": {
+      "p50": 0.0,
+      "p90": 0.81,
+      "p99": 1.19,
+      "mean": 0.2,
+      "max": 1.4
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 2.36,
+      "p99": 2.93,
+      "mean": 0.51,
+      "max": 4.52
+     },
+     "proc_ms": {
+      "p50": 9.61,
+      "p90": 36.3,
+      "p99": 39.08,
+      "mean": 17.92,
+      "max": 83.99
+     },
+     "qwait_ms": {
+      "p50": 5238.1,
+      "p90": 9129.25,
+      "p99": 9916.21,
+      "mean": 5188.67,
+      "max": 10011.26
+     },
+     "e2e_ms": {
+      "p50": 5255.63,
+      "p90": 9144.66,
+      "p99": 9930.69,
+      "mean": 5206.58,
+      "max": 10019.58
+     },
+     "call_ready_ms": {
+      "p50": 5281.41,
+      "p90": 9162.58,
+      "p99": 9947.99,
+      "mean": 5232.98,
+      "max": 10043.28
+     },
+     "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 330.86,
+      "mean": 12.58,
+      "max": 403.83
+     },
+     "mode": "realtime",
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9935,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    },
+    "max": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 19.779,
+     "fps_sustained": 50.56,
+     "decode_ms": {
+      "p50": 0.13,
+      "p90": 4.55,
+      "p99": 13.38,
+      "mean": 1.19,
+      "max": 19.54
+     },
+     "prep_ms": {
+      "p50": 2.54,
+      "p90": 3.46,
+      "p99": 4.92,
+      "mean": 2.69,
+      "max": 7.53
+     },
+     "infer_ms": {
+      "p50": 10.71,
+      "p90": 34.74,
+      "p99": 38.49,
+      "mean": 16.35,
+      "max": 102.08
+     },
+     "blobs_ms": {
+      "p50": 0.07,
+      "p90": 0.69,
+      "p99": 0.88,
+      "mean": 0.24,
+      "max": 1.13
+     },
+     "track_ms": {
+      "p50": 0.01,
+      "p90": 0.07,
+      "p99": 0.11,
+      "mean": 0.03,
+      "max": 0.17
+     },
+     "feat_ms": {
+      "p50": 0.0,
+      "p90": 0.91,
+      "p99": 1.41,
+      "mean": 0.23,
+      "max": 5.6
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 2.63,
+      "p99": 3.54,
+      "mean": 0.58,
+      "max": 7.7
+     },
+     "proc_ms": {
+      "p50": 13.16,
+      "p90": 40.32,
+      "p99": 44.44,
+      "mean": 19.69,
+      "max": 119.9
+     },
+     "qwait_ms": {
+      "p50": 8609.56,
+      "p90": 15979.12,
+      "p99": 17542.78,
+      "mean": 8720.74,
+      "max": 17737.39
+     },
+     "e2e_ms": {
+      "p50": 8629.89,
+      "p90": 15984.85,
+      "p99": 17545.63,
+      "mean": 8740.43,
+      "max": 17739.18
+     },
+     "call_ready_ms": {
+      "p50": 8667.63,
+      "p90": 16016.91,
+      "p99": 17585.35,
+      "mean": 8776.28,
+      "max": 17773.27
+     },
+     "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": null,
+     "mode": "max",
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9935,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    },
+    "bounded": {
+     "frames": 450,
+     "skipped": 550,
+     "wall_s": 8.455,
+     "fps_sustained": 53.22,
+     "decode_ms": {
+      "p50": 0.12,
+      "p90": 0.21,
+      "p99": 0.6,
+      "mean": 0.18,
+      "max": 20.6
+     },
+     "prep_ms": {
+      "p50": 2.85,
+      "p90": 3.27,
+      "p99": 4.45,
+      "mean": 2.89,
+      "max": 5.73
+     },
+     "infer_ms": {
+      "p50": 0.0,
+      "p90": 38.09,
+      "p99": 40.17,
+      "mean": 14.22,
+      "max": 42.2
+     },
+     "blobs_ms": {
+      "p50": 0.06,
+      "p90": 0.81,
+      "p99": 1.14,
+      "mean": 0.28,
+      "max": 1.37
+     },
+     "track_ms": {
+      "p50": 0.01,
+      "p90": 0.08,
+      "p99": 0.13,
+      "mean": 0.03,
+      "max": 0.19
+     },
+     "feat_ms": {
+      "p50": 0.0,
+      "p90": 0.26,
+      "p99": 1.39,
+      "mean": 0.1,
+      "max": 2.04
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 4.29,
+      "mean": 0.17,
+      "max": 5.6
+     },
+     "proc_ms": {
+      "p50": 2.84,
+      "p90": 42.76,
+      "p99": 47.07,
+      "mean": 17.36,
+      "max": 51.15
+     },
+     "qwait_ms": {
+      "p50": 25.61,
+      "p90": 80.85,
+      "p99": 93.44,
+      "mean": 34.41,
+      "max": 97.83
+     },
+     "e2e_ms": {
+      "p50": 53.84,
+      "p90": 105.14,
+      "p99": 128.82,
+      "mean": 51.77,
+      "max": 133.91
+     },
+     "call_ready_ms": {
+      "p50": 84.33,
+      "p90": 127.21,
+      "p99": 137.14,
+      "mean": 82.45,
+      "max": 139.82
+     },
+     "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 0.0,
+      "mean": 0.13,
+      "max": 39.77
+     },
+     "mode": "bounded",
+     "max_lag_ms": 100.0,
+     "detection_vs_labels": {
+      "labelled_frames": 133,
+      "tracked": 133,
+      "recall": 1.0,
+      "within_5px": 0.9474,
+      "within_10px": 0.9925,
+      "median_err_px": 1.63,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 2,
+        "coverage": 0.069,
+        "not_scored_online": [
+         2282,
+         2285,
+         2286,
+         2287,
+         2288,
+         2289,
+         2290,
+         2291,
+         2292,
+         2293,
+         2294,
+         2295,
+         2296,
+         2297,
+         2298,
+         2299,
+         2300,
+         2301,
+         2302,
+         2303,
+         2304,
+         2305,
+         2306,
+         2307,
+         2308,
+         2309,
+         2310
+        ],
+        "offline_t0": 2276,
+        "online_t0": [
+         2277
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 22,
+        "online_scored": 3,
+        "coverage": 0.136,
+        "not_scored_online": [
+         2348,
+         2352,
+         2353,
+         2354,
+         2355,
+         2356,
+         2357,
+         2358,
+         2359,
+         2360,
+         2361,
+         2362,
+         2363,
+         2364,
+         2365,
+         2366,
+         2367,
+         2368,
+         2369
+        ],
+        "offline_t0": 2337,
+        "online_t0": [
+         2343
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 34,
+        "online_scored": 3,
+        "coverage": 0.088,
+        "not_scored_online": [
+         2393,
+         2397,
+         2398,
+         2399,
+         2400,
+         2401,
+         2402,
+         2403,
+         2404,
+         2405,
+         2406,
+         2407,
+         2408,
+         2409,
+         2410,
+         2411,
+         2412,
+         2413,
+         2414,
+         2415,
+         2416,
+         2417,
+         2418,
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2388
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 14,
+        "online_scored": 3,
+        "coverage": 0.214,
+        "not_scored_online": [
+         2457,
+         2458,
+         2459,
+         2460,
+         2461,
+         2465,
+         2466,
+         2467,
+         2468,
+         2469,
+         2470
+        ],
+        "offline_t0": 2437,
+        "online_t0": [
+         2456
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 4,
+        "coverage": 0.143,
+        "not_scored_online": [
+         2487,
+         2488,
+         2489,
+         2490,
+         2491,
+         2492,
+         2493,
+         2494,
+         2495,
+         2496,
+         2497,
+         2498,
+         2499,
+         2500,
+         2501,
+         2502,
+         2503,
+         2504,
+         2505,
+         2506,
+         2510,
+         2511,
+         2512,
+         2513
+        ],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480,
+         2501
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 19,
+        "online_scored": 3,
+        "coverage": 0.158,
+        "not_scored_online": [
+         2553,
+         2557,
+         2558,
+         2559,
+         2560,
+         2561,
+         2562,
+         2563,
+         2564,
+         2565,
+         2566,
+         2567,
+         2568,
+         2569,
+         2570,
+         2571
+        ],
+        "offline_t0": 2540,
+        "online_t0": [
+         2548
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 3,
+        "coverage": 0.115,
+        "not_scored_online": [
+         2646,
+         2650,
+         2651,
+         2652,
+         2653,
+         2654,
+         2655,
+         2656,
+         2657,
+         2658,
+         2659,
+         2660,
+         2661,
+         2662,
+         2663,
+         2664,
+         2665,
+         2666,
+         2667,
+         2668,
+         2669,
+         2670,
+         2671
+        ],
+        "offline_t0": 2639,
+        "online_t0": [
+         2641
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 3,
+        "coverage": 0.107,
+        "not_scored_online": [
+         2693,
+         2697,
+         2698,
+         2699,
+         2700,
+         2701,
+         2702,
+         2703,
+         2704,
+         2705,
+         2706,
+         2707,
+         2708,
+         2709,
+         2710,
+         2711,
+         2712,
+         2713,
+         2714,
+         2715,
+         2716,
+         2717,
+         2718,
+         2719,
+         2720
+        ],
+        "offline_t0": 2684,
+        "online_t0": [
+         2688
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 14,
+        "online_scored": 3,
+        "coverage": 0.214,
+        "not_scored_online": [
+         2761,
+         2765,
+         2766,
+         2767,
+         2768,
+         2769,
+         2770,
+         2771,
+         2772,
+         2773,
+         2774
+        ],
+        "offline_t0": 2744,
+        "online_t0": [
+         2756
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 54,
+        "online_scored": 3,
+        "coverage": 0.056,
+        "not_scored_online": [
+         2805,
+         2806,
+         2807,
+         2811,
+         2812,
+         2813,
+         2814,
+         2815,
+         2816,
+         2817,
+         2818,
+         2819,
+         2820,
+         2821,
+         2822,
+         2823,
+         2824,
+         2825,
+         2826,
+         2827,
+         2828,
+         2829,
+         2830,
+         2831,
+         2832,
+         2833,
+         2834,
+         2835,
+         2836,
+         2837,
+         2838,
+         2839,
+         2840,
+         2841,
+         2842,
+         2843,
+         2844,
+         2845,
+         2846,
+         2847,
+         2848,
+         2849,
+         2850,
+         2851,
+         2852,
+         2853,
+         2854,
+         2855,
+         2856,
+         2857,
+         2858
+        ],
+        "offline_t0": 2782,
+        "online_t0": [
+         2802
+        ]
+       }
+      ],
+      "mean_coverage": 0.13,
+      "t0_exact": "0/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 36
+    },
+    "realtime@40": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 25.066,
+     "fps_sustained": 39.89,
+     "decode_ms": {
+      "p50": 0.1,
+      "p90": 0.15,
+      "p99": 0.4,
+      "mean": 0.14,
+      "max": 18.55
+     },
+     "prep_ms": {
+      "p50": 1.95,
+      "p90": 2.68,
+      "p99": 3.93,
+      "mean": 2.1,
+      "max": 6.57
+     },
+     "infer_ms": {
+      "p50": 8.68,
+      "p90": 14.69,
+      "p99": 38.35,
+      "mean": 9.53,
+      "max": 56.16
+     },
+     "blobs_ms": {
+      "p50": 0.33,
+      "p90": 0.51,
+      "p99": 0.81,
+      "mean": 0.3,
+      "max": 8.43
+     },
+     "track_ms": {
+      "p50": 0.04,
+      "p90": 0.07,
+      "p99": 0.13,
+      "mean": 0.04,
+      "max": 0.31
+     },
+     "feat_ms": {
+      "p50": 0.13,
+      "p90": 0.67,
+      "p99": 1.31,
+      "mean": 0.29,
+      "max": 3.07
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 1.67,
+      "p99": 3.14,
+      "mean": 0.66,
+      "max": 7.72
+     },
+     "proc_ms": {
+      "p50": 12.32,
+      "p90": 18.43,
+      "p99": 40.87,
+      "mean": 12.9,
+      "max": 68.72
+     },
+     "qwait_ms": {
+      "p50": 4.88,
+      "p90": 10.56,
+      "p99": 355.16,
+      "mean": 19.56,
+      "max": 429.43
+     },
+     "e2e_ms": {
+      "p50": 16.89,
+      "p90": 35.5,
+      "p99": 376.46,
+      "mean": 32.45,
+      "max": 431.68
+     },
+     "call_ready_ms": {
+      "p50": 41.88,
+      "p90": 56.45,
+      "p99": 376.74,
+      "mean": 56.2,
+      "max": 451.5
+     },
+     "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 169.63,
+      "mean": 3.7,
+      "max": 404.41
+     },
+     "mode": "realtime@40",
+     "arrival_fps": 40.0,
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9935,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    }
+   }
+  },
+  "laptop-M4|onnx-coreml-gpu16|auto": {
+   "load_avg_1_5_15": [
+    4.27,
+    5.36,
+    5.5
+   ],
+   "when": "2026-10-03T13:58:39",
+   "host": "laptop-M4",
+   "machine": "Darwin arm64 arm",
+   "backend": "onnx-coreml-gpu16",
+   "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/data/vision/test_2_copyts.mp4",
+   "reader": "auto",
+   "video": "test_2",
+   "first_frame": 2000,
+   "frozen_model": null,
+   "calls_enabled": false,
+   "geometry": "local masks (approximate: data/openttgames has a 12-mask sample)",
+   "runs": {
+    "realtime": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 27.858,
+     "fps_sustained": 35.9,
+     "decode_ms": {
+      "p50": 0.13,
+      "p90": 0.25,
+      "p99": 2.86,
+      "mean": 0.27,
+      "max": 21.41
+     },
+     "prep_ms": {
+      "p50": 3.56,
+      "p90": 5.18,
+      "p99": 9.1,
+      "mean": 3.81,
+      "max": 15.47
+     },
+     "infer_ms": {
+      "p50": 22.68,
+      "p90": 24.11,
+      "p99": 27.96,
+      "mean": 22.96,
+      "max": 47.11
+     },
+     "blobs_ms": {
+      "p50": 0.35,
+      "p90": 0.54,
+      "p99": 0.88,
+      "mean": 0.33,
+      "max": 2.17
+     },
+     "track_ms": {
+      "p50": 0.04,
+      "p90": 0.07,
+      "p99": 0.12,
+      "mean": 0.04,
+      "max": 0.21
+     },
+     "feat_ms": {
+      "p50": 0.14,
+      "p90": 0.78,
+      "p99": 1.23,
+      "mean": 0.32,
+      "max": 2.06
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 2.3,
+      "p99": 4.19,
+      "mean": 0.84,
+      "max": 5.5
+     },
+     "proc_ms": {
+      "p50": 26.98,
+      "p90": 31.04,
+      "p99": 34.23,
+      "mean": 27.34,
+      "max": 49.87
+     },
+     "qwait_ms": {
+      "p50": 10610.02,
+      "p90": 17796.24,
+      "p99": 19289.27,
+      "mean": 10271.38,
+      "max": 19457.32
+     },
+     "e2e_ms": {
+      "p50": 10637.03,
+      "p90": 17821.06,
+      "p99": 19313.91,
+      "mean": 10298.72,
+      "max": 19482.48
+     },
+     "call_ready_ms": {
+      "p50": 10655.8,
+      "p90": 17824.34,
+      "p99": 19314.24,
+      "mean": 10318.47,
+      "max": 19482.48
+     },
+     "detector": "onnx-coreml-gpu16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 371.96,
+      "mean": 14.67,
+      "max": 439.7
+     },
+     "mode": "realtime",
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9902,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    },
+    "max": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 27.367,
+     "fps_sustained": 36.54,
+     "decode_ms": {
+      "p50": 0.12,
+      "p90": 7.25,
+      "p99": 18.04,
+      "mean": 1.73,
+      "max": 38.66
+     },
+     "prep_ms": {
+      "p50": 3.16,
+      "p90": 4.66,
+      "p99": 7.62,
+      "mean": 3.35,
+      "max": 13.66
+     },
+     "infer_ms": {
+      "p50": 22.96,
+      "p90": 24.61,
+      "p99": 28.56,
+      "mean": 23.22,
+      "max": 39.55
+     },
+     "blobs_ms": {
+      "p50": 0.35,
+      "p90": 0.52,
+      "p99": 0.75,
+      "mean": 0.32,
+      "max": 2.91
+     },
+     "track_ms": {
+      "p50": 0.04,
+      "p90": 0.06,
+      "p99": 0.1,
+      "mean": 0.04,
+      "max": 1.1
+     },
+     "feat_ms": {
+      "p50": 0.15,
+      "p90": 0.72,
+      "p99": 1.24,
+      "mean": 0.31,
+      "max": 2.66
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 1.9,
+      "p99": 2.72,
+      "mean": 0.72,
+      "max": 10.08
+     },
+     "proc_ms": {
+      "p50": 26.9,
+      "p90": 29.75,
+      "p99": 36.16,
+      "mean": 27.31,
+      "max": 46.91
+     },
+     "qwait_ms": {
+      "p50": 12119.29,
+      "p90": 22241.26,
+      "p99": 24336.2,
+      "mean": 12282.11,
+      "max": 24591.17
+     },
+     "e2e_ms": {
+      "p50": 12146.89,
+      "p90": 22268.75,
+      "p99": 24362.6,
+      "mean": 12309.42,
+      "max": 24617.63
+     },
+     "call_ready_ms": {
+      "p50": 12173.52,
+      "p90": 22270.64,
+      "p99": 24363.1,
+      "mean": 12334.08,
+      "max": 24617.63
+     },
+     "detector": "onnx-coreml-gpu16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": null,
+     "mode": "max",
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9902,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    },
+    "realtime@30": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 33.389,
+     "fps_sustained": 29.95,
+     "decode_ms": {
+      "p50": 0.08,
+      "p90": 0.14,
+      "p99": 0.51,
+      "mean": 0.14,
+      "max": 20.82
+     },
+     "prep_ms": {
+      "p50": 2.15,
+      "p90": 3.2,
+      "p99": 4.96,
+      "mean": 2.35,
+      "max": 8.49
+     },
+     "infer_ms": {
+      "p50": 23.66,
+      "p90": 24.79,
+      "p99": 27.22,
+      "mean": 23.73,
+      "max": 42.34
+     },
+     "blobs_ms": {
+      "p50": 0.3,
+      "p90": 0.45,
+      "p99": 0.76,
+      "mean": 0.28,
+      "max": 1.02
+     },
+     "track_ms": {
+      "p50": 0.04,
+      "p90": 0.06,
+      "p99": 0.11,
+      "mean": 0.04,
+      "max": 0.18
+     },
+     "feat_ms": {
+      "p50": 0.12,
+      "p90": 0.64,
+      "p99": 1.29,
+      "mean": 0.27,
+      "max": 1.95
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 1.71,
+      "p99": 3.39,
+      "mean": 0.66,
+      "max": 5.98
+     },
+     "proc_ms": {
+      "p50": 26.9,
+      "p90": 29.92,
+      "p99": 35.77,
+      "mean": 27.22,
+      "max": 44.93
+     },
+     "qwait_ms": {
+      "p50": 5.28,
+      "p90": 5.72,
+      "p99": 307.89,
+      "mean": 14.04,
+      "max": 418.98
+     },
+     "e2e_ms": {
+      "p50": 31.55,
+      "p90": 36.51,
+      "p99": 333.4,
+      "mean": 41.27,
+      "max": 421.92
+     },
+     "call_ready_ms": {
+      "p50": 31.54,
+      "p90": 36.45,
+      "p99": 316.24,
+      "mean": 40.53,
+      "max": 403.34
+     },
+     "detector": "onnx-coreml-gpu16",
+     "frames_read": 1000,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 65.4,
+      "mean": 2.52,
+      "max": 385.62
+     },
+     "mode": "realtime@30",
+     "arrival_fps": 30.0,
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 306,
+      "recall": 0.9967,
+      "within_5px": 0.9772,
+      "within_10px": 0.9902,
+      "median_err_px": 1.43,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 39,
+        "online_scored": 31,
+        "coverage": 0.795,
+        "not_scored_online": [
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2381
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.98,
+      "t0_exact": "10/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    }
+   }
+  },
+  "laptop-M4|onnx-coreml-gpu16,onnx-coreml-ane16|cv2": {
+   "load_avg_1_5_15": [
+    5.02,
+    5.14,
+    5.36
+   ],
+   "when": "2026-10-03T13:53:25",
+   "host": "laptop-M4",
+   "machine": "Darwin arm64 arm",
+   "backend": "onnx-coreml-gpu16,onnx-coreml-ane16",
+   "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/data/vision/test_2_copyts.mp4",
+   "reader": "cv2",
+   "video": "test_2",
+   "first_frame": 2000,
+   "frozen_model": null,
+   "calls_enabled": false,
+   "geometry": "local masks (approximate: data/openttgames has a 12-mask sample)",
+   "runs": {
+    "max": {
+     "frames": 1000,
+     "skipped": 0,
+     "wall_s": 25.869,
+     "fps_sustained": 38.66,
+     "decode_ms": {
+      "p50": 1.42,
+      "p90": 2.28,
+      "p99": 4.07,
+      "mean": 1.63,
+      "max": 21.51
+     },
+     "prep_ms": {
+      "p50": 12.56,
+      "p90": 14.46,
+      "p99": 16.49,
+      "mean": 12.61,
+      "max": 42.53
+     },
+     "infer_ms": {
+      "p50": 10.65,
+      "p90": 45.54,
+      "p99": 58.77,
+      "mean": 21.0,
+      "max": 103.77
+     },
+     "blobs_ms": {
+      "p50": 0.06,
+      "p90": 1.22,
+      "p99": 1.53,
+      "mean": 0.39,
+      "max": 6.8
+     },
+     "track_ms": {
+      "p50": 0.01,
+      "p90": 0.12,
+      "p99": 0.21,
+      "mean": 0.04,
+      "max": 0.41
+     },
+     "feat_ms": {
+      "p50": 0.0,
+      "p90": 1.45,
+      "p99": 2.27,
+      "mean": 0.36,
+      "max": 3.22
+     },
+     "clf_ms": {
+      "p50": 0.0,
+      "p90": 4.06,
+      "p99": 6.37,
+      "mean": 0.92,
+      "max": 15.0
+     },
+     "proc_ms": {
+      "p50": 12.84,
+      "p90": 53.77,
+      "p99": 70.58,
+      "mean": 25.73,
+      "max": 115.29
+     },
+     "qwait_ms": {
+      "p50": 6826.76,
+      "p90": 12408.05,
+      "p99": 13355.2,
+      "mean": 6871.47,
+      "max": 13452.58
+     },
+     "e2e_ms": {
+      "p50": 6848.99,
+      "p90": 12432.12,
+      "p99": 13376.72,
+      "mean": 6897.2,
+      "max": 13464.73
+     },
+     "call_ready_ms": {
+      "p50": 6879.94,
+      "p90": 12452.36,
+      "p99": 13393.69,
+      "mean": 6934.81,
+      "max": 13496.0
+     },
+     "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+     "frames_read": 1000,
+     "reader": "cv2",
+     "source_dropped": 0,
+     "reader_late_ms": null,
+     "mode": "max",
+     "detection_vs_labels": {
+      "labelled_frames": 307,
+      "tracked": 307,
+      "recall": 1.0,
+      "within_5px": 0.9772,
+      "within_10px": 0.9967,
+      "median_err_px": 1.42,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2296,
+        "label": "BOUNCE",
+        "offline_frames": 29,
+        "online_scored": 29,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2276,
+        "online_t0": [
+         2276
+        ]
+       },
+       {
+        "f_net": 2358,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2337,
+        "online_t0": [
+         2337
+        ]
+       },
+       {
+        "f_net": 2402,
+        "label": "MISS",
+        "offline_frames": 40,
+        "online_scored": 31,
+        "coverage": 0.775,
+        "not_scored_online": [
+         2387,
+         2419,
+         2420,
+         2421,
+         2422,
+         2423,
+         2424,
+         2425,
+         2426
+        ],
+        "offline_t0": 2381,
+        "online_t0": [
+         2382
+        ]
+       },
+       {
+        "f_net": 2457,
+        "label": "BOUNCE",
+        "offline_frames": 26,
+        "online_scored": 26,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2437,
+        "online_t0": [
+         2437
+        ]
+       },
+       {
+        "f_net": 2502,
+        "label": "BOUNCE",
+        "offline_frames": 28,
+        "online_scored": 28,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2480,
+        "online_t0": [
+         2480
+        ]
+       },
+       {
+        "f_net": 2559,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2540,
+        "online_t0": [
+         2540
+        ]
+       },
+       {
+        "f_net": 2660,
+        "label": "BOUNCE",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2639,
+        "online_t0": [
+         2639
+        ]
+       },
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 0.978,
+      "t0_exact": "9/10"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 428
+    }
+   }
+  },
+  "laptop-M4|onnx-cpu|auto": {
+   "load_avg_1_5_15": [
+    3.74,
+    5.05,
+    5.37
+   ],
+   "when": "2026-10-03T13:59:44",
+   "host": "laptop-M4",
+   "machine": "Darwin arm64 arm",
+   "backend": "onnx-cpu",
+   "source": "/Users/ojasvamishra32/Library/Application Support/Claude/scratch-workspaces/7bb77844-b795-43aa-a67b-63736f9e8f62/8080cf91-fcd1-4d20-84cd-23ff24f77beb/scratch-2026-10-03-f34211/courtside/data/vision/test_2_copyts.mp4",
+   "reader": "auto",
+   "video": "test_2",
+   "first_frame": 2660,
+   "frozen_model": null,
+   "calls_enabled": false,
+   "geometry": "local masks (approximate: data/openttgames has a 12-mask sample)",
+   "runs": {
+    "max": {
+     "frames": 240,
+     "skipped": 0,
+     "wall_s": 51.187,
+     "fps_sustained": 4.69,
+     "decode_ms": {
+      "p50": 0.13,
+      "p90": 5.72,
+      "p99": 16.11,
+      "mean": 1.64,
+      "max": 19.4
+     },
+     "prep_ms": {
+      "p50": 2.88,
+      "p90": 3.4,
+      "p99": 6.12,
+      "mean": 2.86,
+      "max": 7.5
+     },
+     "infer_ms": {
+      "p50": 201.95,
+      "p90": 215.49,
+      "p99": 262.22,
+      "mean": 202.71,
+      "max": 533.92
+     },
+     "blobs_ms": {
+      "p50": 0.41,
+      "p90": 0.52,
+      "p99": 0.71,
+      "mean": 0.41,
+      "max": 1.3
+     },
+     "track_ms": {
+      "p50": 0.05,
+      "p90": 0.07,
+      "p99": 0.14,
+      "mean": 0.05,
+      "max": 0.2
+     },
+     "feat_ms": {
+      "p50": 0.49,
+      "p90": 0.79,
+      "p99": 1.04,
+      "mean": 0.43,
+      "max": 1.12
+     },
+     "clf_ms": {
+      "p50": 1.16,
+      "p90": 2.5,
+      "p99": 2.82,
+      "mean": 1.01,
+      "max": 2.97
+     },
+     "proc_ms": {
+      "p50": 205.44,
+      "p90": 221.02,
+      "p99": 267.77,
+      "mean": 207.16,
+      "max": 538.06
+     },
+     "qwait_ms": {
+      "p50": 24414.15,
+      "p90": 44040.58,
+      "p99": 48463.52,
+      "mean": 24521.03,
+      "max": 48950.53
+     },
+     "e2e_ms": {
+      "p50": 24603.65,
+      "p90": 44249.39,
+      "p99": 48667.3,
+      "mean": 24728.19,
+      "max": 49159.14
+     },
+     "call_ready_ms": {
+      "p50": 24793.94,
+      "p90": 44292.16,
+      "p99": 48671.42,
+      "mean": 24935.95,
+      "max": 49159.14
+     },
+     "detector": "onnx-cpu",
+     "frames_read": 240,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": null,
+     "mode": "max",
+     "detection_vs_labels": {
+      "labelled_frames": 89,
+      "tracked": 89,
+      "recall": 1.0,
+      "within_5px": 0.9775,
+      "within_10px": 1.0,
+      "median_err_px": 1.36,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 1.0,
+      "t0_exact": "3/3"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 127
+    },
+    "realtime": {
+     "frames": 240,
+     "skipped": 0,
+     "wall_s": 54.126,
+     "fps_sustained": 4.43,
+     "decode_ms": {
+      "p50": 0.14,
+      "p90": 4.47,
+      "p99": 16.08,
+      "mean": 1.33,
+      "max": 18.86
+     },
+     "prep_ms": {
+      "p50": 3.04,
+      "p90": 4.62,
+      "p99": 7.55,
+      "mean": 3.3,
+      "max": 11.12
+     },
+     "infer_ms": {
+      "p50": 213.45,
+      "p90": 236.54,
+      "p99": 339.88,
+      "mean": 215.66,
+      "max": 391.24
+     },
+     "blobs_ms": {
+      "p50": 0.43,
+      "p90": 0.6,
+      "p99": 1.23,
+      "mean": 0.46,
+      "max": 2.15
+     },
+     "track_ms": {
+      "p50": 0.06,
+      "p90": 0.07,
+      "p99": 0.12,
+      "mean": 0.06,
+      "max": 0.21
+     },
+     "feat_ms": {
+      "p50": 0.51,
+      "p90": 0.87,
+      "p99": 1.01,
+      "mean": 0.45,
+      "max": 1.4
+     },
+     "clf_ms": {
+      "p50": 1.32,
+      "p90": 2.63,
+      "p99": 3.21,
+      "mean": 1.1,
+      "max": 3.59
+     },
+     "proc_ms": {
+      "p50": 218.35,
+      "p90": 241.58,
+      "p99": 349.36,
+      "mean": 220.74,
+      "max": 395.77
+     },
+     "qwait_ms": {
+      "p50": 27010.24,
+      "p90": 47301.74,
+      "p99": 51394.73,
+      "mean": 26596.11,
+      "max": 51875.63
+     },
+     "e2e_ms": {
+      "p50": 27234.03,
+      "p90": 47491.74,
+      "p99": 51602.62,
+      "mean": 26816.86,
+      "max": 52084.42
+     },
+     "call_ready_ms": {
+      "p50": 27444.01,
+      "p90": 47527.8,
+      "p99": 51606.65,
+      "mean": 27033.03,
+      "max": 52084.42
+     },
+     "detector": "onnx-cpu",
+     "frames_read": 240,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 416.09,
+      "p90": 954.97,
+      "p99": 1065.44,
+      "mean": 438.98,
+      "max": 1083.87
+     },
+     "mode": "realtime",
+     "detection_vs_labels": {
+      "labelled_frames": 89,
+      "tracked": 89,
+      "recall": 1.0,
+      "within_5px": 0.9775,
+      "within_10px": 1.0,
+      "median_err_px": 1.36,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 1.0,
+      "t0_exact": "3/3"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 127
+    },
+    "realtime@4": {
+     "frames": 240,
+     "skipped": 0,
+     "wall_s": 59.988,
+     "fps_sustained": 4.0,
+     "decode_ms": {
+      "p50": 0.13,
+      "p90": 0.16,
+      "p99": 0.22,
+      "mean": 0.12,
+      "max": 0.24
+     },
+     "prep_ms": {
+      "p50": 1.68,
+      "p90": 1.9,
+      "p99": 3.88,
+      "mean": 1.79,
+      "max": 10.02
+     },
+     "infer_ms": {
+      "p50": 171.3,
+      "p90": 188.19,
+      "p99": 197.79,
+      "mean": 171.13,
+      "max": 198.9
+     },
+     "blobs_ms": {
+      "p50": 0.35,
+      "p90": 0.47,
+      "p99": 0.67,
+      "mean": 0.36,
+      "max": 1.87
+     },
+     "track_ms": {
+      "p50": 0.04,
+      "p90": 0.06,
+      "p99": 0.08,
+      "mean": 0.05,
+      "max": 0.14
+     },
+     "feat_ms": {
+      "p50": 0.38,
+      "p90": 0.78,
+      "p99": 1.05,
+      "mean": 0.37,
+      "max": 1.38
+     },
+     "clf_ms": {
+      "p50": 0.96,
+      "p90": 2.54,
+      "p99": 2.85,
+      "mean": 0.86,
+      "max": 2.92
+     },
+     "proc_ms": {
+      "p50": 174.23,
+      "p90": 191.67,
+      "p99": 200.46,
+      "mean": 174.49,
+      "max": 203.64
+     },
+     "qwait_ms": {
+      "p50": 5.2,
+      "p90": 5.53,
+      "p99": 713.74,
+      "mean": 32.42,
+      "max": 1229.33
+     },
+     "e2e_ms": {
+      "p50": 179.23,
+      "p90": 200.11,
+      "p99": 906.56,
+      "mean": 206.92,
+      "max": 1231.69
+     },
+     "call_ready_ms": {
+      "p50": 178.9,
+      "p90": 199.65,
+      "p99": 762.17,
+      "mean": 199.35,
+      "max": 932.57
+     },
+     "detector": "onnx-cpu",
+     "frames_read": 240,
+     "reader": "pyav",
+     "source_dropped": 0,
+     "reader_late_ms": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "p99": 383.11,
+      "mean": 10.09,
+      "max": 979.31
+     },
+     "mode": "realtime@4",
+     "arrival_fps": 4.0,
+     "detection_vs_labels": {
+      "labelled_frames": 89,
+      "tracked": 89,
+      "recall": 1.0,
+      "within_5px": 0.9775,
+      "within_10px": 1.0,
+      "median_err_px": 1.36,
+      "offline_reference": "test 94.0% within 5 px, 96.0% within 10 px, recall 0.967 (src/tracking README)"
+     },
+     "segmentation_vs_offline": {
+      "flights": [
+       {
+        "f_net": 2706,
+        "label": "BOUNCE",
+        "offline_frames": 31,
+        "online_scored": 31,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2684,
+        "online_t0": [
+         2684
+        ]
+       },
+       {
+        "f_net": 2760,
+        "label": "MISS",
+        "offline_frames": 25,
+        "online_scored": 25,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2744,
+        "online_t0": [
+         2744
+        ]
+       },
+       {
+        "f_net": 2819,
+        "label": "MISS",
+        "offline_frames": 67,
+        "online_scored": 67,
+        "coverage": 1.0,
+        "not_scored_online": [],
+        "offline_t0": 2782,
+        "online_t0": [
+         2782
+        ]
+       }
+      ],
+      "mean_coverage": 1.0,
+      "t0_exact": "3/3"
+     },
+     "events": "calls disabled (frozen model not available on this host)",
+     "decision_frames_scored": 127
+    }
+   }
+  }
+ },
+ "tennis_stub": {
+  "note": "simulated Hawk-Eye-class tracks (src/hawkeye.py physics + 3.6 mm noise at 340 Hz), not real data",
+  "shots": 200,
+  "outs": 100,
+  "threshold_m": -0.05,
+  "every": 6,
+  "miss_calls": 108,
+  "miss_precision": 0.9259259259259259,
+  "miss_recall": 1.0,
+  "miss_lead_true_ms": {
+   "p10": 374.2747067777728,
+   "median": 412.8223058690041,
+   "p90": 432.46528134147627
+  },
+  "bounce_calls": 92,
+  "bounce_precision": 1.0,
+  "predict_landing_ms": {
+   "p50": 42.515333501796704,
+   "p90": 67.93844990897924,
+   "max": 207.92383300431538
+  }
+ },
+ "summary": [
+  {
+   "config": "laptop-M4|onnx-coreml-gpu16,onnx-coreml-ane16|auto",
+   "host": "laptop-M4",
+   "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+   "reader": "auto",
+   "frames": 1000,
+   "fps_sustained": 50.56,
+   "keeps_up_with_120fps": false,
+   "realtime_factor": 0.421,
+   "infer_ms_p50": 10.71,
+   "engine_ms_per_frame_p50": 13.16,
+   "decode_resize_ms_p50": 2.67,
+   "features_ms_p50": 0.0,
+   "classifier_ms_p90": 2.63,
+   "realtime_120fps_call_latency_ms": {
+    "p50": 5281.41,
+    "p90": 9162.58,
+    "max": 10043.28
+   },
+   "unloaded_call_latency_ms": {
+    "arrival_fps": 40.0,
+    "p50": 41.88,
+    "p90": 56.45,
+    "p99": 376.74
+   },
+   "bounded_call_latency_ms": {
+    "p50": 84.33,
+    "p90": 127.21,
+    "frames_skipped": 550,
+    "max_lag_ms": 100.0,
+    "within_5px": 0.9474
+   },
+   "detection_within_5px": 0.9772,
+   "segmentation_t0_exact": "10/10",
+   "segmentation_coverage": 0.98,
+   "calls_enabled": false,
+   "load_avg": [
+    4.3,
+    5.47,
+    5.53
+   ]
+  },
+  {
+   "config": "laptop-M4|onnx-coreml-gpu16|auto",
+   "host": "laptop-M4",
+   "detector": "onnx-coreml-gpu16",
+   "reader": "auto",
+   "frames": 1000,
+   "fps_sustained": 36.54,
+   "keeps_up_with_120fps": false,
+   "realtime_factor": 0.304,
+   "infer_ms_p50": 22.96,
+   "engine_ms_per_frame_p50": 26.9,
+   "decode_resize_ms_p50": 3.28,
+   "features_ms_p50": 0.15,
+   "classifier_ms_p90": 1.9,
+   "realtime_120fps_call_latency_ms": {
+    "p50": 10655.8,
+    "p90": 17824.34,
+    "max": 19482.48
+   },
+   "unloaded_call_latency_ms": {
+    "arrival_fps": 30.0,
+    "p50": 31.54,
+    "p90": 36.45,
+    "p99": 316.24
+   },
+   "bounded_call_latency_ms": null,
+   "detection_within_5px": 0.9772,
+   "segmentation_t0_exact": "10/10",
+   "segmentation_coverage": 0.98,
+   "calls_enabled": false,
+   "load_avg": [
+    4.27,
+    5.36,
+    5.5
+   ]
+  },
+  {
+   "config": "laptop-M4|onnx-coreml-gpu16,onnx-coreml-ane16|cv2",
+   "host": "laptop-M4",
+   "detector": "onnx-coreml-gpu16+onnx-coreml-ane16",
+   "reader": "cv2",
+   "frames": 1000,
+   "fps_sustained": 38.66,
+   "keeps_up_with_120fps": false,
+   "realtime_factor": 0.322,
+   "infer_ms_p50": 10.65,
+   "engine_ms_per_frame_p50": 12.84,
+   "decode_resize_ms_p50": 13.98,
+   "features_ms_p50": 0.0,
+   "classifier_ms_p90": 4.06,
+   "realtime_120fps_call_latency_ms": null,
+   "unloaded_call_latency_ms": null,
+   "bounded_call_latency_ms": null,
+   "detection_within_5px": 0.9772,
+   "segmentation_t0_exact": "9/10",
+   "segmentation_coverage": 0.978,
+   "calls_enabled": false,
+   "load_avg": [
+    5.02,
+    5.14,
+    5.36
+   ]
+  },
+  {
+   "config": "laptop-M4|onnx-cpu|auto",
+   "host": "laptop-M4",
+   "detector": "onnx-cpu",
+   "reader": "auto",
+   "frames": 240,
+   "fps_sustained": 4.69,
+   "keeps_up_with_120fps": false,
+   "realtime_factor": 0.039,
+   "infer_ms_p50": 201.95,
+   "engine_ms_per_frame_p50": 205.44,
+   "decode_resize_ms_p50": 3.01,
+   "features_ms_p50": 0.49,
+   "classifier_ms_p90": 2.5,
+   "realtime_120fps_call_latency_ms": {
+    "p50": 27444.01,
+    "p90": 47527.8,
+    "max": 52084.42
+   },
+   "unloaded_call_latency_ms": {
+    "arrival_fps": 4.0,
+    "p50": 178.9,
+    "p90": 199.65,
+    "p99": 762.17
+   },
+   "bounded_call_latency_ms": null,
+   "detection_within_5px": 0.9775,
+   "segmentation_t0_exact": "3/3",
+   "segmentation_coverage": 1.0,
+   "calls_enabled": false,
+   "load_avg": [
+    3.74,
+    5.05,
+    5.37
+   ]
+  }
+ ],
+ "status": {
+  "paper_only": "engine/vision never trades; events.assert_paper_only() raises LiveTradingForbidden if live-trading flags or wallet/CLOB credentials are in the environment; enable_live_trading() always raises",
+  "calls_enabled_on_laptop": false,
+  "why": "models/vision/frozen_call_model.pkl (the frozen H3 HGB) must be rebuilt from the game_1..5 training tracks, which live only on HiPerGator; the HPG control socket (~/.ssh/cm-hpg) did not exist during this run. Laptop runs time the classifier stage with a stand-in HGB of the frozen hyperparameters and emit no calls.",
+  "hpg_gpu": "not measured (same reason). hpg/engine_vision.sbatch exports the frozen model (asserting it reproduces results/tracking/test_flights.csv) and benchmarks torch-cuda fp16/fp32 on the same test_2 frames 2000-2999.",
+  "clip": "test_2 frames 2000-2999 (held-out), stream-copied (bit-exact) from https://lab.osai.ai/datasets/openttgames/data/test_2.mp4 into data/vision/test_2_copyts.mp4",
+  "detector": "BlurBall blurball_best (same weights as the offline H3 run, sha256 3545206c...), exported to ONNX; fp16 graph max |diff| 2.8e-5 vs fp32 torch (offline ran fp16 autocast on CUDA)",
+  "laptop": "Apple M4, 10 cores, 16 GB, shared with two other workflows (load avg 4-7 during runs)",
+  "known_difference_vs_offline": "early_call.Flight computes hb (table half-height at the ball's x) as a median over the whole labelled flight, i.e. including frames after the decision frame; online only past frames exist, so scores can differ slightly from the offline test scores (quantified by vs_offline once the frozen model is present)",
+  "fps_definitions": "fps_sustained = frames / wall in 'max' mode; realtime = 120 fps arrivals; realtime@N = N fps arrivals (no backlog -> pure per-call processing latency); bounded = 120 fps arrivals, jump to newest frame when older than 100 ms"
+ }
+}

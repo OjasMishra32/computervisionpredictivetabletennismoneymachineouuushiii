@@ -8,6 +8,7 @@ The feature builder is the one in research/v2/sizing/features.py, made period-ag
 """
 from __future__ import annotations
 
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -17,8 +18,12 @@ import pandas as pd
 from src import fasttier
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "research/v2/sizing"))
-import engine as E  # noqa: E402  (the verified sizing engine)
+# The verified sizing engine, loaded by path under a private name: the top-level `engine/` package
+# (the live paper-trading engine) would otherwise shadow it as `engine`.
+_spec = importlib.util.spec_from_file_location("courtside_sizing_engine", ROOT / "research/v2/sizing/engine.py")
+E = importlib.util.module_from_spec(_spec)
+sys.modules["courtside_sizing_engine"] = E
+_spec.loader.exec_module(E)
 
 POLICY = E.Policy("G_50pct_net100", sizing="risk_parity", deploy_frac=0.5, zone="0.05-0.95",
                   wallet="filter", net_cap=100, family="G")
