@@ -1,0 +1,53 @@
+{
+ "pass": true,
+ "n": 10171,
+ "pnl_usd": 5326.053215035456,
+ "target": {
+  "n": 10171,
+  "pnl_usd": 5326.053215035456
+ },
+ "rel_err": 0.0,
+ "b_T_equals_walkforward_2026_08": true,
+ "walkforward_2026_08": {
+  "tennis_first_set_totals": 3.514143233195978,
+  "tennis_first_set_winner": 1.527875991592811,
+  "tennis_match_totals": 1.8243248664803706,
+  "tennis_set_handicap": 0.8171462571666066,
+  "tennis_set_totals": 2.721259317541827,
+  "tennis_set_winner": 1.0781295500280448
+ },
+ "b_T_max_rel_diff": 1.217133028249607e-16,
+ "model_choice": {
+  "2026-02": "local0.05",
+  "2026-03": "local1.0",
+  "2026-04": "local1.0",
+  "2026-05": "local1.0",
+  "2026-06": "local1.0",
+  "2026-07": "local1.0",
+  "2026-08": "local1.0"
+ },
+ "diagnostics_1s5": {
+  "unconditional maker": [
+   36355,
+   -0.12477008644896942
+  ],
+  "anti-lean placebo": [
+   4674,
+   -1.289634795809543
+  ]
+ },
+ "diagnostics_target": {
+  "unconditional": [
+   36355,
+   -0.12477008644896942
+  ],
+  "anti_lean": [
+   4674,
+   -1.289634795809543
+  ]
+ },
+ "diagnostics_ok": true,
+ "code_sha256_ok": true,
+ "b_T_sha256": "f40c53f741d23fc911cfb42857af4b59d5c22cc54efa7fbfcc27d57fbd18466c",
+ "utc": "2026-10-03T18:43:54.651067+00:00"
+}
