@@ -108,10 +108,37 @@ def pre_instants(P: pd.DataFrame) -> np.ndarray:
                     T - FIRST_PRE_MS).astype(np.int64)
 
 
+def score_winner(model, s: State, p) -> bool | None:
+    """Did the outcome-0 player win this point, according to the official score columns (the score after the
+    point vs the score before it)? None if the two scores are not one point apart. m1_points' `ga`/`gb` are the
+    outcome-0 / outcome-1 player's scores on all 9 matches (checked in run(): the implied winners agree with
+    m1's `winner` column on >= 94 % of points in every match)."""
+    ga, gb = str(p.ga), str(p.gb)
+    if s.ga == 6 and s.gb == 6:                                   # tiebreak: integer counts, no 'G'
+        try:
+            a1, b1 = int(ga), int(gb)
+        except ValueError:
+            return None
+        if (a1, b1) == (s.pa + 1, s.pb):
+            return True
+        if (a1, b1) == (s.pa, s.pb + 1):
+            return False
+        return None
+    if "G" in (ga, gb):
+        return ga == "G"
+    for a in (True, False):
+        nxt = model.step(s, a)
+        if nxt is not None and (nxt.sa, nxt.sb, nxt.ga, nxt.gb) == (s.sa, s.sb, s.ga, s.gb) and score_str(nxt) == (ga, gb):
+            return a
+    return None
+
+
 def exante_swings(P: pd.DataFrame, M: pd.DataFrame, snaps: dict, t_pre: np.ndarray, outages: np.ndarray) -> pd.DataFrame:
-    """Walk every match point by point, as a live engine would: before point n, the score and server belief
-    from points 1..n-1 (official winners), (pa, pb) refit to the outcome-0 mid at t_pre (MatchFair.recalibrate,
-    engine/fair/value.py), swing = |v(A wins the point) - v(B wins it)|. Then apply the official point."""
+    """Walk every match point by point, as a live engine would: before point n, the score (official score
+    columns) and the server belief from points 1..n-1, (pa, pb) refit to the outcome-0 mid at t_pre
+    (MatchFair.recalibrate, engine/fair/value.py), swing = |v(A wins the point) - v(B wins it)|. Then advance
+    by the point's winner as the official score shows it (deviation S1: m1's `winner` column disagrees with
+    the score on 27 points; it is still the replay's call direction, unchanged)."""
     cidx = dict(zip(M.slug, M.cond))
     mu = TOUR_SERVE[TOUR]
     rows = []
@@ -122,9 +149,10 @@ def exante_swings(P: pd.DataFrame, M: pd.DataFrame, snaps: dict, t_pre: np.ndarr
         for i in g.index:
             p = P.loc[i]
             s, p0 = mf.state, mf.p_server0
-            row = {"i": i, "key": key, "slug": p.slug, "n": int(p.n), "t_pre_ms": int(t_pre[i])}
+            row = {"i": i, "key": key, "slug": p.slug, "n": int(p.n), "t_pre_ms": int(t_pre[i]),
+                   "m1_winner": float(p.winner)}
             if s is None:
-                row.update(source="match already over", swing=np.nan, state="")
+                row.update(source="match already over", swing=np.nan, state="", score_ok=False)
                 rows.append(row)
                 continue
             mid = valid_mid(snaps[cidx[p.slug]].get(int(t_pre[i])), int(t_pre[i]), outages)
@@ -136,16 +164,18 @@ def exante_swings(P: pd.DataFrame, M: pd.DataFrame, snaps: dict, t_pre: np.ndarr
                 src = "carried from an earlier point" if cal else "no price yet"
             j = mf.jump()
             sa_, sb_ = score_str(s)
-            # consistency with the official score columns (set, game, previous point's score)
+            # consistency of the rebuilt score with the official columns (set, game, previous point's score)
             ok = (int(p.set) == s.sa + s.sb + 1) and (int(p.game) == s.ga + s.gb + 1)
-            if prev is not None and not bool(prev.game_end):
+            if prev is not None and (int(prev.set), int(prev.game)) == (int(p.set), int(p.game)):
                 ok = ok and (str(prev.ga), str(prev.gb)) == (sa_, sb_)
+            w = score_winner(mf.model, s, p)
             row.update(source=src, mid_pre=mid, pa=mf.model.p[0], pb=mf.model.p[1], p_server0=p0,
                        state=f"sets {s.sa}-{s.sb} games {s.ga}-{s.gb} pts {sa_}-{sb_}", score_ok=ok,
                        v_now=j.v_now, v_if_a=j.v_if_a, v_if_b=j.v_if_b,
-                       swing=abs(j.v_if_a - j.v_if_b) if cal else np.nan)
+                       swing=abs(j.v_if_a - j.v_if_b) if cal else np.nan,
+                       score_winner=np.nan if w is None else float(not w))
             rows.append(row)
-            mf.apply_point(bool(p.winner == 0))
+            mf.apply_point(bool(p.winner == 0) if w is None else w)
             prev = p
     S = pd.DataFrame(rows).set_index("i").sort_index()
     return S
@@ -214,6 +244,20 @@ def run(cache: str | None) -> dict:
     n_bad = int((S.score_ok == False).sum())  # noqa: E712
     print(f"  score reconstruction disagrees with m1's set/game/score columns on {n_bad} of {S.score_ok.notna().sum()} points")
     print("  swing source:", S.source.value_counts().to_dict())
+    # orientation and the m1 `winner` column against the official score
+    agree = S[S.score_winner.notna()].assign(a=lambda x: x.score_winner == x.m1_winner).groupby("slug").a.mean()
+    if (agree < 0.5).any():
+        raise SystemExit(f"score columns look flipped against outcome 0 for {agree[agree < 0.5].index.tolist()}")
+    bad_w = S[S.score_winner.notna() & (S.score_winner != S.m1_winner)].join(P[["D"]])
+    wcheck = {"agreement_by_match": agree.to_dict(), "n_points_score_winner_unknown": int(S.score_winner.isna().sum()),
+              "n_points_m1_winner_disagrees_with_score": int(len(bad_w)),
+              "points": [{"slug": r.slug, "n": int(r.n), "m1_winner": r.m1_winner, "score_winner": r.score_winner,
+                          "book_move_in_m1_winner_direction_c": None if not np.isfinite(r.D) else float(r.D * 100)}
+                         for r in bad_w.itertuples()]}
+    print(f"  m1 `winner` disagrees with the official score on {len(bad_w)} points "
+          f"({int(bad_w.D.notna().sum())} with a recorded book; book move in m1's direction there: "
+          f"{np.round(bad_w.D.dropna().to_numpy() * 100, 1).tolist()} c)")
+    bad_keys = set(zip(bad_w.slug, bad_w.n))
     swing = S.swing.to_numpy()
     elig = {None: np.ones(len(P), bool)}
     for T in THRESHOLDS:
@@ -233,8 +277,12 @@ def run(cache: str | None) -> dict:
             if seed == 0:
                 frames.append(D)
                 nm = f"{tname(T)}|lag{lag:g}|V{V:g}"
+                Fb = D[(D.shares > 1e-9) & pd.Series([(a, b) in bad_keys for a, b in zip(D.slug, D.n)], index=D.index)]
                 res_cells[nm] = {"T": T, "lag": lag, "V": V, "all": s,
                                  "eligible_points": int(mask.sum()), "eligible_replayable": int(len(rep)),
+                                 "fills_on_m1_winner_errors": {"fills": int(len(Fb)),
+                                                               "pnl_mark_usd": float(Fb.pnl_mark.sum(skipna=True)),
+                                                               "pnl_hold_usd": float(Fb.pnl_hold.sum())},
                                  "move_traded_vs_not": None,
                                  "by_match": {m: MR.stats(g, ci=False) for m, g in D.groupby("slug", sort=False)}}
             seed_rows.append({"T": tname(T), "lag": lag, "V": V, "seed": seed, **{k: s[k] for k in (
@@ -310,7 +358,7 @@ def run(cache: str | None) -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
     pts = P[["key", "slug", "n", "set", "game", "ga", "gb", "winner", "T_ms", "D"]].join(
         S[["t_pre_ms", "source", "state", "p_server0", "mid_pre", "pa", "pb", "v_now", "v_if_a", "v_if_b", "swing",
-           "score_ok"]])
+           "score_ok", "score_winner"]])
     pts = pts.rename(columns={"D": "realised_move_D", "ga": "score_after_a", "gb": "score_after_b"})
     pts["replayable_lag2_V1"] = rp.to_numpy()
     for T in THRESHOLDS:
@@ -341,6 +389,7 @@ def run(cache: str | None) -> dict:
                           "capture, outage rule D1)",
         "pre_point_instant_margin_s": gap_min - max(LAGS) - PRE_AFTER_PREV_MS / 1000,
         "score_reconstruction_mismatches": n_bad,
+        "m1_winner_vs_official_score": wcheck,
         "swing_source_counts": S.source.value_counts().to_dict(),
         "swing_diagnostics": swd,
         "reproduces_all_points_replay": repro,
@@ -369,7 +418,7 @@ def _clean(o):
 def figure(res: dict) -> None:
     from scripts import match_replay_report as REP
     REP._style()
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.9), sharey=True)
     off = {None: -0.045, 0.02: -0.015, 0.04: 0.015, 0.06: 0.045}
     for ax, lag in zip(axes, LAGS):
         for T in (None, *THRESHOLDS):
@@ -394,10 +443,11 @@ def figure(res: dict) -> None:
         ax.set_title(f"stamp lag {lag:g} s" + (" (primary)" if lag == PRIMARY_LAG else ""), fontsize=10.5, loc="left")
         ax.grid(axis="y", color=REP.GRID, lw=0.6)
     axes[0].set_ylabel("$ P&L, marked at the +30 s mid (9 matches)")
-    axes[0].legend(loc="lower left", fontsize=8.5)
+    h, lb = axes[0].get_legend_handles_labels()
+    fig.legend(h, lb, loc="upper left", bbox_to_anchor=(0.01, 0.935), ncol=4, fontsize=9)
     fig.suptitle("Trading only points with a large ex-ante Markov swing: marked P&L by feed delay "
                  "(seed 0; whisker = range over 20 seeds)", x=0.01, ha="left", fontsize=11.5, color=REP.INK)
-    fig.tight_layout(rect=(0, 0.06, 1, 0.95))
+    fig.tight_layout(rect=(0, 0.06, 1, 0.88))
     REP._footer(fig, LABEL)
     fig.savefig(OUT / "fig_selective.png", dpi=150)
     plt.close(fig)
@@ -555,17 +605,40 @@ swing. Swing quantiles (p10 / p25 / median / p75 / p90): {q['10']:.1f} / {q['25'
 
 * **All-points cells reproduce the committed replay** (`results/replay/replay.json`, same fills and $ to the cent at
   both lags and every V): {'yes' if repro_ok else 'NO'}. The filter is the only change.
-* **Score reconstruction:** the score rebuilt from the official winners disagrees with `m1_points.csv`'s set, game
-  and point-score columns on {res['score_reconstruction_mismatches']} points.
+* **Score reconstruction:** the score before each point, rebuilt point by point with `src/markov.py`'s scoring
+  rules, disagrees with `m1_points.csv`'s set, game and previous point-score columns on
+  {res['score_reconstruction_mismatches']} of 994 points (deviation S1).
 * **No look-ahead in the filter:** the pre-point instant is ≥ {res['pre_point_instant_margin_s']:g} s before the
   earliest assumed bounce of the point (smallest gap between consecutive stamps minus 3 s lag minus 2 s); the score and
   the server belief use only earlier points; the replay's own reference price is read later, at the bounce, as before.
 * **Where the swing's price came from** (all 994 points): {', '.join(f'{k}: {v}' for k, v in src.items())}.
+* **m1's `winner` column vs the official score:** on {res['m1_winner_vs_official_score']['n_points_m1_winner_disagrees_with_score']}
+  of 994 points the `winner` column of `m1_points.csv` (the replay's call direction) disagrees with the change in
+  the official score: back-to-deuce points, where it names the player who had the advantage, and 9 tiebreak points
+  of two early matches. The score is right where it can be checked: on the
+  {sum(1 for p in res['m1_winner_vs_official_score']['points'] if p['book_move_in_m1_winner_direction_c'] is not None)}
+  of them with a recorded book the mid's move in m1's winner direction was
+  {', '.join(f"{p['book_move_in_m1_winner_direction_c']:+.1f}" for p in res['m1_winner_vs_official_score']['points'] if p['book_move_in_m1_winner_direction_c'] is not None)}c
+  (against m1's winner, or flat).
+  This variant keeps the replay's direction unchanged (it uses the score only for the swing); fills on those points:
+  {res['cells']['all|lag2|V1']['fills_on_m1_winner_errors']['fills']} at the headline cell
+  ({usd(res['cells']['all|lag2|V1']['fills_on_m1_winner_errors']['pnl_mark_usd'])} marked), 1-3 in every cell. The
+  fix belongs to `research/v2/latency/load.py` (`_derive_pw`) and the replay; it is outside these files.
 * **Score knowledge is assumed.** The official point-by-point feed reached our poller 1-2 minutes late on this day
   (`m1_points.pbp_delay_s`); a live trader would need the score from the video itself or a faster feed. The
   server is not observed (belief only).
 
-## 6. Declaration (committed before the first run)
+## 6. Deviation from the declaration
+
+**S1 (bug fix, before any P&L of this variant was read).** The declaration rebuilt the score "from the official
+winners of the match's earlier points", i.e. m1's `winner` column. The first run's own consistency check showed
+that score disagreeing with m1's official set / game / point-score columns on 447 of 963 points: one wrong
+back-to-deuce winner shifts the rebuilt score for the rest of the match, and 31 points fell after a spurious match
+end. The score is now rebuilt from the official score columns (the point winner is the side whose score moved;
+`score_winner()`), and the check passes on all 994 points. The first run's outputs were overwritten; only its console
+log and its per-point score file were read, no P&L. T, the swing, the pre-point instant, the cells and the replay are as declared.
+
+## 7. Declaration (committed before the first run)
 
 {DECLARATION}
 ## Reproduce
@@ -584,34 +657,65 @@ pre-point state, server belief, pre-point mid, calibrated serve probabilities, e
 
 
 def conclusion(res) -> str:
-    """Plain conclusion, from the numbers (written after the results were seen; descriptive)."""
-    c = res["cells"]
-    s = res["seeds"]
+    """Plain conclusion. The wording was written after the results were seen; every number is read from
+    selective.json."""
+    c, s = res["cells"], res["seeds"]
     g = lambda T, lag, V: c[f"{tname(T)}|lag{lag:g}|V{V:g}"]["all"]  # noqa: E731
     gs = lambda T, lag, V: s[f"{tname(T)}|lag{lag:g}|V{V:g}"]  # noqa: E731
-    lines = []
-    for lag in LAGS:
-        neg = [(tname(T), V) for T in (None, *THRESHOLDS) for V in VS if (g(T, lag, V)["pnl_mark_usd"] or 0) < 0]
-        lines.append(f"stamp lag {lag:g} s: {len(neg)} of {4 * len(VS)} cells lose money marked at seed 0")
-    ref1 = g(REF_T, PRIMARY_LAG, 1.0)
-    all1 = g(None, PRIMARY_LAG, 1.0)
-    ref0 = g(REF_T, PRIMARY_LAG, 0.0)
-    all0 = g(None, PRIMARY_LAG, 0.0)
-    out = [
-        f"* **Reference (T = 4c, stamp lag 2.0 s, V = 1 s):** {ref1['fills']} fills, "
-        f"{f2(ref1['per_share_mark_c'])}c per share marked{ci(ref1.get('per_share_mark_ci95_c'))}, "
-        f"{usd(ref1['pnl_mark_usd'])} marked / {usd(ref1['pnl_hold_usd'])} held; all points: {all1['fills']} fills, "
-        f"{f2(all1['per_share_mark_c'])}c, {usd(all1['pnl_mark_usd'])} / {usd(all1['pnl_hold_usd'])}. "
-        f"Positive marked in {gs(REF_T, PRIMARY_LAG, 1.0)['seeds_marked_positive']} of 20 seeds.",
-        f"* **Same at V = 0 (a camera at the venue):** T = 4c {ref0['fills']} fills, "
-        f"{f2(ref0['per_share_mark_c'])}c{ci(ref0.get('per_share_mark_ci95_c'))}, {usd(ref0['pnl_mark_usd'])} marked; "
-        f"all points {f2(all0['per_share_mark_c'])}c, {usd(all0['pnl_mark_usd'])}.",
-        "* **Count of losing cells (marked, seed 0, 4 trade sets × 3 V):** " + "; ".join(lines) + ".",
-    ]
-    return "\n".join(out) + ("\n\n" + READING if READING else "")
+    pos = lambda T, lag, V: gs(T, lag, V)["seeds_marked_positive"]  # noqa: E731
+    sel = [T for T in THRESHOLDS]
+    neg2 = sum((g(T, PRIMARY_LAG, V)["pnl_mark_usd"] or 0) < 0 for T in sel for V in VS)
+    maxpos2 = max(pos(T, PRIMARY_LAG, V) for T in sel for V in VS)
+    sd = res["swing_diagnostics"]
+    b4 = sd["by_threshold"]["T4c"]
+    r = lambda T, lag, V: f"{f2(g(T, lag, V)['per_share_mark_c'])}c"  # noqa: E731
+    mv = lambda T, lag, V: c[f"{tname(T)}|lag{lag:g}|V{V:g}"]["move_traded_vs_not"]  # noqa: E731
+    k30 = g(REF_T, 3.0, 0.0)
+    k35 = g(REF_T, 3.0, 0.5)
+    k31 = g(REF_T, 3.0, 1.0)
+    w = res["m1_winner_vs_official_score"]
+    out = f"""\
+**Plain answer: picking points by their ex-ante Markov swing does not rescue the 1 s video trader. At the primary
+stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly because it trades less.**
 
-
-READING = ""   # plain-language reading, written after the results were seen
+* **Primary stamp lag 2.0 s: {neg2} of {len(sel) * len(VS)} selective cells lose money marked** (seed 0), and no
+  selective cell is positive in more than {maxpos2} of 20 seeds. At the headline V = 1 s: all points
+  {g(None, 2.0, 1.0)['fills']} fills, {r(None, 2.0, 1.0)} per share, {usd(g(None, 2.0, 1.0)['pnl_mark_usd'])} marked;
+  T = 2c {g(0.02, 2.0, 1.0)['fills']} fills, {r(0.02, 2.0, 1.0)}, {usd(g(0.02, 2.0, 1.0)['pnl_mark_usd'])};
+  **T = 4c (reference) {g(0.04, 2.0, 1.0)['fills']} fills, {r(0.04, 2.0, 1.0)}{ci(g(0.04, 2.0, 1.0)['per_share_mark_ci95_c'])},
+  {usd(g(0.04, 2.0, 1.0)['pnl_mark_usd'])}**; T = 6c {g(0.06, 2.0, 1.0)['fills']} fills, {r(0.06, 2.0, 1.0)}{ci(g(0.06, 2.0, 1.0)['per_share_mark_ci95_c'])},
+  {usd(g(0.06, 2.0, 1.0)['pnl_mark_usd'])} (20-seed mean {gs(0.06, 2.0, 1.0)['per_share_mark_c']['mean']:+.2f}c). The
+  smaller dollar losses come from fewer fills; per share, the filter helps at V = 0 (all points {r(None, 2.0, 0.0)},
+  T = 4c {r(0.04, 2.0, 0.0)}, T = 6c {r(0.06, 2.0, 0.0)}) and not at 1 s for T ≤ 4c.
+* **Stamp lag 3.0 s (the optimistic sensitivity): T = 4c makes money at V = 0** ({k30['fills']} fills,
+  {f2(k30['per_share_mark_c'])}c{ci(k30['per_share_mark_ci95_c'])}, {usd(k30['pnl_mark_usd'])} marked; positive in
+  {pos(0.04, 3.0, 0.0)} of 20 seeds), is about zero at V = 0.5 s ({f2(k35['per_share_mark_c'])}c, {pos(0.04, 3.0, 0.5)} of 20
+  seeds positive) and loses at V = 1 s ({f2(k31['per_share_mark_c'])}c{ci(k31['per_share_mark_ci95_c'])}, {pos(0.04, 3.0, 1.0)} of 20).
+  This is the only selective cell whose marked CI excludes zero from above, out of 18 selective cells (3 T × 3 V × 2
+  lags), and it sits at the stamp lag that gives the trader the most time; at the same lag every T loses at V = 1 s.
+* **The ex-ante swing does find the points the book moves on.** Over the {sd['replayable_points']} replayable points
+  its Spearman correlation with the size of the realised book move is
+  {sd['spearman_swing_vs_abs_realised_move']:+.2f}; T = 4c keeps {b4['realised_ge_4c_that_are_eligible']} of the
+  {b4['realised_ge_4c_points']} points whose book moved ≥ 4c, plus as many smaller ones (half of the
+  {b4['eligible']} eligible points moved ≥ 4c). So a set close to the sweep's "≥ 4c jumps" can be chosen without
+  hindsight, at about twice the size. On this day the selection is not what sinks the 1 s trader; the feed delay is.
+  The filter amplifies an
+  edge only where the order already beats the reprice often (V = 0 with a 3 s lag: about two thirds of calls); at V = 1 s
+  and lag 2 s only {g(0.04, 2.0, 1.0)['share_calls_beat_book']:.0%} of T = 4c calls beat the book.
+* **Traded vs not traded (diagnostic, hindsight):** at T = 4c, V = 1 s, lag 2 s the filled points' realised move has
+  median {f2(mv(0.04, 2.0, 1.0)['traded']['median_c'], 1)}c vs {f2(mv(0.04, 2.0, 1.0)['not_traded']['median_c'], 1)}c for
+  every other replayable point (≥ 4c: {mv(0.04, 2.0, 1.0)['traded']['share_ge_4c']:.0%} vs
+  {mv(0.04, 2.0, 1.0)['not_traded']['share_ge_4c']:.0%}); at T = 6c {f2(mv(0.06, 2.0, 1.0)['traded']['median_c'], 1)}c vs
+  {f2(mv(0.06, 2.0, 1.0)['not_traded']['median_c'], 1)}c. At T = 4c the points that fill at 1 s move no more than the
+  rest; at T = 6c they move more, and still lose per share.
+* **Held-to-result P&L** is positive in several selective cells (e.g. T = 4c, lag 2 s, V = 0.5 s:
+  {usd(g(0.04, 2.0, 0.5)['pnl_hold_usd'])} held against {usd(g(0.04, 2.0, 0.5)['pnl_mark_usd'])} marked). It is mostly the
+  match result on a ≤ 100-share net position, so it is noise for this question; read the marked figure.
+* **What this is:** {LABEL}. 18 selective cells on one day; the reading above is descriptive, and no T is chosen.
+  A separate data issue for the replay's owners (not fixed here): m1's `winner` column disagrees with the official
+  score on {w['n_points_m1_winner_disagrees_with_score']} of 994 points (§5); it moves 1-3 fills per cell and a few
+  dollars marked, so it changes no sign."""
+    return out
 
 
 if __name__ == "__main__":
