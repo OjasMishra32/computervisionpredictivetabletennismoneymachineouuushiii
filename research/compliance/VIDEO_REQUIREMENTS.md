@@ -19,7 +19,7 @@ skeptic the model actually works. 75-90 s total, wall-to-wall visuals (entertain
 | 0:54-1:04 | **What speed is worth**: returns vs feed latency (log axis, dotted 1 s baseline, source bands, break-even), then the edge-decay panel |
 | 1:04-1:16 | **The test, shown on a real match**: the showcase match from the multi-month backtest (results/viz/v60_assets/backtest_match/example_match.mp4 + match.json: real Polymarket price path from recent weeks, the model's calls and fills at the simulated 1 s baseline, running P&L; label "example match from the backtest (selected for illustration)" + share of matches profitable), then the full backtest equity curve drawing in (in-sample then out-of-sample, months positive) and rigor badges. Do NOT use the 2026-10-03 replay. |
 | 1:16-1:26 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $/day, Sharpe; both readings compact), equity curve drawing in, capacity one-liner (results/capacity) |
-| 1:26-1:30 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
+| 1:26-1:30 | End card: COURTSIDE, team "Ojasva Mishra · Yoan Exposito · Rafael Penhas · Ian Hoang · University of Florida", repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
 
 **FIRST-TIME VIEWER MUST UNDERSTAND IT (team rule).** Someone who has never heard of the project must follow it:
 - Liam explains every concept in plain words the first time it appears: "Polymarket is a prediction market: each match
