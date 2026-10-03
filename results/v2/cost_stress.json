@@ -1,0 +1,152 @@
+{
+  "is_eval/base": {
+    "n_trades": 55662,
+    "per_share_c": 1.3814511010237975,
+    "per_share_ci_c": [
+      1.167847083750991,
+      1.5935130267793969
+    ],
+    "total_pnl_usd": 40425.71919167921,
+    "sharpe_ann": 14.483153541485253,
+    "max_dd_pct": -2.0120402719953496,
+    "worst_day_usd": -550.764300067122,
+    "worst_month_usd": 2542.5647262976495,
+    "months_positive": 7,
+    "months_total": 7
+  },
+  "is_eval/fee_x2": {
+    "n_trades": 55662,
+    "per_share_c": 0.7749402339026797,
+    "per_share_ci_c": [
+      0.5651649237351738,
+      0.9844242457493877
+    ],
+    "total_pnl_usd": 22677.253116572145,
+    "sharpe_ann": 8.352369449157218,
+    "max_dd_pct": -5.640457423372528,
+    "worst_day_usd": -702.6837547566874,
+    "worst_month_usd": 316.16349326187685,
+    "months_positive": 7,
+    "months_total": 7
+  },
+  "is_eval/fee5_x2": {
+    "n_trades": 55662,
+    "per_share_c": 0.028249258293369786,
+    "per_share_ci_c": [
+      -0.18823951250544385,
+      0.23899910467339003
+    ],
+    "total_pnl_usd": 826.6644995936845,
+    "sharpe_ann": 0.327133863261722,
+    "max_dd_pct": -10.033489205815119,
+    "worst_day_usd": -806.3697681609248,
+    "worst_month_usd": -199.35951528079732,
+    "months_positive": 4,
+    "months_total": 7
+  },
+  "is_eval/costs_x2": {
+    "n_trades": 55662,
+    "per_share_c": 0.27494023390267935,
+    "per_share_ci_c": [
+      0.06516492373517342,
+      0.4844242457493873
+    ],
+    "total_pnl_usd": 8045.6388807444655,
+    "sharpe_ann": 2.9935076476264633,
+    "max_dd_pct": -16.097230951499338,
+    "worst_day_usd": -793.6652772241923,
+    "worst_month_usd": -1677.2731483854811,
+    "months_positive": 5,
+    "months_total": 7
+  },
+  "is_eval/costs_x2_1c": {
+    "n_trades": 55662,
+    "per_share_c": -0.22505976609732084,
+    "per_share_ci_c": [
+      -0.4348350762648268,
+      -0.015575754250613078
+    ],
+    "total_pnl_usd": -6585.97535508321,
+    "sharpe_ann": -2.4015305670962452,
+    "max_dd_pct": -40.82051402218336,
+    "worst_day_usd": -884.646799691697,
+    "worst_month_usd": -4529.965174927614,
+    "months_positive": 2,
+    "months_total": 7
+  },
+  "burned_oos/base": {
+    "n_trades": 10412,
+    "per_share_c": 0.598736335564979,
+    "per_share_ci_c": [
+      0.08724550818301618,
+      1.1271958683912837
+    ],
+    "total_pnl_usd": 3687.5359201936667,
+    "sharpe_ann": 6.667551867200974,
+    "max_dd_pct": -2.0630607174176805,
+    "worst_day_usd": -469.4297898304612,
+    "worst_month_usd": -434.1530679579675,
+    "months_positive": 2,
+    "months_total": 3
+  },
+  "burned_oos/fee_x2": {
+    "n_trades": 10412,
+    "per_share_c": -0.3386410487769019,
+    "per_share_ci_c": [
+      -0.8573447664816245,
+      0.19138938435173888
+    ],
+    "total_pnl_usd": -2085.6443099257303,
+    "sharpe_ann": -3.7565981798944224,
+    "max_dd_pct": -8.722007957957672,
+    "worst_day_usd": -694.6371207127659,
+    "worst_month_usd": -814.1211669160514,
+    "months_positive": 0,
+    "months_total": 3
+  },
+  "burned_oos/fee5_x2": {
+    "n_trades": 10412,
+    "per_share_c": -0.33864104877690193,
+    "per_share_ci_c": [
+      -0.8573447664816247,
+      0.19138938435173855
+    ],
+    "total_pnl_usd": -2085.644309925731,
+    "sharpe_ann": -3.756598179894426,
+    "max_dd_pct": -8.722007957957679,
+    "worst_day_usd": -694.6371207127659,
+    "worst_month_usd": -814.1211669160515,
+    "months_positive": 0,
+    "months_total": 3
+  },
+  "burned_oos/costs_x2": {
+    "n_trades": 10412,
+    "per_share_c": -0.8386410487769022,
+    "per_share_ci_c": [
+      -1.357344766481625,
+      -0.30861061564826164
+    ],
+    "total_pnl_usd": -5165.076525037613,
+    "sharpe_ann": -9.046534166184372,
+    "max_dd_pct": -21.25030218961794,
+    "worst_day_usd": -812.8186581395228,
+    "worst_month_usd": -3064.955012099365,
+    "months_positive": 0,
+    "months_total": 3
+  },
+  "burned_oos/costs_x2_1c": {
+    "n_trades": 10412,
+    "per_share_c": -1.3386410487769023,
+    "per_share_ci_c": [
+      -1.8573447664816254,
+      -0.808610615648262
+    ],
+    "total_pnl_usd": -8244.508740149493,
+    "sharpe_ann": -13.834524432712774,
+    "max_dd_pct": -33.93701862797292,
+    "worst_day_usd": -931.0001955662796,
+    "worst_month_usd": -5489.9110797748435,
+    "months_positive": 0,
+    "months_total": 3
+  }
+}

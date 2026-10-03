@@ -9,3 +9,4 @@
 2026-10-03T17:43:41.266161+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
 2026-10-03T17:45:17.819645+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
 2026-10-03T17:48:08.518292+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)
+2026-10-03T18:00:45.264394+00:00 v2 cost stress (fees/costs doubled, book fixed) on burned OOS (non-blind, no parameter change)
