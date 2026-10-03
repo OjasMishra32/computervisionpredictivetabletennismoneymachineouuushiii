@@ -59,6 +59,9 @@ PY=.venv/bin/python          # from the repo root
 $PY -m engine.run --mode live-market --seconds 60 [--every 15] [--max-matches 12]
 # (b) end-to-end demo: vision on the held-out clip -> recorded WTA book -> paper orders (ILLUSTRATIVE pairing)
 $PY -m engine.run --mode demo        # ~5-8 min on the shared laptop -> results/engine/demo_run.json, demo_timeline.png
+$PY -m engine.vision.demo_live       # the same demo plus a per-frame vision log (demo_vision_trace.json); made the committed run
+$PY -m engine.vision.demo_live --l4-variant            # market replay with the L4 run's calls and latencies -> demo_run_L4.json
+$PY -m engine.vision.render_demo_video                 # engine_live_demo.mp4 (1280x720, 40 s) rendered from those logs
 $PY -m engine.run --mode demo --figure-only            # redraw the figure from demo_run.json
 $PY -m engine.run --mode demo --stamp-lag 3.142 --location london --anchors 12 --match wta-jovic-dart-2026-10-02
 # (c) tier-0 counterfactual backtest (src/tier0.py + scripts/tier0_backtest.py, another workstream; imported, not modified)
@@ -70,9 +73,10 @@ $PY -m pytest tests/test_engine_*.py -q
 
 Mode (a) writes `results/engine/live_market_run.json`. Mode (b) needs `data/vision/test_2_copyts.mp4`
 (it prints the ffmpeg command if the clip is missing), `data/live/market_*`, `data/live/tokens_*` and
-`research/v2/latency/out/m1_points.csv`. If `models/vision/frozen_call_model.pkl` exists, its calls come
-from the live classifier. Without it, see "Demo: where the calls come from" below. Mode (c) prints
-instructions when the tier-0 files are absent.
+`research/v2/latency/out/m1_points.csv`. With `models/vision/frozen_call_model.pkl` (copy it from HPG;
+`models/` is gitignored) every call comes from the live classifier, and `engine.vision.demo_live` refuses to
+run without it. Without it, see "Demo: where the calls come from" below. Mode (c) prints instructions when
+the tier-0 files are absent.
 
 ## The decision rule (`strategy.py`)
 
@@ -90,10 +94,10 @@ On a `CallEvent` for match M (player A = outcome-0 token):
 | size | v2 risk parity `0.10 * $1k / sqrt(q(1-q))`, capped by the stale depth inside the limit, then `RiskManager`: <= $1,000 per order, \|net\| <= 100 shares per match counting in-flight orders (risk-reducing orders may flip to 100 the other way), 0.05-0.95 zone, kills |
 | pre-point reference | `MatchFair` is calibrated between points and refreshed on every BOUNCE call: the rally is still on, so the book has not priced this point yet. Calibration takes 0.3-2 s, so it runs off the hot path (`install_fair`); the demo charges each refresh its measured compute time before it takes effect |
 
-Decision time per call (demo run): the rule itself (`compute_us`: fair jump + rule) takes 77 µs median and
-230 µs p90 over all 72 calls, 56 of which are BOUNCE no-ops. A call that sends an order takes about 250 µs
-median (380 µs max) end to end (`total_us`: rule + paper guard + risk check + paper submit; review rerun,
-laptop under load). Either is negligible next to the 1 s venue delay.
+Decision time per call (demo run, 17:12 EDT, laptop at load ~15): the rule itself (`compute_us`: fair jump +
+rule) takes 85 µs median and 199 µs p90 over all 88 calls, 72 of which are BOUNCE no-ops. A call that sends an
+order takes 557 µs median (4.3 ms max) end to end (`total_us`: rule + paper guard + risk check + paper submit,
+11 SENDs); in the L4-variant replay, 296 µs (max 733 µs). Either is negligible next to the 1 s venue delay.
 
 Interfaces:
 
@@ -113,15 +117,15 @@ Skip reasons: `no_point_decision`, `unknown_winner`, `stale_call`, `no_book`, `o
 | stage | ms | source |
 |---|---|---|
 | camera to frame available | not measured (0 in the demo) | a courtside camera adds capture + encode + transport |
-| vision: frame to CallEvent, processing only (a host that keeps up) | p50 100, p90 153 | demo run: BlurBall ONNX on CoreML GPU+ANE, laptop under load from two other workflows. Unloaded, at 40 fps arrivals: p50 42 (`vision_bench.json`) |
-| vision as run on this shared laptop (frames queue) | p50 13,900 | demo run: 17 fps sustained vs 30 fps arrivals |
+| vision: frame to CallEvent, processing only (a host that keeps up) | p50 158, p90 219 | demo run (live classifier): BlurBall ONNX on CoreML GPU+ANE, laptop at load ~15 from other workflows. Unloaded, at 40 fps arrivals: p50 42 (`vision_bench.json`) |
+| vision as run on this shared laptop (frames queue) | p50 28,900 | demo run: 10.9 fps sustained vs 30 fps arrivals |
 | vision at a true 120 fps feed on this laptop | p50 5,281 and growing | `vision_bench.json`: ~50 fps sustained unloaded, so a 120 fps feed backs up without bound |
 | vision on one NVIDIA L4, 120 fps feed, frame to decision done | p50 4.6, p90 6.9, p99 12.2, max 30 | `online_vs_offline.json`: all 102,120 test frames paced at 120 fps, 0 dropped, fp16 + channels-last + folded BN + `torch.compile`, batch 1. The first 4 s of the run (a start-up transient, up to 1.27 s) are excluded from these numbers |
 | vision on one L4, emitted CallEvents | p50 6.9, p90 8.5, p99 15.8, max 22 | same run, 169 calls after the first 4 s |
 | vision on one L4, detector as the offline run used it (fp16 autocast, eager) | p50 11.4, p90 18.1 at 74 fps arrivals | `vision_bench_gpu.json`: 93-100 fps at most, so it cannot keep up with 120 fps. fp32: 63-65 fps at most, p50 14.8 at 50 fps arrivals |
-| strategy rule (fair jump + rule; no risk, no submit) | 0.077 (p90 0.23) | demo run, all 72 calls (`compute_us`) |
-| strategy `on_call` for a SEND (rule + guard + risk + paper submit) | ~0.25 (max 0.38) | review rerun of the demo (`total_us`) |
-| fair-value refresh (calibration, off the hot path) | 490-2,240 | demo run; 100-500 unloaded |
+| strategy rule (fair jump + rule; no risk, no submit) | 0.085 (p90 0.20) | demo run, all 88 calls (`compute_us`) |
+| strategy `on_call` for a SEND (rule + guard + risk + paper submit) | 0.56 (max 4.3) | demo run, 11 SENDs, laptop at load ~15 (`total_us`); 0.30 (max 0.73) in the L4-variant replay |
+| fair-value refresh (calibration, off the hot path) | 665-2,840 | demo run; 100-500 unloaded |
 | order one-way, laptop (Gainesville) to venue | 67 | `src/paper.py` FLORIDA_MS |
 | order one-way, London co-located | 2 | `src/paper.py` LONDON_MS |
 | venue marketable-order delay | 1,000 | measured (1 s regime) |
@@ -138,34 +142,68 @@ venue's 1 s delay; co-location (67 to 2 ms) barely matters.
 
 ## What the runs showed (2026-10-03)
 
-**(b) Demo** (`results/engine/demo_run.json`, `demo_timeline.png`). ILLUSTRATIVE PAIRING: table-tennis
-calls on a real WTA book. It shows mechanics and timing, not an edge.
+**(b) Demo** (`results/engine/demo_run.json`, `demo_timeline.png`, `engine_live_demo.mp4`; rerun at 17:12 EDT
+with the live classifier). ILLUSTRATIVE PAIRING: table-tennis calls on a real WTA book. It shows mechanics and
+timing, not an edge.
 
-- Vision ran live on the held-out clip (test_2 frames 2000-2999, 1000 frames): detection 97.7% within 5 px
-  of the labels (recall 0.997, 307 labelled frames), and 9 CallEvents (7 BOUNCE, 2 MISS). One offline
-  BOUNCE (frame 2420) was not reproduced, because the online tracker had no flight in that direction.
-- Market: `wta-su-bucsa-2026-10-02` (Sun vs Bucsa). Eight real points were chosen by a P&L-blind rule:
-  reprice >= 3c, reprice lead inside the measured IQR, spread over the match. The clip's point end
-  (frame 2858) was placed on each point's physical end.
-- Primary scenario (2 s stamp lag, Florida 67 ms, processing-only vision latency): 16 MISS calls,
-  11 orders, 8 fills, 5 skipped on `edge_below_cost`. Early-match points have a 5-7c swing, so
-  `E[move]` of 2-3c does not cover half spread + tick + 1.0-1.2c fee.
-  - The MISS at frame 2759 was made 825 ms before the end and is the wrong call (the label audit flags
-    it `rally_continues`). It was sent 6 times and filled 6 times, because its orders land before the
-    reprice.
-  - The right call (frame 2809, 408 ms before the end) was sent 5 times and filled only 2 times (41
-    shares). Its orders execute ~0.77 s after the end, mostly after the book has repriced, and 3 missed
-    with no liquidity left inside the limit.
-  - Marked P&L 10 s after: -$30.56 over 8 points. Fees: $6.86.
+- Vision ran live on the held-out clip (test_2 frames 2000-2999, 1000 frames), and every call came from the
+  frozen classifier (`vision.call_source = frozen_model_live`; no decision was replayed). Detection was 97.7%
+  within 5 px of the labels (recall 0.997, 307 labelled frames). The engine emitted 11 CallEvents, 9 BOUNCE
+  and 2 MISS. Both L4 runs over the same frames emitted the same 11 calls at the same frames and in the same
+  directions: the clip-only benchmark (job 44608026) and the whole-test_2 stream at 120 fps (job 44607191).
+  - MISS f2766, on flight 2760, came 67 ms before that flight's labelled end. The flight is labelled MISS,
+    and the label audit flags it `rally_continues`. The offline first call on it came at 125 ms (the
+    replayed run used frame 2759).
+  - MISS f2819, on the clip's last flight, came 325 ms before the point end (frame 2858). Offline: 408 ms
+    (frame 2809).
+  - Both live MISS calls come 7 and 10 frames (58 and 83 ms) after the offline first calls. This is the
+    gap from the causal `hb` described under "Vision on one GPU".
+  - BOUNCE: 6 on BOUNCE-labelled flights, 1 on flight 2402 (labelled MISS, audited `unannotated_bounce`)
+    and 2 on balls outside the labelled flights (f2258, f2618). Flight 2502 got no call.
+  - `engine.vision.run_demo` on the same clip (`vision_demo_live.json`) scored 313 decision frames both
+    online and offline. The score difference is p50 0, p90 0.13, p99 0.67, max 0.79, the same as on the L4.
+    The online flight start equals the offline t0 on 10 of 10 flights.
+- Market: unchanged. `wta-su-bucsa-2026-10-02` (Sun vs Bucsa), eight real points chosen by the P&L-blind
+  rule, and the clip's point end (frame 2858) placed on each point's physical end.
+- Primary scenario (2 s stamp lag, Florida 67 ms, processing-only vision latency, p50 158 ms on the laptop
+  at load ~15): 16 MISS decisions, 11 orders, 8 fills, 5 skipped on `edge_below_cost`. The skips are on
+  points with a 5-9c swing, where an `E[move]` of 2-4c does not cover half spread + tick + the 1.0-1.2c fee.
+  - The wrong call (f2766, decided 594 ms before the end) was sent 6 times and filled 6 times (600
+    shares). Its orders execute at +0.47 s, before most reprices.
+  - The right call (f2819, decided 133 ms before the end) was sent 5 times and filled 2 times (31
+    shares). Its orders execute at +0.93 s, and 3 missed with no liquidity left inside the limit.
+  - Marked P&L 10 s after: -$28.23 over 8 points (the replayed-decision run: -$30.56). Fees: $6.71.
 - Sensitivities:
-  - London instead of Florida changes almost nothing.
-  - A 1 s stamp lag cuts orders to 7, because more calls arrive after the book moved.
-  - With this laptop's real queueing ("as run", 13.9 s median latency), every call is stale: 0 orders.
-- What it teaches: the 1 s venue delay decides everything. A correct call 400 ms early is still too late
-  on most points, and the only calls early enough to fill were the less reliable ones. That is adverse
-  selection by timing. The tier-0 counterfactual assumes 2-3 s of stamp lag, a licensed point feed and
-  region-aware co-location, and even then only 35-44% of its calls come before the reprice (corrected
-  headline, burned OOS / IS).
+  - London instead of Florida: 11 orders, 8 fills, -$24.96.
+  - A 1 s stamp lag cuts orders to 4 (3 fills), because more calls arrive after the book moved. With a
+    3.14 s lag: 11 orders, 10 fills.
+  - With this laptop's real queueing (as run: 10.9 fps sustained against 30 fps arrivals, 28.9 s median
+    latency), every call is stale: 0 orders.
+- **With the L4's vision** (`demo_run_L4.json`, `python -m engine.vision.demo_live --l4-variant`): the same
+  11 calls with the latencies the L4 measured on a real 120 fps feed (6.8-11.2 ms, `online_events_L4.jsonl`),
+  and the market side replayed the same way.
+  - Primary: 11 orders, 8 fills, -$30.93.
+  - The wrong call executes at +0.31 s and fills 6 of 6. The right call executes at +0.75 s and still
+    fills only 2 of 5 (41 shares).
+  - A 1 s stamp lag gives 7 orders and 5 fills, against 4 and 3 on the laptop.
+  - The L4 keeps up, so "as run" equals the primary there (11 orders). The laptop as run sent none.
+  - The two replays also paid different calibration times for their fair-value refreshes (378-1,520 ms
+    against 665-2,840 ms, laptop load), so not every difference between them comes from vision latency.
+  - This variant replays the L4's logged events. No single process ran camera to paper order on the GPU
+    host.
+- `engine_live_demo.mp4` (1280x720, 40 s) shows the clip at 0.25x with:
+  - the engine's ball track and its live P(miss) trace;
+  - each call with its lead (from the labels) and its measured latency;
+  - the paper orders, fills and book of the figure's point (point 58), as `demo_run.json` logged them.
+
+  `engine/vision/render_demo_video.py` renders it from `demo_run.json`, `demo_vision_trace.json` and the
+  clip. Nothing in it is simulated.
+- What it teaches: the 1 s venue delay decides everything. A correct call 325 ms early is still too late on
+  most points, and the only calls early enough to fill were the less reliable ones. That is adverse
+  selection by timing. Cutting vision latency from ~160 ms to ~7 ms moves each order 165-185 ms earlier and
+  changes little. What the GPU changes is that the engine keeps up with the feed at all. The tier-0
+  counterfactual assumes 2-3 s of stamp lag, a licensed point feed and region-aware co-location, and even
+  then only 35-44% of its calls come before the reprice (corrected headline, burned OOS / IS).
 
 **(a) Live market** (`results/engine/live_market_run.json`): 60 s against the real public websockets at 15:03-15:04 EDT. 27 live tennis moneylines were discovered, 19 had two-sided books, and 7,785 messages arrived with 0 reconnects. Feed delay was p50 65 / p95 84 / p99 123 ms, and 8 of 8 venue snapshots matched the rebuilt books. The what-ifs (a 0.95 MISS call naming either player, at the current book) gave 32 `edge_below_cost`, 2 `wide_spread` and 2 `SEND`. The two SENDs were both sides of `atp-shelbay-krueger` at 0.91/0.10, 100 shares each, net-cap clipped, edge +0.2c. Most live points carry a 1-3c swing when the in-game score is unknown, which is too small to beat half spread + tick + fee. After the socket closed and 2.5 s of silence, both what-ifs the rule would have sent came back `REJECTED risk:kill:feed_stale`; the other 22 were skipped by the rule before reaching the risk check (14 `edge_below_cost`, 8 `wide_spread`). Not measured live: no camera covers these matches, so the vision kill switch was disabled for the what-ifs (`require_vision=False`).
 
@@ -282,26 +320,35 @@ first 458 frames of test_1 (up to 1.27 s) was excluded; with it included, p99 is
 run with CUDA graph (job 44605927) ran at only 114 fps on full videos. It built a backlog, so latency over
 the run was p50 3.5 s and p99 12.5 s; its calls were identical.
 
+**The demo clip on the L4.** Test_2 frames 2000-2999 gave the same 11 CallEvents (same frames, calls and
+directions) in three runs:
+
+- the clip-only benchmark (`torch-cuda-cl-fuse-compile`, batch 1, real-time 120 fps, job 44608026);
+- the whole-test_2 stream (job 44607191);
+- the laptop's CoreML detector in the demo.
+
+On the L4 the emitted calls took 6.8-11.2 ms in the test-set stream, and p50 7.1 ms in the clip-only run.
+`demo_run_L4.json` replays the demo's market side with those latencies (see (b) above).
+
 ## Demo: where the calls come from
 
-`models/vision/frozen_call_model.pkl` (the frozen H3 classifier) did not exist when the demo ran. It
-has since been rebuilt on HiPerGator (CPU job 44603438, 2026-10-03, `engine/vision/export_frozen.py`
-from the game_1..5 training tracks). The export reproduces `results/tracking/test_flights.csv`: P(miss)
-at 50 ms for 170 flights with max |diff| 1.1e-16, and all 8 online first-call leads exactly. It loads
-directly with the laptop's sklearn 1.9.1, which is the same version as on HPG, and it matches the
-stored raw scores to 5.6e-17. `models/` is gitignored, so copy the pickle back from HPG. The demo
-numbers above were produced before the pickle existed and have not been rerun. Without the pickle, the
-demo still streams every frame through the real engine: detection, causal tracking, online flight
-segmentation, features and the classifier stage, with a stand-in HGB used only for timing. At each
-decision frame it emits the frozen model's own offline decision for that held-out frame, from
-`results/tracking/test_flights.csv`:
+Since the 17:12 EDT rerun, every demo call comes from the live frozen H3 classifier,
+`models/vision/frozen_call_model.pkl`. It was rebuilt on HiPerGator (CPU job 44603438,
+`engine/vision/export_frozen.py`, from the game_1..5 training tracks). The export reproduces
+`results/tracking/test_flights.csv`: P(miss) at 50 ms for 170 flights with max |diff| 1.1e-16, and all 8
+online first-call leads exactly. It loads with the laptop's sklearn 1.9.1, the same version as on HPG.
+`models/` is gitignored, so copy the pickle back from HPG. `demo_run.json` records
+`vision.call_source = "frozen_model_live"` and a `p_miss` on every event.
 
-- MISS at the online rule's first call (`t_ref - first_call_lead`);
-- BOUNCE at the 50 ms snapshot when P(miss) < tau_snapshot (0.8854).
+On a host without the pickle, `engine.run --mode demo` still streams every frame through the real engine
+but replays the frozen model's offline decisions from `test_flights.csv`: MISS at the online rule's first
+call, BOUNCE at the 50 ms snapshot when P(miss) < tau_snapshot (0.8854). Those events are marked
+`source = table_tennis:offline_frozen_decision_replay` with `p_miss = null`. The demo committed before
+17:12 was made that way (MISS at frames 2759 and 2809; 11 orders, 8 fills, -$30.56).
+`engine.vision.demo_live` refuses to run without the pickle.
 
-A decision is emitted only if the online tracker is following a flight in the same direction at that
-frame. Each event is marked `source = table_tennis:offline_frozen_decision_replay` and `p_miss = null`.
-Once the pickle is present, the same command uses the live classifier with no flag.
+`run.py` writes a fixed sentence into `mapping.players` that names frame 2759 as the wrong MISS.
+`demo_live` rewrites that sentence from the run's own events and says so in `mapping.players_amended_by`.
 
 Mapping (written to `demo_run.json["mapping"]`):
 
@@ -329,7 +376,7 @@ start + window messages, other markets reduced to a 200 ms liveness marker),
 `run_scenario(match, anchor, snap, msgs, scenario, calls)` (one paper run: feed + risk + executor +
 strategy, scheduled through the feed's clock hook), `timeline_figure(out, path)`.
 
-### vision/ (`stream.py`, `events.py`, `run_demo.py`, `bench_gpu.py`, `eval_online.py`, `export_frozen.py`)
+### vision/ (`stream.py`, `events.py`, `run_demo.py`, `bench_gpu.py`, `eval_online.py`, `export_frozen.py`, `demo_live.py`, `render_demo_video.py`)
 
 `VisionCallEngine(backend, frozen, geometry, fps=120, frame_offset=0, on_event=None, batch=1)`:
 `prep(rgb)` turns a decoded 512x288 RGB frame into detector input, normalised on the GPU for torch
@@ -353,6 +400,17 @@ Benchmarks: `python -m engine.vision.run_demo` (laptop, `results/engine/vision_b
 jobs). `python -m engine.vision.eval_online` streams test_1..7 and scores them like `summary.json`
 (`results/engine/online_vs_offline.json`, one entry per config). `--from-raw` rescores a saved run, and
 `--replay-detections` feeds the offline detector's npz files through the engine's decision code.
+
+Demo tools:
+
+- `python -m engine.vision.demo_live [engine.run demo options]` runs `engine.run --mode demo` unchanged,
+  with a tap on `stream.run_stream`. It writes `results/engine/demo_vision_trace.json`: per frame, the
+  tracked ball position and the timing; per decision frame, P(miss), the gate and the latency; and every
+  CallEvent.
+- `--l4-variant` replays the market side with the L4 run's events and writes `demo_run_L4.json`.
+- `python -m engine.vision.render_demo_video [--preview N,...]` renders `engine_live_demo.mp4` from
+  `demo_run.json`, `demo_vision_trace.json`, the clip and `vision_bench_gpu.json`. `--preview` saves single
+  frames as PNG instead.
 
 ### market/: `clob.py`, `book.py`
 
@@ -514,10 +572,12 @@ Live is the same with `LiveClobFeed`, `await feed.run()`, and `asyncio.create_ta
   off-population calls inside rallies. Nothing gates calls on rally state yet.
 - **120 fps needs a GPU and the speed options.** On one L4, fp16 + channels-last + folded BN +
   `torch.compile` streamed the whole test set in real time. The fp16 autocast detector as `detect.py` ran it
-  manages 93-114 fps (eager or CUDA graph), and fp32 manages 63-65 fps. The laptop does ~50 fps unloaded and 17-23 fps while shared. The
+  manages 93-114 fps (eager or CUDA graph), and fp32 manages 63-65 fps. The laptop does ~50 fps unloaded and 11-23 fps while shared. The
   numbers come from an L4 only; no A100 or H100 was measured.
-- **The demo has not been rerun with the live classifier.** The pickle now exists (copy it from HPG
-  `models/vision/`). The demo still replays the frozen model's offline decisions, and says so.
+- **The laptop cannot run the demo's vision in real time.** At load ~15 it sustained 10.9 fps against 30 fps
+  arrivals, so as run every call was 15-44 s late and stale. The primary scenario uses its processing-only
+  latency (p50 158 ms). On one L4 the same calls arrive in ~7 ms (`demo_run_L4.json`), but that variant
+  replays the L4's logged events. No single process has run camera to paper order on the GPU host.
 - **Stamp lag is not measured**, and it moves the demo between "fills before the reprice" and "too late".
   Measuring the physical point end against the WTA stamp needs footage of live tennis.
 - **The demo pairs a different sport and a different point.** Its fills and P&L show mechanics only. A
@@ -525,7 +585,8 @@ Live is the same with `LiveClobFeed`, `await feed.run()`, and `asyncio.create_ta
 - **The edge is anchored to the current mid, not to the model.** `fair_after = mid_now + E[move]`, while
   `E[move]` is measured from the model's `v_now`, which equals the mid at the last calibration. If the
   book has already drifted toward the predicted winner (by less than the half-jump guard), that drift is
-  counted twice. In the demo this flips 2 of 16 MISS decisions: anchor 2's f2809 (+0.7c becomes -0.3c,
-  one of the right call's two fills) and anchor 5's f2759 (-0.4c becomes +0.6c). The alternative
+  counted twice. In the demo (17:12 rerun) this flips 3 of 16 MISS decisions: anchor 2's f2819 (+0.7c
+  becomes -0.3c, one of the right call's two fills), anchor 5's f2766 (-0.4c becomes +0.6c) and anchor 5's
+  f2819 (+0.3c becomes -0.7c, an order that missed). The alternative
   `fair_after = c*v_w + (1-c)*v_l` (`FairJump.expected_token`) is not adopted yet because it changes the
   reported demo; decide and re-run.
