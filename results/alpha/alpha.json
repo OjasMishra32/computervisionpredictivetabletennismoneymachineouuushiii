@@ -3039,7 +3039,11 @@
   "I.rows[8]": "results/rigor/rigor.json :: psr_dsr.rows[v2_oos]",
   "I.rows[9]": "results/summary.json :: (is|oos).h1.J0.04_H30",
   "I.rows[10]": "results/v2/forward.json (not yet written)",
-  "headline": "copied from sections A-I (see their sources)"
+  "headline": "copied from sections A-I (see their sources)",
+  "page_derived.C_beta_ci95": "computed in scripts/build_alpha_page.py: beta +/- 1.96*|beta/t| from C_factor_neutral.committed.(betas, betas_t); normal approximation; t is rounded to 2 dp in the source, so the interval is approximate",
+  "page_derived.D_counts": "computed in scripts/build_alpha_page.py: per period and split of D_where, the number of groups with net_c_per_share > 0 and with a match-clustered 95% CI wholly above / below zero",
+  "page_derived.E_trend_line": "computed in scripts/build_alpha_page.py: intercept_c + slope_c_per_month x month index at the first and last month, from E_decay.over_calendar_time.IS_plus_OOS_rows (drawn as the trend line)",
+  "page_derived.I_counts": "computed in scripts/build_alpha_page.py: rows of I_failures.rows with and without the verdict 'pending'"
  },
  "figures": [
   "results/alpha/fig_alpha_source.png",
@@ -3050,5 +3054,119 @@
   "results/alpha/fig_alpha_concentration.png",
   "results/alpha/fig_alpha_capacity.png"
  ],
- "runtime_s": 6.0
+ "runtime_s": 6.0,
+ "page_derived": {
+  "C_beta_ci95": {
+   "MktRF": [
+    -0.08,
+    0.4176
+   ],
+   "SMB": [
+    -0.2618,
+    0.4459
+   ],
+   "HML": [
+    -0.1562,
+    0.2781
+   ],
+   "Mom": [
+    -0.1039,
+    0.1713
+   ]
+  },
+  "D_counts": {
+   "IS": {
+    "by_price_decile_q": {
+     "n": 10,
+     "net_positive": 9,
+     "ci_above_zero": 4,
+     "ci_below_zero": 0
+    },
+    "by_regime_delay_fee": {
+     "n": 4,
+     "net_positive": 4,
+     "ci_above_zero": 4,
+     "ci_below_zero": 0
+    },
+    "by_time_of_day_utc": {
+     "n": 6,
+     "net_positive": 6,
+     "ci_above_zero": 5,
+     "ci_below_zero": 0
+    },
+    "by_month": {
+     "n": 7,
+     "net_positive": 7,
+     "ci_above_zero": 7,
+     "ci_below_zero": 0
+    },
+    "by_seconds_since_detection": {
+     "n": 3,
+     "net_positive": 2,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    },
+    "by_direction_vs_jump": {
+     "n": 2,
+     "net_positive": 2,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    }
+   },
+   "OOS": {
+    "by_price_decile_q": {
+     "n": 10,
+     "net_positive": 6,
+     "ci_above_zero": 0,
+     "ci_below_zero": 1
+    },
+    "by_regime_delay_fee": {
+     "n": 1,
+     "net_positive": 1,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    },
+    "by_time_of_day_utc": {
+     "n": 6,
+     "net_positive": 4,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    },
+    "by_month": {
+     "n": 3,
+     "net_positive": 2,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    },
+    "by_seconds_since_detection": {
+     "n": 3,
+     "net_positive": 2,
+     "ci_above_zero": 1,
+     "ci_below_zero": 0
+    },
+    "by_direction_vs_jump": {
+     "n": 2,
+     "net_positive": 2,
+     "ci_above_zero": 0,
+     "ci_below_zero": 0
+    }
+   }
+  },
+  "E_trend_line": {
+   "month_index_origin": "2025-12",
+   "month_index": [
+    0,
+    10
+   ],
+   "fitted_c": [
+    2.0569,
+    0.3629
+   ]
+  },
+  "I_counts": {
+   "n_rows": 11,
+   "pending": 1,
+   "not_pending": 10
+  }
+ }
 }
