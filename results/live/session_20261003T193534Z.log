@@ -1,0 +1,79 @@
+COURTSIDE live paper trader: PAPER ONLY, live public market data. run 20261003T193534Z, pid 65274; log results/live/session_20261003T193534Z.jsonl
+2026-10-03T19:35:36.569Z warm-up | L 67 ms | msgs 0 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:36:36.591Z warm-up: trade-side check 1/50 matched, agree 1 | L 67 ms | msgs 448 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:37:36.594Z warm-up: waiting for trades (4 seen) | L 67 ms | msgs 1,965 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:38:36.597Z warm-up: waiting for trades (4 seen) | L 67 ms | msgs 3,352 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:39:36.608Z warm-up: trade-side check 3/50 matched, agree 3 | L 67 ms | msgs 4,480 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:40:36.612Z warm-up: trade-side check 3/50 matched, agree 3 | L 67 ms | msgs 5,932 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:41:36.614Z warm-up: waiting for trades (20 seen) | L 67 ms | msgs 6,840 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:42:36.625Z warm-up: trade-side check 3/50 matched, agree 3 | L 67 ms | msgs 8,649 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:43:36.635Z warm-up: trade-side check 3/50 matched, agree 3 | L 67 ms | msgs 9,836 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:44:36.639Z warm-up: trade-side check 24/50 matched, agree 24 | L 67 ms | msgs 11,152 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:45:36.650Z warm-up: trade-side check 24/50 matched, agree 24 | L 67 ms | msgs 12,145 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:46:36.662Z warm-up: trade-side check 24/50 matched, agree 24 | L 67 ms | msgs 13,213 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:47:36.672Z warm-up: waiting for trades (41 seen) | L 67 ms | msgs 14,714 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:48:36.692Z warm-up: waiting for trades (43 seen) | L 67 ms | msgs 17,061 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:49:36.706Z warm-up: trade-side check 37/50 matched, agree 37 | L 67 ms | msgs 19,535 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:50:36.721Z warm-up: trade-side check 37/50 matched, agree 37 | L 67 ms | msgs 20,222 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:51:36.731Z warm-up: waiting for trades (51 seen) | L 67 ms | msgs 20,747 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:52:36.733Z warm-up: waiting for trades (51 seen) | L 67 ms | msgs 20,933 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:53:36.776Z warm-up: trade-side check 37/50 matched, agree 37 | L 67 ms | msgs 21,776 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:54:36.802Z warm-up: trade-side check 46/50 matched, agree 46 | L 67 ms | msgs 22,717 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:55:36.815Z warm-up: trade-side check 46/50 matched, agree 46 | L 67 ms | msgs 25,210 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:56:36.822Z warm-up: trade-side check 46/50 matched, agree 46 | L 67 ms | msgs 25,361 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:57:36.836Z warm-up: waiting for trades (64 seen) | L 67 ms | msgs 25,497 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:58:36.837Z warm-up: waiting for trades (65 seen) | L 67 ms | msgs 25,598 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T19:59:37.056Z QUOTING (paper) | L 67 ms | msgs 25,642 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:00:37.070Z QUOTING (paper) | L 67 ms | msgs 25,686 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:01:37.084Z QUOTING (paper) | L 67 ms | msgs 25,733 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:02:37.102Z QUOTING (paper) | L 67 ms | msgs 25,766 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:03:37.123Z QUOTING (paper) | L 68 ms | msgs 25,776 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:04:37.123Z QUOTING (paper) | L 71 ms | msgs 25,796 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:05:37.135Z QUOTING (paper) | L 71 ms | msgs 25,808 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:06:37.149Z QUOTING (paper) | L 75 ms | msgs 25,817 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:07:37.152Z QUOTING (paper) | L 77 ms | msgs 25,828 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:08:37.168Z QUOTING (paper) | L 83 ms | msgs 25,850 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:09:37.175Z QUOTING (paper) | L 84 ms | msgs 25,867 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:10:37.195Z QUOTING (paper) | L 79 ms | msgs 25,872 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:11:37.205Z QUOTING (paper) | L 75 ms | msgs 25,882 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:12:37.226Z QUOTING (paper) | L 71 ms | msgs 25,892 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:13:37.239Z QUOTING (paper) | L 68 ms | msgs 25,902 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:14:37.256Z QUOTING (paper) | L 67 ms | msgs 25,906 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:15:37.266Z QUOTING (paper) | L 67 ms | msgs 25,937 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:16:37.271Z QUOTING (paper) | L 67 ms | msgs 25,951 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:17:37.286Z QUOTING (paper) | L 67 ms | msgs 25,967 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:18:37.301Z QUOTING (paper) | L 67 ms | msgs 25,976 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:19:37.321Z QUOTING (paper) | L 67 ms | msgs 25,986 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:20:37.332Z QUOTING (paper) | L 67 ms | msgs 25,994 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:21:37.348Z QUOTING (paper) | L 67 ms | msgs 25,999 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:22:37.352Z QUOTING (paper) | L 67 ms | msgs 26,009 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:23:37.371Z QUOTING (paper) | L 67 ms | msgs 26,015 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:24:37.391Z QUOTING (paper) | L 67 ms | msgs 26,053 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:25:37.392Z QUOTING (paper) | L 67 ms | msgs 26,059 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:26:37.404Z QUOTING (paper) | L 67 ms | msgs 26,065 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:27:37.418Z QUOTING (paper) | L 67 ms | msgs 26,094 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:28:37.438Z QUOTING (paper) | L 67 ms | msgs 26,099 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:29:37.458Z QUOTING (paper) | L 67 ms | msgs 26,109 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:30:37.462Z QUOTING (paper) | L 67 ms | msgs 26,115 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:31:37.466Z QUOTING (paper) | L 67 ms | msgs 26,119 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:32:37.467Z QUOTING (paper) | L 67 ms | msgs 26,125 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:33:37.482Z QUOTING (paper) | L 67 ms | msgs 26,305 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:34:37.489Z QUOTING (paper) | L 67 ms | msgs 26,313 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:35:37.496Z QUOTING (paper) | L 67 ms | msgs 26,315 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:36:37.505Z QUOTING (paper) | L 67 ms | msgs 26,386 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:37:37.519Z QUOTING (paper) | L 67 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:38:37.526Z QUOTING (paper) | L 67 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:39:37.539Z QUOTING (paper) | L 67 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:40:37.542Z QUOTING (paper) | L 68 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:41:37.547Z QUOTING (paper) | L 68 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:42:37.557Z QUOTING (paper) | L 68 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:43:37.570Z QUOTING (paper) | L 69 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:44:37.576Z QUOTING (paper) | L 69 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:45:37.588Z QUOTING (paper) | L 71 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:46:37.596Z QUOTING (paper) | L 74 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+2026-10-03T20:47:37.610Z QUOTING (paper) | L 77 ms | msgs 26,394 | B1 fills 0 $0.00 pnl +0.00 quotes 0
+B1          fills    0  matches   0  $      0.00  pnl     +0.00 (realised +0.00)
+B1-rt       fills    0  matches   0  $      0.00  pnl     +0.00 (realised +0.00)
+B1-full     fills    0  matches   0  $      0.00  pnl     +0.00 (realised +0.00)
+B1-delay    fills    0  matches   0  $      0.00  pnl     +0.00 (realised +0.00)
+CTRL-taker  fills    0  matches   0  $      0.00  pnl     +0.00 (realised +0.00)

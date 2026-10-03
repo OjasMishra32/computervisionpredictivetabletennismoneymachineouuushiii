@@ -85,3 +85,39 @@ None of this changes the test.
 - A re-run first needs an entry in this file giving its reason. It is then started with `--rerun "<reason>"` and logs
   its own peeks line.
 - The first run's numbers are kept and reported next to any re-run.
+
+---
+
+# After the run
+
+## R1. Post-run audit of (A): wording corrections, no number or verdict changed (2026-10-03, about 20:55 UTC)
+An independent recompute (`audit/indep_maker_oos.py`, peeks log 20:11 UTC) matched every fill. Its findings
+changed the RESULTS.md text only. **No OOS number was recomputed or replaced. The primary stays +1.87c/share
+[−0.14, +3.86], 2,207 fills, 524 matches: FAILURE.** The script was not re-run, and `oos_test.py run` was not
+invoked.
+
+| item | before | after |
+|---|---|---|
+| Verdict wording | "FAILURE. The CI's lower bound is below 0" | FAILURE, **borderline: z about 1.9, two-sided p about 0.06**. Audit: cluster-robust SE 1.00c, t-CI [−0.09, +3.82]; lower bound over 200 seeds −0.07c (sd 0.06), above 0 in 8.5% of seeds; day clusters [+0.10, +3.86]; side-market clusters [−0.04, +3.68]. Seed 0 and match clusters were pre-registered in `c29734b` and govern |
+| Power caveat | "This explains the result" | "This is consistent with the result" |
+| Placebo | "The signal still points the right way OOS" | "OOS, the lean book and the anti-lean placebo cannot be told apart (gap +1.15c [−1.42, +4.00])". Paired match-clustered bootstrap, P(gap ≤ 0) = 0.19; the IS gap of 3.31c is at the OOS bootstrap's 94th percentile |
+| Cost label | "Cost-fragile. Stress (iv) −4.15c ≤ 0, on only 98 fills" | Cost-fragile, with (iv)'s CI [−13.45, +5.54] and n = 98 printed next to it. Also notes that IS already had (iv) at about 0: +0.10c on 513 fills (all regimes) and −1.76c on 156 fills (IS 1s/5%) |
+| Stress table, IS column | IS Feb–Aug, all regimes only (book 1 +3.06c): a cell chosen in hindsight, about 1c high against the OOS regime | Adds an **IS 1s/5%** column, the OOS regime: book 1 +2.02 [+0.53, +3.48]; (i) +2.02; (ii) −1.61 [−8.36, +6.21], n = 156; (iii) +1.86 [+0.37, +3.33]; (iv) −1.76 [−8.51, +6.05], n = 156; (viii) −0.07 [−1.56, +1.40]. IS data only (`is_1s5_stress.py` → `is_reference_1s5.json`, run 20:50 UTC). It reproduces the IS 1s/5% book-1 figure (n = 4,159, +$3,269) and both diagnostics (−0.12c, −1.29c) exactly. The old column is kept and relabelled |
+| Timing caveat | (absent) | Added. data-api block-time jitter, about 2.3 s, can let a later moneyline print into the cut ts − 1 s. Labelled post-hoc stricter cuts (audit): +1 s gives +1.67c (−$989), +2 s gives +1.61c (−$1,220), +5 s gives +1.02c (−$734). The edge fades gradually with no cliff, and any optimism is at most about 0.2–0.26c. It could only lower the estimate |
+
+Original and corrected numbers: the OOS numbers are identical before and after. The only new numbers are the IS
+1s/5% column and the audit's labelled post-hoc figures quoted above.
+
+## R2. Live session (B): code fixes, stop and restart (2026-10-03 20:48 UTC)
+The full timed record is in `DEVIATIONS_LIVE.md` L11–L14. In short:
+- **The fixes.**
+  - Discovery read only the first 100 of about 455 open tennis events, because Gamma caps pages at 100.
+  - The CTRL-taker timer priced orders on a stale book under feed lag. On the hour-13 replay, oids 2892 and 3029
+    filled at 0.7852 and 0.7534; on the venue book at t_exec they fill at 0.7223 and 0.6355.
+  - Socket gaps left orders live on an unobserved queue. Quotes are now pulled at the gap and taker orders voided,
+    and feed lag is recorded.
+- **Stopped.** PID 65274 (run `20261003T193534Z`) at 20:48:00.72 UTC, with 0 quotes, 0 fills and 0 taker orders
+  in every book. Its logs are kept.
+- **Code.** `2c63112`.
+- **Restarted.** At 20:48:12 UTC with the same command: PID 2001, run `20261003T204812Z`. The warm-up runs again,
+  and quoting still stops at 2026-10-04 11:30 UTC.

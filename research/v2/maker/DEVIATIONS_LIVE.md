@@ -84,7 +84,8 @@ real latency.
   - size = min($250, remaining match budget) / limit, in shares, and at least `orderMinSize`.
 - **Execution.** The order reaches the venue at s + L. The venue holds it for d (`secondsDelay`, 1 s). It then walks
   the ask levels of the live book as they stand at that moment, up to the limit, and pays C × fee_rate × p(1 − p) at
-  each level. Nothing fills if the asks have moved above the limit.
+  each level. Nothing fills if the asks have moved above the limit. (Since 20:48 UTC the book used is the venue
+  book at t_exec, waiting for the socket's clock under lag: L12.)
 - **Cap.** $2,000 per match. Hold to resolution.
 - **Reported.** The ask seen at decision time, the execution VWAP, slippage, and misses.
 
@@ -113,8 +114,138 @@ e + L (B2 in PREREG 3.6).
   and we re-peg down to it. Staying alone above the displayed best would be improving, which §3.4 rules out.
 - **Rounding.** Order sizes are in 0.01-share steps; fills are floored to 1e-6 shares.
 - **Discovery window.** Events with Gamma `startTime` in [now − 8 h, now + 3 h] and `seriesSlug` in {atp, wta,
-  challenger}, with "doubles" not in the title. Only the moneyline and the six quoted side types are subscribed.
+  challenger}, with "doubles" not in the title. (Until 20:48 UTC only the first 100 open tennis events were read:
+  L11.) Only the moneyline and the six quoted side types are subscribed.
 - **Websocket subscription.** At most 400 tokens per socket, with the two tokens of a market kept together. A PING
   goes out every 10 s; a socket silent for 45 s is replaced. L is updated from PING→PONG as PREREG 3.3 says.
 - **Starting capital.** $10,000 per book, for the dashboard's equity line only. Position sizes come from the frozen
   $250 / $2,000 rule.
+
+---
+
+# Deviations during the session (timed)
+
+Everything below was written **after** the session in PREREG 3 had started (19:58:42 UTC). Each entry is a
+deviation, with its time. No constant of maker v1 changed: b_T, λ, 4c, the 600 s / 120 s / 30 s windows, 20%,
+$250, $2,000, the price band, the rebate and hold-to-resolution are as frozen.
+
+**Why.** An audit of `scripts/live_paper.py` (2026-10-03, about 20:30 UTC) found the three bugs below. Two of them
+change how paper fills are counted, so the running session was stopped and restarted on the fixed code (L14).
+**State when stopped:** no quote had been placed, no fill or taker order had happened in any book, and no
+universe match had been in play since the start. Nothing in the old session's results is replaced.
+
+## L11. Discovery read only the first 100 open tennis events (fix committed 20:47:54 UTC, 2c63112)
+**The bug.**
+- `gamma_universe()` asked Gamma for `limit=200` and stopped on a page shorter than 200.
+- Gamma caps `/events` pages at 100 rows, so every discovery poll read one page: 100 of about 455 open tennis
+  events, in Gamma's id order.
+- At about 20:50 UTC, with the [now − 8 h, now + 16 h] window, the old code found 15 universe events and the fixed code
+  finds 33. The 18 it missed include Zverev–Djokovic and Medvedev–Cerundolo (China Open), Lehecka (Japan Open),
+  Charaeva–Kartal, 12 Wuning 3 Challenger matches, Bari and Porto 2. (The audit, at 20:30, found 16 of 34.)
+- This broke PREREG 3.2: the session universe would have depended on Gamma's id ordering. The "14 matches between
+  02:00 and 11:00" in SESSION.md came from the truncated page.
+
+**The fix.**
+- Request `limit=100` and advance the offset by the rows actually returned.
+- Stop only on an empty page, or on a page with no new event id. Event ids are de-duplicated.
+- A page that fails after its retries raises, so discovery never updates from a partial list. The poll is logged
+  as `discovery_error` and retried in 120 s.
+- Each `discovery` event now logs `gamma_pages` and `gamma_events`. The first poll of the restarted session read 5
+  pages and 453 events.
+- Unit test: `test_gamma_universe_pages_past_a_100_row_cap` mocks the 100-row cap, a server that ignores offset,
+  and a failed page.
+
+## L12. CTRL-taker timer priced orders on a stale local book under feed lag (fix committed 20:47:54 UTC, 2c63112)
+This changes the fill model of the control book. CTRL-taker is not pre-registered (L6).
+
+**The bug.**
+- A taker order executes at the first message for its market stamped after t_exec, or else on a timer at
+  t_exec + 2 s.
+- The timer used whatever book the engine held at that moment. When the feed lagged by more than 2 s, venue
+  changes stamped before t_exec had not arrived yet, so the order met an out-of-date book.
+- Hour-13 replay of `data/live_v2`: a recorder lag episode ran from 13:18:10 to 13:20:09, with rt − ts up to 48.8 s.
+  - oid 2892 filled at a VWAP of 0.7852 against a stale book. The venue book at t_exec gives 0.7223.
+  - oid 3029 filled at 0.7534 against a stale book. The venue book at t_exec gives 0.6355.
+
+**The fix.**
+- On the timer, the order executes only once the socket that carries its market has delivered a venue timestamp
+  ≥ t_exec + 1 s. Delivery is in order per socket, so every book change stamped ≤ t_exec has then been applied.
+  The 1 s margin covers small cross-market disorder on a socket.
+- Until then the timer re-arms every 500 ms. The engine counts each re-arm as `texec_rearm`.
+- A message on the order's own market stamped after t_exec still executes the order before that message is
+  applied, as before.
+- If no such timestamp arrives within 600 s, the order is voided and logged as `taker_void`.
+- **Recorder files.** They carry no socket id and mix several sockets with very different lags: during that
+  episode the minimum lag stayed at 62 ms while other sockets reached 48 s. There the clock is the market's own:
+  its own next change or trade. If the market stays quiet for 600 s, the order executes on its unchanged book,
+  logged with `how = "timer: market quiet 600 s"`.
+- Every fill and miss now records `how`, which is book, timer, gap, or quiet.
+
+**Result on the hour-13 replay** (`replay_20261003T204340Z`):
+- oids 2892 and 3029 now fill at 0.7223 and 0.6355, which matches the audit's independent rebuild of the venue
+  book.
+- The other 42 CTRL-taker outcomes are unchanged. CTRL-taker P&L for the hour moves from −$358.02 to −$304.10.
+- The four maker books are identical.
+
+**Tests:** `test_taker_timer_waits_for_venue_clock_under_feed_lag` and
+`test_taker_timer_live_socket_dead_voids_and_recorder_quiet_executes`.
+`test_taker_control_pays_latency_and_delay` now advances the market's clock past t_exec.
+
+## L13. Socket gaps and feed lag were not accounted for (fix committed 20:47:54 UTC, 2c63112)
+This changes the maker fill model: quotes are pulled during a gap.
+
+**The bug.**
+- After a socket dropped and reconnected, resting paper orders on its markets stayed active with their old queue
+  position. Trades during the gap were never seen, so any fills in the gap were lost without a record.
+- A pending taker order could execute on the stale pre-gap book once the reconnect snapshot arrived.
+- Feed lag (rt − e) was not recorded at all.
+
+**The fix (all paper; nothing is sent anywhere).**
+- **Gap input.** A socket error is now an engine input (`gap`, raw-logged, so a replay reproduces it). It is
+  posted once per gap.
+- **Maker quotes.** Every live maker quote on that socket's markets is treated as pulled at the last venue
+  timestamp seen on the socket + 1 ms. Each one is logged as `cancel` with `why = "feed gap"` and counted in
+  `gap_cancels`. No fill is counted from a queue we could not observe.
+- **Pending taker orders.** One whose t_exec the socket clock already covers (+1 s) executes. The others are
+  voided (`taker_void`, "feed gap before t_exec").
+- **While the socket is down.** No new quote or taker order is placed on its markets
+  (`place_skipped_gap`, `taker_skipped_gap`).
+- **When data returns.** The first message on the socket closes the gap (`feed_gap_end`). The strategy re-quotes
+  from the fresh book at the back of the queue. As before, the in-play prints for the gap are back-filled from
+  data-api for the signal only (L4).
+- **Lag record.** Feed lag rt − e on price changes and trades is logged per socket:
+  - per-minute quantiles (`lag`: n, p50, p90, p99, max);
+  - episodes (`lag_episode_start` and `lag_episode_end`, from lag > 2 s until it is back under 0.5 s), each with
+    the paper orders live on that socket's markets at its start.
+
+  `summary.json` carries `feed_gaps` and `feed_lag`. Under lag, with no gap, orders stay live and fills are still
+  computed in venue-time order. Our own decisions (placements and cancels) happen at seen time, so they are
+  correctly late.
+- **Test:** `test_feed_gap_pulls_quotes_and_voids_takers`.
+
+## L14. Stop and restart of the session (20:48 UTC)
+**Old session.**
+- PID 65274, run `20261003T193534Z`. SIGTERM at **2026-10-03 20:48:00.72 UTC**, and the process exited at
+  20:48:02 UTC.
+- From the 19:58:42 start to the stop it placed 0 quotes, 0 fills and 0 taker orders in every book.
+- Kept unchanged:
+  - `results/live/session_20261003T193534Z.jsonl` and `results/live/session_20261003T193534Z_summary.json`;
+  - `data/live_maker/raw_20261003T193534Z.jsonl.gz`;
+  - its stdout log, moved from `session.log` to `results/live/session_20261003T193534Z.log`.
+- Its exit marker `results/live/FINAL` was renamed to `results/live/STOPPED_20261003T193534Z`. A dashboard
+  therefore does not read a stopped session as finished.
+
+**Code.** The fixes were committed as `2c63112` before the restart. `scripts/live_paper.py` sha256 is
+`73953c8e8f669af6b5f5bd8aacd6c335274dd639da6c65e664424600562f18ff`. The 20 unit tests pass.
+
+**New session.**
+- Restarted with the same command at **2026-10-03 20:48:12 UTC**: PID 2001, run `20261003T204812Z`.
+  `caffeinate -i -w 2001` runs as PID 2114.
+- The warm-up runs again from scratch, as PREREG 3.1 requires. `session_start` is written to
+  `results/oos_peeks.log` when the warm-up passes.
+- At the restart no universe event started within the 3 h discovery window. The first matches, at 02:00 UTC on
+  2026-10-04, enter it at 23:00 UTC, so warm-up trades start then.
+- Quoting still stops at 2026-10-04 11:30 UTC.
+
+**Replays.** B2 replays of the new raw log use the fixed engine. The old session placed no order, so it has nothing
+to re-price.

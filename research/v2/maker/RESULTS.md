@@ -17,14 +17,15 @@
 |---|---|
 | **Primary** (PREREG §2.5): net per share, fill-weighted, held to resolution | **+1.87c/share, 95% CI [−0.14, +3.86]** |
 | Sample | 2,207 fills in 524 matches. Not underpowered (≥ 500 fills, ≥ 100 matches). |
-| **Result** | **FAILURE.** The CI's lower bound is below 0, so the OOS claim fails. |
+| **Result** | **FAILURE**, and borderline: z about 1.9, two-sided p about 0.06. The CI's lower bound is below 0, so the OOS claim fails. |
 | Consistency with IS | The point estimate lies inside the IS 1s/5% CI [+0.53, +3.48] (IS point +2.02c). |
 | Dollars | **−$379** on $28.8k notional. Share-weighted net −0.75c [−4.92, +3.56]. |
-| Cost label (PREREG §2.7) | **Cost-fragile.** Stress (iv)'s point estimate is −4.15c ≤ 0, on only 98 fills. |
+| Cost label (PREREG §2.7) | **Cost-fragile**: stress (iv) −4.15c, CI [−13.45, +5.54], n = 98 fills. The label says little, since the CI spans about ±9c. It was close to certain before the run: in-sample, (iv) was already about 0 (+0.10c on 513 fills, all regimes; −1.76c on 156 fills at IS 1s/5%). |
 
 In plain terms:
 - Per share, the leaning maker earned about what it earned in-sample in the same fee regime: +1.87c against +2.02c.
-- The OOS sample is too noisy to tell that apart from zero, and the pre-registered rule calls this a failure.
+- The OOS sample is too noisy to tell that apart from zero, and the pre-registered rule calls this a failure. The
+  call is borderline: the data fit the IS edge and a zero edge about equally well (see "Post-run audit" below).
 - In dollars, the frozen sizing lost money, because the larger fills lost.
 - The rule's edge depends on the IS fill model, filling at the print price. When a fill must trade through a level
   quoted earlier, the edge disappears both in-sample and OOS.
@@ -135,14 +136,19 @@ By side-market type (match-clustered CIs):
 
 Each stress makes one change to the book.
 
-| book | OOS fills | OOS net c/share [CI] | OOS $ P&L | IS reference, Feb–Aug, all regimes (code test) |
-|---|---|---|---|---|
-| maker v1 (primary) | 2,207 | +1.87 [−0.14, +3.86] | −$379 | +3.06 [+2.11, +4.01], n = 10,171 |
-| (i) queue share 10% | 2,207 | +1.87 [−0.14, +3.86] | −$107 | +3.06 [+2.11, +4.01] |
-| (ii) trade-through | 98 | −3.99 [−13.28, +5.70] | +$99 | +0.20 [−4.62, +4.89], n = 513 |
-| (iii) rebate removed | 2,207 | +1.71 [−0.29, +3.70] | −$457 | +2.95 [+2.00, +3.91] |
-| (iv) all of (i)–(iii) | 98 | **−4.15 [−13.45, +5.54]** | +$110 | +0.10 [−4.71, +4.79], n = 513 |
-| (viii) conditional: maker fee 0.10·px(1−px) | 2,207 | −0.21 [−2.20, +1.79] | −$1,419 | +0.95 [−0.01, +1.90] |
+| book | OOS fills | OOS net c/share [CI] | OOS $ P&L | **IS 1s/5%** (the OOS regime) | IS Feb–Aug, all regimes (cell chosen in hindsight; code test) |
+|---|---|---|---|---|---|
+| maker v1 (primary) | 2,207 | +1.87 [−0.14, +3.86] | −$379 | +2.02 [+0.53, +3.48], n = 4,159 | +3.06 [+2.11, +4.01], n = 10,171 |
+| (i) queue share 10% | 2,207 | +1.87 [−0.14, +3.86] | −$107 | +2.02 [+0.53, +3.48] | +3.06 [+2.11, +4.01] |
+| (ii) trade-through | 98 | −3.99 [−13.28, +5.70] | +$99 | −1.61 [−8.36, +6.21], n = 156 | +0.20 [−4.62, +4.89], n = 513 |
+| (iii) rebate removed | 2,207 | +1.71 [−0.29, +3.70] | −$457 | +1.86 [+0.37, +3.33] | +2.95 [+2.00, +3.91] |
+| (iv) all of (i)–(iii) | 98 | **−4.15 [−13.45, +5.54]** | +$110 | −1.76 [−8.51, +6.05], n = 156 | +0.10 [−4.71, +4.79], n = 513 |
+| (viii) conditional: maker fee 0.10·px(1−px) | 2,207 | −0.21 [−2.20, +1.79] | −$1,419 | −0.07 [−1.56, +1.40] | +0.95 [−0.01, +1.90] |
+
+The OOS sample is entirely 1s/5%, so the **IS 1s/5%** column is the comparable one. The all-regimes column, which
+was the only IS column before the audit, runs about 1c high against it. The IS 1s/5% values come from IS data only
+(`is_1s5_stress.py` → `is_reference_1s5.json`). They use the same code path as `is_reference.json`, restricted to
+the regime, and reproduce the IS 1s/5% book-1 figure and diagnostics exactly.
 
 Notes:
 - **(i)** The per-share number is unchanged. The $2,000 match cap never binds, so the same fills are kept and only
@@ -171,7 +177,9 @@ Notes:
 **What the placebo shows.**
 - In IS, the anti-lean placebo lost 1.29c while the lean book earned 2.02c, a gap of 3.3c.
 - OOS the placebo is positive (+0.71c). The gap shrinks to 1.2c.
-- The signal still points the right way OOS, but it separates winners from losers much less than it did in IS.
+- OOS, the lean book and the anti-lean placebo cannot be told apart (gap +1.15c [−1.42, +4.00]; paired,
+  match-clustered bootstrap, P(gap ≤ 0) = 0.19). The IS gap of 3.31c sits at the 94th percentile of the OOS
+  bootstrap. (Audit figures, labelled post-hoc.)
 
 ## Variants and peeks
 - **Evaluated on OOS: 8.** These are the 7 pre-registered ones (book 1, stresses i–iv, two diagnostics) plus the
@@ -183,6 +191,22 @@ Notes:
   - `2026-10-03T18:49:10Z maker v1 blind OOS evaluated (first run) ...`, written before any P&L was computed;
   - `2026-10-03T18:49:54Z maker v1 OOS reproduction ...`, which recomputed every committed number from the cached
     data and matched exactly.
+
+## Post-run audit (2026-10-03, about 20:55 UTC, after the run)
+An independent recompute (`audit/indep_maker_oos.py`, logged in `results/oos_peeks.log` at 20:11 UTC) matched every
+fill. Its findings changed the wording above, not a number and not the verdict (`DEVIATIONS.md` R1):
+- **Borderline verdict.** The cluster-robust SE is 1.00c, so z = 1.87 and the t-CI is [−0.09, +3.82].
+  - Across 200 bootstrap seeds, the CI's lower bound averages −0.07c (sd 0.06), and 8.5% of seeds put it above 0.
+  - Clustering by day gives [+0.10, +3.86]. Clustering by side market gives [−0.04, +3.68].
+  - The pre-registered choices (seed 0, match clusters) were fixed in PREREG `c29734b` and they govern, so the
+    FAILURE stands. Nothing was seed-shopped.
+  - The data fit the IS edge and a zero edge about equally well.
+- **Placebo.** The earlier sentence "the signal still points the right way OOS" was not supported. It is replaced
+  by the paired lean-minus-placebo gap above.
+- **Cost label.** The CI and n are now printed next to the label, together with the IS values that already had
+  (iv) at about 0.
+- **IS comparator.** The stress table now has the IS 1s/5% column.
+- **Timing caveat.** Added under Caveats.
 
 ## How to reproduce
 From the repo root, using the project venv:
@@ -208,7 +232,9 @@ slightly, which could move markets across the $250 floor.
 - `research/v2/maker/oos/results.json`: every number above. It is copied to `results/maker/oos.json`.
 - `research/v2/maker/oos/book_*.csv`: fill-level books for book 1 and each stress.
 - `research/v2/maker/oos/by_type.csv`, `by_regime.csv`, `monthly.csv`, `parity.json`.
-- `research/v2/maker/is_reference.json`: the IS code test.
+- `research/v2/maker/is_reference.json`: the IS code test (Feb–Aug, all regimes).
+- `research/v2/maker/is_1s5_stress.py` → `is_reference_1s5.json`: the same IS code test restricted to 1s/5%, for
+  the comparable stress column (IS only).
 - `research/v2/maker/DEVIATIONS.md`: pre-run decisions.
 - `results/maker/equity_is_oos.png`: cumulative P&L, IS walk-forward (Feb 1–Aug 25) vs blind OOS (Aug 25–Oct 3).
   - Top panel: dollars at the frozen sizing.
@@ -227,4 +253,12 @@ slightly, which could move markets across the $250 floor.
   PREREG §2.1.
 - **Power.** The sample is 2,207 fills, against the pre-registered expectation of about 3,500. The standard error is
   about 1.0c, against 0.8c expected. Even with a true edge of +2c, a pass was close to a coin flip at this n. This
-  explains the result. It does not change it: the claim failed.
+  is consistent with the result. It does not change it: the claim failed.
+- **Information-cut timing.** The cut uses prints strictly before ts − d. data-api timestamps are block times in
+  whole seconds, about 2.3 s after the match (DEVIATIONS_LIVE.md L1). Jitter in that lag can let a moneyline print
+  that matched after the side print fall inside the cut.
+  - Labelled post-hoc sensitivity with a stricter cut (audit): +1 s gives +1.67c (−$989), +2 s gives +1.61c
+    (−$1,220), +5 s gives +1.02c (−$734).
+  - The edge fades gradually, with no cliff, so there is no sign of a leak.
+  - Any timing optimism is at most about 0.2–0.26c. It would only lower the point estimate, so it cannot turn the
+    FAILURE into a pass.
