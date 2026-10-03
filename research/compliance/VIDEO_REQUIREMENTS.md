@@ -1,4 +1,21 @@
-# Final video: team requirements (binding for the integration pass)
+# Final video: team requirements (binding) - REVISED: 60 SECONDS MAX
+
+**The team decided (2026-10-03 evening): the video is at most 60 s. It is NOT the presentation; the paper and deck carry
+the full argument, the IC questions, the pipeline diagram and the latency analysis. The video only shows the model working,
+the test, and the profit, in a really cool way.** Voice: ElevenLabs "Liam", energetic, few words (about 110-140 spoken words
+total). Fast, punchy editing; music bed with hits on the calls.
+
+| time | content |
+|---|---|
+| 0:00-0:04 | Cold open: one real MISS call in slow motion, "Called 408 ms before contact", title COURTSIDE |
+| 0:04-0:30 | **The model working on multiple table-tennis games**: a fast montage / 2x2 split-screen across several held-out real games (OpenTTGames test_1..test_7, credited), each with the ball comet trail, predicted arc, live P(miss) gauge rising and "MISS - n ms early" / "IN" call stamps as they happen; counters: "frames tracked", "calls made", "precision" from the logged evaluation (results/engine/online_vs_offline.json, results/tracking/summary.json, spin results). Only calls actually made by the model at those frames (results/engine/online_events_L4.jsonl, cv_showcase logs); examples are examples - the counters carry the honest totals. |
+| 0:30-0:45 | **The test**: GPU 120 fps / 4.6 ms; the returns-vs-latency curve flashing in with the dotted 1 s line; today's real Polymarket match replay (order book racing, orders filling) labelled "backtest replay, assumed 1 s licensed feed" |
+| 0:45-0:57 | **The profit**: money counters at the simulated 1 s baseline (IS / OOS $ and Sharpe, both readings shown compactly), equity curve drawing in |
+| 0:57-1:00 | End card: COURTSIDE, repo URL, "Paper trading only - simulated 1 s licensed-feed baseline - Voice: AI (ElevenLabs) - footage: OpenTTGames CC BY-NC-SA 4.0" |
+
+The material below (presentation structure, IC framing) now applies to the DECK and PAPER, not the video.
+
+---
 
 Voice: ElevenLabs "Liam" (scripts/tts_elevenlabs.py). Length about 3:00-3:30. Structured like a team presentation video:
 
