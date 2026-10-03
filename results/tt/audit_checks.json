@@ -1,0 +1,138 @@
+{
+ "provenance": {
+  "prereg_commit_0f01362_utc": "2026-10-03T18:31:11+00:00",
+  "first_tt_tape_created_utc": "2026-10-03T18:37:49.686453+00:00",
+  "first_data_tt_file_created_utc": "2026-10-03T18:36:35.761810+00:00",
+  "tapes_created_before_prereg": 0,
+  "decisions_commit_eb0e692_utc": "2026-10-03T19:23:07+00:00",
+  "tt1_tt4_run_logged_utc": "2026-10-03T19:23:14.155322+00:00",
+  "seconds_from_decisions_commit_to_run": 7.155322074890137,
+  "tt1_tt4_run_lines_in_peeks_log": 1,
+  "tt_analyze_changed_after_eb0e692": false,
+  "src_v2_changes_after_845666f": [
+   "3d46204 COURTSIDE engine (paper only): streaming vision -> fair value -> strategy -> paper execution -> risk, live read-only feed, demo; 95 tests pass"
+  ],
+  "sizing_engine_changes_after_962371f": []
+ },
+ "fees_delays": {
+  "markets": 3588,
+  "missing_in_gamma_walk": 0,
+  "rate_mismatch": 0,
+  "fees_disabled_but_rate_used": 0,
+  "delay_mismatch": 0,
+  "fee_exponent_values": [
+   1.0
+  ],
+  "by_league_rate": {
+   "Setka/0.05": 2706,
+   "WTT/0.0": 172,
+   "WTT/0.03": 709,
+   "other/0.05": 1
+  },
+  "uma_status": {
+   "resolved": 3588
+  }
+ },
+ "voids": {
+  "utt_res0_half": 17,
+  "res0_half_evaluable": 0,
+  "unlisted_res0_half": 3
+ },
+ "ge20_inplay": {
+  "ge20_inplay_prints": 39,
+  "share": 0.010869565217391304,
+  "evaluable_ok": 27,
+  "dropped_no_jump": 12,
+  "no_jump_by_league": {
+   "WTT": 10,
+   "Setka": 2
+  }
+ },
+ "tt1_inplay_with_no_jump_matches_posthoc": {
+  "matches": 39,
+  "obs": 621,
+  "max_matches_in_a_judgeable_bin": 23,
+  "bins_reaching_30": []
+ },
+ "unlisted": {
+  "markets": 96,
+  "tape_usd": 169653.47941268832,
+  "utt_tape_usd": 652467.8509133945,
+  "share_of_utt_tape_usd": 0.2600181436912013,
+  "wtt_tape_usd_utt": 404065.50632849004,
+  "wtt_tape_usd_unlisted": 169280.4659577087,
+  "inplay_usd_unlisted": 101519.54402478387
+ },
+ "capacity_context": {
+  "calendar_days": 231,
+  "inplay_window_usd_all": 491262.4740188267,
+  "inplay_window_usd_per_day_all": 2126.6773767048776,
+  "inplay_window_usd_per_day_incl_unlisted": 2566.155922266712,
+  "oos_calendar_days": 18,
+  "oos_inplay_window_usd_per_day": 2099.7274303916492,
+  "inplay_usd_in_27_evaluable_matches": 72063.2614850673,
+  "share_of_inplay_usd_in_evaluable_matches": 0.14668993724585935
+ },
+ "tt1_closing_reproduction": {
+  "matches": 780,
+  "bins": {
+   "[0.5, 0.6)": {
+    "n": 258,
+    "mean_price": 0.523,
+    "won": 0.492
+   },
+   "[0.6, 0.7)": {
+    "n": 119,
+    "mean_price": 0.648,
+    "won": 0.58
+   },
+   "[0.7, 0.8)": {
+    "n": 81,
+    "mean_price": 0.741,
+    "won": 0.704
+   },
+   "[0.8, 0.85)": {
+    "n": 37,
+    "mean_price": 0.821,
+    "won": 0.676
+   },
+   "[0.85, 0.9)": {
+    "n": 40,
+    "mean_price": 0.868,
+    "won": 0.85
+   },
+   "[0.9, 0.93)": {
+    "n": 62,
+    "mean_price": 0.914,
+    "won": 0.79
+   },
+   "[0.93, 0.95)": {
+    "n": 18,
+    "mean_price": 0.938,
+    "won": 0.833
+   },
+   "[0.95, 0.97)": {
+    "n": 42,
+    "mean_price": 0.958,
+    "won": 0.81
+   },
+   "[0.97, 0.98)": {
+    "n": 20,
+    "mean_price": 0.972,
+    "won": 0.8
+   },
+   "[0.98, 0.99)": {
+    "n": 43,
+    "mean_price": 0.982,
+    "won": 0.814
+   },
+   "[0.99, 1.0)": {
+    "n": 60,
+    "mean_price": 0.992,
+    "won": 0.8
+   }
+  }
+ },
+ "run_utc": "2026-10-03T20:06:31+00:00",
+ "commit": "d007946089284355fb8efbb3a63851aa65f905fc"
+}

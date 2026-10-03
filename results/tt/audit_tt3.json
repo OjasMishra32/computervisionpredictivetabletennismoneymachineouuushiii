@@ -1,0 +1,181 @@
+{
+ "universe": {
+  "markets": 3588,
+  "is": 2870,
+  "oos": 718,
+  "cut": "2026-09-16 05:30:00+00:00"
+ },
+ "build_status": {
+  "lt20_inplay": 3549,
+  "ok": 27,
+  "no_jump": 12
+ },
+ "evaluable": {
+  "Setka/IS": 16,
+  "Setka/OOS": 3,
+  "WTT/IS": 8
+ },
+ "print_rows": 1002,
+ "b03_by_period": {
+  "IS": {
+   "prints": 100,
+   "matches": 24,
+   "usd": 6628.622388022094
+  },
+  "OOS": {
+   "prints": 13,
+   "matches": 3,
+   "usd": 1434.971696998033
+  }
+ },
+ "walk_forward": [
+  {
+   "month": "2026-04",
+   "prior_matches": 3,
+   "count_bar_reachable": false,
+   "prior_b03_prints": 4,
+   "prior_b03_wallets": 4,
+   "most_active_wallet_prints": 1,
+   "most_active_wallet_matches": 1,
+   "most_active_wallet_t": null,
+   "qualified": 0,
+   "month_b03_prints": 9
+  },
+  {
+   "month": "2026-05",
+   "prior_matches": 7,
+   "count_bar_reachable": false,
+   "prior_b03_prints": 13,
+   "prior_b03_wallets": 12,
+   "most_active_wallet_prints": 2,
+   "most_active_wallet_matches": 1,
+   "most_active_wallet_t": -1.2213662584131282,
+   "qualified": 0,
+   "month_b03_prints": 2
+  },
+  {
+   "month": "2026-07",
+   "prior_matches": 8,
+   "count_bar_reachable": false,
+   "prior_b03_prints": 15,
+   "prior_b03_wallets": 14,
+   "most_active_wallet_prints": 2,
+   "most_active_wallet_matches": 1,
+   "most_active_wallet_t": -1.2213662584131282,
+   "qualified": 0,
+   "month_b03_prints": 48
+  },
+  {
+   "month": "2026-09",
+   "prior_matches": 18,
+   "count_bar_reachable": true,
+   "prior_b03_prints": 63,
+   "prior_b03_wallets": 23,
+   "most_active_wallet_prints": 31,
+   "most_active_wallet_matches": 6,
+   "most_active_wallet_t": -0.0012419620757253187,
+   "qualified": 0,
+   "month_b03_prints": 50
+  }
+ ],
+ "shadow_rows": 0,
+ "TT3_primary_independent": {
+  "IS": {
+   "opportunity_rows": 0,
+   "matches_with_trades": 0,
+   "evaluable_matches_in_period": 24,
+   "verdict": "FAIL (no trades)",
+   "underpowered": true
+  },
+  "OOS": {
+   "opportunity_rows": 0,
+   "matches_with_trades": 0,
+   "evaluable_matches_in_period": 3,
+   "verdict": "FAIL (no trades)",
+   "underpowered": true
+  }
+ },
+ "parity_with_data_tt_prints": {
+  "rows_equal": true,
+  "conds_equal": true,
+  "p_max_abs_diff": 0.0,
+  "p_nan_mismatch": 0,
+  "dir_max_abs_diff": 0.0,
+  "dir_nan_mismatch": 0,
+  "usd_max_abs_diff": 0.0,
+  "usd_nan_mismatch": 0,
+  "since_det_max_abs_diff": 0.0,
+  "since_det_nan_mismatch": 0,
+  "mo30_max_abs_diff": 0.0,
+  "mo30_nan_mismatch": 0,
+  "b03_equal": true
+ },
+ "src_v2_run": {
+  "ok": false,
+  "error": "KeyError('cond')",
+  "where": [
+   "src/v2.py:108 run: f = prepare(build_features(sh, prints, ends))",
+   "src/v2.py:34 build_features: sh = sh.sort_values([\"cond\", \"ts\"], kind=\"stable\").reset_index(drop=True)"
+  ]
+ },
+ "posthoc": {
+  "label": "post-hoc diagnostics, not pre-registered, no verdict change",
+  "most_active_b03_wallet_all_months": {
+   "prints": 58,
+   "matches": 14,
+   "t_mo30": 0.6967511955583635,
+   "share_of_b03_prints": 0.5132743362831859,
+   "share_of_all_print_rows": 0.281437125748503
+  },
+  "copy_every_b03_print_net_res": {
+   "IS": {
+    "prints": 100,
+    "usd": 6628.622388022094,
+    "print_weighted": {
+     "c": -12.925440122369189,
+     "ci_c": [
+      -21.197238000834155,
+      -5.269077833948768
+     ],
+     "matches": 24
+    },
+    "share_weighted": {
+     "c": 0.5750853370544253,
+     "ci_c": [
+      -10.389162720741917,
+      8.47334548311945
+     ],
+     "matches": 24
+    }
+   },
+   "OOS": {
+    "prints": 13,
+    "usd": 1434.971696998033,
+    "print_weighted": {
+     "c": 8.892502817973574,
+     "ci_c": [
+      2.8888460285879476,
+      17.07817423433028
+     ],
+     "matches": 3
+    },
+    "share_weighted": {
+     "c": 21.64875220126017,
+     "ci_c": [
+      5.716275418119719,
+      49.669042046465876
+     ],
+     "matches": 3
+    }
+   }
+  },
+  "copy_every_b03_print_note": "upper bound on v2's opportunity set (every 0-3 s print, any wallet, hold to resolution, net of each market's fee); OOS has 3 clusters, so its CI is not interpretable",
+  "most_active_wallet_share_of_tt2_others_prints": 0.5294117647058824,
+  "b03_prints_with_fav_ge_095": 13,
+  "b03_prints_outside_v2_zone_005_095": 13,
+  "calendar_days_in_window": 231,
+  "b03_usd_per_calendar_day_all_wallets": 34.90733370138584
+ },
+ "run_utc": "2026-10-03T20:08:06+00:00",
+ "commit": "d007946089284355fb8efbb3a63851aa65f905fc"
+}
