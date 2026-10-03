@@ -1,0 +1,1103 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA. assumed: licensed live feed + courtside camera, not purchased; parameters from our measurements. OOS = burned OOS (not blind).",
+ "1_reproduction": {
+  "IS": {
+   "builder_code": {
+    "per_share_c": 3.219,
+    "pnl_usd": 31710.953,
+    "pnl_per_day_usd": 307.873,
+    "sharpe_ann": 36.801
+   },
+   "results_json": {
+    "per_share_c": 3.2187,
+    "pnl_usd": 31710.9529,
+    "pnl_per_day_usd": 307.8733,
+    "sharpe_ann": 36.8015
+   },
+   "independent": {
+    "calls": 22751,
+    "trades": 7913,
+    "fill_rate": 0.3177,
+    "per_share_c": 3.219,
+    "per_share_ci95_c": [
+     2.952,
+     3.462
+    ],
+    "pnl_usd": 31711.0,
+    "pnl_per_day_usd": 307.9,
+    "sharpe_ann": 36.8,
+    "max_dd_usd": -77.4,
+    "worst_day_usd": -77.4,
+    "pnl_wrong_usd": -4565.2
+   }
+  },
+  "burned_OOS": {
+   "builder_code": {
+    "per_share_c": 2.543,
+    "pnl_usd": 9433.024,
+    "pnl_per_day_usd": 235.826,
+    "sharpe_ann": 34.903
+   },
+   "results_json": {
+    "per_share_c": 2.5432,
+    "pnl_usd": 9433.0243,
+    "pnl_per_day_usd": 235.8256,
+    "sharpe_ann": 34.9033
+   },
+   "independent": {
+    "calls": 8282,
+    "trades": 2965,
+    "fill_rate": 0.3259,
+    "per_share_c": 2.543,
+    "per_share_ci95_c": [
+     2.107,
+     2.945
+    ],
+    "pnl_usd": 9433.0,
+    "pnl_per_day_usd": 235.8,
+    "sharpe_ann": 34.9,
+    "max_dd_usd": -20.4,
+    "worst_day_usd": -20.4,
+    "pnl_wrong_usd": 830.1
+   }
+  }
+ },
+ "2_stale_price_audit": {
+  "IS": {
+   "n_covered_in_zone_jumps": 22751,
+   "move_post30_minus_ref_c": {
+    "n": 22751,
+    "mean": 6.009,
+    "median": 5.498
+   },
+   "move_post30_minus_ref_short_c": {
+    "n": 21031,
+    "mean": 4.657,
+    "median": 4.468
+   },
+   "move_post30_minus_vwap10_c": {
+    "n": 9694,
+    "mean": 3.867,
+    "median": 3.739
+   },
+   "move_post30_minus_mid_pre_c": {
+    "n": 20519,
+    "mean": 3.523,
+    "median": 3.449
+   },
+   "move_post30_minus_last_pre_c": {
+    "n": 20519,
+    "mean": 3.267,
+    "median": 3.089
+   },
+   "single_point_move_share_lt_4c": 0.577,
+   "single_point_move_share_lt_2c": 0.311,
+   "drift_ref_to_mid_pre_c": {
+    "mean": 2.505,
+    "median": 2.159,
+    "share_gt_2c": 0.478
+   },
+   "mid_pre_available_share": 0.902,
+   "gap_last_print_before_onset_s_median": 12.0
+  },
+  "burned_OOS": {
+   "n_covered_in_zone_jumps": 8282,
+   "move_post30_minus_ref_c": {
+    "n": 8282,
+    "mean": 6.165,
+    "median": 5.603
+   },
+   "move_post30_minus_ref_short_c": {
+    "n": 7132,
+    "mean": 4.743,
+    "median": 4.576
+   },
+   "move_post30_minus_vwap10_c": {
+    "n": 2481,
+    "mean": 4.054,
+    "median": 3.878
+   },
+   "move_post30_minus_mid_pre_c": {
+    "n": 6831,
+    "mean": 3.903,
+    "median": 3.898
+   },
+   "move_post30_minus_last_pre_c": {
+    "n": 6831,
+    "mean": 3.669,
+    "median": 3.629
+   },
+   "single_point_move_share_lt_4c": 0.522,
+   "single_point_move_share_lt_2c": 0.274,
+   "drift_ref_to_mid_pre_c": {
+    "mean": 2.305,
+    "median": 1.89,
+    "share_gt_2c": 0.391
+   },
+   "mid_pre_available_share": 0.825,
+   "gap_last_print_before_onset_s_median": 15.0
+  }
+ },
+ "2b_primary_by_stale_price": {
+  "IS": {
+   "ref": {
+    "n_calls": 22751.0,
+    "n_trades": 7913.0,
+    "fill_rate": 0.318,
+    "per_share_c": 3.219,
+    "per_share_ci95_c": [
+     2.952,
+     3.462
+    ],
+    "pnl_usd": 31710.953,
+    "pnl_per_day_usd": 307.873,
+    "sharpe_ann": 36.801,
+    "max_dd_usd": -77.375,
+    "pnl_wrong_usd": -4565.179
+   },
+   "ref_short": {
+    "n_calls": 21007.0,
+    "n_trades": 7298.0,
+    "fill_rate": 0.317,
+    "per_share_c": 2.094,
+    "per_share_ci95_c": [
+     1.809,
+     2.38
+    ],
+    "pnl_usd": 19044.494,
+    "pnl_per_day_usd": 184.898,
+    "sharpe_ann": 25.1,
+    "max_dd_usd": -94.261,
+    "pnl_wrong_usd": -2902.196
+   },
+   "vwap10": {
+    "n_calls": 9644.0,
+    "n_trades": 3412.0,
+    "fill_rate": 0.322,
+    "per_share_c": 0.998,
+    "per_share_ci95_c": [
+     0.474,
+     1.543
+    ],
+    "pnl_usd": 4107.437,
+    "pnl_per_day_usd": 39.878,
+    "sharpe_ann": 6.795,
+    "max_dd_usd": -410.392,
+    "pnl_wrong_usd": -1970.315
+   },
+   "mid_pre": {
+    "n_calls": 20461.0,
+    "n_trades": 7118.0,
+    "fill_rate": 0.317,
+    "per_share_c": 1.187,
+    "per_share_ci95_c": [
+     0.904,
+     1.498
+    ],
+    "pnl_usd": 10478.024,
+    "pnl_per_day_usd": 101.728,
+    "sharpe_ann": 15.042,
+    "max_dd_usd": -232.479,
+    "pnl_wrong_usd": -1914.439
+   },
+   "mid_pre_fb": {
+    "n_calls": 22692.0,
+    "n_trades": 7929.0,
+    "fill_rate": 0.32,
+    "per_share_c": 1.365,
+    "per_share_ci95_c": [
+     1.093,
+     1.627
+    ],
+    "pnl_usd": 13367.529,
+    "pnl_per_day_usd": 129.782,
+    "sharpe_ann": 18.59,
+    "max_dd_usd": -169.737,
+    "pnl_wrong_usd": -2480.141
+   }
+  },
+  "burned_OOS": {
+   "ref": {
+    "n_calls": 8282.0,
+    "n_trades": 2965.0,
+    "fill_rate": 0.326,
+    "per_share_c": 2.543,
+    "per_share_ci95_c": [
+     2.107,
+     2.945
+    ],
+    "pnl_usd": 9433.024,
+    "pnl_per_day_usd": 235.826,
+    "sharpe_ann": 34.903,
+    "max_dd_usd": -20.413,
+    "pnl_wrong_usd": 830.093
+   },
+   "ref_short": {
+    "n_calls": 7118.0,
+    "n_trades": 2529.0,
+    "fill_rate": 0.324,
+    "per_share_c": 1.394,
+    "per_share_ci95_c": [
+     0.936,
+     1.91
+    ],
+    "pnl_usd": 4451.445,
+    "pnl_per_day_usd": 111.286,
+    "sharpe_ann": 19.482,
+    "max_dd_usd": -222.038,
+    "pnl_wrong_usd": 609.263
+   },
+   "vwap10": {
+    "n_calls": 2469.0,
+    "n_trades": 985.0,
+    "fill_rate": 0.36,
+    "per_share_c": -0.095,
+    "per_share_ci95_c": [
+     -1.197,
+     1.08
+    ],
+    "pnl_usd": -113.382,
+    "pnl_per_day_usd": -2.835,
+    "sharpe_ann": -0.501,
+    "max_dd_usd": -1126.032,
+    "pnl_wrong_usd": -49.954
+   },
+   "mid_pre": {
+    "n_calls": 6810.0,
+    "n_trades": 2437.0,
+    "fill_rate": 0.325,
+    "per_share_c": 0.741,
+    "per_share_ci95_c": [
+     0.236,
+     1.277
+    ],
+    "pnl_usd": 2262.969,
+    "pnl_per_day_usd": 56.574,
+    "sharpe_ann": 9.201,
+    "max_dd_usd": -426.646,
+    "pnl_wrong_usd": 867.845
+   },
+   "mid_pre_fb": {
+    "n_calls": 8261.0,
+    "n_trades": 2980.0,
+    "fill_rate": 0.328,
+    "per_share_c": 1.004,
+    "per_share_ci95_c": [
+     0.574,
+     1.41
+    ],
+    "pnl_usd": 3711.516,
+    "pnl_per_day_usd": 92.788,
+    "sharpe_ann": 15.289,
+    "max_dd_usd": -153.793,
+    "pnl_wrong_usd": 1511.941
+   }
+  }
+ },
+ "3_live_stale_depth_edge": {
+  "pre2s": {
+   "n_points": 265,
+   "share_weighted_edge_c": 1.592,
+   "share_weighted_net_after_fee_c": 0.553,
+   "median_point_net_usd": -0.24,
+   "mean_point_net_usd": 45.27,
+   "median_point_D_c": 4.0
+  },
+  "pre1s": {
+   "n_points": 265,
+   "share_weighted_edge_c": 1.746,
+   "share_weighted_net_after_fee_c": 0.743,
+   "median_point_net_usd": -0.15,
+   "mean_point_net_usd": 37.86,
+   "median_point_D_c": 4.0
+  },
+  "pre025s": {
+   "n_points": 265,
+   "share_weighted_edge_c": 1.995,
+   "share_weighted_net_after_fee_c": 0.998,
+   "median_point_net_usd": -0.05,
+   "mean_point_net_usd": 35.07,
+   "median_point_D_c": 4.0
+  }
+ },
+ "3b_live_day": {
+  "first_shares_edge_vs_new_mid": {
+   "t-2s_first100": {
+    "share_points_full": 0.958,
+    "edge_c_share_weighted": 2.719,
+    "edge_c_median_point": 2.5
+   },
+   "t-2s_first200": {
+    "share_points_full": 0.909,
+    "edge_c_share_weighted": 2.574,
+    "edge_c_median_point": 2.27
+   },
+   "t-1s_first100": {
+    "share_points_full": 0.932,
+    "edge_c_share_weighted": 2.59,
+    "edge_c_median_point": 2.5
+   },
+   "t-1s_first200": {
+    "share_points_full": 0.857,
+    "edge_c_share_weighted": 2.448,
+    "edge_c_median_point": 2.04
+   },
+   "t-025s_first100": {
+    "share_points_full": 0.815,
+    "edge_c_share_weighted": 2.288,
+    "edge_c_median_point": 1.5
+   },
+   "t-025s_first200": {
+    "share_points_full": 0.721,
+    "edge_c_share_weighted": 2.18,
+    "edge_c_median_point": 1.5
+   },
+   "live_D_c_mean": 4.564
+  },
+  "detector_vs_official_points": {
+   "n_detector_jumps": 163,
+   "n_with_same_dir_official_point": 102,
+   "share_ge2_points_in_window": 0.423,
+   "true_single_point_mid_move_c": {
+    "mean": 4.598,
+    "median": 4.25,
+    "share_lt_4c": 0.333
+   },
+   "stale_proxy_ref_minus_true_pre_mid_c (>0 = proxy overstates edge)": {
+    "n": 102,
+    "mean": 0.562,
+    "median": 0.492
+   },
+   "stale_proxy_ref_short_minus_true_pre_mid_c (>0 = proxy overstates edge)": {
+    "n": 93,
+    "mean": -0.716,
+    "median": -0.5
+   }
+  }
+ },
+ "3c_fast_tier_vs_model": {
+  "measured_fast_tier_prints_landing_[-0.5,0)_with_move": {
+   "all_points": {
+    "n_prints": 91,
+    "gross_c": 1.839,
+    "net_c": 0.93
+   },
+   "D>=3c": {
+    "n_prints": 52,
+    "gross_c": 2.243,
+    "net_c": 1.133
+   }
+  },
+  "model_correct_fills_before_reprice": {
+   "IS": {
+    "n": 5413,
+    "gross_c": 6.073,
+    "net_c": 5.274
+   },
+   "burned_OOS": {
+    "n": 1800,
+    "gross_c": 5.436,
+    "net_c": 4.414
+   }
+  }
+ },
+ "4_variants": {
+  "IS": {
+   "primary (reproduced)": {
+    "calls": 22751,
+    "trades": 7913,
+    "fill_rate": 0.3177,
+    "per_share_c": 3.219,
+    "per_share_ci95_c": [
+     2.952,
+     3.462
+    ],
+    "pnl_usd": 31711.0,
+    "pnl_per_day_usd": 307.9,
+    "sharpe_ann": 36.8,
+    "max_dd_usd": -77.4,
+    "worst_day_usd": -77.4,
+    "pnl_wrong_usd": -4565.2
+   },
+   "stamp 1 s resolution truncated: R - 0.5 s": {
+    "calls": 22751,
+    "trades": 6542,
+    "fill_rate": 0.2547,
+    "per_share_c": 2.302,
+    "per_share_ci95_c": [
+     1.902,
+     2.71
+    ],
+    "pnl_usd": 14465.0,
+    "pnl_per_day_usd": 140.4,
+    "sharpe_ann": 21.87,
+    "max_dd_usd": -133.7,
+    "worst_day_usd": -117.7,
+    "pnl_wrong_usd": -5440.3
+   },
+   "R spread = umpire noise: t_reprice - t_bounce constant (lag 2.0)": {
+    "calls": 22751,
+    "trades": 15392,
+    "fill_rate": 0.642,
+    "per_share_c": -0.069,
+    "per_share_ci95_c": [
+     -0.259,
+     0.118
+    ],
+    "pnl_usd": -876.1,
+    "pnl_per_day_usd": -8.5,
+    "sharpe_ann": -1.21,
+    "max_dd_usd": -2295.0,
+    "worst_day_usd": -285.8,
+    "pnl_wrong_usd": -3817.0
+   },
+   "R spread = umpire noise, calibrated lag 3.14": {
+    "calls": 22751,
+    "trades": 13293,
+    "fill_rate": 0.5548,
+    "per_share_c": 4.3,
+    "per_share_ci95_c": [
+     4.161,
+     4.444
+    ],
+    "pnl_usd": 81694.2,
+    "pnl_per_day_usd": 793.1,
+    "sharpe_ann": 47.72,
+    "max_dd_usd": 0.0,
+    "worst_day_usd": 115.7,
+    "pnl_wrong_usd": -8891.6
+   },
+   "limit order at stale+slip (no decay-window fills)": {
+    "calls": 22751,
+    "trades": 6105,
+    "fill_rate": 0.2375,
+    "per_share_c": 4.078,
+    "per_share_ci95_c": [
+     3.749,
+     4.431
+    ],
+    "pnl_usd": 31444.6,
+    "pnl_per_day_usd": 305.3,
+    "sharpe_ann": 36.46,
+    "max_dd_usd": 0.0,
+    "worst_day_usd": 4.4,
+    "pnl_wrong_usd": -6971.2
+   },
+   "depth/timing sampled by live match (cluster)": {
+    "calls": 22751,
+    "trades": 7907,
+    "fill_rate": 0.3167,
+    "per_share_c": 3.198,
+    "per_share_ci95_c": [
+     2.923,
+     3.449
+    ],
+    "pnl_usd": 31695.1,
+    "pnl_per_day_usd": 307.7,
+    "sharpe_ann": 35.6,
+    "max_dd_usd": -79.4,
+    "worst_day_usd": -79.4,
+    "pnl_wrong_usd": -3507.5
+   },
+   "stale = mid_pre (fallback ref_short, ref)": {
+    "calls": 22692,
+    "trades": 7929,
+    "fill_rate": 0.3196,
+    "per_share_c": 1.365,
+    "per_share_ci95_c": [
+     1.093,
+     1.627
+    ],
+    "pnl_usd": 13367.5,
+    "pnl_per_day_usd": 129.8,
+    "sharpe_ann": 18.59,
+    "max_dd_usd": -169.7,
+    "worst_day_usd": -140.9,
+    "pnl_wrong_usd": -2480.1
+   },
+   "mid_pre + limit order": {
+    "calls": 22692,
+    "trades": 6107,
+    "fill_rate": 0.2385,
+    "per_share_c": 2.352,
+    "per_share_ci95_c": [
+     2.045,
+     2.696
+    ],
+    "pnl_usd": 17987.9,
+    "pnl_per_day_usd": 174.6,
+    "sharpe_ann": 23.55,
+    "max_dd_usd": -162.0,
+    "worst_day_usd": -162.0,
+    "pnl_wrong_usd": -4737.0
+   },
+   "mid_pre + limit + R - 0.5 s": {
+    "calls": 22692,
+    "trades": 3218,
+    "fill_rate": 0.1099,
+    "per_share_c": 2.119,
+    "per_share_ci95_c": [
+     1.486,
+     2.714
+    ],
+    "pnl_usd": 8379.1,
+    "pnl_per_day_usd": 81.4,
+    "sharpe_ann": 12.86,
+    "max_dd_usd": -250.6,
+    "worst_day_usd": -250.6,
+    "pnl_wrong_usd": -739.8
+   },
+   "mid_pre + limit, calibrated lag 3.14 (sampled R)": {
+    "calls": 22692,
+    "trades": 11001,
+    "fill_rate": 0.4558,
+    "per_share_c": 2.274,
+    "per_share_ci95_c": [
+     2.089,
+     2.449
+    ],
+    "pnl_usd": 35351.0,
+    "pnl_per_day_usd": 343.2,
+    "sharpe_ann": 38.88,
+    "max_dd_usd": -7.2,
+    "worst_day_usd": -7.2,
+    "pnl_wrong_usd": -4636.1
+   },
+   "mid_pre + limit, umpire-noise reading, lag 3.14": {
+    "calls": 22692,
+    "trades": 13356,
+    "fill_rate": 0.5591,
+    "per_share_c": 2.249,
+    "per_share_ci95_c": [
+     2.097,
+     2.389
+    ],
+    "pnl_usd": 42578.3,
+    "pnl_per_day_usd": 413.4,
+    "sharpe_ann": 42.28,
+    "max_dd_usd": -60.9,
+    "worst_day_usd": -60.9,
+    "pnl_wrong_usd": -6523.4
+   },
+   "LIVE-PRICED: fill = post - edge of first 100 live shares": {
+    "calls": 22751,
+    "trades": 7942,
+    "fill_rate": 0.3188,
+    "per_share_c": 0.979,
+    "per_share_ci95_c": [
+     0.722,
+     1.229
+    ],
+    "pnl_usd": 9569.4,
+    "pnl_per_day_usd": 92.9,
+    "sharpe_ann": 15.04,
+    "max_dd_usd": -210.3,
+    "worst_day_usd": -184.9,
+    "pnl_wrong_usd": -4564.5
+   },
+   "LIVE-PRICED, edge scaled by size/D": {
+    "calls": 22751,
+    "trades": 7940,
+    "fill_rate": 0.3188,
+    "per_share_c": 1.513,
+    "per_share_ci95_c": [
+     1.268,
+     1.765
+    ],
+    "pnl_usd": 14802.5,
+    "pnl_per_day_usd": 143.7,
+    "sharpe_ann": 22.33,
+    "max_dd_usd": -127.0,
+    "worst_day_usd": -127.0,
+    "pnl_wrong_usd": -4588.7
+   },
+   "LIVE-PRICED + R - 0.5 s": {
+    "calls": 22751,
+    "trades": 6553,
+    "fill_rate": 0.255,
+    "per_share_c": 0.605,
+    "per_share_ci95_c": [
+     0.212,
+     1.005
+    ],
+    "pnl_usd": 3782.8,
+    "pnl_per_day_usd": 36.7,
+    "sharpe_ann": 6.08,
+    "max_dd_usd": -647.7,
+    "worst_day_usd": -213.7,
+    "pnl_wrong_usd": -5439.7
+   },
+   "LIVE-PRICED, calibrated lag 3.14": {
+    "calls": 22751,
+    "trades": 11647,
+    "fill_rate": 0.4825,
+    "per_share_c": 1.479,
+    "per_share_ci95_c": [
+     1.327,
+     1.63
+    ],
+    "pnl_usd": 23760.3,
+    "pnl_per_day_usd": 230.7,
+    "sharpe_ann": 29.15,
+    "max_dd_usd": -62.2,
+    "worst_day_usd": -62.2,
+    "pnl_wrong_usd": -7026.5
+   },
+   "LIVE-PRICED, umpire-noise reading, lag 2.0": {
+    "calls": 22751,
+    "trades": 15391,
+    "fill_rate": 0.6421,
+    "per_share_c": -0.004,
+    "per_share_ci95_c": [
+     -0.186,
+     0.191
+    ],
+    "pnl_usd": -51.2,
+    "pnl_per_day_usd": -0.5,
+    "sharpe_ann": -0.07,
+    "max_dd_usd": -1471.1,
+    "worst_day_usd": -343.9,
+    "pnl_wrong_usd": -3915.8
+   },
+   "LIVE-PRICED, umpire-noise reading, lag 3.14": {
+    "calls": 22751,
+    "trades": 13379,
+    "fill_rate": 0.5584,
+    "per_share_c": 1.543,
+    "per_share_ci95_c": [
+     1.406,
+     1.687
+    ],
+    "pnl_usd": 29045.4,
+    "pnl_per_day_usd": 282.0,
+    "sharpe_ann": 33.24,
+    "max_dd_usd": -79.2,
+    "worst_day_usd": -79.2,
+    "pnl_wrong_usd": -9044.5
+   },
+   "LIVE-PRICED, phi 0.25": {
+    "calls": 22751,
+    "trades": 8365,
+    "fill_rate": 0.3357,
+    "per_share_c": 0.951,
+    "per_share_ci95_c": [
+     0.666,
+     1.218
+    ],
+    "pnl_usd": 8260.8,
+    "pnl_per_day_usd": 80.2,
+    "sharpe_ann": 13.87,
+    "max_dd_usd": -268.0,
+    "worst_day_usd": -186.3,
+    "pnl_wrong_usd": -5176.7
+   },
+   "LIVE-PRICED, p_event 0.99": {
+    "calls": 22751,
+    "trades": 7835,
+    "fill_rate": 0.3319,
+    "per_share_c": 1.277,
+    "per_share_ci95_c": [
+     1.01,
+     1.555
+    ],
+    "pnl_usd": 12226.4,
+    "pnl_per_day_usd": 118.7,
+    "sharpe_ann": 18.09,
+    "max_dd_usd": -184.8,
+    "worst_day_usd": -184.8,
+    "pnl_wrong_usd": -3013.3
+   },
+   "primary_pnl_by_tau_bucket_usd": {
+    "[-0.5, 0.0)": -55.0,
+    "[0.0, 0.5)": 16438.0,
+    "[0.5, 1.0)": 5631.0,
+    "[1.0, 2.0)": 9007.0,
+    "[2.0, 99.0)": 1983.0
+   },
+   "primary_per_share_c_by_jump_size": {
+    "(0.04, 0.05]": 2.32,
+    "(0.05, 0.07]": 3.09,
+    "(0.07, 0.1]": 5.15,
+    "(0.1, 1.0]": 10.5
+   },
+   "primary_5050_resolution_trades": 0,
+   "primary_5050_resolution_pnl_usd": 0.0
+  },
+  "burned_OOS": {
+   "primary (reproduced)": {
+    "calls": 8282,
+    "trades": 2965,
+    "fill_rate": 0.3259,
+    "per_share_c": 2.543,
+    "per_share_ci95_c": [
+     2.107,
+     2.945
+    ],
+    "pnl_usd": 9433.0,
+    "pnl_per_day_usd": 235.8,
+    "sharpe_ann": 34.9,
+    "max_dd_usd": -20.4,
+    "worst_day_usd": -20.4,
+    "pnl_wrong_usd": 830.1
+   },
+   "stamp 1 s resolution truncated: R - 0.5 s": {
+    "calls": 8282,
+    "trades": 2155,
+    "fill_rate": 0.228,
+    "per_share_c": 1.835,
+    "per_share_ci95_c": [
+     1.126,
+     2.572
+    ],
+    "pnl_usd": 4049.4,
+    "pnl_per_day_usd": 101.2,
+    "sharpe_ann": 16.0,
+    "max_dd_usd": -144.6,
+    "worst_day_usd": -143.7,
+    "pnl_wrong_usd": 1148.2
+   },
+   "R spread = umpire noise: t_reprice - t_bounce constant (lag 2.0)": {
+    "calls": 8282,
+    "trades": 5777,
+    "fill_rate": 0.6631,
+    "per_share_c": -0.599,
+    "per_share_ci95_c": [
+     -0.934,
+     -0.263
+    ],
+    "pnl_usd": -2637.8,
+    "pnl_per_day_usd": -65.9,
+    "sharpe_ann": -9.57,
+    "max_dd_usd": -2596.1,
+    "worst_day_usd": -319.7,
+    "pnl_wrong_usd": 750.0
+   },
+   "R spread = umpire noise, calibrated lag 3.14": {
+    "calls": 8282,
+    "trades": 4862,
+    "fill_rate": 0.5566,
+    "per_share_c": 4.104,
+    "per_share_ci95_c": [
+     3.889,
+     4.322
+    ],
+    "pnl_usd": 29597.0,
+    "pnl_per_day_usd": 739.9,
+    "sharpe_ann": 53.66,
+    "max_dd_usd": 0.0,
+    "worst_day_usd": 246.4,
+    "pnl_wrong_usd": -801.7
+   },
+   "limit order at stale+slip (no decay-window fills)": {
+    "calls": 8282,
+    "trades": 2043,
+    "fill_rate": 0.2154,
+    "per_share_c": 3.387,
+    "per_share_ci95_c": [
+     2.762,
+     4.006
+    ],
+    "pnl_usd": 8947.1,
+    "pnl_per_day_usd": 223.7,
+    "sharpe_ann": 36.12,
+    "max_dd_usd": -68.9,
+    "worst_day_usd": -68.9,
+    "pnl_wrong_usd": 848.0
+   },
+   "depth/timing sampled by live match (cluster)": {
+    "calls": 8282,
+    "trades": 2845,
+    "fill_rate": 0.3141,
+    "per_share_c": 2.769,
+    "per_share_ci95_c": [
+     2.339,
+     3.193
+    ],
+    "pnl_usd": 10230.0,
+    "pnl_per_day_usd": 255.7,
+    "sharpe_ann": 31.44,
+    "max_dd_usd": -44.1,
+    "worst_day_usd": -44.1,
+    "pnl_wrong_usd": -1385.8
+   },
+   "stale = mid_pre (fallback ref_short, ref)": {
+    "calls": 8261,
+    "trades": 2980,
+    "fill_rate": 0.3282,
+    "per_share_c": 1.004,
+    "per_share_ci95_c": [
+     0.574,
+     1.41
+    ],
+    "pnl_usd": 3711.5,
+    "pnl_per_day_usd": 92.8,
+    "sharpe_ann": 15.29,
+    "max_dd_usd": -153.8,
+    "worst_day_usd": -143.4,
+    "pnl_wrong_usd": 1511.9
+   },
+   "mid_pre + limit order": {
+    "calls": 8261,
+    "trades": 2048,
+    "fill_rate": 0.2167,
+    "per_share_c": 1.936,
+    "per_share_ci95_c": [
+     1.318,
+     2.653
+    ],
+    "pnl_usd": 5088.7,
+    "pnl_per_day_usd": 127.2,
+    "sharpe_ann": 21.0,
+    "max_dd_usd": -148.7,
+    "worst_day_usd": -148.7,
+    "pnl_wrong_usd": 1429.1
+   },
+   "mid_pre + limit + R - 0.5 s": {
+    "calls": 8261,
+    "trades": 1135,
+    "fill_rate": 0.1057,
+    "per_share_c": 1.957,
+    "per_share_ci95_c": [
+     0.888,
+     2.983
+    ],
+    "pnl_usd": 2851.9,
+    "pnl_per_day_usd": 71.3,
+    "sharpe_ann": 10.21,
+    "max_dd_usd": -377.3,
+    "worst_day_usd": -191.1,
+    "pnl_wrong_usd": 346.1
+   },
+   "mid_pre + limit, calibrated lag 3.14 (sampled R)": {
+    "calls": 8261,
+    "trades": 4011,
+    "fill_rate": 0.4552,
+    "per_share_c": 2.361,
+    "per_share_ci95_c": [
+     2.06,
+     2.651
+    ],
+    "pnl_usd": 13883.5,
+    "pnl_per_day_usd": 347.1,
+    "sharpe_ann": 45.22,
+    "max_dd_usd": 0.0,
+    "worst_day_usd": 26.9,
+    "pnl_wrong_usd": 1557.3
+   },
+   "mid_pre + limit, umpire-noise reading, lag 3.14": {
+    "calls": 8261,
+    "trades": 4889,
+    "fill_rate": 0.5614,
+    "per_share_c": 2.399,
+    "per_share_ci95_c": [
+     2.172,
+     2.611
+    ],
+    "pnl_usd": 17264.9,
+    "pnl_per_day_usd": 431.6,
+    "sharpe_ann": 47.38,
+    "max_dd_usd": 0.0,
+    "worst_day_usd": 68.9,
+    "pnl_wrong_usd": -47.7
+   },
+   "LIVE-PRICED: fill = post - edge of first 100 live shares": {
+    "calls": 8282,
+    "trades": 2974,
+    "fill_rate": 0.3267,
+    "per_share_c": 0.44,
+    "per_share_ci95_c": [
+     -0.009,
+     0.873
+    ],
+    "pnl_usd": 1616.4,
+    "pnl_per_day_usd": 40.4,
+    "sharpe_ann": 5.98,
+    "max_dd_usd": -286.4,
+    "worst_day_usd": -213.8,
+    "pnl_wrong_usd": 891.0
+   },
+   "LIVE-PRICED, edge scaled by size/D": {
+    "calls": 8282,
+    "trades": 2969,
+    "fill_rate": 0.326,
+    "per_share_c": 1.024,
+    "per_share_ci95_c": [
+     0.577,
+     1.447
+    ],
+    "pnl_usd": 3769.0,
+    "pnl_per_day_usd": 94.2,
+    "sharpe_ann": 14.1,
+    "max_dd_usd": -177.6,
+    "worst_day_usd": -141.0,
+    "pnl_wrong_usd": 882.4
+   },
+   "LIVE-PRICED + R - 0.5 s": {
+    "calls": 8282,
+    "trades": 2161,
+    "fill_rate": 0.2286,
+    "per_share_c": 0.112,
+    "per_share_ci95_c": [
+     -0.614,
+     0.904
+    ],
+    "pnl_usd": 246.3,
+    "pnl_per_day_usd": 6.2,
+    "sharpe_ann": 1.0,
+    "max_dd_usd": -635.3,
+    "worst_day_usd": -288.5,
+    "pnl_wrong_usd": 1121.0
+   },
+   "LIVE-PRICED, calibrated lag 3.14": {
+    "calls": 8282,
+    "trades": 4271,
+    "fill_rate": 0.4856,
+    "per_share_c": 1.188,
+    "per_share_ci95_c": [
+     0.931,
+     1.463
+    ],
+    "pnl_usd": 7271.2,
+    "pnl_per_day_usd": 181.8,
+    "sharpe_ann": 26.02,
+    "max_dd_usd": -116.3,
+    "worst_day_usd": -116.3,
+    "pnl_wrong_usd": 289.1
+   },
+   "LIVE-PRICED, umpire-noise reading, lag 2.0": {
+    "calls": 8282,
+    "trades": 5779,
+    "fill_rate": 0.6634,
+    "per_share_c": -0.428,
+    "per_share_ci95_c": [
+     -0.756,
+     -0.098
+    ],
+    "pnl_usd": -1888.8,
+    "pnl_per_day_usd": -47.2,
+    "sharpe_ann": -6.89,
+    "max_dd_usd": -2185.3,
+    "worst_day_usd": -319.0,
+    "pnl_wrong_usd": 748.0
+   },
+   "LIVE-PRICED, umpire-noise reading, lag 3.14": {
+    "calls": 8282,
+    "trades": 4905,
+    "fill_rate": 0.5617,
+    "per_share_c": 1.26,
+    "per_share_ci95_c": [
+     1.025,
+     1.489
+    ],
+    "pnl_usd": 8995.9,
+    "pnl_per_day_usd": 224.9,
+    "sharpe_ann": 29.13,
+    "max_dd_usd": -50.4,
+    "worst_day_usd": -50.4,
+    "pnl_wrong_usd": -821.8
+   },
+   "LIVE-PRICED, phi 0.25": {
+    "calls": 8282,
+    "trades": 3114,
+    "fill_rate": 0.343,
+    "per_share_c": 0.368,
+    "per_share_ci95_c": [
+     -0.128,
+     0.837
+    ],
+    "pnl_usd": 1206.0,
+    "pnl_per_day_usd": 30.1,
+    "sharpe_ann": 4.61,
+    "max_dd_usd": -317.8,
+    "worst_day_usd": -212.4,
+    "pnl_wrong_usd": 898.5
+   },
+   "LIVE-PRICED, p_event 0.99": {
+    "calls": 8282,
+    "trades": 2887,
+    "fill_rate": 0.336,
+    "per_share_c": 0.656,
+    "per_share_ci95_c": [
+     0.224,
+     1.08
+    ],
+    "pnl_usd": 2322.4,
+    "pnl_per_day_usd": 58.1,
+    "sharpe_ann": 9.38,
+    "max_dd_usd": -195.2,
+    "worst_day_usd": -173.1,
+    "pnl_wrong_usd": -440.6
+   },
+   "primary_pnl_by_tau_bucket_usd": {
+    "[-0.5, 0.0)": -1432.0,
+    "[0.0, 0.5)": 6286.0,
+    "[0.5, 1.0)": 1076.0,
+    "[1.0, 2.0)": 328.0,
+    "[2.0, 99.0)": 2313.0
+   },
+   "primary_per_share_c_by_jump_size": {
+    "(0.04, 0.05]": 0.34,
+    "(0.05, 0.07]": 3.23,
+    "(0.07, 0.1]": 4.59,
+    "(0.1, 1.0]": 13.56
+   },
+   "primary_5050_resolution_trades": 1,
+   "primary_5050_resolution_pnl_usd": 27.7
+  }
+ },
+ "7_bookkeeping": {
+  "mtimes_utc": {
+   "research/v2/tier0/PREREG.md": "2026-10-03T17:25:41.002508879+00:00",
+   "research/v2/tier0/DEVIATIONS.md": "2026-10-03T17:29:12.575949192+00:00",
+   "research/v2/tier0/RESULTS.md": "2026-10-03T17:37:40.559877157+00:00",
+   "src/tier0.py": "2026-10-03T17:28:43.860580683+00:00",
+   "scripts/tier0_backtest.py": "2026-10-03T17:32:09.826076508+00:00",
+   "results/tier0/equity_primary.csv": "2026-10-03T17:29:29.384770870+00:00",
+   "results/tier0/equity_primary.png": "2026-10-03T17:32:10.937603951+00:00",
+   "results/tier0/grid.csv": "2026-10-03T17:30:27.480139732+00:00",
+   "results/tier0/grid_ref_short.csv": "2026-10-03T17:31:26.122247696+00:00",
+   "results/tier0/results.json": "2026-10-03T17:31:26.457925797+00:00",
+   "results/tier0/sharpe_heatmap.png": "2026-10-03T17:32:11.155779839+00:00"
+  },
+  "oos_peeks_tier0": [
+   "2026-10-03T17:23:41.710383+00:00 tier0 counterfactual: OOS jump table built (burned OOS, non-blind)",
+   "2026-10-03T17:29:29.198786+00:00 tier0 counterfactual grid evaluated on burned OOS (non-blind, labelled)",
+   "2026-10-03T17:43:41.266161+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)",
+   "2026-10-03T17:45:17.819645+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)",
+   "2026-10-03T17:48:08.518292+00:00 tier0 independent rebuild: OOS prints read for jump onsets + stale price (burned OOS, non-blind, labelled)"
+  ],
+  "affirmative_live_data_claims": [],
+  "grid_levels": {
+   "cv": [
+    "hawkeye340",
+    "own120",
+    "own120_pess"
+   ],
+   "stamp_lag": [
+    1.0,
+    2.0,
+    3.0,
+    3.142
+   ],
+   "phi": [
+    0.25,
+    0.5,
+    1.0
+   ],
+   "coverage": [
+    3.0,
+    10.0,
+    30.0
+   ],
+   "p_event": [
+    0.95,
+    0.99
+   ],
+   "net_cap": [
+    100.0,
+    1000.0
+   ]
+  },
+  "grid_rows": 864
+ }
+}

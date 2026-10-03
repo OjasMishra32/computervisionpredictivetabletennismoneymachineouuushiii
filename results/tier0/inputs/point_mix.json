@@ -1,0 +1,32 @@
+{
+ "source": "Jeff Sackmann, Match Charting Project (https://github.com/JeffSackmann/tennis_MatchChartingProject), charting-{m,w}-points-2020s.csv, CC BY-NC-SA 4.0. Crowd-charted, mostly tour-level and Grand Slam matches.",
+ "distance_out": "not recorded by the MCP; out-ball distances use the physics model's near-line population (ASSUMPTION)",
+ "men": {
+  "n_points": 547478,
+  "n_matches": 3337,
+  "years": [
+   2020,
+   2026
+  ],
+  "out": 0.362,
+  "net": 0.2521,
+  "winner": 0.3515,
+  "other": 0.0345,
+  "double_fault": 0.034,
+  "double_fault_out": 0.0188
+ },
+ "women": {
+  "n_points": 353755,
+  "n_matches": 2552,
+  "years": [
+   2020,
+   2026
+  ],
+  "out": 0.4125,
+  "net": 0.2596,
+  "winner": 0.2916,
+  "other": 0.0363,
+  "double_fault": 0.0489,
+  "double_fault_out": 0.0294
+ }
+}

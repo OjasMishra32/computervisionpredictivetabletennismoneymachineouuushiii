@@ -1,0 +1,1038 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA. assumed: licensed live feed + courtside camera, not purchased; parameters from our measurements. OOS = burned OOS (not blind).",
+ "params": {
+  "stamp_lag": 2.0,
+  "phi": 0.5,
+  "coverage": 10,
+  "p_event": 0.95,
+  "net_cap": 100.0,
+  "trade_cap": 1000.0,
+  "slip": 0.005,
+  "inference": 0.02,
+  "gateway": 0.002,
+  "zone": [
+   0.05,
+   0.95
+  ],
+  "need_lead": 0.0,
+  "shift": 0.0
+ },
+ "primary": {
+  "IS": {
+   "n_calls": 22513,
+   "n_trades": 7993,
+   "fill_rate": 0.3247,
+   "calls_before_reprice": 0.4068,
+   "calls_in_decay": 0.1328,
+   "calls_too_late": 0.4604,
+   "median_tau_s": -0.359,
+   "early_out_call_share": 0.2161,
+   "correct_calls_blocked_by_net_cap": 0.1908,
+   "correct_calls_blocked_or_cut_by_net_cap": 0.788,
+   "per_share_c": 3.146,
+   "per_share_ci95_c": [
+    2.879,
+    3.39
+   ],
+   "pnl_usd": 31258.8,
+   "days": 103,
+   "pnl_per_day": 303.5,
+   "sharpe_ann": 34.72,
+   "max_dd_usd": -14.9,
+   "worst_day_usd": -14.9,
+   "months_positive": "4/4",
+   "capital_usd": 18765.0,
+   "roc_pct": 166.6,
+   "roc_ann_pct": 590.3,
+   "pnl_wrong_usd": -5103.7,
+   "wrong_share_of_trades": 0.0854,
+   "n_matches": 879,
+   "median_usd_per_fill": 50.5
+  },
+  "burned_OOS": {
+   "n_calls": 8255,
+   "n_trades": 2910,
+   "fill_rate": 0.3205,
+   "calls_before_reprice": 0.3673,
+   "calls_in_decay": 0.1706,
+   "calls_too_late": 0.4621,
+   "median_tau_s": -0.382,
+   "early_out_call_share": 0.2298,
+   "correct_calls_blocked_by_net_cap": 0.1897,
+   "correct_calls_blocked_or_cut_by_net_cap": 0.7951,
+   "per_share_c": 2.592,
+   "per_share_ci95_c": [
+    2.2,
+    2.986
+   ],
+   "pnl_usd": 9557.1,
+   "days": 40,
+   "pnl_per_day": 238.9,
+   "sharpe_ann": 30.15,
+   "max_dd_usd": -120.8,
+   "worst_day_usd": -120.8,
+   "months_positive": "3/3",
+   "capital_usd": 18313.0,
+   "roc_pct": 52.2,
+   "roc_ann_pct": 476.2,
+   "pnl_wrong_usd": -2247.9,
+   "wrong_share_of_trades": 0.0907,
+   "n_matches": 330,
+   "median_usd_per_fill": 52.2
+  }
+ },
+ "stress": {
+  "i_stamp_lag_1.0": {
+   "IS": {
+    "n_calls": 22513,
+    "n_trades": 3379,
+    "fill_rate": 0.1146,
+    "calls_before_reprice": 0.126,
+    "calls_in_decay": 0.0505,
+    "calls_too_late": 0.8234,
+    "median_tau_s": -1.359,
+    "early_out_call_share": 0.2161,
+    "correct_calls_blocked_by_net_cap": 0.0476,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6544,
+    "per_share_c": 1.411,
+    "per_share_ci95_c": [
+     0.631,
+     2.175
+    ],
+    "pnl_usd": 4558.2,
+    "days": 103,
+    "pnl_per_day": 44.3,
+    "sharpe_ann": 6.76,
+    "max_dd_usd": -517.9,
+    "worst_day_usd": -303.6,
+    "months_positive": "4/4",
+    "capital_usd": 5792.0,
+    "roc_pct": 78.7,
+    "roc_ann_pct": 278.9,
+    "pnl_wrong_usd": -3141.3,
+    "wrong_share_of_trades": 0.2368,
+    "n_matches": 809,
+    "median_usd_per_fill": 33.3
+   },
+   "burned_OOS": {
+    "n_calls": 8255,
+    "n_trades": 1276,
+    "fill_rate": 0.1176,
+    "calls_before_reprice": 0.1089,
+    "calls_in_decay": 0.0707,
+    "calls_too_late": 0.8204,
+    "median_tau_s": -1.382,
+    "early_out_call_share": 0.2298,
+    "correct_calls_blocked_by_net_cap": 0.0472,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6627,
+    "per_share_c": 1.222,
+    "per_share_ci95_c": [
+     0.123,
+     2.258
+    ],
+    "pnl_usd": 1522.7,
+    "days": 40,
+    "pnl_per_day": 38.1,
+    "sharpe_ann": 7.38,
+    "max_dd_usd": -200.3,
+    "worst_day_usd": -189.5,
+    "months_positive": "2/3",
+    "capital_usd": 5684.0,
+    "roc_pct": 26.8,
+    "roc_ann_pct": 244.4,
+    "pnl_wrong_usd": -783.0,
+    "wrong_share_of_trades": 0.239,
+    "n_matches": 302,
+    "median_usd_per_fill": 34.3
+   }
+  },
+  "ii_beat_reprice_by_0.25s": {
+   "IS": {
+    "n_calls": 22513,
+    "n_trades": 3587,
+    "fill_rate": 0.1278,
+    "calls_before_reprice": 0.4068,
+    "calls_in_decay": 0.1328,
+    "calls_too_late": 0.4604,
+    "median_tau_s": -0.359,
+    "early_out_call_share": 0.2161,
+    "correct_calls_blocked_by_net_cap": 0.078,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.8513,
+    "per_share_c": 2.426,
+    "per_share_ci95_c": [
+     1.888,
+     2.959
+    ],
+    "pnl_usd": 11664.4,
+    "days": 103,
+    "pnl_per_day": 113.2,
+    "sharpe_ann": 14.98,
+    "max_dd_usd": -407.1,
+    "worst_day_usd": -290.9,
+    "months_positive": "4/4",
+    "capital_usd": 8651.0,
+    "roc_pct": 134.8,
+    "roc_ann_pct": 477.8,
+    "pnl_wrong_usd": -5887.4,
+    "wrong_share_of_trades": 0.1977,
+    "n_matches": 826,
+    "median_usd_per_fill": 55.6
+   },
+   "burned_OOS": {
+    "n_calls": 8255,
+    "n_trades": 1337,
+    "fill_rate": 0.1286,
+    "calls_before_reprice": 0.3673,
+    "calls_in_decay": 0.1706,
+    "calls_too_late": 0.4621,
+    "median_tau_s": -0.382,
+    "early_out_call_share": 0.2298,
+    "correct_calls_blocked_by_net_cap": 0.0755,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.8487,
+    "per_share_c": 2.318,
+    "per_share_ci95_c": [
+     1.5,
+     3.131
+    ],
+    "pnl_usd": 4154.5,
+    "days": 40,
+    "pnl_per_day": 103.9,
+    "sharpe_ann": 17.08,
+    "max_dd_usd": -162.0,
+    "worst_day_usd": -162.0,
+    "months_positive": "3/3",
+    "capital_usd": 8306.0,
+    "roc_pct": 50.0,
+    "roc_ann_pct": 456.4,
+    "pnl_wrong_usd": -2091.6,
+    "wrong_share_of_trades": 0.2057,
+    "n_matches": 307,
+    "median_usd_per_fill": 56.8
+   }
+  },
+  "ii_b_add_0.25s_latency": {
+   "IS": {
+    "n_calls": 22513,
+    "n_trades": 7113,
+    "fill_rate": 0.2839,
+    "calls_before_reprice": 0.2211,
+    "calls_in_decay": 0.242,
+    "calls_too_late": 0.5368,
+    "median_tau_s": -0.609,
+    "early_out_call_share": 0.2161,
+    "correct_calls_blocked_by_net_cap": 0.157,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7453,
+    "per_share_c": 2.374,
+    "per_share_ci95_c": [
+     2.053,
+     2.666
+    ],
+    "pnl_usd": 18975.9,
+    "days": 103,
+    "pnl_per_day": 184.2,
+    "sharpe_ann": 24.19,
+    "max_dd_usd": -58.6,
+    "worst_day_usd": -58.6,
+    "months_positive": "4/4",
+    "capital_usd": 14860.0,
+    "roc_pct": 127.7,
+    "roc_ann_pct": 452.5,
+    "pnl_wrong_usd": -4626.2,
+    "wrong_share_of_trades": 0.1015,
+    "n_matches": 871,
+    "median_usd_per_fill": 45.7
+   },
+   "burned_OOS": {
+    "n_calls": 8255,
+    "n_trades": 2598,
+    "fill_rate": 0.2815,
+    "calls_before_reprice": 0.221,
+    "calls_in_decay": 0.2399,
+    "calls_too_late": 0.5392,
+    "median_tau_s": -0.632,
+    "early_out_call_share": 0.2298,
+    "correct_calls_blocked_by_net_cap": 0.153,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7469,
+    "per_share_c": 1.845,
+    "per_share_ci95_c": [
+     1.372,
+     2.29
+    ],
+    "pnl_usd": 5315.8,
+    "days": 40,
+    "pnl_per_day": 132.9,
+    "sharpe_ann": 18.58,
+    "max_dd_usd": -269.0,
+    "worst_day_usd": -269.0,
+    "months_positive": "3/3",
+    "capital_usd": 14378.0,
+    "roc_pct": 37.0,
+    "roc_ann_pct": 337.4,
+    "pnl_wrong_usd": -2069.9,
+    "wrong_share_of_trades": 0.1055,
+    "n_matches": 327,
+    "median_usd_per_fill": 44.3
+   }
+  },
+  "i+ii_lag1.0_and_beat_by_0.25s": {
+   "IS": {
+    "n_calls": 22513,
+    "n_trades": 1445,
+    "fill_rate": 0.0281,
+    "calls_before_reprice": 0.126,
+    "calls_in_decay": 0.0505,
+    "calls_too_late": 0.8234,
+    "median_tau_s": -1.359,
+    "early_out_call_share": 0.2161,
+    "correct_calls_blocked_by_net_cap": 0.0103,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6725,
+    "per_share_c": -1.138,
+    "per_share_ci95_c": [
+     -2.506,
+     0.296
+    ],
+    "pnl_usd": -1710.1,
+    "days": 103,
+    "pnl_per_day": -16.6,
+    "sharpe_ann": -3.09,
+    "max_dd_usd": -2106.2,
+    "worst_day_usd": -228.3,
+    "months_positive": "1/4",
+    "capital_usd": 3916.0,
+    "roc_pct": -43.7,
+    "roc_ann_pct": -154.8,
+    "pnl_wrong_usd": -5081.2,
+    "wrong_share_of_trades": 0.5626,
+    "n_matches": 667,
+    "median_usd_per_fill": 41.0
+   },
+   "burned_OOS": {
+    "n_calls": 8255,
+    "n_trades": 582,
+    "fill_rate": 0.032,
+    "calls_before_reprice": 0.1089,
+    "calls_in_decay": 0.0707,
+    "calls_too_late": 0.8204,
+    "median_tau_s": -1.382,
+    "early_out_call_share": 0.2298,
+    "correct_calls_blocked_by_net_cap": 0.0102,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7267,
+    "per_share_c": 0.008,
+    "per_share_ci95_c": [
+     -2.047,
+     2.073
+    ],
+    "pnl_usd": 4.9,
+    "days": 40,
+    "pnl_per_day": 0.1,
+    "sharpe_ann": 0.02,
+    "max_dd_usd": -508.2,
+    "worst_day_usd": -233.9,
+    "months_positive": "1/3",
+    "capital_usd": 3283.0,
+    "roc_pct": 0.1,
+    "roc_ann_pct": 1.4,
+    "pnl_wrong_usd": -956.1,
+    "wrong_share_of_trades": 0.5464,
+    "n_matches": 253,
+    "median_usd_per_fill": 42.2
+   }
+  }
+ },
+ "variant_coverage_ranked_per_period": {
+  "IS": {
+   "n_calls": 22751,
+   "n_trades": 8043,
+   "fill_rate": 0.3246,
+   "calls_before_reprice": 0.4091,
+   "calls_in_decay": 0.1317,
+   "calls_too_late": 0.4592,
+   "median_tau_s": -0.353,
+   "early_out_call_share": 0.2176,
+   "correct_calls_blocked_by_net_cap": 0.1914,
+   "correct_calls_blocked_or_cut_by_net_cap": 0.787,
+   "per_share_c": 3.236,
+   "per_share_ci95_c": [
+    2.977,
+    3.488
+   ],
+   "pnl_usd": 32049.0,
+   "days": 103,
+   "pnl_per_day": 311.2,
+   "sharpe_ann": 32.59,
+   "max_dd_usd": -71.0,
+   "worst_day_usd": -71.0,
+   "months_positive": "4/4",
+   "capital_usd": 19231.0,
+   "roc_pct": 166.7,
+   "roc_ann_pct": 590.6,
+   "pnl_wrong_usd": -2070.4,
+   "wrong_share_of_trades": 0.0819,
+   "n_matches": 889,
+   "median_usd_per_fill": 50.3
+  },
+  "burned_OOS": {
+   "n_calls": 8282,
+   "n_trades": 2867,
+   "fill_rate": 0.3151,
+   "calls_before_reprice": 0.3654,
+   "calls_in_decay": 0.1666,
+   "calls_too_late": 0.468,
+   "median_tau_s": -0.399,
+   "early_out_call_share": 0.2278,
+   "correct_calls_blocked_by_net_cap": 0.1886,
+   "correct_calls_blocked_or_cut_by_net_cap": 0.7877,
+   "per_share_c": 2.613,
+   "per_share_ci95_c": [
+    2.144,
+    3.052
+   ],
+   "pnl_usd": 9296.6,
+   "days": 40,
+   "pnl_per_day": 232.4,
+   "sharpe_ann": 27.39,
+   "max_dd_usd": -46.3,
+   "worst_day_usd": -46.3,
+   "months_positive": "3/3",
+   "capital_usd": 17707.0,
+   "roc_pct": 52.5,
+   "roc_ann_pct": 479.1,
+   "pnl_wrong_usd": -2919.6,
+   "wrong_share_of_trades": 0.0896,
+   "n_matches": 334,
+   "median_usd_per_fill": 50.9
+  }
+ },
+ "supp_ref_short": {
+  "primary": {
+   "IS": {
+    "n_calls": 20795,
+    "n_trades": 7482,
+    "fill_rate": 0.3286,
+    "calls_before_reprice": 0.4094,
+    "calls_in_decay": 0.1325,
+    "calls_too_late": 0.4581,
+    "median_tau_s": -0.359,
+    "early_out_call_share": 0.2158,
+    "correct_calls_blocked_by_net_cap": 0.1904,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7866,
+    "per_share_c": 1.857,
+    "per_share_ci95_c": [
+     1.589,
+     2.153
+    ],
+    "pnl_usd": 17125.2,
+    "days": 103,
+    "pnl_per_day": 166.3,
+    "sharpe_ann": 20.57,
+    "max_dd_usd": -288.7,
+    "worst_day_usd": -241.7,
+    "months_positive": "4/4",
+    "capital_usd": 16875.0,
+    "roc_pct": 101.5,
+    "roc_ann_pct": 359.6,
+    "pnl_wrong_usd": -1426.1,
+    "wrong_share_of_trades": 0.0866,
+    "n_matches": 875,
+    "median_usd_per_fill": 51.0
+   },
+   "burned_OOS": {
+    "n_calls": 7093,
+    "n_trades": 2473,
+    "fill_rate": 0.3168,
+    "calls_before_reprice": 0.3625,
+    "calls_in_decay": 0.1717,
+    "calls_too_late": 0.4658,
+    "median_tau_s": -0.383,
+    "early_out_call_share": 0.2266,
+    "correct_calls_blocked_by_net_cap": 0.1895,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.8041,
+    "per_share_c": 1.618,
+    "per_share_ci95_c": [
+     1.122,
+     2.088
+    ],
+    "pnl_usd": 5161.2,
+    "days": 40,
+    "pnl_per_day": 129.0,
+    "sharpe_ann": 14.75,
+    "max_dd_usd": -194.7,
+    "worst_day_usd": -122.5,
+    "months_positive": "3/3",
+    "capital_usd": 15987.0,
+    "roc_pct": 32.3,
+    "roc_ann_pct": 294.6,
+    "pnl_wrong_usd": -692.1,
+    "wrong_share_of_trades": 0.0914,
+    "n_matches": 322,
+    "median_usd_per_fill": 55.0
+   }
+  },
+  "i_stamp_lag_1.0": {
+   "IS": {
+    "n_calls": 20795,
+    "n_trades": 3172,
+    "fill_rate": 0.1172,
+    "calls_before_reprice": 0.1259,
+    "calls_in_decay": 0.05,
+    "calls_too_late": 0.8241,
+    "median_tau_s": -1.359,
+    "early_out_call_share": 0.2158,
+    "correct_calls_blocked_by_net_cap": 0.0447,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6373,
+    "per_share_c": 1.006,
+    "per_share_ci95_c": [
+     0.254,
+     1.716
+    ],
+    "pnl_usd": 3001.2,
+    "days": 103,
+    "pnl_per_day": 29.1,
+    "sharpe_ann": 4.77,
+    "max_dd_usd": -1272.6,
+    "worst_day_usd": -241.7,
+    "months_positive": "4/4",
+    "capital_usd": 6517.0,
+    "roc_pct": 46.1,
+    "roc_ann_pct": 163.2,
+    "pnl_wrong_usd": 546.8,
+    "wrong_share_of_trades": 0.2314,
+    "n_matches": 803,
+    "median_usd_per_fill": 33.0
+   },
+   "burned_OOS": {
+    "n_calls": 7093,
+    "n_trades": 1075,
+    "fill_rate": 0.1163,
+    "calls_before_reprice": 0.1066,
+    "calls_in_decay": 0.0708,
+    "calls_too_late": 0.8226,
+    "median_tau_s": -1.383,
+    "early_out_call_share": 0.2266,
+    "correct_calls_blocked_by_net_cap": 0.0472,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6605,
+    "per_share_c": 1.788,
+    "per_share_ci95_c": [
+     0.487,
+     3.096
+    ],
+    "pnl_usd": 1909.2,
+    "days": 40,
+    "pnl_per_day": 47.7,
+    "sharpe_ann": 6.65,
+    "max_dd_usd": -263.3,
+    "worst_day_usd": -263.3,
+    "months_positive": "3/3",
+    "capital_usd": 4985.0,
+    "roc_pct": 38.3,
+    "roc_ann_pct": 349.5,
+    "pnl_wrong_usd": 224.9,
+    "wrong_share_of_trades": 0.2326,
+    "n_matches": 288,
+    "median_usd_per_fill": 36.8
+   }
+  },
+  "ii_beat_reprice_by_0.25s": {
+   "IS": {
+    "n_calls": 20795,
+    "n_trades": 3368,
+    "fill_rate": 0.1306,
+    "calls_before_reprice": 0.4094,
+    "calls_in_decay": 0.1325,
+    "calls_too_late": 0.4581,
+    "median_tau_s": -0.359,
+    "early_out_call_share": 0.2158,
+    "correct_calls_blocked_by_net_cap": 0.0742,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.8473,
+    "per_share_c": 2.209,
+    "per_share_ci95_c": [
+     1.716,
+     2.805
+    ],
+    "pnl_usd": 9891.8,
+    "days": 103,
+    "pnl_per_day": 96.0,
+    "sharpe_ann": 14.11,
+    "max_dd_usd": -313.4,
+    "worst_day_usd": -211.0,
+    "months_positive": "4/4",
+    "capital_usd": 8511.0,
+    "roc_pct": 116.2,
+    "roc_ann_pct": 411.9,
+    "pnl_wrong_usd": -1651.7,
+    "wrong_share_of_trades": 0.1939,
+    "n_matches": 817,
+    "median_usd_per_fill": 55.9
+   },
+   "burned_OOS": {
+    "n_calls": 7093,
+    "n_trades": 1125,
+    "fill_rate": 0.1272,
+    "calls_before_reprice": 0.3625,
+    "calls_in_decay": 0.1717,
+    "calls_too_late": 0.4658,
+    "median_tau_s": -0.383,
+    "early_out_call_share": 0.2266,
+    "correct_calls_blocked_by_net_cap": 0.0729,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.8729,
+    "per_share_c": 2.631,
+    "per_share_ci95_c": [
+     1.688,
+     3.585
+    ],
+    "pnl_usd": 4127.7,
+    "days": 40,
+    "pnl_per_day": 103.2,
+    "sharpe_ann": 13.98,
+    "max_dd_usd": -298.5,
+    "worst_day_usd": -298.5,
+    "months_positive": "3/3",
+    "capital_usd": 7055.0,
+    "roc_pct": 58.5,
+    "roc_ann_pct": 533.8,
+    "pnl_wrong_usd": -539.7,
+    "wrong_share_of_trades": 0.1982,
+    "n_matches": 300,
+    "median_usd_per_fill": 58.2
+   }
+  },
+  "ii_b_add_0.25s_latency": {
+   "IS": {
+    "n_calls": 20795,
+    "n_trades": 6699,
+    "fill_rate": 0.29,
+    "calls_before_reprice": 0.2185,
+    "calls_in_decay": 0.2471,
+    "calls_too_late": 0.5344,
+    "median_tau_s": -0.609,
+    "early_out_call_share": 0.2158,
+    "correct_calls_blocked_by_net_cap": 0.1542,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7408,
+    "per_share_c": 1.119,
+    "per_share_ci95_c": [
+     0.782,
+     1.466
+    ],
+    "pnl_usd": 8297.2,
+    "days": 103,
+    "pnl_per_day": 80.6,
+    "sharpe_ann": 10.73,
+    "max_dd_usd": -374.8,
+    "worst_day_usd": -240.6,
+    "months_positive": "4/4",
+    "capital_usd": 13764.0,
+    "roc_pct": 60.3,
+    "roc_ann_pct": 213.6,
+    "pnl_wrong_usd": -737.6,
+    "wrong_share_of_trades": 0.0999,
+    "n_matches": 868,
+    "median_usd_per_fill": 45.0
+   },
+   "burned_OOS": {
+    "n_calls": 7093,
+    "n_trades": 2223,
+    "fill_rate": 0.2811,
+    "calls_before_reprice": 0.2153,
+    "calls_in_decay": 0.2422,
+    "calls_too_late": 0.5425,
+    "median_tau_s": -0.633,
+    "early_out_call_share": 0.2266,
+    "correct_calls_blocked_by_net_cap": 0.1499,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7489,
+    "per_share_c": 0.941,
+    "per_share_ci95_c": [
+     0.36,
+     1.601
+    ],
+    "pnl_usd": 2405.3,
+    "days": 40,
+    "pnl_per_day": 60.1,
+    "sharpe_ann": 7.23,
+    "max_dd_usd": -600.2,
+    "worst_day_usd": -229.5,
+    "months_positive": "3/3",
+    "capital_usd": 12264.0,
+    "roc_pct": 19.6,
+    "roc_ann_pct": 179.0,
+    "pnl_wrong_usd": -399.6,
+    "wrong_share_of_trades": 0.103,
+    "n_matches": 320,
+    "median_usd_per_fill": 48.0
+   }
+  },
+  "i+ii_lag1.0_and_beat_by_0.25s": {
+   "IS": {
+    "n_calls": 20795,
+    "n_trades": 1366,
+    "fill_rate": 0.0284,
+    "calls_before_reprice": 0.1259,
+    "calls_in_decay": 0.05,
+    "calls_too_late": 0.8241,
+    "median_tau_s": -1.359,
+    "early_out_call_share": 0.2158,
+    "correct_calls_blocked_by_net_cap": 0.0093,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.7123,
+    "per_share_c": 0.275,
+    "per_share_ci95_c": [
+     -1.257,
+     1.69
+    ],
+    "pnl_usd": 398.2,
+    "days": 103,
+    "pnl_per_day": 3.9,
+    "sharpe_ann": 0.74,
+    "max_dd_usd": -1377.0,
+    "worst_day_usd": -234.1,
+    "months_positive": "3/4",
+    "capital_usd": 3676.0,
+    "roc_pct": 10.8,
+    "roc_ann_pct": 38.4,
+    "pnl_wrong_usd": -425.3,
+    "wrong_share_of_trades": 0.5673,
+    "n_matches": 657,
+    "median_usd_per_fill": 41.9
+   },
+   "burned_OOS": {
+    "n_calls": 7093,
+    "n_trades": 463,
+    "fill_rate": 0.0286,
+    "calls_before_reprice": 0.1066,
+    "calls_in_decay": 0.0708,
+    "calls_too_late": 0.8226,
+    "median_tau_s": -1.383,
+    "early_out_call_share": 0.2266,
+    "correct_calls_blocked_by_net_cap": 0.0085,
+    "correct_calls_blocked_or_cut_by_net_cap": 0.6692,
+    "per_share_c": 0.986,
+    "per_share_ci95_c": [
+     -1.402,
+     3.385
+    ],
+    "pnl_usd": 485.1,
+    "days": 40,
+    "pnl_per_day": 12.1,
+    "sharpe_ann": 2.28,
+    "max_dd_usd": -339.8,
+    "worst_day_usd": -212.5,
+    "months_positive": "2/3",
+    "capital_usd": 2538.0,
+    "roc_pct": 19.1,
+    "roc_ann_pct": 174.4,
+    "pnl_wrong_usd": -439.1,
+    "wrong_share_of_trades": 0.5616,
+    "n_matches": 231,
+    "median_usd_per_fill": 39.9
+   }
+  }
+ },
+ "stress_seeds_1_20_mean_sd": {
+  "i_stamp_lag_1.0": {
+   "IS": {
+    "pnl_per_day": [
+     66.6,
+     9.8
+    ],
+    "sharpe": [
+     10.81,
+     1.61
+    ],
+    "per_share_c": [
+     2.137,
+     0.318
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     43.5,
+     23.3
+    ],
+    "sharpe": [
+     6.98,
+     3.61
+    ],
+    "per_share_c": [
+     1.487,
+     0.817
+    ]
+   }
+  },
+  "ii_beat_reprice_by_0.25s": {
+   "IS": {
+    "pnl_per_day": [
+     150.6,
+     8.6
+    ],
+    "sharpe": [
+     21.6,
+     1.62
+    ],
+    "per_share_c": [
+     3.19,
+     0.179
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     120.2,
+     22.8
+    ],
+    "sharpe": [
+     17.84,
+     3.4
+    ],
+    "per_share_c": [
+     2.735,
+     0.543
+    ]
+   }
+  },
+  "ii_b_add_0.25s_latency": {
+   "IS": {
+    "pnl_per_day": [
+     179.8,
+     11.0
+    ],
+    "sharpe": [
+     24.47,
+     1.5
+    ],
+    "per_share_c": [
+     2.328,
+     0.14
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     136.6,
+     19.6
+    ],
+    "sharpe": [
+     20.25,
+     3.42
+    ],
+    "per_share_c": [
+     1.892,
+     0.271
+    ]
+   }
+  },
+  "i+ii_lag1.0_and_beat_by_0.25s": {
+   "IS": {
+    "pnl_per_day": [
+     2.9,
+     10.8
+    ],
+    "sharpe": [
+     0.52,
+     2.02
+    ],
+    "per_share_c": [
+     0.187,
+     0.698
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     3.5,
+     14.7
+    ],
+    "sharpe": [
+     0.51,
+     2.72
+    ],
+    "per_share_c": [
+     0.263,
+     1.057
+    ]
+   }
+  },
+  "ref_short|primary": {
+   "IS": {
+    "pnl_per_day": [
+     177.5,
+     11.8
+    ],
+    "sharpe": [
+     23.59,
+     2.02
+    ],
+    "per_share_c": [
+     2.014,
+     0.135
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     118.0,
+     18.9
+    ],
+    "sharpe": [
+     16.98,
+     2.65
+    ],
+    "per_share_c": [
+     1.519,
+     0.241
+    ]
+   }
+  },
+  "ref_short|i_stamp_lag_1.0": {
+   "IS": {
+    "pnl_per_day": [
+     42.5,
+     9.5
+    ],
+    "sharpe": [
+     6.76,
+     1.52
+    ],
+    "per_share_c": [
+     1.471,
+     0.322
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     24.8,
+     15.4
+    ],
+    "sharpe": [
+     3.99,
+     2.53
+    ],
+    "per_share_c": [
+     0.991,
+     0.623
+    ]
+   }
+  },
+  "ref_short|ii_beat_reprice_by_0.25s": {
+   "IS": {
+    "pnl_per_day": [
+     97.8,
+     10.6
+    ],
+    "sharpe": [
+     14.4,
+     1.7
+    ],
+    "per_share_c": [
+     2.241,
+     0.232
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     80.2,
+     14.0
+    ],
+    "sharpe": [
+     12.0,
+     1.91
+    ],
+    "per_share_c": [
+     2.137,
+     0.394
+    ]
+   }
+  },
+  "ref_short|ii_b_add_0.25s_latency": {
+   "IS": {
+    "pnl_per_day": [
+     87.8,
+     10.6
+    ],
+    "sharpe": [
+     12.83,
+     1.65
+    ],
+    "per_share_c": [
+     1.228,
+     0.147
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     53.4,
+     20.5
+    ],
+    "sharpe": [
+     7.79,
+     2.92
+    ],
+    "per_share_c": [
+     0.865,
+     0.337
+    ]
+   }
+  },
+  "ref_short|i+ii_lag1.0_and_beat_by_0.25s": {
+   "IS": {
+    "pnl_per_day": [
+     7.2,
+     8.3
+    ],
+    "sharpe": [
+     1.28,
+     1.5
+    ],
+    "per_share_c": [
+     0.521,
+     0.594
+    ]
+   },
+   "burned_OOS": {
+    "pnl_per_day": [
+     8.3,
+     13.2
+    ],
+    "sharpe": [
+     1.47,
+     2.43
+    ],
+    "per_share_c": [
+     0.664,
+     1.076
+    ]
+   }
+  }
+ },
+ "seeds_1_20": {
+  "IS": {
+   "pnl_per_day_mean_sd": [
+    302.4,
+    7.2
+   ],
+   "sharpe_mean_sd": [
+    34.65,
+    2.11
+   ],
+   "per_share_c_mean_sd": [
+    3.175,
+    0.074
+   ],
+   "fill_rate_mean_sd": [
+    0.3192,
+    0.0034
+   ]
+  },
+  "burned_OOS": {
+   "pnl_per_day_mean_sd": [
+    239.5,
+    22.2
+   ],
+   "sharpe_mean_sd": [
+    32.56,
+    4.62
+   ],
+   "per_share_c_mean_sd": [
+    2.643,
+    0.246
+   ],
+   "fill_rate_mean_sd": [
+    0.3179,
+    0.0051
+   ]
+  }
+ }
+}

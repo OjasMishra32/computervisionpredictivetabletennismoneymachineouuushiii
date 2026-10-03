@@ -1,0 +1,2 @@
+Tier-0 counterfactual revised after two independent verifiers (realism: refuted original fill pricing; rebuild: reproduced). Revision applied all fixes: live-book fill pricing, tournament-level reprice timing, both readings of R, 20-seed means, 0.5c stale-price correction, per-day coverage. Revised primary: IS +1.10c [0.82,1.38] Sharpe 11.4+/-2.5; burned OOS +0.58c [-0.08,1.21] Sharpe 7.3+/-5.9. Sign depends on the unmeasured bounce-to-reprice time. Second-round verification runs in the tier0_v3 workflow.
+2026-10-03T19:24:26Z

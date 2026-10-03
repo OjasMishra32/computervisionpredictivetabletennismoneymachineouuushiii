@@ -1,0 +1,21 @@
+{
+ "edges_m": [
+  0.0,
+  0.02,
+  0.05,
+  0.1,
+  0.2,
+  0.4,
+  1.0
+ ],
+ "weights": [
+  0.03234,
+  0.0479,
+  0.07066,
+  0.11377,
+  0.23832,
+  0.49701
+ ],
+ "n_out": 835,
+ "source": "src/hawkeye.py sample_shots/_integrate, seed 7, n 20000, near-line filter |d|<1 m"
+}
