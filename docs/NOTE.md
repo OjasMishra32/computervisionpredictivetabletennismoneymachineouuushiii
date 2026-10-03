@@ -1,6 +1,6 @@
 # COURTSIDE: trading the seconds after a tennis point
 
-*Gator Quant Hacks 2026 · Systematic Trading · Repo: [github.com/OjasMishra32/courtside](https://github.com/OjasMishra32/courtside) · Reproduce: `python run_all.py --oos`, `python scripts/v2_burned_oos.py`*
+*Gator Quant Hacks 2026 · Systematic Trading · Repo: [github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii](https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii) · Reproduce: `python run_all.py --oos`, `python scripts/v2_burned_oos.py`*
 
 ## 1. Economic foundation
 

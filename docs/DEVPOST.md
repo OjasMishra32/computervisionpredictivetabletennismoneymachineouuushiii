@@ -57,5 +57,5 @@ python · pandas · numpy · scipy · matplotlib · websockets · Polymarket CLO
 API · HiPerGator (SLURM, L4 GPUs) · PyTorch · OpenCV · ffmpeg
 
 ## Links
-Repo: https://github.com/OjasMishra32/courtside · Quant note: `docs/NOTE.pdf` · Demo videos:
+Repo: https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii · Quant note: `docs/NOTE.pdf` · Demo videos:
 `results/viz/courtside_replay.mp4`, `results/tracking/demo/supercut.mp4`

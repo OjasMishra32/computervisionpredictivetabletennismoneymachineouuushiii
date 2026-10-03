@@ -788,7 +788,7 @@ def slide_title(prs):
     text(s, vx, 1.05 + vh + 0.12, vw, 0.5, P(R(
         f"Real Polymarket tape ({TAPE_TXT}) beside a simulated Hawk-Eye-style call", 12, MUTED_DK)),
         name="Video caption")
-    text(s, M, 7.06, 6.0, 0.26, P(R("github.com/OjasMishra32/courtside", 11, MUTED_DK)), anchor="m", name="Repo")
+    text(s, M, 7.06, 6.0, 0.26, P(R("github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii", 11, MUTED_DK)), anchor="m", name="Repo")
     notes(s, f"""
 [0:00 to 0:40]  TITLE + HOOK
 
