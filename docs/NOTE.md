@@ -1,133 +1,152 @@
-# COURTSIDE: who gets paid in the seconds after a tennis point
+# COURTSIDE: trading the seconds after a tennis point
 
-*Gator Quant Hacks 2026 · Systematic Trading · Repo: `<GITHUB_URL>` · Reproduce: `python run_all.py --oos`*
+*Gator Quant Hacks 2026 · Systematic Trading · Repo: `<GITHUB_URL>` · Reproduce: `python run_all.py --oos`, `python scripts/v2_burned_oos.py`*
 
 ## 1. Economic foundation
 
-A tennis point ends in tiers. Ball tracking knows the landing point while the ball is still in the
-air. The umpire knows at the bounce. Official data feeds, and the market makers that consume them,
-know one to a few seconds later. Streams and score widgets know tens of seconds later. Match-win
-probability is a known function of the score; we built the exact point-level Markov chain
-(`src/markov.py`). So every point moves fair value by a computable amount, its **leverage**. A
-simulated ATP best-of-3 has ~161 points with mean |leverage| of 5.7%, fair value travels $4.20 per
-share over the match, and the ten biggest points carry 23% of that.
+A tennis point ends in tiers. Ball tracking knows where the ball will land while it is still in the
+air; the umpire knows at the bounce; licensed data feeds, and the market makers on them, know about a
+second later; TV, streams and score widgets know tens of seconds later. Match-win probability is a
+known function of the score, and we built the exact point-level Markov chain (`src/markov.py`). So
+every point moves fair value by a computable amount, its **leverage**. A simulated ATP best-of-3 has
+~161 points with mean |leverage| 5.7%, and fair value travels $4.20 per share over the match.
 
-**Who is on the other side?** Whoever acts on an older tier. A trader who knows the point before the
-book reprices buys from a stale resting order. One who acts after it reprices pays the spread to
-someone faster. The gap is physical (stream delays, frame rates, data latency), so it persists.
-Polymarket shows it knows this: sports markets hold every marketable order for 1–3 s
-(`secondsDelay`) to protect makers.
-
-Hypotheses were committed before any result (`HYPOTHESIS.md`, commit `7232986`). Every later change
-is in `DEVIATIONS.md`.
+**Who is on the other side?** Whoever is acting on an older tier. A trader who knows the point before
+the book reprices buys from a stale quote; a trader who acts after it pays the spread to someone
+faster. The gaps are physical (camera frame rates, data licensing, stream delays), so they persist.
+Polymarket's own design admits it: sports markets hold every marketable order for 1 s (3 s before May
+2026) so makers can reprice. Hypotheses were committed before any result (`HYPOTHESIS.md`, commit
+`7232986`; v2 in `HYPOTHESIS_V2.md`). Every change since then is in `DEVIATIONS.md`.
 
 ## 2. Data and method
 
-- **Every resolved ATP/WTA singles moneyline on Polymarket with ≥$5k volume, 2025-10-08 to
-  2026-10-03: 13,084 matches, $2.84B traded**, with full taker trade tapes (13,081). Each print is
-  classified as lifting the ask or hitting the bid (buying one outcome = selling the other), so
-  fills pay historical spreads. Each match is charged its own fee (`rate·p(1−p)` per share; rate 0,
-  0.03, then 0.05) and its own order delay (3 s, then 1 s from May 2026).
-- **Out-of-sample** = last 20% of matches (from 2026-08-25, n = 2,617, all 1 s/5%). It stayed locked
-  until every rule was frozen (commit `9d61d1b`) and was evaluated once (`results/oos_peeks.log`).
-- **Live**, on 2026-10-03: Polymarket order books and its public sports score feed, recorded side by
-  side with millisecond receive times, for every tennis and table-tennis market.
-- **Tracking**: physics Monte Carlo of Hawk-Eye-class tracking; real 120 fps table-tennis video
-  (OpenTTGames) and tennis broadcast data, processed on HiPerGator.
+- **Every resolved ATP/WTA singles moneyline on Polymarket with ≥$5k volume, Oct 2025–Oct 2026:
+  13,084 matches, $2.84B traded.** Full taker tapes come from the public data API. Each print is
+  classified as lifting the ask or hitting the bid (buying one outcome is selling the other), so
+  fills pay the spreads that were actually traded. Every match is charged its own fee
+  (`rate·q(1−q)` per share; rate 0, 0.03, then 0.05) and its own order delay. We measured that tape
+  timestamps are on-chain block times, a median **1.98 s after the true match time** (5,472 trades
+  joined to the live websocket by transaction hash).
+- **In sample:** the first 80% of matches. **Out of sample (OOS):** the last 20%, from 2026-08-25,
+  locked until v1 was frozen and opened once (`results/oos_peeks.log`). **Forward:** matches that
+  start after 2026-10-03 13:00 UTC, the blind test for v2.
+- **Live, on 2026-10-03:** we recorded Polymarket order books (every tennis and table-tennis market)
+  alongside four score sources, with millisecond receive times.
+- **Tracking:** a physics Monte Carlo of Hawk-Eye-class tracking (340 fps, ±3.6 mm); real 120 fps
+  table-tennis video (OpenTTGames); broadcast tennis (TrackNet). Processing ran on HiPerGator.
 
-## 3. Results
+## 3. What the data says
 
-**Table 1. Pre-registered and post-hoc tests, net of fees and historical spreads (¢/share, 95% CI clustered by match).**
+**Table 1. Tests, net of fees and traded spreads (¢/share; 95% CI clustered by match).**
 
-| Test | In sample (10,467 matches) | Out of sample (2,617) | Verdict |
+| Test | In sample | Out of sample (opened once) | Verdict |
 |---|---|---|---|
-| H1 follow the jump after the delay | −1.61 [−1.65, −1.57]; all 20 variants −1.50 to −1.86 | −2.08 [−2.17, −1.98] | Fails |
-| H2 buy favourites entering 0.85–0.97 | −0.41 [−1.44, 0.59]; all 6 CIs span 0 | +0.80 [−1.36, 2.66] | No edge |
-| Live-price calibration | within ±1.0¢ in every band 0.5–0.99 | within ±1.1¢ | Efficient |
-| H5 maker quoting after jumps (post-hoc) | +0.22 [−0.01, 0.43] vs always-on +0.13 | +0.16 [−0.49, 0.87] vs −0.52 | Inconclusive |
-| **H6 fast tier, 30 s markout (post-hoc)** | **+0.6 to +2.4, 9/9 months > 0** | **+0.83, +0.70, +0.44 (3/3)** | **Holds** |
-| Other takers, same window | −0.5 to −1.7, 9/9 months < 0 | −1.2 to −1.9 | |
-| Copying the fast tier (+3 s) | < 0 in 9/9 months | < 0 in 3/3 | Speed, not signal |
-| H6 shadow book, held to resolution | +1.16 [0.79, 1.54]; Sharpe 5.5; max DD −20% | +0.57 [−0.16, 1.40]; −$36k | Fee-bound |
+| H1 Follow the jump after the delay | −1.61 [−1.65, −1.57]; all 20 variants −1.5 to −1.9 | −2.08 [−2.17, −1.98] | Fails |
+| H2 Buy favourites entering 0.85–0.97 | −0.41 [−1.44, 0.59]; live prices calibrated within ~1¢ | +0.80 [−1.36, 2.66] | No edge |
+| H5 Maker quoting after jumps | +0.22 [−0.01, 0.43] | +0.16 [−0.49, 0.87] | Inconclusive |
+| **H6 Fast tier, 30 s markout, walk-forward** | **+0.6 to +2.4, 8/8 months > 0** | **+0.4 to +0.8, 3/3 months > 0** | **Holds** |
+| Everyone else in the same 0–3 s window | −0.5 to −1.7, every month | −1.2 to −1.9 | |
+| Copying the fast tier 3 s later | < 0 every month | < 0 every month | Edge is speed |
 
 ![](../results/figures/fig1_tiers.png)
-*Fig. 1. Taker markouts 30 s after each print, net of fee, by seconds since the score event (in
-sample; fast tier = wallets qualified on earlier months only).*
+*Fig. 1. 30 s markout per taker print, net of fee, by seconds since the score event. Fast-tier wallets
+are qualified each month using earlier months only.*
 
-**Chasing the move loses (H1).** By the time a delayed order fills, the book has moved, and you pay
-the spread to whoever moved it. **Prices are calibrated (H2).** There is no slow-money edge.
+Chasing the move loses, and live prices are calibrated, so slow money has no edge. What exists is a
+**persistent fast tier**: wallets that trade within 3 s of a score event and beat the market every
+month, in sample and out. The other side of their trades is the ~1¢ a share that everyone else loses.
+Copying them with a lag loses too, so the edge is speed and cannot be followed.
 
-**The fast tier is real and persistent (H6).** Each month we qualify wallets using only earlier
-months: at least 30 prints within 3 s of a score event, at least 10 matches, and t > 3 on 30 s
-markout. Their next-month prints in that window beat the market in all 11 months (Dec 2025–Oct 2026), out of sample
-included. Everyone else in the same window loses about 1¢. The fast tier makes the most in the
-first 3 s, and copying it with a 3 s lag loses: the edge is speed.
+## 4. The strategy (v2) and its evidence
 
-**But it is fee-bound.** Net to resolution, the edge fell from 1.5–1.6¢ (3 s delay) to 1.19¢ (1 s,
-3% fee) to 0.54¢ (1 s, 5% fee) as the fee rose and qualifying wallets went 4 → 131. Out of sample
-(all 1 s/5%), the per-share edge is +0.57¢ with a CI spanning 0, and the fixed-dollar shadow book
-lost $36k: larger fast-tier trades lost while small ones won. The average fee alone, 0.99¢/share,
-is about two-thirds of the gross edge. We report this as it came out.
+v1 (the fast tier's trades, ≤$1k each, held to resolution) earned +1.16¢/share in sample but **lost
+$36k out of sample**. Big tickets on cheap tokens made its P&L a lottery. Six optimisation lenses then
+ran on in-sample data only, each checked by two adversarial verifiers (`research/v2/`). The survivors
+are frozen as v2 (`HYPOTHESIS_V2.md`, `src/v2.py`):
 
-![](../results/figures/fig3_walkforward.png)
-*Fig. 3. Left: fast-tier net markout by month (\*Aug 2026 includes IS days before Aug 25). Right:
-shadow book (≤$1k/trade, ≤$3k/match, held to resolution).*
+1. Trade the walk-forward fast-tier opportunity set (prints inside 0–3 s of a score event).
+2. Keep a wallet only if its shrunk past edge beats **today's** fee: 0.05·q(1−q).
+3. **Risk-parity size**: shares ∝ 1/√(q(1−q)), capped by the print and at $1k.
+4. **Cap net exposure at 100 shares per match**; trades that reduce risk are always allowed.
+5. **Hold to resolution.** No exit orders.
 
-## 4. Innovation: ball tracking as the way into tier 0
+Refuted and dropped: **maker exits**. They looked like Sharpe 10 on the tape, but the verifiers found a
+wrong tick size. On live books a resting exit after a jump filled only 36% of the time within a
+minute. When it did fill, the price kept running another 5.5¢; when it did not, the price fell 5.6¢.
+That is adverse selection.
 
-- **Physics (tennis, 340 fps, 3.6 mm noise):** landing error is ±0.7 cm at 25 ms before the bounce,
-  ±2.4 cm at 100 ms, ±5.8 cm at 200 ms, ±10.7 cm at 300 ms. A ball landing ≥4 cm out is called with
-  95% confidence 100 ms early; one ≥18 cm out, 300 ms early (Fig. 4).
-- **Table tennis, real 120 fps video:** `[TT_RESULT]`.
-- **Tennis broadcast video:** `[TENNIS_VIDEO_RESULT]`.
-- **The public score feed is the slowest tier (H4, live):** the book moved first on 93% of score
-  changes, a median 55 s ahead of Polymarket's own sports feed (n = 42). The feed sends ~30 s
-  snapshots. Anyone trading off it is the orange bar in Fig. 1.
+**Table 2. v2, net of fees, held to resolution.**
 
-**COURTSIDE, the strategy.** For each point the Markov model gives the fair-value jump at stake.
-When tracking calls the point before it lands, take the side it favours if
-`leverage × P(correct call) − fee − ½ spread > 0`, sized by leverage and visible depth. The
-evidence says this pays only if you are *faster than today's fast tier*, not equal to it. The
-tracking lead (100–300 ms on the bounce) stacks on a low-latency official feed. Broadcast video
-alone is tier 4.
+| | In sample, Feb–Aug 2026 | Burned OOS, Aug 25–Oct 3 (non-blind) | Forward, from Oct 3 13:00 UTC (blind) |
+|---|---|---|---|
+| Trades / matches | 67,468 / 7,782 | 13,184 / 2,093 | `[FWD_N]` |
+| Net per share | **+1.59¢ [1.35, 1.81]** | **+0.75¢ [0.30, 1.20]** | `[FWD_RES]` |
+| 30 s markout per share (primary forward test) | +1.18¢ | `—` | `[FWD_M30]` |
+| P&L / capital (3× peak locked) | +$43.3k / $23.2k | +$5.2k / $8.6k | `[FWD_PNL]` |
+| Sharpe / max DD / worst day | **16.8 / −4.0% / −2.1%** | **11.1 / −5.2% / −3.3%** | |
+| Months positive | 7/7 (worst month +$2.1k) | 2/3 (Oct = 3 days, −$0.4k) | |
 
-## 5. Risk management
+![](../results/figures/fig6_v2.png)
+*Fig. 2. v1 vs v2, return on each book's own capital, and v2 P&L by month (\*Aug includes IS days).*
 
-- **Venue rules (largest risk).** The 5% fee cut the edge by about two-thirds; a longer delay would
-  shrink it further. Re-estimate the trailing-month fast-tier net edge weekly. Halve size below 0.3¢,
-  stop at ≤ 0. On today's OOS reading (0.57¢, CI spanning 0) we would run at minimum size.
-- **Speed race.** Qualifying wallets grew 4 → 131. Log our own order-to-fill latency against the
-  book's reprice time, and scale size down as our measured lead shrinks.
-- **Wrong calls.** A mis-called point loses its full leverage. Trade only calls with P ≥ 0.95, when
-  the landing margin exceeds the 95% callable margin at the current lead.
-- **Limits.** ≤$1k per order, ≤$3k per match, capital = 3× peak locked dollars. Daily stop at −5%.
-  Kill switch on any feed or tracking dropout > 2 s. Sizing in shares, not dollars, is the first
-  change to test (the OOS dollar loss came from large tickets).
-- **Resolution.** 2.9% of matches resolved 50/50 (retirements, walkovers); this is already in the
-  P&L.
+The Sharpe is high because v2 places ~330 small, nearly independent bets a day, each held to an
+exogenous binary outcome, with net exposure capped per match. It is not a single tuned spike. In the
+sizing study, all nine net-cap/deployment settings have per-share CIs above zero, with Sharpe 9.9–16.8, and Sharpe moves smoothly with the cap.
+
+## 5. Latency: who can actually be in the fast tier?
+
+| Signal | When it knows the point, vs the official WTA point timestamp |
+|---|---|
+| Ball tracking, Hawk-Eye class (physics) | 100–300 ms *before the bounce*: ±2.4 cm landing error at 100 ms, ±10.7 cm at 300 ms |
+| Ball tracking, real 120 fps video (table tennis) | misses called **50 ms before contact: 11/11 correct** on held-out games; demo clips with calls at 408, 83 and 25 ms |
+| Ball tracking, 25 fps broadcast (tennis) | useless: 0.6–1.2 m landing error |
+| **Polymarket book (market makers)** | **−1.2 s (reprices before the official stamp)**, n = 482 points |
+| Kalshi | leads Polymarket on 69% of 106k repricings, by ~2 s once block lag is removed; 6.1× Polymarket's in-play volume |
+| ESPN / Polymarket sports feed / WTA API | +27.5 s / +29.1 s / +43.3 s; 0 of 295 changes beat the book by > 1.3 s |
+
+Market makers already sit on the official feed, and Kalshi is where prices are discovered. **Remote
+traders on public data are the slow tier.** No public feed beats the book, and a Kalshi→Polymarket
+laggard trade nets ≈0 today. The fast tier needs a signal that arrives before the official feed:
+in-venue, high-frame-rate ball tracking. Our results show where that lead comes from (frame rate and
+camera count) and how large it is (tens to hundreds of ms on top of a ~1 s official-feed lag).
+Infrastructure: Polymarket's API sits behind Cloudflare's Miami edge, with a 67 ms median one-way feed
+delay from Gainesville and an origin consistent with London. Co-locating there saves ~130 ms per round
+trip, and that decides queue order behind the 1 s delay.
+
+## 6. Risk management
+
+- **Venue rules (largest risk).** Moving to a 5% fee cut the fast tier's edge by about two-thirds. A
+  longer delay would cut it again. v2 re-prices its wallet filter at the live fee every month. We halve
+  size if the trailing-month net edge falls below 0.3¢ and stop at ≤ 0.
+- **Crowding.** Qualifying wallets grew 4 → 131. Edge per share fell from ~2.4¢ to ~0.8¢ but stayed
+  positive every month.
+- **Position limits.** Net |exposure| ≤ 100 shares per match; ≤ $1k per order; capital = 3× peak
+  locked. The worst historical match lost $155 (v1: $3,098); the worst day was −2.1%.
+- **Wrong calls and outages.** Trade only calls with P ≥ 0.95. Kill switch on any feed or tracking
+  dropout over 2 s, and on measured order latency beyond its 95th percentile.
+- **Resolution.** 2.9% of matches settled 50/50 (retirements); this is included in all P&L.
 - **Legal and access.** Courtsiding breaks most tournaments' ticket terms, live tracking data is
-  licensed, and Polymarket's international venue restricts US persons (these events are flagged
-  `restricted`). Deployment requires licensed low-latency data, a permitted venue and jurisdiction,
-  and legal review. The repo only reads public data and never places orders.
+  licensed, and Polymarket's international venue restricts US persons. A deployment needs licensed
+  data, a permitted venue and legal review. This repo only reads public data and never places orders.
 
-## 6. Liquidity and capital deployment
+## 7. Liquidity and capital deployment
 
-- **Tennis is deep.** In the live sample: median spread 1¢, $8.1k at the touch, $61k within 2¢.
-  Fast-tier volume in the 0–3 s window was $0.3–3.1M a month.
-- **Table tennis is not tradable on Polymarket.** Median spread 89¢, $23 at the touch, 25% empty
-  books, about $2 of volume per match. The big table-tennis price swings people see are midpoints of
-  near-empty books.
-- **Capital.** The capped shadow book locked at most $33.5k (IS) / $16.8k (OOS), with 520–700 trades
-  a day and turnover ~100× capital a year. Capacity is bounded by the stale liquidity resting at
-  each point (usually a few $k at the touch), and every extra dollar competes with the existing fast
-  tier for it.
+- **Tennis is deep:** median 1¢ spread, $8.1k at the touch and $61k within 2¢ (live sample).
+  **Table tennis is not tradable on Polymarket:** 89¢ median spread, $23 at the touch, ~$2 of volume
+  per match.
+- **v2 is small by design.** ~$1.37M traded over 206 days on $23k capital (turnover ~105× a year).
+  Capacity is bounded by the stale quotes resting at each point (a few $k at the touch) and shared
+  with the existing fast tier. Fast-tier volume in the 0–3 s window ran $0.3–3.1M a month. Side markets add
+  only ~$2k/month.
 
-## 7. Variants, caveats, references
+## 8. Variants and caveats
 
-44 strategy variants were backtested (H1 20, H2 6, H5 17, H6 1); all are in `results/summary.json`.
-Exploratory calibration, tier and wallet studies are disclosed in `DEVIATIONS.md`. H5 and H6 were
-written after seeing in-sample data, so only their OOS results are tests. The shadow book estimates
-the *opportunity* at fast-tier speed: it uses those wallets' fills, not ours. Expected best Sharpe
-from luck across 44 trials is ~2.7 (Bailey & López de Prado 2014). References: Bailey et al.
-(2014); Harvey, Liu & Zhu (2016); Klaassen & Magnus (2001), *Are points in tennis i.i.d.?*;
-Polymarket fee and websocket docs; OpenTTGames (Voeikov et al. 2020, TTNet).
+Strategy variants backtested: 44 (H1–H6) plus 3,342 across the six v2 lenses (exit 902, sizing 111,
+selection 341, cross-market 68, latency 16, Kalshi 1,904). All are reported in `results/` and
+`research/v2/`, along with their verifier reports. The expected best Sharpe from luck over this many trials is ~4.8 (Bailey & López de Prado); v2 shows 16.8 in sample and 11.1 on the burned OOS. The v2 forward test is the clean check. **The v2 book trades the fast tier's own
+fills.** It measures the opportunity at that speed, not our execution, which would need in-venue
+tracking plus a co-located gateway. One verifier noted that the "0–3 s after onset" label uses a
+detector that fires up to 10 s later; Section 4's figures include those trades.
+`[DETECT_STRESS]` References: Bailey & López de Prado (2014); Harvey, Liu & Zhu (2016); Klaassen &
+Magnus (2001); Voeikov et al. (2020) TTNet/OpenTTGames; Huang et al. (2019) TrackNet; Polymarket and
+Kalshi API docs.
