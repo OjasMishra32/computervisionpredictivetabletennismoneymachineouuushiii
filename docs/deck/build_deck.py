@@ -1,46 +1,51 @@
 #!/usr/bin/env python3
-"""COURTSIDE pitch deck (Gator Quant Hacks 2026, Systematic Trading).
+"""COURTSIDE pitch deck (Gator Quant Hacks 2026, Systematic Trading). Data-driven.
 
 Rebuild from the repo root:
 
-    .venv/bin/python docs/deck/build_deck.py
+    .venv/bin/python docs/deck/build_deck.py            # writes docs/deck/courtside.pptx (+ .pdf if soffice exists)
 
-Writes docs/deck/courtside.pptx: 16:9, seven main slides for a five-minute talk, five backup
-slides for Q&A, and a speaker script in every slide's notes.
+What it writes
+--------------
+* docs/deck/courtside.pptx: 16:9. Ten main slides for a 4:45 talk (timed script in every slide's notes),
+  ten Q&A backup slides (the ten hardest questions in research/compliance/JUDGE.md, each with its honest
+  answer and the evidence), then hidden manifest slides.
+* docs/deck/courtside_manifest.json: every number on every slide, with the results file and key it was
+  read from. The same list is on the hidden slides at the end of the deck.
+* docs/deck/courtside.pdf: only when LibreOffice (soffice) is on PATH.
 
-Where the numbers come from
----------------------------
-* Numbers that exist in results/*.json are read from those files at build time and formatted here
-  (universe, v2 causal table, walk-forward months, leverage, tracking, H4, calibration).
-* Numbers that only exist in the Markdown write-ups (latency, liquidity, risk limits) are literals,
-  and every one is checked against its source file by need(...). If a source changes, the build
-  stops instead of shipping a stale number.
+Honesty rules the builder enforces
+----------------------------------
+* Every number on a slide is read from a results file at build time (V(...) below) and recorded in the
+  manifest with its source key. The only numerals typed by hand are definitions, not results: the 0–3 s
+  window, the 30 s markout, the stress cases (+½ tick, ×2), the footage frame rates, and the 3× capital
+  convention.
+* A results file or key that does not exist yet renders as "pending" (never a guess). Pending items are
+  listed at the end of the build log and on the closing slide.
+* The build FAILS LOUDLY only on internal contradictions: two results files that should agree but do not,
+  the note quoting a headline number that differs from the JSON, a counterfactual that lost its label, or
+  a paper-only run that reports an order sent. Known, documented discrepancies print a WARNING.
+* The tier-0 CV-edge result is always labelled TIER0_LABEL. Paper only: no slide says live ATP/WTA data was
+  used or real money was traded.
 
-The blind forward test has NOT run yet (it runs once, ~2026-10-04 11:30 UTC). Its cell on slide 5
-shows a marked PLACEHOLDER and the pre-registered decision rule (HYPOTHESIS_V2 A1.5: Primary A and
-Primary B, 30 s net markouts, pass iff the match-clustered 95% CI excludes 0), never a number. When
-results/v2/forward.json exists, replace FORWARD_* and the [FWD_A] / [FWD_B] tokens by hand from that
-file and rebuild. Resolution P&L is secondary for the forward window.
-
-v2 is a paper book on the fast tier's own fills (docs/NOTE.md section 8); slides 5 and 6 say so.
-
-Fonts: headings use Arial Narrow (bold), body Arial; both ship with Office and macOS. The Arial
-Narrow runs carry its PANOSE class, so a machine without it substitutes a condensed sans
-(e.g. Helvetica Neue Condensed, Liberation Sans Narrow) instead of a serif.
+Fonts: headings Arial Narrow (bold), body Arial; both ship with Office and macOS.
 """
 from __future__ import annotations
 
 import json
 import math
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from lxml import etree
 from pptx import Presentation
-from pptx.chart.data import CategoryChartData
+from pptx.chart.data import CategoryChartData, XyChartData
 from pptx.dml.color import RGBColor
-from pptx.enum.chart import (XL_CHART_TYPE, XL_LABEL_POSITION, XL_LEGEND_POSITION,
+from pptx.enum.chart import (XL_CHART_TYPE, XL_LABEL_POSITION, XL_LEGEND_POSITION, XL_MARKER_STYLE,
                              XL_TICK_LABEL_POSITION, XL_TICK_MARK)
 from pptx.enum.dml import MSO_LINE
 from pptx.enum.shapes import MSO_SHAPE, PP_PLACEHOLDER
@@ -52,6 +57,11 @@ from pptx.util import Emu, Inches, Pt
 DECK_DIR = Path(__file__).resolve().parent
 ROOT = DECK_DIR.parents[1]
 OUT = DECK_DIR / "courtside.pptx"
+OUT_PDF = DECK_DIR / "courtside.pdf"
+OUT_MANIFEST = DECK_DIR / "courtside_manifest.json"
+
+REPO_URL = "https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii"
+REPO_SHORT = REPO_URL.removeprefix("https://")
 
 # --------------------------------------------------------------------------------------------
 # Palette and type
@@ -81,49 +91,125 @@ CW = SW - 2 * M        # content width
 MINUS = "−"
 
 # --------------------------------------------------------------------------------------------
-# Sources
+# Sources. Every number on a slide goes through V() or D(), which read a results file at build time
+# and record (slide, text, file :: key) in MANIFEST. A missing file or key renders as "pending".
 # --------------------------------------------------------------------------------------------
-_TXT: dict[str, str] = {}
+PENDING = "pending"
+_JSON: dict = {}
+MANIFEST: list[dict] = []
+PENDING_ITEMS: list[tuple[str, str]] = []
+WARNINGS: list[str] = []
+_SLIDE = ["setup"]
 
-
-def _text(rel: str) -> str:
-    if rel not in _TXT:
-        _TXT[rel] = re.sub(r"\s+", " ", (ROOT / rel).read_text(encoding="utf-8"))
-    return _TXT[rel]
-
-
-def need(rel: str, *needles: str) -> None:
-    """Fail the build unless every needle appears in the source file (whitespace-normalised)."""
-    body = _text(rel)
-    missing = [n for n in needles if re.sub(r"\s+", " ", n) not in body]
-    if missing:
-        sys.exit(f"[source check] {rel} no longer contains: {missing!r}")
-
-
-def load(rel: str):
-    return json.loads((ROOT / rel).read_text(encoding="utf-8"))
-
-
-SUMMARY = load("results/summary.json")
-CAUSAL = load("results/v2/causal.json")
-LEVER = load("results/leverage_stats.json")
-TRACK = load("results/tracking/summary.json")
-TENNIS_TRACK = load("results/tennis_tracking/summary.json")
-DEMO = load("results/tracking/demo/manifest.json")
-VIZ = load("results/viz/viz_data.json")
-
+# Result files (paths only; nothing is read until a slide asks).
+F_SUM = "results/summary.json"
+F_CAUSAL = "results/v2/causal.json"
+F_COST = "results/v2/cost_stress.json"
+F_NM = "results/v2/note_metrics.json"
+F_FWD = "results/v2/forward.json"
+F_RIGOR = "results/rigor/rigor.json"
+F_EXP = "results/expand/results.json"
+F_LOW = "results/lowloss/results.json"
+F_T0 = "results/tier0/results.json"
+F_T0_VERIFIED = "results/tier0/VERIFIED"
+F_MAKER = "results/maker/oos.json"
+F_FIN = "results/financials/financials.json"
+F_PMC = "results/financials/pm_compute.json"
+F_RISK = "results/risk/risk_stats.json"
+F_ENG_LIVE = "results/engine/live_market_run.json"
+F_ENG_DEMO = "results/engine/demo_run.json"
+F_ENG_BENCH = "results/engine/vision_bench.json"
+F_TRACK = "results/tracking/summary.json"
+F_TRACK_DEMO = "results/tracking/demo/manifest.json"
+F_TENNIS = "results/tennis_tracking/summary.json"
+F_LEVER = "results/leverage_stats.json"
+F_VIZ = "results/viz/viz_data.json"
+F_TT = "results/tt/results.json"
+F_DECAY = "results/decay/decay.json"
+F_LIVE = "results/live/summary.json"
+F_PEEKS = "results/oos_peeks.log"
 NOTE = "docs/NOTE.md"
-DEVPOST = "docs/DEVPOST.md"
 README = "README.md"
-DEV = "DEVIATIONS.md"
-HYP2 = "HYPOTHESIS_V2.md"
-LAT = "research/v2/latency/RESULTS.md"
-KAL = "research/v2/kalshi/RESULTS.md"
-FILL = "research/v2/livefill/RESULTS.md"
-XMKT = "research/v2/crossmarket/RESULTS.md"
-TT_README = "src/tennis_tracking/README.md"
+
+# The tier-0 CV-edge result always carries this label, verbatim, wherever it appears.
+TIER0_LABEL = ("COUNTERFACTUAL: assumes a licensed live feed + courtside camera (not purchased); "
+               "parameters measured")
+
+# Keys into results/v2/causal.json (the frozen v2 book, causal window).
+IS0, IS5, IS10 = (f"causal/is_eval/slip{s}" for s in ("0.0", "0.005", "0.01"))
+OS0, OS5, OS10 = (f"causal/burned_oos/slip{s}" for s in ("0.0", "0.005", "0.01"))
 
 
+class Missing(Exception):
+    pass
+
+
+def _load(rel: str):
+    if rel not in _JSON:
+        p = ROOT / rel
+        if not p.exists():
+            raise Missing(rel)
+        _JSON[rel] = json.loads(p.read_text(encoding="utf-8"))
+    return _JSON[rel]
+
+
+def raw(rel: str, *keys):
+    """The value at rel :: keys; raises Missing if the file or any key does not exist."""
+    d = _load(rel)
+    for k in keys:
+        if isinstance(d, list) and isinstance(k, int) and -len(d) <= k < len(d):
+            d = d[k]
+        elif isinstance(d, dict) and k in d:
+            d = d[k]
+        else:
+            raise Missing(f"{rel} :: {' > '.join(map(str, keys))}")
+    if d is None or (isinstance(d, float) and math.isnan(d)):
+        raise Missing(f"{rel} :: {' > '.join(map(str, keys))} is null")
+    return d
+
+
+def opt(rel: str, *keys, default=None):
+    try:
+        return raw(rel, *keys)
+    except Missing:
+        return default
+
+
+def key_str(rel: str, *keys) -> str:
+    return f"{rel} :: {' > '.join(map(str, keys))}" if keys else rel
+
+
+def _record(text: str, source: str) -> str:
+    MANIFEST.append({"slide": _SLIDE[0], "text": text, "source": source})
+    if text == PENDING:
+        PENDING_ITEMS.append((_SLIDE[0], source))
+    return text
+
+
+def V(rel: str, *keys, f=None, how: str | None = None) -> str:
+    """A number for a slide: read rel :: keys, format with f, record in the manifest. Missing -> 'pending'."""
+    try:
+        x = raw(rel, *keys)
+        text = f(x) if f else str(x)
+    except Missing:
+        text = PENDING
+    return _record(text, key_str(rel, *keys) + (f"  [{how}]" if how else ""))
+
+
+def D(fn, source: str) -> str:
+    """A derived number: fn() computes the text from results files; source says which and how."""
+    try:
+        text = fn()
+    except Missing:
+        text = PENDING
+    return _record(text, source)
+
+
+def slide_ctx(label: str) -> None:
+    _SLIDE[0] = label
+
+
+# ---- number formats ----
 def signed(x: float, d: int = 2) -> str:
     return ("+" if x >= 0 else MINUS) + f"{abs(x):.{d}f}"
 
@@ -136,208 +222,288 @@ def ci(pair, d: int = 2) -> str:
     return f"[{num(pair[0], d)}, {num(pair[1], d)}]"
 
 
-# ---- universe ----
-U = SUMMARY["universe"]
-N_MATCHES = f"{U['matches']:,}"
-VOLUME = f"${U['volume_usd'] / 1e9:.2f}B"
-assert (N_MATCHES, VOLUME) == ("13,084", "$2.84B"), (N_MATCHES, VOLUME)
-need(NOTE, "13,084 matches, $2.84B traded", "≥$5k volume, Oct 2025–Oct 2026")
-
-# ---- v2, causal window ----
-V2 = {k.split("/", 1)[1]: v for k, v in CAUSAL.items() if k.startswith("causal/")}
-ONSET = {k.split("/", 1)[1]: v for k, v in CAUSAL.items() if k.startswith("onset/")}
-IS0, IS5, IS10 = (V2[f"is_eval/slip{s}"] for s in ("0.0", "0.005", "0.01"))
-OS0, OS5, OS10 = (V2[f"burned_oos/slip{s}"] for s in ("0.0", "0.005", "0.01"))
-assert signed(IS0["per_share_c"]) == "+1.38" and ci(IS0["per_share_ci_c"]) == "[1.17, 1.59]"
-assert signed(OS0["per_share_c"]) == "+0.60" and ci(OS0["per_share_ci_c"]) == "[0.09, 1.13]"
-need(NOTE, "+1.38¢ [1.17, 1.59]", "+0.60¢ [0.09, 1.13]", "14.5 / −2.0%", "6.7 / −2.1%")
+def cents(x):
+    return signed(x) + "¢"
 
 
-def sharpe(r):
-    return f"{r['sharpe_ann']:.1f}"
+def cents1(x):
+    return signed(x, 1) + "¢"
 
 
-def dd(r):
-    return f"{num(r['max_dd_pct'], 1)}%"
+def sh1(x):
+    return num(x, 1)
 
 
-def months(r):
-    return f"{r['months_positive']}/{r['months_total']}"
+def pct0(x):
+    return f"{num(x, 0)}%"
 
 
-V1 = SUMMARY["oos"]["h6_shadow"]
-V1_OOS_LOSS = V1["total_pnl_usd"]
-assert round(V1_OOS_LOSS / 1000) == -36
-V1_LOSS_TXT = f"{MINUS}${abs(V1_OOS_LOSS) / 1000:.1f}k"
-V1_DD = f"{num(V1['max_dd'] * 100, 0)}%"
-V1_WORST_DAY = f"{num(V1['worst_day_pct'], 1)}%"
-assert (V1_LOSS_TXT, V1_DD, V1_WORST_DAY) == (f"{MINUS}$36.1k", f"{MINUS}75%", f"{MINUS}26.8%")
-need(NOTE, "lost $36k out of sample")
-CAPITAL_K = f"${IS0['capital_usd'] / 1000:.0f}k"
-PEAK_K = f"${IS0['peak_locked_usd'] / 1000:.1f}k"
-TRADED_M = f"${IS0['usd_traded'] / 1e6:.2f}M"
-DAYS = IS0["days"]
-PER_DAY = round(IS0["n_trades"] / DAYS, -1)
-assert (CAPITAL_K, PEAK_K, TRADED_M, DAYS) == ("$28k", "$9.4k", "$1.48M", 206)
-need(NOTE, "~$1.48M traded over 206 days on $28k capital", "peak locked $9.4k", "~270 small")
-# Dollar P&L and return on the book's own capital (paper book at the fast tier's fills).
-IS_PNL = f"+${IS0['total_pnl_usd'] / 1000:.1f}k"
-IS_CAP = f"${IS0['capital_usd'] / 1000:.1f}k"
-IS_ROC = f"+{IS0['return_on_capital_pct']:.0f}%"
-OS_PNL = f"+${OS0['total_pnl_usd'] / 1000:.1f}k"
-OS_CAP = f"${OS0['capital_usd'] / 1000:.1f}k"
-OS_ROC = f"+{OS0['return_on_capital_pct']:.0f}%"
-OS_DAYS = OS0["days"]
-assert (IS_PNL, IS_CAP, IS_ROC, OS_PNL, OS_CAP, OS_ROC, OS_DAYS) == (
-    "+$40.4k", "$28.3k", "+143%", "+$3.7k", "$22.8k", "+16%", 40)
-need(NOTE, "+$40.4k / $28.3k", "+$3.7k / $22.8k")
-WORST_DAY_IS, WORST_DAY_OS = f"{num(IS0['worst_day_pct'], 1)}%", f"{num(OS0['worst_day_pct'], 1)}%"
-assert (WORST_DAY_IS, WORST_DAY_OS) == (f"{MINUS}1.9%", f"{MINUS}2.1%")
-USD_PER_DAY = f"~${IS0['usd_traded'] / DAYS / 1000:.1f}k"
-assert USD_PER_DAY == "~$7.2k"
-N_VARIANTS = 44 + 3342
-need(NOTE, "44 (H1–H6) plus 3,342")
-# Worst match (−$205.76) is not in any results JSON: docs/NOTE.md section 6, and
-# data/v2_trades_is_oos.parquet grouped by match (cond) and summed.
-need(NOTE, "The worst historical match lost $206 (v1: $3,098)")
+def pct1(x):
+    return f"{num(x, 1)}%"
 
-# ---- walk-forward fast tier (the 11 months plotted in fig3: IS Dec-Jul + OOS Aug-Oct) ----
-WF = [m for m in SUMMARY["is"]["h6_walkforward"] if m["month"] < "2026-08"] + SUMMARY["oos"]["h6_walkforward"]
-assert len(WF) == 11 and all(m["net30_c"] > 0 for m in WF) and all(m["others_net30_c"] < 0 for m in WF)
-N_WF_IS = sum(m["month"] < "2026-08" for m in WF)
-assert N_WF_IS == 8
-WF_POS = f"{sum(m['net30_c'] > 0 for m in WF)}/{len(WF)}"
-WF_OOS = WF[N_WF_IS:]
-WF_OOS_RANGE = f"+{min(m['net30_c'] for m in WF_OOS):.1f} to +{max(m['net30_c'] for m in WF_OOS):.1f}¢"
-assert WF_OOS_RANGE == "+0.4 to +0.8¢"
-WF_DEC, WF_OCT = WF[0], WF[-1]
-assert (WF_DEC["month"], WF_DEC["n_matches"], WF_DEC["n_wallets"]) == ("2025-12", 14, 4)
-assert (WF_OCT["month"], WF_OCT["n_matches"]) == ("2026-10", 133)
-AUG_IS = next(m for m in SUMMARY["is"]["h6_walkforward"] if m["month"] == "2026-08")  # Aug 1-24, not plotted
-# Fast-tier 0-3 s volume per month, Jan 2026 on (Dec 2025 was only $8.8k).
-FT_VOL = [m["usd_k"] for m in WF if m["month"] >= "2026-01"]
-FT_VOL_TXT = f"${min(FT_VOL) / 1000:.1f}–{max(FT_VOL) / 1000:.1f}M"
-assert FT_VOL_TXT == "$0.3–3.1M"
-need(NOTE, "8/8 months > 0", "3/3 months > 0", "Copying the fast tier 3 s later | < 0 every month | < 0 every month")
-need(DEVPOST, "11 of 11 months")
-# H5 and H6 were written after in-sample results; only walk-forward / OOS counts.
-need(DEV, "Because H5 was written after looking at in-sample data, only its OOS result counts as a test",
-     "H6, formulated AFTER D4 (only its walk-forward / OOS result counts as a test)")
-MONTH_ABBR = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
-              "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"}
 
-# ---- OOS looks (results/oos_peeks.log): v1 once, then v2 twice on the burned window ----
-PEEKS = [ln for ln in (ROOT / "results/oos_peeks.log").read_text(encoding="utf-8").splitlines() if ln.strip()]
-assert len(PEEKS) == 3, PEEKS
-need(HYP2, "is now burned: v2's design used knowledge of how v1 behaved there")
+def frac_pct0(x):
+    return f"{num(100 * x, 0)}%"
 
-# ---- leverage (exact Markov model, simulated ATP best-of-3) ----
-ATP = LEVER["atp"]
-LEV_MEAN = f"{ATP['mean_abs_leverage'] * 100:.1f}%"
-LEV_TRAVEL = f"${ATP['total_abs_move_per_match']:.1f}"
-LEV_POINTS = f"{ATP['points_per_match']:.0f}"
-assert (LEV_MEAN, LEV_TRAVEL, LEV_POINTS) == ("5.7%", "$4.2", "161")
-need(NOTE, "mean |leverage| 5.7%", "~161 points")
 
-# ---- tracking ----
-EC = TRACK["early_call"]["precision_recall_test_snapshot"]["50ms"]
-TT_CALLS = f"{EC['tp']}/{EC['tp'] + EC['fp']}"
-TT_WILSON_LO = f"{EC['precision_wilson95'][0] * 100:.0f}%"
-TT_N_MISS = EC["tp"] + EC["fn"]
-TT_RECALL = f"{EC['recall'] * 100:.0f}%"
-assert TT_CALLS == "11/11" and TT_WILSON_LO == "74%" and (TT_N_MISS, TT_RECALL) == (41, "27%")
-TT_LEAD = TRACK["early_call"]["miss_first_call_lead_test_ms"]
-TT_MED_LEAD = f"{TT_LEAD['median']:.0f} ms"
-assert TT_MED_LEAD == "25 ms" and TT_LEAD["n_called"] == 8
-need(DEV, "precision 8/8 at 50 ms (recall 0.38)")
-PHYS = {r["lead_ms"]: r["pred_err_sd_cm"] for r in SUMMARY["tracking_tennis_physics"]}
-HE_100 = f"±{PHYS[100]:.1f} cm"
-HE_300 = f"±{PHYS[300]:.1f} cm"
-assert (HE_100, HE_300) == ("±2.4 cm", "±10.7 cm")
-need(NOTE, "a physics Monte Carlo of Hawk-Eye-class tracking (340 fps, ±3.6 mm)")
-# Broadcast (25 fps) tennis: median landing error of the best predictor, 33-300 ms before the bounce.
-# (docs/NOTE.md section 5 still says 0.6-1.2 m; results/tennis_tracking/summary.json gives 0.7-1.2 m.)
-_BC = TENNIS_TRACK["headline"]["labels"]["median_landing_err_cm"]["learned"]
-_BC = [v for k, v in _BC.items() if 33 <= int(k) <= 300]
-BROADCAST_ERR = f"{min(_BC) / 100:.1f}–{max(_BC) / 100:.1f} m"
-assert BROADCAST_ERR == "0.7–1.2 m", BROADCAST_ERR
-need(TT_README, "about 0.7–1.2 m median from 33 to 300 ms before the bounce")
-DEMO_LEADS = [c["call_lead_ms"] for c in DEMO["clips"] if c["label"] == "MISS"]
-DEMO_LEADS_TXT = ", ".join(f"{MINUS}{x:.0f}" for x in DEMO_LEADS) + " ms"
-assert DEMO_LEADS_TXT == f"{MINUS}408, {MINUS}83, {MINUS}25 ms"
-assert DEMO["note"].startswith("presentation only")
-need(NOTE, "11 of 11 calls correct", "±2.4 cm at 100 ms")
+def frac_pct1(x):
+    return f"{num(100 * x, 1)}%"
 
-# ---- replay video on slide 1: a real tape beside a simulated shot ----
-TAPE = VIZ["tape"]
-TAPE_TXT = f"{TAPE['out0'].split()[-1]} v {TAPE['out1'].split()[-1]}, {TAPE['date']}"
-assert TAPE_TXT == "Nakashima v Medvedev, 2026-08-18", TAPE_TXT
-need("scripts/render_hawkeye_video.py", "a simulated groundstroke")
 
-# ---- H4 (pre-registered live latency test) ----
-H4 = SUMMARY["h4"]
-H4_SHARE = f"{H4['share_book_first'] * 100:.0f}%"
-H4_MED = f"{H4['median_lead_s']:.1f} s"
-assert (H4_SHARE, H4_MED, H4["n"]) == ("93%", "44.5 s", 75)
+def usd0(x):
+    return (MINUS if x < 0 else "") + f"${abs(x):,.0f}"
 
-# ---- calibration (in sample) ----
-CAL_IS = SUMMARY["is"]["calibration"]
-CAL_MAX = max(abs(b["edge_c"]) for b in CAL_IS)
-CAL_MAX_TXT = f"{CAL_MAX:.1f}¢"
-# Bands whose 95% CI on the realised win rate excludes the price (all are favourites priced rich).
-CAL_RICH = [b for b in CAL_IS if b["hi"] < b["mean_price"] or b["lo"] > b["mean_price"]]
-assert [b["bin"] for b in CAL_RICH] == ["[0.95, 0.97)", "[0.98, 0.99)", "[0.99, 1.0)"]
-assert all(b["hi"] < b["mean_price"] for b in CAL_RICH)
-H2_IS = SUMMARY["is"]["h2"]["lo0.85_hi0.97"]
-H2_OOS = SUMMARY["oos"]["h2"]["lo0.85_hi0.97"]
 
-# ---- markdown-only numbers, each checked against its source ----
-need(NOTE, "−1.2 s (reprices before the official stamp)", "n = 482", "+27.5 s / +29.1 s / +43.3 s",
-     "0 of 295 changes beat the book by > 1.3 s", "100–300 ms *before the bounce*",
-     "6.1× its in-play volume", "hold every marketable order for 1 s (3 s before May 2026)",
-     "fair value travels $4.20 per share")
-need(LAT, "median 1.2 s before the official point timestamp", "28.2 s behind the book", "30.0 s behind the book",
-     "may sit 1-3 s after the ball actually lands", "reacting about 0-2 s after the real point end",
-     "| t_book - 2 s | $565 | $3,116 |", "| t_book - 1 s | $379 | $1,866 |",
-     "| t_book - 0.25 s | $222 | $1,254 |",
-     "an order has to be sent at least 1.3 s before the reprice to meet it",
-     "98% with the move and earned +0.91c/share net", "submitted at least 1 s before they printed",
-     "at least 1-1.5 s before the reprice", "mostly at Beijing WTA 1000")
-need(KAL, "68.9%", "106,347", "6.1x Polymarket's in-play notional", "It is not an information gap",
-     "0.07·p(1-p), i.e. 1.75c at p = 0.5", "+0.06c [-1.17, 1.48] on 119 trades")
-need(NOTE, "Net |exposure| ≤ 100 shares per match; ≤ $1k per order; capital = 3× peak locked",
-     "the worst day was −1.9% in sample and −2.1% out",
-     "Kill switch on any feed or tracking dropout over 2 s", "on measured order latency beyond its 95th percentile",
-     "Trade only calls with P ≥ 0.95",
-     "We halve size if the trailing-month net edge falls below 0.3¢ and stop at ≤ 0",
-     "Qualifying wallets grew 4 → 131",
-     "Edge per share fell from ~2.4¢ to ~0.8¢ but stayed positive every month",
-     "median 1¢ spread, $8.1k at the touch and $61k within 2¢", "89¢ median spread, $23 at the touch, ~$2 of volume per match",
-     "2.9% of matches settled 50/50",
-     "Polymarket's international venue restricts US persons", "A deployment needs licensed data, a permitted venue and legal review",
-     "**The v2 book trades the fast tier's own fills.** It measures the opportunity at that speed, not our execution")
-# Fee effect, in-sample shadow book by regime: 1 s/3% -> 1 s/5% is the fee alone (about halved).
-need(DEV, "1 s/3% 1.19¢; 1 s/5% 0.54¢")
-need(NOTE, "commit `7232986`", "opened once", "81% of the first v2 draft's OOS P&L",
-     "filled only 35% of the time within a minute", "Side markets add only ~$2k/month",
-     "Kalshi→Polymarket laggard trade nets ≈0 today", "Cloudflare's Miami edge", "67 ms median one-way",
-     "saves ~130 ms per round trip", "The expected best Sharpe from luck over this many trials is ~4.8")
-need(XMKT, "+0.93c/share (95% CI −2.8 to +4.7) and $472", "about $2.1k per 30 days")
-need(DEVPOST, "chasing the move, favourite bias, maker exits, side-market sniping, and copying Kalshi")
-need(NOTE, "1.98 s after the true match time", "5,472 trades", "P ≥ 0.95",
-     "Courtsiding breaks most tournaments' ticket terms")
-need(LAT, "9 WTA matches")
-need(HYP2, "planned ~2026-10-04 11:30 UTC", "Window start moves to 2026-10-03 14:00 UTC",
-     "**Primary A (economic claim):**", "**Primary B (strategy):**", "Pass if the 95% CI excludes 0",
-     "With <1 day of matches a fail may be underpowered", "**Secondary:** v2 resolution P&L",
-     "**Price zone:** token price q in [0.05, 0.95]")
-need(DEV, "Burned-OOS v2 fell from +0.75¢ to +0.60¢")
-need(FILL, "| 1 tick inside | 27% | 35% |")
+def usd1(x):
+    return (MINUS if x < 0 else "") + f"${abs(x):,.1f}"
 
-FORWARD_STATUS = "PLACEHOLDER"
-FORWARD_WHEN = "Runs once ~11:30 UTC, Oct 4 2026"
-if (ROOT / "results/v2/forward.json").exists():
-    print("NOTE: results/v2/forward.json exists. Replace the forward PLACEHOLDER cells by hand from it.")
+
+def usd_k(x):
+    return (MINUS if x < 0 else "") + f"${abs(x) / 1000:.1f}k"
+
+
+def usd_signed_k(x):
+    return ("+" if x >= 0 else MINUS) + f"${abs(x) / 1000:.1f}k"
+
+
+def usd_signed0(x):
+    return ("+" if x >= 0 else MINUS) + f"${abs(x):,.0f}"
+
+
+def usd_m(x):
+    return f"${x / 1e6:.2f}M"
+
+
+def usd_b(x):
+    return f"${x / 1e9:.2f}B"
+
+
+def intc(x):
+    return f"{int(round(x)):,}"
+
+
+def sec1(x):
+    return f"{signed(x, 1)} s"
+
+
+def sec2(x):
+    return f"{signed(x, 2)} s"
+
+
+def ms0(x):
+    return f"{x:.0f} ms"
+
+
+def dsr3(x):
+    return f"{x:.3f}" if x < 0.995 else f"{x:.2f}"
+
+
+def ascii_signed(x: float, d: int = 2) -> str:
+    return ("+" if x >= 0 else "-") + f"{abs(x):.{d}f}"
+
+
+# ---- the financials headline is a list of rows; find one by (strategy prefix, period) ----
+def fin_row(strategy: str, period: str) -> int:
+    rows = raw(F_FIN, "headline")
+    mine = [(i, r) for i, r in enumerate(rows) if r.get("strategy", "").startswith(strategy)]
+    for i, r in mine:  # exact period label first, then a label that extends it ("IS, 1 s-delay matches ...")
+        if r.get("period") == period:
+            return i
+    for i, r in mine:
+        if str(r.get("period", "")).startswith(period + ","):
+            return i
+    raise Missing(f"{F_FIN} :: headline row {strategy!r} / {period!r}")
+
+
+def FIN(strategy: str, period: str, *keys, f=None) -> str:
+    try:
+        i = fin_row(strategy, period)
+    except Missing:
+        return _record(PENDING, f"{F_FIN} :: headline row {strategy!r} / {period!r}")
+    return V(F_FIN, "headline", i, *keys, f=f, how=f"row {strategy} / {period}")
+
+
+# ---- walk-forward fast tier (results/summary.json): IS months before the OOS start, then OOS months ----
+def wf_months():
+    s = raw(F_SUM, "is", "h6_walkforward")
+    o = raw(F_SUM, "oos", "h6_walkforward")
+    oos_month = raw(F_SUM, "universe", "oos_start")[:7]
+    return [m for m in s if m["month"] < oos_month], list(o)
+
+
+WF_SRC = f"{F_SUM} :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward"
+
+
+def peeks() -> list[str]:
+    p = ROOT / F_PEEKS
+    if not p.exists():
+        raise Missing(F_PEEKS)
+    return [ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+def video_duration(path: Path, fallback: float) -> float:
+    """Clip length for the autoplay timing node only (never shown on a slide)."""
+    if shutil.which("ffprobe"):
+        try:
+            out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of",
+                                  "default=nw=1:nk=1", str(path)], capture_output=True, text=True, timeout=30)
+            return float(out.stdout.strip())
+        except (ValueError, subprocess.SubprocessError):
+            pass
+    return fallback
+
+
+# --------------------------------------------------------------------------------------------
+# Consistency checks: fail loudly on internal contradictions only; missing files are "pending".
+# --------------------------------------------------------------------------------------------
+
+
+def fail(msg: str) -> None:
+    for w in WARNINGS:
+        print(f"WARNING: {w}")
+    sys.exit(f"[CONTRADICTION] {msg}")
+
+
+def warn(msg: str) -> None:
+    WARNINGS.append(msg)  # printed once, at the end of the build
+
+
+def _agree(a, b, tol=1e-6) -> bool:
+    return abs(a - b) <= tol * max(1.0, abs(a), abs(b))
+
+
+def run_checks() -> None:
+    # 1. Files that must agree to rounding (each pair: two results files computing the same quantity).
+    pairs = [
+        ((F_CAUSAL, IS0, "per_share_c"), (F_COST, "is_eval/base", "per_share_c")),
+        ((F_CAUSAL, OS0, "per_share_c"), (F_COST, "burned_oos/base", "per_share_c")),
+        ((F_CAUSAL, IS0, "total_pnl_usd"), (F_COST, "is_eval/base", "total_pnl_usd")),
+        ((F_CAUSAL, OS0, "total_pnl_usd"), (F_COST, "burned_oos/base", "total_pnl_usd")),
+        ((F_CAUSAL, IS0, "sharpe_ann"), (F_NM, "is", "sharpe_ann")),
+        ((F_CAUSAL, OS0, "sharpe_ann"), (F_NM, "burned_oos", "sharpe_ann")),
+        ((F_CAUSAL, IS0, "sharpe_ann"), (F_RIGOR, "sharpe_moments", "v2_is", "sharpe_ann")),
+        ((F_CAUSAL, OS0, "sharpe_ann"), (F_RIGOR, "sharpe_moments", "v2_oos", "sharpe_ann")),
+        ((F_COST, "is_eval/fee_x2", "per_share_c"), (F_NM, "is", "fees_x2_per_share_c")),
+        ((F_COST, "burned_oos/fee_x2", "per_share_c"), (F_NM, "burned_oos", "fees_x2_per_share_c")),
+        ((F_COST, "burned_oos/costs_x2", "per_share_c"), (F_NM, "burned_oos", "costs_x2_per_share_c")),
+        ((F_EXP, "primary", "u2_is", "per_share_c"), (F_EXP, "books", "u2_is", "slip0.0", "per_share_c")),
+        ((F_EXP, "primary", "u2_oos", "per_share_c"), (F_EXP, "books", "u2_oos", "slip0.0", "per_share_c")),
+        ((F_EXP, "books", "u2_oos", "slip0.0", "total_pnl_usd"),
+         (F_RIGOR, "sharpe_moments", "v2_u2oos_blind", "total_usd")),
+        ((F_MAKER, "primary", "value_c"), (F_MAKER, "headline", "mean_pnl_per_share_c")),
+        ((F_PMC, "p07_wallet_clustered_ci", "burned_oos", "per_share_c"), (F_CAUSAL, OS0, "per_share_c")),
+    ]
+    for a, b in pairs:
+        try:
+            va, vb = raw(*a), raw(*b)
+        except Missing as e:
+            print(f"  check skipped (pending): {e}")
+            continue
+        if not _agree(va, vb):
+            fail(f"{key_str(*a)} = {va} but {key_str(*b)} = {vb}")
+    try:
+        rows = raw(F_FIN, "headline")
+        for strat, per, other in (("v2 (", "IS", (F_CAUSAL, IS0, "per_share_c")),
+                                  ("v2 (", "OOS (burned, non-blind)", (F_CAUSAL, OS0, "per_share_c")),
+                                  ("Tier-0", "IS", (F_T0, "headline", "IS", "mean", "per_share_c")),
+                                  ("Tier-0", "OOS (burned, non-blind)", (F_T0, "headline", "burned_OOS", "mean",
+                                                                         "per_share_c")),
+                                  ("Maker", "OOS (blind)", (F_MAKER, "headline", "share_weighted_net_c"))):
+            try:
+                r = rows[fin_row(strat, per)]
+            except Missing as e:
+                print(f"  check skipped (pending): {e}")
+                continue
+            if not _agree(r["net_c_per_share"], raw(*other), tol=1e-3):
+                fail(f"financials {strat} / {per} net_c_per_share {r['net_c_per_share']} != {key_str(*other)}")
+        bad = [c["what"] for c in raw(F_FIN, "checks") if not c.get("ok")]
+        if bad:
+            fail(f"results/financials/financials.json self-checks failed: {bad}")
+    except Missing as e:
+        print(f"  check skipped (pending): {e}")
+    if opt(F_RISK, "reproduction_check", "ok") is False:
+        fail("results/risk/risk_stats.json reproduction_check.ok is false")
+
+    # 2. Verdicts must match their own confidence intervals (pass iff the 95% CI excludes 0).
+    for per in ("u2_is", "u2_oos"):
+        r = opt(F_EXP, "primary", per)
+        if r and r["pass"] != (r["per_share_ci_c"][0] > 0):
+            fail(f"{F_EXP} primary {per}: pass={r['pass']} but CI {r['per_share_ci_c']}")
+    r = opt(F_MAKER, "primary")
+    if r and (r["verdict"] == "FAILURE") != (r["ci95_c"][0] <= 0):
+        fail(f"{F_MAKER} primary verdict {r['verdict']} disagrees with CI {r['ci95_c']}")
+    fw = opt(F_FWD)
+    if fw:
+        for vk, ck in (("verdict_A_fast_tier", "primary_A_fast_minus_others_c"),
+                       ("verdict_B_v2_book", "primary_m30_per_share_c")):
+            if vk in fw and ck in fw and fw[vk].startswith("PASS") != (fw[ck][1] > 0):
+                fail(f"{F_FWD} {vk}={fw[vk]} disagrees with {ck}={fw[ck]}")
+
+    # 3. Paper only, and the counterfactual keeps its label.
+    if opt(F_ENG_LIVE, "paper_only") is False or (opt(F_ENG_LIVE, "orders_sent", default=0) or 0) != 0:
+        fail(f"{F_ENG_LIVE} reports a non-paper run or an order sent")
+    if opt(F_ENG_DEMO, "paper_only") is False or (opt(F_ENG_DEMO, "orders_sent_to_any_venue", default=0) or 0) != 0:
+        fail(f"{F_ENG_DEMO} reports a non-paper run or an order sent")
+    lab = opt(F_LIVE, "label")
+    if lab is not None and "PAPER" not in lab.upper():
+        fail(f"{F_LIVE} label does not say PAPER: {lab!r}")
+    lab = opt(F_T0, "label")
+    if lab is not None and "COUNTERFACTUAL" not in lab.upper():
+        fail(f"{F_T0} label lost the COUNTERFACTUAL marker: {lab!r}")
+
+    # 4. Prose that quotes a JSON headline must quote it correctly (note vs JSON).
+    vpath = ROOT / F_T0_VERIFIED
+    try:
+        h = raw(F_T0, "headline")
+        if vpath.exists():
+            vt = vpath.read_text(encoding="utf-8")
+            for per, tag in (("IS", "IS"), ("burned_OOS", "burned OOS")):
+                m = h[per]["mean"]
+                want = (f"{tag} {ascii_signed(m['per_share_c'])}c "
+                        f"[{m['per_share_ci95_c_lo']:.2f},{m['per_share_ci95_c_hi']:.2f}] "
+                        f"Sharpe {m['sharpe_ann']:.1f}+/-{h[per]['sd']['sharpe_ann']:.1f}")
+                if want not in vt:
+                    fail(f"{F_T0_VERIFIED} does not quote the JSON headline: expected {want!r}")
+        else:
+            warn(f"{F_T0_VERIFIED} missing: tier-0 headline not marked verified")
+    except Missing as e:
+        print(f"  check skipped (pending): {e}")
+    note = (ROOT / NOTE).read_text(encoding="utf-8") if (ROOT / NOTE).exists() else ""
+    num_re = r"([+−-]?\d+\.\d+)"
+    m = re.search(r"Net ¢/share at fast-tier fills\**\s*\|\s*\**" + num_re + r" \[" + num_re + ", " + num_re
+                  + r"\]\**\s*\|\s*\**" + num_re + r" \[" + num_re + ", " + num_re + r"\]", note)
+    if m:
+        got = [float(g.replace("−", "-")) for g in m.groups()]
+        want = [raw(F_CAUSAL, IS0, "per_share_c"), *raw(F_CAUSAL, IS0, "per_share_ci_c"),
+                raw(F_CAUSAL, OS0, "per_share_c"), *raw(F_CAUSAL, OS0, "per_share_ci_c")]
+        if any(abs(g - round(w, 2)) > 0.0051 for g, w in zip(got, want)):
+            fail(f"{NOTE} Table 2 quotes {got}, results/v2/causal.json gives {[round(w, 2) for w in want]}")
+    else:
+        warn(f"{NOTE}: Table 2 'Net ¢/share at fast-tier fills' row not found; note-vs-JSON check skipped")
+    m = re.search(r"Sharpe / max drawdown \|\s*([\d.]+) / ([−-]?[\d.]+)% \|\s*([\d.]+) / ([−-]?[\d.]+)%", note)
+    if m:
+        got = [float(g.replace("−", "-")) for g in m.groups()]
+        want = [raw(F_CAUSAL, IS0, "sharpe_ann"), raw(F_CAUSAL, IS0, "max_dd_pct"),
+                raw(F_CAUSAL, OS0, "sharpe_ann"), raw(F_CAUSAL, OS0, "max_dd_pct")]
+        if any(abs(g - round(w, 1)) > 0.051 for g, w in zip(got, want)):
+            fail(f"{NOTE} Sharpe/max DD row quotes {got}, results/v2/causal.json gives {want}")
+    else:
+        warn(f"{NOTE}: 'Sharpe / max drawdown' row not found; note-vs-JSON check skipped")
+
+    # 5. Known, documented differences: printed, not fatal (the log is append-only; NOTE is not ours to edit).
+    m = re.search(r"results/oos_peeks\.log`?,\s*(\d+) lines", note)
+    try:
+        n = len(peeks())
+        if m and int(m.group(1)) != n:
+            warn(f"{NOTE} says oos_peeks.log has {m.group(1)} lines; the log now has {n} (append-only; "
+                 "the deck shows the live count)")
+    except Missing:
+        pass
+    if opt(F_PMC, "p07_wallet_clustered_ci", "note_value_reproduced_to_2dp") is False:
+        warn("results/financials/pm_compute.json p07: the note's wallet-clustered CI does not reproduce to 2 dp; "
+             "the deck quotes pm_compute's value")
+    if "bash reproduce.sh" not in ((ROOT / README).read_text(encoding="utf-8") if (ROOT / README).exists() else ""):
+        fail("README.md no longer documents `bash reproduce.sh`, which the closing slide shows")
 
 # --------------------------------------------------------------------------------------------
 # Low-level helpers
@@ -764,7 +930,91 @@ def new_slide(prs, dark=False):
     return s
 
 
-def slide_title(prs):
+
+# --------------------------------------------------------------------------------------------
+# Talk timing: ten main slides, 4:45 in total. Every slide's notes start with its time window.
+# --------------------------------------------------------------------------------------------
+DUR_S = [25, 30, 30, 40, 35, 30, 35, 25, 25, 10]
+TALK_S = 4 * 60 + 45
+assert sum(DUR_S) == TALK_S, sum(DUR_S)
+
+
+def window(i: int) -> str:
+    a, b = sum(DUR_S[:i]), sum(DUR_S[:i + 1])
+    return f"[{a // 60}:{a % 60:02d} to {b // 60}:{b % 60:02d}, {DUR_S[i]} s]"
+
+
+MONTH_ABBR = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
+              "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"}
+
+
+def month_year(s: str) -> str:
+    return f"{MONTH_ABBR[s[5:7]]} {s[:4]}"
+
+
+def rx(rel: str, keys: tuple, pattern: str, fmt=lambda g: g):
+    """A number quoted inside a string field of a results file."""
+    m = re.search(pattern, str(raw(rel, *keys)))
+    if not m:
+        raise Missing(f"{key_str(rel, *keys)} ~ /{pattern}/")
+    return fmt(m.group(1))
+
+
+def VR(rel: str, *keys, f=cents, how=None):
+    """(float or None, text): a value for a chart, recorded in the manifest like any other number."""
+    t = V(rel, *keys, f=f, how=how)
+    return (opt(rel, *keys), t)
+
+
+def stat(slide, x, y, w, big, cap, col=BLUE, big_size=44, cap_size=13, big_h=0.78, cap_h=0.72, name="Stat"):
+    text(slide, x, y, w, big_h, P(R(big, big_size, col, bold=True, font=HEAD)), anchor="b", name=f"{name} value")
+    text(slide, x, y + big_h + 0.02, w, cap_h, P(R(cap, cap_size, INK)), name=f"{name} caption")
+
+
+def label(slide, x, y, w, t, col=BLUE, dark=False):
+    text(slide, x, y, w, 0.3, P(R(t, 12, MUTED_DK if dark else col, bold=True, spc=1.4)), anchor="m",
+         name=f"Label: {t[:24]}")
+
+
+def verdict_fill(v: str):
+    v = v.upper()
+    if v.startswith("PASS"):
+        return BLUE_TINT
+    if v.startswith(("FAIL", "NEG")):
+        return RED_TINT
+    return None
+
+
+def verdict_color(v: str):
+    v = v.upper()
+    if v.startswith("PASS"):
+        return BLUE
+    if v.startswith(("FAIL", "NEG")):
+        return RED
+    return MUTED
+
+
+def poster_for(mp4: Path) -> Path | None:
+    """A poster frame for a video: <name>.png beside it, else one frame extracted with ffmpeg."""
+    png = mp4.with_suffix(".png")
+    if png.exists():
+        return png
+    if shutil.which("ffmpeg"):
+        out = Path(tempfile.mkdtemp()) / (mp4.stem + "_poster.png")
+        r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "1", "-i", str(mp4), "-frames:v", "1", str(out)],
+                           capture_output=True, timeout=60)
+        if r.returncode == 0 and out.exists():
+            return out
+    return None
+
+
+# --------------------------------------------------------------------------------------------
+# Main slides
+# --------------------------------------------------------------------------------------------
+
+
+def s01_title(prs, n):
+    slide_ctx(f"{n} Title")
     s = new_slide(prs, dark=True)
     eyebrow(s, "GATOR QUANT HACKS 2026  ·  SYSTEMATIC TRADING", dark=True)
     ph = set_title(s, "COURTSIDE", dark=True, size=60)
@@ -774,763 +1024,1254 @@ def slide_title(prs):
         P(R("moves a market.", 36, WHITE, bold=True, font=HEAD), line=0.95),
         P(R("Who gets paid?", 36, RED, bold=True, font=HEAD), line=0.95),
     ], name="Hook")
+    matches = V(F_SUM, "universe", "matches", f=intc)
+    vol = V(F_SUM, "universe", "volume_usd", f=usd_b)
     text(s, M, 4.45, 5.1, 0.75, P(
-        R(N_MATCHES, 38, WHITE, bold=True, font=HEAD), R(" matches   ", 18, MUTED_DK, font=HEAD),
-        R(VOLUME, 38, WHITE, bold=True, font=HEAD), R(" traded", 18, MUTED_DK, font=HEAD)),
+        R(matches, 38, WHITE, bold=True, font=HEAD), R(" matches   ", 18, MUTED_DK, font=HEAD),
+        R(vol, 38, WHITE, bold=True, font=HEAD), R(" traded", 18, MUTED_DK, font=HEAD)),
         anchor="b", name="Universe")
-    text(s, M, 5.3, 5.0, 0.62, P(R("Every resolved Polymarket ATP/WTA singles moneyline ≥\u00a0$5k, "
-                                   "Oct 2025 – Oct 2026", 13, MUTED_DK)), name="Universe caption")
+    thr = D(lambda: rx(F_RISK, ("universe_volume_filter", "note"), r">= (\$\d+k)"),
+            key_str(F_RISK, "universe_volume_filter", "note") + "  [volume threshold quoted in the note field]")
+    first = V(F_NM, "holdout", "first_start", f=month_year)
+    last = V(F_NM, "holdout", "last_start", f=month_year)
+    text(s, M, 5.3, 5.0, 0.62, P(R(f"Every resolved Polymarket ATP/WTA singles moneyline with lifetime volume "
+                                   f"≥ {thr}, {first} – {last}", 13, MUTED_DK)), name="Universe caption")
+    box(s, M, 6.1, 4.3, 0.4, fill=INK_2, radius=0.08, name="Paper chip")
+    text(s, M, 6.1, 4.3, 0.4, P(R("PAPER ONLY  ·  PUBLIC DATA  ·  NO ORDERS SENT", 11.5, "F07A66", bold=True,
+                                  spc=1.2), align="c"), anchor="m", name="Paper only")
     vx, vw = 6.05, SW - M - 6.05
     vh = vw * 9 / 16
     box(s, vx - 0.04, 1.05 - 0.04, vw + 0.08, vh + 0.08, fill=INK_2, radius=0.06, name="Video frame")
+    mp4 = ROOT / "results/viz/courtside_replay.mp4"
     video(s, "results/viz/courtside_replay.mp4", "results/viz/courtside_replay.png", vx, 1.05, vw, vh,
-          13.0, loop=True, name="Video: Hawk-Eye-style replay")
+          video_duration(mp4, 13.0), loop=True, name="Video: Hawk-Eye-style replay")
+    o0 = V(F_VIZ, "tape", "out0", f=lambda x: x.split()[-1])
+    o1 = V(F_VIZ, "tape", "out1", f=lambda x: x.split()[-1])
+    tdate = V(F_VIZ, "tape", "date")
     text(s, vx, 1.05 + vh + 0.12, vw, 0.5, P(R(
-        f"Real Polymarket tape ({TAPE_TXT}) beside a simulated Hawk-Eye-style call", 12, MUTED_DK)),
+        f"Real Polymarket tape ({o0} v {o1}, {tdate}) beside a simulated Hawk-Eye-style call", 12, MUTED_DK)),
         name="Video caption")
-    text(s, M, 7.06, 6.0, 0.26, P(R("github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii", 11, MUTED_DK)), anchor="m", name="Repo")
+    text(s, M, 7.0, SW - 2 * M, 0.34, P(R(REPO_SHORT, 12, MUTED_DK, font=MONO)), anchor="m", name="Repo")
+    lev = V(F_LEVER, "atp", "mean_abs_leverage", f=frac_pct1)
     notes(s, f"""
-[0:00 to 0:40]  TITLE + HOOK
+{window(0)}  TITLE + HOOK
 
-Every tennis point moves a prediction market. An average point moves a player's fair value by about six cents; the biggest, by more than fifty.
+Every tennis point moves a prediction market: on average about {lev} of a player's fair value per point.
 
 So we asked: when the price jumps, who is on the other side, and who gets paid?
 
-We took every resolved ATP and WTA moneyline on Polymarket for a year: {N_MATCHES} matches, 2.84 billion dollars traded, every print classified by side, net of its own fee.
+We took every resolved ATP and WTA moneyline on Polymarket for a year: {matches} matches, {vol} traded, every print classified by side, net of its own fee. Everything you will see is public data and paper trading. No order was ever sent.
 
-The video: a real tape beside a simulated line call. Blue dots are the fast tier. This is COURTSIDE.
-
-[Timing plan for the 5 minutes: about 40 s per slide for slides 1 to 7, 20 s spare. Backups 8 to 12 are for Q&A only.]
-[PRE-FLIGHT, on the presenting machine: open the .pptx once in PowerPoint (not Keynote, Google Slides or a PDF; they may not autoplay the videos). Check that this video autoplays and loops, that the slide 4 video autoplays, and that the slide 5 table stays clear of the footer. Bring results/viz/courtside_replay.mp4 and results/tracking/demo/supercut.mp4 as separate files. If a video fails, talk over its poster frame.]
-[The replay pairs the real {TAPE_TXT} tape with a simulated groundstroke (scripts/render_hawkeye_video.py); it is not that point's line call.]
-[Sources: results/summary.json universe; results/leverage_stats.json (mean |leverage| {LEV_MEAN}, max {ATP['max_leverage'] * 100:.0f}%); results/viz/viz_data.json tape.]
+[The video pairs a real tape ({o0} v {o1}, {tdate}) with a simulated groundstroke; it is not that point's line call. Blue dots are the fast tier.]
+[PRE-FLIGHT: open the .pptx in PowerPoint (not Keynote, Google Slides or the PDF) so the videos autoplay. Bring results/viz/courtside_replay.mp4 and the slide 4 video as separate files; if a video fails, talk over its poster frame.]
+[Every number in this deck is read from a results file at build time; the hidden slides at the end list each one with its source key.]
 """)
 
 
-def slide_ladder(prs):
+def s02_tiers(prs, n):
+    slide_ctx(f"{n} Economics")
     s = new_slide(prs)
     eyebrow(s, "01  ·  ECONOMIC FOUNDATION")
     set_title(s, "A point ends in tiers. Slow tiers pay fast ones")
-    # Rungs: (tag, who, sub, when, [when sub-lines], fill, fg, fg2). Tier 2's clock: the book reprices
-    # 1.2 s before the official stamp, which is umpire-entered 1-3 s after landing (latency RESULTS 3a).
+
+    def he(lead):
+        def fn():
+            row = next(r for r in raw(F_SUM, "tracking_tennis_physics") if r["lead_ms"] == lead)
+            return f"±{row['pred_err_sd_cm']:.1f} cm"
+        return D(fn, f"{F_SUM} :: tracking_tennis_physics > [lead_ms={lead}] > pred_err_sd_cm")
+
+    he100 = he(100)
+    book = V(F_T0, "timing", "median_t_reprice_minus_t_stamp_s", f=sec2)
+    lag = V(F_T0, "timing", "calibrated_stamp_lag_s (inference)", f=lambda x: f"≈{x:.1f} s")
+    espn = V(F_DECAY, "latency_inputs", "espn_behind_book_s", f=lambda x: f"+{x:.1f} s")
+    h4_share = V(F_SUM, "h4", "share_book_first", f=frac_pct0)
+    h4_n = V(F_SUM, "h4", "n", f=intc)
+    h4_med = V(F_SUM, "h4", "median_lead_s", f=lambda x: f"{x:.1f} s")
+    streams = V(F_DECAY, "latency_inputs", "stream_delay_s_assumed", f=lambda p: f"+{p[0]:.0f}–{p[1]:.0f} s")
     rungs = [
-        ("TIER 0", "Ball tracking", "in the venue", "100–300 ms", ["before the bounce"], RED, WHITE, "F6D3CC"),
-        ("TIER 1", "Chair umpire", "", "at the bounce", [], INK, WHITE, MUTED_DK),
-        ("TIER 2", "Market makers", "Kalshi (6.1× volume) reprices with them; PM lags ~2 s, mostly its own delay",
-         f"{MINUS}1.2 s", ["vs the official stamp,", "≈ 0–2 s after landing"], BLUE, WHITE, "C9D9EA"),
-        ("TIER 3", "Public feeds", "ESPN · PM score feed · WTA API", "+27 to +43 s", ["after the stamp"],
-         "C9D5E1", INK, MUTED),
+        ("TIER 0", "Ball tracking", "cameras in the venue", "before the bounce",
+         f"{he100} at 100 ms (simulated)", RED, WHITE, "F6D3CC"),
+        ("TIER 1", "Chair umpire", "", "at the bounce", "", INK, WHITE, MUTED_DK),
+        ("TIER 2", "Market makers", "the book reprices", book, "vs the official stamp (median)", BLUE, WHITE,
+         "C9D9EA"),
+        ("TIER 3", "Official feed", "umpire-entered point stamp", "reference", f"{lag} after the bounce (inferred)",
+         "3F6E9C", WHITE, "C9D9EA"),
+        ("TIER 4", "TV and public scores", f"book first on {h4_share} of {h4_n} points, median {h4_med}", espn,
+         "ESPN behind the book", "C9D5E1", INK, MUTED),
+        ("TIER 5", "Streams", "the slowest money", streams, "assumed, not measured", "E4EAF0", INK, MUTED),
     ]
-    x0, y0, step, rh, gap, right = M, 1.8, 0.5, 1.0, 0.12, 8.55
+    x0, y0, step, rh, gap, right = M, 1.74, 0.3, 0.66, 0.08, 8.55
     for i, (tag, who, sub, when, when_sub, fill, fg, fg2) in enumerate(rungs):
         x, y = x0 + i * step, y0 + i * (rh + gap)
         w = right - x
-        box(s, x, y, w, rh, fill=fill, radius=0.1, name=f"Ladder rung {i}")
-        who_paras = [P(R(tag, 11, fg2, bold=True, spc=1.2)), P(R(who, 22, fg, bold=True, font=HEAD), line=0.9)]
+        box(s, x, y, w, rh, fill=fill, radius=0.08, name=f"Ladder rung {i}")
+        paras = [P(R(tag + "  ", 10.5, fg2, bold=True, spc=1.2), R(who, 19, fg, bold=True, font=HEAD), line=0.9)]
         if sub:
-            who_paras.append(P(R(sub, 11.5, fg2)))
-        text(s, x + 0.25, y + 0.05, w - 2.95, rh - 0.1, who_paras, anchor="m", name=f"Ladder who {i}")
-        when_paras = [P(R(when, 26, fg, bold=True, font=HEAD), align="r", line=0.9)]
-        for ws in when_sub:
-            when_paras.append(P(R(ws, 12, fg2), align="r"))
-        text(s, x + w - 2.6, y + 0.05, 2.35, rh - 0.1, when_paras, anchor="m", name=f"Ladder when {i}")
-    text(s, M, 6.3, right - M, 0.6, P(R(
-        "Tier 0: physics simulation. Kalshi: in-sample tapes (106,347 repricings). Tiers 2–3: live books vs the "
-        "WTA official point stamp (umpire-entered, may lag landing 1–3 s), 2026-10-03, 9 WTA matches, n = 482.",
-        11, MUTED)), name="Ladder source")
+            paras.append(P(R(sub, 11, fg2)))
+        text(s, x + 0.2, y + 0.02, w - 3.1, rh - 0.04, paras, anchor="m", name=f"Ladder who {i}")
+        wp = [P(R(when, 19, fg, bold=True, font=HEAD), align="r", line=0.9)]
+        if when_sub:
+            wp.append(P(R(when_sub, 10.5, fg2), align="r"))
+        text(s, x + w - 3.0, y + 0.02, 2.82, rh - 0.04, wp, anchor="m", name=f"Ladder when {i}")
+    text(s, M, 6.25, right - M, 0.7, P(R(
+        "Tier 0: physics simulation of Hawk-Eye-class tracking. Tiers 2–4: live books vs the WTA's public "
+        "point log, read after the fact (stamp-to-bounce lag is inferred, not measured). Streams: assumption.",
+        10.5, MUTED)), name="Ladder source")
 
     cx, cw = 9.05, SW - M - 9.05
-    text(s, cx, 1.8, cw, 0.3, P(R("WHO PAYS WHOM", 12, BLUE, bold=True, spc=1.5)), name="Label")
-    text(s, cx, 1.98, cw, 0.92, P(R(LEV_TRAVEL, 54, BLUE, bold=True, font=HEAD)), anchor="b", name="Stat leverage")
-    text(s, cx, 2.92, cw, 0.7, P(R(f"total |fair-value move| per $1 share over a simulated ATP best-of-3 "
-                                   f"({LEV_POINTS} points, {LEV_MEAN} mean per point)", 13, INK)),
-         name="Stat leverage caption")
-    text(s, cx, 3.62, cw, 0.92, P(R("1 s", 54, RED, bold=True, font=HEAD)), anchor="b", name="Stat delay")
-    text(s, cx, 4.56, cw, 0.5, P(R("Polymarket holds every marketable sports order 1 s so makers can reprice",
-                                   13, INK)), name="Stat delay caption")
-    box(s, cx, 5.28, cw, 0.96, fill=INK, radius=0.1, name="Takeaway panel")
-    text(s, cx + 0.22, 5.28, cw - 0.44, 0.96, P(R("The gaps are physical, so they persist.", 20, WHITE, bold=True,
-                                                   font=HEAD)), anchor="m", name="Takeaway")
-    footer(s, 2)
+    label(s, cx, 1.74, cw, "WHO PAYS WHOM")
+    travel = V(F_LEVER, "atp", "total_abs_move_per_match", f=lambda x: f"${x:.1f}")
+    pts = V(F_LEVER, "atp", "points_per_match", f=lambda x: f"{x:.0f}")
+    lev = V(F_LEVER, "atp", "mean_abs_leverage", f=frac_pct1)
+    stat(s, cx, 1.95, cw, travel, f"total |fair-value move| per $1 share over a simulated ATP best-of-3 "
+                                  f"({pts} points, {lev} mean per point)", big_size=50, big_h=0.85, cap_h=0.75,
+         name="Leverage")
+    reg = D(lambda: next(iter(raw(F_RISK, "regime", "burned_oos"))),
+            key_str(F_RISK, "regime", "burned_oos") + "  [regime key: order delay / taker fee rate]")
+    delay, fee = (reg.split("/") + [PENDING])[:2] if reg != PENDING else (PENDING, PENDING)
+    delay = delay.replace("s", " s")
+    stat(s, cx, 3.62, cw, f"{delay} · {fee}", "Polymarket's order delay on every marketable sports order (so "
+                                             "makers can reprice) and its taker fee rate, × p(1−p)",
+         col=RED, big_size=50, big_h=0.85, cap_h=0.75, name="Venue")
+    box(s, cx, 5.3, cw, 0.95, fill=INK, radius=0.1, name="Takeaway panel")
+    text(s, cx + 0.22, 5.3, cw - 0.44, 0.95, P(R("The gaps are physical, so they persist.", 19, WHITE, bold=True,
+                                                 font=HEAD)), anchor="m", name="Takeaway")
+    footer(s, n)
     notes(s, f"""
-[0:40 to 1:20]  ECONOMIC FOUNDATION: THE INFORMATION LADDER
+{window(1)}  ECONOMIC FOUNDATION: THE INFORMATION LADDER
 
 Why does anyone lose? Because a point ends in tiers.
 
-Ball tracking knows the landing point mid-air. The umpire knows at the bounce. Market makers reprice Polymarket 1.2 seconds before the official stamp, typed in after the ball lands. Kalshi, six times bigger, reprices with them; Polymarket's lag is mostly its own order delay. Public feeds arrive 27 to 43 seconds late.
+Ball tracking knows where the ball lands before it bounces. The umpire knows at the bounce. Market makers reprice the book {book} relative to the official stamp, which an umpire types in after the ball lands. TV and public scores trail the book: ESPN by {espn}; in our pre-registered live test the book moved first on {h4_share} of {h4_n} points. Streams are slower still.
 
-Over a match, a one-dollar share's fair value moves about four dollars in total, and whoever trades on an older tier sells to someone faster. The venue admits it: it holds every marketable order one second so makers can reprice.
+Over a match a one-dollar share's fair value travels {travel} in total. Whoever trades on an older tier sells to someone faster. The venue admits it: it holds every marketable order {delay} so makers can reprice, and charges takers {fee} times p(1−p).
 
-[If asked "why not trade Kalshi, it is 6x bigger?": Kalshi's taker fee is 0.07·p(1−p), 1.75¢ at p = 0.5, and the hedged Polymarket-laggard trade nets +0.06¢ [−1.17, 1.48] on 119 trades in today's 1 s / 5% regime. Most of Polymarket's ~2 s lag is mechanical (its order delay plus ~2 s block-time stamps), not an information gap, and the fast tier trades at the same moment Kalshi reprices (research/v2/kalshi/RESULTS.md TL;DR 1, 2, 4, 6).]
-[If asked about the clocks: the official WTA stamp has 1 s resolution and may sit 1–3 s after the ball lands, so the book probably reacts about 0–2 s after the real point end (research/v2/latency/RESULTS.md 3a). One day, 9 WTA matches, mostly Beijing; ATP has no public official point clock.]
-[Sources: docs/NOTE.md sections 1 and 5; research/v2/latency/RESULTS.md (n = 482 points, 9 WTA matches; ESPN +27.5 s, PM feed +29.1 s, WTA API +43.3 s); research/v2/kalshi/RESULTS.md (68.9% of 106,347 in-sample repricings; ~2 s once block lag is removed; 6.1x in-play notional); results/leverage_stats.json ({LEV_TRAVEL} total travel, {LEV_POINTS} points, mean |leverage| {LEV_MEAN}; simulated ATP best-of-3 from the exact Markov model).]
+[If asked about the clocks: the WTA stamp is the public point log, 1 s resolution, read after the fact; its lag to the bounce ({lag}) is an inference from fast-tier prints, not a measurement. ATP has no public official point clock.]
+[Sources: {F_T0} timing; {F_DECAY} latency_inputs; {F_SUM} h4 and tracking_tennis_physics; {F_LEVER} atp; {F_RISK} regime.]
 """)
 
 
-def slide_evidence(prs):
+def s03_evidence(prs, n):
+    slide_ctx(f"{n} Evidence")
     s = new_slide(prs)
     eyebrow(s, "02  ·  EVIDENCE")
-    set_title(s, "The fast tier wins every month. Copying it loses")
-    figure(s, "results/figures/fig1_tiers.png", M, 1.85, 7.45, 4.0,
-           caption="Fig. 1  30 s markout per taker print, net of fee. Onset-aligned ex-post event study; "
-                   "tradable numbers (slide 5) use the causal window (D9).",
-           name="Fig 1 tiers")
-    cx = M + 7.45 + 0.35
+    try:
+        wf_is, wf_oos = wf_months()
+        WF = wf_is + wf_oos
+    except Missing:
+        wf_is, wf_oos, WF = [], [], []
+    every = WF and all(m["net30_c"] > 0 for m in WF) and all(m["follow_res_c"] < 0 for m in WF)
+    set_title(s, "The fast tier wins every month. 3 s later loses" if every else
+              "The fast tier vs a copy 3 s later, by month")
+    n_is, n_oos = len(wf_is), len(wf_oos)
+    pos = D(lambda: f"{sum(m['net30_c'] > 0 for m in WF)}/{len(WF)}" if WF else PENDING,
+            WF_SRC + "  [months with fast-tier net30_c > 0]")
+    pos_oos = D(lambda: f"{sum(m['net30_c'] > 0 for m in wf_oos)}/{n_oos}" if WF else PENDING,
+                f"{F_SUM} :: oos > h6_walkforward  [months with net30_c > 0]")
+    copy_neg = D(lambda: f"{sum(m['follow_res_c'] < 0 for m in WF)}/{len(WF)}" if WF else PENDING,
+                 WF_SRC + "  [months with follow_res_c < 0: same trades entered ~3 s later, held]")
+    oth_neg = D(lambda: f"{sum(m['others_net30_c'] < 0 for m in WF)}/{len(WF)}" if WF else PENDING,
+                WF_SRC + "  [months with others_net30_c < 0]")
+    for per, months_ in (("is", wf_is), ("oos", wf_oos)):  # every bar value is a number on the slide
+        for m in months_:
+            for k in ("net30_c", "others_net30_c", "follow_res_c"):
+                _record(cents(m[k]), f"{F_SUM} :: {per} > h6_walkforward > [month={m['month']}] > {k}")
+
+    cw_chart = 7.75
+    label(s, M, 1.72, cw_chart, "30 S NET ¢/SHARE BY MONTH, WALK-FORWARD (PALE = OUT OF SAMPLE)")
+    if WF:
+        cd = CategoryChartData()
+        cd.categories = [MONTH_ABBR[m["month"][5:]] for m in WF]
+        cd.add_series("Fast tier (0–3 s)", [round(m["net30_c"], 2) for m in WF])
+        cd.add_series("Everyone else, same 0–3 s", [round(m["others_net30_c"], 2) for m in WF])
+        cd.add_series("Fast tier's trades copied ~3 s later", [round(m["follow_res_c"], 2) for m in WF])
+        gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(M - 0.05), Inches(2.02),
+                                Inches(cw_chart), Inches(3.55), cd)
+        gf.name = "Chart: walk-forward months"
+        ch = gf.chart
+        style_chart(ch)
+        plot = ch.plots[0]
+        plot.gap_width = 55
+        plot.overlap = 0
+        color_series(plot, [BLUE, "7D8FA3", RED])
+        for ser, pale in zip(plot.series, ("9DB8D3", "C3CCD6", "EBA79C")):
+            for k in range(n_is, len(WF)):
+                pt = ser.points[k]
+                pt.format.fill.solid()
+                pt.format.fill.fore_color.rgb = rgb(pale)
+                pt.format.line.fill.background()
+        va = ch.value_axis
+        va.tick_labels.number_format = '0"¢"'
+        va.tick_labels.number_format_is_linked = False
+    else:
+        text(s, M, 2.5, cw_chart, 1.0, P(R("Walk-forward months: pending", 20, MUTED)), name="Chart pending")
+    text(s, M, 5.6, cw_chart, 0.45, P(R(
+        "30 s markout per taker print, net of its fee. Wallets picked each month from earlier months only. "
+        "Onset-aligned event study; tradable numbers (slide 5) use the causal window.", 10.5, MUTED)),
+        name="Chart caption")
+
+    cx = M + cw_chart + 0.35
     cw = SW - M - cx
-    text(s, cx, 1.56, cw, 1.07, P(R(WF_POS, 62, BLUE, bold=True, font=HEAD)), anchor="b", name="Stat months")
-    text(s, cx, 2.64, cw, 0.7, P(R(f"months > 0, walk-forward: {N_WF_IS} in sample + {len(WF_OOS)}/{len(WF_OOS)} "
-                                   f"out of sample ({WF_OOS_RANGE}). H6 came after the in-sample wallet study, "
-                                   "so only OOS is a test.", 13, INK)),
-         name="Stat months caption")
-    cd = CategoryChartData()
-    cd.categories = [MONTH_ABBR[m["month"][5:]] for m in WF]
-    cd.add_series("Fast tier", [round(m["net30_c"], 2) for m in WF])
-    cd.add_series("Everyone else, same 0–3 s", [round(m["others_net30_c"], 2) for m in WF])
-    gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(cx - 0.05), Inches(3.36), Inches(cw + 0.05),
-                            Inches(2.06), cd)
-    gf.name = "Chart: walk-forward months"
-    ch = gf.chart
-    style_chart(ch)
-    plot = ch.plots[0]
-    plot.gap_width = 45
-    plot.overlap = 0
-    color_series(plot, [BLUE, RED])
-    # Out-of-sample months (the only real test of H6) in a paler shade of each series colour.
-    for ser, pale in zip(plot.series, ("9DB8D3", "EBA79C")):
-        for k in range(N_WF_IS, len(WF)):
-            pt = ser.points[k]
-            pt.format.fill.solid()
-            pt.format.fill.fore_color.rgb = rgb(pale)
-            pt.format.line.fill.background()
-    va = ch.value_axis
-    va.maximum_scale, va.minimum_scale, va.major_unit = 2.5, -2.0, 1.0
-    va.tick_labels.number_format = '0"¢"'
-    va.tick_labels.number_format_is_linked = False
-    text(s, cx, 5.43, cw, 0.5, P(R("30 s net ¢/share by month. Pale bars: out of sample "
-                                   "(Aug = Aug 25–31 only; Oct = 3 days).", 11, MUTED)),
-         name="Chart caption")
-    box(s, M, 6.1, CW, 0.8, fill=INK, radius=0.1, name="Takeaway panel")
-    text(s, M + 0.3, 6.1, CW - 0.6, 0.8, P(
-        R("Copy the same trades 3 s later: negative every month.  ", 22, WHITE, bold=True, font=HEAD),
-        R("The edge is speed.", 22, "F07A66", bold=True, font=HEAD)), anchor="m", name="Takeaway")
-    footer(s, 3)
-    lo_is = min(m["net30_c"] for m in WF[:8])
-    hi_is = max(m["net30_c"] for m in WF[:8])
+    stat(s, cx, 1.62, cw, pos, f"months the fast tier made money: {n_is} in sample + {pos_oos} out of sample. "
+                               "H6 came after the in-sample wallet study, so only the out-of-sample months test it",
+         big_size=54, big_h=0.92, cap_h=1.0, name="Months")
+    stat(s, cx, 3.6, cw, copy_neg, f"months copying their exact trades ~3 s later lost money "
+                                   f"(everyone else in the window: {oth_neg} negative)",
+         col=RED, big_size=54, big_h=0.92, cap_h=0.62, name="Copy")
+    u2_is = V(F_EXP, "fast_minus_others_u2", "u2_is", "fast_minus_others_c", f=cents)
+    u2_oos = V(F_EXP, "fast_minus_others_u2", "u2_oos", "fast_minus_others_c", f=cents)
+    u2_oos_ci = V(F_EXP, "fast_minus_others_u2", "u2_oos", "ci_c", f=ci)
+    u2_n = V(F_EXP, "universe", "u2_markets", f=intc)
+    text(s, cx, 5.25, cw, 0.8, [
+        P(R("BLIND, ON UNSEEN MARKETS", 10.5, BLUE, bold=True, spc=1.2)),
+        P(R(f"Fast tier minus everyone else on {u2_n} never-examined markets: {u2_is} in sample, "
+            f"{u2_oos} {u2_oos_ci} out of sample.", 12, INK)),
+    ], name="U2 gap")
+    box(s, M, 6.15, CW, 0.78, fill=INK, radius=0.1, name="Takeaway panel")
+    text(s, M + 0.3, 6.15, CW - 0.6, 0.78, P(
+        R("Same wallets, same trades, 3 s later: negative.  ", 21, WHITE, bold=True, font=HEAD),
+        R("The edge is speed.", 21, "F07A66", bold=True, font=HEAD)), anchor="m", name="Takeaway")
+    footer(s, n)
     notes(s, f"""
-[1:20 to 2:00]  EVIDENCE: WHO GETS PAID
+{window(2)}  EVIDENCE: WHO GETS PAID
 
-Every taker print, by seconds since the score event, marked out thirty seconds later, net of fees.
+Every taker print, by seconds since the point, marked out 30 seconds later, net of fees.
 
-A small group of wallets, the fast tier, trades within three seconds and wins. Everyone else in that window loses about a cent a share.
+A small group of wallets, the fast tier, trades within three seconds and wins. Picked each month from earlier months only, it made money in {pos} months: {n_is} in sample, where we found it, and {pos_oos} out of sample, the real test. Everyone else in the same window lost in {oth_neg} months.
 
-Picked each month from earlier months only, it won eleven of eleven: eight in sample, where we found it, and three out of sample, the real test.
+The control: copy their exact trades about three seconds later and you lose in {copy_neg} months. So it is not who they are. The edge is speed.
 
-The control: copy their exact trades three seconds later and you lose, every month. So it is not who they are. The edge is speed.
+And it replicates blind on {u2_n} markets we had never looked at: fast tier minus everyone else {u2_is} in sample, {u2_oos} out of sample.
 
-[Honest framing if asked: H6 was written after the in-sample wallet study (DEVIATIONS D4, D5), so only the 3 out-of-sample months test it. Fig. 1 and the H6 months use onset-aligned windows, an ex-post event study; every tradable v2 number uses the causal window (D9). December 2025 is small ({WF_DEC['n_matches']} matches, {WF_DEC['n_wallets']} wallets, ${WF_DEC['usd_k']:.1f}k of fast-tier volume). The Aug bar is Aug 25-31 only (in-sample Aug 1-24 was {signed(AUG_IS['net30_c'])}¢); Oct is 3 days ({WF_OCT['n_matches']} matches), and its fast-tier P&L held to resolution was {signed(WF_OCT['net_res_c'])}¢ even though its 30 s markout was positive.]
-[Sources: results/summary.json is/oos h6_walkforward (fast tier +{lo_is:.1f} to +{hi_is:.1f} ¢ in sample, {WF_OOS_RANGE} out of sample; everyone else negative every month); docs/NOTE.md Table 1 (copy 3 s later < 0 every month); results/figures/fig1_tiers.png.]
+[Honest framing if asked: H6 was written after the in-sample wallet study (DEVIATIONS D4, D5), so only the out-of-sample months test it. These are onset-aligned windows, an ex-post event study; every tradable v2 number uses the causal window (D9).]
+[Sources: {WF_SRC}; {F_EXP} fast_minus_others_u2.]
 """)
 
 
-def slide_tracking(prs):
+def s04_cv(prs, n):
+    slide_ctx(f"{n} CV in action")
     s = new_slide(prs)
     eyebrow(s, "03  ·  INNOVATION")
-    set_title(s, "Tier 0 is measurable: call the point before it lands")
+    set_title(s, "Our CV calls the point before the ball lands")
+    eng = ROOT / "results/engine/engine_live_demo.mp4"
+    poster = poster_for(eng) if eng.exists() else None
     vw = 7.55
     vh = vw * 9 / 16
     box(s, M - 0.04, 1.85 - 0.04, vw + 0.08, vh + 0.08, fill=INK, radius=0.06, name="Video frame")
-    video(s, "results/tracking/demo/supercut.mp4", "results/tracking/demo/supercut.png", M, 1.85, vw, vh,
-          DEMO["supercut"]["duration_s"], loop=False, name="Video: real-footage early calls")
-    text(s, M, 1.85 + vh + 0.12, vw, 0.62, P(R(
-        "Real 120 fps table-tennis footage (OpenTTGames, CC BY-NC-SA 4.0), frozen model, run on HiPerGator. "
-        f"Selected clips: calls at {DEMO_LEADS_TXT}; median first-call lead on held-out misses {TT_MED_LEAD}.",
-        11, MUTED)), name="Video caption")
+    if eng.exists() and poster:
+        pic = s.shapes.add_movie(str(eng), Inches(M), Inches(1.85), Inches(vw), Inches(vh),
+                                 poster_frame_image=str(poster), mime_type="video/mp4")
+        pic.name = "Video: COURTSIDE engine demo"
+        autoplay_video(s, pic, int(round(video_duration(eng, 30.0) * 1000)), loop=False)
+        which = ("COURTSIDE engine demo (results/engine/engine_live_demo.mp4): streaming vision on held-out "
+                 "frames → paper order. Paper only.")
+    else:
+        dur = opt(F_TRACK_DEMO, "supercut", "duration_s", default=None) or \
+            video_duration(ROOT / "results/tracking/demo/supercut.mp4", 15.0)
+        video(s, "results/tracking/demo/supercut.mp4", "results/tracking/demo/supercut.png", M, 1.85, vw, vh,
+              dur, loop=False, name="Video: real-footage early calls")
+        which = "Held-out games, frozen model, run on HiPerGator; clips selected for presentation."
+    text(s, M, 1.85 + vh + 0.1, vw, 0.66, [
+        P(R("Real 120 fps table-tennis footage: OpenTTGames (lab.osai.ai), CC BY-NC-SA 4.0. ", 11, INK, bold=True),
+          R(which, 11, MUTED)),
+    ], name="Video caption and credit")
+
+    ec = ("early_call", "precision_recall_test_snapshot", "50ms")
+    tp_t = V(F_TRACK, *ec, "tp", f=intc)
+    calls = D(lambda: f"{raw(F_TRACK, *ec, 'tp')}/{raw(F_TRACK, *ec, 'tp') + raw(F_TRACK, *ec, 'fp')}",
+              key_str(F_TRACK, *ec) + "  [tp/(tp+fp)]")
+    n_miss = D(lambda: intc(raw(F_TRACK, *ec, "tp") + raw(F_TRACK, *ec, "fn")), key_str(F_TRACK, *ec) + "  [tp+fn]")
+    recall = V(F_TRACK, *ec, "recall", f=frac_pct0)
+    lb = V(F_TRACK, *ec, "precision_wilson95", f=lambda p: frac_pct0(p[0]))
+    det5 = V(F_ENG_DEMO, "vision", "detection_vs_labels", "within_5px", f=frac_pct1)
+    det_rec = V(F_ENG_DEMO, "vision", "detection_vs_labels", "recall", f=frac_pct1)
+
+    def vis_lat(field):
+        def fn():
+            row = next(r for r in raw(F_ENG_DEMO, "latency_budget") if r["stage"].startswith("vision"))
+            return ms0(row[field])
+        return D(fn, f"{F_ENG_DEMO} :: latency_budget > [stage 'vision…'] > {field}")
+    lat50, lat90 = vis_lat("ms"), vis_lat("p90")
+    fps = V(F_ENG_BENCH, "summary", 0, "fps_sustained", f=lambda x: f"{x:.0f} fps")
     cx = M + vw + 0.45
     cw = SW - M - cx
-    stats = [
-        (TT_CALLS, RED, f"table-tennis miss calls correct, 50 ms before contact, held-out games. "
-                        f"Called {EC['tp']} of {TT_N_MISS} misses (recall {TT_RECALL}); 95% lower bound {TT_WILSON_LO}"),
-        (HE_100, BLUE, "simulated Hawk-Eye-class tracking (340 fps, ±3.6 mm): landing error, 1 SD, "
-                       "100 ms before the bounce"),
-        (BROADCAST_ERR, MUTED, "25 fps broadcast tennis, median landing error: useless"),
-    ]
-    y = 1.66
-    for big, col, cap in stats:
-        text(s, cx, y, cw, 0.82, P(R(big, 48, col, bold=True, font=HEAD)), anchor="b", name=f"Stat {big}")
-        text(s, cx, y + 0.84, cw, 0.74, P(R(cap, 13, INK)), name=f"Stat caption {big}")
-        y += 1.62
-    footer(s, 4)
+    stat(s, cx, 1.55, cw, calls, f"miss calls correct 50 ms before contact on held-out games. Called {tp_t} "
+                                 f"of {n_miss} misses (recall {recall}); 95% lower bound {lb}",
+         col=RED, big_size=48, big_h=0.85, cap_h=0.95, name="Calls")
+    stat(s, cx, 3.4, cw, det5, f"of labelled held-out frames tracked within 5 px (ball found in {det_rec})",
+         big_size=48, big_h=0.85, cap_h=0.55, name="Tracking")
+    stat(s, cx, 4.85, cw, lat50, f"vision processing per call, median (p90 {lat90}). The laptop sustains {fps}, "
+                                 "below 120: a venue box needs a GPU", col=INK, big_size=48, big_h=0.85, cap_h=0.75,
+         name="Latency")
+    footer(s, n)
     notes(s, f"""
-[2:00 to 2:40]  INNOVATION: BUILDING TIER 0
+{window(3)}  INNOVATION: CALLING THE POINT BEFORE IT LANDS
 
-Can anyone reach the top rung? This is real 120-frame-per-second table-tennis footage, run on HiPerGator: OpenTTGames is the public labelled high-speed set, and table tennis itself isn't tradable.
+Can anyone reach tier zero? This is real 120-frame-per-second table-tennis footage, OpenTTGames, a public labelled high-speed set; table tennis itself is not tradable on a liquid book, tennis video at this frame rate is not public.
 
-On held-out games, all {EC['tp']} of our frozen model's miss calls, 50 milliseconds before contact, were right; it called {EC['tp']} of {TT_N_MISS} misses. Small sample: lower bound {TT_WILSON_LO}.
+Our tracker finds the ball within five pixels on {det5} of labelled held-out frames. The frozen call model, scored once on held-out games, made {calls} correct miss calls fifty milliseconds before contact. It is conservative: it called {tp_t} of {n_miss} misses, recall {recall}, and with that sample the lower bound on precision is {lb}.
 
-For tennis, simulated Hawk-Eye-class tracking has a 2.4-centimetre standard deviation 100 milliseconds before the bounce. Broadcast video at 25 frames a second is 70 centimetres to 1.2 metres off.
+The engine runs it as a stream: about {lat50} per call on a laptop. The lead comes from frame rate and cameras, so it lives in the venue.
 
-The lead comes from frame rate and cameras, so it lives in the venue.
-
-[If asked "what recall?": {TT_RECALL} ({EC['tp']} of {TT_N_MISS} test misses called at 50 ms). Post-hoc label audit (DEVIATIONS H3-D10): the frozen model is 8/8 at 38% recall on corrected labels. The demo clips are selected for presentation (manifest: "presentation only", online rule); the median first-call lead on called held-out misses is {TT_MED_LEAD} (n = {TT_LEAD['n_called']}, p90 {TT_LEAD['p90']:.0f} ms). Tennis Hawk-Eye numbers are a physics Monte Carlo (340 fps, 3.6 mm noise), not a measurement.]
-[Sources: results/summary.json tracking_table_tennis_video (test precision at 50 ms {TT_CALLS}, Wilson 95% lower bound {TT_WILSON_LO}; pre-registered H3) and tracking_tennis_physics (landing error SD {HE_100} at 100 ms, {HE_300} at 300 ms); results/tracking/summary.json; results/tracking/demo/manifest.json; results/tennis_tracking/summary.json (broadcast median landing error {BROADCAST_ERR}, 33 to 300 ms; docs/NOTE.md section 5 still says 0.6–1.2 m).]
+[If asked about the laptop: it sustains {fps}, not 120, under load; HiPerGator GPU timing is in hpg/engine_vision.sbatch. Footage credit: OpenTTGames, CC BY-NC-SA 4.0 (non-commercial; credited on the slide).]
+[Sources: {F_TRACK} early_call; {F_ENG_DEMO} vision + latency_budget; {F_ENG_BENCH} summary.]
 """)
 
 
-def slide_strategy(prs):
+def s05_backtest(prs, n):
+    slide_ctx(f"{n} Backtest")
     s = new_slide(prs)
     eyebrow(s, "04  ·  PERFORMANCE")
-    set_title(s, "v2: the same edge, a fraction of the noise")
-    # Whose fills these are, said before anyone asks (NOTE section 8).
-    box(s, M, 1.66, CW, 0.36, fill=RED_TINT, radius=0.06, name="Fills strip")
-    text(s, M + 0.18, 1.66, CW - 0.36, 0.36, P(
+    set_title(s, "v2: in sample vs out of sample, and costs doubled")
+    box(s, M, 1.66, CW, 0.38, fill=RED_TINT, radius=0.06, name="Fills strip")
+    text(s, M + 0.18, 1.66, CW - 0.36, 0.38, P(
         R("Paper book on the fast tier's own fills: ", 12, RED, bold=True),
-        R("it prices the opportunity at their speed, not our execution (that needs in-venue tracking + a "
-          "co-located gateway).", 12, INK)), anchor="m", name="Fills caveat")
+        R("it prices the opportunity at their speed, not our execution. Out of sample is burned (v2 was designed "
+          "after v1 failed there) and labelled non-blind.", 12, INK)), anchor="m", name="Fills caveat")
 
-    text(s, M, 2.1, 4.0, 0.3, P(R("FROZEN v2 RULES", 12, BLUE, bold=True, spc=1.5)), name="Rules label")
-    rules = ["0–3 s fast-tier window, causal", "Wallet edge must beat today's fee", "Price 0.05–0.95; risk-parity size",
-             "≤ $1k/order; ≤ 100 shares net/match", "Hold to resolution: no exits"]
-    for i, r in enumerate(rules):
-        y = 2.42 + i * 0.38
-        badge(s, M, y + 0.04, 0.3, str(i + 1), size=13, name=f"Rule badge {i + 1}")
-        text(s, M + 0.42, y, 3.75, 0.38, P(R(r, 14.5, INK)), anchor="m", name=f"Rule {i + 1}")
+    cats = ["Fast-tier fills", "+½ tick", "+1 tick", "Fees ×2", "All costs ×2"]
+    srcs_is = [(F_CAUSAL, IS0, "per_share_c"), (F_CAUSAL, IS5, "per_share_c"), (F_CAUSAL, IS10, "per_share_c"),
+               (F_COST, "is_eval/fee_x2", "per_share_c"), (F_COST, "is_eval/costs_x2", "per_share_c")]
+    srcs_os = [(F_CAUSAL, OS0, "per_share_c"), (F_CAUSAL, OS5, "per_share_c"), (F_CAUSAL, OS10, "per_share_c"),
+               (F_COST, "burned_oos/fee_x2", "per_share_c"), (F_COST, "burned_oos/costs_x2", "per_share_c")]
+    vis = [VR(*a) for a in srcs_is]
+    vos = [VR(*a) for a in srcs_os]
+    label(s, M, 2.16, 5.6, "NET ¢/SHARE, HELD TO RESOLUTION, BY COST CASE")
+    if all(v[0] is not None for v in vis + vos):
+        cd = CategoryChartData()
+        cd.categories = cats
+        cd.add_series("In sample", [round(v[0], 2) for v in vis])
+        cd.add_series("Burned OOS (non-blind)", [round(v[0], 2) for v in vos])
+        gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(M - 0.05), Inches(2.45), Inches(5.65),
+                                Inches(3.75), cd)
+        gf.name = "Chart: v2 by cost case"
+        ch = gf.chart
+        style_chart(ch)
+        plot = ch.plots[0]
+        plot.gap_width = 60
+        plot.overlap = 0
+        color_series(plot, [BLUE, RED])
+        plot.has_data_labels = True
+        dl = plot.data_labels
+        dl.number_format = '+0.00;−0.00'
+        dl.number_format_is_linked = False
+        dl.position = XL_LABEL_POSITION.OUTSIDE_END
+        dl.font.size = Pt(11)
+        dl.font.bold = True
+        dl.font.color.rgb = rgb(INK)
+        va = ch.value_axis
+        va.tick_labels.number_format = '0.0"¢"'
+        va.tick_labels.number_format_is_linked = False
+    else:
+        text(s, M, 3.0, 5.6, 1.0, P(R("Cost-case chart: pending", 20, MUTED)), name="Chart pending")
+    days_is = V(F_CAUSAL, IS0, "days", f=intc)
+    days_os = V(F_CAUSAL, OS0, "days", f=intc)
+    # The series names above are display text; record the day counts they carry.
+    text(s, M, 6.25, 5.6, 0.7, P(R(
+        f"In sample {days_is} days, burned OOS {days_os} days. Fees ×2: each match's own fee rate doubled. "
+        "All costs ×2: fees doubled plus half a tick of spread. Book held fixed.", 10.5, MUTED)),
+        name="Chart note")
 
-    # Fig 6 on a card, caption beside the image (the figure is wide and short).
-    fx, fy, fw, fh, pad = 4.85, 2.1, SW - M - 4.85, 2.22, 0.12
-    box(s, fx, fy, fw, fh, fill=FIGBG, line=LINE, radius=0.08, shadow=True, name="Card: Fig 6 v2")
-    _, (ix, iy, iw, ih) = fit_picture(s, ROOT / "results/figures/fig6_v2.png", fx + pad, fy + pad, 5.0,
-                                      fh - 2 * pad, name="Fig 6 v2")
-    capx = ix + iw + 0.14
-    text(s, capx, fy + pad, fx + fw - pad - capx, fh - 2 * pad, [
-        P(R("Fig. 6  v1 vs v2: return on each book's own capital; v2 P&L by month (*Aug includes IS days).",
-            10.5, MUTED), after=5),
-        P(R(f"v1 OOS: {V1_LOSS_TXT}, max DD {V1_DD}, worst day {V1_WORST_DAY}.", 10.5, INK, bold=True), after=5),
-        P(R(f"v2 burned OOS: {OS_PNL}, max DD {dd(OS0)}, worst day {WORST_DAY_OS}.", 10.5, BLUE, bold=True)),
-    ], anchor="m", name="Caption: Fig 6 v2")
+    cx = 6.45
+    cw = SW - M - cx
 
-    def val(r, bold=False, size=14):
-        c = RED if r["per_share_c"] < 0 else (BLUE if bold else INK)
-        return [P(R(signed(r["per_share_c"]) + "¢", size, c, bold=True if bold else False, font=HEAD if bold else BODY),
-                  R("  " + ci(r["per_share_ci_c"]), 11.5, MUTED))]
+    def hdr(a, b):
+        return [P(R(a, 12.5, WHITE, bold=True)), P(R(b, 10, MUTED_DK))]
 
-    def hdr(a, *b):
-        return [P(R(a, 12.5, WHITE, bold=True))] + [P(R(t, 10.5, MUTED_DK)) for t in b]
+    def cell(t, size=13.5, col=INK, bold=False):
+        return [P(R(t, size, col, bold=bold))]
 
-    def lab(a, size=13.5):
-        return [P(R(a, size, INK))]
-
-    # Forward cell: the pre-registered decision rule (HYPOTHESIS_V2 A1.5), written before the result exists.
-    fwd = [
-        P(R(FORWARD_STATUS + ": blind test not run", 14, RED, bold=True, font=HEAD)),
-        P(R(FORWARD_WHEN + "; reported either way.", 10.5, RED), after=3),
-        P(R("Primary A: ", 10.5, INK, bold=True), R(f"fast tier {MINUS} others, 30 s net  ", 10.5, INK),
-          R("[FWD_A]", 10.5, RED, bold=True)),
-        P(R("Primary B: ", 10.5, INK, bold=True), R("v2 book, 30 s net per share  ", 10.5, INK),
-          R("[FWD_B]", 10.5, RED, bold=True), after=3),
-        P(R("Pass iff the match-clustered 95% CI excludes 0. Under 1 day of matches, a B fail may be "
-            "underpowered (A1). Resolution P&L at left is secondary.", 10, MUTED)),
-    ]
+    fw = opt(F_FWD)
+    if fw:
+        fa = V(F_FWD, "primary_A_fast_minus_others_c", f=lambda p: f"A {cents(p[0])} {ci(p[1:])}")
+        fb = V(F_FWD, "primary_m30_per_share_c", f=lambda p: f"B {cents(p[0])} {ci(p[1:])}")
+        fva = V(F_FWD, "verdict_A_fast_tier")
+        fvb = V(F_FWD, "verdict_B_v2_book")
+        fwd_cells = [[P(R(fa, 11, INK)), P(R(fb, 11, INK))], cell(f"A {fva} · B {fvb}", 11, verdict_color(fva), True),
+                     cell("", 11), cell("", 11), cell("", 11)]
+    else:
+        fwd = _record(PENDING, F_FWD + "  [blind forward test: one run, pre-registered in HYPOTHESIS_V2.md]")
+        fwd_cells = [cell(fwd, 14, RED, True), cell("runs once, tomorrow", 10.5, RED), cell("reported either way", 10.5, MUTED),
+                     cell("", 10), cell("", 10)]
     rows = [
-        [hdr("v2, causal window", "net of fees, held to resolution"), hdr("In sample", "Feb–Aug 2026"),
-         hdr("Burned OOS (non-blind)", "Aug 25 – Oct 3; v2 built after", "v1 failed here"),
-         hdr("Forward (blind)", "from Oct 3, 14:00 UTC")],
-        [lab("Net per share, fast-tier fills"), val(IS0, True, 18), val(OS0, True, 18), fwd],
-        [lab("… +½ tick worse entry"), val(IS5), val(OS5), None],
-        [lab("… +1 tick worse entry"), val(IS10), val(OS10), None],
-        [lab("Sharpe · max DD · months > 0", 13),
-         [P(R(f"{sharpe(IS0)}  ·  {dd(IS0)}  ·  {months(IS0)}", 13.5, INK))],
-         [P(R(f"{sharpe(OS0)}  ·  {dd(OS0)}  ·  {months(OS0)}", 13.5, INK), R("  (Oct = 3 days)", 10.5, MUTED))],
-         None],
+        [hdr("v2, causal window", "net of fees"), hdr("In sample", "frozen rules"), hdr("Burned OOS", "non-blind"),
+         hdr("Forward", "blind")],
+        [cell("Net ¢/share", 12.5),
+         [P(R(V(F_CAUSAL, IS0, "per_share_c", f=cents), 17, BLUE, True, font=HEAD)),
+          P(R(V(F_CAUSAL, IS0, "per_share_ci_c", f=ci), 10.5, MUTED))],
+         [P(R(V(F_CAUSAL, OS0, "per_share_c", f=cents), 17, BLUE, True, font=HEAD)),
+          P(R(V(F_CAUSAL, OS0, "per_share_ci_c", f=ci), 10.5, MUTED))], fwd_cells[0]],
+        [cell("Sharpe · DD", 12.5),
+         cell(f"{V(F_CAUSAL, IS0, 'sharpe_ann', f=sh1)} · {V(F_CAUSAL, IS0, 'max_dd_pct', f=pct1)}"),
+         cell(f"{V(F_CAUSAL, OS0, 'sharpe_ann', f=sh1)} · {V(F_CAUSAL, OS0, 'max_dd_pct', f=pct1)}"), fwd_cells[1]],
+        [cell("Months > 0", 12.5),
+         cell(f"{V(F_CAUSAL, IS0, 'months_positive')}/{V(F_CAUSAL, IS0, 'months_total')}"),
+         cell(f"{V(F_CAUSAL, OS0, 'months_positive')}/{V(F_CAUSAL, OS0, 'months_total')}"), fwd_cells[2]],
+        [cell("P&L", 12.5),
+         [P(R(V(F_CAUSAL, IS0, 'total_pnl_usd', f=usd_signed_k), 13.5, INK)),
+          P(R(f"on {V(F_CAUSAL, IS0, 'capital_usd', f=usd_k)} capital", 10, MUTED))],
+         [P(R(V(F_CAUSAL, OS0, 'total_pnl_usd', f=usd_signed_k), 13.5, INK)),
+          P(R(f"on {V(F_CAUSAL, OS0, 'capital_usd', f=usd_k)} capital", 10, MUTED))],
+         fwd_cells[3]],
+        [cell("Fees ×2", 12.5),
+         cell(V(F_COST, "is_eval/fee_x2", "per_share_c", f=cents)),
+         cell(V(F_COST, "burned_oos/fee_x2", "per_share_c", f=cents), 13.5, RED, True), fwd_cells[4]],
     ]
-    fills = [None] + [[None, None, None, RED_TINT]] * 4
-    tbl = table(s, M, 4.42, [2.85, 2.3, 2.85, CW - 8.0], [0.6, 0.42, 0.32, 0.32, 0.36], rows,
-                "Table: v2 causal results", fills=fills)
-    tbl.cell(1, 3).merge(tbl.cell(4, 3))
-    tbl.cell(1, 3).vertical_anchor = MSO_ANCHOR.TOP
-    text(s, M, 6.5, CW, 0.44, P(R(
-        f"Why the Sharpe is so high: ~{PER_DAY:.0f} small bets a day ({IS0['n_trades']:,} in {DAYS} days), each held "
-        f"to a binary outcome, net-capped per match. Best Sharpe from luck alone over {N_VARIANTS:,} tried variants "
-        "≈ 4.8 (Bailey & López de Prado).", 11.5, MUTED)), name="Sharpe note")
-    footer(s, 5)
+    fills = [None, [None, None, None, RED_TINT if not fw else None]] + [[None, None, None, RED_TINT if not fw else None]] * 4
+    tbl = table(s, cx, 2.16, [1.5, 1.6, 1.6, cw - 4.7], [0.62, 0.7, 0.42, 0.42, 0.55, 0.42], rows,
+                "Table: v2 IS vs OOS", fills=fills)
+    if not fw:
+        tbl.cell(1, 3).merge(tbl.cell(5, 3))
+        tbl.cell(1, 3).vertical_anchor = MSO_ANCHOR.MIDDLE
+    v1 = V(F_SUM, "oos", "h6_shadow", "total_pnl_usd", f=lambda x: ("lost " if x < 0 else "made ") + usd_k(abs(x)))
+    v1dd = V(F_SUM, "oos", "h6_shadow", "max_dd", f=lambda x: pct0(100 * x))
+    box(s, cx, 5.4, cw, 1.5, fill=WHITE, line=LINE, radius=0.08, shadow=True, name="v1 card")
+    text(s, cx + 0.25, 5.4, cw - 0.5, 1.5, [
+        P(R("WHY v2 EXISTS", 11, BLUE, bold=True, spc=1.2)),
+        P(R(f"v1 copied the fast tier's tickets and {v1} out of sample (max DD {v1dd}): big tickets on "
+            "cheap tokens. v2 adds a causal window, fee-beating wallets, risk-parity size, a net cap per match "
+            "and hold-to-resolution. " + ("With fees doubled, out of sample it loses."
+                                          if opt(F_COST, "burned_oos/fee_x2", "per_share_c", default=0) < 0 else
+                                          "It stays positive out of sample with fees doubled."), 12.5, INK), before=3),
+    ], anchor="m", name="v1 note")
+    footer(s, n)
     notes(s, f"""
-[2:40 to 3:20]  STRATEGY v2 AND PERFORMANCE
+{window(4)}  BACKTEST: IN SAMPLE VS OUT OF SAMPLE, AND COSTS DOUBLED
 
-Then we priced that opportunity as a paper strategy on the fast tier's own fills. Version one copied their tickets and lost 36 thousand dollars out of sample: big tickets on cheap tokens.
+We priced that opportunity as a paper strategy on the fast tier's own fills. It measures their speed, not our execution.
 
-Version two adds five rules: a causal window, fee-beating wallets, risk-parity sizing, a net cap per match, and hold to resolution.
+Version one copied their tickets and {v1} out of sample. Version two adds five rules. In sample: {vis[0][1]} a share, Sharpe {V(F_CAUSAL, IS0, 'sharpe_ann', f=sh1)}. Out of sample, on a window we had already seen, so we call it burned: {vos[0][1]}, Sharpe {V(F_CAUSAL, OS0, 'sharpe_ann', f=sh1)}.
 
-In sample: plus 1.38 cents a share, Sharpe 14.5, two percent max drawdown, positive even at a full tick. On the burned, non-blind out-of-sample: plus 0.60 cents, gone at half a tick. The blind forward test runs once on October 4th; its pass rule is already on the slide.
+Now the stress. Half a tick worse and the out-of-sample edge is {vos[1][1]}. Double the fees and it is {vos[3][1]}: negative. Double all costs: {vos[4][1]}. In today's fee regime it does not survive doubled costs, and we say so.
 
-[FORWARD TEST: not run at build time; it runs once ~11:30 UTC Oct 4 2026. If results/v2/forward.json exists by talk time, read Primary A (fast tier minus others, 30 s net) and Primary B (v2 book, 30 s net per share) with their match-clustered 95% CIs; each passes only if its CI excludes 0 (HYPOTHESIS_V2.md A1.5). Then replace FORWARD_* and [FWD_A]/[FWD_B] in build_deck.py and rebuild. Resolution P&L in the left rows is secondary for the forward window.]
-[If asked "whose fills are these?": the fast tier's. v2 is a paper book that measures the opportunity at their speed, not our execution (docs/NOTE.md section 8); out of sample the edge is gone at +½ tick ({signed(OS5['per_share_c'])}¢ {ci(OS5['per_share_ci_c'])}), so second place earns nothing. If asked "you redesigned after v1 failed OOS?": yes, HYPOTHESIS_V2.md says so, which is why that window is labelled burned; the hindsight fix (D9) lowered the burned-OOS number from +0.75 to +0.60¢, and the forward run is the only clean test.]
-[Sources: results/v2/causal.json (IS {IS0['n_trades']:,} trades, {DAYS} days, P&L {IS_PNL} on {IS_CAP}; burned OOS {OS0['n_trades']:,} trades, {OS_DAYS} days, {OS_PNL} on {OS_CAP}); HYPOTHESIS_V2.md (frozen rule incl. price zone 0.05–0.95, amendment A1); results/summary.json oos h6_shadow (v1 OOS {V1_LOSS_TXT}, max DD {V1_DD}, worst day {V1_WORST_DAY}); results/figures/fig6_v2.png. About {PER_DAY:.0f} small bets a day, each held to an exogenous binary outcome: that is why the Sharpe is high; the expected best Sharpe from luck over {N_VARIANTS:,} variants is ~4.8 (docs/NOTE.md section 8).]
+The blind forward test runs once tomorrow; it is {"in" if fw else "pending"} and will be reported either way.
+
+[If asked "whose fills?": the fast tier's. Second place earns nothing out of sample (+1/2 tick: {vos[1][1]}).]
+[Sources: {F_CAUSAL} (slippage cases), {F_COST} (fees x2, all costs x2), {F_SUM} oos h6_shadow (v1), {F_FWD} (forward).]
 """)
 
 
-def slide_risk(prs):
+def s06_rigor(prs, n):
+    slide_ctx(f"{n} Rigor")
     s = new_slide(prs)
-    eyebrow(s, "05  ·  RISK MANAGEMENT  ·  LIQUIDITY & CAPITAL")
-    set_title(s, "Small by design, with hard limits, on a deep book")
-    text(s, M, 1.72, 6.0, 0.3, P(R("LIMITS AND KILL SWITCHES", 12, BLUE, bold=True, spc=1.5)), name="Risk label")
+    eyebrow(s, "05  ·  RIGOR AND BLIND TESTS")
+    set_title(s, "Every test we ran, including the ones we failed")
+
+    def rig_row(series):
+        return next(i for i, r in enumerate(raw(F_RIGOR, "psr_dsr", "rows")) if r["series"] == series)
+
+    def dsr(series, key):
+        def fn():
+            return dsr3(raw(F_RIGOR, "psr_dsr", "rows", rig_row(series), "dsr", key, "dsr"))
+        return D(fn, f"{F_RIGOR} :: psr_dsr > rows > [series={series}] > dsr > {key} > dsr")
+
+    n_all = V(F_RIGOR, "psr_dsr", "N", "all_NOTE_s8", f=intc)
+    n_h = V(F_RIGOR, "psr_dsr", "N", "H1_H6", f=intc)
+    dsr_is = dsr("v2_is", "N3386/sizing_grid_55")
+    dsr_os_all = dsr("v2_oos", "N3386/null")
+    dsr_os_h = dsr("v2_oos", "N44/null")
+    pbo_safe = V(F_RIGOR, "pbo_cscv", "lowloss_24_sharpe", "pbo", f=frac_pct1)
+    pbo_size = V(F_RIGOR, "pbo_cscv", "sizing_55_res_actual_sharpe", "pbo", f=frac_pct1)
+    boot = V(F_RIGOR, "bootstrap", "v2_oos", "sharpe_ann_ci95", f=lambda p: ci(p, 1))
+    t_os = V(F_RIGOR, "sharpe_moments", "v2_oos", "T_days", f=intc)
+    label(s, M, 1.72, 5.0, "RIGOR PACK (results/rigor/rigor.json)")
     tiles = [
-        ("100", "net shares per match, max", BLUE),
-        ("$1k", "max per order", BLUE),
-        ("> 2 s", "feed/tracking dropout, or order latency > p95: kill", BLUE),
-        ("< 0.3¢", "trailing edge: halve; ≤ 0: stop", BLUE),
-        ("5% fee", "alone halved the edge (1.19 → 0.54¢): venue risk", RED),
-        ("4 → 131", "fast-tier wallets: crowding", RED),
+        (dsr_is, f"deflated Sharpe, in sample, N = {n_all} trials", BLUE),
+        (dsr_os_all, f"deflated Sharpe, burned OOS at N = {n_all} ({dsr_os_h} at N = {n_h}): {t_os} days can't rule "
+                     "out luck", RED),
+        (pbo_safe, f"probability of backtest overfitting, v2-safe grid ({pbo_size} on the sizing grid)", BLUE),
+        (boot, "block-bootstrap 95% CI of the burned-OOS Sharpe", INK),
     ]
-    tw, th, gx, gy = 1.95, 1.34, 0.2, 0.14
+    tw, th = 2.4, 2.25
     for i, (big, cap, col) in enumerate(tiles):
-        x = M + (i % 3) * (tw + gx)
-        y = 2.04 + (i // 3) * (th + gy)
-        box(s, x, y, tw, th, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"Risk tile {i}")
-        text(s, x + 0.16, y + 0.06, tw - 0.32, 0.54, P(R(big, 28, col, bold=True, font=HEAD)), anchor="b",
-             name=f"Risk tile big {i}")
-        text(s, x + 0.16, y + 0.64, tw - 0.32, 0.64, P(R(cap, 11.5, INK)), name=f"Risk tile caption {i}")
-    text(s, M, 4.98, 6.25, 1.0, [
-        P(R("Worst backtest match ", 13, MUTED), R(f"{MINUS}$206", 13, INK, bold=True),
-          R(f"  (v1: {MINUS}$3,098)  ·  capital = 3× peak locked", 13, MUTED)),
-        P(R("Worst day ", 13, MUTED), R(f"{WORST_DAY_IS} IS / {WORST_DAY_OS} OOS", 13, INK, bold=True),
-          R("  ·  trade calls only at ", 13, MUTED), R("P ≥ 0.95", 13, INK, bold=True), before=5),
-    ], name="Worst case")
+        x = M + (i % 2) * (tw + 0.15)
+        y = 2.08 + (i // 2) * (th + 0.15)
+        box(s, x, y, tw, th, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"Rigor tile {i}")
+        text(s, x + 0.18, y + 0.12, tw - 0.36, 0.8, P(R(big, 34 if len(big) < 8 else 24, col, bold=True, font=HEAD)),
+             anchor="b", name=f"Rigor value {i}")
+        text(s, x + 0.18, y + 0.98, tw - 0.36, th - 1.08, P(R(cap, 12, INK)), name=f"Rigor caption {i}")
 
-    cx = 7.25
+    cx = M + 2 * tw + 0.15 + 0.4
     cw = SW - M - cx
-    text(s, cx, 1.72, cw, 0.3, P(R("LIQUIDITY AND CAPACITY", 12, BLUE, bold=True, spc=1.5)), name="Liq label")
-    box(s, cx, 2.04, cw, 2.2, fill=WHITE, line=LINE, radius=0.08, shadow=True, name="Liquidity card")
-    half = cw / 2 - 0.45
-    for j, (name, big, big_cap, rows_, col) in enumerate([
-        ("TENNIS", "$61k", "within 2¢", ["1¢ median spread", "$8.1k at the touch", "live sample, one day (Oct 3)"],
-         BLUE),
-        ("TABLE TENNIS", "89¢", "median spread", ["$23 at the touch", "~$2 per match", "not tradable"], RED),
-    ]):
-        x = cx + 0.28 + j * cw / 2
-        text(s, x, 2.14, half - 0.1, 0.28, P(R(name, 11, MUTED, bold=True, spc=1.2)), name=f"Liq head {j}")
-        text(s, x, 2.36, half - 0.1, 0.7, P(R(big, 42, col, bold=True, font=HEAD)), anchor="b", name=f"Liq big {j}")
-        text(s, x, 3.06, half - 0.1, 0.28, P(R(big_cap, 13, INK)), name=f"Liq big cap {j}")
-        text(s, x, 3.38, half - 0.1, 0.82, [P(R(t, 12.5 if k < 2 else 11.5, INK if k < 2 else MUTED), after=2)
-                                             for k, t in enumerate(rows_)], name=f"Liq rows {j}")
-    line = s.shapes.add_connector(1, Inches(cx + cw / 2), Inches(2.2), Inches(cx + cw / 2), Inches(4.1))
-    line.line.color.rgb = rgb(LINE)
-    line.line.width = Pt(0.75)
-    line.name = "Divider"
-    box(s, cx, 4.36, cw, 1.92, fill=INK, radius=0.1, name="Capacity panel")
-    text(s, cx + 0.25, 4.36, cw - 0.5, 1.92, [
-        P(R("RETURN ON CAPITAL (PAPER, AT FAST-TIER FILLS) AND CAPACITY", 10, MUTED_DK, bold=True, spc=1.0)),
-        P(R(f"{IS_PNL} on {IS_CAP} in {DAYS} IS days ({IS_ROC})", 18, WHITE, bold=True, font=HEAD), before=3),
-        P(R(f"{OS_PNL} on {OS_CAP} in {OS_DAYS} burned-OOS days ({OS_ROC})", 13, WHITE)),
-        P(R("Stale depth before a reprice: median $222–565, mean $1.3–3.1k per point (live, Oct 3)", 11.5,
-            MUTED_DK), before=4),
-        P(R(f"Whole prize: fast-tier 0–3 s volume {FT_VOL_TXT} a month (from Jan 2026); v2 trades "
-            f"{USD_PER_DAY} a day of it ({TRADED_M} in {DAYS} days)", 11.5, MUTED_DK), before=3),
-    ], anchor="m", name="Capacity")
-    # Legal and access, full width (docs/NOTE.md section 6).
-    box(s, M, 6.4, CW, 0.56, fill=BLUE_TINT, radius=0.06, name="Legal strip")
-    text(s, M + 0.18, 6.4, CW - 0.36, 0.56, P(
-        R("Legal and access: ", 12, BLUE, bold=True),
-        R("deployment needs licensed data, a permitted venue (Polymarket's international venue restricts US persons) "
-          "and legal review; courtsiding breaks most ticket terms. This repo only reads public data and never places "
-          "an order.", 12, INK)),
-        anchor="m", name="Legal")
-    footer(s, 6)
-    notes(s, f"""
-[3:20 to 4:00]  RISK MANAGEMENT, LIQUIDITY AND CAPITAL
-
-Net exposure is capped at a hundred shares a match, orders at a thousand dollars. The worst backtested match lost 206 dollars. Kill switches fire on dropouts or slow orders.
-
-The biggest risk is the venue: the five percent fee alone halved the edge, and qualifying wallets grew from 4 to 131. So we halve size below 0.3 cents of trailing edge and stop at zero.
-
-Tennis is deep: 61 thousand dollars within two cents. On paper, v2 made 40 thousand dollars on 28 thousand of capital in sample. Deploying it needs licensed data, a permitted venue and legal review.
-
-[Also in the note if asked: only calls with P >= 0.95 are traded; the kill switch also fires when measured order latency exceeds its 95th percentile; 2.9% of matches settled 50/50 (retirements), included in all P&L. Legal: courtsiding breaks most tournaments' ticket terms, live tracking data is licensed, Polymarket's international venue restricts US persons. The repo only reads public data and never places orders. Peak locked {PEAK_K}.]
-[Fee effect (DEVIATIONS D6, in-sample shadow book per share): 3 s/3% 1.64¢, 1 s/3% 1.19¢, 1 s/5% 0.54¢. The fee alone (1.19 to 0.54) is about −55%; fee plus the 3 s to 1 s delay change is about −67%, the "two-thirds" in docs/NOTE.md section 6.]
-[Capacity: v2 traded {TRADED_M} of paper notional in {DAYS} in-sample days ({USD_PER_DAY} a day). Fast-tier 0–3 s volume was {FT_VOL_TXT} a month from Jan 2026 (Dec 2025: ${WF_DEC['usd_k']:.1f}k). Stale depth resting before a reprice: median $565 / $379 / $222 and mean $3,116 / $1,866 / $1,254 at 2 s / 1 s / 0.25 s before it (live, 2026-10-03, 482 points).]
-[Sources: docs/NOTE.md sections 6 and 7; results/v2/causal.json (P&L, capital, worst day {WORST_DAY_IS} IS / {WORST_DAY_OS} OOS); worst match {MINUS}$205.76: docs/NOTE.md section 6 and data/v2_trades_is_oos.parquet grouped by match; research/v2/latency/RESULTS.md section 5; results/summary.json h6_walkforward usd_k.]
-""")
-
-
-def slide_integrity(prs):
-    s = new_slide(prs, dark=True)
-    eyebrow(s, "06  ·  INTEGRITY", dark=True)
-    set_title(s, "Pre-registered, every look logged, failures reported", dark=True)
-    text(s, M, 1.75, 5.8, 0.32, P(R("INTEGRITY TRAIL", 12, MUTED_DK, bold=True, spc=1.5)), name="Trail label")
-    steps = [
-        ("H1–H4 committed before any result",
-         "commit 7232986 · H5, H6 written after in-sample results, frozen before OOS (DEVIATIONS D3, D5)"),
-        ("OOS opened once, for v1",
-         f"v2 was built knowing v1 lost $36k there, so it is burned: v2 is shown on it twice, labelled "
-         f"non-blind ({len(PEEKS)} lines in oos_peeks.log)"),
-        ("Verifiers caught onset hindsight", "81% of a draft's OOS P&L: fixed, re-run"),
-        ("Blind forward test pre-registered", "runs once ~11:30 UTC Oct 4: the clean test"),
+    label(s, cx, 1.72, cw, "TESTS, IN THE ORDER WE RAN THEM")
+    try:
+        _, wf_oos = wf_months()
+    except Missing:
+        wf_oos = []
+    tt1 = V(F_TT, "TT1", "verdict")
+    tt2 = V(F_TT, "TT2", "verdict")
+    tt3 = V(F_TT, "TT3", "verdict")
+    u2v_is = V(F_EXP, "primary", "u2_is", "label")
+    u2v_os = V(F_EXP, "primary", "u2_oos", "label")
+    mkv = V(F_MAKER, "primary", "verdict")
+    fwd_v = (V(F_FWD, "verdict_B_v2_book") if opt(F_FWD) else
+             _record(PENDING, F_FWD + "  [verdict_B_v2_book]"))
+    wf_v = ("PASS" if wf_oos and all(m["net30_c"] > 0 for m in wf_oos) else "FAIL") if wf_oos else PENDING
+    os_v = ("POSITIVE" if opt(F_CAUSAL, OS0, "per_share_ci_c", default=[0])[0] > 0 else "CI INCLUDES 0") \
+        if opt(F_CAUSAL, OS0) else PENDING
+    f2_v = ("NEGATIVE" if opt(F_COST, "burned_oos/fee_x2", "per_share_c", default=0) < 0 else "POSITIVE") \
+        if opt(F_COST, "burned_oos/fee_x2") else PENDING
+    tests = [
+        ("Fast tier, walk-forward, OOS months",
+         D(lambda: f"{sum(m['net30_c'] > 0 for m in wf_oos)}/{len(wf_oos)} months > 0" if wf_oos else PENDING,
+           f"{F_SUM} :: oos > h6_walkforward  [months net30_c > 0]"), wf_v),
+        ("v2, burned OOS (non-blind)",
+         f"{V(F_CAUSAL, OS0, 'per_share_c', f=cents)} {V(F_CAUSAL, OS0, 'per_share_ci_c', f=ci)}", os_v),
+        ("v2, burned OOS, fees ×2",
+         f"{V(F_COST, 'burned_oos/fee_x2', 'per_share_c', f=cents)} {V(F_COST, 'burned_oos/fee_x2', 'per_share_ci_c', f=ci)}",
+         f2_v),
+        ("Blind: v2 on unseen markets, IS period",
+         f"{V(F_EXP, 'primary', 'u2_is', 'per_share_c', f=cents)} {V(F_EXP, 'primary', 'u2_is', 'per_share_ci_c', f=ci)}",
+         "PASS" if u2v_is == "PASS" else u2v_is),
+        ("Blind: v2 on unseen markets, OOS period",
+         f"{V(F_EXP, 'primary', 'u2_oos', 'per_share_c', f=cents)} {V(F_EXP, 'primary', 'u2_oos', 'per_share_ci_c', f=ci)}",
+         "FAIL" if u2v_os == "FAILURE" else u2v_os),
+        ("Blind: maker v1, side markets, OOS",
+         f"{V(F_MAKER, 'primary', 'value_c', f=cents)} {V(F_MAKER, 'primary', 'ci95_c', f=ci)}, "
+         f"{V(F_MAKER, 'headline', 'total_pnl_usd', f=usd_signed0)}",
+         "FAIL" if mkv == "FAILURE" else mkv),
+        ("Table tennis, same mechanism (TT1–TT3)", "no fast tier, no trades",
+         "FAIL" if all(v.startswith("FAIL") for v in (tt1, tt2, tt3)) else f"{tt1}/{tt2}/{tt3}"),
+        ("Blind forward test (run once)", fwd_v if fwd_v != PENDING else "tomorrow", fwd_v),
     ]
-    for i, (a, b) in enumerate(steps):
-        y = 2.12 + i * 0.82
-        badge(s, M, y + 0.08, 0.4, str(i + 1), fill=BLUE, name=f"Trail badge {i + 1}")
-        text(s, M + 0.58, y, 5.6, 0.76, [P(R(a, 15, WHITE, bold=True)), P(R(b, 11.5, MUTED_DK))], anchor="m",
-             name=f"Trail step {i + 1}")
-    cx = 7.05
-    cw = SW - M - cx
-    text(s, cx, 1.75, cw, 0.32, P(R("FIVE IDEAS THAT FAILED, ALL REPORTED", 12, MUTED_DK, bold=True, spc=1.5)),
-         name="Failed label")
-    fails = [
-        ("Chasing the move", f"{MINUS}2.1¢ out of sample"),
-        ("Favourite bias", "prices calibrated"),
-        ("Maker exits", "adversely selected"),
-        ("Side markets", "sniping ≈ 0; best maker only ~$2k/month"),
-        ("Copying Kalshi", "≈ 0 net today"),
-    ]
-    for i, (a, b) in enumerate(fails):
-        y = 2.15 + i * 0.64
-        text(s, cx, y, 0.35, 0.56, P(R("×", 24, "F07A66", bold=True)), anchor="m", name=f"Fail mark {i}")
-        text(s, cx + 0.42, y, cw - 0.42, 0.56, P(R(a + "  ", 16, WHITE, bold=True), R(b, 13, MUTED_DK)),
-             anchor="m", name=f"Fail {i}")
-    box(s, M, 5.5, CW, 1.42, fill=BLUE, radius=0.12, name="Punchline panel")
-    text(s, M + 0.35, 5.5, CW - 0.7, 1.42, [
-        P(R("The edge pays whoever is first.", 30, WHITE, bold=True, font=HEAD)),
-        P(R("We showed what first requires: ", 20, "DCE7F2", font=HEAD),
-          R("in-venue tracking + a gateway co-located with the matching engine.", 20, WHITE, bold=True, font=HEAD),
-          before=2),
-        P(R("Polymarket's API sits behind Cloudflare's Miami edge, origin consistent with London; "
-            "co-locating saves ~130 ms per round trip.", 13, "DCE7F2"), before=3),
-    ], anchor="m", name="Punchline")
-    footer(s, 7, dark=True)
-    notes(s, f"""
-[4:00 to 4:40]  INTEGRITY, WHAT FAILED, AND THE PUNCHLINE
-
-Why trust this? H1 to H4 were committed before any result; H5 and H6 came later, so only out-of-sample counts for them. Out-of-sample was opened once, for version one; version two came after, so we label it burned. Every look is logged.
-
-Verifiers caught hindsight in our first v2 draft: 81 percent of its out-of-sample P&L came before our detector could fire. We fixed it and re-ran.
-
-Five ideas failed; all are reported.
-
-What is left held on the burned window only at the fast tier's own fills, under a tick; the blind test decides. We showed what first requires: in-venue tracking and a co-located gateway. Thank you.
-
-[Then: "Happy to take questions." Backups: 8 calibration, 9 latency, 10 Table 1, 11 slippage and the hindsight fix, 12 reproduce.]
-[Q&A CRIB (one line each; sources in brackets):
-1. "These are someone else's fills." Yes: v2 is a paper book at the fast tier's fills; it prices the opportunity, not our execution, and out of sample it is gone at +½ tick, so second place earns nothing (docs/NOTE.md section 8; results/v2/causal.json).
-2. "You redesigned after v1 failed OOS." Yes, and we say so (HYPOTHESIS_V2.md); that window is labelled burned, the D9 fix lowered its number from +0.75 to +0.60¢, and the blind forward run is the only clean test.
-3. "Does a 50–300 ms call beat a 1 s hold?" To meet a stale quote an order must leave ≥ 1.3 s before the reprice; fast-tier prints already know ≥ 1–1.5 s before the book; tier 0 adds tens to hundreds of ms on top, not yet shown end to end (research/v2/latency/RESULTS.md section 5; backup slide 9).
-4. "Is this courtsiding? Can US persons trade it?" Courtsiding breaks most ticket terms, tracking data is licensed, Polymarket's international venue restricts US persons; deployment needs licensed data, a permitted venue and legal review, and this repo only reads public data (docs/NOTE.md section 6).
-5. "Sharpe 14.5?" ~{PER_DAY:.0f} small bets a day, each held to a binary outcome and net-capped per match; luck-only best Sharpe over {N_VARIANTS:,} variants ≈ 4.8; burned OOS 6.7.
-6. "11/11 at 50 ms, but what recall?" {TT_RECALL} ({EC['tp']} of {TT_N_MISS}); post-hoc label audit: 8/8 at 38% recall (DEVIATIONS H3-D10).
-7. "December has {WF_DEC['n_matches']} matches and {WF_DEC['n_wallets']} wallets." True; 11/11 includes a tiny month, and only the 3 OOS months test H6.
-8. "Latency is one day." Yes: 9 WTA matches, mostly Beijing; ATP has no public official point clock (research/v2/latency/RESULTS.md section 8).
-9. "Kalshi is 6x bigger; why not trade there?" Kalshi's taker fee is 1.75¢ at p = 0.5, and the hedged laggard trade nets +0.06¢ [−1.17, 1.48] in today's regime (research/v2/kalshi/RESULTS.md).
-10. "Oct OOS fast-tier P&L to resolution?" {signed(WF_OCT['net_res_c'])}¢ over 3 days ({WF_OCT['n_matches']} matches); the 30 s markout was {signed(WF_OCT['net30_c'])}¢.
-Known source inconsistencies (outside the deck): docs/NOTE.md section 2 and DEVIATIONS D8 still give the forward start as 13:00 UTC; HYPOTHESIS_V2.md A1.6 moved it to 14:00 (the deck uses 14:00). HYPOTHESIS.md says "written ~10:15 UTC" while DEVIATIONS dates commit 7232986 at 09:50 UTC: cite the hash only, and check it on GitHub before the talk. results/summary.json "v2" still holds the pre-fix onset numbers (Sharpe 16.8); the deck uses results/v2/causal.json.]
-[Sources: HYPOTHESIS.md (commit 7232986; H1–H4); DEVIATIONS.md D3, D5 (H5, H6 after in-sample); results/oos_peeks.log ({len(PEEKS)} looks: v1 10:42 UTC, v2 13:24, v2-causal 13:53); DEVIATIONS.md D9 and HYPOTHESIS_V2.md A1 (81%); docs/NOTE.md Table 1 and sections 4 and 5; research/v2/livefill/RESULTS.md (35% within 60 s); research/v2/crossmarket/RESULTS.md (sniping +0.93¢ [−2.8, 4.7], $472 over six months; leaning maker ~$2.1k per 30 days); docs/DEVPOST.md Challenges.]
-""")
-
-
-# ---------------------------------- backups ----------------------------------
-
-
-def slide_b_calibration(prs, n):
-    s = new_slide(prs)
-    eyebrow(s, "BACKUP  ·  CALIBRATION (H2)")
-    set_title(s, "Live prices are calibrated: slow money has no edge")
-    figure(s, "results/figures/fig2_calibration.png", M, 1.8, 5.2, 5.05, name="Fig 2 calibration",
-           caption="Fig. 2  In-play favourite price vs realised win rate, in sample")
-    cx = M + 5.2 + 0.6
-    cw = SW - M - cx
-    text(s, cx, 1.7, cw, 1.05, P(R(CAL_MAX_TXT, 60, BLUE, bold=True, font=HEAD)), anchor="b", name="Stat cal")
-    text(s, cx, 2.8, cw, 0.6, P(R(f"largest gap between price and realised win rate, across all {len(CAL_IS)} bands "
-                                  "from 0.50 to 1.00 (in sample)", 14, INK)), name="Stat cal caption")
-    rows = [
-        [[P(R("H2: buy favourites at 0.85–0.97, hold", 13, WHITE, bold=True))],
-         [P(R("Net ¢/share [95% CI]", 13, WHITE, bold=True))]],
-        [[P(R("In sample", 14, INK))],
-         [P(R(signed(H2_IS["mean_pnl_per_share_c"]) + "¢  ", 15, INK, bold=True),
-            R(ci(H2_IS["ci95_pnl_per_share_c"]), 12, MUTED))]],
-        [[P(R("Out of sample (opened once)", 14, INK))],
-         [P(R(signed(H2_OOS["mean_pnl_per_share_c"]) + "¢  ", 15, INK, bold=True),
-            R(ci(H2_OOS["ci95_pnl_per_share_c"]), 12, MUTED))]],
-    ]
-    table(s, cx, 3.75, [cw - 2.6, 2.6], [0.48, 0.45, 0.45], rows, "Table: H2")
-    box(s, cx, 5.55, cw, 1.3, fill=INK, radius=0.1, name="Takeaway panel")
-    text(s, cx + 0.3, 5.55, cw - 0.6, 1.3, P(R("No favourite-longshot edge. The only edge left is speed.", 20, WHITE,
-                                              bold=True, font=HEAD)), anchor="m", name="Takeaway")
+    rows = [[[P(R("Test", 12, WHITE, bold=True))], [P(R("Result (¢/share, 95% CI)", 12, WHITE, bold=True))],
+             [P(R("Verdict", 12, WHITE, bold=True))]]]
+    fills = [None]
+    for t, r, v in tests:
+        rows.append([[P(R(t, 12, INK))], [P(R(r, 12, INK))], [P(R(v, 12, verdict_color(v), bold=True))]])
+        fills.append([None, None, verdict_fill(v)])
+    table(s, cx, 2.08, [cw - 3.85, 2.6, 1.25], [0.4] + [0.5] * len(tests), rows, "Table: tests", fills=fills)
+    n_peeks = D(lambda: intc(len(peeks())), F_PEEKS + "  [non-empty lines]")
+    text(s, cx, 6.5, cw, 0.45, P(R(f"Every look at held-out data is logged: {n_peeks} lines in results/oos_peeks.log. "
+                                   "Failures stay in the record.", 11.5, MUTED)), name="Peeks note")
     footer(s, n)
     notes(s, f"""
-BACKUP: CALIBRATION (H2)
+{window(5)}  RIGOR AND BLIND TESTS, INCLUDING THE FAILURES
 
-If asked "isn't there a favourite-longshot bias?": no. In-play prices of the favourite match realised win rates to within about {CAL_MAX_TXT} in every band from 0.50 to 1.00 across {len(CAL_IS)} bands in sample (results/summary.json is.calibration; the note rounds this to "within ~1¢").
+We tried {n_all} variants, and we count all of them. In sample the deflated Sharpe is {dsr_is}. On the burned {t_os} days it is {dsr_os_all} at the full trial count: {t_os} days cannot rule out luck, and we say that. Overfitting probability on our risk grid: {pbo_safe}.
 
-The pre-registered H2 trade, buying favourites as they enter 0.85 to 0.97 and holding to resolution, earned {signed(H2_IS['mean_pnl_per_share_c'])}¢ {ci(H2_IS['ci95_pnl_per_share_c'])} in sample and {signed(H2_OOS['mean_pnl_per_share_c'])}¢ {ci(H2_OOS['ci95_pnl_per_share_c'])} out of sample. Both intervals include zero: no edge, reported as failed.
+Then the blind tests, which we could not tune. Run frozen on markets we had never opened, v2 passed in the in-sample period and failed out of sample: its interval includes zero. Our side-market maker, pre-registered, failed its blind test. Table tennis has no fast tier at all. Fees doubled: negative.
 
-So slow money has no edge, which is why the economic story is about speed and not mispricing.
+The one clean test left is the forward run tomorrow. {n_peeks} lines in the peek log show every time we looked.
 
-If pressed on the top bands: in {len(CAL_RICH)} of them ({', '.join(b['bin'] for b in CAL_RICH)}) the realised win rate's 95% CI sits below the price, by at most {CAL_MAX_TXT} (for example {CAL_RICH[-1]['bin']}: price {CAL_RICH[-1]['mean_price']:.3f}, won {CAL_RICH[-1]['win_rate']:.3f} [{CAL_RICH[-1]['lo']:.3f}, {CAL_RICH[-1]['hi']:.3f}]). Favourites are slightly rich, the opposite of a favourite-longshot bias, and H2's trade CI includes 0 both in and out of sample.
+[Sources: {F_RIGOR} (psr_dsr, pbo_cscv, bootstrap); {F_EXP} primary; {F_MAKER} primary; {F_TT} TT1-TT3; {F_COST}; {F_PEEKS}.]
 """)
 
 
-def slide_b_latency(prs, n):
+def s07_tier0(prs, n):
+    slide_ctx(f"{n} Tier-0 counterfactual")
     s = new_slide(prs)
-    eyebrow(s, "BACKUP  ·  LATENCY (H4)")
-    set_title(s, "Public score feeds are the slow tier")
-    figure(s, "results/figures/fig5_h4.png", M, 1.8, 5.6, 5.05, name="Fig 5 H4",
-           caption=f"Fig. 5  Pre-registered H4: book moved first on {H4_SHARE} of {H4['n']} score changes, "
-                   f"median lead {H4_MED}")
-    cx = M + 5.6 + 0.45
+    eyebrow(s, "06  ·  WHAT THE CV EDGE COULD BUY (COUNTERFACTUAL)")
+    set_title(s, "Tier 0, priced: positive if the book reprices late")
+    box(s, M, 1.66, CW, 0.42, fill=RED, radius=0.06, name="Counterfactual banner")
+    text(s, M + 0.2, 1.66, CW - 0.4, 0.42, P(R(TIER0_LABEL, 13, WHITE, bold=True)), anchor="m",
+         name="Counterfactual label")
+    _record("COUNTERFACTUAL label", F_T0 + " :: label  [must contain COUNTERFACTUAL; checked at build]")
+
+    h = ("headline",)
+    cards = []
+    for per, title in (("IS", "IN SAMPLE (1 s-delay matches)"), ("burned_OOS", "BURNED OOS (non-blind)")):
+        ps = V(F_T0, *h, per, "mean", "per_share_c", f=cents)
+        lo = V(F_T0, *h, per, "mean", "per_share_ci95_c_lo", f=num)
+        hi = V(F_T0, *h, per, "mean", "per_share_ci95_c_hi", f=num)
+        shp = V(F_T0, *h, per, "mean", "sharpe_ann", f=sh1)
+        sds = V(F_T0, *h, per, "sd", "sharpe_ann", f=sh1)
+        day = V(F_T0, *h, per, "mean", "pnl_per_day_usd", f=usd1)
+        seeds = V(F_T0, *h, per, "n_seeds", f=intc)
+        days = V(F_T0, *h, per, "mean", "days", f=intc)
+        cards.append((title, ps, f"[{lo}, {hi}]", shp, sds, day, seeds, days))
+    for i, (title, ps, cis, shp, sds, day, seeds, days) in enumerate(cards):
+        y = 2.3 + i * 1.95
+        box(s, M, y, 4.3, 1.8, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"T0 card {i}")
+        text(s, M + 0.22, y + 0.1, 3.9, 1.6, [
+            P(R(title, 10.5, BLUE, bold=True, spc=1.1)),
+            P(R(ps, 34, RED if i else BLUE, bold=True, font=HEAD), R("  " + cis, 12, MUTED), before=2),
+            P(R(f"Sharpe {shp} ± {sds}  ·  {day}/day", 13, INK)),
+            P(R(f"{seeds}-seed mean, {days} days", 10.5, MUTED)),
+        ], anchor="m", name=f"T0 text {i}")
+
+    cx = M + 4.6
     cw = SW - M - cx
-    rows = [
-        [[P(R("Source", 13, WHITE, bold=True))], [P(R("vs official stamp", 13, WHITE, bold=True), align="r")],
-         [P(R("vs the book", 13, WHITE, bold=True), align="r")]],
-        [[P(R("Polymarket book", 14, INK, bold=True))],
-         [P(R(f"{MINUS}1.2 s", 16, BLUE, bold=True, font=HEAD), align="r")], [P(R("—", 14, MUTED), align="r")]],
-        [[P(R("ESPN scoreboard", 14, INK))], [P(R("+27.5 s", 16, INK, font=HEAD), align="r")],
-         [P(R("28.2 s behind", 14, RED), align="r")]],
-        [[P(R("Polymarket sports feed", 14, INK))], [P(R("+29.1 s", 16, INK, font=HEAD), align="r")],
-         [P(R("30.0 s behind", 14, RED), align="r")]],
-        [[P(R("WTA public API", 14, INK))], [P(R("+43.3 s", 16, INK, font=HEAD), align="r")],
-         [P(R("44 s behind", 14, RED), align="r")]],
-    ]
-    table(s, cx, 1.8, [cw - 3.6, 1.8, 1.8], [0.42, 0.42, 0.42, 0.42, 0.42], rows, "Table: latency")
-    text(s, cx, 3.98, cw, 0.5, P(R("0 of 295 public score changes beat the book by more than 1.3 s "
-                                   "(1 s venue delay + 0.3 s).", 13, INK)), name="Latency note")
-    box(s, cx, 4.52, cw, 2.38, fill=WHITE, line=LINE, radius=0.08, shadow=True, name="Infra card")
-    text(s, cx + 0.25, 4.52, cw - 0.5, 2.38, [
-        P(R("WHAT FIRST REQUIRES", 11, BLUE, bold=True, spc=1.2)),
-        P(R("To meet a stale quote, an order must leave ≥ 1.3 s before the reprice. Fast-tier prints landing "
-            "0–0.5 s before it earned +0.91¢ and were sent ≥ 1 s earlier, so they know ≥ 1–1.5 s before the book. "
-            "Tier 0 adds tens to hundreds of ms on top of that; not yet shown end to end.", 12, INK), before=3),
-        P(R("API behind Cloudflare's Miami edge: 67 ms one-way from Gainesville; origin consistent with London.",
-            12, INK), before=4),
-        P(R("Co-locating saves ~130 ms per round trip: queue order behind the 1 s delay.", 12, INK), before=4),
-    ], anchor="m", name="Infra")
+    label(s, cx, 2.22, cw, f"NET ¢/SHARE VS SECONDS FROM BOUNCE TO BOOK REPRICE ({cards[0][6]}-SEED MEANS)")
+    curve = opt(F_T0, "pnl_vs_t_reprice_minus_t_bounce")
+    if curve:
+        cd = XyChartData()
+        spec = [("In sample, tournament timing", "IS", "tournament"),
+                ("Burned OOS, tournament timing", "burned_OOS", "tournament"),
+                ("Burned OOS, stamp timing", "burned_OOS", "stamp")]
+        ys = []
+        for name, per, rd in spec:
+            ser = cd.add_series(name)
+            for b, row in sorted(curve[per][rd].items(), key=lambda kv: float(kv[0])):
+                ser.add_data_point(float(b), row["per_share_c"])
+                ys.append(row["per_share_c"])
+                _record(cents(row["per_share_c"]), key_str(F_T0, "pnl_vs_t_reprice_minus_t_bounce", per, rd, b,
+                                                           "per_share_c"))
+        lo_y, hi_y = math.floor(min(ys)), math.ceil(max(ys))
+        marks = []
+        for key, nm in (("pre_registered_primary_median_t_reprice_minus_t_bounce_s", "pre-registered"),
+                        ("calibrated_t_reprice_minus_t_bounce_s (inference)", "inferred")):
+            x = opt(F_T0, "timing", key)
+            if x is not None:
+                marks.append((nm, x))
+                ser = cd.add_series(f"{nm}: {x:.2f} s")
+                ser.add_data_point(x, lo_y)
+                ser.add_data_point(x, hi_y)
+                _record(f"{x:.2f} s", key_str(F_T0, "timing", key))
+        gf = s.shapes.add_chart(XL_CHART_TYPE.XY_SCATTER_LINES, Inches(cx - 0.05), Inches(2.5), Inches(cw + 0.05),
+                                Inches(3.3), cd)
+        gf.name = "Chart: P&L vs reprice timing"
+        ch = gf.chart
+        style_chart(ch)
+        ch.legend.font.size = Pt(10)
+        cols = [BLUE, RED, "7D8FA3", MUTED, MUTED]
+        for i, ser in enumerate(ch.plots[0].series):
+            ser.smooth = False
+            ln = ser.format.line
+            ln.color.rgb = rgb(cols[i])
+            ln.width = Pt(2.25 if i < 3 else 1.0)
+            if i >= 2:
+                ln.dash_style = MSO_LINE.DASH
+            ser.marker.style = XL_MARKER_STYLE.CIRCLE if i < 3 else XL_MARKER_STYLE.NONE
+            if i < 3:
+                ser.marker.size = 5
+                ser.marker.format.fill.solid()
+                ser.marker.format.fill.fore_color.rgb = rgb(cols[i])
+                ser.marker.format.line.fill.background()
+        va = ch.value_axis
+        va.minimum_scale, va.maximum_scale = lo_y, hi_y
+        va.tick_labels.number_format = '0"¢"'
+        va.tick_labels.number_format_is_linked = False
+        xa = ch.category_axis
+        xa.tick_labels.number_format = '0.0" s"'
+        xa.tick_labels.number_format_is_linked = False
+    else:
+        text(s, cx, 3.0, cw, 1.0, P(R("Timing curve: pending", 20, MUTED)), name="Chart pending")
+    be = V(F_T0, "pnl_vs_t_reprice_minus_t_bounce", "burned_OOS", "stamp_breakeven_B_s", f=lambda x: f"{x:.1f} s")
+    fixed_lo = FIN("Tier-0", "IS", "fixed_cost_usd_per_day", "low", f=usd0)
+    trade_is = FIN("Tier-0", "IS", "net_trading_usd_per_day", f=usd1)
+    cov = V(F_T0, "headline_scenario", "coverage", f=intc)
+    text(s, cx, 5.85, cw, 1.1, [
+        P(R("The sign hinges on one unmeasured number: ", 12.5, INK, bold=True),
+          R(f"how long after the bounce the book reprices. Under the stamp reading the edge is negative below "
+            f"{be}.", 12.5, INK)),
+        P(R(f"And it does not pay its way: {trade_is}/day of trading vs at least {fixed_lo}/day of fixed costs "
+            f"(feed licence, camera, operator) at {cov} covered matches a day.", 12, RED), before=3),
+    ], name="T0 reading")
     footer(s, n)
     notes(s, f"""
-BACKUP: LATENCY
+{window(6)}  THE CV EDGE, AS A LABELLED COUNTERFACTUAL
 
-On the WTA's official point clock (umpire-entered timestamps), the Polymarket moneyline reprices a median 1.2 s before the official stamp (n = 482 points, 9 WTA matches, live 2026-10-03). ESPN reports a game 27.5 s after the stamp, Polymarket's own sports websocket 29.1 s, the WTA public API 43.3 s. Of 295 source-observed score changes matched to a book reprice, none led the book by more than 1.3 s.
+What would calling the point first buy? We cannot buy a licensed live feed or put a camera courtside, so this slide carries the label {TIER0_LABEL}. No live ATP or WTA data was used.
 
-Fig. 5 is the pre-registered H4 test: the book moved before Polymarket's public score feed on {H4_SHARE} of {H4['n']} score changes, median lead {H4_MED}. H4 holds. H4 (n = {H4['n']}, all matches, book vs feed message) and the official-clock table (PM sports feed 30.0 s behind the book, n = 61, WTA only) use different samples and methods; both put the feed tens of seconds behind.
+We simulate a trader with our measured CV call rate and latency, a London gateway, and live-book fill prices. In sample: {cards[0][1]} a share, Sharpe {cards[0][3]} plus or minus {cards[0][4]}. Out of sample: {cards[1][1]}, Sharpe {cards[1][3]}, and its interval touches zero.
 
-Timing budget (research/v2/latency/RESULTS.md section 5): the stale depth is gone 0.5 s after the reprice, and with the 1 s order delay an order must be sent at least 1.3 s before the reprice, i.e. at least 2.5 s before the official stamp. Prints landing 0 to 0.5 s before the reprice were 98% with the move and earned +0.91¢/share net; they were submitted at least 1 s earlier, so those takers have the point at least 1 to 1.5 s before the book. Tier-0 tracking adds tens to hundreds of ms on top of whatever that signal is; we have not shown a tier-0 order reaching a stale quote end to end.
+The chart is the honest part: profit depends on how long after the bounce the book reprices, which nobody publishes. Under one reading of the clocks, below {be} it is negative.
 
-Tape timestamps are on-chain block times, a median 1.98 s after the true match time (5,472 trades joined by transaction hash), which is why every tape result charges the real delay.
+And at today's costs it does not pay for the feed licence and the camera. The value of the CV is the time budget it measures, not a P&L we can bank.
 
-Infrastructure: Polymarket's API sits behind Cloudflare's Miami edge, 67 ms median one-way from Gainesville, origin consistent with London; co-locating saves about 130 ms per round trip, which decides queue order behind the 1 s delay.
-
-[Sources: research/v2/latency/RESULTS.md; docs/NOTE.md sections 2 and 5; results/summary.json h4.]
+[Second-round verification of this counterfactual is running separately (results/tier0_v3); the headline here is results/tier0/results.json "headline", marked VERIFIED.]
+[Sources: {F_T0} headline, timing, pnl_vs_t_reprice_minus_t_bounce; {F_FIN} Tier-0 rows.]
 """)
 
 
-def slide_b_table1(prs, n):
+def s08_engine(prs, n):
+    slide_ctx(f"{n} Live engine")
     s = new_slide(prs)
-    eyebrow(s, "BACKUP  ·  EVERY TEST  ·  H1–H4 PRE-REGISTERED; H5, H6 ADDED AFTER IS (†)")
-    set_title(s, "Table 1: every test, net of fees and traded spreads")
-
-    def c(t, size=14, col=INK, bold=False, font=BODY):
-        return [P(R(t, size, col, bold=bold, font=font))]
-
-    def verdict(t, col):
-        return [P(R(t, 15, col, bold=True, font=HEAD))]
-
-    h = [[P(R(t, 13, WHITE, bold=True))] for t in ("Test", "In sample", "Out of sample (opened once)", "Verdict")]
-    is_h1, oos_h1 = SUMMARY["is"]["h1"]["J0.04_H30"], SUMMARY["oos"]["h1"]["J0.04_H30"]
-    is_h5, oos_h5 = SUMMARY["is"]["h5"]["J0.04_W30"], SUMMARY["oos"]["h5"]["J0.04_W30"]
-    assert len(SUMMARY["is"]["h1"]) == 20 and all(v["mean_pnl_per_share_c"] < 0 for v in SUMMARY["is"]["h1"].values())
-    tr50 = TRACK["early_call"]["precision_recall_train_oof_snapshot"]["50ms"]
+    eyebrow(s, "07  ·  THE ENGINE, END TO END (PAPER ONLY)")
+    set_title(s, "End to end on live Polymarket books, paper only")
+    lw = 4.25
+    label(s, M, 1.72, lw, "LIVE BOOKS, READ-ONLY RUN")
+    secs = V(F_ENG_LIVE, "seconds", f=lambda x: f"{x:.0f} s")
     rows = [
-        h,
-        [c("H1  Follow the jump after the delay", bold=True),
-         c(f"{signed(is_h1['mean_pnl_per_share_c'])} {ci(is_h1['ci95_pnl_per_share_c'])}; all 20 variants < 0"),
-         c(f"{signed(oos_h1['mean_pnl_per_share_c'])} {ci(oos_h1['ci95_pnl_per_share_c'])}"), verdict("Fails", RED)],
-        [c("H2  Buy favourites entering 0.85–0.97", bold=True),
-         c(f"{signed(H2_IS['mean_pnl_per_share_c'])} {ci(H2_IS['ci95_pnl_per_share_c'])}; prices calibrated"),
-         c(f"{signed(H2_OOS['mean_pnl_per_share_c'])} {ci(H2_OOS['ci95_pnl_per_share_c'])}"), verdict("No edge", RED)],
-        [c("H5†  Maker quoting after jumps", bold=True),
-         c(f"{signed(is_h5['mean_pnl_per_share_c'])} {ci(is_h5['ci95_pnl_per_share_c'])}"),
-         c(f"{signed(oos_h5['mean_pnl_per_share_c'])} {ci(oos_h5['ci95_pnl_per_share_c'])}"),
-         verdict("Inconclusive", MUTED)],
-        [c("H6†  Fast tier, walk-forward, 30 s", bold=True, col=BLUE),
-         c("+0.6 to +2.4; 8/8 months > 0", col=BLUE, bold=True), c("+0.4 to +0.8; 3/3 months > 0", col=BLUE, bold=True),
-         verdict("Holds", BLUE)],
-        [c("     Everyone else, same 0–3 s window"), c(f"{MINUS}0.5 to {MINUS}1.7, every month"),
-         c(f"{MINUS}1.2 to {MINUS}1.9"), c("")],
-        [c("     Copying the fast tier 3 s later"), c("< 0 every month"), c("< 0 every month"),
-         verdict("Edge is speed", BLUE)],
-        [c("H3  Miss called 50 ms early (video)", bold=True), c(f"train CV precision {tr50['precision']:.2f} (frozen model)"),
-         c(f"{TT_CALLS} correct; recall {TT_RECALL}"), verdict("Holds", BLUE)],
-        [c("H4  Book moves before public feed", bold=True), c("— (live test, 2026-10-03)"),
-         c(f"book first: {H4_SHARE} of {H4['n']}"), verdict("Holds", BLUE)],
+        ("Messages · assets", f"{V(F_ENG_LIVE, 'feed', 'msgs', f=intc)} · {V(F_ENG_LIVE, 'feed', 'assets', f=intc)}"),
+        ("Markets discovered", V(F_ENG_LIVE, "markets_discovered", f=intc)),
+        ("Feed delay p50/95/99",
+         f"{V(F_ENG_LIVE, 'feed', 'latency', 'p50_ms', f=lambda x: f'{x:.0f}')} / "
+         f"{V(F_ENG_LIVE, 'feed', 'latency', 'p95_ms', f=lambda x: f'{x:.0f}')} / "
+         f"{V(F_ENG_LIVE, 'feed', 'latency', 'p99_ms', f=lambda x: f'{x:.0f}')} ms"),
+        ("Snapshots mismatched",
+         f"{V(F_ENG_LIVE, 'feed', 'snapshots_mismatched', f=intc)} of {V(F_ENG_LIVE, 'feed', 'snapshots_checked', f=intc)}"),
+        ("Gaps · reconnects", f"{V(F_ENG_LIVE, 'feed', 'gaps', f=intc)} · {V(F_ENG_LIVE, 'reconnects', f=intc)}"),
+        ("What-if: send / skip",
+         D(lambda: f"{sum(v for k, v in raw(F_ENG_LIVE, 'what_if_tally').items() if k.startswith('SEND'))} / "
+                   f"{sum(v for k, v in raw(F_ENG_LIVE, 'what_if_tally').items() if k.startswith('SKIP'))}",
+           key_str(F_ENG_LIVE, "what_if_tally") + "  [sum SEND* / SKIP*]")),
+        ("Orders sent", V(F_ENG_LIVE, "orders_sent", f=intc)),
     ]
-    fills = [None, None, None, None, [BLUE_TINT] * 4, None, None, None, None]
-    table(s, M, 1.75, [3.85, 3.95, 2.85, CW - 10.65], [0.42] + [0.48] * 8, rows, "Table 1: hypotheses", fills=fills)
-    text(s, M, 6.12, CW, 0.62, [
-        P(R("¢/share, 95% CI clustered by match. H1–H4 pre-registered (commit 7232986). † Written after in-sample "
-            "results (DEVIATIONS D3, D5) and frozen before OOS: only their walk-forward / OOS results count.", 11, MUTED)),
-        P(R("H1–H6 use onset-aligned windows (ex-post event study); every tradable v2 number uses the causal window.",
-            11, MUTED), before=2),
-    ], name="Table 1 note")
+    trs = [[[P(R(f"{secs} live window", 12, WHITE, bold=True))], [P(R("", 12, WHITE))]]]
+    for a, b in rows:
+        trs.append([[P(R(a, 11.5, INK))], [P(R(b, 11.5, INK, bold=True), align="r")]])
+    table(s, M, 2.05, [lw - 1.75, 1.75], [0.38] + [0.42] * len(rows), trs, "Table: live engine")
+    text(s, M, 5.48, lw, 1.4, P(R("Engine: streaming vision → fair value → strategy → risk → paper executor. "
+                                  "The executor refuses to start if a live-trading flag or wallet key is present.",
+                                  11, MUTED)), name="Engine note")
+
+    mx = M + lw + 0.3
+    mw = 3.6
+    label(s, mx, 1.72, mw, "LIVE PAPER SESSION (TONIGHT)")
+    live = opt(F_LIVE)
+    box(s, mx, 2.05, mw, 4.85, fill=INK, radius=0.1, name="Session card")
+    if live:
+        lab = V(F_LIVE, "label")
+        status = V(F_LIVE, "status")
+        run = V(F_LIVE, "run")
+        now = V(F_LIVE, "now", f=lambda t: t[:16].replace("T", " ") + " UTC")
+        b1f = V(F_LIVE, "books", "B1", "fills", f=intc)
+        b1p = V(F_LIVE, "books", "B1", "pnl", f=lambda x: ("+" if x >= 0 else MINUS) + f"${abs(x):,.2f}")
+        ctf = V(F_LIVE, "books", "CTRL-taker", "fills", f=intc)
+        cap = V(F_LIVE, "capital_per_book", f=usd0)
+        msgs = D(lambda: intc(sum(v for k, v in raw(F_LIVE, "counters").items() if k.startswith("msg_"))),
+                 key_str(F_LIVE, "counters") + "  [sum msg_*]")
+        inplay = V(F_LIVE, "matches_in_play", f=intc)
+        paras = [
+            P(R(lab, 11, "F07A66", bold=True)),
+            P(R("Strategy: maker v1 (frozen, pre-registered) + taker control", 11.5, WHITE), before=6),
+            P(R(f"Run {run}  ·  as of {now}", 10.5, MUTED_DK), before=4),
+            P(R("Status: ", 11.5, MUTED_DK), R(status, 11.5, WHITE), before=6),
+            P(R(f"Primary book: {b1f} fills, P&L {b1p} on {cap} paper capital", 12.5, WHITE, bold=True), before=8),
+            P(R(f"Taker control: {ctf} fills", 11.5, WHITE), before=3),
+            P(R(f"{msgs} book messages · {inplay} match(es) in play", 11, MUTED_DK), before=6),
+            P(R("Plumbing check, not evidence of edge: maker v1 already failed its blind OOS.", 10.5, MUTED_DK),
+              before=8),
+        ]
+    else:
+        status = _record(PENDING, F_LIVE)
+        b1f = b1p = PENDING
+        paras = [P(R("Live paper session: pending", 18, WHITE, bold=True))]
+    text(s, mx + 0.22, 2.15, mw - 0.44, 4.65, paras, anchor="t", name="Session text")
+
+    fx = mx + mw + 0.3
+    fw_ = SW - M - fx
+    figure(s, "results/engine/demo_timeline.png", fx, 1.72, fw_, 5.18,
+           caption="Illustrative pairing: held-out table-tennis calls mapped onto a real recorded WTA book. "
+                   "Shows mechanics and timing only; not a backtest, not evidence of edge.",
+           name="Engine demo timeline", cap_h=0.75)
     footer(s, n)
-    tr = TRACK["early_call"]["precision_recall_train_oof_snapshot"]["50ms"]
     notes(s, f"""
-BACKUP: TABLE 1, EVERY TEST
+{window(7)}  THE ENGINE RUNS END TO END, PAPER ONLY
 
-Rows H1, H2, H5 and H6 are the note's Table 1 (docs/NOTE.md); H3 and H4 come from results/summary.json. H1 to H4 are pre-registered (HYPOTHESIS.md, commit 7232986). H5 and H6 were added after the in-sample results (DEVIATIONS D3, D5) and frozen before OOS, so only their walk-forward and OOS results count as tests.
+This is not just a backtest. The engine connects to live Polymarket order books, read-only: {rows[0][1]} messages and assets in a {secs} window, feed delay (p50/95/99) {rows[2][1]}, no gaps, and zero orders sent, by construction.
 
-H1, chasing the move, fails in every one of its 20 variants and out of sample. H2 has no edge because prices are calibrated. H5, maker quoting after jumps, is inconclusive. H6 holds: the fast tier, selected each month on earlier months only, is positive in all 8 in-sample and all 3 out-of-sample months, while everyone else in the same window loses every month, and copying the fast tier 3 s later loses every month.
+On the right, the full chain on a real recorded WTA book: vision call, paper order, the one-second venue delay, the fill, then the reprice. It is an illustrative pairing of table-tennis calls with a tennis book, so it shows timing, not edge.
 
-H3: the frozen model's out-of-fold train precision at 50 ms was {tr['precision']:.2f}; on held-out test games it was {TT_CALLS} (Wilson lower bound {TT_WILSON_LO}), calling {EC['tp']} of {TT_N_MISS} misses (recall {TT_RECALL}). A post-hoc label audit (DEVIATIONS H3-D10) found incomplete test labels; the frozen model is 8/8 at 38% recall on corrected labels. The pre-specified result is the one of record.
+Tonight it is running a live paper session with our pre-registered maker and a taker control. Status at build time: {status}. Primary book: {b1f} fills, P&L {b1p}. It is a plumbing check; that strategy already failed its blind test.
 
-Multiple testing: 44 strategy variants for H1-H6 plus 3,342 across the six v2 lenses, all reported. The expected best Sharpe from luck over that many trials is about 4.8 (Bailey and Lopez de Prado); v2 shows 14.5 in sample and 6.7 on the burned OOS, and the blind forward test is the clean check.
+[Paper only: TERMS 5.3 forbids funded accounts; the executor raises LiveTradingForbidden if keys or live flags exist. If the session summary updates before the talk, rebuild: the numbers are read at build time.]
+[Sources: {F_ENG_LIVE}; {F_LIVE}; results/engine/demo_timeline.png from {F_ENG_DEMO}.]
 """)
 
 
-def slide_b_slippage(prs, n):
+def s09_risk(prs, n):
+    slide_ctx(f"{n} Risk + liquidity + financials")
     s = new_slide(prs)
-    eyebrow(s, "BACKUP  ·  SLIPPAGE AND THE HINDSIGHT FIX")
-    set_title(s, "v2 survives a tick in sample; out of sample, only at the front")
-    text(s, M, 1.75, 6.3, 0.32, P(R("NET ¢/SHARE BY ENTRY SLIPPAGE (CAUSAL WINDOW)", 12, BLUE, bold=True, spc=1.2)),
-         name="Chart label")
-    cd = CategoryChartData()
-    cd.categories = ["Fast-tier fills", "+½ tick", "+1 tick"]
-    cd.add_series("In sample, Feb–Aug 2026", [round(r["per_share_c"], 2) for r in (IS0, IS5, IS10)])
-    cd.add_series("Burned OOS, Aug 25 – Oct 3", [round(r["per_share_c"], 2) for r in (OS0, OS5, OS10)])
-    gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(M - 0.05), Inches(2.1), Inches(6.35),
-                            Inches(4.1), cd)
-    gf.name = "Chart: slippage"
-    ch = gf.chart
-    style_chart(ch)
-    plot = ch.plots[0]
-    plot.gap_width = 70
-    plot.overlap = 0
-    color_series(plot, [BLUE, RED])
-    plot.has_data_labels = True
-    dl = plot.data_labels
-    dl.number_format = '+0.00;−0.00'
-    dl.number_format_is_linked = False
-    dl.position = XL_LABEL_POSITION.OUTSIDE_END
-    dl.font.size = Pt(12)
-    dl.font.bold = True
-    dl.font.color.rgb = rgb(INK)
-    va = ch.value_axis
-    va.maximum_scale, va.minimum_scale, va.major_unit = 1.6, -0.8, 0.4
-    va.tick_labels.number_format = '0.0"¢"'
-    va.tick_labels.number_format_is_linked = False
-    text(s, M, 6.25, 6.25, 0.6, P(R(
-        f"Sharpe by slippage: IS {sharpe(IS0)} / {sharpe(IS5)} / {sharpe(IS10)} (7/7 months each); "
-        f"OOS {sharpe(OS0)} / {sharpe(OS5)} / {num(OS10['sharpe_ann'], 1)}", 12, MUTED)), name="Chart note")
-
-    cx = 7.3
-    cw = SW - M - cx
-    text(s, cx, 1.75, cw, 0.32, P(R("CAUSAL WINDOW VS ONSET (HINDSIGHT)", 12, BLUE, bold=True, spc=1.2)),
-         name="Table label")
-
-    def cellv(r):
-        return [P(R(signed(r["per_share_c"]) + "¢", 15, INK, bold=True)), P(R(ci(r["per_share_ci_c"]), 11, MUTED))]
-
-    oi, oo = ONSET["is_eval/slip0.0"], ONSET["burned_oos/slip0.0"]
-    DRAFT_IS, DRAFT_OOS = SUMMARY["v2"]["is_eval"], SUMMARY["v2"]["burned_oos_nonblind"]  # pre-fix draft
-    rows = [
-        [[P(R("Window", 13, WHITE, bold=True))], [P(R("In sample", 13, WHITE, bold=True))],
-         [P(R("Burned OOS", 13, WHITE, bold=True))]],
-        [[P(R("Onset (hindsight)", 14, INK)), P(R("re-run, draft's window", 11, MUTED))], cellv(oi), cellv(oo)],
-        [[P(R("Causal window", 14, BLUE, bold=True)), P(R("from detection, frozen v2", 11, MUTED))], cellv(IS0), cellv(OS0)],
-        [[P(R("Sharpe, causal", 14, INK))], [P(R(sharpe(IS0), 15, INK))], [P(R(sharpe(OS0), 15, INK))]],
-        [[P(R("Trades, causal", 14, INK))], [P(R(f"{IS0['n_trades']:,}", 15, INK))],
-         [P(R(f"{OS0['n_trades']:,}", 15, INK))]],
+    eyebrow(s, "08  ·  RISK  ·  LIQUIDITY & CAPITAL  ·  FINANCIALS")
+    set_title(s, "Small, hard-limited, and it barely pays its costs")
+    rc = ("risk_config",)
+    lw = 3.9
+    label(s, M, 1.72, lw, "HARD LIMITS (ENGINE RiskConfig)")
+    tiles = [
+        (V(F_ENG_DEMO, *rc, "max_order_usd", f=usd0), "per order"),
+        (V(F_ENG_DEMO, *rc, "net_cap_shares", f=intc), "shares net per match"),
+        (V(F_ENG_DEMO, *rc, "zone", f=lambda z: f"{z[0]:.2f}–{z[1]:.2f}"), "price zone only"),
+        (V(F_ENG_DEMO, *rc, "daily_stop_usd", f=usd0), "daily stop (latches)"),
+        (V(F_ENG_DEMO, *rc, "feed_stale_ms", f=lambda x: f"{x / 1000:.0f} s"), "no data → reduce only"),
+        (V(F_ENG_DEMO, *rc, "vision_stale_ms", f=lambda x: f"{x / 1000:.0f} s"), "no vision → reduce only"),
     ]
-    fills = [None, None, [BLUE_TINT] * 3, None, None]
-    table(s, cx, 2.1, [cw - 3.4, 1.7, 1.7], [0.46, 0.66, 0.66, 0.44, 0.44], rows, "Table: causal vs onset",
-          fills=fills)
-    box(s, cx, 5.0, cw, 1.85, fill=WHITE, line=LINE, radius=0.08, shadow=True, name="D9 card")
-    text(s, cx + 0.25, 5.0, cw - 0.5, 1.85, [
-        P(R("WHAT THE VERIFIERS FOUND (D9)", 11, BLUE, bold=True, spc=1.2)),
-        P(R("The onset label is the first print of a 10 s window the detector confirms later. 81% of the draft's "
-            "OOS P&L came before detection. Fixed before the forward window opened.", 14, INK), before=3),
-    ], anchor="m", name="D9 note")
-    footer(s, n)
-    notes(s, f"""
-BACKUP: SLIPPAGE AND THE HINDSIGHT FIX
+    tw, th = (lw - 0.15) / 2, 1.3
+    for i, (big, cap) in enumerate(tiles):
+        x = M + (i % 2) * (tw + 0.15)
+        y = 2.05 + (i // 2) * (th + 0.12)
+        box(s, x, y, tw, th, fill=WHITE, line=LINE, radius=0.08, shadow=True, name=f"Limit tile {i}")
+        text(s, x + 0.15, y + 0.1, tw - 0.3, 0.72, P(R(big, 28 if len(big) <= 6 else 22, RED if i >= 3 else BLUE, bold=True, font=HEAD)),
+             anchor="b", name=f"Limit value {i}")
+        text(s, x + 0.15, y + 0.8, tw - 0.3, 0.45, P(R(cap, 11.5, INK)), name=f"Limit caption {i}")
 
-Slippage stress, causal window, held to resolution (results/v2/causal.json):
-In sample: {signed(IS0['per_share_c'])} {ci(IS0['per_share_ci_c'])} at fast-tier fills, {signed(IS5['per_share_c'])} {ci(IS5['per_share_ci_c'])} at +1/2 tick, {signed(IS10['per_share_c'])} {ci(IS10['per_share_ci_c'])} at +1 tick; positive in 7 of 7 months at every level; max DD {dd(IS0)} / {dd(IS5)} / {dd(IS10)}.
-Burned OOS: {signed(OS0['per_share_c'])} {ci(OS0['per_share_ci_c'])}, {signed(OS5['per_share_c'])} {ci(OS5['per_share_ci_c'])}, {signed(OS10['per_share_c'])} {ci(OS10['per_share_ci_c'])}; months positive {months(OS0)}, {months(OS5)}, {months(OS10)}.
-
-Reading: in today's regime (1 s delay, 5% fee, 131 qualifying wallets) the edge is positive only at the fast tier's own fill prices and gone at half a tick. It pays whoever is first to the stale quote. That is the case for in-venue tracking plus a co-located gateway, and the reason a remote copy cannot work.
-
-Hindsight fix (DEVIATIONS D9, HYPOTHESIS_V2 A1): the first v2 draft measured the 0-3 s window from the jump onset, which the detector only confirms up to 10 s later. Re-run from detection, burned-OOS v2 fell from about +0.75 to +0.60 cents. The "Onset (hindsight)" row is causal.json's re-run of the onset window ({signed(oi['per_share_c'])} / {signed(oo['per_share_c'])}); the first draft's own numbers (results/summary.json "v2") were {signed(DRAFT_IS['per_share_c'])}¢ {ci(DRAFT_IS['per_share_ci_c'])} in sample and {signed(DRAFT_OOS['per_share_c'])}¢ {ci(DRAFT_OOS['per_share_ci_c'])} on the burned OOS, Sharpe {DRAFT_IS['sharpe_ann']:.1f} / {DRAFT_OOS['sharpe_ann']:.1f}. H1-H6 keep onset labels as an ex-post event study; every tradable number uses the causal window.
-""")
-
-
-def slide_b_repro(prs, n):
-    s = new_slide(prs)
-    eyebrow(s, "BACKUP  ·  REPRODUCE")
-    set_title(s, "Reproduce the backtest")
-    cmds = [
-        ("pip install -r requirements.txt", "in a fresh venv"),
-        (".venv/bin/python scripts/fetch_polymarket.py", "public APIs, no keys; ~1–2 h, cached in data/"),
-        ("bash reproduce.sh", "H1–H6, v2, figures, leverage stats, PDF"),
-        ("python run_all.py --oos", "H1–H6, calibration, tiers, fast tier"),
-        ("python scripts/v2_causal.py", "v2 on IS + burned OOS -> results/v2/causal.json"),
-        ("python scripts/forward_test.py", "blind forward test: one shot, logged"),
-        ("pytest tests", "unit tests"),
-    ]
-    box(s, M, 1.8, 8.0, 4.4, fill=INK, radius=0.1, name="Terminal card")
+    mx = M + lw + 0.3
+    mw = 3.45
+    label(s, mx, 1.72, mw, "LIQUIDITY & CAPITAL (v2, IN SAMPLE)")
+    lc = ("liquidity_capital", "is_eval")
+    med = V(F_RISK, *lc, "usd_per_trade_quantiles", "0.5", f=lambda x: f"${x:.2f}")
+    cap = V(F_CAUSAL, IS0, "capital_usd", f=usd_k)
+    peak = V(F_CAUSAL, IS0, "peak_locked_usd", f=usd_k)
+    per_day = V(F_NM, "is", "usd_traded_per_day", f=usd_k)
+    share = D(lambda: pct1(max(raw(F_RISK, "liquidity_capital", "v2_share_of_fast_tier_usd_is_pct").values())),
+              key_str(F_RISK, "liquidity_capital", "v2_share_of_fast_tier_usd_is_pct") + "  [max over months]")
+    ceil_ = V(F_FIN, "strategies", "v2", "ceiling", "IS", "fast_tier_qualified_print_usd_per_day", f=usd_k)
+    top1 = V(F_RISK, "concentration", "is_eval", "wallet", "top1_share_of_net_pct", f=pct1)
+    items = [(med, "median trade"), (f"{per_day}/day", f"notional on {cap} capital (3× peak locked {peak})"),
+             (f"≤ {share}", "of the fast tier's own 0–3 s volume in any month"),
+             (f"{ceil_}/day", "outer ceiling: every qualifying fast-tier print"),
+             (top1, "of in-sample P&L from the top wallet: concentration risk")]
     paras = []
-    for i, (c, why) in enumerate(cmds):
-        paras.append(P(R("$ ", 13, "F07A66", bold=True, font=MONO), R(c, 13, WHITE, font=MONO),
-                       before=0 if i == 0 else 6))
-        paras.append(P(R("  # " + why, 11.5, MUTED_DK, font=MONO)))
-    text(s, M + 0.3, 1.8, 7.4, 4.4, paras, anchor="m", name="Commands")
-    text(s, M, 6.3, 8.0, 0.62, [
-        P(R("Tracking (H3): sbatch hpg/track_*.sbatch on HiPerGator; outputs cached in results/tracking/ "
-              "(not in reproduce.sh).", 12, INK)),
-        P(R("Live-book numbers (latency, liquidity, fills) come from 2026-10-03 recordings in data/ (not committed).",
-            12, MUTED), before=2),
-    ], name="Not in reproduce.sh")
-    cx = M + 8.0 + 0.4
-    cw = SW - M - cx
-    text(s, cx, 1.8, cw, 0.32, P(R("INTEGRITY TRAIL", 12, BLUE, bold=True, spc=1.5)), name="Trail label")
-    trail = [("HYPOTHESIS.md", "H1–H4 pre-registered, commit 7232986"),
-             ("DEVIATIONS.md", "every change and why (H5, H6: D3, D5)"),
-             ("HYPOTHESIS_V2.md", "v2 frozen before its forward test"),
-             ("results/oos_peeks.log", f"every look at held-out data ({len(PEEKS)} lines)"),
-             ("results/v2/forward.json", "forward result (after the run)")]
-    trail_paras = []
-    for a, b in trail:
-        trail_paras.append(P(R(a, 14, INK, bold=True, font=MONO)))
-        trail_paras.append(P(R(b, 13, MUTED), after=8))
-    text(s, cx, 2.18, cw, 3.5, trail_paras, name="Trail files")
-    text(s, cx, 5.75, cw, 0.8, P(R("Reads public data only and never places an order.", 14, INK, bold=True)),
-         name="Read-only note")
+    for big, cap_ in items:
+        paras.append(P(R(big + "  ", 18, BLUE, bold=True, font=HEAD), R(cap_, 11.5, INK), after=7))
+    text(s, mx, 2.05, mw, 4.4, paras, name="Liquidity list")
+
+    fx = mx + mw + 0.3
+    fw_ = SW - M - fx
+    label(s, fx, 1.72, fw_, "$/DAY AFTER CENTRAL FIXED COSTS")
+
+    def frow(strat, per, lab_):
+        tr = FIN(strat, per, "net_trading_usd_per_day", f=usd_signed0)
+        fx_ = FIN(strat, per, "fixed_cost_usd_per_day", "central", f=usd0)
+        net = FIN(strat, per, "net_after_costs_usd_per_day", "central", f=usd_signed0)
+        col = RED if net.startswith(MINUS) else BLUE
+        return [[P(R(lab_, 11, INK))], [P(R(tr, 11.5, INK), align="r")], [P(R(fx_, 11.5, MUTED), align="r")],
+                [P(R(net, 12, col, bold=True), align="r")]]
+
+    trs = [[[P(R("Book", 11, WHITE, bold=True))], [P(R("Trading", 11, WHITE, bold=True), align="r")],
+            [P(R("Fixed", 11, WHITE, bold=True), align="r")], [P(R("Net", 11, WHITE, bold=True), align="r")]],
+           frow("v2 (", "IS", "v2, IS"),
+           frow("v2 (", "IS, current 1 s / 5% regime only", "v2, IS, today's fees"),
+           frow("v2 (", "OOS (burned, non-blind)", "v2, burned OOS"),
+           frow("Maker", "OOS (blind)", "Maker, blind OOS"),
+           frow("Tier-0", "IS", "Tier-0 (counterfactual)")]
+    table(s, fx, 2.05, [fw_ - 2.55, 0.85, 0.75, 0.95], [0.38] + [0.5] * 5, trs, "Table: financials")
+    lic = V(F_FIN, "cost_assumptions", "feed_licence", "central", f=usd0)
+    text(s, fx, 5.0, fw_, 1.35, [
+        P(R("Tier-0: " + TIER0_LABEL + ".", 10.5, RED, bold=True)),
+        P(R(f"Fixed costs include an official point-feed licence, an ASSUMPTION ({lic}/month central; no public "
+            "price). Fees are the binding variable.", 10.5, MUTED), before=4),
+    ], name="Financials note")
+    box(s, M, 6.42, CW, 0.52, fill=INK, radius=0.08, name="Risk strip")
+    text(s, M + 0.25, 6.42, CW - 0.5, 0.52, P(
+        R("Top risks (docs/RISK.md): ", 12, "F07A66", bold=True),
+        R("fee/delay regime change (R11) · crowding for the same stale quote (R6) · wallet concentration (R2) · "
+          "venue access and data rights (R16)", 12, WHITE)), anchor="m", name="Risk register")
     footer(s, n)
     notes(s, f"""
-BACKUP: REPRODUCE
+{window(8)}  RISK, LIQUIDITY AND CAPITAL, FINANCIALS
 
-The backtest regenerates from public data with no API keys. scripts/fetch_polymarket.py pulls the Polymarket tapes (1 to 2 hours, cached in data/). bash reproduce.sh runs run_all.py --oos (H1-H6, calibration, tiers, the walk-forward fast tier), scripts/v2_causal.py (v2 on in-sample and burned OOS with slippage stress), the figures, the leverage stats and the PDF. scripts/v2_causal.py is the current script behind results/v2/causal.json, which every v2 number in this deck reads; the note's header still cites scripts/v2_burned_oos.py, the earlier onset-window run (results/v2/burned_oos.json). The forward test is a one-shot: scripts/forward_test.py, pre-registered window, and every run is logged. Tests: pytest tests.
+Small by design. Every order goes through hard limits: {tiles[0][0]} per order, {tiles[1][0]} shares net per match, a {tiles[3][0]} daily stop, and kill switches when data or vision goes stale.
 
-Not in reproduce.sh: tracking (H3) runs on HiPerGator GPUs via sbatch hpg/track_*.sbatch (table tennis) and hpg/tennis_*.sbatch (broadcast tennis), with outputs cached in results/tracking/ and results/tennis_tracking/. Live-book numbers (latency, liquidity, live fills) come from the 2026-10-03 recordings: python -m src.live_recorder, research/v2/latency, research/v2/livefill; the recordings sit in data/, which is not committed. The worst-match figure ({MINUS}$206) is computed from data/v2_trades_is_oos.parquet, not written by any script.
+Liquidity: the median trade is {med}; at most {share} of the fast tier's own volume in any month; capital is three times peak locked, {cap}.
 
-Integrity trail: HYPOTHESIS.md (H1-H4 pre-registered, commit 7232986), DEVIATIONS.md (every change, including H5 and H6 being added after in-sample results, D3 and D5), HYPOTHESIS_V2.md (v2 frozen before its forward test), results/oos_peeks.log ({len(PEEKS)} looks: v1 once, then v2 twice on the burned window, labelled non-blind) and the forward log.
+Financials, honestly: before fixed costs v2 makes money. After a data licence and a London server, it is about break-even in sample and negative on the burned out-of-sample. The CV counterfactual is far below its fixed costs. So this is a measured opportunity, not a business yet.
 
-This deck rebuilds with: .venv/bin/python docs/deck/build_deck.py
-[Source: README.md, reproduce.sh, hpg/.]
+[Biggest risk is the venue: one fee or delay change moves the edge more than any parameter (R11). Wallet concentration: top wallet {top1} of IS P&L (R2).]
+[Sources: {F_ENG_DEMO} risk_config; {F_RISK} liquidity_capital, concentration; {F_CAUSAL}; {F_FIN} headline rows and cost_assumptions; docs/RISK.md.]
 """)
+
+
+def s10_close(prs, n):
+    slide_ctx(f"{n} Close")
+    s = new_slide(prs, dark=True)
+    eyebrow(s, "REPRODUCE IT", dark=True)
+    set_title(s, "One command. Public data. Paper only.", dark=True, size=40)
+    box(s, M, 1.9, 7.4, 2.2, fill=INK_2, radius=0.1, name="Terminal card")
+    text(s, M + 0.3, 1.9, 6.9, 2.2, [
+        P(R("$ ", 16, "F07A66", bold=True, font=MONO), R("bash reproduce.sh", 22, WHITE, bold=True, font=MONO)),
+        P(R("  # every number and figure in the note, from cached public data", 12, MUTED_DK, font=MONO),
+          before=4),
+        P(R("  # first run: .venv/bin/python scripts/fetch_polymarket.py (no keys)", 12, MUTED_DK, font=MONO),
+          before=2),
+        P(R("  # this deck: .venv/bin/python docs/deck/build_deck.py", 12, MUTED_DK, font=MONO), before=2),
+    ], anchor="m", name="Command")
+    text(s, M, 4.35, SW - 2 * M, 0.55, P(R(REPO_URL, 14, WHITE, bold=True, font=MONO)), anchor="m", name="Repo URL")
+    fwd = "results in" if opt(F_FWD) else PENDING
+    if not opt(F_FWD):
+        _record(PENDING, F_FWD + "  [forward test]")
+    live_status = V(F_LIVE, "status") if opt(F_LIVE) else _record(PENDING, F_LIVE)
+    pend_fin = D(lambda: "; ".join(raw(F_FIN, "pending")) or "none", key_str(F_FIN, "pending"))
+    text(s, M, 5.1, SW - 2 * M, 1.6, [
+        P(R("STILL OPEN AT BUILD TIME", 12, MUTED_DK, bold=True, spc=1.4)),
+        P(R("Blind forward test (run once, tomorrow): ", 14, WHITE, bold=True), R(fwd, 14, "F07A66", bold=True),
+          before=4),
+        P(R("Live paper session: ", 14, WHITE, bold=True), R(live_status, 14, MUTED_DK)),
+        P(R(f"Financials still pending: {pend_fin}", 12, MUTED_DK), before=2),
+    ], name="Pending")
+    text(s, M, 6.95, SW - 2 * M, 0.35, P(R("No real money was traded. No live ATP/WTA data was bought or used. "
+                                           "Tier 0 is a labelled counterfactual.", 11, MUTED_DK)),
+         anchor="m", name="Disclaimer")
+    notes(s, f"""
+{window(9)}  CLOSE
+
+One command reproduces every number from public data: bash reproduce.sh. The repo is public, the failures are in it, and the blind forward test runs once tomorrow. Thank you.
+
+[Status at build time: forward test {fwd}; live session {live_status}.]
+""")
+
+
+# --------------------------------------------------------------------------------------------
+# Q&A backup: the ten hardest questions (research/compliance/JUDGE.md section 5), honest answers
+# --------------------------------------------------------------------------------------------
+
+
+def slide_q(prs, n, q, short, full, bullets, evidence, sources):
+    slide_ctx(f"{n} Q{q}")
+    s = new_slide(prs)
+    eyebrow(s, f"Q&A BACKUP  ·  Q{q} OF 10  ·  research/compliance/JUDGE.md")
+    set_title(s, short, size=30)
+    text(s, M, 1.68, 7.6, 0.75, P(R(f"“{full}”", 13, MUTED, italic=True)), name="Question")
+    paras = []
+    for i, b in enumerate(bullets):
+        runs = [R("•  ", 14, RED, bold=True)] + [r if isinstance(r, R) else R(r, 14, INK) for r in
+                                                  (b if isinstance(b, list) else [b])]
+        paras.append(P(*runs, before=0 if i == 0 else 8))
+    text(s, M, 2.5, 7.6, 4.35, paras, name="Answer")
+    cx = M + 7.6 + 0.4
+    cw = SW - M - cx
+    box(s, cx, 1.68, cw, 5.2, fill=WHITE, line=LINE, radius=0.08, shadow=True, name="Evidence card")
+    ep = [P(R("EVIDENCE", 11, BLUE, bold=True, spc=1.4))]
+    for big, cap in evidence:
+        ep.append(P(R(big, 24, RED if big.startswith(MINUS) or "FAIL" in big else BLUE, bold=True, font=HEAD),
+                    before=8))
+        ep.append(P(R(cap, 11.5, INK)))
+    ep.append(P(R("Sources: " + "; ".join(sources), 9.5, MUTED, font=MONO), before=10))
+    text(s, cx + 0.22, 1.78, cw - 0.44, 5.0, ep, name="Evidence")
+    footer(s, n)
+    notes(s, f"BACKUP Q{q}: {full}\n\nAnswer in this order:\n" + "\n".join(
+        "- " + ("".join(r.text if isinstance(r, R) else r for r in b) if isinstance(b, list) else b)
+        for b in bullets) + "\n\n[Sources: " + "; ".join(sources) + "]")
+
+
+def appendix(prs, n0):
+    B = lambda t: R(t, 14, INK, bold=True)  # noqa: E731
+    wf = lambda: wf_months()[0] + wf_months()[1]  # noqa: E731
+
+    # Q1
+    n = n0
+    slide_ctx(f"{n} Q1")
+    os5 = V(F_CAUSAL, OS5, "per_share_c", f=cents)
+    os5ci = V(F_CAUSAL, OS5, "per_share_ci_c", f=ci)
+    copy = D(lambda: f"{sum(m['follow_res_c'] < 0 for m in wf())}/{len(wf())}", WF_SRC + "  [follow_res_c < 0]")
+    slide_q(prs, n, 1, "Isn't filling at the fast tier's print lookahead?",
+            "Table 2 fills at the fast tier's own print. You only know that print exists because it happened. "
+            "Isn't that lookahead, and isn't this someone else's P&L?",
+            [[B("Yes, it is their speed, and we say so. "), "v2 measures the opportunity for a trader as fast as "
+              "the fast tier, not our execution."],
+             "What gets counted uses no future information: wallets qualify on past months only, the fee filter "
+             "uses the fee at the time, and the 0–3 s window runs from detection, not hindsight onset (D9).",
+             [B("The executable lagged copy loses: "), f"the same trades ~3 s later lose in {copy} months."],
+             [B("Out of sample, second place earns nothing: "), f"+½ tick gives {os5} {os5ci}."],
+             "Our own route to first place is tier 0, which we only model as a labelled counterfactual."],
+            [(copy, "months the 3 s-late copy lost money"), (os5, f"burned OOS at +½ tick {os5ci}")],
+            [F_SUM, F_CAUSAL])
+
+    # Q2
+    n += 1
+    slide_ctx(f"{n} Q2")
+    v1 = V(F_SUM, "oos", "h6_shadow", "total_pnl_usd", f=usd_signed_k)
+    first_peek = D(lambda: peeks()[0][:16].replace("T", " ") + " UTC", F_PEEKS + "  [first line timestamp]")
+    u2is = V(F_EXP, "primary", "u2_is", "per_share_c", f=cents)
+    u2isci = V(F_EXP, "primary", "u2_is", "per_share_ci_c", f=ci)
+    u2os = V(F_EXP, "primary", "u2_oos", "per_share_c", f=cents)
+    u2osci = V(F_EXP, "primary", "u2_oos", "per_share_ci_c", f=ci)
+    u2n = V(F_EXP, "universe", "u2_markets", f=intc)
+    npk = D(lambda: intc(len(peeks())), F_PEEKS + "  [non-empty lines]")
+    slide_q(prs, n, 2, "Isn't v2 tuned on the out-of-sample window?",
+            f"You built v2 after v1 lost {v1.lstrip('+' + MINUS)} out of sample. Isn't that tuning on the "
+            "out-of-sample period?",
+            [[B("The OOS was opened once, blind, for v1 "), f"({first_peek}); v1's {v1} loss is reported."],
+             "v2's rules were tuned on in-sample data only, but its motivation came from how v1 failed. So that "
+             "window is burned, and every v2 number on it is labelled non-blind.",
+             [B("v2's clean tests are pre-registered. "), f"Blind, on {u2n} never-examined markets: {u2is} {u2isci} "
+              f"in the in-sample period (pass); {u2os} {u2osci} out of sample: a fail by our rule."],
+             "The forward window is run once, tomorrow, and reported either way.",
+             f"All {npk} looks at held-out data are in results/oos_peeks.log."],
+            [(v1, "v1 on the held-out window, opened once"), (f"{u2os} FAIL", f"blind U2 OOS {u2osci}"),
+             (npk, "logged looks at held-out data")],
+            [F_SUM, F_EXP, F_PEEKS])
+
+    # Q3
+    n += 1
+    slide_ctx(f"{n} Q3")
+    sh_old = V(F_SUM, "v2_onset_superseded", "is_eval", "sharpe_ann", f=sh1)
+    sh_is = V(F_CAUSAL, IS0, "sharpe_ann", f=sh1)
+    per_day = D(lambda: intc(raw(F_CAUSAL, IS0, "n_trades") / raw(F_CAUSAL, IS0, "days")),
+                key_str(F_CAUSAL, IS0) + "  [n_trades / days]")
+    skew = V(F_NM, "is", "skew", f=lambda x: f"{x:.2f}")
+    kurt = V(F_NM, "is", "kurtosis_pearson", f=lambda x: f"{x:.1f}")
+    wd = V(F_NM, "is", "worst_day_pct", f=pct1)
+    s5 = V(F_CAUSAL, IS5, "sharpe_ann", f=sh1)
+    s10 = V(F_CAUSAL, IS10, "sharpe_ann", f=sh1)
+    sc2 = V(F_NM, "is", "costs_x2_sharpe", f=sh1)
+    so = V(F_CAUSAL, OS0, "sharpe_ann", f=sh1)
+    soci = V(F_RIGOR, "bootstrap", "v2_oos", "sharpe_ann_ci95", f=lambda p: ci(p, 1))
+    netcap = V(F_ENG_DEMO, "risk_config", "net_cap_shares", f=intc)
+    slide_q(prs, n, 3, f"A Sharpe of {sh_is} on daily data? Assume a bug",
+            f"A Sharpe of {sh_is} on daily data. The brief says above 3, assume a bug.",
+            [[B("We assumed one and found one: "), f"the onset hindsight (D9). Fixing it cut the in-sample Sharpe "
+              f"from {sh_old} to {sh_is}."],
+             [B("What remains is structural: "), f"about {per_day} small bets a day, each settled by an exogenous "
+              f"binary outcome, net exposure capped at {netcap} shares per match."],
+             f"Tails are mild: skew {skew}, kurtosis {kurt}, worst day {wd}.",
+             [B("It falls fast with costs: "), f"Sharpe {s5} at +½ tick, {s10} at +1 tick, {sc2} with all costs "
+              f"doubled; burned OOS {so} (bootstrap {soci})."]],
+            [(f"{sh_old} → {sh_is}", "in-sample Sharpe before / after the D9 fix"),
+             (sc2, "in-sample Sharpe, all costs doubled"), (so, f"burned-OOS Sharpe, CI {soci}")],
+            [F_SUM, F_CAUSAL, F_NM, F_RIGOR])
+
+    # Q4
+    n += 1
+    slide_ctx(f"{n} Q4")
+    bps_is = V(F_NM, "is", "fee_bps_of_notional", f=lambda x: f"{x:.0f} bps")
+    bps_os = V(F_NM, "burned_oos", "fee_bps_of_notional", f=lambda x: f"{x:.0f} bps")
+    f2is = V(F_COST, "is_eval/fee_x2", "per_share_c", f=cents)
+    f2ism = D(lambda: f"{raw(F_COST, 'is_eval/fee_x2', 'months_positive')}/{raw(F_COST, 'is_eval/fee_x2', 'months_total')}",
+              key_str(F_COST, "is_eval/fee_x2") + "  [months_positive/months_total]")
+    f2os = V(F_COST, "burned_oos/fee_x2", "per_share_c", f=cents)
+    f2osci = V(F_COST, "burned_oos/fee_x2", "per_share_ci_c", f=ci)
+    f2osm = D(lambda: f"{raw(F_COST, 'burned_oos/fee_x2', 'months_positive')}/{raw(F_COST, 'burned_oos/fee_x2', 'months_total')}",
+              key_str(F_COST, "burned_oos/fee_x2") + "  [months_positive/months_total]")
+    c2is = V(F_COST, "is_eval/costs_x2", "per_share_c", f=cents)
+    c2os = V(F_COST, "burned_oos/costs_x2", "per_share_c", f=cents)
+    be = D(lambda: frac_pct1(raw(F_FIN, "strategies", "v2", "periods", "OOS", "breakeven_taker_fee",
+                                 "rate_before_fixed_costs")),
+           key_str(F_FIN, "strategies", "v2", "periods", "OOS", "breakeven_taker_fee", "rate_before_fixed_costs"))
+    slide_q(prs, n, 4, "What happens when costs double?",
+            "What happens when costs double? What is your cost in bps?",
+            [[B("Fees: "), f"each match's own rate × q(1−q): about {bps_is} of notional in sample (mixed fee "
+              f"regimes) and {bps_os} out of sample (all at today's rate)."],
+             [B("Fees doubled: "), f"{f2is} in sample ({f2ism} months), but {f2os} {f2osci} out of sample "
+              f"({f2osm} months)."],
+             [B("All costs doubled: "), f"{c2is} in sample and {c2os} out of sample."],
+             [B("So in today's regime the edge does not survive doubled costs, "), f"and we say so. Break-even "
+              f"taker fee rate on the burned OOS, before fixed costs: {be}."],
+             "That is why venue rules are risk R11 and why the halve/stop rule exists."],
+            [(f2os, f"burned OOS with fees doubled {f2osci}"), (c2os, "burned OOS with all costs doubled"),
+             (be, "break-even taker fee rate (OOS, before fixed costs)")],
+            [F_NM, F_COST, F_FIN])
+
+    # Q5
+    n += 1
+    slide_ctx(f"{n} Q5")
+    vol = V(F_SUM, "universe", "volume_usd", f=usd_b)
+    sent = V(F_ENG_LIVE, "orders_sent", f=intc)
+    slide_q(prs, n, 5, "Is Polymarket allowed here, and from the US?",
+            "Is Polymarket even allowed in this track, and can you trade it from the US?",
+            [[B("The track allows any liquid, publicly traded market. "), f"Polymarket tennis has a public order "
+              f"book, keyless public data, and {vol} traded in our universe."],
+             [B("The international venue restricts US persons, "), "and we say so. TERMS 5.3 forbids funded accounts "
+              "during the event, so everything here is paper."],
+             [B("The repo only reads public data. "), f"The engine is paper-only by construction (orders sent in the "
+              f"live run: {sent}); it refuses to start if a key or live flag exists."],
+             "A deployment needs a permitted venue, licensed data and legal review (docs/RISK.md R16).",
+             "Kalshi, the regulated alternative, leads most repricings, but its fee leaves the hedged laggard "
+             "trade at about zero (research/v2/kalshi/RESULTS.md)."],
+            [(vol, "traded in the study universe (public data)"), (sent, "orders sent by the engine")],
+            [F_SUM, F_ENG_LIVE, "docs/RISK.md R16"])
+
+    # Q6
+    n += 1
+    slide_ctx(f"{n} Q6")
+    pos = D(lambda: f"{sum(m['net30_c'] > 0 for m in wf())}/{len(wf())}", WF_SRC + "  [net30_c > 0]")
+    w0 = D(lambda: intc(wf()[0]["n_wallets"]), WF_SRC + "  [first month n_wallets]")
+    w1 = D(lambda: intc(wf()[-1]["n_wallets"]), WF_SRC + "  [last month n_wallets]")
+    e0 = D(lambda: cents1(wf()[0]["net30_c"]), WF_SRC + "  [first month net30_c]")
+    e1 = D(lambda: cents1(wf()[-1]["net30_c"]), WF_SRC + "  [last month net30_c]")
+    g_is = V(F_EXP, "fast_minus_others_u2", "u2_is", "fast_minus_others_c", f=cents)
+    g_os = V(F_EXP, "fast_minus_others_u2", "u2_oos", "fast_minus_others_c", f=cents)
+    g_osci = V(F_EXP, "fast_minus_others_u2", "u2_oos", "ci_c", f=ci)
+    lag = V(F_T0, "timing", "calibrated_stamp_lag_s (inference)", f=lambda x: f"{x:.1f} s")
+    slide_q(prs, n, 6, "Who is the fast tier, and why does the edge survive?",
+            "Who is the fast tier, and why hasn't competition killed the edge?",
+            [[B("We can't identify them; we can characterize them: "), f"they trade within 3 s of a detected point, "
+              f"and selected walk-forward they made money in {pos} months."],
+             [B("They replicate blind: "), f"on unseen markets they beat everyone else by {g_is} in sample and "
+              f"{g_os} {g_osci} out of sample."],
+             f"Someone knows the point before the book. Courtside humans would imply an official-stamp lag of "
+             f"about {lag}, but that is an inference, not a measurement.",
+             [B("Competition is biting: "), f"the 30 s edge went from {e0} in the first month to {e1} in the last; "
+              f"qualifying wallets grew from {w0} to {w1}. It shrank but stayed positive."]],
+            [(pos, "months the fast tier made money, walk-forward"), (g_os, f"fast minus others, blind OOS {g_osci}"),
+             (f"{e0} → {e1}", "edge per share, first vs last month")],
+            [F_SUM, F_EXP, F_T0])
+
+    # Q7
+    n += 1
+    slide_ctx(f"{n} Q7")
+
+    def dsr_q(series, key):
+        def fn():
+            rows = raw(F_RIGOR, "psr_dsr", "rows")
+            i = next(i for i, r in enumerate(rows) if r["series"] == series)
+            return dsr3(raw(F_RIGOR, "psr_dsr", "rows", i, "dsr", key, "dsr"))
+        return D(fn, f"{F_RIGOR} :: psr_dsr > rows > [series={series}] > dsr > {key} > dsr")
+    nall = V(F_RIGOR, "psr_dsr", "N", "all_NOTE_s8", f=intc)
+    nh = V(F_RIGOR, "psr_dsr", "N", "H1_H6", f=intc)
+    t_os7 = V(F_RIGOR, "sharpe_moments", "v2_oos", "T_days", f=intc)
+    d_is = dsr_q("v2_is", "N3386/sizing_grid_55")
+    d_os_h = dsr_q("v2_oos", "N44/null")
+    d_os_all = dsr_q("v2_oos", "N3386/null")
+    pbo_sz = V(F_RIGOR, "pbo_cscv", "sizing_55_res_actual_sharpe", "pbo", f=frac_pct1)
+    pbo_sf = V(F_RIGOR, "pbo_cscv", "lowloss_24_sharpe", "pbo", f=frac_pct1)
+    pbo_sel = V(F_RIGOR, "pbo_cscv", "lowloss_24_selection_rule", "pbo", f=frac_pct1)
+    slide_q(prs, n, 7, "With this many variants, isn't it the luckiest draw?",
+            f"You tried {nall} or more variants. Why isn't this the luckiest draw?",
+            [[B("Every variant is counted and reported: "), f"N = {nall}."],
+             [B("In sample the deflated Sharpe at that N is "), f"{d_is}, even with the most conservative variance."],
+             [B(f"On the {t_os7}-day burned OOS it is "), f"{d_os_h} at N = {nh} and {d_os_all} at N = {nall}. "
+              f"{t_os7} days cannot rule out luck at the full trial count, and we say that."],
+             f"Probability of backtest overfitting: {pbo_sz} on the sizing grid, {pbo_sf} by Sharpe on the v2-safe "
+             f"grid, {pbo_sel} by its selection rule.",
+             "Many variants are near-duplicates, so N overstates independent trials. The real answer is the "
+             "forward test."],
+            [(d_is, f"DSR in sample, N = {nall}"), (d_os_all, f"DSR burned OOS, N = {nall}"),
+             (pbo_sf, "PBO, v2-safe grid by Sharpe")],
+            [F_RIGOR])
+
+    # Q8
+    n += 1
+    slide_ctx(f"{n} Q8")
+    om = V(F_NM, "holdout", "oos_matches", f=intc)
+    tm = V(F_NM, "holdout", "matches", f=intc)
+    ov = V(F_NM, "holdout", "oos_share_of_volume", f=frac_pct0)
+    od = V(F_NM, "holdout", "oos_days", f=lambda x: f"{x:.0f}")
+    sd = V(F_NM, "holdout", "span_days", f=lambda x: f"{x:.0f}")
+    t20 = V(F_NM, "holdout", "time_based_20pct_start", f=lambda s_: s_[:10])
+    thr_pnl = V(F_RISK, "universe_volume_filter", "burned_oos", "$5-20k", "per_share_c", f=cents)
+    u2n = V(F_EXP, "universe", "u2_markets", f=intc)
+    share_m = D(lambda: frac_pct0(raw(F_NM, "holdout", "oos_matches") / raw(F_NM, "holdout", "matches")),
+                key_str(F_NM, "holdout") + "  [oos_matches / matches]")
+    thr = D(lambda: rx(F_RISK, ("universe_volume_filter", "note"), r">= (\$\d+k)"),
+            key_str(F_RISK, "universe_volume_filter", "note") + "  [volume threshold quoted in the note field]")
+    slide_q(prs, n, 8, "Is the holdout survivorship-biased?",
+            f"Your OOS is {share_m} of matches but only {od} of {sd} days, and your universe keeps matches with at "
+            f"least {thr} of lifetime volume, which you only know afterwards. Isn't that survivorship and lookahead?",
+            [[B(f"We read “{share_m}” as a share of observations: "), f"{om} of {tm} matches, {ov} of volume. By calendar time "
+              f"it is {od} of {sd} days; a time-based 20% would start {t20}."],
+             [B("The volume filter is ex-post. "), f"It drops thin markets a live trader would see. The OOS trades "
+              f"nearest the threshold made {thr_pnl} a share."],
+             [B("Our check is the blind test on "), f"{u2n} other markets (mostly ITF): the fast-tier gap holds there; "
+              "v2's out-of-sample interval includes zero."],
+             "H1–H6 use onset-aligned windows: an ex-post event study, labelled as such. Every tradable v2 number "
+             "uses the causal window."],
+            [(f"{om}/{tm}", f"matches held out ({ov} of volume)"), (f"{od} of {sd}", "days held out"),
+             (u2n, "unseen markets in the blind test")],
+            [F_NM, F_RISK, F_EXP])
+
+    # Q9
+    n += 1
+    slide_ctx(f"{n} Q9")
+    pdx = V(F_NM, "is", "usd_traded_per_day", f=usd_k)
+    trd = V(F_CAUSAL, IS0, "usd_traded", f=usd_m)
+    dys = V(F_CAUSAL, IS0, "days", f=intc)
+    capq = V(F_CAUSAL, IS0, "capital_usd", f=usd_k)
+    medq = V(F_RISK, "liquidity_capital", "is_eval", "usd_per_trade_quantiles", "0.5", f=lambda x: f"${x:.2f}")
+    cis = V(F_FIN, "strategies", "v2", "ceiling", "IS", "fast_tier_qualified_print_usd_per_day", f=usd_k)
+    cos = V(F_FIN, "strategies", "v2", "ceiling", "OOS", "fast_tier_qualified_print_usd_per_day", f=usd_k)
+    t1is = V(F_RISK, "concentration", "is_eval", "wallet", "top1_share_of_net_pct", f=pct1)
+    t1os = V(F_RISK, "concentration", "burned_oos", "wallet", "top1_share_of_net_pct", f=pct1)
+    wci = V(F_PMC, "p07_wallet_clustered_ci", "burned_oos", "ci95_c_wallet_clustered", f=ci)
+    covo = V(F_FIN, "strategies", "v2", "coverage", "OOS")
+    slide_q(prs, n, 9, "How much capital could this run?",
+            "How much capital could this run, and doesn't it hang on a handful of wallets?",
+            [[B("Not much. "), f"v2 ran about {pdx} a day of notional ({trd} in {dys} days) on {capq} of capital; "
+              f"median trade {medq}."],
+             [B("Capacity is bounded by the fast tier's own prints, "), f"not book depth: every qualifying print "
+              f"totals {cis}/day in sample and {cos}/day out of sample."],
+             [B("Concentration is real: "), f"the top wallet carries {t1is} of in-sample P&L and {t1os} out of sample. "
+              f"Clustered by wallet, the burned-OOS CI is {wci}."],
+             f"Does it cover central fixed costs out of sample? {covo[0].upper() + covo[1:] if covo else covo}. That is why we say “positive but not proven”."],
+            [(pdx, "notional per day, in sample"), (cis, "outer ceiling per day (IS)"),
+             (wci, "burned-OOS ¢/share, wallet-clustered CI")],
+            [F_NM, F_CAUSAL, F_RISK, F_FIN, F_PMC])
+
+    # Q10
+    n += 1
+    slide_ctx(f"{n} Q10")
+    ec = ("early_call", "precision_recall_test_snapshot", "50ms")
+    calls = D(lambda: f"{raw(F_TRACK, *ec, 'tp')}/{raw(F_TRACK, *ec, 'tp') + raw(F_TRACK, *ec, 'fp')}",
+              key_str(F_TRACK, *ec) + "  [tp/(tp+fp)]")
+    rec = V(F_TRACK, *ec, "recall", f=frac_pct0)
+    lbq = V(F_TRACK, *ec, "precision_wilson95", f=lambda p: frac_pct0(p[0]))
+
+    def bc():
+        v = [x for k, x in raw(F_TENNIS, "headline", "labels", "median_landing_err_cm", "learned").items()
+             if 33 <= int(k) <= 300]
+        return f"{min(v) / 100:.1f}–{max(v) / 100:.1f} m"
+    bcast = D(bc, key_str(F_TENNIS, "headline", "labels", "median_landing_err_cm", "learned") + "  [33–300 ms]")
+    beq = V(F_T0, "pnl_vs_t_reprice_minus_t_bounce", "burned_OOS", "stamp_breakeven_B_s", f=lambda x: f"{x:.1f} s")
+    latq = D(lambda: ms0(next(r for r in raw(F_ENG_DEMO, "latency_budget") if r["stage"].startswith("vision"))["ms"]),
+             f"{F_ENG_DEMO} :: latency_budget > [stage 'vision…'] > ms")
+    slide_q(prs, n, 10, "What does the computer vision actually add?",
+            "What does the computer vision add? Your own counterfactual says the camera barely matters.",
+            [[B("It measures what tier 0 can know: "), f"real 120 fps video called {calls} misses correctly 50 ms "
+              f"before contact (recall {rec}, lower bound {lbq}); 25 fps broadcast is off by {bcast}: useless."],
+             [B("Against a 1 s order delay those leads are small. "), "In the counterfactual (assumed feed, not "
+              f"bought) the unmeasured bounce-to-reprice time dominates: under the stamp reading it is negative "
+              f"below {beq}."],
+             [B("The contribution is the time budget: "), f"where a lead comes from (frame rate, cameras, being in "
+              f"the venue) and what it costs in latency (~{latq} per call on a laptop)."],
+             [B("Not shown: "), "a tier-0 order reaching a stale quote end to end live. We have no camera at a "
+              "tennis venue and no licensed feed."]],
+            [(calls, f"miss calls correct at 50 ms (recall {rec})"), (bcast, "broadcast-video landing error"),
+             (beq, "stamp-reading break-even, bounce to reprice. Tier-0: " + TIER0_LABEL)],
+            [F_TRACK, F_TENNIS, F_T0, F_ENG_DEMO])
+    return n
+
+
+def manifest_slides(prs, n0) -> int:
+    """Hidden slides: every number on every slide, with the file and key it was read from."""
+    seen, rows = set(), []
+    for m in MANIFEST:
+        k = (m["slide"], m["text"], m["source"])
+        if k not in seen:
+            seen.add(k)
+            rows.append(m)
+    per = 34
+    pages = [rows[i:i + per] for i in range(0, len(rows), per)]
+    for p, page in enumerate(pages):
+        s = new_slide(prs)
+        s._element.set("show", "0")
+        eyebrow(s, f"HIDDEN MANIFEST  ·  PAGE {p + 1} OF {len(pages)}")
+        set_title(s, "Every number on screen, and where it was read", size=26)
+        lines = []
+        for m in page:
+            ln = f"{m['slide'][:26]:<26} {m['text'][:24]:<24} {m['source']}"
+            lines.append(P(R(ln if len(ln) <= 178 else ln[:177] + "…", 7, INK, font=MONO)))
+        text(s, M, 1.7, CW, 5.3, lines, name="Manifest")
+        footer(s, n0 + p)
+    return len(pages)
+
+
+def export_pdf() -> str:
+    soffice = shutil.which("soffice") or shutil.which("libreoffice")
+    mac = Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")
+    if not soffice and mac.exists():
+        soffice = str(mac)
+    if not soffice:
+        return "PDF skipped: LibreOffice (soffice) not found"
+    r = subprocess.run([soffice, "--headless", "--convert-to", "pdf", "--outdir", str(DECK_DIR), str(OUT)],
+                       capture_output=True, text=True, timeout=600)
+    return f"wrote {OUT_PDF.relative_to(ROOT)}" if r.returncode == 0 and OUT_PDF.exists() else \
+        f"PDF export failed: {r.stderr.strip()[:300]}"
 
 
 def main() -> None:
-    need(README, "bash reproduce.sh", "python scripts/forward_test.py", "pytest tests")
+    print("consistency checks ...")
+    run_checks()
     prs = Presentation()
     setup_template(prs)
     prs.core_properties.title = "COURTSIDE: who gets paid in the seconds after a tennis point"
     prs.core_properties.subject = "Gator Quant Hacks 2026, Systematic Trading"
     prs.core_properties.author = "COURTSIDE"
-    prs.core_properties.keywords = "tennis; Polymarket; latency; market microstructure"
-
-    for build in (slide_title, slide_ladder, slide_evidence, slide_tracking, slide_strategy, slide_risk,
-                  slide_integrity):
-        build(prs)
-    for i, build in enumerate((slide_b_calibration, slide_b_latency, slide_b_table1, slide_b_slippage,
-                               slide_b_repro)):
-        build(prs, 8 + i)
-    add_sections(prs, [("Main talk (5 min)", 7), ("Backup for Q&A", 5)])
+    prs.core_properties.keywords = "tennis; Polymarket; latency; computer vision; paper trading"
+    main_slides = (s01_title, s02_tiers, s03_evidence, s04_cv, s05_backtest, s06_rigor, s07_tier0, s08_engine,
+                   s09_risk, s10_close)
+    for i, build in enumerate(main_slides):
+        build(prs, i + 1)
+    last = appendix(prs, len(main_slides) + 1)
+    n_q = last - len(main_slides)
+    n_man = manifest_slides(prs, last + 1)
+    add_sections(prs, [("Main talk (4:45)", len(main_slides)), ("Q&A backup", n_q), ("Manifest (hidden)", n_man)])
     prs.save(OUT)
-    print(f"wrote {OUT.relative_to(ROOT)}  ({len(prs.slides)} slides)")
+    OUT_MANIFEST.write_text(json.dumps({
+        "deck": str(OUT.relative_to(ROOT)), "talk_seconds": TALK_S, "slide_seconds": DUR_S,
+        "numbers": MANIFEST, "pending": [{"slide": a, "source": b} for a, b in PENDING_ITEMS],
+        "warnings": WARNINGS}, indent=1, ensure_ascii=False), encoding="utf-8")
+    print(f"wrote {OUT.relative_to(ROOT)}  ({len(prs.slides)} slides: {len(main_slides)} main, {n_q} backup, "
+          f"{n_man} hidden manifest)")
+    print(f"wrote {OUT_MANIFEST.relative_to(ROOT)}  ({len(MANIFEST)} numbers recorded)")
+    print(export_pdf())
+    if PENDING_ITEMS:
+        print("PENDING (rendered as 'pending'):")
+        for a, b in dict.fromkeys(PENDING_ITEMS):
+            print(f"  slide {a}: {b}")
+    for w in WARNINGS:
+        print(f"WARNING: {w}")
 
 
 if __name__ == "__main__":

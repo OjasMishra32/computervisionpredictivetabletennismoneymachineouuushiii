@@ -1,0 +1,1686 @@
+{
+ "deck": "docs/deck/courtside.pptx",
+ "talk_seconds": 285,
+ "slide_seconds": [
+  25,
+  30,
+  30,
+  40,
+  35,
+  30,
+  35,
+  25,
+  25,
+  10
+ ],
+ "numbers": [
+  {
+   "slide": "1 Title",
+   "text": "13,084",
+   "source": "results/summary.json :: universe > matches"
+  },
+  {
+   "slide": "1 Title",
+   "text": "$2.84B",
+   "source": "results/summary.json :: universe > volume_usd"
+  },
+  {
+   "slide": "1 Title",
+   "text": "$5k",
+   "source": "results/risk/risk_stats.json :: universe_volume_filter > note  [volume threshold quoted in the note field]"
+  },
+  {
+   "slide": "1 Title",
+   "text": "Oct 2025",
+   "source": "results/v2/note_metrics.json :: holdout > first_start"
+  },
+  {
+   "slide": "1 Title",
+   "text": "Oct 2026",
+   "source": "results/v2/note_metrics.json :: holdout > last_start"
+  },
+  {
+   "slide": "1 Title",
+   "text": "Nakashima",
+   "source": "results/viz/viz_data.json :: tape > out0"
+  },
+  {
+   "slide": "1 Title",
+   "text": "Medvedev",
+   "source": "results/viz/viz_data.json :: tape > out1"
+  },
+  {
+   "slide": "1 Title",
+   "text": "2026-08-18",
+   "source": "results/viz/viz_data.json :: tape > date"
+  },
+  {
+   "slide": "1 Title",
+   "text": "5.7%",
+   "source": "results/leverage_stats.json :: atp > mean_abs_leverage"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "±2.4 cm",
+   "source": "results/summary.json :: tracking_tennis_physics > [lead_ms=100] > pred_err_sd_cm"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "−1.32 s",
+   "source": "results/tier0/results.json :: timing > median_t_reprice_minus_t_stamp_s"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "≈3.1 s",
+   "source": "results/tier0/results.json :: timing > calibrated_stamp_lag_s (inference)"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "+28.2 s",
+   "source": "results/decay/decay.json :: latency_inputs > espn_behind_book_s"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "93%",
+   "source": "results/summary.json :: h4 > share_book_first"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "75",
+   "source": "results/summary.json :: h4 > n"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "44.5 s",
+   "source": "results/summary.json :: h4 > median_lead_s"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "+5–30 s",
+   "source": "results/decay/decay.json :: latency_inputs > stream_delay_s_assumed"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "$4.2",
+   "source": "results/leverage_stats.json :: atp > total_abs_move_per_match"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "161",
+   "source": "results/leverage_stats.json :: atp > points_per_match"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "5.7%",
+   "source": "results/leverage_stats.json :: atp > mean_abs_leverage"
+  },
+  {
+   "slide": "2 Economics",
+   "text": "1s/5%",
+   "source": "results/risk/risk_stats.json :: regime > burned_oos  [regime key: order delay / taker fee rate]"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "11/11",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [months with fast-tier net30_c > 0]"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "3/3",
+   "source": "results/summary.json :: oos > h6_walkforward  [months with net30_c > 0]"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "11/11",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [months with follow_res_c < 0: same trades entered ~3 s later, held]"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "11/11",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [months with others_net30_c < 0]"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+1.97¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2025-12] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.48¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2025-12] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.37¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2025-12] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+2.41¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-01] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.56¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-01] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−2.10¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-01] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+1.21¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-02] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.63¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-02] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.06¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-02] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+2.02¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-03] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.49¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-03] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−2.53¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-03] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+1.43¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-04] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.87¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-04] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.02¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-04] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.80¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-05] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.68¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-05] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.03¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-05] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.73¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-06] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.84¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-06] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.70¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-06] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.60¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-07] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.27¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-07] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−0.97¢",
+   "source": "results/summary.json :: is > h6_walkforward > [month=2026-07] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.83¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-08] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.20¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-08] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.53¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-08] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.70¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-09] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.22¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-09] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.57¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-09] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+0.44¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-10] > net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−1.86¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-10] > others_net30_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "−2.42¢",
+   "source": "results/summary.json :: oos > h6_walkforward > [month=2026-10] > follow_res_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+3.09¢",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_is > fast_minus_others_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "+2.16¢",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_oos > fast_minus_others_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "[1.79, 2.53]",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_oos > ci_c"
+  },
+  {
+   "slide": "3 Evidence",
+   "text": "11,307",
+   "source": "results/expand/results.json :: universe > u2_markets"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "11",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms > tp"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "11/11",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms  [tp/(tp+fp)]"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "41",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms  [tp+fn]"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "27%",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms > recall"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "74%",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms > precision_wilson95"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "97.7%",
+   "source": "results/engine/demo_run.json :: vision > detection_vs_labels > within_5px"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "99.7%",
+   "source": "results/engine/demo_run.json :: vision > detection_vs_labels > recall"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "100 ms",
+   "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > ms"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "153 ms",
+   "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > p90"
+  },
+  {
+   "slide": "4 CV in action",
+   "text": "51 fps",
+   "source": "results/engine/vision_bench.json :: summary > 0 > fps_sustained"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+1.38¢",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.88¢",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.005 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.38¢",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.01 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.77¢",
+   "source": "results/v2/cost_stress.json :: is_eval/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.27¢",
+   "source": "results/v2/cost_stress.json :: is_eval/costs_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.60¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.10¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.005 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−0.40¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.01 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−0.34¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−0.84¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/costs_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "206",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > days"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "40",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > days"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "pending",
+   "source": "results/v2/forward.json  [blind forward test: one run, pre-registered in HYPOTHESIS_V2.md]"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+1.38¢",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "[1.17, 1.59]",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > per_share_ci_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.60¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "[0.09, 1.13]",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > per_share_ci_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "14.5",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−2.0%",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > max_dd_pct"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "6.7",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−2.1%",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > max_dd_pct"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "7",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > months_positive"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "7",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > months_total"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "2",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > months_positive"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "3",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > months_total"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+$40.4k",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > total_pnl_usd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "$28.3k",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > capital_usd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+$3.7k",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > total_pnl_usd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "$22.8k",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > capital_usd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "+0.77¢",
+   "source": "results/v2/cost_stress.json :: is_eval/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−0.34¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "lost $36.1k",
+   "source": "results/summary.json :: oos > h6_shadow > total_pnl_usd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "−75%",
+   "source": "results/summary.json :: oos > h6_shadow > max_dd"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "14.5",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "5 Backtest",
+   "text": "6.7",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "3,386",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > all_NOTE_s8"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "44",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > H1_H6"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "1.00",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr > N3386/sizing_grid_55 > dsr"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "0.075",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N3386/null > dsr"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "0.481",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N44/null > dsr"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "15.4%",
+   "source": "results/rigor/rigor.json :: pbo_cscv > lowloss_24_sharpe > pbo"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "0.0%",
+   "source": "results/rigor/rigor.json :: pbo_cscv > sizing_55_res_actual_sharpe > pbo"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[1.9, 12.3]",
+   "source": "results/rigor/rigor.json :: bootstrap > v2_oos > sharpe_ann_ci95"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "40",
+   "source": "results/rigor/rigor.json :: sharpe_moments > v2_oos > T_days"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAIL",
+   "source": "results/tt/results.json :: TT1 > verdict"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAIL (no fast tier detected)",
+   "source": "results/tt/results.json :: TT2 > verdict"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAIL (no trades)",
+   "source": "results/tt/results.json :: TT3 > verdict"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "PASS",
+   "source": "results/expand/results.json :: primary > u2_is > label"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAILURE",
+   "source": "results/expand/results.json :: primary > u2_oos > label"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "FAILURE",
+   "source": "results/maker/oos.json :: primary > verdict"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "pending",
+   "source": "results/v2/forward.json  [verdict_B_v2_book]"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "3/3 months > 0",
+   "source": "results/summary.json :: oos > h6_walkforward  [months net30_c > 0]"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "+0.60¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > per_share_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[0.09, 1.13]",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > per_share_ci_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "−0.34¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[−0.86, 0.19]",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_ci_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "+2.02¢",
+   "source": "results/expand/results.json :: primary > u2_is > per_share_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[1.14, 2.93]",
+   "source": "results/expand/results.json :: primary > u2_is > per_share_ci_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "+1.22¢",
+   "source": "results/expand/results.json :: primary > u2_oos > per_share_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[−0.19, 2.65]",
+   "source": "results/expand/results.json :: primary > u2_oos > per_share_ci_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "+1.87¢",
+   "source": "results/maker/oos.json :: primary > value_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "[−0.14, 3.86]",
+   "source": "results/maker/oos.json :: primary > ci95_c"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "−$379",
+   "source": "results/maker/oos.json :: headline > total_pnl_usd"
+  },
+  {
+   "slide": "6 Rigor",
+   "text": "45",
+   "source": "results/oos_peeks.log  [non-empty lines]"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "COUNTERFACTUAL label",
+   "source": "results/tier0/results.json :: label  [must contain COUNTERFACTUAL; checked at build]"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.10¢",
+   "source": "results/tier0/results.json :: headline > IS > mean > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "0.82",
+   "source": "results/tier0/results.json :: headline > IS > mean > per_share_ci95_c_lo"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "1.38",
+   "source": "results/tier0/results.json :: headline > IS > mean > per_share_ci95_c_hi"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "11.4",
+   "source": "results/tier0/results.json :: headline > IS > mean > sharpe_ann"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "2.5",
+   "source": "results/tier0/results.json :: headline > IS > sd > sharpe_ann"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "$88.8",
+   "source": "results/tier0/results.json :: headline > IS > mean > pnl_per_day_usd"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "20",
+   "source": "results/tier0/results.json :: headline > IS > n_seeds"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "103",
+   "source": "results/tier0/results.json :: headline > IS > mean > days"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.58¢",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−0.08",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > per_share_ci95_c_lo"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "1.21",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > per_share_ci95_c_hi"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "7.3",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > sharpe_ann"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "5.9",
+   "source": "results/tier0/results.json :: headline > burned_OOS > sd > sharpe_ann"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "$46.4",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > pnl_per_day_usd"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "20",
+   "source": "results/tier0/results.json :: headline > burned_OOS > n_seeds"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "40",
+   "source": "results/tier0/results.json :: headline > burned_OOS > mean > days"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.85¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 0.6 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.06¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 0.8 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.10¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.14¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.15¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.18¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.3 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.20¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.35 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.20¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.4 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.21¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.34¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 1.75 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.36¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.44¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > IS > tournament > 2.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.23¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 0.6 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.67¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 0.8 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.73¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.78¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.84¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.83¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.3 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.83¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.35 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.83¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.4 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.84¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.93¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 1.75 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.97¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.01¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > tournament > 2.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−2.10¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 0.6 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−3.93¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 0.8 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "−3.25¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.71¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.1 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.86¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.86¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.3 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.84¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.35 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.83¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.4 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.86¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+0.95¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 1.75 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.05¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 2 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "+1.12¢",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp > 2.5 > per_share_c"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "0.68 s",
+   "source": "results/tier0/results.json :: timing > pre_registered_primary_median_t_reprice_minus_t_bounce_s"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "1.35 s",
+   "source": "results/tier0/results.json :: timing > calibrated_t_reprice_minus_t_bounce_s (inference)"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "1.1 s",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp_breakeven_B_s"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "$1,153",
+   "source": "results/financials/financials.json :: headline > 9 > fixed_cost_usd_per_day > low  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "$88.8",
+   "source": "results/financials/financials.json :: headline > 9 > net_trading_usd_per_day  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "7 Tier-0 counterfactual",
+   "text": "10",
+   "source": "results/tier0/results.json :: headline_scenario > coverage"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "60 s",
+   "source": "results/engine/live_market_run.json :: seconds"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "7,785",
+   "source": "results/engine/live_market_run.json :: feed > msgs"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "54",
+   "source": "results/engine/live_market_run.json :: feed > assets"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "27",
+   "source": "results/engine/live_market_run.json :: markets_discovered"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "65",
+   "source": "results/engine/live_market_run.json :: feed > latency > p50_ms"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "84",
+   "source": "results/engine/live_market_run.json :: feed > latency > p95_ms"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "123",
+   "source": "results/engine/live_market_run.json :: feed > latency > p99_ms"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/engine/live_market_run.json :: feed > snapshots_mismatched"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "8",
+   "source": "results/engine/live_market_run.json :: feed > snapshots_checked"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/engine/live_market_run.json :: feed > gaps"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/engine/live_market_run.json :: reconnects"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "2 / 34",
+   "source": "results/engine/live_market_run.json :: what_if_tally  [sum SEND* / SKIP*]"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/engine/live_market_run.json :: orders_sent"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "PAPER TRADING - LIVE MARKET DATA (public Polymarket feeds; no orders sent)",
+   "source": "results/live/summary.json :: label"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "QUOTING (paper)",
+   "source": "results/live/summary.json :: status"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "20261003T193534Z",
+   "source": "results/live/summary.json :: run"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "2026-10-03 20:19 UTC",
+   "source": "results/live/summary.json :: now"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/live/summary.json :: books > B1 > fills"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "+$0.00",
+   "source": "results/live/summary.json :: books > B1 > pnl"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/live/summary.json :: books > CTRL-taker > fills"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "$10,000",
+   "source": "results/live/summary.json :: capital_per_book"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "25,982",
+   "source": "results/live/summary.json :: counters  [sum msg_*]"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "0",
+   "source": "results/live/summary.json :: matches_in_play"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$1,000",
+   "source": "results/engine/demo_run.json :: risk_config > max_order_usd"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "100",
+   "source": "results/engine/demo_run.json :: risk_config > net_cap_shares"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "0.05–0.95",
+   "source": "results/engine/demo_run.json :: risk_config > zone"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$1,000",
+   "source": "results/engine/demo_run.json :: risk_config > daily_stop_usd"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "2 s",
+   "source": "results/engine/demo_run.json :: risk_config > feed_stale_ms"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "1 s",
+   "source": "results/engine/demo_run.json :: risk_config > vision_stale_ms"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$11.17",
+   "source": "results/risk/risk_stats.json :: liquidity_capital > is_eval > usd_per_trade_quantiles > 0.5"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$28.3k",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > capital_usd"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$9.4k",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > peak_locked_usd"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$7.2k",
+   "source": "results/v2/note_metrics.json :: is > usd_traded_per_day"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "18.1%",
+   "source": "results/risk/risk_stats.json :: liquidity_capital > v2_share_of_fast_tier_usd_is_pct  [max over months]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$82.3k",
+   "source": "results/financials/financials.json :: strategies > v2 > ceiling > IS > fast_tier_qualified_print_usd_per_day"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "41.7%",
+   "source": "results/risk/risk_stats.json :: concentration > is_eval > wallet > top1_share_of_net_pct"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$196",
+   "source": "results/financials/financials.json :: headline > 0 > net_trading_usd_per_day  [row v2 ( / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$167",
+   "source": "results/financials/financials.json :: headline > 0 > fixed_cost_usd_per_day > central  [row v2 ( / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$29",
+   "source": "results/financials/financials.json :: headline > 0 > net_after_costs_usd_per_day > central  [row v2 ( / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$179",
+   "source": "results/financials/financials.json :: headline > 1 > net_trading_usd_per_day  [row v2 ( / IS, current 1 s / 5% regime only]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$167",
+   "source": "results/financials/financials.json :: headline > 1 > fixed_cost_usd_per_day > central  [row v2 ( / IS, current 1 s / 5% regime only]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$12",
+   "source": "results/financials/financials.json :: headline > 1 > net_after_costs_usd_per_day > central  [row v2 ( / IS, current 1 s / 5% regime only]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$92",
+   "source": "results/financials/financials.json :: headline > 2 > net_trading_usd_per_day  [row v2 ( / OOS (burned, non-blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$167",
+   "source": "results/financials/financials.json :: headline > 2 > fixed_cost_usd_per_day > central  [row v2 ( / OOS (burned, non-blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "−$75",
+   "source": "results/financials/financials.json :: headline > 2 > net_after_costs_usd_per_day > central  [row v2 ( / OOS (burned, non-blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "−$9",
+   "source": "results/financials/financials.json :: headline > 13 > net_trading_usd_per_day  [row Maker / OOS (blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$3",
+   "source": "results/financials/financials.json :: headline > 13 > fixed_cost_usd_per_day > central  [row Maker / OOS (blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "−$12",
+   "source": "results/financials/financials.json :: headline > 13 > net_after_costs_usd_per_day > central  [row Maker / OOS (blind)]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "+$89",
+   "source": "results/financials/financials.json :: headline > 9 > net_trading_usd_per_day  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$4,149",
+   "source": "results/financials/financials.json :: headline > 9 > fixed_cost_usd_per_day > central  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "−$4,060",
+   "source": "results/financials/financials.json :: headline > 9 > net_after_costs_usd_per_day > central  [row Tier-0 / IS]"
+  },
+  {
+   "slide": "9 Risk + liquidity + financials",
+   "text": "$5,000",
+   "source": "results/financials/financials.json :: cost_assumptions > feed_licence > central"
+  },
+  {
+   "slide": "10 Close",
+   "text": "pending",
+   "source": "results/v2/forward.json  [forward test]"
+  },
+  {
+   "slide": "10 Close",
+   "text": "QUOTING (paper)",
+   "source": "results/live/summary.json :: status"
+  },
+  {
+   "slide": "10 Close",
+   "text": "v2 (frozen fast-tier book) Forward (blind); Maker v1, side markets Live paper session",
+   "source": "results/financials/financials.json :: pending"
+  },
+  {
+   "slide": "11 Q1",
+   "text": "+0.10¢",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.005 > per_share_c"
+  },
+  {
+   "slide": "11 Q1",
+   "text": "[−0.41, 0.63]",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.005 > per_share_ci_c"
+  },
+  {
+   "slide": "11 Q1",
+   "text": "11/11",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [follow_res_c < 0]"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "−$36.1k",
+   "source": "results/summary.json :: oos > h6_shadow > total_pnl_usd"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "2026-10-03 10:42 UTC",
+   "source": "results/oos_peeks.log  [first line timestamp]"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "+2.02¢",
+   "source": "results/expand/results.json :: primary > u2_is > per_share_c"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "[1.14, 2.93]",
+   "source": "results/expand/results.json :: primary > u2_is > per_share_ci_c"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "+1.22¢",
+   "source": "results/expand/results.json :: primary > u2_oos > per_share_c"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "[−0.19, 2.65]",
+   "source": "results/expand/results.json :: primary > u2_oos > per_share_ci_c"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "11,307",
+   "source": "results/expand/results.json :: universe > u2_markets"
+  },
+  {
+   "slide": "12 Q2",
+   "text": "45",
+   "source": "results/oos_peeks.log  [non-empty lines]"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "16.8",
+   "source": "results/summary.json :: v2_onset_superseded > is_eval > sharpe_ann"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "14.5",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "270",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0  [n_trades / days]"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "0.53",
+   "source": "results/v2/note_metrics.json :: is > skew"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "4.3",
+   "source": "results/v2/note_metrics.json :: is > kurtosis_pearson"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "−1.9%",
+   "source": "results/v2/note_metrics.json :: is > worst_day_pct"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "9.8",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.005 > sharpe_ann"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "4.3",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.01 > sharpe_ann"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "3.0",
+   "source": "results/v2/note_metrics.json :: is > costs_x2_sharpe"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "6.7",
+   "source": "results/v2/causal.json :: causal/burned_oos/slip0.0 > sharpe_ann"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "[1.9, 12.3]",
+   "source": "results/rigor/rigor.json :: bootstrap > v2_oos > sharpe_ann_ci95"
+  },
+  {
+   "slide": "13 Q3",
+   "text": "100",
+   "source": "results/engine/demo_run.json :: risk_config > net_cap_shares"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "120 bps",
+   "source": "results/v2/note_metrics.json :: is > fee_bps_of_notional"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "179 bps",
+   "source": "results/v2/note_metrics.json :: burned_oos > fee_bps_of_notional"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "+0.77¢",
+   "source": "results/v2/cost_stress.json :: is_eval/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "7/7",
+   "source": "results/v2/cost_stress.json :: is_eval/fee_x2  [months_positive/months_total]"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "−0.34¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_c"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "[−0.86, 0.19]",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2 > per_share_ci_c"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "0/3",
+   "source": "results/v2/cost_stress.json :: burned_oos/fee_x2  [months_positive/months_total]"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "+0.27¢",
+   "source": "results/v2/cost_stress.json :: is_eval/costs_x2 > per_share_c"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "−0.84¢",
+   "source": "results/v2/cost_stress.json :: burned_oos/costs_x2 > per_share_c"
+  },
+  {
+   "slide": "14 Q4",
+   "text": "8.2%",
+   "source": "results/financials/financials.json :: strategies > v2 > periods > OOS > breakeven_taker_fee > rate_before_fixed_costs"
+  },
+  {
+   "slide": "15 Q5",
+   "text": "$2.84B",
+   "source": "results/summary.json :: universe > volume_usd"
+  },
+  {
+   "slide": "15 Q5",
+   "text": "0",
+   "source": "results/engine/live_market_run.json :: orders_sent"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "11/11",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [net30_c > 0]"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "4",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [first month n_wallets]"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "131",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [last month n_wallets]"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "+2.0¢",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [first month net30_c]"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "+0.4¢",
+   "source": "results/summary.json :: is > h6_walkforward (months before universe > oos_start) + oos > h6_walkforward  [last month net30_c]"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "+3.09¢",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_is > fast_minus_others_c"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "+2.16¢",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_oos > fast_minus_others_c"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "[1.79, 2.53]",
+   "source": "results/expand/results.json :: fast_minus_others_u2 > u2_oos > ci_c"
+  },
+  {
+   "slide": "16 Q6",
+   "text": "3.1 s",
+   "source": "results/tier0/results.json :: timing > calibrated_stamp_lag_s (inference)"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "3,386",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > all_NOTE_s8"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "44",
+   "source": "results/rigor/rigor.json :: psr_dsr > N > H1_H6"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "40",
+   "source": "results/rigor/rigor.json :: sharpe_moments > v2_oos > T_days"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "1.00",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_is] > dsr > N3386/sizing_grid_55 > dsr"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "0.481",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N44/null > dsr"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "0.075",
+   "source": "results/rigor/rigor.json :: psr_dsr > rows > [series=v2_oos] > dsr > N3386/null > dsr"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "0.0%",
+   "source": "results/rigor/rigor.json :: pbo_cscv > sizing_55_res_actual_sharpe > pbo"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "15.4%",
+   "source": "results/rigor/rigor.json :: pbo_cscv > lowloss_24_sharpe > pbo"
+  },
+  {
+   "slide": "17 Q7",
+   "text": "42.0%",
+   "source": "results/rigor/rigor.json :: pbo_cscv > lowloss_24_selection_rule > pbo"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "2,617",
+   "source": "results/v2/note_metrics.json :: holdout > oos_matches"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "13,084",
+   "source": "results/v2/note_metrics.json :: holdout > matches"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "21%",
+   "source": "results/v2/note_metrics.json :: holdout > oos_share_of_volume"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "39",
+   "source": "results/v2/note_metrics.json :: holdout > oos_days"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "360",
+   "source": "results/v2/note_metrics.json :: holdout > span_days"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "2026-07-23",
+   "source": "results/v2/note_metrics.json :: holdout > time_based_20pct_start"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "−1.96¢",
+   "source": "results/risk/risk_stats.json :: universe_volume_filter > burned_oos > $5-20k > per_share_c"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "11,307",
+   "source": "results/expand/results.json :: universe > u2_markets"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "20%",
+   "source": "results/v2/note_metrics.json :: holdout  [oos_matches / matches]"
+  },
+  {
+   "slide": "18 Q8",
+   "text": "$5k",
+   "source": "results/risk/risk_stats.json :: universe_volume_filter > note  [volume threshold quoted in the note field]"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$7.2k",
+   "source": "results/v2/note_metrics.json :: is > usd_traded_per_day"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$1.48M",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > usd_traded"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "206",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > days"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$28.3k",
+   "source": "results/v2/causal.json :: causal/is_eval/slip0.0 > capital_usd"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$11.17",
+   "source": "results/risk/risk_stats.json :: liquidity_capital > is_eval > usd_per_trade_quantiles > 0.5"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$82.3k",
+   "source": "results/financials/financials.json :: strategies > v2 > ceiling > IS > fast_tier_qualified_print_usd_per_day"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "$105.5k",
+   "source": "results/financials/financials.json :: strategies > v2 > ceiling > OOS > fast_tier_qualified_print_usd_per_day"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "41.7%",
+   "source": "results/risk/risk_stats.json :: concentration > is_eval > wallet > top1_share_of_net_pct"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "48.4%",
+   "source": "results/risk/risk_stats.json :: concentration > burned_oos > wallet > top1_share_of_net_pct"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "[−0.45, 2.38]",
+   "source": "results/financials/pm_compute.json :: p07_wallet_clustered_ci > burned_oos > ci95_c_wallet_clustered"
+  },
+  {
+   "slide": "19 Q9",
+   "text": "no: not even with every qualifying print (central cost $167/day)",
+   "source": "results/financials/financials.json :: strategies > v2 > coverage > OOS"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "11/11",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms  [tp/(tp+fp)]"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "27%",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms > recall"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "74%",
+   "source": "results/tracking/summary.json :: early_call > precision_recall_test_snapshot > 50ms > precision_wilson95"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "0.7–1.2 m",
+   "source": "results/tennis_tracking/summary.json :: headline > labels > median_landing_err_cm > learned  [33–300 ms]"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "1.1 s",
+   "source": "results/tier0/results.json :: pnl_vs_t_reprice_minus_t_bounce > burned_OOS > stamp_breakeven_B_s"
+  },
+  {
+   "slide": "20 Q10",
+   "text": "100 ms",
+   "source": "results/engine/demo_run.json :: latency_budget > [stage 'vision…'] > ms"
+  }
+ ],
+ "pending": [
+  {
+   "slide": "5 Backtest",
+   "source": "results/v2/forward.json  [blind forward test: one run, pre-registered in HYPOTHESIS_V2.md]"
+  },
+  {
+   "slide": "6 Rigor",
+   "source": "results/v2/forward.json  [verdict_B_v2_book]"
+  },
+  {
+   "slide": "10 Close",
+   "source": "results/v2/forward.json  [forward test]"
+  }
+ ],
+ "warnings": [
+  "docs/NOTE.md says oos_peeks.log has 19 lines; the log now has 45 (append-only; the deck shows the live count)",
+  "results/financials/pm_compute.json p07: the note's wallet-clustered CI does not reproduce to 2 dp; the deck quotes pm_compute's value"
+ ]
+}
