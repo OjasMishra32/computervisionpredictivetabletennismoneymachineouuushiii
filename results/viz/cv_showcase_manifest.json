@@ -1,0 +1,170 @@
+{
+ "output": "results/viz/cv_showcase.mp4",
+ "fps": 30,
+ "size": [
+  1920,
+  1080
+ ],
+ "frames": 1933,
+ "duration_s": 64.43,
+ "segments": [
+  {
+   "name": "title",
+   "start_s": 0.0,
+   "dur_s": 3.5,
+   "frames": 105
+  },
+  {
+   "name": "slate:Real match footage",
+   "start_s": 3.5,
+   "dur_s": 1.2,
+   "frames": 36
+  },
+  {
+   "name": "featured",
+   "start_s": 4.7,
+   "dur_s": 6.033,
+   "frames": 181
+  },
+  {
+   "name": "quick:test_4_5750",
+   "start_s": 10.733,
+   "dur_s": 3.267,
+   "frames": 98
+  },
+  {
+   "name": "quick:test_6_1484",
+   "start_s": 14.0,
+   "dur_s": 3.267,
+   "frames": 98
+  },
+  {
+   "name": "bounce:test_6_1299",
+   "start_s": 17.267,
+   "dur_s": 2.933,
+   "frames": 88
+  },
+  {
+   "name": "stats",
+   "start_s": 20.2,
+   "dur_s": 4.0,
+   "frames": 120
+  },
+  {
+   "name": "slate:¼× replay",
+   "start_s": 24.2,
+   "dur_s": 1.2,
+   "frames": 36
+  },
+  {
+   "name": "slowmo",
+   "start_s": 25.4,
+   "dur_s": 7.1,
+   "frames": 213
+  },
+  {
+   "name": "slate:Tennis, simulated",
+   "start_s": 32.5,
+   "dur_s": 1.2,
+   "frames": 36
+  },
+  {
+   "name": "tennis",
+   "start_s": 33.7,
+   "dur_s": 20.233,
+   "frames": 607
+  },
+  {
+   "name": "speed",
+   "start_s": 53.933,
+   "dur_s": 6.0,
+   "frames": 180
+  },
+  {
+   "name": "end",
+   "start_s": 59.933,
+   "dur_s": 4.5,
+   "frames": 135
+  }
+ ],
+ "labels": {
+  "real": "real match footage (OpenTTGames, held-out games; CC BY-NC-SA 4.0)",
+  "sim": "simulated physics: Hawk-Eye-class camera model (not real footage)",
+  "market": "market timing: live Polymarket books vs the official WTA point log (2026-10-03); no match video"
+ },
+ "calls_source": "frozen tier-0 model (data/cv_showcase/assets.json from scripts/cv_showcase_assets.py)",
+ "featured": {
+  "video": "test_2",
+  "f_net": 2819,
+  "call_lead_ms": 408.3,
+  "physics_reproduction_max_dev": {
+   "p": 0.00017647058823533346,
+   "rpm": 0.4999399264343083,
+   "n": 67
+  },
+  "anchor": {
+   "anchor": "none",
+   "reason": "incoming bounce not on the hitter's half"
+  }
+ },
+ "tennis": {
+  "shot_index": 38,
+  "d_true_cm": 3.23,
+  "rpm_true": 3236,
+  "call_lead_ms": 390.3,
+  "call_sd95_cm": 3.18
+ },
+ "numbers": {
+  "n_test": {
+   "BOUNCE": 130,
+   "MISS": 41,
+   "MISS_out": 39,
+   "MISS_net": 2,
+   "dropped": 9
+  },
+  "tau_online": 0.9799,
+  "tau_snapshot": 0.8854,
+  "snap50_tp": 11,
+  "snap50_calls": 11,
+  "snap50_ci": [
+   0.7412,
+   1.0
+  ],
+  "snap50_recall": 0.2683,
+  "online_calls": 8,
+  "online_fp": 0,
+  "lead_median": 25.0,
+  "n_miss": 41,
+  "spin50_tp": 10,
+  "spin50_calls": 12,
+  "spin50_prec": 0.8333,
+  "ten_margin95_200": 1.15,
+  "ten_prec_200": 1.0,
+  "ten_recall_200": 0.983,
+  "ten_base_margin95_200": 14.51,
+  "ten_base_margin95_25": 1.61
+ },
+ "speed": {
+  "book_vs_stamp_s": -1.2,
+  "book_n_points": 482,
+  "book_n_matches": 9,
+  "venue_delay_s": 1.0,
+  "inference_s": 0.02,
+  "stamp_lag_s": 2.0,
+  "breakeven_before_stamp_s": 0.9,
+  "breakeven_video_delay": [
+   1.09,
+   1.01
+  ]
+ },
+ "stills": {
+  "still_01_tt_call_408ms.png": "Real match footage (OpenTTGames, held-out test_2, flight 2819; CC BY-NC-SA 4.0). The frozen tier-0 model calls MISS 408 ms before the ball reaches the table end (online rule: P(MISS) ≥ 0.98 on 3 consecutive frames). Comet: BlurBall detections. Arc, 95% cone, table-height crossing ellipse, P(in/long/net/wide) and spin: online drag + Magnus physics fit, display only.",
+  "still_02_tt_arc_lock_in.png": "Quarter-speed replay of the same flight, 67 ms before contact. Faint lines: the predicted arc at earlier decision frames; they converge as track points accumulate. Inset: the fit's predicted crossing past the end line with its 95% band (physics fit, display only).",
+  "still_03_tt_uncertainty_early.png": "Same flight at 517 ms before contact, before the call: with few track points the physics fit's 95% cone is wide and its predicted crossing past the end line is +2.8 ± 2.1 m (inset); compare still 2. Real match footage (OpenTTGames, held-out games; CC BY-NC-SA 4.0).",
+  "still_04_tt_call_83ms.png": "Real match footage (OpenTTGames, held-out test_4, flight 5750; CC BY-NC-SA 4.0). Fast ball (about 19 m/s, image estimate): the frozen model calls MISS 83 ms before the ball reaches the table end.",
+  "still_05_tt_call_25ms.png": "Real match footage (OpenTTGames, held-out test_6, flight 1484; CC BY-NC-SA 4.0). The frozen model calls MISS 25 ms before contact, the median first-call lead of the 8 online calls on the test games.",
+  "still_06_tennis_out_call.png": "Simulated physics: Hawk-Eye-class camera model (not real footage). A topspin drive (3,236 rpm) that lands 3.2 cm long. The spin-aware fit calls OUT 390 ms before the bounce (P(OUT) ≥ 0.95 on 5 consecutive frames; landing ±3.2 cm, 95%). White: true path; coral: fitted prediction and its 95% landing ellipse; grey: the same launch without spin (Magnus effect); blue: fitted spin axis.",
+  "still_07_tennis_landing.png": "Simulated physics (not real footage). Close-up after the bounce: ball mark beyond the baseline, the final 95% landing ellipse and the top-view inset.",
+  "still_08_speed_card.png": "Speed card. CV call times are real-footage calls (OpenTTGames); order timing adds 20 ms inference and Polymarket's 1 s venue order delay. Book reprice: median 1.2 s before the official WTA point stamp (live data, 482 points, 2026-10-03; no match video). The 2.0 s stamp lag is assumed, not measured."
+ }
+}
