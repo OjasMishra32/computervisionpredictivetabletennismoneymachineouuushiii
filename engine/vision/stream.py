@@ -127,24 +127,152 @@ class OnnxBackend:
 
 
 class TorchBackend:
-    """BlurBall in PyTorch (needs the BlurBall source tree). device: cuda (fp16 autocast, as detect.py) | mps | cpu."""
+    """BlurBall in PyTorch (needs the BlurBall source tree). device: cuda | mps | cpu.
 
-    def __init__(self, blurball_root, weights=MODELS / "blurball_best", device="cuda", fp16=True):
+    fp16=True runs it as detect.py did: torch.autocast fp16 on CUDA, sigmoid of the fp32-cast output.
+    fp16=False is strict fp32 (TF32 convolutions / matmuls are switched off unless tf32=True).
+    gpu_prep: frames are uploaded as uint8 512x288 RGB and normalised on the device (prep()), and the
+    3-frame windows are concatenated there (window(), cat()), so each frame crosses PCIe once.
+    cuda_graph: the forward pass for each batch size is captured once as a CUDA graph and replayed
+    (removes the per-kernel launch cost of the many small HRNet kernels; numerics are the same kernels).
+    Speed options (same weights, float rounding differs at the fp16 level):
+      channels_last  NHWC activations (cudnn's tensor-core kernels need no layout transposes)
+      fuse_bn        BatchNorm folded into the preceding convolution (torch.fx optimization.fuse; eval only)
+      compile        torch.compile (inductor) of the forward: pointwise BN / ReLU / residual adds fused"""
+
+    def __init__(self, blurball_root, weights=MODELS / "blurball_best", device="cuda", fp16=True, tf32=False,
+                 gpu_prep=True, cuda_graph=False, channels_last=False, fuse_bn=False, compile=False, autotune=True):
         import torch
-        from .export_onnx import SigmoidHeatmap, build_torch_model
+        from .export_onnx import build_torch_model
         self.torch = torch
         self.dev = torch.device(device)
-        self.fp16 = fp16 and device == "cuda"
-        self.net = SigmoidHeatmap(build_torch_model(blurball_root, str(weights))).to(self.dev)
-        if device == "cuda":
-            torch.backends.cudnn.benchmark = True
-        self.name = f"torch-{device}{'-fp16' if self.fp16 else ''}"
+        cuda = device.startswith("cuda")
+        self.fp16 = fp16 and cuda
+        net = build_torch_model(blurball_root, str(weights)).eval()
+        self.fuse_error = self.compile_error = None
+        if fuse_bn:
+            try:
+                from torch.fx.experimental.optimization import fuse
+                net = fuse(net, inplace=False)
+            except Exception as e:      # model not fx-traceable: keep it unfused, say so
+                self.fuse_error = repr(e)
+        self.channels_last = bool(channels_last)
+        self.net = net.to(self.dev)
+        if self.channels_last:
+            self.net = self.net.to(memory_format=torch.channels_last)
+        self._fwd = self._forward
+        self.compiled = bool(compile)
+        self.warm = set()           # batch sizes run through warmup() (compiled / captured there)
+        if compile:
+            try:
+                # dynamo caches compiled code per code object (shared by every TorchBackend instance) and gives
+                # up (silently runs eager) after cache_size_limit variants: one variant per batch size,
+                # precision and instance here, so raise the limit
+                import torch._dynamo
+                torch._dynamo.config.cache_size_limit = max(torch._dynamo.config.cache_size_limit, 256)
+                torch._dynamo.config.accumulated_cache_size_limit = max(
+                    torch._dynamo.config.accumulated_cache_size_limit, 2048)
+                self._fwd = torch.compile(self._forward, dynamic=False)
+            except Exception as e:
+                self.compile_error = repr(e)
+        if cuda:
+            # autotune=False keeps cudnn's default algorithm choice, as detect.py ran (no benchmark flag)
+            torch.backends.cudnn.benchmark = bool(autotune)
+            torch.backends.cudnn.allow_tf32 = bool(tf32)
+            torch.backends.cuda.matmul.allow_tf32 = bool(tf32)
+        self.gpu_prep = bool(gpu_prep) and device != "cpu"
+        D = tracking_modules().D
+        self.mean = torch.tensor(D.MEAN, dtype=torch.float32, device=self.dev).view(3, 1, 1)
+        self.std = torch.tensor(D.STD, dtype=torch.float32, device=self.dev).view(3, 1, 1)
+        self.cuda_graph = bool(cuda_graph) and cuda
+        self.graphs = {}            # batch size -> (graph, static input, static output)
+        self.graph_error = None
+        self.capture_new = True     # capture a graph for a new batch size on first use (off after warmup())
+        prec = "fp16" if self.fp16 else ("tf32" if (tf32 and cuda) else "fp32")
+        self.name = (f"torch-{device}-{prec}" + ("-cl" if self.channels_last else "")
+                     + ("-fuse" if fuse_bn and self.fuse_error is None else "") + ("-compile" if compile else "")
+                     + ("-graph" if self.cuda_graph else "") + ("" if autotune or not cuda else "-nobench"))
+
+    # -- input side (gpu_prep)
+    def prep(self, rgb):
+        """uint8 RGB [288, 512, 3] -> normalised float32 [3, 288, 512] on the device (detect.to_tensor)."""
+        torch = self.torch
+        t = torch.from_numpy(rgb).to(self.dev).permute(2, 0, 1).float()
+        return (t * (1.0 / 255.0) - self.mean) / self.std
+
+    def window(self, xs):
+        return self.torch.cat(xs, 0)[None]
+
+    def cat(self, xs):
+        return self.torch.cat(xs, 0)
+
+    # -- forward
+    def _forward(self, x):
+        torch = self.torch
+        if self.channels_last:
+            x = x.contiguous(memory_format=torch.channels_last)
+        with torch.autocast(self.dev.type, dtype=torch.float16, enabled=self.fp16, cache_enabled=False):
+            y = self.net(x)
+        y = y[0] if isinstance(y, dict) else y
+        return torch.sigmoid(y.float()).contiguous()     # detect.py: sigmoid(pred.float())
+
+    def _capture(self, n, x):
+        torch = self.torch
+        static_in = torch.zeros_like(x)
+        static_in.copy_(x)
+        s = torch.cuda.Stream()
+        s.wait_stream(torch.cuda.current_stream())
+        with torch.cuda.stream(s), torch.no_grad():
+            for _ in range(3):                           # cudnn.benchmark picks its algorithms here
+                self._fwd(static_in)
+        torch.cuda.current_stream().wait_stream(s)
+        g = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(g), torch.no_grad():
+            static_out = self._fwd(static_in)
+        self.graphs[n] = (g, static_in, static_out)
 
     def __call__(self, x):
         torch = self.torch
-        with torch.no_grad(), torch.autocast(self.dev.type, dtype=torch.float16, enabled=self.fp16):
-            y = self.net(torch.from_numpy(x).to(self.dev, non_blocking=True))
-        return y.float().cpu().numpy()
+        if isinstance(x, np.ndarray):
+            x = torch.from_numpy(x).to(self.dev)
+        n = int(x.shape[0])
+        if self.cuda_graph and self.graph_error is None and (n in self.graphs or self.capture_new):
+            try:
+                if n not in self.graphs:
+                    self._capture(n, x)
+                g, si, so = self.graphs[n]
+                si.copy_(x)
+                g.replay()
+                return so.cpu().numpy()
+            except Exception as e:  # capture not possible for this model / driver: run eagerly
+                self.graph_error = repr(e)
+                self.graphs.clear()
+        # a compiled forward only for sizes compiled during warmup(): a new size (the short last batch of a
+        # stream) would otherwise compile for seconds mid-stream
+        fwd = self._fwd if (not self.compiled or self.capture_new or n in self.warm) else self._forward
+        with torch.no_grad():
+            try:
+                return fwd(x).cpu().numpy()
+            except Exception as e:
+                if fwd is self._forward:
+                    raise
+                self.compile_error = repr(e)      # torch.compile failed at run time: eager from now on
+                self._fwd = self._forward
+                return self._forward(x).cpu().numpy()
+
+    def warmup(self, sizes=(1,)):
+        """Run each batch size a few times (cudnn autotuning, graph capture) before the stream starts.
+        Afterwards no new graph is captured mid-stream: other sizes (a short last batch) run eagerly."""
+        D = tracking_modules().D
+        self.capture_new = True
+        for n in sizes:
+            x = self.torch.zeros((n, 9, D.INP_H, D.INP_W), dtype=self.torch.float32, device=self.dev)
+            for _ in range(3):
+                self(x)
+            self.warm.add(n)
+        self.capture_new = False
+        if self.dev.type == "cuda":
+            self.torch.cuda.synchronize()
 
 
 def make_backend(spec, blurball_root=None, threads=4):
@@ -155,11 +283,19 @@ def make_backend(spec, blurball_root=None, threads=4):
     if spec.startswith("onnx-"):
         return OnnxBackend(spec[5:], threads)
     if spec.startswith("torch-"):
-        dev = spec[6:]
+        # torch-<device>[-fp32|-tf32][-cl][-fuse][-compile][-graph][-cpuprep][-nobench], e.g. torch-cuda (fp16 autocast),
+        # torch-cuda-fp32-graph, torch-cuda-cl-fuse
+        tok = spec[6:].split("-")
         root = blurball_root or os.environ.get("BLURBALL_ROOT")
         if not root:
             raise SystemExit("torch backends need --blurball_root (or BLURBALL_ROOT)")
-        return TorchBackend(root, device=dev.replace("-fp32", ""), fp16=not dev.endswith("-fp32"))
+        bad = [t for t in tok[1:] if t not in ("fp16", "fp32", "tf32", "graph", "cpuprep", "cl", "fuse", "compile",
+                                                "nobench")]
+        if bad:
+            raise SystemExit(f"unknown torch backend options {bad} in {spec}")
+        return TorchBackend(root, device=tok[0], fp16=not ({"fp32", "tf32"} & set(tok)), tf32="tf32" in tok,
+                            gpu_prep="cpuprep" not in tok, cuda_graph="graph" in tok, channels_last="cl" in tok,
+                            fuse_bn="fuse" in tok, compile="compile" in tok, autotune="nobench" not in tok)
     raise SystemExit(f"unknown backend {spec}")
 
 
@@ -192,9 +328,14 @@ class StreamingDetector:
 
     With a pool of backends, window n runs while windows n-1, n-2 may still be in flight on other
     accelerators; results are folded in strictly in window order, so the output is identical to the
-    sequential path, only later by up to len(pool) - 1 windows."""
+    sequential path, only later by up to len(pool) - 1 windows.
 
-    def __init__(self, backend, D, thr=0.3, full_size=(1920, 1080)):
+    batch=B (single backend): windows wait until B of them are formed and run as one [B, 9, H, W] call
+    (detect.py ran batches of 32). push(..., run=False) only queues the window; run_pending() runs whatever
+    is queued (dynamic batching: the caller decides when). Heatmaps are folded in window order either way,
+    so the output is identical to batch 1; only the time at which a frame becomes final changes."""
+
+    def __init__(self, backend, D, thr=0.3, full_size=(1920, 1080), batch=1):
         from concurrent.futures import ThreadPoolExecutor
         self.backends = backend if isinstance(backend, list) else [backend]
         self.name = "+".join(b.name for b in self.backends)
@@ -203,9 +344,44 @@ class StreamingDetector:
         self.buf = deque()       # [idx, x, acc, cnt] not yet covered by their own window
         self.pending = deque()   # (future or heatmap, window entries)
         self.pools = ([ThreadPoolExecutor(1) for _ in self.backends] if len(self.backends) > 1 else None)
+        if self.pools is not None and batch != 1:
+            raise ValueError("batching is for a single backend (a pool runs one window per accelerator)")
+        self.batch = max(1, int(batch))
+        self.waiting = []        # (window input, window entries) formed but not yet run
+        self.batch_log = []      # (windows in the call, ms) per detector call
         self.k = 0
         self.t_infer = 0.0       # time the caller spent in (or blocked on) inference
         self.t_post = 0.0
+        be = self.backends[0]
+        # frames already live on the device (TorchBackend gpu_prep): windows are built there too
+        self.device_frames = all(getattr(b, "gpu_prep", False) for b in self.backends)
+        self._window = be.window if self.device_frames else (lambda xs: np.concatenate(xs, 0)[None])
+        self._cat = be.cat if self.device_frames else (lambda xs: np.concatenate(xs, 0))
+
+    def _run_waiting(self):
+        """Run the queued windows (in chunks of <= batch); their heatmaps join `pending` in order."""
+        be = self.backends[0]
+        while self.waiting:
+            chunk, self.waiting = self.waiting[:self.batch], self.waiting[self.batch:]
+            inp = chunk[0][0] if len(chunk) == 1 else self._cat([c[0] for c in chunk])
+            t = time.perf_counter()
+            r = be(inp)
+            dt = time.perf_counter() - t
+            self.t_infer += dt
+            self.batch_log.append((len(chunk), dt * 1e3))
+            for j, (_, w) in enumerate(chunk):
+                self.pending.append((r[j], w))
+
+    @staticmethod
+    def _timed(b, v):
+        t = time.perf_counter()
+        r = b(v)[0]
+        return r, (time.perf_counter() - t) * 1e3
+
+    def run_pending(self):
+        """Dynamic batching: run every queued window now. -> frames that became final."""
+        self._run_waiting()
+        return self._fold(0)
 
     def _emit(self, e):
         t = time.perf_counter()
@@ -225,8 +401,9 @@ class StreamingDetector:
                 if not r.done() and len(self.pending) <= block_until:
                     break
                 t = time.perf_counter()
-                r = r.result()
+                r, ms_ = r.result()
                 self.t_infer += time.perf_counter() - t
+                self.batch_log.append((1, ms_))      # time of the call inside its worker thread
             self.pending.popleft()
             for q in range(3):
                 w[q][2] += r[q]
@@ -235,29 +412,30 @@ class StreamingDetector:
         return out
 
     def flush(self):
+        self._run_waiting()
         out = self._fold(0)
         out += [self._emit(e) for e in self.buf]
         self.buf.clear()
         return out
 
-    def push(self, idx, x):
-        """-> list of (frame_index, cands [K, 5]) that became final with this frame."""
+    def push(self, idx, x, run=True):
+        """-> list of (frame_index, cands [K, 5]) that became final with this frame.
+        run=False: queue the new window without running it (see run_pending)."""
         out = []
         if self.buf and idx != self.buf[-1][0] + 1:
             out += self.flush()
         self.buf.append([idx, x, np.zeros((self.D.INP_H, self.D.INP_W), np.float32), 0])
         if len(self.buf) >= 3:
             w = [self.buf[-3], self.buf[-2], self.buf[-1]]
-            inp = np.concatenate([e[1] for e in w], 0)[None]
+            inp = self._window([e[1] for e in w])
             if self.pools is None:
-                t = time.perf_counter()
-                r = self.backends[0](inp)[0]
-                self.t_infer += time.perf_counter() - t
+                self.waiting.append((inp, w))
+                if run and len(self.waiting) >= self.batch:
+                    self._run_waiting()
             else:
                 j = self.k % len(self.backends)
-                r = self.pools[j].submit(lambda b=self.backends[j], v=inp: b(v)[0])
+                self.pending.append((self.pools[j].submit(self._timed, self.backends[j], inp), w))
                 self.k += 1
-            self.pending.append((r, w))
             self.buf.popleft()
         out += self._fold(len(self.backends) - 1)
         return out
@@ -419,6 +597,7 @@ class FrozenCaller:
         self.trace = []             # (t, key, p_gated, gate_open) per decision frame
         self.t_feat = self.t_clf = 0.0
         self.n_dec = 0
+        self.dec_ms = []            # (features ms, classifier ms) per classified decision frame
 
     def _direction(self, trk, t_last):
         pts = [(f, trk[f]) for f in range(t_last - 8, t_last + 1) if f in trk]
@@ -459,7 +638,8 @@ class FrozenCaller:
             self._break()
             return []
         f = F.features(t)
-        self.t_feat += time.perf_counter() - t_f
+        dt_f = time.perf_counter() - t_f
+        self.t_feat += dt_f
         if f is None:
             self._break()
             return []
@@ -468,8 +648,10 @@ class FrozenCaller:
         p_raw = float(self.model.predict_proba(X)[0, 1])
         gate_open = min(f["tau_end"], f["tau_net"]) <= self.gate_h
         p = p_raw if gate_open else 0.0                   # early_call.gated
-        self.t_clf += time.perf_counter() - t_c
+        dt_c = time.perf_counter() - t_c
+        self.t_clf += dt_c
         self.n_dec += 1
+        self.dec_ms.append((dt_f * 1e3, dt_c * 1e3))
         key = (d, t0)
         if key != self.key or self.last_t is None or t != self.last_t + 1:
             self.run = 0
@@ -510,14 +692,15 @@ class VisionCallEngine:
     minus t_frame(t): the latency any call made at t would have had."""
 
     def __init__(self, backend, frozen=None, geometry=None, fps=120.0, frame_offset=0, thr=0.3,
-                 full_size=(1920, 1080), on_event=None, emit_enabled=True):
+                 full_size=(1920, 1080), on_event=None, emit_enabled=True, batch=1):
         assert_paper_only()
         M = tracking_modules()
         self.D = M.D
         self.lag = M.E.LAG
         self.fps = fps
         self.offset = frame_offset
-        self.det = StreamingDetector(backend, M.D, thr=thr, full_size=full_size)
+        self.det = StreamingDetector(backend, M.D, thr=thr, full_size=full_size, batch=batch)
+        self._prep = (self.det.backends[0].prep if self.det.device_frames else (lambda rgb: normalize(rgb, self.D)))
         self.trk = OnlineTracker(M.T)
         self.caller = FrozenCaller(frozen, geometry, fps, emit_enabled) if frozen is not None else None
         self.on_event = on_event or (lambda ev: None)
@@ -527,14 +710,23 @@ class VisionCallEngine:
         self.ready_ms = {}
         self.t_track = 0.0
 
-    def process(self, i, x, t_frame):
-        """i: frame index in arrival order (0-based); x: preprocess() output; t_frame: arrival wall clock."""
+    def prep(self, rgb):
+        """uint8 RGB [288, 512, 3] (FrameSource output) -> detector input for one frame (normalised; on the
+        GPU when the backend normalises there)."""
+        return self._prep(rgb)
+
+    def process(self, i, x, t_frame, run=True):
+        """i: frame index in arrival order (0-based); x: prep() output; t_frame: arrival wall clock.
+        run=False queues the frame's window for run_pending() (dynamic batching)."""
         idx = i + self.offset
         self.arrival[idx] = t_frame
-        if len(self.arrival) > 256:
-            for k in [k for k in self.arrival if k < idx - 128]:
+        if len(self.arrival) > 1024:
+            for k in [k for k in self.arrival if k < idx - 512]:
                 del self.arrival[k]
-        return self._consume(self.det.push(idx, x))
+        return self._consume(self.det.push(idx, x, run=run))
+
+    def run_pending(self):
+        return self._consume(self.det.run_pending())
 
     def _consume(self, fin):
         evs = []
@@ -582,10 +774,12 @@ class FrameSource:
     realtime=True paces a file at `fps` (frame i is due at start + i / fps; t_frame = that due time, so
     decode and resize count as engine latency). Live sources are never paced: t_frame = the moment the
     decoder returns the frame. If the queue is full when a frame arrives in realtime / live mode, the frame
-    is dropped (what a live capture driver does); `dropped` counts them."""
+    is dropped (what a live capture driver does); `dropped` counts them. drop_when_full=False instead makes
+    the reader wait (no frame is ever lost; a backlog then shows up as latency, since t_frame stays the due
+    time): used to replay a whole video in real time with decisions identical to processing every frame."""
 
     def __init__(self, src, D, realtime=False, fps=None, max_frames=None, start_frame=0, maxsize=1200,
-                 reader="auto"):
+                 reader="auto", drop_when_full=True):
         self.src = parse_source(src)
         self.D = D
         self.realtime = realtime
@@ -598,6 +792,7 @@ class FrameSource:
             reader = "cv2" if isinstance(self.src, int) or importlib.util.find_spec("av") is None else "pyav"
         self.reader = reader
         self.info = {"dropped": 0, "reader": reader}
+        self.drop_when_full = drop_when_full
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.stop = threading.Event()
 
@@ -643,6 +838,8 @@ class FrameSource:
         if s and tb:   # as detect.frame_iter: seek to the keyframe at or before s, decode forward
             c.seek(int(max(s - 2, 0) / fps / tb), stream=st, backward=True, any_frame=False)
         t0_pts = None
+        n_out = 0
+        self.info["pts_index_mismatch"] = 0     # frames whose detect.py index round(pts*tb*fps) != position
         try:
             it = c.decode(st)
             while True:
@@ -656,6 +853,9 @@ class FrameSource:
                         t0_pts = float(st.start_time or 0) * tb
                     if int(round((fr.pts * tb - t0_pts) * fps)) < s:
                         continue
+                if tb and fr.pts is not None and int(round(fr.pts * tb * fps)) != s + n_out:
+                    self.info["pts_index_mismatch"] += 1
+                n_out += 1
                 b = time.perf_counter()
                 small = fr.to_ndarray(width=self.D.INP_W, height=self.D.INP_H, format="rgb24", interpolation="AREA")
                 yield small, (b - a) * 1e3, (time.perf_counter() - b) * 1e3
@@ -666,6 +866,9 @@ class FrameSource:
         try:
             gen = self._frames_pyav() if self.reader == "pyav" else self._frames_cv2()
             pace = self.realtime and not self.live
+            # the paced clock starts once the first frame is decoded: opening the file and seeking to the
+            # start frame (a keyframe + decode forward) is not part of the stream
+            first = next(gen, None) if pace else None
             t_wall0 = time.time() + 0.05
             t_perf0 = time.perf_counter() + 0.05
             i = 0
@@ -680,14 +883,18 @@ class FrameSource:
                         time.sleep(dt)
                     late.append(max(0.0, -dt) * 1e3)
                     t_frame = t_wall0 + i / fps
-                try:
-                    small, dec_ms, rs_ms = next(gen)
-                except StopIteration:
-                    break
+                if first is not None:
+                    small, dec_ms, rs_ms = first
+                    first = None
+                else:
+                    try:
+                        small, dec_ms, rs_ms = next(gen)
+                    except StopIteration:
+                        break
                 if not pace:   # arrival = when the decoder handed the frame over (resize counts as engine time)
                     t_frame = time.time() - rs_ms / 1e3
                 item = (i, np.ascontiguousarray(small), t_frame, dec_ms, rs_ms)
-                if self.realtime or self.live:
+                if (self.realtime or self.live) and self.drop_when_full:
                     try:
                         self.q.put_nowait(item)
                     except queue.Full:
@@ -704,16 +911,21 @@ class FrameSource:
             self.q.put(None)
 
 
-def run_stream(engine, source, max_lag_ms=None, on_frame=None):
+def run_stream(engine, source, max_lag_ms=None, on_frame=None, dynamic=False):
     """Consume `source` until it ends. Returns per-frame timing rows and the number of skipped frames.
 
     max_lag_ms: if set and the dequeued frame is older than this, the engine jumps to the newest queued
     frame (everything older is skipped) and continues from there in order: bounded latency for a live feed,
     at the cost of gaps (a gap ends the detector's window range, as a range end does offline).
-    Default: process every frame."""
+    Default: process every frame.
+    dynamic: with a detector batch B > 1, take every frame already queued (up to B) and run their windows
+    as one batch right away, instead of waiting for B windows: batch 1 while the engine keeps up, larger
+    batches only to work off a backlog. Stage times of a group are split evenly over its frames."""
     rows = []
     skipped = 0
     done = False
+    B = engine.det.batch
+    c = engine.caller
     while not done:
         item = source.q.get()
         if item is None:
@@ -729,25 +941,41 @@ def run_stream(engine, source, max_lag_ms=None, on_frame=None):
                     break
                 skipped += 1
                 item = nxt
-        i, small, t_frame, dec_ms, prep_ms = item
+        group = [item]
+        if dynamic and B > 1:
+            while len(group) < B:
+                try:
+                    nxt = source.q.get_nowait()
+                except queue.Empty:
+                    break
+                if nxt is None:
+                    done = True
+                    break
+                group.append(nxt)
         t_deq = now()
-        t_n = time.perf_counter()
-        x = normalize(small, engine.D)
-        prep_ms += (time.perf_counter() - t_n) * 1e3
-        ti0 = engine.det.t_infer
-        tp0 = engine.det.t_post
-        tt0 = engine.t_track
-        c = engine.caller
+        ti0, tp0, tt0 = engine.det.t_infer, engine.det.t_post, engine.t_track
         tf0, tc0 = (c.t_feat, c.t_clf) if c else (0.0, 0.0)
-        evs = engine.process(i, x, t_frame)
+        grows, evs = [], []
+        for i, small, t_frame, dec_ms, rs_ms in group:
+            t_n = time.perf_counter()
+            x = engine.prep(small)
+            norm_ms = (time.perf_counter() - t_n) * 1e3
+            evs += engine.process(i, x, t_frame, run=not dynamic)
+            grows.append(dict(i=i, t_frame=t_frame, qwait_ms=(t_deq - t_frame) * 1e3, decode_ms=dec_ms,
+                              resize_ms=rs_ms, norm_ms=norm_ms, prep_ms=rs_ms + norm_ms))
+        if dynamic:
+            evs += engine.run_pending()
         t_done = now()
-        rows.append(dict(i=i, t_frame=t_frame, qwait_ms=(t_deq - t_frame) * 1e3, decode_ms=dec_ms, prep_ms=prep_ms,
-                         infer_ms=(engine.det.t_infer - ti0) * 1e3, blobs_ms=(engine.det.t_post - tp0) * 1e3,
-                         track_ms=(engine.t_track - tt0) * 1e3,
-                         feat_ms=((c.t_feat - tf0) * 1e3 if c else 0.0), clf_ms=((c.t_clf - tc0) * 1e3 if c else 0.0),
-                         proc_ms=(t_done - t_deq) * 1e3, e2e_ms=(t_done - t_frame) * 1e3, n_events=len(evs)))
+        n = len(group)
+        share = dict(infer_ms=(engine.det.t_infer - ti0) * 1e3 / n, blobs_ms=(engine.det.t_post - tp0) * 1e3 / n,
+                     track_ms=(engine.t_track - tt0) * 1e3 / n,
+                     feat_ms=((c.t_feat - tf0) * 1e3 / n if c else 0.0), clf_ms=((c.t_clf - tc0) * 1e3 / n if c else 0.0),
+                     proc_ms=(t_done - t_deq) * 1e3 / n, group=n)
+        for k, r in enumerate(grows):
+            r.update(share, e2e_ms=(t_done - r["t_frame"]) * 1e3, n_events=(len(evs) if k == n - 1 else 0))
+            rows.append(r)
         if on_frame:
-            on_frame(i, evs)
+            on_frame(group[-1][0], evs)
     engine.finish()
     return rows, skipped
 
@@ -762,19 +990,34 @@ def pct(a, qs=(50, 90, 99)):
 
 
 def summarize(rows, wall_s, skipped=0, engine=None):
-    """fps_sustained = frames processed / wall time. Per-frame stage times (ms): decode + prep run in the
-    reader thread; infer (time the engine waited on the detector), blobs, track, feat, clf in the engine
-    thread; proc = engine time per frame; qwait = arrival -> dequeue; e2e = arrival -> frame processed.
-    call_ready_ms = arrival of frame t -> decision for t done (the latency of a call made at t)."""
+    """fps_sustained = frames processed / wall time. Per-frame stage times (ms): decode + resize run in the
+    reader thread; norm (normalise / upload), infer (time the engine waited on the detector), blobs, track,
+    feat, clf in the engine thread (with batching or dynamic groups, a call's time is split over its frames);
+    proc = engine time per frame; qwait = arrival -> dequeue; e2e = arrival -> frame processed.
+    call_ready_ms = arrival of frame t -> decision for t done (the latency of a call made at t).
+    detector_call_ms: per detector call, by batch size. per_decision_ms: features / classifier per scored
+    decision frame (the per-frame feat / clf values are 0 on frames without a flight)."""
     n = len(rows)
-    keys = ["decode_ms", "prep_ms", "infer_ms", "blobs_ms", "track_ms", "feat_ms", "clf_ms", "proc_ms",
-            "qwait_ms", "e2e_ms"]
+    keys = ["decode_ms", "resize_ms", "norm_ms", "prep_ms", "infer_ms", "blobs_ms", "track_ms", "feat_ms",
+            "clf_ms", "proc_ms", "qwait_ms", "e2e_ms"]
     out = {"frames": n, "skipped": skipped, "wall_s": round(wall_s, 3),
            "fps_sustained": round(n / wall_s, 2) if wall_s > 0 else None,
-           **{k: pct([r[k] for r in rows]) for k in keys}}
+           **{k: pct([r.get(k, np.nan) for r in rows]) for k in keys}}
+    out["detect_ms"] = pct([r["infer_ms"] + r["blobs_ms"] for r in rows])
+    if rows and "group" in rows[0]:
+        out["group_size"] = pct([r["group"] for r in rows], (50, 90, 99))
     if engine is not None:
         out["call_ready_ms"] = pct(list(engine.ready_ms.values()))
         out["detector"] = engine.det.name
+        out["batch"] = engine.det.batch
+        by = {}
+        for b, ms_ in engine.det.batch_log:
+            by.setdefault(b, []).append(ms_)
+        out["detector_call_ms"] = {str(b): dict(pct(v), calls=len(v), per_window_mean=round(float(np.mean(v)) / b, 3))
+                                   for b, v in sorted(by.items())}
+        if engine.caller is not None and engine.caller.dec_ms:
+            dm = np.asarray(engine.caller.dec_ms)
+            out["per_decision_ms"] = dict(decisions=len(dm), features=pct(dm[:, 0]), classifier=pct(dm[:, 1]))
     return out
 
 
@@ -798,6 +1041,8 @@ def main():
     ap.add_argument("--log", default=None, help="CallEvent JSONL output")
     ap.add_argument("--reader", default="auto", help="auto | pyav | cv2")
     ap.add_argument("--track-only", action="store_true", help="no frozen model: detection + tracking only")
+    ap.add_argument("--batch", type=int, default=1, help="detector windows per call (single backend)")
+    ap.add_argument("--dynamic", action="store_true", help="batch only what is queued (up to --batch)")
     a = ap.parse_args()
     assert_paper_only()
     M = tracking_modules()
@@ -819,11 +1064,11 @@ def main():
             fh.write(ev.to_json() + "\n")
             fh.flush()
     eng = VisionCallEngine(make_backend(a.backend, a.blurball_root, a.threads), frozen, geo,
-                           fps=a.fps or 120.0, frame_offset=a.frame_offset, on_event=on_event)
+                           fps=a.fps or 120.0, frame_offset=a.frame_offset, on_event=on_event, batch=a.batch)
     src = FrameSource(a.source, M.D, realtime=a.realtime, fps=a.fps, max_frames=a.max_frames,
                       reader=a.reader).start()
     t = time.time()
-    rows, sk = run_stream(eng, src, a.max_lag_ms)
+    rows, sk = run_stream(eng, src, a.max_lag_ms, dynamic=a.dynamic)
     print(json.dumps(summarize(rows, time.time() - t, sk, eng), indent=1))
 
 

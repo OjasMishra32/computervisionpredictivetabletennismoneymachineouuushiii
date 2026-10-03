@@ -116,6 +116,9 @@ Skip reasons: `no_point_decision`, `unknown_winner`, `stale_call`, `no_book`, `o
 | vision: frame to CallEvent, processing only (a host that keeps up) | p50 100, p90 153 | demo run: BlurBall ONNX on CoreML GPU+ANE, laptop under load from two other workflows. Unloaded, at 40 fps arrivals: p50 42 (`vision_bench.json`) |
 | vision as run on this shared laptop (frames queue) | p50 13,900 | demo run: 17 fps sustained vs 30 fps arrivals |
 | vision at a true 120 fps feed on this laptop | p50 5,281 and growing | `vision_bench.json`: ~50 fps sustained unloaded, so a 120 fps feed backs up without bound |
+| vision on one NVIDIA L4, 120 fps feed, frame to decision done | p50 4.6, p90 6.9, p99 12.2, max 30 | `online_vs_offline.json`: all 102,120 test frames paced at 120 fps, 0 dropped, fp16 + channels-last + folded BN + `torch.compile`, batch 1. The first 4 s of the run (a start-up transient, up to 1.27 s) are excluded from these numbers |
+| vision on one L4, emitted CallEvents | p50 6.9, p90 8.5, p99 15.8, max 22 | same run, 169 calls after the first 4 s |
+| vision on one L4, detector as the offline run used it (fp16 autocast, eager) | p50 11.4, p90 18.1 at 74 fps arrivals | `vision_bench_gpu.json`: 93-100 fps at most, so it cannot keep up with 120 fps. fp32: 63-65 fps at most, p50 14.8 at 50 fps arrivals |
 | strategy rule (fair jump + rule; no risk, no submit) | 0.077 (p90 0.23) | demo run, all 72 calls (`compute_us`) |
 | strategy `on_call` for a SEND (rule + guard + risk + paper submit) | ~0.25 (max 0.38) | review rerun of the demo (`total_us`) |
 | fair-value refresh (calibration, off the hot path) | 490-2,240 | demo run; 100-500 unloaded |
@@ -187,11 +190,108 @@ one seed of the corrected headline and of the pre-registered primary through the
 out of sample" quoted elsewhere is v2, the book-only strategy without vision: burned OOS (not blind)
 +0.60c/share, CI [0.09, 1.13], over 40 days (`results/v2/burned_oos.json`).
 
+## Vision on one GPU (HiPerGator, 2026-10-03)
+
+Hardware: one NVIDIA L4 (24 GB, Ada sm_89, 72 W) on `hpg-turin`, 8 cores of an AMD EPYC 9655P, torch
+2.7.1+cu128, cuDNN 9.7 and PyAV 19. The pipeline is the full streaming engine: PyAV decodes the 1080p
+H.264 stream and resizes it on the reader thread; the engine thread then normalises and uploads each frame,
+runs BlurBall, extracts blobs, tracks the ball, segments flights, computes features, runs the frozen HGB
+and applies the call rule. Nothing is retrained. Commands: `hpg/engine_vision.sbatch` (`STAGE=bench`,
+`STAGE=eval`).
+
+**Benchmark** (`results/engine/vision_bench_gpu.json`: jobs 44606460 and 44608026, test_2 frames 2000-2999
+from the original 120 fps file). "max" means frames are fed as fast as the engine takes them. "Keeps up"
+means real-time 120 fps arrivals with nothing dropped and a queue wait p99 of 4 frames or less. Latency is
+measured from frame arrival until that frame's decision is done, with no backlog. Configs that cannot keep
+up are measured at 80% of their max fps.
+
+| detector config (backend spec) | max fps, batch 1 | best batch (fps) | keeps up at 120 | detect ms p50 (batch 1) | call latency p50 / p90 ms |
+|---|---|---|---|---|---|
+| fp16 autocast, eager, as `detect.py` ran it (`torch-cuda`) | 92.7 | 2 (95.2) | no | 8.8 | 11.4 / 18.1 at 74 fps |
+| same + CUDA graph (`torch-cuda-graph`) | 99.9 | 1 | no | 8.4 | 9.6 / 14.7 at 79 fps |
+| fp16 + channels-last + BN folded + CUDA graph (`torch-cuda-cl-fuse-graph`) | 130.6 | 1 | yes, q99 12.6 ms | 5.7 | 10.7 / 18.7 |
+| fp16 + channels-last + BN folded + `torch.compile` (`torch-cuda-cl-fuse-compile`) | 131 (174 in job 44606460) | 2 (180.4) | yes, q99 8.9 ms | 3.9 | 5.5 / 7.8 (batch 2: 16.3 / 21.9; dynamic up to 2: 6.8 / 14.6) |
+| same + CUDA graph (`torch-cuda-cl-fuse-compile-graph`) | 194.2 | 1 | yes, q99 11.6 ms | 3.4 | 6.2 / 13.2 |
+| two compiled copies pipelined on one GPU | 124.5 | n/a | no, q99 114 ms | n/a | 14.2 / 22.9 at 99 fps |
+| fp32, strict with TF32 off (`torch-cuda-fp32`) | 63.2 | 1 | no | 14.2 | 14.8 / 16.8 at 50 fps |
+| fp32 + CUDA graph, or + BN folded + compile (with or without graph or channels-last) | 62.5-64.5 | 1 | no | 13.8-14.6 | 14.1-16.3 / 16.3-21.0 at 49-51 fps |
+
+Other stages, p50 per frame in every config: decode 0.04 ms (PyAV frame threads; mean 0.9), resize to 512x288
+0.6 ms, normalise and upload 0.1 ms, blobs about 0.4 ms (included in detect), tracker 0.04 ms. Per scored
+decision frame: features 0.5 ms and HGB classifier 1.4 ms. The reader alone decodes and resizes 445 fps.
+
+Batching does not help. Per window, the detector is as slow or slower at batch 2-32 than at batch 1
+(eager fp16: 8.3 ms at batch 1, 11.3 ms per window at batch 8), because BlurBall runs at full 288x512
+resolution with a stride-1 stem and is bound by memory bandwidth. A fixed batch B also adds the wait for B
+frames. The one exception is the compiled detector, where batch 2 gives the most throughput, but batch 1
+still has the lower latency. fp32 cannot reach 120 fps on an L4 in any config. The batch-1 max fps over
+1000 frames includes the reader's seek and a start-up transient, so the long runs below measure sustained
+speed better. One B8 row per fp32 config dips: the stream's last short batch, 6 windows, is autotuned once.
+
+**Held-out test set through the streaming engine** (`results/engine/online_vs_offline.json`). All of
+test_1..test_7 was streamed: every frame from first to last, gaps between rallies included, 102,120 frames
+(851 s). The frames were decoded from the original files and paced at 120 fps. Primary run: `torch-cuda-cl-fuse-compile`,
+batch 1, job 44607191. It took 851.9 s of wall time for 851 s of video (119.9 fps), dropped 0 frames, and its
+queue wait p99 was at most 10 ms in every video. Ball detection was within 5 px on 93.9% of the 6,836
+labelled frames; the offline tracked number is 94.0%. Calls are scored with
+`src/tracking/early_call.py`'s own code (`curves`, `lead_table`) on the 171 labelled flights, as
+`summary.json` does:
+
+| MISS calls, test, original labels (precision / recall, tp) | 0 ms | 25 ms | 50 ms | 100 ms | 150 ms | 200 ms | first-call lead, called flights |
+|---|---|---|---|---|---|---|---|
+| online rule, `summary.json` (offline) | 1.0 / 0.195 (8) | 1.0 / 0.122 (5) | 1.0 / 0.073 (3) | 1.0 / 0.049 (2) | 1.0 / 0.024 (1) | 1.0 / 0.024 (1) | 8 of 41, median 25 ms |
+| online rule, offline with hb from the prefix only (causal) | 1.0 / 0.195 (8) | 1.0 / 0.122 (5) | 1.0 / 0.098 (4) | 1.0 / 0.049 (2) | 1.0 / 0.049 (2) | 1.0 / 0.049 (2) | 8 of 41, median 46 ms |
+| **CallEvents the engine emitted** | 1.0 / 0.098 (4) | 1.0 / 0.098 (4) | 1.0 / 0.098 (4) | 1.0 / 0.049 (2) | 1.0 / 0.049 (2) | 1.0 / 0.049 (2) | 4 of 41, median 163 ms (67, 92, 233, 325) |
+| snapshot rule, `summary.json` | 1.0 / 0.585 (24) | 1.0 / 0.463 (19) | 1.0 / 0.268 (11) | 1.0 / 0.146 (6) | 0.75 / 0.073 (3) | 1.0 / 0.049 (2) | |
+| snapshot rule on the engine's live scores | 1.0 / 0.195 (8) | 1.0 / 0.171 (7) | 1.0 / 0.146 (6) | 1.0 / 0.098 (4) | 1.0 / 0.049 (2) | 1.0 / 0.024 (1) | |
+
+The offline numbers recomputed through this code equal `summary.json` exactly, which checks the scoring.
+Precision is 1.0 at every lead: no engine MISS call landed on a BOUNCE-labelled flight. Recall is lower.
+The table looks the same for the fp16 autocast detector with CUDA graph (job 44605927) and for the
+offline detector's own detections replayed through the engine's tracker and decision code, so the GPU,
+the speed options and fp16 rounding change no call. The gap comes from two differences in what the evaluation could see:
+
+1. **Look-ahead in one offline feature.** `early_call.Flight` computes `hb` (the table's half-depth at the
+   ball's x, also the level of the `u_far` / `u_near` / `w_end` crossings) as a median over the whole
+   labelled flight up to T_ref, so it includes points after the decision frame. The engine can only use
+   the prefix. Rescoring the offline samples with a prefix-only `hb` (the "causal" row) reproduces the
+   engine's scores bit for bit on 95.7-98.1% of decision frames, depending on the run, and p99 |diff| is at
+   most 0.02. The rest comes from the offline tracks being stored to 0.01 px. Without the look-ahead the snapshot rule at 50 ms falls from 11 to 9
+   test misses, and the online rule keeps 8 calls but at different leads.
+2. **The engine stops deciding once the track shows a bounce past the net.** Offline, a flight's decision
+   window runs from the hit to the labelled T_ref even when the ball bounced on the far half in between.
+   Online, `flights.flight_start` finds that bounce, the flight then starts past the net, and the engine
+   makes no further decisions on it. Of the 24 offline snapshot calls at 0 ms, 13 come after such a bounce.
+   10 of those 13 are flights the post-hoc label audit relabelled as BOUNCE (`unannotated_bounce`). The
+   offline evaluation scored these as correct MISS calls, so the engine's lower recall here is partly a
+   label correction. Four of the online-rule calls are lost this way: test_1 2448, test_3 5552, test_6 3070
+   (all `unannotated_bounce`) and test_6 4955.
+
+With the audited labels (21 misses), the engine's own calls score 1.0 / 0.19 (4) at 0-50 ms. The snapshot
+rule on the engine's scores scores 6 at 50 ms, against 8 offline.
+
+The engine emitted 172 CallEvents over the 14 min: 12 MISS and 160 BOUNCE.
+- MISS: 5 on labelled MISS flights (one of them 58 ms after T_ref), 0 on BOUNCE flights, and 7 on balls
+  outside the 171 labelled flights. Five of those 7 were between rallies: test_1 4963 and 7728, test_4 10907,
+  13393 and 34896. A live system needs a rally-state gate before it trades on a MISS.
+- BOUNCE: 68 on BOUNCE flights and 20 on MISS-labelled flights (0.77 against the original labels, most of
+  them `unannotated_bounce`), plus 72 off-population.
+
+Latency of the emitted calls: p50 6.9 ms, p90 8.5 ms, p99 15.8 ms, max 22 ms. A start-up transient in the
+first 458 frames of test_1 (up to 1.27 s) was excluded; with it included, p99 is 218 ms. The fp16 autocast
+run with CUDA graph (job 44605927) ran at only 114 fps on full videos. It built a backlog, so latency over
+the run was p50 3.5 s and p99 12.5 s; its calls were identical.
+
 ## Demo: where the calls come from
 
-`models/vision/frozen_call_model.pkl` (the frozen H3 classifier) is rebuilt on HiPerGator from the
-game_1..5 training tracks, and HiPerGator was unreachable this session. Without the pickle, the demo
-still streams every frame through the real engine: detection, causal tracking, online flight
+`models/vision/frozen_call_model.pkl` (the frozen H3 classifier) did not exist when the demo ran. It
+has since been rebuilt on HiPerGator (CPU job 44603438, 2026-10-03, `engine/vision/export_frozen.py`
+from the game_1..5 training tracks). The export reproduces `results/tracking/test_flights.csv`: P(miss)
+at 50 ms for 170 flights with max |diff| 1.1e-16, and all 8 online first-call leads exactly. It loads
+directly with the laptop's sklearn 1.9.1, which is the same version as on HPG, and it matches the
+stored raw scores to 5.6e-17. `models/` is gitignored, so copy the pickle back from HPG. The demo
+numbers above were produced before the pickle existed and have not been rerun. Without the pickle, the
+demo still streams every frame through the real engine: detection, causal tracking, online flight
 segmentation, features and the classifier stage, with a stand-in HGB used only for timing. At each
 decision frame it emits the frozen model's own offline decision for that held-out frame, from
 `results/tracking/test_flights.csv`:
@@ -229,14 +329,30 @@ start + window messages, other markets reduced to a 200 ms liveness marker),
 `run_scenario(match, anchor, snap, msgs, scenario, calls)` (one paper run: feed + risk + executor +
 strategy, scheduled through the feed's clock hook), `timeline_figure(out, path)`.
 
-### vision/ (`stream.py`, `events.py`, `run_demo.py`)
+### vision/ (`stream.py`, `events.py`, `run_demo.py`, `bench_gpu.py`, `eval_online.py`, `export_frozen.py`)
 
-`VisionCallEngine(backend, frozen, geometry, fps=120, frame_offset=0, on_event=None).process(i, x, t_frame)`
-returns the `CallEvent`s emitted by that frame. `FrameSource(src, D, realtime, fps)` reads files, URLs,
-RTSP or webcams. `run_stream(engine, source)` returns per-frame timing.
+`VisionCallEngine(backend, frozen, geometry, fps=120, frame_offset=0, on_event=None, batch=1)`:
+`prep(rgb)` turns a decoded 512x288 RGB frame into detector input, normalised on the GPU for torch
+backends. `process(i, x, t_frame, run=True)` returns the `CallEvent`s emitted by that frame. With
+`run=False` the frame's window is only queued, and `run_pending()` runs everything queued (dynamic
+batching). `FrameSource(src, D, realtime, fps, drop_when_full=True)` reads files, URLs, RTSP or webcams. In
+real-time mode the clock starts at the first decoded frame. `drop_when_full=False` replays a file at 120 fps
+without ever dropping a frame. `run_stream(engine, source, dynamic=False)` returns per-frame timing.
 `CallEvent(call, frame, t_frame, t_emit, p_miss, lead_ms, source, rule, media_t, flight_t0, direction, extra)`
-has `latency_ms = (t_emit - t_frame) * 1000`. Benchmarks: `python -m engine.vision.run_demo`
-(`results/engine/vision_bench.json`).
+has `latency_ms = (t_emit - t_frame) * 1000`.
+
+Backend specs (`make_backend`) take the form `onnx-<provider>` or
+`torch-<device>[-fp32|-tf32][-cl][-fuse][-compile][-graph][-cpuprep][-nobench]`. A plain `torch-cuda` is
+fp16 autocast, as `detect.py` ran it. The options are channels-last, BatchNorm folded into the convolutions
+(torch.fx), `torch.compile`, CUDA-graph replay per batch size, CPU normalisation, and cuDNN's default
+algorithms instead of autotuning. A comma-separated list is a pool of model copies with pipelined windows.
+The fastest config that keeps up on an L4 is `torch-cuda-cl-fuse-compile`, batch 1.
+
+Benchmarks: `python -m engine.vision.run_demo` (laptop, `results/engine/vision_bench.json`) and
+`python -m engine.vision.bench_gpu` (GPU matrix, `results/engine/vision_bench_gpu.json`; `--merge` joins
+jobs). `python -m engine.vision.eval_online` streams test_1..7 and scores them like `summary.json`
+(`results/engine/online_vs_offline.json`, one entry per config). `--from-raw` rescores a saved run, and
+`--replay-detections` feeds the offline detector's npz files through the engine's decision code.
 
 ### market/: `clob.py`, `book.py`
 
@@ -388,10 +504,20 @@ Live is the same with `LiveClobFeed`, `await feed.run()`, and `asyncio.create_ta
 
 ## Known gaps
 
-- **No live calls on this laptop yet.** `models/vision/frozen_call_model.pkl` must be rebuilt on HiPerGator
-  (`hpg/engine_vision.sbatch`). The demo replays the frozen model's offline decisions and says so.
-- **The vision engine cannot keep up with a 120 fps feed on the laptop** (~50 fps unloaded, 17-23 fps while
-  shared). That needs a GPU host: the HiPerGator benchmark is written but not run.
+- **The live engine calls fewer test misses than the offline H3 evaluation**: 4 of 41 against 8 under the
+  online rule, still with precision 1.0. The cause is not the GPU. The offline `hb` feature looks ahead
+  (it is a median over the whole labelled flight), and the offline window keeps deciding after the track
+  shows a far-side bounce; most of those flights the label audit calls `unannotated_bounce`. See "Vision on
+  one GPU". The frozen model was trained with the look-ahead `hb`. A causal `hb` needs a retrain, which is
+  a new pre-registration and was not done.
+- **The engine also calls MISS between rallies**: 5 such calls in 14 min of test video, plus 2
+  off-population calls inside rallies. Nothing gates calls on rally state yet.
+- **120 fps needs a GPU and the speed options.** On one L4, fp16 + channels-last + folded BN +
+  `torch.compile` streamed the whole test set in real time. The fp16 autocast detector as `detect.py` ran it
+  manages 93-114 fps (eager or CUDA graph), and fp32 manages 63-65 fps. The laptop does ~50 fps unloaded and 17-23 fps while shared. The
+  numbers come from an L4 only; no A100 or H100 was measured.
+- **The demo has not been rerun with the live classifier.** The pickle now exists (copy it from HPG
+  `models/vision/`). The demo still replays the frozen model's offline decisions, and says so.
 - **Stamp lag is not measured**, and it moves the demo between "fills before the reprice" and "too late".
   Measuring the physical point end against the WTA stamp needs footage of live tennis.
 - **The demo pairs a different sport and a different point.** Its fills and P&L show mechanics only. A

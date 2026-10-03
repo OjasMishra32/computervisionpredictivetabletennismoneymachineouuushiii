@@ -113,6 +113,40 @@ def test_streaming_detector_matches_offline_averaging(pool):
         np.testing.assert_allclose(c, r, rtol=1e-5, atol=1e-4, equal_nan=True)
 
 
+class BatchFakeBackend(FakeBackend):
+    """FakeBackend for [B, 9, H, W] inputs; records the batch sizes it was called with."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, x):
+        self.calls.append(len(x))
+        return np.concatenate([FakeBackend.__call__(self, x[j:j + 1]) for j in range(len(x))], 0)
+
+
+@pytest.mark.parametrize("batch,dynamic", [(4, False), (5, False), (4, True)])
+def test_batched_detector_matches_offline_averaging(batch, dynamic):
+    """Fixed and dynamic batching give exactly the batch-1 output (same windows, folded in order), with a gap."""
+    rng = np.random.default_rng(3)
+    frames = _frames(23, rng)
+    be = BatchFakeBackend()
+    det = StreamingDetector(be, M.D, batch=batch)
+    got = []
+    idx = list(range(13)) + list(range(40, 50))
+    for k, (i, x) in enumerate(zip(idx, frames)):
+        got += det.push(i, x, run=not dynamic)
+        if dynamic and k % 3 == 2:          # e.g. three frames were queued when the engine got to them
+            got += det.run_pending()
+    got += det.flush()
+    ref = _offline_reference(frames[:13]) + _offline_reference(frames[13:])
+    assert [g[0] for g in got] == idx
+    for (f, c), r in zip(got, ref):
+        np.testing.assert_allclose(c, r, rtol=1e-5, atol=1e-4, equal_nan=True)
+    assert max(be.calls) <= batch and sum(be.calls) == (13 - 2) + (10 - 2)
+    if not dynamic:
+        assert be.calls[0] == batch
+
+
 def test_streaming_detector_gap_starts_new_range():
     rng = np.random.default_rng(2)
     frames = _frames(10, rng)
@@ -206,3 +240,26 @@ def test_no_call_below_threshold():
     for t in range(1000, 1062):
         calls += [o[0] for o in c.decide(t, {f: p for f, p in trk.items() if f <= t - 2})]
     assert "MISS" not in calls
+
+
+# --------------------------------------------------------------------------------------------- scoring
+def test_engine_call_scoring_equals_offline_online_rule():
+    """eval_online scores emitted calls with early_call's own definitions: first calls placed at the offline
+    online-rule first-call frames must give exactly the offline online-rule table (summary.json)."""
+    from engine.vision.stream import FROZEN_PATH, load_frozen
+    if not FROZEN_PATH.exists():
+        pytest.skip("models/vision/frozen_call_model.pkl not present (made on HiPerGator)")
+    import pandas as pd
+    from engine.vision import eval_online as EO
+    E = M.E
+    fz = load_frozen()
+    E.GATE_H = fz["gate_h_s"]
+    te, _ = EO._flights()
+    ts = fz["test_scores"]
+    S = pd.DataFrame({"fid": ts["fid"], "k": ts["k"]})
+    score = np.asarray(ts["score"], float)
+    cur = E.curves(S, score, te, fz["tau_online"])["online"]
+    first = {f: {"frame": int(te.t_ref[f] - round(l * E.FPS / 1000))} for f, l in cur[1].items() if np.isfinite(l)}
+    tab, lead = EO.engine_call_tables(te, first, E)
+    assert tab == E.lead_table(cur[2])
+    np.testing.assert_allclose(lead.reindex(te.index).values, cur[1].reindex(te.index).values, equal_nan=True)
