@@ -1,0 +1,38 @@
+# Exact versions of the reproduction environment (Python 3.14.0; clean-clone venv on macOS arm64).
+# Core: pip freeze of the clean-clone venv built from requirements.txt on 2026-10-04; then the
+# requirements-repro.txt pins. paramiko's own dependencies (bcrypt, cryptography, cffi, pycparser, pynacl)
+# resolve at install; every run records its full pip freeze in results/repro/run_manifest.json.
+# Install: .venv/bin/python -m pip install -r requirements.lock   (bash run.sh setup --locked)
+certifi==2026.7.22
+charset-normalizer==3.5.2
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.66.1
+idna==3.20
+iniconfig==2.3.0
+Jinja2==3.1.6
+kiwisolver==1.5.1
+Markdown==3.11
+MarkupSafe==3.0.4
+matplotlib==3.11.2
+numpy==2.5.3
+orjson==3.12.0
+packaging==26.3
+pandas==3.0.6
+pillow==12.3.0
+pluggy==1.6.0
+pyarrow==25.0.1
+Pygments==2.21.0
+pymupdf==1.28.2
+pyparsing==3.3.3
+pytest==9.1.1
+python-dateutil==2.9.0.post0
+requests==2.34.2
+scipy==1.18.1
+six==1.17.0
+urllib3==2.8.0
+websockets==17.1
+duckdb==1.5.6
+opencv-python-headless==5.0.0.93
+paramiko==5.0.0
+tabulate==0.10.0

@@ -5,7 +5,7 @@
 scikit-learn==1.9.1
 torch==2.14.1
 opencv-python-headless==5.0.0.93
-av==19.0.1
+av==17.1.0              # the version in the authors' venv (pip freeze)
 python-pptx==1.0.2
 onnx==1.23.1            # scripts/get_models.sh exports BlurBall to ONNX
 onnxruntime==1.30.0     # engine/vision ONNX backends (bash run.sh cv)

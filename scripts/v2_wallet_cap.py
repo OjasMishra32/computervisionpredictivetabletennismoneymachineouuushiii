@@ -369,6 +369,8 @@ def run_oos(repro: bool) -> None:
     final = OUT / "wallet_cap.json"
     first = not final.exists()
     assert first or repro, "the burned-OOS run was already done; use --repro to recompute (not a new peek)"
+    # --repro recomputes the logged first run: keep its record (first_run) and mark the file as a reproduction
+    first_run = first or bool(json.loads(final.read_text()).get("first_run", False))
     if first:   # logged BEFORE any OOS data is read
         with open(PEEKS, "a") as fh:
             fh.write(f"{dt.datetime.now(dt.timezone.utc).isoformat()} v2 per-wallet cap {name(FROZEN_W, FROZEN_R)} "
@@ -399,7 +401,7 @@ def run_oos(repro: bool) -> None:
                     "parameters chosen on IS only (research/v2/risk/GRID_wallet_cap.md)",
            "prereg": {"path": rel, "commit": commit, "sha256": sha256(PREREG_MD)},
            "frozen_rule": {"variant": name(FROZEN_W, FROZEN_R), "W_usd_per_wallet_day": FROZEN_W, "retire": FROZEN_R},
-           "first_run": first, "reference_check": {"file": "data/v2_trades_is_oos.parquet", "identical": bool(same),
+           "first_run": first_run, "reproduction_of_first_run": not first, "reference_check": {"file": "data/v2_trades_is_oos.parquet", "identical": bool(same),
                                                     "n_trades": int(len(base))},
            "is_selection_run": {"source": "results/v2/risk/wallet_cap_is.json", "selected": isj["selection"],
                                 "v2_uncapped": next(v for v in isj["variants"] if v["variant"] == "Winf_Roff"),

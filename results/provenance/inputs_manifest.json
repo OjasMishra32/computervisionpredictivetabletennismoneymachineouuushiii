@@ -1,0 +1,251 @@
+{
+ "schema": "courtside.provenance.inputs/1",
+ "created_utc": "2026-10-04T08:51:52+00:00",
+ "created_from": "authors' cache at 906e849708bbc2f1e09402369cbd307be4337238",
+ "note": "sha256 of every input the reproduction reads that is not in git; hashing computes no statistic and is not a held-out read",
+ "universe": {
+  "events_file": "data/raw/events_tennis_2025-07-01_2026-10-03.parquet",
+  "events_sha256": "03986becf3cfd0ce22ed8e65c0dd9bbd0a684f621e744d53aa742eebd534cfd5",
+  "n_matches": 13084,
+  "n_is": 10467,
+  "n_oos": 2617,
+  "oos_start_utc": "2026-08-25T14:15:00+00:00",
+  "oos_rule": "last 20% of matches by start time (track rule: latest 20% or latest two years, whichever is shorter; 20% binds), src/tape.py",
+  "conds_file": "results/universe_conds.txt.gz",
+  "conds_sha256": "6082dba88b5dc725b8821825d01550b5efb03e13ee60ae4ec19cabe8f1c260e2",
+  "conds_equal_frozen_list": true,
+  "split_sha256": "fd3929f02f50a75e1d720840042ab0335649a3dedd60209c987a6f7e12fe9a79",
+  "fields": [
+   "cond",
+   "slug",
+   "series",
+   "start",
+   "end",
+   "res0",
+   "volume",
+   "fee_rate",
+   "delay",
+   "tok0",
+   "tok1",
+   "oos"
+  ],
+  "fields_sha256": "41b7a73822d21a8ad4f130d1707efb28bdb5dc3a869400081f33d1817eb70e75"
+ },
+ "groups": {
+  "tapes": {
+   "dir": "data/raw/trades",
+   "n": 13084,
+   "bytes": 1211633926,
+   "rows": 11986514,
+   "merkle_sha256": "0cc528fd7fdb407044fe49e3be1c63fd7edc63e6611b1f0a712b3d61c6138a9c",
+   "rows_merkle_sha256": "d781dfe3424b168b97e9e40a783d55734ca928682c46a3903e832b7b2a5dd4a5",
+   "files_tsv_gz": "results/provenance/inputs_tapes.tsv.gz",
+   "files_tsv_gz_sha256": "0b0c6d3e43df764947f7c228ddd30c746d00e75c7ce9134ba51a21475fb1027a",
+   "n_at_data_api_offset_cap_10000": 7
+  },
+  "archived": [
+   {
+    "path": "results/repro/inputs/factors/F-F_Momentum_Factor_daily.csv",
+    "bytes": 472762,
+    "sha256": "d4b3e98cb5afb1533af0d4568aa816de2aadac5bbff9a590c1c65e3392d7b05b"
+   },
+   {
+    "path": "results/repro/inputs/factors/F-F_Research_Data_Factors_daily.csv",
+    "bytes": 1210997,
+    "sha256": "c2dc30c9e89eeea05a689c81fb426f4d76711270733b3731997615cbdff5b247"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x0697f559709777ef09cabbc87199fe3a9403e6ce90e6421a39ece63f674d4e65.parquet",
+    "bytes": 20973,
+    "sha256": "8822e7170686cfca045261917ea0f82e25b110a7188b703d284c92023a012496"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x14520fb39d5350caf7be59fbe4f1ed75d082d561b78c33031fff242cf5068b9a.parquet",
+    "bytes": 20280,
+    "sha256": "7f74db47abe398eccc9cf902e0e5966c7f4d5b71c2f481de143b422ab92a23ce"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x1decf8afc8f431d0cc19bf53c967dcde43e1941bf6c26fde72d897d189e8b1d2.parquet",
+    "bytes": 85780,
+    "sha256": "208572de470e38ad55ca7ed0ee07dfaeaf0fb23f27008ff9ae35298ed4b2851c"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x28347482f71ddb7453aa213662afce5ad316e98403928635a21697ed7b47c6ff.parquet",
+    "bytes": 37667,
+    "sha256": "e49659e387dca37e41c741ea25f02e88aa88d2f6235874fb194b1911cc5a386e"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x3ce4db7c483b1514744766b720b96fe5b4c6daca245cb44cf18562cadc4dbff1.parquet",
+    "bytes": 132329,
+    "sha256": "883e537483be4d89899d5529ae5f4d9d3d2efaf7d581e9f86d4e039f64e3f389"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x42789b597aaca530048d9f51fc7c16d1893559cd9abb1aab9c08228589915adc.parquet",
+    "bytes": 36093,
+    "sha256": "d956b3dc70bc60f966f0c6371b2b9565298de11794c7c61d4924d8e7e5332e04"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x6b8556202fe40ff5c04e5a085358d5004b51943738ce4180b747a4904b750696.parquet",
+    "bytes": 67509,
+    "sha256": "4226108ddb34d086a099c596a52dba6bdc9b79143d343e8ba0d3008a6ff23ded"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x723315ef4251abd6d6f8892ec83f9ad3fa8ad95b9f12dd51656eb7e13d4d8d68.parquet",
+    "bytes": 22963,
+    "sha256": "fb9e4c46bfc435f1ca61ea1471a7955c9c9959b9184ae93ac3cc936fbadb1143"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x87c41288f71f3af9dc2892de94554c090d2368149e6bc7d5c8c6abb8d98effb2.parquet",
+    "bytes": 83640,
+    "sha256": "b1fb7e3b746c9c36c639de26aa21ba623737f37ecb381de4f2bbe3fc18acf2b5"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0x95934f103be59a070ba175a103bbc350c4da5993adfa39c1402ad36b44c1a513.parquet",
+    "bytes": 26261,
+    "sha256": "599dbc9c9e0586a5fc0761e879e666f5e6ce00a832523d7f9984e1c898de5786"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xa3f1c2b67309d3bca90c65e8b4156374569b15e569c1cabb04386b1e1e59a4d1.parquet",
+    "bytes": 118389,
+    "sha256": "b56bac0fb37d12198075e9ce679f21f9421943635e28c4bc36d44704b39a5202"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xbadd333dc398180928fad433f868da613b9c9cd604e1016e4b352f77ce5a37f8.parquet",
+    "bytes": 35082,
+    "sha256": "9a6c6f751fdd13bf8a94789f5a0f622a9db32f947d0fe63f63f0019e69156418"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xc363a3b0cb2f98da14197b6234502c13cc005d971569aad04f48d5465c91029e.parquet",
+    "bytes": 76220,
+    "sha256": "ec39e02ac32020209b7703cfdd230ef20792368f8babcbd21c25d2af5bab1354"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xc79a5af77239d33a24e31d9ef8a7b4e6695bb3ab1ef6a28220955baba31dc546.parquet",
+    "bytes": 46042,
+    "sha256": "a45e8f6022d7e6372f81a1a8fe128d6aedc03e4cff4adbada02908dd6712784b"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xcbe6ca9e9b4058abbded5c143d99dc42d4d1edb3863e0b4194f3125439e98924.parquet",
+    "bytes": 41336,
+    "sha256": "52eac6b632319b359040d99c4266e0cc46e4673c53a4ee3ae60b0394e8f0358d"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xcbf8dcc36292ae4748c3d237fa6af1ef6b84fac9df367fd025f241ab5b8f577f.parquet",
+    "bytes": 79953,
+    "sha256": "dbef35c18fea4507ec97412379a45eaa2a31c7f875be44c12cc22ad58c88af08"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xd6a3aded428f8a2747af4979ef321f700de0fdd6cb1c9dcdf1e9e430c7f0a2f4.parquet",
+    "bytes": 22620,
+    "sha256": "f4bbb8d7169f01ec7ce26dbc3e8e619505c2747d7731a931e9c0c821d67f890a"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xdb54c7d91a2cf88bbf1a4cc3c4b3c4362654fc861d6574cc21531e0ad24bedcb.parquet",
+    "bytes": 30667,
+    "sha256": "41fe6439aa8071b90ce5724389e78bbeb7dd2f1eb9f614ca91e31de546fd8a8b"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xe252a85e04ac9ba4757fc7f3e51021336d2da5e887f97a708d42dc5be4f7dd9c.parquet",
+    "bytes": 32262,
+    "sha256": "e29fded77645d08a59b24548b2f804c59d11f39392f73f30c83e9cd390c24b8c"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xe7ca9865bd8777a318d0e1ca40c5607233d8d38b0b8960aac231249aba297079.parquet",
+    "bytes": 37684,
+    "sha256": "450441799552610113887c9851aaea40abcb881759d21e583025a503c9957633"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xed02a9bdd2fe299a0b62a478a2d54054e636f9831416e246e87dbee028939a7f.parquet",
+    "bytes": 47779,
+    "sha256": "7aef6555306c3a55799a2807672c44a87ec7f42c3968aba58b931ed884908c22"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/trades/0xffaf2bdf988734ca723328c5b32d708888330ae22e0461955bd94610a37552c0.parquet",
+    "bytes": 95938,
+    "sha256": "9c25110ef9eefcb56d0f2ad74faaf4d0ad6e5cebe06076f19d587dccee06bdd6"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/unresolved_check.json",
+    "bytes": 399,
+    "sha256": "06582d8eb7c16cd524335f699209069423a27ec1d608bef97e1ef0fe7dcd4cc9"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/window_meta.json",
+    "bytes": 1112,
+    "sha256": "d206ead414f1ad9b9d61a857b7f87862f4ed22bbb258b0daf4559447739ebfe8"
+   },
+   {
+    "path": "results/repro/inputs/fresh_holdout/window_universe.parquet",
+    "bytes": 24858,
+    "sha256": "eb2c261b1570f2393b025efcf58ffbeb46688bef9f20f19524629166ff885596"
+   }
+  ],
+  "models": [
+   {
+    "path": "models/vision/frozen_call_model.pkl",
+    "bytes": 12261451,
+    "sha256": "b798f138c9f36ba44a8898c78a3ef40c3405ce948f5c7458adf4e4fa8d599ed3"
+   }
+  ]
+ },
+ "config": {
+  "run_all.calibration_seed": {
+   "file": "run_all.py",
+   "value": [
+    "0"
+   ]
+  },
+  "rigor_pack.SEED": {
+   "file": "scripts/rigor_pack.py",
+   "value": [
+    "20261003"
+   ]
+  },
+  "impact_model.SEED": {
+   "file": "scripts/impact_model.py",
+   "value": [
+    "20261004"
+   ]
+  },
+  "edge_persistence.SEED": {
+   "file": "scripts/edge_persistence.py",
+   "value": [
+    "20261004"
+   ]
+  },
+  "psr_mintrl.CV_SEEDS": {
+   "file": "scripts/psr_mintrl.py",
+   "value": [
+    "20",
+    "500"
+   ]
+  },
+  "fresh_holdout.SHOW_SEED": {
+   "file": "scripts/fresh_holdout.py",
+   "value": [
+    "4000"
+   ]
+  },
+  "tape.OOS_FRAC": {
+   "file": "src/tape.py",
+   "value": [
+    "0.20"
+   ]
+  },
+  "tape.MIN_VOL": {
+   "file": "src/tape.py",
+   "value": [
+    "5_000"
+   ]
+  },
+  "tape.SINCE_UNTIL": {
+   "file": "src/tape.py",
+   "value": [
+    "2025-07-01",
+    "2026-10-03"
+   ]
+  }
+ },
+ "python": "3.14.0",
+ "requirements_lock_sha256": "f0a5cdc8ddbb39a63b7f27ddfdf39b24b645afc64777d506d5ca006cdc166b8a"
+}

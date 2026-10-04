@@ -12,13 +12,16 @@ Counts the real matches each part of the study uses and writes results/data_cove
 Inputs: data/raw/events_tennis_*.parquet (Gamma API listing, from scripts in src/), the tier0_v3
 bundle, and committed result files. Run: python scripts/data_coverage.py
 """
-import glob
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from src.tape import SINCE, UNTIL  # noqa: E402
+
 OUT = ROOT / "results/data_coverage.json"
 SLAMS = {"australian_open": "australian open", "roland_garros": "roland garros", "us_open": "us open",
          "wimbledon": "wimbledon"}
@@ -49,7 +52,8 @@ def universe(D, label):
 
 
 def main():
-    raw = sorted(glob.glob(str(ROOT / "data/raw/events_tennis_*.parquet")))[-1]
+    # the exact event list (scripts/freeze_universe.py keeps dropped newer matches in ..._newer.parquet next to it)
+    raw = ROOT / f"data/raw/events_tennis_{SINCE}_{UNTIL}.parquet"
     E = pd.read_parquet(raw)
     M = pd.read_parquet(ROOT / "results/tier0_v3/is/inputs/bundle/M.parquet")
     X = M.merge(E[["cond", "title", "series", "league"]].drop_duplicates("cond"), on="cond", how="left")

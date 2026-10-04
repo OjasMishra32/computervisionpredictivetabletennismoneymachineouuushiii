@@ -13,11 +13,21 @@ usage() {
 bash run.sh <command> [args]                                  (times: laptop, after setup)
 
 Judge quick path (~10 min, no data download, no keys):  setup, replay, redteam, tests
-One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, reproduce)
+Reproduce the submitted snapshot (~2-3 h, no keys):      all  (= setup, data, reproduce)
+Fresh, mutable API fetch (a NEW evaluation, not ours):   fresh-fetch
 
-  all                 setup + data (public crawl) + reproduce: every result, figure, the paper and the docs  ~1.5-2.5 h
-  setup [--full]      make .venv, pip install -r requirements.txt               ~1 min
+  all                 setup + data (public crawl) + reproduce: every recomputed result, figure, the paper and
+                      the docs from the verified inputs                                         ~2-3 h
+  setup [--locked] [--full]
+                      make .venv; pip install -r requirements-repro.txt (requirements.txt + duckdb, paramiko,
+                      tabulate, opencv for reproduce)                                            ~1-2 min
+                      --locked installs the exact versions in requirements.lock instead
                       --full also installs requirements-extra.txt (vision, deck: torch, onnxruntime...)
+                      Paper compiler: uses tectonic from PATH, or TECTONIC=/path/to/tectonic (linked into
+                      .venv/bin); INSTALL_TECTONIC=1 downloads the official tectonic 0.17.0 release binary
+                      from GitHub into .venv/bin. Warns on a Python other than 3.14 (the lock's).
+  verify-inputs       check data/ against results/provenance/inputs_manifest.json (universe, 80/20 split, OOS
+                      start, sha256 of every tape, archived inputs, frozen call model); exit 0 = the snapshot  ~1 min
   tests               unit tests (pytest: tests/, engine/vision/tests/)          ~2-7 min (393 s on a loaded laptop)
   replay              10 min of recorded live Polymarket books (tests/fixtures/live_sample.jsonl.gz)
                       through the live paper trader and the engine's order books  ~15 s, no network
@@ -32,10 +42,18 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
                       ETA ~1-2 h for ~13k tapes; resumable: every read is cached in data/raw, rerun to continue.
                       --smoke DAY: event list + tapes of the matches starting on DAY (default 2026-01-15, 38 in-sample matches), ~1-3 min
                       Both pin the event list to the paper's 13,084 matches (scripts/freeze_universe.py,
-                      results/universe_conds.txt.gz): a later crawl also returns matches resolved after ours
-  reproduce           bash reproduce.sh: every result file and figure, results/paper/numbers.json, docs/NOTE.pdf
-                      and the docs (needs the full `data` crawl first; one smoke day is not enough for the
-                      walk-forward tables)                                                   ~15-20 min
+                      results/universe_conds.txt.gz): a later crawl also returns matches resolved after ours.
+                      The full crawl ends with verify-inputs (a report; reproduce enforces it)
+  reproduce           bash reproduce.sh: reproduce the SUBMITTED SNAPSHOT, offline. Checks the inputs against
+                      the manifest (stops on a universe/split mismatch or tape drift; ALLOW_INPUT_DRIFT=1 runs
+                      anyway and labels the run), reruns every step from the prints up (incl. the fresh holdout
+                      on its archived inputs), rebuilds results/paper/numbers.json, docs/NOTE.pdf and the docs,
+                      and writes results/repro/run_manifest.json. Fails on the first error. Paper sources it does
+                      not recompute are listed with reasons in results/paper/committed_artifacts.json
+                      (needs the full `data` crawl first)                                          ~1-1.5 h
+  fresh-fetch         a NEW fresh holdout: today's public listing under the same window rule and frozen code,
+                      fetched now (network), into results/fresh_holdout_new/<utc>/; the submitted
+                      results/fresh_holdout/ is not touched. A new fetch is a new evaluation, not ours ~5 min
   docs [--check]      README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from docs/templates/,
                       results/paper/numbers.json and the paper's label map (docs/paper/note.aux, or
                       results/paper/labels.json on a clone); writes nothing if a placeholder does not resolve;
@@ -48,7 +66,8 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
   cv                  ball-tracking call engine on the held-out OpenTTGames clip (needs setup --full;
                       fetches BlurBall weights via scripts/get_models.sh and the clip with ffmpeg). The point-end
                       calls use models/vision/frozen_call_model.pkl (12 MB, committed; rebuilt on HiPerGator by
-                      sbatch hpg/engine_vision.sbatch); if it is missing, cv detects and tracks with calls disabled
+                      sbatch hpg/engine_vision.sbatch); cv stops if it is missing or its sha256 differs from the
+                      input manifest (ALLOW_NO_CALL_MODEL=1: detect and track with calls disabled)
   dashboard [port]    status daemon + read-only dashboard at http://localhost:8765 (Ctrl-C stops both)
   money [args]        terminal replay of the v2 in-sample backtest with a running paper-money counter
                       (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
@@ -66,6 +85,37 @@ need_venv() {
   [ -x "$PY" ] || { echo "no $PY: run 'bash run.sh setup' first (or set PY=/path/to/python)"; exit 1; }
 }
 
+TECTONIC_VERSION=0.17.0
+ensure_tectonic() {   # the paper compiler: PATH, then $TECTONIC, then (opt-in) the official release binary
+  local exe="" plat url tmp
+  if [ -x .venv/bin/tectonic ]; then exe=.venv/bin/tectonic
+  elif command -v tectonic >/dev/null; then exe=$(command -v tectonic)
+  elif [ -n "${TECTONIC:-}" ] && [ -x "$TECTONIC" ]; then ln -sf "$TECTONIC" .venv/bin/tectonic; exe=.venv/bin/tectonic
+  elif [ "${INSTALL_TECTONIC:-0}" = 1 ]; then
+    case "$(uname -s)-$(uname -m)" in
+      Darwin-arm64) plat=aarch64-apple-darwin ;;
+      Darwin-x86_64) plat=x86_64-apple-darwin ;;
+      Linux-x86_64) plat=x86_64-unknown-linux-musl ;;
+      *) echo "setup: no tectonic release binary for $(uname -s)-$(uname -m); install tectonic $TECTONIC_VERSION yourself"; return 1 ;;
+    esac
+    url="https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40$TECTONIC_VERSION/tectonic-$TECTONIC_VERSION-$plat.tar.gz"
+    tmp=$(mktemp -d)
+    echo "setup: downloading tectonic $TECTONIC_VERSION ($plat) from the official GitHub release"
+    curl -fsSL -o "$tmp/t.tgz" "$url"
+    .venv/bin/python -c "import hashlib,sys; print('setup: tectonic tarball sha256', hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" "$tmp/t.tgz"
+    tar -xzf "$tmp/t.tgz" -C .venv/bin tectonic
+    rm -rf "$tmp"
+    exe=.venv/bin/tectonic
+  fi
+  if [ -z "$exe" ]; then
+    echo "setup: WARNING no tectonic found. replay/redteam/tests do not need it; reproduce (docs/NOTE.pdf) does."
+    echo "       install tectonic $TECTONIC_VERSION (macOS: brew install tectonic; conda: conda install -c conda-forge tectonic),"
+    echo "       or rerun with TECTONIC=/path/to/tectonic or INSTALL_TECTONIC=1 bash run.sh setup"
+    return 0
+  fi
+  echo "setup: paper compiler $("$exe" --version 2>/dev/null | head -1) ($exe; the paper was built with $TECTONIC_VERSION)"
+}
+
 cmd=${1:-help}
 [ $# -gt 0 ] && shift
 
@@ -76,17 +126,40 @@ case "$cmd" in
     bash "$HERE/run.sh" reproduce "$@"
     ;;
 
+  verify-inputs)
+    need_venv
+    "$PY" scripts/repro/manifest.py verify "$@"
+    ;;
+
+  fresh-fetch)
+    need_venv
+    echo "fresh-fetch: a NEW holdout fetched now from the public Polymarket APIs (network, no keys); it is a new"
+    echo "evaluation with a new fetch time, written to results/fresh_holdout_new/<utc>/, not the submitted one."
+    "$PY" scripts/repro/holdout_inputs.py new-fetch
+    ;;
+
   docs)
     need_venv
     "$PY" scripts/build_docs.py "$@"
     ;;
 
   setup)
+    locked="" full=""
+    for a in "$@"; do
+      case "$a" in
+        --locked) locked=1 ;;
+        --full) full=1 ;;
+        *) echo "unknown setup arg $a"; exit 2 ;;
+      esac
+    done
     [ -x .venv/bin/python ] || "$PYTHON" -m venv .venv
     .venv/bin/python -m pip install -q --upgrade pip
-    .venv/bin/python -m pip install -r requirements.txt
-    if [ "${1:-}" = "--full" ]; then .venv/bin/python -m pip install -r requirements-extra.txt; fi
-    .venv/bin/python -c "import numpy, pandas, pyarrow, scipy, websockets; print('setup ok:', __import__('sys').version.split()[0])"
+    if [ -n "$locked" ]; then .venv/bin/python -m pip install -r requirements.lock
+    else .venv/bin/python -m pip install -r requirements-repro.txt; fi
+    if [ -n "$full" ]; then .venv/bin/python -m pip install -r requirements-extra.txt; fi
+    .venv/bin/python -c "import numpy, pandas, pyarrow, scipy, websockets, duckdb, cv2; print('setup ok:', __import__('sys').version.split()[0])"
+    .venv/bin/python -c "import sys; v = sys.version_info[:2]; v == (3, 14) or print(f'setup: WARNING Python {v[0]}.{v[1]}; requirements.lock was made on 3.14.0 (the run manifest records the version)')"
+    ensure_tectonic
     ;;
 
   tests)
@@ -143,6 +216,7 @@ EOF
       exit 0
     fi
     echo "full crawl: ETA ~1-2 h (event list ~5-10 min, then ~13k trade tapes). Resumable: rerun to continue."
+    mkdir -p data/raw/trades   # the progress meter counts files here (under pipefail a missing dir ended it)
     progress() {
       local t0 n0 n
       t0=$(date +%s); n0=$(ls data/raw/trades 2>/dev/null | wc -l)
@@ -171,7 +245,8 @@ EOF
       "$PY" scripts/fetch_reverse.py & R1=$!
       "$PY" scripts/fetch_middle.py & R2=$!
       "$PY" scripts/fetch_polymarket.py
-      wait $R1 $R2
+      wait "$R1" || { echo "data: scripts/fetch_reverse.py failed"; exit 1; }   # each crawler's own exit status
+      wait "$R2" || { echo "data: scripts/fetch_middle.py failed"; exit 1; }
     else   # Gamma rate-limits long crawls ("RuntimeError: GET failed"); every finished read stays cached
       for attempt in 1 2 3 4; do
         "$PY" scripts/fetch_polymarket.py && break
@@ -179,18 +254,17 @@ EOF
         echo "data: fetch stopped (attempt $attempt); resuming from the cache in 60 s"; sleep 60
       done
     fi
-    echo "data done: $(ls data/raw/trades | wc -l) tapes in data/raw/trades"
+    echo "data done: $(ls data/raw/trades | wc -l) tapes in data/raw/trades; checking them against the submitted snapshot"
+    "$PY" scripts/repro/manifest.py verify --allow-drift
     ;;
 
   reproduce)
     need_venv
-    if ! ls data/raw/events_tennis_*.parquet >/dev/null 2>&1 || [ "$(ls data/raw/trades 2>/dev/null | wc -l)" -lt 1000 ]; then
+    if ! ls data/raw/events_tennis_*.parquet >/dev/null 2>&1; then
       echo "reproduce needs the full public crawl first: bash run.sh data (~1-2 h, resumable)."
-      echo "found $(ls data/raw/trades 2>/dev/null | wc -l | tr -d ' ') trade tapes in data/raw/trades; the walk-forward tables need the whole year."
-      [ "${FORCE:-0}" = 1 ] || { echo "(set FORCE=1 to run anyway)"; exit 1; }
+      exit 1
     fi
-    "$PY" scripts/freeze_universe.py || [ "${FORCE:-0}" = 1 ] || { echo "the event list lacks some of the paper's matches (set FORCE=1 to run anyway)"; exit 1; }
-    PY="$PY" bash reproduce.sh "$@"
+    PY="$PY" bash reproduce.sh "$@"   # its first steps check every input against the manifest
     ;;
 
   engine)
@@ -219,9 +293,12 @@ EOF
     need_venv
     "$PY" -c "import onnxruntime, cv2, av" 2>/dev/null || { echo "cv needs: bash run.sh setup --full"; exit 1; }
     if [ ! -f models/vision/frozen_call_model.pkl ]; then
-      echo "note: models/vision/frozen_call_model.pkl (committed) is missing from this checkout, so this run detects and"
-      echo "      tracks the ball with point-end calls disabled. git checkout -- models/vision/frozen_call_model.pkl"
-      echo "      restores it; sbatch hpg/engine_vision.sbatch rebuilds it on HiPerGator"
+      echo "models/vision/frozen_call_model.pkl (committed) is missing: git checkout -- models/vision/frozen_call_model.pkl"
+      echo "(sbatch hpg/engine_vision.sbatch rebuilds it on HiPerGator). ALLOW_NO_CALL_MODEL=1 runs detection and"
+      echo "tracking with point-end calls disabled."
+      [ "${ALLOW_NO_CALL_MODEL:-0}" = 1 ] || exit 1
+    else
+      "$PY" scripts/repro/check_model.py
     fi
     PY="$PY" bash scripts/get_models.sh
     if [ ! -f data/vision/test_2_copyts.mp4 ]; then
@@ -269,8 +346,10 @@ EOF
 
   redteam)
     need_venv
-    "$PY" scripts/redteam_stamp_lag.py >/dev/null && echo "wrote results/redteam/stamp_lag.json"
-    "$PY" scripts/redteam_derived.py >/dev/null && echo "wrote results/redteam/derived.json"
+    "$PY" scripts/redteam_stamp_lag.py >/dev/null   # under set -e a failure stops here (no `&&` that hides it)
+    echo "wrote results/redteam/stamp_lag.json"
+    "$PY" scripts/redteam_derived.py >/dev/null
+    echo "wrote results/redteam/derived.json"
     "$PY" scripts/redteam_acceptance.py "$@"
     ;;
 

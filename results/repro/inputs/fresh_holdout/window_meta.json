@@ -1,0 +1,25 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.",
+ "fetch_time_utc": "2026-10-04T05:44:23+00:00",
+ "window_start_exclusive_utc": "2026-10-03T07:10:00+00:00",
+ "listed_closed_resolved_atp_wta_ge5k": 32,
+ "dropped_start_equal_to_window_start": 1,
+ "dropped_in_U1": [],
+ "dropped_live_calibration_matches": [
+  "wta-andree-boisson-2026-10-03",
+  "wta-bencic-zakharo-2026-10-01",
+  "wta-bouzkov-birrell-2026-10-01",
+  "wta-jovic-dart-2026-10-02",
+  "wta-kartal-wa-2026-10-01",
+  "wta-rakhimo-fernand-2026-10-01",
+  "wta-rybakin-charaev-2026-10-01",
+  "wta-su-bucsa-2026-10-02",
+  "wta-zhen-kalinsk-2026-10-01"
+ ],
+ "dropped_finished_within_10min_of_fetch": [],
+ "eligible_matches": 22,
+ "tapes_present": 22,
+ "tapes_missing": [],
+ "tapes_at_data_api_offset_cap (>= 10,000 fills)": [],
+ "tapes_fetched_by_utc": "2026-10-04T05:44:25.095914+00:00"
+}

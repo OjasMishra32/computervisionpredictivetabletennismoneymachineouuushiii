@@ -19,3 +19,9 @@ results/viz/v60_assets/clips/
 
 # real tennis footage: full-length source download (55 MB, > 20 MB); URL + sha256 in tennis_real/LICENSE.md
 results/viz/v60_assets/tennis_real/source_*.mp4
+
+# reproduction run outputs (scripts/repro): logs, step records, drift report, held-out re-read log.
+# The archived inputs and the authors' final run manifest are committed.
+results/repro/*
+!results/repro/inputs/
+!results/repro/run_manifest.json
