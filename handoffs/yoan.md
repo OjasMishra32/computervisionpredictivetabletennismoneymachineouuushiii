@@ -4,6 +4,7 @@
 **Prizes targeted (opt in on Devpost when submitting):**
 1. **MLH: Best Use of ElevenLabs** (wireless earbuds) — "Deploy natural, human-sounding audio with ElevenLabs ... give your project a voice."
 2. **ElevenLabs: Best Project Built with ElevenLabs** (earbuds + 3 months ElevenLabs Scale per member).
+3. *Stretch, only after 1-2 work:* **MLH: Best Use of Solana** (Ledger Nano S Plus) — see §1c.
 
 Give this whole file to your AI coding agent as its brief. It is self-contained.
 
@@ -58,8 +59,26 @@ Make ElevenLabs a working part of the trading system, not just a voiceover. **Sc
 `results/viz/v60_assets/clips/` if present) and mux in the announcer's audio at the exact call frames (ffmpeg), plus a short
 title card "COURTSIDE Voice · powered by ElevenLabs". Show the measured event->audio latency on screen.
 
+### 1c. STRETCH — Solana devnet "proof of pre-registration" (about 1 hour; only after 1a and 1b are done)
+Our integrity story is that we wrote our hypotheses and rules down **before** seeing results (git timestamps). Make that
+tamper-evident on a public chain:
+- `sponsors/solana/anchor_prereg.py`: compute SHA-256 of each pre-registration file (`HYPOTHESIS.md`, `HYPOTHESIS_V2.md`,
+  `HYPOTHESIS_TT.md`, `research/v2/*/PREREG.md`, `research/v2/maker/PREREG.md`, `research/v2/tier0_v3/PREREG.md`) together with
+  the git commit hash and commit time that introduced each file (`git log --diff-filter=A --format="%H %cI" -- <file>`), and
+  write one **Memo-program transaction per file on Solana devnet** (memo text: `COURTSIDE prereg <file> sha256=<...> commit=<...>`).
+  Use `solana-py`/`solders` or the Solana CLI; fund the devnet keypair with `solana airdrop` (devnet SOL has no value).
+- `sponsors/solana/verify.py`: re-hashes the files and checks each memo on devnet (via `getTransaction`), printing a table with
+  explorer links (`https://explorer.solana.com/tx/<sig>?cluster=devnet`).
+- Output `sponsors/solana/anchors.json` (file, sha256, commit, commit time, tx signature, slot, block time).
+- Honest framing: the chain timestamp proves the file content existed **at anchoring time** (tonight); the git commit
+  times are the evidence for "before results". Say exactly that in the README.
+- Rules: devnet only (never mainnet, never real funds); the devnet keypair file goes in `sponsors/solana/.keys/` and is
+  gitignored (`sponsors/solana/.gitignore`); folder ownership: only `sponsors/solana/` in addition to `sponsors/elevenlabs/`.
+- Devpost line: "**Solana:** every pre-registration file in our repo is hashed and anchored on Solana devnet
+  (<N> memo transactions, links in sponsors/solana/anchors.json), so anyone can check our rules weren't edited after the fact."
+
 ## 2. Rules (hard)
-- **Folder ownership: you may only create/edit files under `sponsors/elevenlabs/`** (code, README, requirements, outputs ≤ 40 MB;
+- **Folder ownership: you may only create/edit files under `sponsors/elevenlabs/` (and `sponsors/solana/` for the stretch)** (code, README, requirements, outputs ≤ 40 MB;
   put larger media in `sponsors/elevenlabs/out/` and gitignore it via `sponsors/elevenlabs/.gitignore`). Do NOT edit anything else
   (no edits to engine/, scripts/, docs/, results/, README.md, requirements.txt). That guarantees zero merge conflicts.
 - **API key:** get your own free ElevenLabs access via the ElevenLabs Discord bot (see gqhacks Hacker Guide) or use the team

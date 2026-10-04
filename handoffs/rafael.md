@@ -4,6 +4,7 @@
 Sun Oct 4** (Devpost closes 11:00 AM EDT)
 **Prize targeted (opt in on Devpost when submitting):** **MLH: Best Use of Gemini API** — "build AI-powered apps that make
 your friends say WHOA ... create an app that summarizes complex research papers."
+*Stretch, only after 1a works:* **MLH: Best Use of Snowflake API** (Raspberry Pi 4) — see §1c.
 
 Give this whole file to your AI coding agent as its brief. It is self-contained.
 
@@ -49,8 +50,23 @@ Two small pieces. Keep it simple and reliable.
   static `sponsors/gemini/out/explanations.html`. Numbers must come from the event row (pass them in; tell the model not
   to invent any).
 
+### 1c. STRETCH — Gemini x Snowflake: the analyst queries our results in Snowflake (about 1.5 hours; only after 1a works)
+- Free Snowflake trial account (30 days). Credentials ONLY in `.env` (`SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`
+  or key-pair, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_DATABASE`), gitignored; never print/commit them.
+- `sponsors/snowflake/load.py`: create tables and load our committed result files with the Snowflake Python connector
+  (`write_pandas`): `results/tier0/latency_sweep.csv` (profit/Sharpe by feed latency), `results/capacity/*.csv|json`
+  (capacity grid), `results/v2/causal.json` + `results/v2/cost_stress.json` (flattened), `results/engine/online_events_L4.jsonl`
+  (CV calls), `results/e2e/trace.jsonl` (pipeline stage times). Small tables; no raw market data.
+- `sponsors/gemini/analyst.py --sql` mode: give Gemini a function-calling tool `run_sql(query)` that runs **read-only SELECT**
+  queries against Snowflake (reject anything else in code), plus the table schemas; numeric questions ("What Sharpe do we get
+  at a 0.5 s feed, pre-registered reading?", "How much capital before Sharpe halves?") are answered by SQL over the real tables,
+  and the answer shows the SQL it ran.
+- Rules: folder ownership `sponsors/snowflake/` + `sponsors/gemini/`; read-only queries from the model; no secrets in git.
+- Devpost line: "**Snowflake:** our results tables (latency sweep, capacity grid, CV calls, pipeline timings) live in Snowflake,
+  and the Gemini analyst answers numeric questions by writing and running read-only SQL against them, showing its query."
+
 ## 2. Rules (hard)
-- **Folder ownership: you may only create/edit files under `sponsors/gemini/`.** Do NOT edit anything else (no edits to
+- **Folder ownership: you may only create/edit files under `sponsors/gemini/` (and `sponsors/snowflake/` for the stretch).** Do NOT edit anything else (no edits to
   docs/, results/, engine/, scripts/, README.md, requirements.txt). Zero merge conflicts.
 - **API key:** free key from Google AI Studio (https://aistudio.google.com/apikey). Put it ONLY in `.env` at the repo root
   as `GEMINI_API_KEY=...` (gitignored). Never print/commit/paste it. Load it with a few lines of code (no new dependency
