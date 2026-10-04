@@ -1,0 +1,9 @@
+# Reproduction extras: reproduce.sh steps that need more than requirements.txt (bash run.sh setup installs both).
+#   duckdb, paramiko, tabulate  scripts/sponsor_evidence.py: the Snowflake SQL recheck on DuckDB and the Vultr unit
+#                               tests (sponsors/*/requirements.txt pins); reproduce.sh fails if either part is skipped
+#   opencv-python-headless      scripts/cv_teaser_fig.py (Fig. 1 frames)
+-r requirements.txt
+duckdb==1.5.6
+paramiko==5.0.0
+tabulate==0.10.0
+opencv-python-headless==5.0.0.93
