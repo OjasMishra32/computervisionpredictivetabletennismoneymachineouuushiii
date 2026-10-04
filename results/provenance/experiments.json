@@ -38,6 +38,20 @@
   "exploratory: everything else (no pre-registered P&L test; forward recordings only)",
   "Required flags, checked: oos_selected (a d or e event picked the reported variant after seeing its OOS value), oos_informed_design (a d event after an OOS look), defect_fix_after_oos (an e event after an OOS look), prereg_committed_after_run (an a or f event whose pre-registration was committed after the read)"
  ],
+ "decision_classes": {
+  "1": "new policy, parameter or variant chosen with knowledge of its evaluation performance",
+  "2": "mechanical correction of the implementation to a rule written before the change",
+  "3": "no strategy decision: an evaluation, reproduction or diagnostic, or a model, accounting or presentation change that selects no trading rule on performance",
+  "4": "unsupported: a real change made after an OOS look, but no contemporaneous evidence shows that held-out results drove it",
+  "undetermined": "the record shows the chronology but not the motive of the choice; neither class 1 nor class 2 can be shown"
+ },
+ "decision_class_rules": [
+  "decision_class records what a change actually was, from the code or configuration change and its contemporaneous evidence (class_evidence on every kind d or e event). oos_informed is chronological only and does not by itself show that performance drove a change.",
+  "Kinds a, b, c and f choose nothing and are class 3: reads, reruns, downloads, reproductions and diagnostics are never evidence of tuning.",
+  "Class 1 needs a kind d event and pre_change_reference (the result before the change); class 2 needs a kind e event and a rule written before the change. A mixed event (E21) classes each sub-decision in sub_classes; summary counts decision units (events, or sub-decisions of a mixed event).",
+  "presentation_choice marks a class-3 headline or scenario choice made after OOS cells existed; it changes no trade.",
+  "A class does not change a label: everything evaluated on the August 25 to October 3 window stays non-blind, and a mechanical correction is not a clean pre-registration."
+ ],
  "result_kinds": {
   "executable": "trades we could have placed at our own latency, priced from the book we would have hit",
   "sim_upper_bound": "simulated fills with an optimistic fill rule",
@@ -105,7 +119,8 @@
     "R_h1_h6_oos",
     "R_v1_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E03",
@@ -126,7 +141,8 @@
    "touches": [
     "R_v1_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E04",
@@ -153,7 +169,8 @@
     "R_tracking_test",
     "R_tracking_relabel"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E05",
@@ -175,7 +192,9 @@
    "touches": [
     "R_tracking_relabel"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "No model or threshold change: src/tracking/audit_labels.py relabels test flights and the frozen model is re-scored with no refit and the same threshold (be64ea4; DEVIATIONS.md:139-152). The audit margin was revised after a missed far-edge bounce in the test videos (both versions post hoc), so the relabelled score is a post hoc audit informed by the test set. The pre-specified score stays the result of record, labelled an offline evaluation with a look-ahead feature (913f5da, research/compliance/PAPER_REQUIREMENTS.md)."
   },
   {
    "id": "E06",
@@ -207,7 +226,10 @@
     "R_capacity",
     "R_v2_strict"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "1",
+   "class_evidence": "New rule v2 (risk-parity sizing, fee-aware wallet filter, 100-share net cap, hold to resolution), frozen in HYPOTHESIS_V2.md (1f229bc; POLICY in src/v2.py). HYPOTHESIS_V2.md:5-9 says its design used knowledge of how v1 behaved on the OOS, and research/v2/sizing/RESULTS.md:15-19 cites the OOS loss of the same exposure; both come after the single OOS read E02. Parameters were fitted by in-sample walk-forward only (DEVIATIONS.md D8, :154-163).",
+   "pre_change_reference": "v1 and H1/H2/H5/H6, frozen in 9d61d1b (D6, E01) and evaluated once on clean OOS (E02): R_v1_oos and R_h1_h6_oos. R_v1_oos is a shadow book at the fast tier's onset-aligned fills, an observational event study and never attainable profit."
   },
   {
    "id": "E07",
@@ -231,7 +253,8 @@
    "touches": [
     "R_v2_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E08",
@@ -256,7 +279,8 @@
     "R_v2_oos",
     "R_v2_strict"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E09",
@@ -279,7 +303,8 @@
     "R_h1_h6_oos",
     "R_v1_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E10",
@@ -293,7 +318,7 @@
    "oos_selected": true,
    "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
    "summary": "D9 causal fix adopted as variant T3e after the unlogged verifier run (E08) had computed seven causal variants on the already-read OOS: T3b +0.34, T3c -0.35, T3d +0.34, T3e +0.59 [0.07, 1.14], T3f +0.77 [-1.14, 2.65], T3g +0.05, T3h +0.15 c/share. T3e is the only variant whose OOS CI excludes 0. In sample it ranks fifth of seven (T3g 1.77, T3h 1.65, T3b 1.51, T3d 1.51, T3e 1.38, T3c 0.96, T3f 0.33 c/share); of the three fully re-derived variants (T3e, T3f, T3h), T3h ranks higher in sample.",
-   "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero.",
+   "printed_text": "To remove onset hindsight, v2 adopted causal window T3e after seven variants had OOS values; only T3e's interval excluded zero; no selection reason was recorded.",
    "evidence": [
     "results/oos_peeks.log:3",
     "DEVIATIONS.md:165-172",
@@ -315,7 +340,9 @@
     "R_wcap_oos",
     "R_capacity"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "undetermined",
+   "class_evidence": "845666f adds add_causal_bucket (src/tiers.py) and run(causal=True) in src/v2.py: the [0, 3 s) window is re-anchored from the jump onset to the detector's detection time, keeping the detection second. Frozen item 1 of HYPOTHESIS_V2.md states the window after the jump onset, so the onset code implemented the written rule and D9/A1.1 amends it. Every source (DEVIATIONS.md D9, HYPOTHESIS_V2.md A1.1, the commit subject) gives onset hindsight as the reason for the fix. Chronology: the seven variants' OOS values existed (research/v2/verify_v2/out/leakage_check.json, mtime 13:48:38 UTC) before the run (13:53:01) and the commit (13:55:43). T3e, T3f and T3h were the fully re-derived variants, and no text says why T3e was chosen. oos_selected records that chronology; performance-driven selection is not shown, and the choice is not shown to be mechanical either. The fix left the detection second in the window; E60 corrects that."
   },
   {
    "id": "E11",
@@ -338,7 +365,9 @@
     "R_v2_is",
     "R_v2_oos"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "845666f: LOCK_S = 4 h replaces the realised match end (src/v2.py). The 4 h value was specified in the verifier's T7 spec (research/v2/verify_v2/leakage_check.py docstring) before the run. Capital and return-on-capital accounting only; per-share P&L and Sharpe are unchanged."
   },
   {
    "id": "E12",
@@ -359,7 +388,9 @@
    "touches": [
     "R_forward"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "HYPOTHESIS_V2.md A1.5 and scripts/forward_test.py (845666f) redefine the forward primaries for power after a dry run on already-read OOS days. The forward test was never run (A5, 01c959c), so no printed result depends on it."
   },
   {
    "id": "E13",
@@ -386,7 +417,8 @@
    "touches": [
     "R_cv_prereg_record"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E14",
@@ -411,7 +443,9 @@
     "R_fresh",
     "R_cv_causal_points"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "2",
+   "class_evidence": "a5769c7: coverage_set in src/tier0.py ranks every universe match by pre-start volume instead of only the matches that later had a jump. The written rule, research/v2/tier0/PREREG.md:96-99 (file mtime 17:25:41 UTC, before the first P&L at 17:28:43), already says the N matches with the highest pre-start volume per start date, ex ante; research/v2/tier0/DEVIATIONS.md:31-38 calls the old code look-ahead. The pre-fix code is not in git, so the dates rest on file mtimes. The recorded direction is the covered-jump count; the P&L direction was not recorded."
   },
   {
    "id": "E15",
@@ -436,7 +470,8 @@
    "touches": [
     "R_v2_u2"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E16",
@@ -449,7 +484,7 @@
    "data_state": "burned",
    "direction": "n/a (new variant; selection in sample only)",
    "summary": "v2-safe grid declared to cut v2's losing days; v2's OOS loss profile (60% profitable days, worst day -$469) was known before the grid",
-   "printed_text": "The v2-safe variant was designed after v2's OOS losing days were known; it was selected on in-sample data only.",
+   "printed_text": "The v2-safe variant was designed with v2's in-sample and OOS loss profiles known; it was selected in sample by a pre-declared rule.",
    "evidence": [
     "research/v2/lowloss/GRID.md:1-6",
     "research/v2/lowloss/PREREG.md:8-11"
@@ -459,7 +494,9 @@
     "R_v2safe_oos",
     "R_v2safe_u2"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "4",
+   "class_evidence": "342d515: v2-safe is v2 with the net cap lowered from 100 to 50 (research/v2/lowloss/PREREG.md). research/v2/lowloss/GRID.md:3-6 (mtime 17:25:35 UTC, before any variant ran) discloses that v2's in-sample and OOS loss profiles were known; the goal at GRID.md:8-11 is generic (fewer losing days and matches), and the variant was selected by a pre-declared in-sample walk-forward rule (GRID.md:66-79). No contemporaneous text gives the OOS result as the motive, so the claim that the OOS drove the design is unsupported. It stays a dated post hoc disclosure."
   },
   {
    "id": "E17",
@@ -482,7 +519,8 @@
    "touches": [
     "R_v2safe_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E18",
@@ -505,7 +543,8 @@
    "touches": [
     "R_v2safe_u2"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E19",
@@ -533,7 +572,8 @@
     "R_cv_table2_pre",
     "R_cv_table2_post"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E20",
@@ -555,7 +595,8 @@
    "touches": [
     "R_v2_stress"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E21",
@@ -602,6 +643,15 @@
     "V4": "about neutral (one-change stress: OOS $47 vs $46/day)",
     "V5": "down (one-change stress: decay-window fills give OOS $56 vs $46/day)",
     "V6": "neutral (IS $308 -> $305/day at seed 0, inside Monte Carlo noise)"
+   },
+   "decision_class": "mixed",
+   "class_evidence": "a5769c7, src/tier0.py. V1 (class 3): correct-call fill price from the live book (live_edge_curve), because the pre-registered fill double-counts the edge (research/v2/tier0/DEVIATIONS.md:61-76); a fill-model correction. V2 (class 3): wrong calls priced from the same book for consistency with V1 (:78-87); both versions are reported. V4 (class 3): stale price +0.5c, measured on live jumps (:109-115). V5 (class 4): limit order with no fills at a moved price, because a 1 s venue delay means the order cannot see the book (:117-123); the verifiers' limit-order cell came first, PREREG.md had allowed decay-window fills, and no text gives the OOS as the reason, so it is a dated post hoc execution rule. V6 (class 2): coverage ranked across both periods, the literal rule at PREREG.md:96 (DEVIATIONS.md:125-130).",
+   "sub_classes": {
+    "V1": "3",
+    "V2": "3",
+    "V4": "3",
+    "V5": "4",
+    "V6": "2"
    }
   },
   {
@@ -631,7 +681,10 @@
     "R_capacity",
     "R_cv_causal_points"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "a5769c7: CORRECTED = Scenario(r_mode='tournament') replaces the pre-registered per-point draw of R (research/v2/tier0/PREREG.md:81,102). research/v2/tier0/DEVIATIONS.md:89-107 gives a modelling reason (per-point draws give implausible daily Sharpe; per-tournament draws keep the centre and add persistence). The builder added the tournament reading: the verifiers' code had per-point, constant and match-clustered draws only, so the attributions to the verifiers in research/v2/tier0/DEVIATIONS.md:156-157 and docs/QA_PREP.md:189 are wrong. Tournament cells were first computed in the 18:06-18:13 UTC run and the designation was saved at 18:14:43, so it cannot be shown that the designation preceded its own OOS value. A simulator assumption made the headline; no trading rule changed.",
+   "presentation_choice": true
   },
   {
    "id": "E23",
@@ -655,7 +708,9 @@
     "R_cv_table2_post",
     "R_cv_prereg_record"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "The CV headline switched from the pre-registered PRIMARY model to CORRECTED, with PRIMARY kept as prereg_record (research/v2/tier0/DEVIATIONS.md:152-158). A reporting change in the conservative direction; no trading rule chosen."
   },
   {
    "id": "E24",
@@ -677,7 +732,8 @@
     17
    ],
    "touches": [],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E25",
@@ -699,7 +755,8 @@
    "touches": [
     "R_capacity"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E26",
@@ -723,7 +780,8 @@
    "touches": [
     "R_maker"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E27",
@@ -744,7 +802,8 @@
    "touches": [
     "R_maker"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E28",
@@ -782,7 +841,8 @@
     77
    ],
    "touches": [],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E29",
@@ -806,7 +866,8 @@
     "R_v2_oos",
     "R_v2_stress"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E30",
@@ -829,7 +890,8 @@
    "touches": [
     "R_v2_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E31",
@@ -859,7 +921,8 @@
    "touches": [
     "R_tt"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E32",
@@ -888,7 +951,8 @@
    "touches": [
     "R_tt"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E33",
@@ -929,7 +993,8 @@
    "touches": [
     "R_tt"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E34",
@@ -952,7 +1017,8 @@
     "R_v2_oos",
     "R_maker"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E35",
@@ -977,7 +1043,8 @@
    "touches": [
     "R_v2_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E36",
@@ -1002,7 +1069,8 @@
    "touches": [
     "R_maker"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E36b",
@@ -1026,7 +1094,8 @@
    "touches": [
     "R_maker"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E37",
@@ -1055,7 +1124,8 @@
    "touches": [
     "R_cv_table2_pre"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E38",
@@ -1082,7 +1152,8 @@
    "touches": [
     "R_v3_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E39",
@@ -1105,7 +1176,8 @@
    "touches": [
     "R_v3_u2"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E40",
@@ -1130,7 +1202,8 @@
     "R_v3_oos",
     "R_v3_u2"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E41",
@@ -1162,7 +1235,10 @@
     "R_capacity",
     "R_cv_causal_points"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "84c3898 adds the readings tournament_lag1/lag3/lagcal to scripts/tier0_latency_sweep.py after f5ff9ff's OOS cells existed; 2724479 puts lagcal in the main table as 'calibrated, post hoc'. 3.14 s is a pre-registered grid level from live-day prints (research/v2/tier0/PREREG.md:45-52), and the trading rule is identical at every lag. The promotion to headline was performance-driven: PLAN.md (2724479) and research/compliance/PAPER_REQUIREMENTS.md (8a5ebd4) call it the best optimised estimate, and it raised the OOS number. The in-sample ordering is the same, so OOS-specific selection cannot be isolated. 913f5da put the pre-registered column first. A presentation choice; no trade changes.",
+   "presentation_choice": true
   },
   {
    "id": "E42",
@@ -1190,7 +1266,8 @@
    "touches": [
     "R_replay"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E43",
@@ -1222,7 +1299,9 @@
    "touches": [
     "R_capacity"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "6ecc04d: src/tier0.py gains depth_cap, extrap and alloc (off by default) and scripts/capacity_study.py, from the capacity verifier's findings; the commit message says no parameter was chosen on the OOS. Capacity accounting only."
   },
   {
    "id": "E44",
@@ -1251,7 +1330,10 @@
    "touches": [
     "R_replay"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "1",
+   "class_evidence": "62a273a declares an ex-ante swing filter T in {2, 4, 6}c and b20a4e4 runs it (research/replay/SELECTIVE.md); b20a4e4 says the variant was added after seeing the all-points replay and is not pre-registered. The all-points protocol 0e083ed was written before any P&L (run c6c728d). Log line 69 precedes the declaring commit, and b20a4e4 changed the script before the results. Data: the 9 forward-recorded matches that built the CV model's inputs, not held-out data. Exploratory; all three T values are reported.",
+   "pre_change_reference": "The all-points replay under protocol 0e083ed, written before any P&L (R_replay main rows)."
   },
   {
    "id": "E45",
@@ -1276,7 +1358,10 @@
     "R_cv_table2_pre",
     "R_cv_table2_post"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "3",
+   "class_evidence": "e1b5272 (docs/paper/STYLE_GUIDE.md) fixes the 1 s feed delay as the paper's base case after the sweep's OOS cells existed (f5ff9ff); stated basis: a licensed feed over WebRTC plus the measured pipeline. Disclosed as post hoc (research/compliance/INTEGRATION_TODO.md, docs/paper/note.tex). A presentation choice; the trading rule is unchanged and every latency tier is reported.",
+   "presentation_choice": true
   },
   {
    "id": "E46",
@@ -1298,7 +1383,8 @@
    "touches": [
     "R_cv_table2_pre"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E47",
@@ -1322,7 +1408,8 @@
     72
    ],
    "touches": [],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E48",
@@ -1368,7 +1455,8 @@
    "touches": [
     "R_tracking_spin"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E50",
@@ -1390,7 +1478,10 @@
    "touches": [
     "R_wcap_oos"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "1",
+   "class_evidence": "f35131a declares the per-wallet cap grid; research/v2/risk/GRID_wallet_cap.md:5-13 says the rule exists because of what the OOS showed (the wallet concentration measured in E35). The cap value W1000 was fixed in sample only (scripts/v2_wallet_cap.py; 4a5a19d at 05:34:45 UTC, before the 05:34:59 run E51). The OOS 'pass' (E51) is therefore not a test.",
+   "pre_change_reference": "Frozen causal v2 without a cap (R_v2_oos), itself shaped by E06 and non-blind."
   },
   {
    "id": "E51",
@@ -1413,7 +1504,8 @@
    "touches": [
     "R_wcap_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E52",
@@ -1448,7 +1540,8 @@
     "R_cv_table2_pre",
     "R_cv_table2_post"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E53",
@@ -1472,7 +1565,8 @@
    "touches": [
     "R_fresh"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E54",
@@ -1499,7 +1593,8 @@
    "touches": [
     "R_fresh"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E55",
@@ -1525,7 +1620,8 @@
    "touches": [
     "R_fresh"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E56",
@@ -1559,7 +1655,8 @@
    "touches": [
     "R_capacity"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E57",
@@ -1581,7 +1678,8 @@
    "touches": [
     "R_wcap_oos"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E58",
@@ -1603,7 +1701,8 @@
    "touches": [
     "R_fresh"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E59",
@@ -1630,7 +1729,8 @@
     "R_cv_table2_pre",
     "R_cv_table2_post"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E60",
@@ -1657,7 +1757,9 @@
     "R_v2_copier",
     "R_v2_strict"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "2",
+   "class_evidence": "844a978 adds strict detection labels (prints after the detection second; tapes carry no within-second order) and an executable copier priced after the network leg, taker hold and block lag; a63ec74 rejects fills beyond the recorded tape. Rule written before the change: a copier may act only after the detecting trade has arrived, with feed and order latency added, excluding the whole second when the order cannot be established (team repair rule 1, from the external review's defect D1); it completes D9's causal intent. For second-resolution stamps that rule forces the verifiers' T3f-style labels, so no variant was chosen on OOS values (oos_selected false); the frozen T3e rule is kept unchanged as the event study. The OOS recomputation is a second look at already-used data and stays non-blind."
   },
   {
    "id": "E61",
@@ -1684,7 +1786,9 @@
    "touches": [
     "R_cv_causal_points"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "decision_class": "2",
+   "class_evidence": "37e10c7 replaces the realised >= 4c jump set with a causal trade set: every point of every covered match, the frozen call model's measured calls and false calls, and ex-ante depth; be0c74b and 415f8db fix seed draws and parallel workers with identical results. Rule written before the change: the camera policy chooses points and direction from information available before the order (team repair rule 2, from the external review's defect D2). Cells, seeds, metrics and the primary cell are fixed in scripts/cv_causal_points.py, and no variant was chosen on OOS values (oos_selected false). The jump set stays as a labelled conditional benchmark; the OOS recomputation is non-blind."
   },
   {
    "id": "E62",
@@ -1712,7 +1816,8 @@
     "R_v2_copier",
     "R_v2_strict"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
   },
   {
    "id": "E63",
@@ -1742,7 +1847,41 @@
    "touches": [
     "R_cv_causal_points"
    ],
-   "oos_informed": false
+   "oos_informed": false,
+   "decision_class": "3"
+  },
+  {
+   "id": "E64",
+   "utc": "2026-10-04T05:34:34Z",
+   "time_source": "commit",
+   "commit": "dc95717",
+   "kind": "d",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "oos_selected": true,
+   "direction": "up vs V = 1 s (E45: V = 1 s shows lower P&L than V = 0.5 s)",
+   "summary": "The licensed 0.5 s feed, listed as the vendor-stated best case in the paper requirements at 8a5ebd4 (23:13:40 UTC), was made the main latency scenario: the fresh-holdout pre-registration (dc95717) fixes V = 0.5 s as its headline, and the team lead's latency framing shows 0.5 s first, then 1 s and 3 s. The sweep's OOS cells, V = 0.5 s included, existed from f5ff9ff (20:43:35 UTC).",
+   "printed_text": "The licensed 0.5 s feed was made the main latency scenario after the latency sweep's OOS cells had been computed.",
+   "evidence": [
+    "commit:dc95717",
+    "research/v2/tier0_v3/fresh/PREREG_FRESH.md:1",
+    "research/v2/tier0_v3/fresh/PREREG_FRESH.md:56-59",
+    "git:8a5ebd4:research/compliance/PAPER_REQUIREMENTS.md",
+    "git:f5ff9ff:scripts/tier0_latency_sweep.py",
+    "local:human_feedback.md section C (team-lead latency framing; not in the repository)"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_cv_causal_points",
+    "R_fresh"
+   ],
+   "decision_class": "3",
+   "class_evidence": "dc95717 pre-registers the licensed 0.5 s feed as the fresh-holdout headline (research/v2/tier0_v3/fresh/PREREG_FRESH.md), and the team lead's latency framing shows 0.5 s first, then 1 s and 3 s. The 0.5 s tier first appears in research/compliance/PAPER_REQUIREMENTS.md (8a5ebd4) as the vendor-stated best case; the sweep's OOS cells, V = 0.5 s included, existed from f5ff9ff. Stated basis: the standard setup a trading firm would buy. A presentation and scenario choice; the trading rule is unchanged.",
+   "presentation_choice": true,
+   "oos_informed": true
   }
  ],
  "results": [
@@ -1769,7 +1908,7 @@
    "period": "OOS",
    "kind": "event_study",
    "label": "clean-oos",
-   "label_text": "OOS, single pre-registered evaluation",
+   "label_text": "OOS, single pre-registered evaluation (shadow book at the fast tier's fills; ex-post event study)",
    "events": [
     "E02",
     "E03",
@@ -1922,7 +2061,7 @@
    "period": "OOS",
    "kind": "event_study",
    "label": "burned-non-blind",
-   "label_text": "OOS, non-blind (variant designed after v2's OOS losing days were known)",
+   "label_text": "OOS, non-blind (variant designed with v2's in-sample and OOS loss profiles known)",
    "flags": [
     "oos_informed_design",
     "oos_selected",
@@ -1944,7 +2083,7 @@
    "period": "U2",
    "kind": "event_study",
    "label": "blind",
-   "label_text": "Blind: unseen markets (U2), pre-registered; variant motivated by OOS losing days",
+   "label_text": "Blind: unseen markets (U2), pre-registered; variant designed with v2's OOS loss profile known",
    "flags": [
     "oos_informed_design",
     "oos_selected",
@@ -2024,7 +2163,8 @@
     "E45",
     "E46",
     "E52",
-    "E59"
+    "E59",
+    "E64"
    ],
    "paper_keys": [
     "cv.pre*",
@@ -2053,7 +2193,8 @@
     "E41",
     "E45",
     "E52",
-    "E59"
+    "E59",
+    "E64"
    ],
    "paper_keys": [
     "cv.cal*",
@@ -2079,7 +2220,8 @@
     "E22",
     "E41",
     "E61",
-    "E63"
+    "E63",
+    "E64"
    ],
    "paper_keys": [
     "cvx.*"
@@ -2107,7 +2249,8 @@
     "E53",
     "E54",
     "E55",
-    "E58"
+    "E58",
+    "E64"
    ],
    "paper_keys": [
     "fresh.*"
@@ -2244,7 +2387,7 @@
    "period": "test",
    "kind": "descriptive",
    "label": "clean-oos",
-   "label_text": "Held-out test videos, single pre-specified evaluation",
+   "label_text": "Held-out test videos, single pre-specified offline evaluation with a look-ahead feature",
    "events": [
     "E04"
    ]
@@ -3032,16 +3175,162 @@
   }
  ],
  "summary": {
-  "n_events": 65,
+  "n_events": 66,
   "n_events_by_kind": {
    "a": 10,
    "b": 11,
    "c": 19,
-   "d": 9,
+   "d": 10,
    "e": 8,
    "f": 5,
    "protocol": 3
   },
+  "n_events_by_class": {
+   "1": 3,
+   "2": 3,
+   "3": 54,
+   "4": 1,
+   "undetermined": 1,
+   "mixed": 1
+  },
+  "decision_units_by_class": {
+   "1": 3,
+   "2": 4,
+   "3": 12,
+   "4": 2,
+   "undetermined": 1
+  },
+  "new_policies_after_performance": [
+   {
+    "id": "E06",
+    "utc": "2026-10-03T13:23:07Z",
+    "family": "v2",
+    "data_state": "burned",
+    "held_out": true,
+    "printed_text": "v2 was designed after v1's OOS loss was known; its parameters were fitted on in-sample data only.",
+    "touches": [
+     "R_v2_is",
+     "R_v2_oos",
+     "R_v2_stress",
+     "R_v2_copier",
+     "R_v2_u2",
+     "R_v2safe_oos",
+     "R_v2safe_u2",
+     "R_wcap_oos",
+     "R_capacity",
+     "R_v2_strict"
+    ],
+    "pre_change_reference": "v1 and H1/H2/H5/H6, frozen in 9d61d1b (D6, E01) and evaluated once on clean OOS (E02): R_v1_oos and R_h1_h6_oos. R_v1_oos is a shadow book at the fast tier's onset-aligned fills, an observational event study and never attainable profit."
+   },
+   {
+    "id": "E44",
+    "utc": "2026-10-03T23:01:16Z",
+    "family": "replay",
+    "data_state": "forward",
+    "held_out": false,
+    "printed_text": "A selective replay variant was added after the all-points replay had been seen; it is exploratory.",
+    "touches": [
+     "R_replay"
+    ],
+    "pre_change_reference": "The all-points replay under protocol 0e083ed, written before any P&L (R_replay main rows)."
+   },
+   {
+    "id": "E50",
+    "utc": "2026-10-04T05:28:28Z",
+    "family": "v2",
+    "data_state": "burned",
+    "held_out": true,
+    "printed_text": "The per-wallet cap was designed because the OOS showed five wallets carried 142% of v2's OOS P&L; it was selected in sample.",
+    "touches": [
+     "R_wcap_oos"
+    ],
+    "pre_change_reference": "Frozen causal v2 without a cap (R_v2_oos), itself shaped by E06 and non-blind."
+   }
+  ],
+  "mechanical_corrections": [
+   {
+    "id": "E14",
+    "family": "cv",
+    "kind": "e",
+    "data_state": "burned",
+    "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)"
+   },
+   {
+    "id": "E21:V6",
+    "family": "cv",
+    "kind": "e",
+    "data_state": "burned",
+    "direction": "neutral (IS $308 -> $305/day at seed 0, inside Monte Carlo noise)"
+   },
+   {
+    "id": "E60",
+    "family": "v2",
+    "kind": "e",
+    "data_state": "burned",
+    "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)"
+   },
+   {
+    "id": "E61",
+    "family": "cv",
+    "kind": "e",
+    "data_state": "burned",
+    "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)"
+   }
+  ],
+  "undetermined_decisions": [
+   {
+    "id": "E10",
+    "family": "v2",
+    "oos_selected": true,
+    "printed_text": "To remove onset hindsight, v2 adopted causal window T3e after seven variants had OOS values; only T3e's interval excluded zero; no selection reason was recorded."
+   }
+  ],
+  "unsupported_oos_allegations": [
+   {
+    "id": "E16",
+    "family": "v2",
+    "kind": "d",
+    "data_state": "burned",
+    "direction": "n/a (new variant; selection in sample only)"
+   },
+   {
+    "id": "E21:V5",
+    "family": "cv",
+    "kind": "e",
+    "data_state": "burned",
+    "direction": "down (one-change stress: decay-window fills give OOS $56 vs $46/day)"
+   }
+  ],
+  "presentation_choices_after_oos": [
+   {
+    "id": "E22",
+    "family": "cv",
+    "direction": "up vs the pre-registered per-point timing at stamp lag 2.0 s (IS $66 -> $89/day, OOS $20 -> $46/day)",
+    "oos_selected": true,
+    "printed_text": "The per-tournament CV timing reading was made the headline after OOS results existed; it raised OOS P&L over the pre-registered per-point reading."
+   },
+   {
+    "id": "E41",
+    "family": "cv",
+    "direction": "up (V = 1 s OOS: +$4/day at stamp lag 2.0 s -> +$57/day at 3.14 s)",
+    "oos_selected": true,
+    "printed_text": "The calibrated 3.14 s stamp-lag reading was made the post hoc CV headline after OOS sweep cells existed; it raised OOS P&L."
+   },
+   {
+    "id": "E45",
+    "family": "cv",
+    "direction": "down vs V = 0.5 s (V = 1 s shows lower P&L)",
+    "oos_selected": true,
+    "printed_text": "The 1 s feed-delay base case was fixed after the latency sweep's OOS cells had been computed."
+   },
+   {
+    "id": "E64",
+    "family": "cv",
+    "direction": "up vs V = 1 s (E45: V = 1 s shows lower P&L than V = 0.5 s)",
+    "oos_selected": true,
+    "printed_text": "The licensed 0.5 s feed was made the main latency scenario after the latency sweep's OOS cells had been computed."
+   }
+  ],
   "oos_informed_decisions": [
    {
     "id": "E05",
@@ -3051,6 +3340,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
     "oos_selected": false,
+    "decision_class": "3",
     "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model's offline evaluation then scores 8/8 instead of 11/11."
    },
    {
@@ -3061,6 +3351,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "n/a (new rule fitted in sample only)",
     "oos_selected": false,
+    "decision_class": "1",
     "printed_text": "v2 was designed after v1's OOS loss was known; its parameters were fitted on in-sample data only."
    },
    {
@@ -3071,7 +3362,8 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
     "oos_selected": true,
-    "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero."
+    "decision_class": "undetermined",
+    "printed_text": "To remove onset hindsight, v2 adopted causal window T3e after seven variants had OOS values; only T3e's interval excluded zero; no selection reason was recorded."
    },
    {
     "id": "E11",
@@ -3081,6 +3373,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "none on per-share P&L and Sharpe (leakage_check T7); return on capital changes",
     "oos_selected": false,
+    "decision_class": "3",
     "printed_text": "Capital lock-up was set to an ex-ante 4 hours after an OOS look; per-share P&L and Sharpe did not change."
    },
    {
@@ -3091,6 +3384,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "n/a (the forward test was never run)",
     "oos_selected": false,
+    "decision_class": "3",
     "printed_text": "Forward-test primary metrics were redefined after a dry run on OOS days; the forward test was never run."
    },
    {
@@ -3101,6 +3395,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)",
     "oos_selected": false,
+    "decision_class": "2",
     "printed_text": "A look-ahead in CV camera coverage was fixed after the first CV P&L, including OOS, existed; the fix lowered coverage."
    },
    {
@@ -3111,7 +3406,8 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "n/a (new variant; selection in sample only)",
     "oos_selected": false,
-    "printed_text": "The v2-safe variant was designed after v2's OOS losing days were known; it was selected on in-sample data only."
+    "decision_class": "4",
+    "printed_text": "The v2-safe variant was designed with v2's in-sample and OOS loss profiles known; it was selected in sample by a pre-declared rule."
    },
    {
     "id": "E21",
@@ -3121,6 +3417,14 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
     "oos_selected": false,
+    "decision_class": "mixed",
+    "sub_classes": {
+     "V1": "3",
+     "V2": "3",
+     "V4": "3",
+     "V5": "4",
+     "V6": "2"
+    },
     "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
    },
    {
@@ -3131,6 +3435,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "up vs the pre-registered per-point timing at stamp lag 2.0 s (IS $66 -> $89/day, OOS $20 -> $46/day)",
     "oos_selected": true,
+    "decision_class": "3",
     "printed_text": "The per-tournament CV timing reading was made the headline after OOS results existed; it raised OOS P&L over the pre-registered per-point reading."
    },
    {
@@ -3141,6 +3446,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "down (the pre-registered headline overstated the corrected one about 3x in sample and 5x out of sample)",
     "oos_selected": false,
+    "decision_class": "3",
     "printed_text": "The CV headline was switched from the pre-registered model to the corrected model after OOS results existed; this lowered it about 3-5x."
    },
    {
@@ -3151,6 +3457,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "up (V = 1 s OOS: +$4/day at stamp lag 2.0 s -> +$57/day at 3.14 s)",
     "oos_selected": true,
+    "decision_class": "3",
     "printed_text": "The calibrated 3.14 s stamp-lag reading was made the post hoc CV headline after OOS sweep cells existed; it raised OOS P&L."
    },
    {
@@ -3161,6 +3468,7 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "down vs V = 0.5 s (V = 1 s shows lower P&L)",
     "oos_selected": true,
+    "decision_class": "3",
     "printed_text": "The 1 s feed-delay base case was fixed after the latency sweep's OOS cells had been computed."
    },
    {
@@ -3171,6 +3479,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
     "oos_selected": false,
+    "decision_class": "3",
     "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly."
    },
    {
@@ -3181,7 +3490,19 @@
     "kind_label": "design/headline choice after an OOS look",
     "direction": "n/a (new rule; selection in sample only)",
     "oos_selected": false,
+    "decision_class": "1",
     "printed_text": "The per-wallet cap was designed because the OOS showed five wallets carried 142% of v2's OOS P&L; it was selected in sample."
+   },
+   {
+    "id": "E64",
+    "utc": "2026-10-04T05:34:34Z",
+    "family": "cv",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "up vs V = 1 s (E45: V = 1 s shows lower P&L than V = 0.5 s)",
+    "oos_selected": true,
+    "decision_class": "3",
+    "printed_text": "The licensed 0.5 s feed was made the main latency scenario after the latency sweep's OOS cells had been computed."
    },
    {
     "id": "E60",
@@ -3191,6 +3512,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)",
     "oos_selected": false,
+    "decision_class": "2",
     "printed_text": "After review, v2 and its copier were re-timed to use only prints after the detecting print's second; the copier's estimates stay negative."
    },
    {
@@ -3201,6 +3523,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)",
     "oos_selected": false,
+    "decision_class": "2",
     "printed_text": "After review, simulated CV trades were taken on every point from the call model's calls, not only on later price jumps; this lowered simulated P&L."
    }
   ],
@@ -3212,55 +3535,71 @@
    "E23",
    "E41",
    "E45",
-   "E50"
+   "E50",
+   "E64"
   ],
   "defect_fixes_after_oos": [
    {
     "id": "E05",
     "family": "tracking",
     "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
+    "decision_class": "3",
     "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model's offline evaluation then scores 8/8 instead of 11/11."
    },
    {
     "id": "E10",
     "family": "v2",
     "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
-    "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero."
+    "decision_class": "undetermined",
+    "printed_text": "To remove onset hindsight, v2 adopted causal window T3e after seven variants had OOS values; only T3e's interval excluded zero; no selection reason was recorded."
    },
    {
     "id": "E11",
     "family": "v2",
     "direction": "none on per-share P&L and Sharpe (leakage_check T7); return on capital changes",
+    "decision_class": "3",
     "printed_text": "Capital lock-up was set to an ex-ante 4 hours after an OOS look; per-share P&L and Sharpe did not change."
    },
    {
     "id": "E14",
     "family": "cv",
     "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)",
+    "decision_class": "2",
     "printed_text": "A look-ahead in CV camera coverage was fixed after the first CV P&L, including OOS, existed; the fix lowered coverage."
    },
    {
     "id": "E21",
     "family": "cv",
     "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
+    "decision_class": "mixed",
+    "sub_classes": {
+     "V1": "3",
+     "V2": "3",
+     "V4": "3",
+     "V5": "4",
+     "V6": "2"
+    },
     "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
    },
    {
     "id": "E43",
     "family": "capacity",
     "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
+    "decision_class": "3",
     "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly."
    },
    {
     "id": "E60",
     "family": "v2",
     "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)",
+    "decision_class": "2",
     "printed_text": "After review, v2 and its copier were re-timed to use only prints after the detecting print's second; the copier's estimates stay negative."
    },
    {
     "id": "E61",
     "family": "cv",
     "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)",
+    "decision_class": "2",
     "printed_text": "After review, simulated CV trades were taken on every point from the call model's calls, not only on later price jumps; this lowered simulated P&L."
    }
   ],

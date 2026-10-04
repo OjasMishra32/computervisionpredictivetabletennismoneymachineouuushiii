@@ -12,6 +12,13 @@ read logs and to committed evidence. Events and results are written by hand. The
 derived and must never be edited by hand: events[].oos_informed, log_lines, summary. `build`
 writes them; `check` fails if they differ from a recomputation.
 
+oos_informed is chronological only: a kind d or e event after a held-out look. What actually happened is
+recorded by hand in events[].decision_class (DECISION_CLASSES), from the actual code or configuration change and
+its contemporaneous evidence (class_evidence): 1 a new policy, parameter or variant chosen with knowledge of its
+evaluation performance, 2 a mechanical correction to a rule written before the change, 3 no strategy decision,
+4 unsupported (no evidence that held-out results drove the change), or undetermined. Reads, reruns and downloads
+are class 3 and never evidence of tuning.
+
 `check` fails on a malformed event (missing or ill-typed field, unknown kind or state), on an
 unsupported event (commit missing or not an ancestor of HEAD, evidence file not in git, log line
 out of range or out of time order, pre-registration committed after the read without saying so),
@@ -55,6 +62,18 @@ PERIODS = ("IS", "OOS", "U2", "fresh", "test", "side_markets", "tt", "forward", 
 RESULT_KINDS = ("executable", "sim_upper_bound", "others_fills", "conditional", "event_study",
                 "descriptive", "diagnostic")
 LABELS = ("in-sample", "clean-oos", "blind", "post-freeze", "burned-non-blind", "exploratory", "not-run")
+# What a decision actually was, from the code or configuration change and contemporaneous evidence (not chronology).
+DECISION_CLASSES = {
+    "1": "new policy, parameter or variant chosen with knowledge of its evaluation performance",
+    "2": "mechanical correction of the implementation to a rule written before the change",
+    "3": "no strategy decision: an evaluation, reproduction or diagnostic, or a model, accounting or presentation "
+         "change that selects no trading rule on performance",
+    "4": "unsupported: a real change made after an OOS look, but no contemporaneous evidence shows that held-out "
+         "results drove it",
+    "undetermined": "the record shows the chronology but not the motive of the choice; neither class 1 nor class 2 "
+                    "can be shown",
+}
+MIXED = "mixed"  # a kind d/e event whose sub_decisions carry their own classes (sub_classes)
 FORBIDDEN_WORDS = re.compile(r"\bburned\b", re.I)  # never printed (paper rule)
 UTC_RE = re.compile(r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$")
 SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
@@ -153,6 +172,15 @@ def oos_informed(ev: dict) -> bool:
     return ev.get("kind") in ("d", "e") and ev.get("data_state") in OOS_STATES
 
 
+def decision_units(ev: dict) -> list[tuple[str, str | None, str | None]]:
+    """(unit id, class, direction) of a kind d/e event: the event itself, or one unit per sub-decision of a mixed
+    event (id "E21:V6"), in sub_decisions order."""
+    if ev.get("decision_class") == MIXED:
+        sc, sd = ev.get("sub_classes") or {}, ev.get("sub_directions") or {}
+        return [(f"{ev['id']}:{k}", sc.get(k), sd.get(k, ev.get("direction"))) for k in ev.get("sub_decisions", [])]
+    return [(ev["id"], ev.get("decision_class"), ev.get("direction"))]
+
+
 def derive_label(result: dict, evs: list[dict]) -> str:
     """The result label from label_rules, computed from the result's period and its events."""
     if result.get("period") == "IS":
@@ -208,17 +236,47 @@ def compute_summary(reg: dict, logs: dict[str, list[str]]) -> dict:
     res_by_label: dict[str, list[str]] = {}
     for r in reg.get("results", []):
         res_by_label.setdefault(r.get("label"), []).append(r.get("id"))
+    decs = [e for e in by_time if e.get("kind") in ("d", "e")]
+    units = [(e, u) for e in decs for u in decision_units(e)]
+
+    def unit_list(cls: str) -> list[dict]:
+        return [{"id": uid, "family": e["family"], "kind": e["kind"], "data_state": e.get("data_state"),
+                 "direction": d} for e, (uid, c, d) in units if c == cls]
+
+    def classes(e: dict) -> dict:
+        out = {"decision_class": e.get("decision_class")}
+        if e.get("decision_class") == MIXED:
+            out["sub_classes"] = {k: (e.get("sub_classes") or {}).get(k) for k in e.get("sub_decisions", [])}
+        return out
+
     return {
         "n_events": len(evs),
         "n_events_by_kind": {k: sum(1 for e in evs if e.get("kind") == k) for k in KINDS},
+        "n_events_by_class": {c: sum(1 for e in evs if e.get("kind") != "protocol" and e.get("decision_class") == c)
+                              for c in (*DECISION_CLASSES, MIXED)},
+        "decision_units_by_class": {c: sum(1 for _, u in units if u[1] == c) for c in DECISION_CLASSES},
+        "new_policies_after_performance": [
+            {"id": e["id"], "utc": e["utc"], "family": e["family"], "data_state": e.get("data_state"),
+             "held_out": e.get("data_state") in OOS_STATES, "printed_text": e.get("printed_text"),
+             "touches": list(e.get("touches", [])), "pre_change_reference": e.get("pre_change_reference")}
+            for e in decs if e.get("decision_class") == "1"],
+        "mechanical_corrections": unit_list("2"),
+        "undetermined_decisions": [
+            {"id": e["id"], "family": e["family"], "oos_selected": bool(e.get("oos_selected")),
+             "printed_text": e.get("printed_text")} for e in decs if e.get("decision_class") == "undetermined"],
+        "unsupported_oos_allegations": unit_list("4"),
+        "presentation_choices_after_oos": [
+            {"id": e["id"], "family": e["family"], "direction": e.get("direction"),
+             "oos_selected": bool(e.get("oos_selected")), "printed_text": e.get("printed_text")}
+            for e in decs if e.get("presentation_choice") and oos_informed(e)],
         "oos_informed_decisions": [
             {"id": e["id"], "utc": e["utc"], "family": e["family"], "kind": e["kind"],
              "kind_label": KIND_LABELS[e["kind"]], "direction": e.get("direction"),
-             "oos_selected": bool(e.get("oos_selected")), "printed_text": e.get("printed_text")}
+             "oos_selected": bool(e.get("oos_selected")), **classes(e), "printed_text": e.get("printed_text")}
             for e in by_time if oos_informed(e)],
         "design_choices_after_oos": [e["id"] for e in by_time if e["kind"] == "d" and oos_informed(e)],
         "defect_fixes_after_oos": [
-            {"id": e["id"], "family": e["family"], "direction": e.get("direction"),
+            {"id": e["id"], "family": e["family"], "direction": e.get("direction"), **classes(e),
              "printed_text": e.get("printed_text")}
             for e in by_time if e["kind"] == "e" and oos_informed(e)],
         "decisions_after_non_oos_look": [e["id"] for e in by_time
@@ -297,6 +355,8 @@ def validate(reg: dict, repo: Path = ROOT, git: Git | None = None,
             E(f"missing top-level key {key!r}")
     if reg.get("kind_labels") not in (None, KIND_LABELS):
         E("kind_labels differ from scripts/provenance.py KIND_LABELS")
+    if reg.get("decision_classes") not in (None, DECISION_CLASSES):
+        E("decision_classes differ from scripts/provenance.py DECISION_CLASSES")
     if errs:
         return errs
 
@@ -368,6 +428,37 @@ def validate(reg: dict, repo: Path = ROOT, git: Git | None = None,
                 E(p + "kinds d and e need printed_text")
         if "oos_selected" in ev and (not isinstance(ev["oos_selected"], bool) or kind not in ("d", "e")):
             E(p + "oos_selected must be a bool on a kind d or e event")
+        # decision class: what the change actually was (chronology alone is oos_informed)
+        dc = ev.get("decision_class")
+        if kind == "protocol":
+            if dc is not None:
+                E(p + "protocol events read no data and carry no decision_class")
+        elif dc not in DECISION_CLASSES and dc != MIXED:
+            E(p + f"decision_class {dc!r} not in {(*DECISION_CLASSES, MIXED)}")
+        elif kind in ("a", "b", "c", "f"):
+            if dc != "3":
+                E(p + "kinds a, b, c and f choose nothing: decision_class must be '3'")
+        else:
+            if not isinstance(ev.get("class_evidence"), str) or not ev["class_evidence"].strip():
+                E(p + "kinds d and e need class_evidence (the actual change and its contemporaneous evidence)")
+            if dc == MIXED:
+                sc, sd = ev.get("sub_classes"), ev.get("sub_decisions")
+                if (not isinstance(sc, dict) or not isinstance(sd, list) or sorted(sc) != sorted(sd)
+                        or any(v not in DECISION_CLASSES for v in sc.values())):
+                    E(p + "decision_class 'mixed' needs sub_classes giving a class to every sub_decision")
+            for uid, c, _ in decision_units(ev):
+                if c == "1" and kind != "d":
+                    E(p + f"{uid}: class 1 (a new policy) must be a kind d event")
+                if c == "2" and kind != "e":
+                    E(p + f"{uid}: class 2 (a mechanical correction) must be a kind e event")
+        if "sub_classes" in ev and dc != MIXED:
+            E(p + "sub_classes needs decision_class 'mixed'")
+        if "presentation_choice" in ev and (ev["presentation_choice"] is not True or kind != "d" or dc != "3"):
+            E(p + "presentation_choice must be true and only on a kind d event of class 3")
+        if "pre_change_reference" in ev and dc != "1":
+            E(p + "pre_change_reference belongs to class 1 events")
+        if dc == "1" and not str(ev.get("pre_change_reference", "")).strip():
+            E(p + "class 1 events need pre_change_reference (the result before the change)")
         if "printed_text" in ev:
             pt = ev["printed_text"]
             if not isinstance(pt, str) or word_count(pt) > MAX_PRINTED_WORDS:
@@ -571,6 +662,7 @@ def main(argv: list[str] | None = None) -> int:
     unmatched = sorted(k for k, v in cov.items() if v == 0)
     print(f"provenance: OK {len(reg['events'])} events, {len(reg['results'])} results, "
           f"{s['log_lines_total']} log lines mapped, {len(s['oos_informed_decisions'])} decisions after an OOS look"
+          + "; decision units by class " + " ".join(f"{k}={v}" for k, v in s.get("decision_units_by_class", {}).items())
           + (f"; paper_keys with no match in numbers.json: {', '.join(unmatched)}" if unmatched else ""))
     return 0
 

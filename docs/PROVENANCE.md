@@ -30,7 +30,7 @@ pytest tests/test_provenance.py
 
 | field | meaning |
 |---|---|
-| `id` | `E00`..`E59`, plus a letter for a split event (`E36b`) |
+| `id` | `E00`..`E64`, plus a letter for a split event (`E36b`) |
 | `utc`, `utc_end` | start of the event and, if it spans several lines, its last line (UTC, to the second) |
 | `time_source` | `log` (earliest own log line), `commit`, `mtime` (local file times), `document`; free text may follow |
 | `commit` | commit that records the event (its results, decision text or log line); `commit_role: "code"` when it is instead the code that ran, committed before the event |
@@ -47,6 +47,11 @@ pytest tests/test_provenance.py
 | `evidence` | at least one verifiable item: a tracked path (optionally `:a-b` line range), `git:<rev>:<path>` or `commit:<rev>`; `local:<path>` marks an untracked file on the authors' machine and never counts as support |
 | `touches` | result ids this event produced or shaped |
 | `oos_informed` | derived: kind `d` or `e` after a look at OOS or held-out data (not forward recordings) |
+| `decision_class` | what the change actually was (see "Decision classes"); `3` for kinds `a`, `b`, `c`, `f`; absent on `protocol` |
+| `class_evidence` | required for kinds `d` and `e`: the actual code or configuration change and its contemporaneous evidence |
+| `sub_classes` | for `decision_class: "mixed"` (E21): a class per entry of `sub_decisions` |
+| `presentation_choice` | a class-3 headline or scenario choice made after OOS cells existed; it changes no trade |
+| `pre_change_reference` | required for class 1: the result before the change |
 
 `oos_informed` is the registry's chronological flag for a design choice or defect correction after
 a held-out look. It does not by itself establish that performance drove a change. The separate
@@ -64,6 +69,28 @@ Kinds:
 | `e` | defect fix after an OOS look (with direction) |
 | `f` | blind or post-freeze evaluation |
 | `protocol` | protocol change that read no data |
+
+## Decision classes
+
+Each `d`/`e` event is classified from the code or configuration change it made and the evidence written at the
+time, following the verified decision trace of 2026-10-04 (the reviewer's corrections prevail over the first
+draft):
+
+| class | meaning | events |
+|---|---|---|
+| `1` | new policy, parameter or variant chosen with knowledge of its evaluation performance | E06 (v2), E50 (per-wallet cap), E44 (selective replay; exploratory, on the calibration matches, not held-out data) |
+| `2` | mechanical correction of the implementation to a rule written before the change | E14 (T1), E21 V6, E60 (strict timing), E61 (causal CV trade set) |
+| `3` | no strategy decision: evaluation, reproduction, diagnostic, or a model, accounting or presentation change | every `a`/`b`/`c`/`f` event; E05, E11, E12, E21 V1/V2/V4, E23, E43; presentation choices E22, E41, E45, E64 |
+| `4` | unsupported: real change after an OOS look, but no evidence that held-out results drove it | E16 (v2-safe), E21 V5 (limit order) |
+| `undetermined` | chronology recorded, motive not: neither class 1 nor class 2 can be shown | E10 (causal window T3e) |
+
+`oos_selected` stays a chronological record (E10, E22, E41, E45, E64). A class changes no label: everything
+evaluated on the August 25 to October 3 window stays non-blind, a mechanical correction is not a clean
+pre-registration, and the U2 tests of v2 and v2-safe stay blind because their pre-registration and freezes
+preceded the first U2 read. `summary` lists the classes (`decision_units_by_class`,
+`new_policies_after_performance` with the results each touches, `mechanical_corrections`,
+`undetermined_decisions`, `unsupported_oos_allegations`, `presentation_choices_after_oos`); E21's
+sub-decisions count as separate units.
 
 ## Results
 
@@ -114,7 +141,8 @@ with the longer calendar-time window. External-validation feasibility is assesse
    `e` for a defect fix after an OOS look (with `direction` and `printed_text`), kind `f` only for
    data first read after a freeze commit. A re-run on the old OOS period is never `f` or blind.
    If the commit that records the run is the same one that adds the event, set `commit` to the
-   code commit and `commit_role: "code"`.
+   code commit and `commit_role: "code"`. Set `decision_class` (`3` for every read or re-run) and, for
+   kinds `d` and `e`, `class_evidence` from the actual change and the evidence written at the time.
 3. Add the event id to the `touches` of the results it changes, and add new results with their
    `period`, `kind`, `label_text` and `paper_keys`.
 4. `python scripts/provenance.py build && python scripts/provenance.py check`, then commit the

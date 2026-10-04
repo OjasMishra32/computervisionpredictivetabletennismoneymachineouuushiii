@@ -90,7 +90,30 @@ def test_known_decisions_are_registered():
     """The OOS-informed design choices verified against the evidence stay in the registry."""
     s = load_registry()["summary"]
     assert {"E06", "E10", "E16", "E22", "E41", "E45", "E50"} <= {d["id"] for d in s["oos_informed_decisions"]}
-    assert {d["id"] for d in s["oos_informed_decisions"] if d["oos_selected"]} == {"E10", "E22", "E41", "E45"}
+    assert {d["id"] for d in s["oos_informed_decisions"] if d["oos_selected"]} == {"E10", "E22", "E41", "E45", "E64"}
+
+
+def test_decision_classes_follow_the_verified_trace():
+    """Classes come from the actual change and contemporaneous evidence (verified decision trace), not chronology."""
+    reg = load_registry()
+    s = reg["summary"]
+    assert reg["decision_classes"] == P.DECISION_CLASSES
+    assert {d["id"] for d in s["new_policies_after_performance"]} == {"E06", "E50", "E44"}
+    assert {d["id"]: d["held_out"] for d in s["new_policies_after_performance"]} == {
+        "E06": True, "E50": True, "E44": False}  # E44: calibration matches, not held-out data
+    assert {d["id"] for d in s["mechanical_corrections"]} == {"E14", "E21:V6", "E60", "E61"}
+    assert {d["id"] for d in s["undetermined_decisions"]} == {"E10"}
+    assert {d["id"] for d in s["unsupported_oos_allegations"]} == {"E16", "E21:V5"}
+    assert {d["id"] for d in s["presentation_choices_after_oos"]} == {"E22", "E41", "E45", "E64"}
+    assert s["decision_units_by_class"] == {"1": 3, "2": 4, "3": 12, "4": 2, "undetermined": 1}
+    # chronology is kept: oos_selected stays on E10 and E41; the U2 tests stay blind and v3 on U2 post-freeze
+    ev = {e["id"]: e for e in reg["events"]}
+    assert ev["E10"]["oos_selected"] and ev["E41"]["oos_selected"]
+    labels = {r["id"]: r["label"] for r in reg["results"]}
+    assert labels["R_v2_u2"] == labels["R_v2safe_u2"] == "blind" and labels["R_v3_u2"] == "post-freeze"
+    for e in reg["events"]:
+        if e["kind"] in ("a", "b", "c", "f"):
+            assert e["decision_class"] == "3", e["id"]
 
 
 def test_log_timestamps_normalised_to_utc():
@@ -134,9 +157,11 @@ def fixture(tmp_path: Path):
         "2026-10-03T07:05:00-04:00 reproduction\n"
         "2026-10-03T12:00:00+00:00 blind read\n")
     (tmp_path / "NOTES.md").write_text("\n".join(f"line {i}" for i in range(1, 11)) + "\n")
-    base = dict(time_source="log", decision=False, summary="s", evidence=["NOTES.md:1-5"], touches=[])
+    base = dict(time_source="log", decision=False, summary="s", evidence=["NOTES.md:1-5"], touches=[],
+                decision_class="3")
+    proto = {k: v for k, v in base.items() if k != "decision_class"}
     events = [
-        dict(base, id="E00", utc="2026-10-03T09:00:00Z", time_source="commit", commit="aaaaaaa", kind="protocol",
+        dict(proto, id="E00", utc="2026-10-03T09:00:00Z", time_source="commit", commit="aaaaaaa", kind="protocol",
              family="v1", oos_log_lines=[]),
         dict(base, id="E01", utc="2026-10-03T10:00:00Z", commit="bbbbbbb", prereg_commit="aaaaaaa", kind="a",
              family="v1", data_state="clean", oos_log_lines=[1], touches=["R_oos"]),
@@ -193,6 +218,10 @@ def test_fixture_is_valid(tmp_path):
     (lambda r: r["results"][0].update(label="blind"), "label_rules give 'clean-oos'"),
     (lambda r: r["results"][0].update(label_text="burned OOS"), "must not say 'burned'"),
     (lambda r: r["results"][0].update(events=["E01"]), "differ from the events that touch it"),
+    (lambda r: r["events"][1].pop("decision_class"), "decision_class None"),
+    (lambda r: r["events"][1].update(decision_class="1"), "must be '3'"),
+    (lambda r: r["events"][0].update(decision_class="3"), "carry no decision_class"),
+    (lambda r: r["events"][1].update(presentation_choice=True), "presentation_choice must be"),
 ], ids=lambda x: x if isinstance(x, str) else "")
 def test_validator_rejects(tmp_path, mutate, needle):
     reg, git, logs = fixture(tmp_path)
@@ -213,6 +242,18 @@ def test_decision_events_need_direction_and_printed_text(tmp_path):
     errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
     assert any("must not say 'burned'" in e for e in errs)
     reg["events"][-1].update(printed_text="A design choice was made after an OOS look.")
+    errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
+    assert any("decision_class None" in e for e in errs)
+    reg["events"][-1].update(decision_class="3")
+    errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
+    assert any("need class_evidence" in e for e in errs)
+    reg["events"][-1].update(decision_class="2",class_evidence="NOTES.md:1 states the rule before the change.")
+    errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
+    assert any("class 2 (a mechanical correction) must be a kind e event" in e for e in errs)
+    reg["events"][-1].update(decision_class="1")
+    errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
+    assert any("need pre_change_reference" in e for e in errs)
+    reg["events"][-1].update(pre_change_reference="R_oos before the change")
     errs = errors(rebuilt(reg, logs), git, logs, tmp_path)
     # the d event makes the OOS result non-blind and demands the flag
     assert any("label_rules give 'burned-non-blind'" in e for e in errs)
