@@ -55,8 +55,10 @@ step s02_inputs -- $PY scripts/reproduce_inputs.py
 step s03_v2_causal --out results/v2/causal.json -- $PY scripts/v2_causal.py
 step s03_v2_cost --out results/v2/cost_stress.json -- $PY scripts/v2_cost_stress.py
 step s03_note_metrics --out results/v2/note_metrics.json -- $PY scripts/note_metrics.py
-# ---- corrected headline producers (executable v2 copier timing, causal camera policy cells) are added here, each
-# ---- with --out for every file the paper cites; scripts/repro/artifacts.py check fails the run otherwise.
+# ---- corrected headline producers: v2 strict timing + executable copier (D1), causal every-point CV book (D2).
+# ---- Both re-read the OOS prints of already-evaluated periods (lines go to results/repro/reads.log).
+step s03_v2_strict --out results/v2/strict_causal.json -- $PY scripts/v2_strict.py --oos
+step s03_cv_causal --out results/tier0/causal_points.json -- $PY scripts/cv_causal_points.py --oos --workers 3
 
 # ---- s04 descriptive tables and figures
 step s04_v2_figures -- $PY scripts/v2_figures.py
