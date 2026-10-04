@@ -304,14 +304,16 @@
   },
   "cv.pool482.oos.c": {
    "value": 0.25,
-   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0)"
+   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0)",
+   "label": "jump set (points that later moved >=4c); timing and depth drawn from all 482 live points; not an all-points book"
   },
   "cv.pool482.oos.ci": {
    "value": [
     -0.35,
     0.86
    ],
-   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*"
+   "source": "results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*",
+   "label": "jump set (points that later moved >=4c); timing and depth drawn from all 482 live points; not an all-points book"
   },
   "cv.netcap1000.oos.usd": {
    "value": -51,
