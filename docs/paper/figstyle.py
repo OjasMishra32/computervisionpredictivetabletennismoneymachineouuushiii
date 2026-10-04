@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import itertools
 import math
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import matplotlib
@@ -38,9 +39,10 @@ FONTS = ROOT / "docs/paper/fonts"
 # ------------------------------------------------------------------------------------------------ palette
 ORANGE = "#E8601C"        # our CV strategy / our pipeline
 ORANGE_LIGHT = "#F4AE88"  # a second reading of ours (e.g. a nearby stamp lag), only next to ORANGE
-INK = "#222222"           # v2 / pre-registered reading / neutral emphasis
-GREY = "#8C8C8C"          # others / everyone else
-GREY_LIGHT = "#B8B8B8"    # a third, recessive series
+ORANGE_LIGHT_TEXT = "#D9824F"  # ORANGE_LIGHT is too pale for 9 pt text: its labels use this
+INK = "#222222"           # v2 / pre-registered reading only (not a generic dark series colour)
+GREY = "#8C8C8C"          # others / everyone else / any secondary series
+GREY_LIGHT = "#B8B8B8"    # placeholder frames only: never a line, marker or bar colour (vanishes in print)
 SHADE = "#EFEFEF"         # OOS period shading
 BAND = "#E2E2E2"          # source / range bands
 GRID = "#E6E6E6"
@@ -106,15 +108,28 @@ def apply() -> None:
 
 
 # ------------------------------------------------------------------------------------------------ numbers
+def r(x: float, nd: int = 1) -> float:
+    """Round half up on the decimal value as written (11.95 -> 12.0), not on its binary approximation (Python's
+    f-string gives 11.9). Every number printed in a figure goes through this."""
+    q = Decimal(1).scaleb(-nd)
+    return float(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
+
+
+def f(x: float, nd: int = 1) -> str:
+    """``x`` with ``nd`` decimals, rounded half up, true minus sign."""
+    return f"{r(x, nd):.{nd}f}".replace("-", MINUS)
+
+
 def num(x: float, nd: int = 1, sign: bool = False) -> str:
-    """Number with a true minus sign; ``sign`` adds a plus to positives."""
-    s = f"{x:+,.{nd}f}" if sign else f"{x:,.{nd}f}"
+    """Number with a true minus sign (rounded half up); ``sign`` adds a plus to positives."""
+    v = r(x, nd)
+    s = f"{v:+,.{nd}f}" if sign else f"{v:,.{nd}f}"
     return s.replace("-", MINUS)
 
 
 def usd(x: float, nd: int = 0, sign: bool = False, k: bool = False) -> str:
     """$ amount with a true minus sign before the dollar ('−$75'); ``k`` writes thousands as '$40.4k'."""
-    v = abs(x) / 1e3 if k else abs(x)
+    v = r(abs(x) / 1e3 if k else abs(x), nd)
     body = f"${v:,.{nd}f}" + ("k" if k else "")
     if x < 0:
         return MINUS + body
@@ -208,6 +223,25 @@ def vref(ax, x: float, color: str = INK, ls=DOT_LS, lw: float = LW_REF, zorder: 
     ax.axvline(x, color=color, ls=ls, lw=lw, zorder=zorder)
 
 
+def vref_labelled(ax, refs, color: str = INK, lw: float = LW_REF, tier_pt: float = 11.0, pad_pt: float = 1.5,
+                  fontsize: float = FS_SMALL) -> None:
+    """Dotted verticals with their labels above the frame, every label LEFT-aligned at its own line.
+
+    ``refs``: iterable of (x, label, tier). Tier 1 sits just above the frame, tier 2 one line higher; each line is
+    continued (dotted, outside the frame) up to its own label's baseline, so a label that runs across another
+    line's x is on a different tier and is never read as that line's label."""
+    fig = ax.figure
+    h_in = ax.get_position().height * fig.get_size_inches()[1]
+    tr = ax.get_xaxis_transform()
+    for x, lab, tier in refs:
+        ax.axvline(x, color=color, ls=DOT_LS, lw=lw, zorder=2.5)
+        dy_pt = pad_pt + (tier - 1) * tier_pt
+        top = 1.0 + (dy_pt + 0.35 * fontsize) / 72.0 / h_in
+        ax.plot([x, x], [1.0, top], transform=tr, color=color, ls=DOT_LS, lw=lw, clip_on=False, zorder=2.5)
+        ax.annotate(lab, xy=(x, 1.0), xycoords=tr, xytext=(2.0, dy_pt), textcoords="offset points", ha="left",
+                    va="bottom", fontsize=fontsize, color=color, annotation_clip=False)
+
+
 def _fmt_tick(v, _pos=None) -> str:
     if v == 0:
         return "0"
@@ -250,11 +284,11 @@ def placeholder(ax, what: str, note: str = "") -> None:
     """A clearly marked placeholder panel for an input that is not there yet (never a made-up value)."""
     ax.set_xticks([])
     ax.set_yticks([])
-    for s in ax.spines.values():
-        s.set_visible(True)
-        s.set_color(GREY_LIGHT)
-        s.set_linestyle((0, (3, 2)))
-        s.set_linewidth(0.6)
+    for sp in ax.spines.values():
+        sp.set_visible(True)
+        sp.set_color(GREY_LIGHT)
+        sp.set_linestyle((0, (3, 2)))
+        sp.set_linewidth(0.6)
     ax.set_facecolor("#FAFAFA")
     ax.text(0.5, 0.56, "PLACEHOLDER", transform=ax.transAxes, ha="center", va="bottom", fontsize=FS,
             fontweight="semibold", color=MUTED)
@@ -277,16 +311,23 @@ def halo(width: float = 2.4, color: str = "white"):
     return [patheffects.withStroke(linewidth=width, foreground=color)]
 
 
+def knockout(pad: float = 0.8, color: str = "white") -> dict:
+    """A borderless background box for a label that a reference line or gridline would otherwise cross (a halo
+    leaves the line visible in the gaps between glyphs; this interrupts it for the whole word)."""
+    return dict(boxstyle=f"square,pad={pad / 10:g}", facecolor=color, edgecolor="none")
+
+
 def direct_label(ax, items, dx_pt: float = 4.0, gap_pt: float | None = None, ha: str = "left",
                  bounds=None, leader: bool | None = None, leader_min_pt: float = 5.0, fontsize: float = FS,
-                 **text_kw):
+                 pad_pt: float = 1.0, **text_kw):
     """Place direct labels next to line ends (or any anchor) with no vertical overlap.
 
     items: iterable of dicts {x, y, text, color[, dy_pt, weight]} in data coordinates. Each label wants to sit at its
     anchor's height (plus ``dy_pt``), ``dx_pt`` points to the right (``ha='left'``) or left (``ha='right'``). Labels are
     sorted by height and pushed apart in display space so that neighbours are at least one line height apart and
     all stay inside ``bounds`` (axes-fraction (lo, hi) for the label centres, default the axes). A label moved more
-    than ``leader_min_pt`` gets a thin leader line back to its anchor (``leader=False`` disables it).
+    than ``leader_min_pt`` gets a thin leader line back to its anchor (``leader=False`` disables it). ``pad_pt`` is
+    the extra white space between neighbouring labels.
     Call it after the axis limits are final: the offsets are computed in display space at call time.
     Returns the list of created annotations."""
     items = [dict(it) for it in items]
@@ -314,7 +355,7 @@ def direct_label(ax, items, dx_pt: float = 4.0, gap_pt: float | None = None, ha:
     hs = [items[i]["h_px"] for i in order]
 
     def need(a, b):
-        return gap_px if gap_px is not None else (hs[a] + hs[b]) / 2 + 1.0 / to_pt
+        return gap_px if gap_px is not None else (hs[a] + hs[b]) / 2 + pad_pt / to_pt
 
     for _ in range(50):  # relax: push up, clip at top, push down, clip at bottom
         moved = False
@@ -381,6 +422,9 @@ def layout_problems(fig, tol_px: float = 0.5) -> list[str]:
         boxes.append((txt, bb.from_extents(bb.x0, bb.y0 + shrink, bb.x1, bb.y1 - shrink)))
     W, H = fig.canvas.get_width_height()
     probs = []
+    for t in fig.findobj(Text):  # the house range is 8.5-9.5 pt at print size
+        if t.get_visible() and t.get_text().strip() and not (FS_SMALL - 1e-6 <= t.get_fontsize() <= FS_TITLE + 1e-6):
+            probs.append(f"font {t.get_fontsize():g} pt: {t.get_text()!r}")
     for txt, bb in boxes:
         if bb.x0 < -tol_px or bb.y0 < -tol_px or bb.x1 > W + tol_px or bb.y1 > H + tol_px:
             probs.append(f"outside canvas: {txt!r}")

@@ -28,7 +28,7 @@ from scripts import paper_figures as pf  # noqa: E402  (shared loaders: load, sw
 
 OUT = ROOT / "results/paper/v2"
 W = fs.FIG_W
-O, K, G, GL = fs.ORANGE, fs.INK, fs.GREY, fs.GREY_LIGHT
+O, K, G = fs.ORANGE, fs.INK, fs.GREY
 M = fs.MINUS
 T = fs.THIN
 ND = fs.NDASH
@@ -83,11 +83,38 @@ def stamp_lags() -> tuple[float, float]:
     return pre, cal
 
 
+def reprice_window() -> tuple[float, float, float] | None:
+    """(lo, hi, book-minus-stamp) in s: when the book reprices, counted from the end of the point.
+
+    The book reprices a measured median 1.16 s before the official stamp (research/v2/latency, n = 482); the stamp's
+    own lag after the point is unmeasured, so the reprice lies between stamp lag 2.0 s (pre-registered) and 3.14 s
+    (calibrated) minus 1.16 s = 0.84-1.98 s. F1 and F4 both draw this one window (results/e2e/summary.json quotes the
+    same two implied values under reprice_reference.implied_after_point_s and is checked against them)."""
+    m1 = pf.latency_m1()
+    if not m1:
+        return None
+    b = float(m1["book_vs_official_T_s"]["median"])
+    pre, cal = stamp_lags()
+    lo, hi = pre + b, (cal if cal else pre) + b
+    e2e = pf.load("results/e2e/summary.json")
+    imp = ((e2e or {}).get("reprice_reference") or {}).get("implied_after_point_s") or {}
+    if imp:
+        vals = sorted(v for k, v in imp.items() if k.startswith("stamp_lag"))
+        assert len(vals) == 2 and abs(vals[0] - lo) < 0.006 and abs(vals[1] - hi) < 0.006, (vals, lo, hi)
+    return lo, hi, b
+
+
+TIME_AFTER = "seconds after the point ends"          # F1a, F4a: one wording for the time axis after the event
+LEAD_TT = "lead before the ball reaches the table end (ms)"   # table tennis: 'contact' as defined in the source
+LEAD_TENNIS = "lead before the bounce (ms)"          # tennis simulation (A6)
+
+
 def F1() -> list[str]:
     name = "fig1_race"
     fig = plt.figure(figsize=(W, 3.2))
     # ---------------------------------------------------------------- (a) the information race
-    axa = fs.axes_in(fig, 1.78, 2.04, 3.22, 0.90)
+    AX_L, AX_W = 1.36, 4.30
+    axa = fs.axes_in(fig, AX_L, 1.98, AX_W, 0.88)
     wr = pf.webrtc_latency()
     note_src(name, "results/webrtc/latency.json")
     sw = load("results/tier0/latency_sweep.json", name)
@@ -95,144 +122,127 @@ def F1() -> list[str]:
     note_src(name, "research/v2/latency/results.json")
     pub = pf.public_stream_s()
     note_src(name, "results/home_stream/sub_second_routes.json")
-    src = {s["key"]: s for s in sw["sources"]} if sw else {}
+    src = {s_["key"]: s_ for s_ in sw["sources"]} if sw else {}
 
-    rows = []  # label, kind, lo, hi, points, value text, source text
+    rows = []  # (row label, kind, lo, hi, extra, status)
     if wr:
-        rows.append(("Our pipeline: WebRTC + CV", "ours", wr["p50"] / 1e3, wr["p99"] / 1e3, None,
-                     f"{wr['p50']:.0f}{T}ms", "measured, p50"))
+        rows.append(("Our CV pipeline", "ours", wr["p50"] / 1e3, wr["p99"] / 1e3, None, "measured"))
     else:
-        rows.append(("Our pipeline: WebRTC + CV", "pending", None, None, None, "pending", ""))
+        rows.append(("Our CV pipeline", "pending", None, None, None, ""))
     if "official_feed" in src:
         lo, hi = src["official_feed"]["band_s"]
-        rows.append(("Venue tablet, official stamp", "unmeasured", lo, hi, None, rng(lo, hi), "unmeasured"))
+        rows.append(("Official stamp (venue)", "unmeasured", lo, hi, None, "unmeasured"))
     if "betting_video" in src:
         lo, hi = src["betting_video"]["band_s"]
-        rows.append(("Licensed video", "vendor", lo, hi, None, rng(lo, hi), "vendor-stated"))
+        rows.append(("Licensed video", "range", lo, hi, None, "vendor-stated"))
     if "tv" in src:
         lo, hi = src["tv"]["band_s"]
-        rows.append(("TV broadcast", "vendor", lo, hi, None, rng(lo, hi), "published"))
+        rows.append(("TV broadcast", "range", lo, hi, None, "published"))
     if pub:
-        rows.append(("Public WebRTC stream", "measured", pub, pub, None, f"{pub:.1f}{T}s", "measured"))
+        rows.append(("Public WebRTC stream", "point", pub, pub, None, "measured"))
     if m1:
-        pts = [-m1[k]["lead_vs_book_s"]["median"] for k in ("espn:game", "pm_sports:game", "wta:point")]
-        rows.append(("Score feeds (ESPN, PM, WTA)", "measured3", min(pts), max(pts), pts,
-                     rng(min(pts), max(pts)), "measured"))
+        feeds = [("ESPN", -m1["espn:game"]["lead_vs_book_s"]["median"]),
+                 ("PM", -m1["pm_sports:game"]["lead_vs_book_s"]["median"]),
+                 ("WTA", -m1["wta:point"]["lead_vs_book_s"]["median"])]
+        v = [x for _, x in feeds]
+        rows.append(("Score feeds", "feeds", min(v), max(v), feeds, "measured"))
 
     ax = axa
     x0, x1 = 0.01, 100
-    fs.log_time_axis(ax, ticks=(0.01, 0.1, 0.5, 1, 3, 10, 60), lim=(x0, x1),
-                     label="seconds after the bounce (log scale)")
+    fs.log_time_axis(ax, ticks=(0.01, 0.1, 0.5, 1, 3, 10, 60), lim=(x0, x1), label=f"{TIME_AFTER} (log scale)")
     n = len(rows)
-    ax.set_ylim(n - 0.45, -1.15)
+    ax.set_ylim(n - 0.5, -0.6)
     ax.set_yticks(range(n))
-    ax.set_yticklabels([r[0] for r in rows])
+    ax.set_yticklabels([r_[0] for r_ in rows])
     ax.tick_params(axis="y", length=0, pad=6)
-    for t, r in zip(ax.get_yticklabels(), rows):
-        if r[1] in ("ours", "pending"):
+    for t, r_ in zip(ax.get_yticklabels(), rows):
+        if r_[1] in ("ours", "pending"):
             t.set_color(O)
             t.set_fontweight("semibold")
     ax.spines["left"].set_visible(False)
-    # the book reprices ~1.2 s before the official stamp: with the stamp lag unmeasured, that puts the reprice
-    # 0.8 s (pre-registered 2.0 s lag) to 2.0 s (calibrated 3.14 s lag) after the bounce
-    if m1:
-        b = m1["book_vs_official_T_s"]["median"]
-        pre, cal = stamp_lags()
-        r_lo, r_hi = pre + b, (cal if cal else pre) + b
+    rw = reprice_window()
+    if rw:
+        r_lo, r_hi, b = rw
         ax.axvspan(r_lo, r_hi, color=fs.SHADE, lw=0, zorder=0.3)
-        ax.text(np.sqrt(r_lo * r_hi), -0.72, f"book reprices, {abs(b):.1f}{T}s before the stamp", ha="center",
-                va="center", fontsize=fs.FS_SMALL, color=fs.MUTED, zorder=6)
-    h = 0.50
-    for i, (lab, kind, lo, hi, pts, vtxt, stxt) in enumerate(rows):
+        # label in a strip above the frame, centred on the band (never in the rows)
+        ax.annotate(f"book reprices, {fs.f(abs(b))}{T}s before the stamp", xy=(np.sqrt(r_lo * r_hi), 1.0),
+                    xycoords=("data", "axes fraction"), xytext=(0, 2.0), textcoords="offset points", ha="center",
+                    va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED, annotation_clip=False)
+    RANGE_LW = 3.0  # 3 pt range bars
+    for i, (lab, kind, lo, hi, extra, status) in enumerate(rows):
         if kind == "pending":
             ax.text(x0 * 1.3, i, "pending: results/webrtc/latency.json", va="center", fontsize=fs.FS_SMALL,
                     color=O, style="italic")
             continue
-        if kind == "ours":
-            ax.barh(i, lo - x0, left=x0, height=h, color=O, zorder=3)
-            ax.plot([lo, hi], [i, i], color=O, lw=1.0, zorder=3)
-            ax.plot([hi, hi], [i - 0.16, i + 0.16], color=O, lw=1.0, zorder=3)
-        elif kind == "measured":
-            ax.barh(i, lo - x0, left=x0, height=h, color=G, zorder=3)
-        elif kind == "measured3":
-            ax.barh(i, lo - x0, left=x0, height=h, color=G, zorder=3)
-            ax.plot([lo, hi], [i, i], color=fs.MUTED, lw=0.9, zorder=4)
-            for p in pts:
-                ax.plot([p], [i], marker="o", ms=3.0, color=fs.MUTED, mew=0, zorder=5)
-        elif kind in ("vendor", "unmeasured"):
-            solid = "#D0D0D0" if kind == "vendor" else "white"
-            ax.barh(i, lo - x0, left=x0, height=h, color=solid, zorder=3,
-                    edgecolor="none" if kind == "vendor" else G, lw=0.0 if kind == "vendor" else 0.6,
-                    ls=(0, (2.5, 1.5)))
-            ax.barh(i, hi - lo, left=lo, height=h, color="#E9E9E9" if kind == "vendor" else "white", zorder=3,
-                    edgecolor=G if kind == "unmeasured" else "#C4C4C4", lw=0.6,
-                    ls=(0, (2.5, 1.5)) if kind == "unmeasured" else "-")
-        # right-hand value column (outside the data)
-        ax.annotate(vtxt, xy=(1.0, i), xycoords=("axes fraction", "data"), xytext=(8, 0),
-                    textcoords="offset points", ha="left", va="center", fontsize=fs.FS,
-                    color=O if kind == "ours" else K, annotation_clip=False)
-        ax.annotate(stxt, xy=(1.0, i), xycoords=("axes fraction", "data"), xytext=(46, 0),
+        val = None   # direct value label right of the mark
+        if kind == "ours":   # p50 dot, whisker to the p99
+            ax.plot([lo, hi], [i, i], color=O, lw=1.0, zorder=4, solid_capstyle="butt")
+            ax.plot([lo], [i], ls="none", marker="o", ms=4.6, color=O, mew=0, zorder=5)
+            val = (hi, f"{wr['p50']:.0f}{T}ms (p50) · own clip, loopback", O)
+        elif kind == "unmeasured":
+            ax.plot([lo, hi], [i, i], color=G, lw=1.6, ls=(0, (2.2, 1.6)), zorder=4)
+            val = (hi, rng(lo, hi), K)
+        elif kind == "range":
+            ax.plot([lo, hi], [i, i], color=G, lw=RANGE_LW, zorder=4, solid_capstyle="butt")
+            val = (hi, rng(lo, hi), K)
+        elif kind == "point":
+            ax.plot([lo], [i], ls="none", marker="o", ms=4.6, color=G, mew=0, zorder=5)
+            val = (lo, f"{fs.f(lo)}{T}s", K)
+        elif kind == "feeds":
+            ax.plot([lo, hi], [i, i], color=G, lw=RANGE_LW, zorder=4, solid_capstyle="butt")
+            # one range, the three medians named to its left (the dots fused at print size)
+            ax.annotate(f"{' · '.join(f'{k_} {round(v_):d}' for k_, v_ in extra)}{T}s", xy=(lo, i),
+                        xytext=(-5, 0), textcoords="offset points", ha="right", va="center",
+                        fontsize=fs.FS_SMALL, color=K, zorder=6)
+        if val:
+            ax.annotate(val[1], xy=(val[0], i), xytext=(5, 0), textcoords="offset points", ha="left",
+                        va="center", fontsize=fs.FS_SMALL, color=val[2], zorder=6)
+        # one right-hand column: how each number was obtained
+        ax.annotate(status, xy=(1.0, i), xycoords=("axes fraction", "data"), xytext=(8, 0),
                     textcoords="offset points", ha="left", va="center", fontsize=fs.FS_SMALL, color=fs.MUTED,
                     annotation_clip=False)
     ax.tick_params(axis="x", length=2.6)
-    ta = (f"Our pipeline adds {wr['p50']:.0f}{T}ms; the feeds add seconds" if wr
-          else "Who sees the point first")
-    ptitle(name, ax, "a", ta, x_in=0.06, y_in=3.04)
+    ta = f"We call in {wr['p50']:.0f}{T}ms; feeds take seconds" if wr else "Who sees the point first"
+    ptitle(name, ax, "a", ta, x_in=0.06, y_in=3.06)
 
     # ---------------------------------------------------------------- (b) early out-calls on real footage
-    axb = fs.axes_in(fig, 0.47, 0.47, 2.25, 0.80)
+    axb = fs.axes_in(fig, 0.56, 0.42, 4.40, 0.80)
     ax = axb
-    p = ROOT / "results/tracking/test_precision_vs_lead_snapshot.csv"
     tr = load("results/tracking/summary.json", name)
-    if not p.exists() or not tr:
-        fs.placeholder(ax, "results/tracking/test_precision_vs_lead_snapshot.csv")
+    snap = ((tr or {}).get("early_call") or {}).get("precision_recall_test_snapshot")
+    if not snap:
+        fs.placeholder(ax, "results/tracking/summary.json")
+        ptitle(name, ax, "b", "Early out-calls: pending", x_in=0.06, y_in=1.40)
     else:
-        note_src(name, "results/tracking/test_precision_vs_lead_snapshot.csv")
-        d = pd.read_csv(p)
-        d = d[d.lead_ms <= 200 + 1e-9]
+        leads = sorted(int(k[:-2]) for k in snap)
+        P = [snap[f"{x}ms"] for x in leads]
         fs.hgrid(ax)
-        fs.add_ci_band(ax, d.lead_ms, d.prec_lo95, d.prec_hi95, O, alpha=0.14, step="post")
-        ax.plot(d.lead_ms, d.precision, color=O, lw=fs.LW, drawstyle="steps-post", zorder=4)
-        ax.plot(d.lead_ms, d.recall, color=K, lw=fs.LW_2, drawstyle="steps-post", zorder=4)
-        ax.set_xlim(0, 200)
-        ax.set_ylim(0, 1.24)
-        ax.set_xticks([0, 50, 100, 150, 200])
+        prec = [d["precision"] for d in P]
+        rec = [d["recall"] for d in P]
+        lo = [d["precision_wilson95"][0] for d in P]
+        hi = [d["precision_wilson95"][1] for d in P]
+        ax.plot(leads, rec, color=G, lw=fs.LW_2, zorder=3)
+        ax.plot(leads, rec, ls="none", marker="o", ms=3.4, color=G, mew=0, zorder=4)
+        fs.whiskers(ax, leads, prec, lo, hi, O, lw=0.9)
+        ax.plot(leads, prec, color=O, lw=fs.LW_2, zorder=4)
+        ax.plot(leads, prec, ls="none", marker="o", ms=3.8, color=O, mew=0, zorder=5)
+        for x, d in zip(leads, P):  # right calls / calls made, above each precision point
+            ax.annotate(f"{d['tp']}/{d['tp'] + d['fp']}", xy=(x, max(d["precision_wilson95"][1], d["precision"])),
+                        xytext=(0, 3.0), textcoords="offset points", ha="center", va="bottom",
+                        fontsize=fs.FS_SMALL, color=O)
+        ax.set_xlim(-12, 210)
+        ax.set_ylim(0, 1.27)
+        ax.set_xticks(leads)
         ax.set_yticks([0, 0.5, 1.0])
         fs.unicode_ticks(ax)
-        ax.set_xlabel("call lead before contact (ms)")
-        s50 = tr["early_call"]["precision_recall_test_snapshot"]["50ms"]
-        ax.plot([50], [s50["precision"]], marker="o", ms=3.6, color=O, mec="white", mew=0.7, zorder=6)
-        ax.text(57, 1.13, f"{s50['tp']} of {s50['tp'] + s50['fp']} right at 50{T}ms", ha="left", va="center",
-                fontsize=fs.FS_SMALL, color=O)
-        last = d.iloc[-1]
-        fs.direct_label(ax, [dict(x=200, y=float(last.precision), text="precision", color=O),
-                             dict(x=200, y=float(last.recall), text="recall", color=K)], dx_pt=4)
-    ptitle(name, ax, "b", "Out-calls stay precise up to 200 ms early", x_in=0.06, y_in=1.44)
-
-    # ---------------------------------------------------------------- (c) tennis spin model, simulation
-    axc = fs.axes_in(fig, 3.78, 0.47, 1.95, 0.80)
-    ax = axc
-    sp = load("results/spin/tennis/key_numbers.json", name)
-    if not sp:
-        fs.placeholder(ax, "results/spin/tennis/key_numbers.json")
-    else:
-        fs.hgrid(ax)
-        items = []
-        for k, col, lab, lw in (("baseline", G, "no spin", fs.LW_2), ("bls", O, "spin-aware", fs.LW)):
-            d = sp[k]["sd_cm"]
-            xs = sorted(int(x) for x in d)
-            ys = [d[str(x)] for x in xs]
-            ax.plot(xs, ys, color=col, lw=lw, zorder=4)
-            items.append(dict(x=xs[-1], y=ys[-1], text=f"{lab}\n{ys[-1]:.1f}{T}cm", color=col))
-        ax.set_xlim(0, 400)
-        ax.set_ylim(0, 18)
-        ax.set_xticks([0, 100, 200, 300, 400])
-        ax.set_yticks([0, 5, 10, 15])
-        ax.set_xlabel("lead before the bounce (ms)")
-        ax.set_ylabel("landing error, cm")
-        fs.direct_label(ax, items, dx_pt=4)
-        fs.tag(ax, "simulation", x=0.03, y=0.96, ha="left", va="top")
-    ptitle(name, ax, "c", "Spin model cuts tennis landing error", x_in=3.30, y_in=1.44)
+        ax.tick_params(axis="x", length=2.6)
+        ax.set_xlabel(LEAD_TT)
+        ax.set_ylabel("precision, recall")
+        fs.direct_label(ax, [dict(x=leads[-1], y=prec[-1], text="precision (95% CI)", color=O),
+                             dict(x=leads[-1], y=rec[-1], text="recall", color=G)], dx_pt=12, leader=False)
+        clean = [x for x, d in zip(leads, P) if d["fp"] == 0]
+        upto = max(x for x in clean if all(snap[f"{y}ms"]["fp"] == 0 for y in leads if y <= x))
+        ptitle(name, ax, "b", f"No false out-calls up to {upto}{T}ms early", x_in=0.06, y_in=1.40)
     return fs.save_fig(fig, name, OUT)
 
 # ============================================================================================== F2
@@ -252,8 +262,8 @@ def month_axis(ax, months: list[pd.Timestamp]) -> None:
 def F2() -> list[str]:
     name = "fig2_edge"
     fig = plt.figure(figsize=(W, 2.6))
-    axa = fs.axes_in(fig, 0.50, 0.40, 2.10, 1.78)
-    axb = fs.axes_in(fig, 3.98, 0.40, 1.62, 1.78)
+    axa = fs.axes_in(fig, 0.50, 0.40, 2.00, 1.78)
+    axb = fs.axes_in(fig, 4.08, 0.40, 1.60, 1.78)
     al = load("results/alpha/alpha.json", name)
     paths = pf.v2_daily_paths()
     note_src(name, "results/lowloss/daily.csv", "results/v2/causal.json", "results/v2/cost_stress.json",
@@ -273,29 +283,36 @@ def F2() -> list[str]:
             oos0 = pd.Timestamp(A["OOS"]["months"][0]["month"] + "-01")
             oos1 = pd.Timestamp(A["OOS"]["months"][-1]["month"] + "-01") + pd.offsets.MonthEnd(0)
         is0 = pd.Timestamp(A["IS"]["months"][0]["month"] + "-01")
-        series = [("fast_net30_c", K, "Fast tier", fs.LW), ("others_net30_c", G, "Everyone else", fs.LW_2),
-                  ("copy_3s_later_net_to_resolution_c", GL, f"Copy 3{T}s later", fs.LW_2)]
+        # the two tiers are net 30 s markouts; copy-3-s-later is held to resolution (alpha.json), so its label says
+        # so and it is drawn thinner, without markers
+        series = [("fast_net30_c", K, "Fast tier", fs.LW, True),
+                  ("others_net30_c", G, "Everyone else", fs.LW_2, True),
+                  ("copy_3s_later_net_to_resolution_c", G, f"Copy 3{T}s later,\nheld to resolution", 0.9, False)]
+        dy = {"copy_3s_later_net_to_resolution_c": -7.0}  # its two-line label hangs below its end point
         fs.hgrid(ax)
         x_is = [month_mid(m["month"], is0, oos0) for m in A["IS"]["months"]]
         x_oos = [month_mid(m["month"], oos0, oos1) for m in A["OOS"]["months"]]
         items = []
-        for key, col, lab, lw in series:
+        for key, col, lab, lw, mk in series:
             y_is = [m[key] for m in A["IS"]["months"]]
             y_oos = [m[key] for m in A["OOS"]["months"]]
-            ax.plot(x_is, y_is, color=col, lw=lw, ls=fs.IS_LS, marker="o", ms=2.8, mew=0, zorder=4)
+            ax.plot(x_is, y_is, color=col, lw=lw, ls=fs.IS_LS, zorder=4)
             ax.plot([x_is[-1]] + x_oos, [y_is[-1]] + y_oos, color=col, lw=lw, ls=fs.OOS_LS, zorder=4)
-            ax.plot(x_oos, y_oos, ls="none", marker="o", ms=2.8, mfc="white", mec=col, mew=0.9, zorder=5)
-            items.append(dict(x=x_oos[-1], y=y_oos[-1], text=lab, color=col if col != GL else fs.MUTED))
+            if mk:  # filled = IS, hollow = OOS
+                ax.plot(x_is, y_is, ls="none", marker="o", ms=2.8, color=col, mew=0, zorder=5)
+                ax.plot(x_oos, y_oos, ls="none", marker="o", ms=2.8, mfc="white", mec=col, mew=0.9, zorder=5)
+            items.append(dict(x=x_oos[-1], y=y_oos[-1], text=lab, color=col if col != G else fs.MUTED,
+                              dy_pt=dy.get(key, 0.0)))
         ax.set_xlim(is0 - pd.Timedelta(days=4), oos1 + pd.Timedelta(days=4))
         fs.oos_shade(ax, oos0)
         fs.zero_line(ax)
         ax.set_ylim(-3.2, 3.2)
         ax.set_yticks([-3, -2, -1, 0, 1, 2, 3])
         fs.unicode_ticks(ax, "y")
-        ax.set_ylabel(f"net {fs.CENT} per share")
+        ax.set_ylabel(f"net 30{T}s markout, {fs.CENT}/share")
         month_axis(ax, [pd.Timestamp(m) for m in ("2025-12-01", "2026-02-01", "2026-04-01", "2026-06-01",
                                                    "2026-08-01", "2026-10-01")])
-        fs.direct_label(ax, items, dx_pt=5)
+        fs.direct_label(ax, items, dx_pt=5, leader=False, pad_pt=4.0)
     ptitle(name, ax, "a", "Only the fast tier earns; copying late loses", x_in=0.06, y_in=2.42)
 
     # ---------------------------------------------------------------- (b) v2 cumulative P&L, costs doubled
@@ -306,21 +323,26 @@ def F2() -> list[str]:
         base, stressed, _cs = paths
         fs.hgrid(ax)
         lines = [("base", base["is_eval"], base["burned_oos"], K, fs.LW, "Base")]
-        if stressed:
+        if stressed:  # both stressed paths grey (nested: all costs x2 always sits below fees x2), told apart by width
             lines.append(("fee_x2", stressed[("is_eval", "fee_x2")], stressed[("burned_oos", "fee_x2")], G,
                           fs.LW_2, f"Fees {fs.TIMES}2"))
-            lines.append(("costs_x2", stressed[("is_eval", "costs_x2")], stressed[("burned_oos", "costs_x2")], GL,
-                          fs.LW_2, f"All costs {fs.TIMES}2"))
+            lines.append(("costs_x2", stressed[("is_eval", "costs_x2")], stressed[("burned_oos", "costs_x2")], G,
+                          0.9, f"All costs {fs.TIMES}2"))
         items = []
         for _k, s_is, s_oos, col, lw, lab in lines[::-1]:
             c1 = s_is.cumsum() / 1e3
             c2 = (s_oos.cumsum() / 1e3) + c1.iloc[-1]
+            # dashing a jagged daily path breaks into blotches: the OOS part is drawn at weekly closes (and the
+            # last day), so the dash pattern reads; the end value is the exact daily total
+            c2w = c2.resample("W-SUN").last().dropna()
+            c2w = c2w[c2w.index < c2.index[-1]]
+            c2w = pd.concat([c2w, c2.iloc[[-1]]])
             ax.plot(c1.index, c1.values, color=col, lw=lw, ls=fs.IS_LS, zorder=4)
-            ax.plot([c1.index[-1]] + list(c2.index), [c1.iloc[-1]] + list(c2.values), color=col, lw=lw,
-                    ls=fs.OOS_LS, zorder=4)
+            ax.plot([c1.index[-1]] + list(c2w.index), [c1.iloc[-1]] + list(c2w.values), color=col, lw=lw,
+                    ls=(0, (3.0, 1.6)), zorder=4)
             items.append(dict(x=c2.index[-1], y=float(c2.iloc[-1]),
                               text=f"{lab}\nOOS {fs.usd(s_oos.sum(), 1, sign=True, k=True)}",
-                              color=col if col != GL else fs.MUTED))
+                              color=col if col != G else fs.MUTED))
         x_lo = base["is_eval"].index.min()
         ax.set_xlim(x_lo - pd.Timedelta(days=3), oos1 + pd.Timedelta(days=3))
         fs.oos_shade(ax, oos0)
@@ -330,24 +352,24 @@ def F2() -> list[str]:
         ax.set_ylabel("cumulative net P&L, $k")
         month_axis(ax, [pd.Timestamp(m) for m in ("2026-02-01", "2026-04-01", "2026-06-01", "2026-08-01",
                                                    "2026-10-01")])
-        fs.direct_label(ax, items, dx_pt=5, bounds=(0.0, 1.1))
-    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.42, y_in=2.42)
+        fs.direct_label(ax, items, dx_pt=5, bounds=(0.0, 1.1), leader=False)
+    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.52, y_in=2.42)
     return fs.save_fig(fig, name, OUT)
 
 
 # ============================================================================================== F3
-REF_LINES = ((0.5, "best licensed", "right"), (1.0, "base", "left"), (3.0, "requirement", "left"))
+REF_LINES = ((0.5, "best licensed", 2), (1.0, "base", 1), (3.0, "requirement", 1))
 
 
 def ref_verticals(ax, labels: bool = True) -> None:
-    """Dotted verticals at 0.5 s (best licensed case), 1 s (base case) and 3 s (requirement), labelled just above
-    the frame so the labels never sit on data."""
-    for x, lab, ha in REF_LINES:
-        fs.vref(ax, x, color=K, lw=0.8)
-        if labels:
-            ax.annotate(lab, xy=(x, 1.0), xycoords=("data", "axes fraction"), xytext=(-2.5 if ha == "right" else 2.5,
-                        1.5), textcoords="offset points", ha=ha, va="bottom", fontsize=fs.FS_SMALL, color=K,
-                        annotation_clip=False)
+    """Dotted verticals at 0.5 s (best licensed case), 1 s (base case) and 3 s (requirement). Every label starts at
+    its own line, above the frame; 'best licensed' is one tier higher because it runs across the 1 s and 3 s lines,
+    and each line is continued up to its own label."""
+    if labels:
+        fs.vref_labelled(ax, REF_LINES, color=K, lw=0.8)
+    else:
+        for x, _lab, _tier in REF_LINES:
+            fs.vref(ax, x, color=K, lw=0.8)
 
 
 def F3() -> list[str]:
@@ -391,21 +413,22 @@ def F3() -> list[str]:
     ax.set_ylim(-88, 272)
     ax.set_yticks([0, 100, 200])
     fs.unicode_ticks(ax, "y")
-    for (r, p), x in bes.items():
+    for (r, p), x in bes.items():  # filled = IS, hollow = OOS (as everywhere)
         col = O if r == "tournament_lagcal" else K
-        ax.plot([x], [0], ls="none", marker="o", ms=4.2, mfc="white", mec=col, mew=1.1, zorder=7)
+        ax.plot([x], [0], ls="none", marker="o", ms=4.2, mfc=col if p == "IS" else "white", mec=col, mew=1.1,
+                zorder=7)
     bc = [bes[("tournament_lagcal", p)] for p in ("IS", "burned_OOS")]
     bp = [bes[("tournament", p)] for p in ("IS", "burned_OOS")]
     # break-even key in the empty upper right (open circles on the zero line)
     ax.text(3.6, 150, "break-even V", ha="left", va="center", fontsize=fs.FS_SMALL, color=fs.MUTED)
-    ax.text(3.6, 118, f"{min(bc):.1f}{ND}{max(bc):.1f}{T}s", ha="left", va="center", fontsize=fs.FS, color=O)
-    ax.text(3.6, 86, f"{min(bp):.1f}{ND}{max(bp):.1f}{T}s", ha="left", va="center", fontsize=fs.FS, color=K)
+    ax.text(3.6, 118, f"{fs.f(min(bc))}{ND}{fs.f(max(bc))}{T}s", ha="left", va="center", fontsize=fs.FS, color=O)
+    ax.text(3.6, 86, f"{fs.f(min(bp))}{ND}{fs.f(max(bp))}{T}s", ha="left", va="center", fontsize=fs.FS, color=K)
     lab_cal = readings[0][2].replace(" lag", "\nlag")
     lab_pre = readings[1][2].replace(" lag", "\nlag")
     ax.text(0.058, 236, lab_cal, ha="left", va="center", fontsize=fs.FS, color=O, zorder=8, linespacing=1.1)
     ax.text(0.058, -50, lab_pre, ha="left", va="center", fontsize=fs.FS, color=K, zorder=8, linespacing=1.1)
     lo_be, hi_be = min(bes.values()), max(bes.values())
-    ptitle(name, ax, "a", f"Profit hits zero at {lo_be:.1f}{ND}{hi_be:.1f}{T}s of delay", x_in=0.06, y_in=2.55)
+    ptitle(name, ax, "a", f"Profit hits zero at {fs.f(lo_be)}{ND}{fs.f(hi_be)}{T}s of delay", x_in=0.06, y_in=2.55)
 
     # (b) Sharpe: base-case values at V = 1 s
     ax = axb
@@ -419,7 +442,7 @@ def F3() -> list[str]:
     ax.text(0.985, 0.97, "IS solid\nOOS dashed\n20-seed OOS band", transform=ax.transAxes, ha="right",
             va="top", fontsize=fs.FS_SMALL, color=fs.MUTED, linespacing=1.2)
     lo1, hi1 = min(v1.values()), max(v1.values())
-    ptitle(name, ax, "b", f"Sharpe at the 1{T}s base: {lo1:.1f}{ND}{hi1:.1f}", x_in=3.24, y_in=2.55)
+    ptitle(name, ax, "b", f"Sharpe at the 1{T}s base: {fs.f(lo1)}{ND}{fs.f(hi1)}", x_in=3.24, y_in=2.55)
     return fs.save_fig(fig, name, OUT)
 
 
@@ -471,10 +494,10 @@ def F4() -> list[str]:
         n = len(rows)
         ax.set_xlim(0, 3.2)
         ax.set_ylim(n - 0.5, -0.6)
-        band = e2e.get("budget_with_1s_simulated_feed", {}).get("reprice_band_ms")
-        if band:
-            ax.axvspan(band[0] / 1e3, band[1] / 1e3, color=fs.SHADE, lw=0, zorder=0.3)
-            ax.annotate("book reprices", xy=(sum(band) / 2e3, 1.0), xycoords=("data", "axes fraction"),
+        rw = reprice_window()  # the same window as F1a (0.84-1.98 s), not e2e's narrower 1.0-1.5 s working band
+        if rw:
+            ax.axvspan(rw[0], rw[1], color=fs.SHADE, lw=0, zorder=0.3)
+            ax.annotate("book reprices", xy=((rw[0] + rw[1]) / 2, 1.0), xycoords=("data", "axes fraction"),
                         xytext=(0, 1.5), textcoords="offset points", ha="center", va="bottom",
                         fontsize=fs.FS_SMALL, color=fs.MUTED, annotation_clip=False)
         req = e2e.get("budget_with_1s_simulated_feed", {}).get("requirement_ms")
@@ -499,7 +522,7 @@ def F4() -> list[str]:
                 ax.barh(i, x1 - x0, left=x0, height=h, color="white", edgecolor=G, lw=0.7, ls=(0, (2.5, 1.5)),
                         zorder=3)
             else:
-                ax.barh(i, x1 - x0, left=x0, height=h, color=G if kind == "rule" else GL, lw=0, zorder=3)
+                ax.barh(i, x1 - x0, left=x0, height=h, color=G, lw=0, zorder=3)
             if v >= 100:
                 txt = f"{v / 1e3:g}{T}s" + (", simulated" if kind == "assumed" else "")
             elif v >= 1:
@@ -523,8 +546,11 @@ def F4() -> list[str]:
         ax.spines["left"].set_visible(False)
         ax.set_xticks([0, 0.5, 1, 1.5, 2, 2.5, 3])
         fs.unicode_ticks(ax, "x")
-        ax.set_xlabel("seconds after the point")
-        ptitle(name, ax, "a", f"Our pipeline is {ours:.0f}{T}ms of a {total:.1f}{T}s path", x_in=0.06, y_in=3.06)
+        ax.set_xlabel(TIME_AFTER)
+        # 'order-ready in 54 ms' (capture to unsigned order, e2e) is a different span from F1's 'call in 46 ms'
+        # (frame send to call, webrtc/latency.json): the title names which one
+        ptitle(name, ax, "a", f"Order-ready in {ours:.0f}{T}ms; executable at {fs.f(total)}{T}s", x_in=0.06,
+               y_in=3.06)
 
     # ---------------------------------------------------------------- (b, c) capacity vs capital
     axb = fs.axes_in(fig, 0.58, 0.44, 2.30, 0.88)
@@ -568,10 +594,15 @@ def F4() -> list[str]:
                     # several hundred dollars at large size and would set the scale
                     fs.add_ci_band(ax, D.capital_usd, D[lo_k], D[hi_k], col, alpha=0.13)
                 ax.plot(D.capital_usd, D[col_m], color=col, ls=ls, lw=fs.LW, zorder=4)
-                ax.plot(D.capital_usd, D[col_m], ls="none", marker="o", ms=2.4, color=col, mew=0, zorder=5)
-        for p, h in half.items():
+                if p == "IS":  # filled = IS, hollow = OOS
+                    ax.plot(D.capital_usd, D[col_m], ls="none", marker="o", ms=2.6, color=col, mew=0, zorder=5)
+                else:
+                    ax.plot(D.capital_usd, D[col_m], ls="none", marker="o", ms=2.8, mfc="white", mec=col, mew=0.8,
+                            zorder=5)
+        for p, h in half.items():  # where the Sharpe halves: a larger marker, same fill rule
             yv = h["pnl_per_day_usd"] if col_m == "pnl_per_day_usd" else h["sharpe_ann"]
-            ax.plot([h["capital_usd"]], [yv], ls="none", marker="o", ms=4.6, mfc="white", mec=O, mew=1.1, zorder=7)
+            ax.plot([h["capital_usd"]], [yv], ls="none", marker="o", ms=5.2, mfc=O if p == "IS" else "white",
+                    mec=O, mew=1.2, zorder=7)
         fs.zero_line(ax)
         ax.set_xscale("log")
         ax.set_xlim(6.5e3, 1.25e5)
@@ -587,7 +618,8 @@ def F4() -> list[str]:
     ax.text(6.9e3, 300, readings[0][2].replace(" lag", "\nlag"), ha="left", va="center", fontsize=fs.FS,
             color=O, linespacing=1.1)
     ax.text(6.9e3, -72, readings[1][2], ha="left", va="center", fontsize=fs.FS, color=K)
-    ptitle(name, ax, "b", "Out of sample, dollars flatten with size", x_in=0.06, y_in=1.52)
+    # calibrated OOS $/day along the path is 37, 57, 67, 61, 44, 24, 168: not monotone, so the title says erratic
+    ptitle(name, ax, "b", "Dollars grow in sample; OOS is erratic", x_in=0.06, y_in=1.52)
     ax = axc
     ax.set_ylim(-10, 23)
     ax.set_yticks([0, 10, 20])
@@ -631,9 +663,15 @@ def F5() -> list[str]:
     im = Image.open(p).convert("RGB").crop(crop)
     ax.imshow(np.asarray(im), interpolation="none", aspect="auto")
     ax.set_axis_off()
-    m = re.search(r"calls MISS (\d+) ms before", caps.get(Path(still).name, ""))
+    cap = caps.get(Path(still).name, "")
+    m = re.search(r"calls MISS (\d+) ms before", cap)
     ms = m.group(1) if m else re.search(r"_(\d+)ms", still).group(1)
-    ptitle(name, ax, "", f"Frozen model calls the miss {ms}{T}ms before contact", x_in=0.0, y_in=img_h + 0.08)
+    # 'contact' in the source means the ball reaching the table end, so the title says that; the call is the
+    # frozen model's, the arc and its +/-81 cm landing band are the display-only physics fit (the tag says so)
+    ptitle(name, ax, "", f"Miss called {ms}{T}ms before the table end", x_in=0.0, y_in=img_h + 0.08)
+    fig.text(1.0, (img_h + 0.08) / fig.get_size_inches()[1],
+             "call: frozen tier-0 model · arc and band: physics fit, display only", ha="right", va="baseline",
+             fontsize=fs.FS_SMALL, color=fs.MUTED, style="italic")
     return fs.save_fig(fig, name, OUT)
 
 
@@ -657,7 +695,7 @@ def A1() -> list[str]:
     ax = axa
     fs.hgrid(ax)
     fs.zero_line(ax)
-    for per, off, mfc, ls in (("IS", -0.09, K, fs.IS_LS), ("OOS", 0.09, "white", fs.OOS_LS)):
+    for per, off, mfc, ls in (("IS", -0.09, K, fs.IS_LS), ("OOS", 0.09, "white", fs.OOS_LS)):  # hollow = OOS
         y = np.array([sc[k][per]["per_share_c"] for k in sizes])
         lo = np.array([sc[k][per]["per_share_ci95_c"][0] for k in sizes])
         hi = np.array([sc[k][per]["per_share_ci95_c"][1] for k in sizes])
@@ -693,21 +731,24 @@ def A1() -> list[str]:
     pos = 0
     for i, (lab, gross, net, col) in enumerate(rows):
         after = net - fixed["central"]
+        oos = "OOS" in lab  # filled = IS, hollow = OOS (as everywhere)
         pts = [v for v in (gross, net, after) if v is not None]
-        ax.plot([min(pts), max(pts)], [i, i], color=GL, lw=0.8, zorder=2)
+        ax.plot([min(pts), max(pts)], [i, i], color=G, lw=0.6, zorder=2)
         ax.plot([net - fixed["high"], net - fixed["low"]], [i, i], color=col, lw=0.9, zorder=3)
-        if gross is not None:
-            ax.plot([gross], [i], ls="none", marker="o", ms=4.0, color="#C9C9C9", mew=0, zorder=4)
-        ax.plot([net], [i], ls="none", marker="o", ms=4.0, color=G, mew=0, zorder=4)
-        ax.plot([after], [i], ls="none", marker="o", ms=4.6, color=col, mew=0, zorder=5)
+        if gross is not None:  # gross edge: a short grey tick (no fill to encode)
+            ax.plot([gross], [i], ls="none", marker="|", ms=7.0, color=G, mew=1.3, zorder=4)
+        ax.plot([net], [i], ls="none", marker="o", ms=4.0, mfc="white" if oos else G, mec=G, mew=1.0, zorder=4)
+        ax.plot([after], [i], ls="none", marker="o", ms=4.6, mfc="white" if oos else col, mec=col, mew=1.1,
+                zorder=5)
         ax.annotate(fs.usd(after, 0, sign=True), xy=(after, i), xytext=(0, -5.5), textcoords="offset points",
-                    ha="center", va="top", fontsize=fs.FS_SMALL, color=col)
+                    ha="center", va="top", fontsize=fs.FS_SMALL, color=col, zorder=6, bbox=fs.knockout())
         pos += after > 0
         if i == 0:
             for v, t in ((gross, "gross"), (net, "net"), (after, "after costs")):
                 if v is not None:
                     ax.annotate(t, xy=(v, i), xytext=(0, 5), textcoords="offset points", ha="center",
-                                va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED)
+                                va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED, zorder=6,
+                                bbox=fs.knockout())  # the zero line stops at the word
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels([r[0] for r in rows])
     ax.tick_params(axis="y", length=0, pad=6)
@@ -755,7 +796,7 @@ def A2() -> list[str]:
         # same top-to-bottom order as the lines at the left edge
         for j, (_r, col, lab, _side) in enumerate(spec):
             ax.text(3.45, 0.93 - 0.115 * j, lab.replace("\n", " "), transform=ax.get_xaxis_transform(), ha="left",
-                    va="center", fontsize=fs.FS_SMALL, color=col if col != fs.ORANGE_LIGHT else "#D9824F")
+                    va="center", fontsize=fs.FS_SMALL, color=col if col != fs.ORANGE_LIGHT else fs.ORANGE_LIGHT_TEXT)
         ref_verticals(ax)
         fs.zero_line(ax)
         ax.set_ylabel("net $ per day")
@@ -804,7 +845,11 @@ def A3() -> list[str]:
     ax.set_yticks([0, 1, 2])
     ax.set_xlabel("venue regime: taker delay / fee")
     ax.set_ylabel(f"net {fs.CENT} per share, 95% CI")
-    ptitle(name, ax, "a", "Edge falls as the venue's protection falls", x_in=0.06, y_in=2.34)
+    # not monotone in the regime (3 s/3% 1.36 c < 1 s/3% 1.45 c, CIs overlap): the title states what holds,
+    # every regime's CI is above zero, IS and OOS
+    all_pos = all(reg[p][r]["ci_c"][0] > 0 for p in reg for r in reg[p])
+    ptitle(name, ax, "a", "Edge stays positive in every venue regime" if all_pos else "Edge by venue regime",
+           x_in=0.06, y_in=2.34)
 
     ax = axb
     bm = rs["by_month"]
@@ -900,7 +945,7 @@ def A4() -> list[str]:
     for i, (fam, lab, v, lo, hi) in enumerate(rows):
         c = col[fam]
         if fam_prev is not None and fam != fam_prev:
-            ax.axhline(i - 0.5, color=GRID_SEP, lw=0.6, zorder=0)
+            ax.axhline(i - 0.5, color=fs.GRID, lw=0.6, zorder=0)
         fam_prev = fam
         if lo is not None:
             a, b = max(lo, lim[0]), min(hi, lim[1])
@@ -911,12 +956,14 @@ def A4() -> list[str]:
                                 arrowprops=dict(arrowstyle="-|>", color=c, lw=1.0, mutation_scale=6,
                                                 shrinkA=0, shrinkB=0), zorder=3)
         passed = lo is not None and lo > 0
-        ax.plot([v], [i], ls="none", marker="o", ms=4.4, mfc=c if passed else "white", mec=c, mew=1.1, zorder=5)
+        oos = "OOS" in lab  # filled = IS (or not split), hollow = OOS, as in every other figure
+        ax.plot([v], [i], ls="none", marker="o", ms=4.4, mfc="white" if oos else c, mec=c, mew=1.1, zorder=5)
         ci = f" [{fs.num(lo, 2)}, {fs.num(hi, 2)}]" if lo is not None else ""
         ax.annotate(f"{fs.num(v, 2, sign=True)}{ci}", xy=(1.0, i), xycoords=("axes fraction", "data"),
                     xytext=(10, 0), textcoords="offset points", ha="left", va="center", fontsize=fs.FS_SMALL,
-                    color=K if passed else fs.MUTED, annotation_clip=False)
-    ax.axvline(0, color=ZERO_DARK, lw=0.8, zorder=1)
+                    color=K if passed else fs.MUTED, fontweight="semibold" if passed else "normal",
+                    annotation_clip=False)
+    ax.axvline(0, color=fs.ZERO, lw=0.8, zorder=1)
     ax.set_yticks(range(n))
     ax.set_yticklabels([r[1] for r in rows])
     for t, r in zip(ax.get_yticklabels(), rows):
@@ -932,14 +979,13 @@ def A4() -> list[str]:
                 textcoords="offset points", ha="left", va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED,
                 annotation_clip=False)
     pos = [r for r in rows if r[3] is not None and r[3] > 0]
-    title = ("Only v2 at the fast tier's fills clears zero" if pos and all(r[0] == "v2" for r in pos)
+    title = ("Only v2 at fast-tier fills clears zero" if pos and all(r[0] == "v2" for r in pos)
              else "Every test on one axis")
     ptitle(name, ax, "", title, x_in=0.06, y_in=H - 0.16)
     return fs.save_fig(fig, name, OUT)
 
 
-GRID_SEP = "#D9D9D9"
-ZERO_DARK = "#8C8C8C"
+GRID_SEP = fs.GRID  # family separators (A4) and the A7a 'base' divider: gridline grey, nothing darker
 
 
 def A5() -> list[str]:
@@ -988,7 +1034,7 @@ def A5() -> list[str]:
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _p: f"{v:.0f}%"))
     ax.set_ylabel("share of v2 P&L")
     w5 = F["IS"]["wallets"]["top5_share_of_pnl"] * 100
-    ptitle(name, ax, "", f"Five copied wallets carry {w5:.0f}% of v2's in-sample P&L", x_in=0.06, y_in=2.24)
+    ptitle(name, ax, "", f"Five wallets carry {fs.f(w5, 0)}% of in-sample P&L", x_in=0.06, y_in=2.24)
     return fs.save_fig(fig, name, OUT)
 
 
@@ -1015,11 +1061,11 @@ def A6() -> list[str]:
         ys = [d[str(x)] for x in xs]
         ax.plot(xs, ys, color=col, lw=fs.LW, zorder=4 if k != "ukf" else 3.5)
         items.append(dict(x=xs[-1], y=ys[-1], text=lab.replace("spin-aware ", "spin, "),
-                          color=col if k != "ukf" else "#D9824F"))
+                          color=col if k != "ukf" else fs.ORANGE_LIGHT_TEXT))
     fs.log_time_axis(ax, which="y", ticks=(0.1, 0.3, 1, 3, 10, 30), lim=(0.1, 30))
     ax.set_xlim(0, 400)
     ax.set_xticks([0, 100, 200, 300, 400])
-    ax.set_xlabel("lead before the bounce (ms)")
+    ax.set_xlabel(LEAD_TENNIS)
     ax.set_ylabel("landing error SD, cm (log scale)")
     fs.direct_label(ax, items, dx_pt=4)
     fs.tag(ax, "simulation", x=0.03, y=0.96, ha="left", va="top")
@@ -1030,6 +1076,7 @@ def A6() -> list[str]:
     fs.hgrid(ax)
     items = []
     prec_all = []
+    rec_min = []
     for k, col, lab in spec[1:]:
         if k not in sp or "pout95_recall" not in sp[k]:
             continue
@@ -1039,22 +1086,23 @@ def A6() -> list[str]:
         prec_all += [sp[k]["pout95_precision"][str(x)] for x in xs]
         ax.plot(xs, ys, color=col, lw=fs.LW, zorder=4 if k != "ukf" else 3.5)
         items.append(dict(x=xs[-1], y=ys[-1], text=f"recall, {lab.split()[-1]}",
-                          color=col if k != "ukf" else "#D9824F"))
-    if prec_all and min(prec_all) == max(prec_all):
-        ax.axhline(prec_all[0], color=K, lw=fs.LW_2, zorder=4)
-        items.append(dict(x=400, y=prec_all[0], text="precision", color=K))
+                          color=col if k != "ukf" else fs.ORANGE_LIGHT_TEXT))
+        rec_min.append(min(ys))
+    if prec_all and min(prec_all) == max(prec_all):  # INK is reserved for v2 / pre-registered: precision in grey
+        ax.axhline(prec_all[0], color=G, lw=fs.LW_2, zorder=4)
+        items.append(dict(x=400, y=prec_all[0], text="precision, both", color=fs.MUTED))
     ax.set_xlim(0, 400)
     ax.set_xticks([0, 100, 200, 300, 400])
     ax.set_ylim(0.84, 1.02)
     ax.set_yticks([0.85, 0.9, 0.95, 1.0])
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _p: f"{v:.2f}"))
-    ax.set_xlabel("lead before the bounce (ms)")
+    ax.set_xlabel(LEAD_TENNIS)
     ax.set_ylabel("OUT calls, precision and recall")
     fs.direct_label(ax, items, dx_pt=4)
     fs.tag(ax, "simulation", x=0.03, y=0.04, ha="left", va="bottom")
-    rmin = min(sp["bls"]["pout95_recall"].values())
+    rmin = min(rec_min)  # over every recall line drawn (UKF ends at 0.88), not only BLS
     pr = f"{prec_all[0]:g}" if prec_all and min(prec_all) == max(prec_all) else "high"
-    ptitle(name, ax, "b", f"OUT calls: precision {pr}, recall \u2265 {rmin:.2f}", x_in=3.24, y_in=2.34)
+    ptitle(name, ax, "b", f"OUT calls: precision {pr}, recall \u2265 {fs.f(rmin, 2)}", x_in=3.24, y_in=2.34)
     return fs.save_fig(fig, name, OUT)
 
 
@@ -1089,7 +1137,7 @@ def A7() -> list[str]:
                     items.append(dict(x=x[5], y=float(ys[5]), text=lab, color=col if col != G else fs.MUTED))
         ax.axvline(6.35, color=GRID_SEP, lw=0.6)
         ax.text(0.85, -0.25, f"0.25{ND}1{T}s not resolvable", ha="center", va="center", rotation=90,
-                fontsize=fs.FS_SMALL - 0.5, color=fs.MUTED)
+                fontsize=fs.FS_SMALL, color=fs.MUTED, zorder=6, bbox=fs.knockout())
         ax.set_xticks(xpos)
         ax.set_xticklabels(["0", "1", "2", "3", "5", "10", "base"])
         ax.tick_params(axis="x", length=2)
@@ -1137,11 +1185,18 @@ def A7() -> list[str]:
     ax.set_ylim(-2.0, 1.2)
     ax.set_yticks([-2, -1, 0, 1])
     fs.unicode_ticks(ax, "y")
-    fs.direct_label(ax, items, dx_pt=10)  # after the limits: offsets are computed in display space
+    fs.direct_label(ax, items, dx_pt=10, leader=False)  # after the limits (display-space offsets)
     ax.set_xlabel("feed delay V, s")
     ax.set_ylabel(f"net {fs.CENT} per share, 95% CI")
+    # the title speaks only for the 9 cells drawn (model leads, Florida network); the count over all 36 cells
+    # (also London and zero lead) is a tag, computed from the same file
+    drawn = [rp["cells"][f"V{keyv[v]}|lag{lag}|lead_model|florida"]["all"]["per_share_mark_c"] for v in Vs
+             for lag in (1, 2, 3)]
     neg = sum(1 for c in rp["cells"].values() if c["all"]["per_share_mark_c"] < 0)
-    ptitle(name, ax, "b", f"Replay of every point loses in {neg} of {len(rp['cells'])} settings", x_in=3.28, y_in=2.43)
+    fs.tag(ax, f"all settings: {neg} of {len(rp['cells'])} below zero", x=0.97, y=0.04)
+    tb = ("Trading every point loses at every delay" if all(v < 0 for v in drawn)
+          else "Replay of every point")
+    ptitle(name, ax, "b", tb, x_in=3.28, y_in=2.43)
     return fs.save_fig(fig, name, OUT)
 
 
@@ -1152,49 +1207,69 @@ FIGS = {"F1": F1, "F2": F2, "F3": F3, "F4": F4, "F5": F5, "A1": A1, "A2": A2, "A
 # ============================================================================================== FIGURES.md
 INFO = {  # figure key -> (role, figure name in the brief, replaces in results/paper/, notes for the integration pass)
     "F1": ("main", "Who sees the point first", "fig1_latency_cv",
-           "a: horizontal bars from the bounce on a log time axis; our row = frame leaving our virtual camera to the "
-           "call (WebRTC loopback, own clip, CV fed 10 frames/s), p50 bar and p99 whisker; vendor/published rows are "
-           "ranges (solid to the low end, light box to the high end); the stamp row is dashed because the stamp lag is "
-           "unmeasured; score feeds are the ESPN, Polymarket-sports and WTA medians of the lead behind the book. The "
-           "shaded column is the book's reprice implied by the measured median book-minus-stamp time and the two "
-           "stamp-lag readings (pre-registered 2.0 s, calibrated 3.14 s). b: snapshot rule, held-out test games, Wilson "
-           "95% band on precision. c: simulation only (no tennis video)."),
+           "a: dot-and-range on a log time axis from the end of the point. Our row = frame leaving our virtual camera "
+           "to the call (own clip, WebRTC over loopback on one laptop, CV fed 10 frames/s; not glass-to-glass, no "
+           "network): p50 dot, p99 whisker; 'call in 46 ms' is a different span from F4's 'order-ready in 54 ms' "
+           "(capture to unsigned order, results/e2e). Vendor and published rows are 3 pt ranges; the stamp row is a "
+           "dashed range because the stamp lag is unmeasured; the public stream is one measured median; score feeds are "
+           "one range over the ESPN, Polymarket-sports and WTA medians of the lag behind the book (named left of it). "
+           "The shaded column is the book's reprice, 0.84-1.98 s: the measured median 1.16 s book-before-stamp "
+           "subtracted from the two stamp-lag readings (pre-registered 2.0 s, calibrated 3.14 s); F4a draws the same "
+           "window. b: the six snapshot points of the frozen model on the held-out test games (summary.json), precision "
+           "with Wilson 95% whiskers, right/called counts above, recall in grey. The former panel c (tennis spin "
+           "landing error) duplicated A6a and was dropped."),
     "F2": ("main", "The edge exists", "fig2_speed_edge",
-           "a: monthly net 30 s markout of the fast tier and everyone else, and copy-3-s-later net to resolution "
-           "(as in alpha.json); August is split at the OOS cut and each part sits mid-way through its own days. "
-           "b: cumulative v2 P&L at the fast tier's fills; the stressed paths are re-drawn from the committed trade file "
-           "by the loader in scripts/paper_figures.py, which asserts every total against cost_stress.json to the cent."),
+           "a: monthly net 30 s markout of the fast tier and everyone else (the axis), and copy-3-s-later held to "
+           "resolution (a different horizon, said in its label, drawn thinner without markers); filled = IS, hollow = "
+           "OOS; August is split at the OOS cut and each part sits mid-way through its own days. b: cumulative v2 P&L at "
+           "the fast tier's fills; the OOS part is drawn at weekly closes (and the last day) so the dashes read; end "
+           "labels are the exact daily totals. The stressed paths are re-drawn from the committed trade file by the "
+           "loader in scripts/paper_figures.py, which asserts every total against cost_stress.json to the cent."),
     "F3": ("main", "What speed is worth", "fig3_signal_decay (panels a, b)",
            "Seed-mean curves; the band is the 2.5-97.5% range of the 20 seeds around the OOS curve only (four "
-           "overlapping bands were unreadable). Open circles = break-even V of the seed-mean curve; dots in b = the "
-           "1 s base case. Dotted verticals: 0.5 s best licensed case, 1 s base, 3 s requirement. Simulated: assumed "
-           "feed latency (licensed feed not purchased); the caption must keep that label."),
+           "overlapping bands were unreadable). Circles on the zero line in a = break-even V of the seed-mean curve; "
+           "dots in b = the 1 s base case; filled = IS, hollow = OOS. Dotted verticals: 0.5 s best licensed case, 1 s "
+           "base, 3 s requirement, each label starting at its own line ('best licensed' one tier up). Numbers rounded "
+           "half up (Sharpe 11.95 -> 12.0). Simulated: assumed feed latency (licensed feed not purchased); the caption "
+           "must keep that label."),
     "F4": ("main", "Frame to trade", "(new)",
            "a: stage means from results/e2e/summary.json (means add up exactly to the total; the p50 total is 2,119 ms "
-           "vs the 2,124 ms mean). The CV stage was measured on a laptop; the L4 GPU figure in its label is the "
-           "production reference quoted in the same file. Order not sent; feed 1 s simulated. b, c: CV strategy along "
-           "the capacity study's size path (net cap 50-5,000 shares at $250 orders, 10 matches a day, half the stale "
-           "depth); open circles = where the Sharpe halves; band in c = 20-seed range, calibrated OOS. Either part "
-           "draws a marked placeholder if its input is missing."),
+           "vs the 2,124 ms mean); 'order-ready in 54 ms' = capture to unsigned order (mean 54.2 ms, n = 24), not F1's "
+           "46 ms call. The shaded book-reprice window is F1a's 0.84-1.98 s (e2e's own working band 1.0-1.5 s lies "
+           "inside it). The CV stage was measured on a laptop; the L4 GPU figure in its label is the production "
+           "reference quoted in the same file. Order not sent; feed 1 s simulated. b, c: CV strategy along the "
+           "capacity study's size path (net cap 50-5,000 shares at $250 orders, 10 matches a day, half the stale "
+           "depth); filled = IS, hollow = OOS; the larger circles = where the Sharpe halves; band in c = 20-seed range, "
+           "calibrated OOS. b's title says 'erratic' because the calibrated OOS path is 37, 57, 67, 61, 44, 24, 168 "
+           "$/day. Either part draws a marked placeholder if its input is missing."),
     "F5": ("main", "CV visual (optional)", "(new)",
            "Real match footage (OpenTTGames held-out test_2, CC BY-NC-SA 4.0: credit it in the caption). Cropped from "
-           "the rendered still, below its top text box and above its call banner; the arc, cone and landing label are "
-           "the physics fit for display, the call itself is the frozen tier-0 model."),
+           "the rendered still, below its top text box and above its call banner. 'Table end' = the source's "
+           "'contact' (ball reaches the table end). The call is the frozen tier-0 model's; the arc, cone and the "
+           "'LONG +74 cm, +/-81 cm (95%)' landing label are the display-only physics fit (its band reaches the table, "
+           "so the figure does not rest the miss on it); the tag above the image says so."),
     "A1": ("appendix", "A1 restyled", "figA1_capacity",
-           "a: v2 at scaled caps (optimistic at large size: no impact model). b: gross edge, net of fees, and after "
-           "central fixed costs with the low-high fixed-cost range as the bar; CV rows at V = 1 s, burned OOS."),
+           "a: v2 at scaled caps (optimistic at large size: no impact model); filled = IS, hollow = OOS. b: gross edge "
+           "(grey tick), net of fees (grey dot) and after central fixed costs (coloured dot) with the low-high "
+           "fixed-cost range as the bar; hollow on OOS rows; CV rows at V = 1 s, burned OOS."),
     "A2": ("appendix", "A2 restyled", "figA2_sweep_lags",
            "Seed means for the four stamp-lag readings; the key is ordered like the lines at the left edge."),
     "A3": ("appendix", "A3 restyled", "figA3_regime_month", "b: August split at the OOS cut, as in F2."),
     "A4": ("appendix", "Robustness forest plot", "figA4_forest",
            "Axis clipped at +-4 c (arrowheads mark a CI that runs past it; the exact CI is in the right column). "
-           "Colour = family (grey earlier hypotheses and maker, black v2, orange CV / tier-0 / replay); filled = CI "
-           "above zero."),
+           "Colour = family (grey earlier hypotheses and maker, black v2, orange CV / tier-0 / replay); hollow = an OOS "
+           "test, filled = IS or not split (replay), as in every figure; a CI above zero is set in semibold in the "
+           "right column."),
     "A5": ("appendix", "A5 restyled", "figA5_concentration", "Above 100% means the rest lost money."),
-    "A6": ("appendix", "A6 restyled", "figA6_spin_sim", "Simulation only; a: log scale."),
+    "A6": ("appendix", "A6 restyled", "figA6_spin_sim",
+           "Simulation only; a: log scale (the only copy of the tennis landing-error curves). b: precision in grey "
+           "(INK is reserved for v2 / pre-registered); the recall bound in the title is the minimum over both lines "
+           "drawn (UKF 0.88 at 400 ms)."),
     "A7": ("appendix", "All-points replay (+ signal decay)", "fig3_signal_decay (panels c, d)",
-           "a: market-side markout by seconds since the score move; 0.25-1 s bins are empty in the data. b: replay of "
-           "9 live-recorded matches trading every point, Florida network, model leads; x = sweep OOS reference."),
+           "a: market-side markout by seconds since the score move; 0.25-1 s bins are empty in the data; filled = IS, "
+           "hollow = OOS. b: replay of 9 live-recorded matches trading every point, Florida network, model leads (9 of "
+           "the 36 cells); x = sweep OOS reference. The title speaks for the 9 cells drawn; the tag counts all 36 "
+           "(London network and zero lead too) from replay.json."),
 }
 OLD_PROBLEMS = [
     "Every glyph at 11 pt in panels 1.6-1.9 in tall: tick labels, direct labels and titles crowd the data "
@@ -1222,7 +1297,11 @@ def write_figures_md(written: dict) -> Path:
              "PNG. Numbers come only from the result files listed; nothing here re-runs a backtest. Captions stay in "
              "LaTeX; the honesty labels (simulated, assumed feed latency, paper only, order not sent) belong in them.",
              "", "Palette: orange #E8601C our CV strategy / pipeline; near-black #222 v2 or the pre-registered "
-             "reading; grey #8C8C8C others; light grey shading OOS and source bands. IS solid, OOS dashed.", "",
+             "reading only; grey #8C8C8C others and any secondary series; light grey only as shading (OOS periods, "
+             "source bands, seed bands), never as a line, marker or bar. IS solid, OOS dashed; filled marker = IS, "
+             "hollow marker = OOS, with no other meaning anywhere. Time axes: 'seconds after the point ends'; lead "
+             "axes: 'lead before the ball reaches the table end' (table tennis) or 'lead before the bounce' (tennis "
+             "simulation). Numbers rounded half up, true minus signs, thin spaces before units.", "",
              "Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F1 A4`).", ""]
     for role, head in (("main", "## Main text"), ("appendix", "## Appendix")):
         lines += [head, ""]
