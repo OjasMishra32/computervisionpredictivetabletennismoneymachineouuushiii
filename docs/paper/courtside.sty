@@ -115,6 +115,9 @@
 \fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\csfooter}}
 
 % ---------------------------------------------------------------- title block (page 1, no cover page)
+% #5: optional event logo (image path). When given, it sits 0.45 in tall to the left of the event and date lines,
+% which stay centred on the page (an invisible box of the same width balances it on the right).
+\newsavebox\cslogobox
 \newcommand\cstitle[5]{%
   \thispagestyle{plain}%
   \vspace*{-4pt}%
@@ -122,8 +125,17 @@
     {\display\fontsize{23}{26}\selectfont #1\par}
     \vspace{3pt}
     {\displayreg\fontsize{12.5}{14.5}\selectfont #2\par}
-    {\display\fontsize{12}{14}\selectfont #3\par}
-    {\display\fontsize{12}{14}\selectfont #4\par}}
+    \if\relax\detokenize{#5}\relax
+      {\display\fontsize{12}{14}\selectfont #3\par}
+      {\display\fontsize{12}{14}\selectfont #4\par}
+    \else
+      \vspace{1pt}%
+      \sbox\cslogobox{\includegraphics[height=0.45in]{#5}}%
+      {\display\fontsize{12}{14}\selectfont
+       \raisebox{\dimexpr-0.5\ht\cslogobox+0.3em\relax}{\usebox\cslogobox}\hspace{8pt}%
+       \begin{tabular}[c]{@{}c@{}}#3\\#4\end{tabular}%
+       \hspace{8pt}\hphantom{\usebox\cslogobox}\par}
+    \fi}
   \vspace{5pt}}
 
 \newenvironment{csabstract}

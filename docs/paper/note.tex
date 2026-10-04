@@ -7,10 +7,10 @@
   pdfauthor={Ojasva Mishra, Yoan Exposito, Rafael Penhas, Ian Hoang, University of Florida},
   pdfkeywords={prediction markets; latency arbitrage; in-play betting; tennis; computer vision; market microstructure}}
 % a little more air than the house default: sections, floats and paragraphs
-\titlespacing*{\section}{0pt}{10pt plus 3pt minus 2pt}{4pt plus 1pt}
-\setlength\textfloatsep{12pt plus 3pt minus 3pt}
-\setlength\floatsep{11pt plus 2pt minus 2pt}
-\setlength\intextsep{11pt plus 2pt minus 2pt}
+\titlespacing*{\section}{0pt}{7pt plus 3pt minus 2pt}{3pt plus 1pt}
+\setlength\textfloatsep{10pt plus 3pt minus 3pt}
+\setlength\floatsep{9pt plus 2pt minus 2pt}
+\setlength\intextsep{9pt plus 2pt minus 2pt}
 \setlength\parskip{0pt plus 1pt}
 \captionsetup{skip=5pt}
 
@@ -19,18 +19,21 @@
 \cstitle{COURTSIDE: Pricing the Value of Speed\\in In-Play Tennis Prediction Markets}
   {Ojasva Mishra, Yoan Exposito, Rafael Penhas, Ian Hoang \textperiodcentered{} University of Florida}
   {Gator Quant Hacks 2026 \textperiodcentered{} Systematic Trading Track}
-  {October 4, 2026}{}
+  {October 4, 2026}{gqh_logo.png}
 \unmarkedfootnote{Rerun everything with \texttt{bash reproduce.sh}; rebuild this paper with \texttt{python
 scripts/build\_paper.py} (\url{https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii}).
-Paper trading only: we used no real money, no licensed feed, no match footage and no court camera.}
+Paper trading only: no real money, no licensed feed, no footage of traded matches and no court camera.}
 
 \begin{csabstract}
-Polymarket prices on tennis matches are win probabilities, and each point moves them by an amount we can compute. In
-public data on 13,084 matches, the wallets that trade within 3\,s of a point earn after fees in every
-month, in and out of sample, while everyone else loses. Copying them at their own prices has a Sharpe ratio of
-14.5 in sample and 6.7 out of sample but loses once fees double. A computer-vision
-trader, simulated with an assumed video delay (we did not buy a feed), makes +\$4 a day out of sample at 1\,s pre-registered (+\$57 post hoc); a
-replay on real order books loses.
+After each point, a Polymarket tennis price (a win probability) is set by whoever learns the point first. In public
+data on 13,084 matches, wallets that repeatedly trade within 3\,s of a point earn after fees in all
+11 months, in and out of sample, while everyone else loses; copying them has no factor exposure
+and an out-of-sample Sharpe ratio of 6.7 that doubled fees erase. About half the edge is gone within
+1--2\,s, and the first second of video delay costs a simulated computer-vision (CV) trader \$42–74 a
+day; our pipeline needs 54\,ms. With an assumed feed delay (no feed purchased), that trader makes,
+pre-registered, +\$15, +\$4 and −\$13 a day out of sample at 0.5, 1 and 3\,s
+(+\$81, +\$57, −\$11 post hoc). Every blind test of a book we could trade
+failed.
 
 \vspace{3pt}\noindent\textbf{JEL:} G14, G12, C58.\enspace \textbf{Keywords:} prediction markets; latency arbitrage;
 in-play betting; tennis.
@@ -40,14 +43,20 @@ in-play betting; tennis.
 \section{Summary}\label{sec:summary}
 \begin{keybox}
 \item Each tennis point changes who is likely to win, and on Polymarket the price \emph{is} that probability. Quotes
-lag the point by about a second, so whoever sees it first can trade against stale prices.
-\item The wallets that trade in the first 3\,s after a point (the \emph{fast tier}) earn this after fees, in and out
-of sample; everyone else loses. Copying them at their prices has an out-of-sample Sharpe ratio of
-6.7, but doubled fees wipe it out.
-\item With computer vision and an assumed 1\,s video feed, our pre-registered simulation makes +\$4 a day out of sample, about break-even. Our pipeline adds 54\,ms,
-so an order is executable 2,119\,ms after the point, inside the 3\,s bar.
-\item Every blind test of a book we could actually trade failed, and so did a replay on real order books. We tried
-4,219 variants, logged all 77 reads of held-out data and used no real money.
+lag the point by about a second, so whoever learns it first sets the price: the wallets that repeatedly trade in the first 3\,s after a point (the \emph{fast tier}, picked on past months)
+earn after fees in all 11 months, in and out of sample, and
+everyone else loses. Copying them has no factor exposure and an out-of-sample Sharpe ratio of 6.7,
+which doubled fees wipe out.
+\item About half the edge is gone 1--2\,s after the point (+1.18¢ a share in the block of the
+move, +0.59¢ at 1--2\,s, in sample), and the first second of feed delay costs a simulated CV trader \$42–74 a day. Our
+pipeline adds 54\,ms: with a 1\,s feed an order can execute 2,119\,ms after the point,
+inside the 3\,s bar.
+\item With an assumed feed delay, the pre-registered simulation makes +\$15,
++\$4 and −\$13 a day out of sample at 0.5, 1 and 3\,s, so it pays only
+with a feed near 1\,s or faster (post hoc: +\$81, +\$57 and
+−\$11).
+\item Every blind test of a book we could actually trade failed, and so did a replay on real order books; we report
+all 4,219 variants and 77 reads of held-out data, and used no real money.
 \end{keybox}
 
 % ======================================================================================== 2 Hypothesis
@@ -58,13 +67,11 @@ that chance in cents, so each point moves fair value by a known amount at a know
 it is lost. It averages 5.7\% and reaches 38.4\% on a big point (Appendix~A).
 
 The news reaches traders in tiers: the court first, then video, then public score feeds
-28.2--44.1\,s after the price has moved (Fig.~\ref{fig:race}). A maker whose quote still
-rests when the point ends is picked off by whoever knows first: the adverse selection of \citet{glosten1985} and the
-latency race \citet{budish2015} and \citet{aquilina2022} measured in stocks. In-play betting prices are known to react
-late \citep{croxson2014,brown2012}. We add a wallet-level map of who is fast and a dollar value for
-each second. Polymarket holds every \emph{taker} order (one that trades against a resting quote) for
-1\,s, giving makers time to cancel. The edge is shrinking: the fast tier grew from 4 to 131 wallets
-while its edge fell 0.20¢ a month (\(t = −3.98\)).
+28.2--44.1\,s after the price has moved (Fig.~\ref{fig:race}). A maker whose quote still rests after the point is picked off by whoever knows first: the adverse selection of \citet{glosten1985} and the
+latency race \citet{budish2015} and \citet{aquilina2022} measured in stocks. In-play betting prices react late \citep{croxson2014,brown2012}. We add a wallet-level map of who is fast and a price for each
+second. Polymarket holds every \emph{taker} order (one that hits a resting quote) for
+1\,s, so makers can cancel. The edge is shrinking: the fast tier grew from 4 to 131 wallets
+as its edge fell 0.20¢ a month (\(t = −3.98\)).
 
 \begin{hypbox}
 \textbf{H6 (pre-registered).} We expect wallets that trade within 3\,s of a score move in Polymarket ATP, WTA and
@@ -87,22 +94,22 @@ CV simulation, so it is \emph{burned}. For a blind test, which also checks survi
 11,307 smaller markets we never examined and opened them once per frozen rule. Six tapes hit the API's
 offset cap, 2,889 early matches paid no fee, 2.89\% of markets settled 50/50 (kept),
 tape timestamps run 1.98\,s late, and no corporate actions apply. Timing data: ESPN and the WTA
-\citep{espn,wtaapi}; vision: OpenTTGames footage \citep{voeikov2020}, BlurBall and WASB weights
-\citep{gossard2026,tarashima2023}.
+\citep{espn,wtaapi}; vision: OpenTTGames footage \citep{voeikov2020}, BlurBall, WASB, TrackNet and
+court-keypoint weights \citep{gossard2026,tarashima2023,huang2019,yastrebksv} and one Pexels tennis rally
+\citep{pexels2021}.
 
 % ======================================================================================== 4 Methodology
 \section{Methodology}\label{sec:method}
 \para{The fast tier and v2} We flag a score move when the 10\,s volume-weighted price moves at least
 4¢ away from its prior 60\,s. Each month a wallet joins the fast tier if, in earlier months, it
-traded at least 30 times in the 0--3\,s after a flag, in at least 10
-matches, with \(t > 3\). Our copy book, \emph{v2}, copies those wallets' trades, sizes each by its
+traded at least 30 times 0--3\,s after a flag, in at least 10
+matches, with \(t > 3\). Our copy book, \emph{v2}, copies their trades, sizes each by its
 resolution risk (the best of 55 sizing rules, picked walk-forward), caps orders at \$1,000 and exposure at 100 shares net per match,
-and holds to resolution. At the fast tier's own prices it measures what their speed is worth, not what we could
-earn: copying the same trades 3\,s later loses (Fig.~\ref{fig:edge}a).
+and holds to resolution. At their own prices it measures what their speed is worth, not what we could earn: copying the same trades 3\,s later loses (Fig.~\ref{fig:edge}a).
 
 \para{Being fast ourselves} Our second strategy uses computer vision (CV): a model watches the video, calls the point as
-early as it can and sends a taker order before the stale quote is cancelled. We have no tennis video, so we
-simulate this trader on past points with an assumed feed latency (licensed feed not purchased); all other parameters
+early as it can and sends a taker order before the stale quote is cancelled. We have
+no video of the matches we trade, so we simulate this trader on past points with an assumed feed latency (licensed feed not purchased); all other parameters
 are measured. The order wins only if
 \begin{equation}\label{eq:budget}
   V + \delta + D - \ell \;<\; L + R \quad\Longleftrightarrow\quad V \;<\; L + R - D - \delta + \ell ,
@@ -118,9 +125,12 @@ hoc} estimate from one day of data. The simulated trades are past points where t
 
 Our CV is real on table tennis. On 41 held-out balls that went out (120\,fps), our live causal engine called
 4 early (median lead 162\,ms) and none wrongly, at 119.9\,fps on
-one L4 GPU. On our own footage a video frame becomes a built order in 54\,ms; with a simulated 1\,s
-feed, 65\,ms of network and the 1\,s hold, the order can execute 2,119\,ms after the
-point ends, inside the organizers' 3\,s bar (Fig.~\ref{fig:f2t}).
+one L4 GPU. On a freely licensed real tennis rally \citep{pexels2021}, our tennis tracker found the ball in
+89\% of 300 frames (48/48 random spot-checks on the ball in
+play) and fitted the court lines in every frame, a median 0.36\,px off the paint; we make no
+in/out calls on single-camera tennis footage. On our own footage a frame becomes a built order in 54\,ms, and with a simulated 1\,s
+feed, 65\,ms of network and the 1\,s hold the order can execute 2,119\,ms after the
+point, inside the organizers' 3\,s bar (Fig.~\ref{fig:f2t}).
 
 \begin{figure}[b]
 \includegraphics{../../results/paper/v2/fig4_frame_to_trade.pdf}
@@ -130,10 +140,9 @@ is simulated; order built, not sent. Shaded: when the book reprices. Source: \te
 \end{figure}
 
 \para{Costs and validation} Polymarket charges takers \(f(q) = r\,q\,(1-q)\) a share at price \(q\), which is
-\(10{,}000\,r\,(1-q)\) bps of notional. Today \(r = 5\%\), so a trade at 50¢ pays
-1.25¢ a share (250\,bps). Each match pays its actual fee and every trade the spread
-it crossed; we also double both. v2 paid 120 and
-179\,bps of notional in fees (IS, OOS) and still netted 273 and
+\(10{,}000\,r\,(1-q)\) bps of notional. Today \(r = 5\%\): a trade at 50¢ pays
+1.25¢ a share. Each match pays its own fee, every trade the spread it crossed; we also double both. v2 paid 120 and
+179\,bps in fees (IS, OOS) and still netted 273 and
 114\,bps. We tune only in sample, walk-forward (fit on past months, test on the next).
 
 % ======================================================================================== 5 Results
@@ -157,8 +166,7 @@ Annual volatility & 17.5\% & 22.2\% & Net ¢, all costs \(\times\)2 & +0.27 & �
 \end{tabular*}
 \tabnotes{\emph{Notes:} 55,662 trades in 206 days IS (+\$40,426),
 10,412 in 40 OOS (+\$3,688; burned, not blind), net of costs.
-Sharpe: daily P\&L \(\times\sqrt{365}\); CIs: block bootstrap; deflated at 3,386 trials; return on
-capital (3\(\times\) peak dollars locked). Formulas: Appendix~A.}
+Sharpe: daily P\&L \(\times\sqrt{365}\); CIs: block bootstrap; deflated at 3,386 trials; formulas: Appendix~A.}
 \end{table}
 
 \begin{figure}[t]
@@ -178,11 +186,14 @@ time used hindsight (deviation D9), and fixing it cut the in-sample Sharpe from
 16.8 to 14.5. The rest comes from about 270 small, nearly
 independent bets a day (mean correlation within a day 0.0013). The \emph{deflated Sharpe}
 \citep{bailey2014}, the chance the Sharpe is real once every variant is counted, is 0.997 in sample
-but only 0.075 out of sample: forty days cannot rule out luck.
+but only 0.075 out of sample: forty days cannot rule out luck. Nearby settings work too: all
+55 sizing rules we tried have a per-share 95\% CI above zero in sample (Sharpe
+4.1–16.8), the v2-safe grid's probability of backtest overfitting is 9–24\% across block
+choices (A6), and the CV profit falls across all 14 feed delays from 0 to
+60\,s, never rising by more than \$0.09 a day (Fig.~\ref{fig:speed}).
 
 \begin{table}[t]
-\caption{\emph{The CV strategy at three assumed feed delays: pre-registered it breaks even near 1\,s; post hoc it
-looks far better.}}
+\caption{\emph{The CV strategy at three assumed feed delays: pre-registered it breaks even near 1\,s.}}
 \label{tab:lat}
 \tabnums\setlength\tabcolsep{3pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
@@ -214,16 +225,14 @@ Table~\ref{tab:lat}; grey bar: vendor-stated licensed video. Assumed feed latenc
 \label{fig:speed}
 \end{figure}
 
-\para{What speed is worth} Pre-registered, the CV trader makes +\$15, +\$4
-and −\$13 a day out of sample at 0.5, 1 and 3\,s and breaks even at 1.01\,s
-(Table~\ref{tab:lat}, Fig.~\ref{fig:speed}); the call must reach the venue 0.89\,s before the
-umpire's stamp. Post hoc they read +\$81, +\$57 and −\$11
-(+\$8 at 1\,s at the low end of its interval).
-Read per point, the post hoc inference loses (−\$17 a day at 1\,s). Every reading loses at 3\,s,
-so meeting the 3\,s bar is not enough. A replay of 9 matches recorded live on Oct~3 against their
-real books calls every point ex ante and loses in 36 of 36 settings
-(−0.94¢ a share at 1\,s; Fig.~\ref{fig:replay}). The gap is knowing in advance which points matter; no
-rule we tested does that yet.
+\para{What speed is worth} Pre-registered, the CV trader breaks even at a 1.01\,s feed delay
+out of sample (Table~\ref{tab:lat}, Fig.~\ref{fig:speed}): the call must reach the venue
+0.89\,s before the umpire's stamp. Post hoc it makes +\$57 a day at
+1\,s (+\$8 at the low end of the stamp-lag interval), but read per point the post hoc inference
+loses (−\$17 a day). Every reading loses at 3\,s, so meeting the 3\,s bar is not enough. A replay
+of 9 matches recorded live on Oct~3 against their real books, calling every point ex ante, loses in
+36 of 36 settings (−0.94¢ a share at 1\,s;
+Fig.~\ref{fig:replay}): the gap is knowing which points matter in advance.
 
 \para{What failed} Every blind test of a book we could trade failed: v2 on the 11,307 unseen markets
 (+1.22¢ [−0.19, 2.65]), the pre-registered maker book and the CV rule v3
@@ -244,7 +253,11 @@ and stop if it reaches zero, if drawdown hits 5\%, or if the venue changes its f
 \para{Model, concentration and tail risk} Wrong CV calls always fill, so an out call trades only at confidence
 \(\geq\)0.95 and one confirmed false call halts the day. Phantom calls outside play come about
 30 an hour; 2.5 a day would erase the pre-registered 1\,s OOS P\&L
-(32 post hoc); their filter is coded but untested. The top five copied wallets
+(32 post hoc). Replayed on the engine's held-out call log, our rally gate (trade a miss call
+only within 2.0\,s of a bounce call, set before the test) removes 5 of the 7 calls on unlabelled balls (4 of the
+5 between rallies) but keeps only 3 of
+5 correct calls (2 at 0.5–0.8\,s), leaving
+about 8 phantom calls an hour: not yet safe to trade. The top five copied wallets
 carry 81\% of v2's P\&L in sample and 142\% out of sample. The UMA oracle settles
 markets \citep{pmuma}, US persons may only close positions \citep{pmgeoblock}, and courtsiding breaches ticket terms
 \citep{itf2026}. Factor risk is nil (largest factor
@@ -259,20 +272,18 @@ OOS even at its smallest size). Post hoc, taking at most half the stale depth at
 \$40,000 of capital OOS and \$73,000 IS and peaks at \$177 a
 day on \$83,000 OOS (Fig.~\ref{fig:capacity}). What binds is the few seconds after each point: the
 book is 0.22\% of in-play volume but 9\% of what the fast tier trades
-0--3\,s after a point. Data is the other limit: the cheapest data stack (\$42 a day) needs
-\$14,000--\$16,000 of capital post hoc, and at 1\,s the book could pay at most
+0--3\,s after a point. Data is the other limit: at 1\,s the book could pay at most
 \$1,644 a month for data post hoc and \$55 pre-registered, against
 reported feed prices of \$1,250--\$10,000. At today's fee COURTSIDE prices speed; it
 is not yet a business.
 
 % ======================================================================================== 8 Limitations
 \section{Limitations and next steps}\label{sec:limits}
-The stamp lag \(L\) is unmeasured and moves the break-even one for one (Eq.~\ref{eq:budget}). Our post hoc value
-assumes humans at the court, but the 1\,s hold dominates: even for a 20\,ms bot the inferred lag is
-2.85\,s. One session with a licensed feed and a few test orders would measure \(L\) and show if held
-orders are released on a whole-second clock; at 1\,s the feed pays for itself only if \(L \geq 3.0\)\,s,
-so buying it is a business decision we have not made. Our CV accuracy comes from table tennis, tennis is simulated and
-we never sent an order. A fee rise, a shorter hold or more fast wallets would break the strategy.\label{lastmain}
+The stamp lag \(L\) is unmeasured and moves the break-even one for one (Eq.~\ref{eq:budget}); the 1\,s hold
+dominates it, since even for a 20\,ms bot the inferred lag is 2.85\,s. One session with a licensed feed
+and a few test orders would measure \(L\); at 1\,s the feed pays for itself only if \(L \geq 3.0\)\,s, so
+buying it is a business decision we have not made. Our CV call accuracy comes from table tennis, the trading is
+simulated and we never sent an order. A fee rise, a shorter hold or more fast wallets would break the strategy.\label{lastmain}
 
 % ======================================================================================== References
 \clearpage
@@ -282,8 +293,10 @@ we never sent an order. A fee rise, a shorter hold or more fast wallets would br
 \nocite{harvey2016,politis1994,bailey2017,harvey2017,huang2019,statsperform,nextio,sportradar,ably,regen2026,glsystemhaus,ispreview,thedesk,itia2026,brown2014,gi2026,prn2026,kalshiapi,french,newey1987}
 
 \vspace{6pt}\noindent\textbf{Disclosure.} We used no real money and connected no funded account. Simulated parts are
-labelled where they appear. We hold no licensed data feed, no match footage and no court access. Open-source parts we
-did not build: the OpenTTGames dataset and the BlurBall and WASB model weights, cited above. Authors:
+labelled where they appear. We hold no licensed data feed, no footage of the matches we trade and no court access. Open-source parts we
+did not build: the OpenTTGames dataset, the BlurBall and WASB model weights, and the TrackNet weights and
+TennisProject/TennisCourtDetector code (used unmodified, for evaluation only), cited above. The tennis rally is a Pexels
+stock clip \citep{pexels2021}; the logo on page~1 is the Gator Quant Hacks 2026 event's own mark. Authors:
 Ojasva Mishra, Yoan Exposito, Rafael Penhas, Ian Hoang (University of Florida).
 
 % ======================================================================================== Appendix
@@ -385,11 +398,12 @@ H4 score feeds & do public score feeds lag the book? & median lag 44.5\,s ($n = 
 H5 quote after jumps & post maker quotes after a move & OOS +0.16¢ [−0.49, 0.87] & not significant \\
 H6 fast tier & wallets trading 0--3\,s after a move, picked on past months & +0.93\,/\,+0.75¢ net 30\,s markout (IS\,/\,OOS); 9/9 and 3/3 months positive & confirmed \\
 Kalshi lead-lag & Kalshi vs Polymarket on the same points & Kalshi first in 68.9\% of 106,347 repricings (median 5\,s) & lag mostly mechanical \\
+Signal decay (TT5) & with-jump markout at 1--2\,s minus 10--30\,s after a move & OOS +0.66 [0.45, 0.87]¢; whole year +0.19 [−0.26, 0.46]¢; fast tier +1.18 to +0.59¢ (IS, 0 to 1--2\,s) & decays in today's regime only \\
 Clocks & when the book, the stamp and the tape move & book 1.2\,s before the stamp ($n = 482$); tape 1.98\,s late & measured \\
 Factor regression & Fama--French three factors and momentum & $\alpha$ $t = 8.48$; largest factor $|t| = 1.36$ & no factor exposure \\
 \multicolumn{4}{@{}l}{\emph{Copying the fast tier (v2 and relatives)}} \\
 v1 & copy the fast tier, dollar sizing; OOS opened once & IS +1.16¢; OOS +0.57¢, −\$36,056 & failed \\
-Sizing & 55 sizing policies, walk-forward & \texttt{G\_50pct\_net100}: Sharpe 14.5 IS & adopted (v2) \\
+Sizing & 55 sizing policies, walk-forward & \texttt{G\_50pct\_net100}: Sharpe 14.5 IS; all 55 with IS CI above zero (Sharpe 4.1–16.8) & adopted (v2); plateau \\
 Exits & maker exit instead of holding (902 variants) & IS +0.53¢ [0.42, 0.64] (1\,s\,/\,5\% regime); live fills adverse (27\% filled in 30\,s) & not adopted \\
 Trade selection & which fast-tier trades to take (341 variants) & nested walk-forward +1.76¢ [1.36, 2.16] vs +1.16¢ (IS) & IS only \\
 Side markets & side markets vs the match market (68 variants) & leaning maker +2.73¢ [1.73, 3.70] (IS); taking stale side quotes: no edge & IS only; tiny \\
@@ -400,12 +414,14 @@ v2, fixed costs & after central data and running costs & IS +\$29 a day; OOS −
 v2, unseen markets & 11,307 markets we never examined (blind) & IS +2.02¢; OOS +1.22¢ [−0.19, 2.65] & fail \\
 v2-safe & net cap 50, fixed after v2's OOS losses & Sharpe 15.7\,/\,9.3; blind +1.21¢ [−0.02, 2.43] & fail (blind) \\
 Maker v1 & pre-registered maker book (blind) & +1.87¢ [−0.14, 3.86] per fill, −\$379 & fail \\
-Rigor pack & deflated Sharpe, PBO, block bootstrap & DSR 0.997\,/\,0.075; PBO 15\%; $P(\text{SR}\leq 0) = 0.0023$ & luck not ruled out OOS \\
+Rigor pack & deflated Sharpe, PBO, block bootstrap & DSR 0.997\,/\,0.075; PBO 15\% (9–24\% by block choice); $P(\text{SR}\leq 0) = 0.0023$ & luck not ruled out OOS \\
 Blind forward test & v2 on new matches, CV rule v3 as secondary & pre-registered but not run within the hackathon window (HYPOTHESIS\_V2.md A5) & not run \\
 \multicolumn{4}{@{}l}{\emph{Being fast ourselves (computer vision)}} \\
 H3 early call & table-tennis MISS call 50\,ms before contact, precision $\geq$0.95 & live causal engine: 4 of 41 misses, none wrong; offline evaluation (look-ahead feature): 11/11 & precision passes; recall low \\
 Spin model, table tennis & spin-aware early call, held-out footage & 10/12 right at 50\,ms vs the frozen model's 11/11 (both offline) & not adopted \\
-Tennis tracker & spin-aware landing model (simulated physics) & 0.57 vs 5.76\,cm at 200\,ms; OUT precision 1, recall 0.98 & simulation only \\
+Tennis tracker, real clip & our tennis tracker on a Pexels rally (no labels) & ball in 89\% of 300 frames; 48/48 spot-checks on the ball; court lines 0.36\,px (median) & tracks; no in/out calls \\
+Tennis spin model & spin-aware landing model (simulated physics) & 0.57 vs 5.76\,cm at 200\,ms; OUT precision 1, recall 0.98 & simulation only \\
+Rally gate & a miss call trades only within 2.0\,s of a bounce call (engine log; 0.5–1.2\,s also run) & removes 5 of 7 calls on unlabelled balls; keeps 3 of 5 right ones (2 at 0.5–0.8\,s) & not enough \\
 GPU engine & streamed causal engine on one L4 & 119.9\,fps; 4.6\,ms p50; 0 frames dropped & measured \\
 WebRTC pipeline & our clip over WebRTC into the engine & 46 ms p50, 67 ms p99 frame to call; video leg 4–8\,ms & measured \\
 End to end & video frame to unsigned order on a live book & 54\,ms ours; 2,119\,ms with a 1\,s feed vs 3,000\,ms & pass (paper) \\
@@ -418,7 +434,6 @@ Capacity & size grid for the CV book and v2 & post hoc Sharpe halves at \$40,000
 Table-tennis markets & TT1--TT5 on Polymarket table tennis & no fast wallet qualifies; spread 94¢ & untestable \\
 \end{longtable}}
 
-\clearpage
 \section*{Appendix C\quad Robustness and extra figures}
 These figures back the regime, replay, latency and capacity claims in the main text.
 
@@ -492,7 +507,7 @@ checks, 25 audits or re-runs, 22 live-data or replay reads and
 
 \para{Variants} 4,219 in all (\nolinkurl{results/paper/variants.json}):
 H1-H6 pre-registered and H5/H6 rules (44); v2 lenses (exit, sizing, selection, cross-market, latency, Kalshi) (3,342); v2-safe grid (24); tier-0 pre-registered scenarios (432); tier-0 v3 in-sample grid (360); maker v1 evaluated variants (8); cost-stress cases (4); table-tennis tests TT1-TT5 (5).
-Sensitivities that chose nothing: 944 latency-sweep cells and 36 replay cells.
+Sensitivities that chose nothing: 944 latency-sweep cells and 36 replay cells, plus 4 rally-gate values (Section~\ref{sec:risk}).
 Two presentation choices were post hoc: the 3.14\,s headline reading and the 1\,s base case.
 
 \para{Grids and sources} Latency sweep: \nolinkurl{results/tier0/latency_sweep.json}; replay:

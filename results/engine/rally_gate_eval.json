@@ -1,0 +1,526 @@
+{
+ "what": "Rally-in-progress gate (engine/strategy.py StrategyConfig.rally_gate_s) replayed on the live engine's held-out table-tennis call log; paper only, post hoc on test labels, no gate value chosen here",
+ "script": "scripts/rally_gate_eval.py",
+ "generated_utc": "2026-10-04T04:10:52+00:00",
+ "inputs": {
+  "results/engine/online_events_L4.jsonl": "997e272ae70037f1c56709fc7ce4e0165b0521aeb6e3156d00473f0a0633d89a",
+  "results/tracking/test_flights.csv": "680235ea519bffe8d2faf1200bb9b60b510ea5cbeb77cb5fb76c9af5c9b56467",
+  "results/engine/online_vs_offline.json": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
+  "engine/strategy.py": "fc7009058e97aa7534d4a99ac0214afebf2da147dd78d49600d95b82596c86e6"
+ },
+ "definitions": {
+  "gate": "a MISS call trades only if a BOUNCE call on the same match came 0 to gate_s before it (CourtsideStrategy.evaluate, reason 'no_rally_in_progress' otherwise)",
+  "correct": "the first MISS call on a labelled MISS flight (engine/vision/eval_online.assign_events); correct_early: at or before T_ref",
+  "outside_flights": "a MISS call on a ball outside the 171 labelled flights (wrong for trading: no point ended there); between_rallies: outside the rally frame ranges as flagged in online_vs_offline.json, the rest inside a rally range (serve tosses, rally-ending balls)",
+  "clocks": "emit: t_emit, the engine's emit wall clock in the real-time run (what a live trader sees); video: frame / 120 fps",
+  "a_priori": "2 s is the value the engine/strategy.py comment sets for any live use; 0.5, 0.8 and 1.2 s are the sensitivity sweep"
+ },
+ "counts": {
+  "video_seconds": 851.0,
+  "events": 172,
+  "bounce_calls": 160,
+  "miss_calls": 12,
+  "correct": 5,
+  "correct_early": 4,
+  "outside_flights": 7,
+  "between_rallies": 5,
+  "wrong_on_bounce_flights": 0
+ },
+ "results": {
+  "emit": {
+   "0.5": {
+    "gate_s": 0.5,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 4,
+    "correct_kept": 2,
+    "correct_total": 5,
+    "correct_early_kept": 1,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_2",
+      "frame": 2819,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 808
+     },
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "0.8": {
+    "gate_s": 0.8,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 4,
+    "correct_kept": 2,
+    "correct_total": 5,
+    "correct_early_kept": 1,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_2",
+      "frame": 2819,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 808
+     },
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "1.2": {
+    "gate_s": 1.2,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 5,
+    "correct_kept": 3,
+    "correct_total": 5,
+    "correct_early_kept": 2,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "2": {
+    "gate_s": 2.0,
+    "a_priori": true,
+    "miss_calls": 12,
+    "kept": 5,
+    "correct_kept": 3,
+    "correct_total": 5,
+    "correct_early_kept": 2,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   }
+  },
+  "video": {
+   "0.5": {
+    "gate_s": 0.5,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 4,
+    "correct_kept": 2,
+    "correct_total": 5,
+    "correct_early_kept": 1,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_2",
+      "frame": 2819,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 809
+     },
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "0.8": {
+    "gate_s": 0.8,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 4,
+    "correct_kept": 2,
+    "correct_total": 5,
+    "correct_early_kept": 1,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_2",
+      "frame": 2819,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 809
+     },
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "1.2": {
+    "gate_s": 1.2,
+    "a_priori": false,
+    "miss_calls": 12,
+    "kept": 5,
+    "correct_kept": 3,
+    "correct_total": 5,
+    "correct_early_kept": 2,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   },
+   "2": {
+    "gate_s": 2.0,
+    "a_priori": true,
+    "miss_calls": 12,
+    "kept": 5,
+    "correct_kept": 3,
+    "correct_total": 5,
+    "correct_early_kept": 2,
+    "correct_early_total": 4,
+    "correct_lost": [
+     {
+      "video": "test_4",
+      "frame": 5751,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 16625
+     },
+     {
+      "video": "test_4",
+      "frame": 9837,
+      "label": "correct_early",
+      "gap_since_last_bounce_ms": 6342
+     }
+    ],
+    "outside_flights_removed": 5,
+    "outside_flights_total": 7,
+    "between_rallies_removed": 4,
+    "between_rallies_total": 5,
+    "stale_call_skips": 0,
+    "outside_flights_per_hour_ungated": 29.6,
+    "outside_flights_per_hour_gated": 8.5
+   }
+  }
+ },
+ "miss_calls": [
+  {
+   "video": "test_1",
+   "frame": 4963,
+   "media_t_s": 41.358,
+   "label": "outside_flights_between_rallies",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 8200,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 8200,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_1",
+   "frame": 7728,
+   "media_t_s": 64.4,
+   "label": "outside_flights_between_rallies",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 266,
+   "kept_emit_0.5s": true,
+   "kept_emit_0.8s": true,
+   "kept_emit_1.2s": true,
+   "kept_emit_2s": true,
+   "gap_since_last_bounce_ms_video": 267,
+   "kept_video_0.5s": true,
+   "kept_video_0.8s": true,
+   "kept_video_1.2s": true,
+   "kept_video_2s": true
+  },
+  {
+   "video": "test_1",
+   "frame": 15484,
+   "media_t_s": 129.033,
+   "label": "outside_flights_inside_rally_range",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 342,
+   "kept_emit_0.5s": true,
+   "kept_emit_0.8s": true,
+   "kept_emit_1.2s": true,
+   "kept_emit_2s": true,
+   "gap_since_last_bounce_ms_video": 341,
+   "kept_video_0.5s": true,
+   "kept_video_0.8s": true,
+   "kept_video_1.2s": true,
+   "kept_video_2s": true
+  },
+  {
+   "video": "test_2",
+   "frame": 2766,
+   "media_t_s": 23.05,
+   "label": "correct_early",
+   "labelled_flight": 42,
+   "t_ref": 2774,
+   "gap_since_last_bounce_ms_emit": 367,
+   "kept_emit_0.5s": true,
+   "kept_emit_0.8s": true,
+   "kept_emit_1.2s": true,
+   "kept_emit_2s": true,
+   "gap_since_last_bounce_ms_video": 367,
+   "kept_video_0.5s": true,
+   "kept_video_0.8s": true,
+   "kept_video_1.2s": true,
+   "kept_video_2s": true
+  },
+  {
+   "video": "test_2",
+   "frame": 2819,
+   "media_t_s": 23.492,
+   "label": "correct_early",
+   "labelled_flight": 43,
+   "t_ref": 2858,
+   "gap_since_last_bounce_ms_emit": 808,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": true,
+   "kept_emit_2s": true,
+   "gap_since_last_bounce_ms_video": 809,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": true,
+   "kept_video_2s": true
+  },
+  {
+   "video": "test_4",
+   "frame": 5751,
+   "media_t_s": 47.925,
+   "label": "correct_early",
+   "labelled_flight": 71,
+   "t_ref": 5762,
+   "gap_since_last_bounce_ms_emit": 16625,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 16625,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_4",
+   "frame": 9837,
+   "media_t_s": 81.975,
+   "label": "correct_early",
+   "labelled_flight": 80,
+   "t_ref": 9865,
+   "gap_since_last_bounce_ms_emit": 6342,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 6342,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_4",
+   "frame": 10907,
+   "media_t_s": 90.892,
+   "label": "outside_flights_between_rallies",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 15259,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 15259,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_4",
+   "frame": 13393,
+   "media_t_s": 111.608,
+   "label": "outside_flights_between_rallies",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 35975,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 35975,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_4",
+   "frame": 34896,
+   "media_t_s": 290.8,
+   "label": "outside_flights_between_rallies",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 11425,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 11425,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  },
+  {
+   "video": "test_5",
+   "frame": 5544,
+   "media_t_s": 46.2,
+   "label": "correct_after_T_ref",
+   "labelled_flight": 102,
+   "t_ref": 5537,
+   "gap_since_last_bounce_ms_emit": 408,
+   "kept_emit_0.5s": true,
+   "kept_emit_0.8s": true,
+   "kept_emit_1.2s": true,
+   "kept_emit_2s": true,
+   "gap_since_last_bounce_ms_video": 408,
+   "kept_video_0.5s": true,
+   "kept_video_0.8s": true,
+   "kept_video_1.2s": true,
+   "kept_video_2s": true
+  },
+  {
+   "video": "test_6",
+   "frame": 5658,
+   "media_t_s": 47.15,
+   "label": "outside_flights_inside_rally_range",
+   "labelled_flight": null,
+   "t_ref": null,
+   "gap_since_last_bounce_ms_emit": 14351,
+   "kept_emit_0.5s": false,
+   "kept_emit_0.8s": false,
+   "kept_emit_1.2s": false,
+   "kept_emit_2s": false,
+   "gap_since_last_bounce_ms_video": 14350,
+   "kept_video_0.5s": false,
+   "kept_video_0.8s": false,
+   "kept_video_1.2s": false,
+   "kept_video_2s": false
+  }
+ ],
+ "limits": "7 videos, 12 MISS calls: counts, not rates. Table tennis only; tennis would need a serve detector for the same gate. The labels are the held-out test labels, read after the run."
+}

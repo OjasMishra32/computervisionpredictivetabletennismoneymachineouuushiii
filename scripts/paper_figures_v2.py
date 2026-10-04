@@ -309,10 +309,10 @@ def month_axis(ax, months: list[pd.Timestamp]) -> None:
 
 def F2() -> list[str]:
     name = "fig2_edge"
-    fig = plt.figure(figsize=(W, 2.6))
+    fig = plt.figure(figsize=(W, 2.38))
     PW = 1.85  # both panels the same width over the same dates, so months and OOS shading line up across the row
-    axa = fs.axes_in(fig, 0.50, 0.40, PW, 1.78)
-    axb = fs.axes_in(fig, 3.80, 0.40, PW, 1.78)
+    axa = fs.axes_in(fig, 0.50, 0.40, PW, 1.56)
+    axb = fs.axes_in(fig, 3.80, 0.40, PW, 1.56)
     al = load("results/alpha/alpha.json", name)
     paths = pf.v2_daily_paths()
     note_src(name, "results/lowloss/daily.csv", "results/v2/causal.json", "results/v2/cost_stress.json",
@@ -372,7 +372,7 @@ def F2() -> list[str]:
         month_axis(ax, ticks)
         # each label at its own line end (Everyone else at -1.86, not lifted towards the gap)
         fs.direct_label(ax, items, dx_pt=5, leader=False, pad_pt=2.0)
-    ptitle(name, ax, "a", "Only the fast tier earns; copying late loses", x_in=0.06, y_in=2.42)
+    ptitle(name, ax, "a", "Only the fast tier earns; copying late loses", x_in=0.06, y_in=2.20)
 
     # ---------------------------------------------------------------- (b) v2 cumulative P&L, costs doubled
     ax = axb
@@ -413,7 +413,7 @@ def F2() -> list[str]:
         ax.set_ylabel("cumulative net P&L, $k")
         month_axis(ax, ticks)
         fs.direct_label(ax, items, dx_pt=5, bounds=(0.0, 1.1), leader=False)
-    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.24, y_in=2.42)
+    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.24, y_in=2.20)
     return fs.save_fig(fig, name, OUT)
 
 
@@ -461,9 +461,9 @@ def F3() -> list[str]:
     """What speed is worth: net $/day of the CV strategy against the feed delay V, in sample (a) and out of sample (b),
     at the pre-registered and the post hoc stamp-lag readings and the post hoc inference read point by point."""
     name = "fig3_speed_value"
-    H = 2.85
+    H = 2.68
     fig = plt.figure(figsize=(W, H))
-    AXW, AXH, B = 2.48, 1.50, 0.55
+    AXW, AXH, B = 2.48, 1.33, 0.55
     axa = fs.axes_in(fig, 0.80, B, AXW, AXH)
     axb = fs.axes_in(fig, 3.86, B, AXW, AXH)
     sw = load("results/tier0/latency_sweep.json", name)
@@ -479,7 +479,7 @@ def F3() -> list[str]:
         return fs.save_fig(fig, name, OUT)
     be = sw["breakeven_video_delay"]
     for ax, period, letter, ylim, yt, strip_y, x_in in (
-            (axa, "IS", "a", (-75, 262), [0, 100, 200], 240, 0.06),
+            (axa, "IS", "a", (-100, 262), [0, 100, 200], 240, 0.06),
             (axb, "burned_OOS", "b", (-75, 172), [0, 50, 100, 150], 158, 3.30)):
         oos = period == "burned_OOS"
         fs.log_time_axis(ax, ticks=(0.1, 0.5, 1, 3, 10, 60), lim=(0.05, 60), label="feed delay V, s (log scale)")
@@ -507,7 +507,7 @@ def F3() -> list[str]:
         ccal = cur[("tournament_lagcal", period)]
         m_ = (cpre.x_s >= 0.05) & (cpre.x_s <= 0.6)
         y_pre = float(cpre[m_].pnl_per_day_usd.max())
-        ax.annotate("pre-registered", xy=(0.056, y_pre), xytext=(0, 2.5), textcoords="offset points", ha="left",
+        ax.annotate("pre-registered", xy=(0.056, y_pre), xytext=(0, 1.2), textcoords="offset points", ha="left",
                     va="bottom", fontsize=fs.FS, color=K, zorder=8, path_effects=fs.halo(3.0))
         y_cal = float(ccal[np.isclose(ccal.x_s, 1.15)].pnl_per_day_usd.iloc[0])
         ax.annotate(f"post hoc, L = {cal:g}{T}s", xy=(1.3, y_cal), xytext=(0, 4), textcoords="offset points",
@@ -563,7 +563,7 @@ def F4() -> list[str]:
     """Frame to trade: the measured pipeline, a simulated 1 s feed, the network and the venue hold against the 3 s bar
     (one panel; the capacity panels are the appendix figure A8, figA8_capacity)."""
     name = "fig4_frame_to_trade"
-    H = 1.72
+    H = 1.66
     fig = plt.figure(figsize=(W, H))
     # ---------------------------------------------------------------- frame-to-executable timeline
     axa = fs.axes_in(fig, 1.22, 0.40, 4.98, 0.84)

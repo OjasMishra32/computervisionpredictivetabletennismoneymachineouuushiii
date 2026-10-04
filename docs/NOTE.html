@@ -26,12 +26,17 @@ copy of the fast tier's trades at their own prices: it measures what their speed
 "OOS" for v2 and the CV simulation is a burned hold-out (we had looked at it), not a blind one. No real money was used
 and no order was ever sent.</p>
 <h2>Abstract</h2>
-<p>Polymarket prices on tennis matches are win probabilities, and each point moves them by an amount we can compute. In
-public data on 13,084 matches, the wallets that trade within 3 s of a point (the fast tier) earn after fees
-in every month, in and out of sample, while everyone else loses. Copying them at their own prices has a Sharpe ratio of
-14.5 in sample and 6.7 out of sample but loses once fees double. A computer-vision trader,
-simulated with an assumed video delay (we did not buy a feed), pre-registered, makes +$4 a day out of sample at 1 s (+$57 post hoc);
-a replay on real order books loses.</p>
+<p>After each point, a Polymarket tennis price (a win probability) is set by whoever learns the point first. In public
+data on 13,084 matches, wallets that repeatedly trade within 3 s of a point (the fast tier, picked on past
+months) earn after fees in all
+11 months, in and out of sample, while everyone else loses; copying them has no factor exposure and an
+out-of-sample Sharpe ratio of 6.7 (14.5 in sample) that doubled fees erase. About half the edge
+is gone within 1–2 s (+1.18¢ to +0.59¢ a share in sample), and the first second of
+video delay costs a simulated computer-vision (CV) trader $42–74 a day; our pipeline needs
+54 ms. With an assumed feed delay (no feed purchased), that trader makes +$15,
++$4 and −$13 a day out of sample at 0.5, 1 and 3 s pre-registered
+(+$81, +$57, −$11 post hoc). Every blind test of a book we
+could trade failed, and so did a replay on real order books.</p>
 <h2>Table 1 of the PDF: our copy of the fast tier's trades (v2)</h2>
 <p>Sharpe uses daily P&amp;L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
 corrects for 3,386 trials.</p>
@@ -180,7 +185,20 @@ matches recorded live against their real order books calls every point ex ante a
   execute 2,119 ms after the point ends, inside the organizers' 3,000 ms bar.</li>
 <li><strong>CV on real held-out table-tennis footage.</strong> The live causal engine called 4 of 41
   balls that went out early (median lead 162 ms), none wrongly, at 119.9 fps on one L4 GPU.
-  Tennis is simulated physics only.</li>
+  On a freely licensed real tennis rally (Pexels), our tennis tracker found the ball in 89% of
+  300 frames (48/48 random spot-checks on the ball in play) and fitted the court lines in
+  every frame (0.36 px median); we make no in/out calls on single-camera tennis footage, and tennis
+  trading is simulated.</li>
+<li><strong>Nearby settings also work.</strong> All 55 sizing rules have a per-share 95% CI above zero in sample
+  (Sharpe 4.1–16.8); the v2-safe grid's probability of backtest overfitting is 9–24% across
+  block choices; the CV profit falls across all 14 feed delays from 0 to
+  60 s, never rising by more than $0.09 a day.</li>
+<li><strong>Rally gate (risk).</strong> Replayed on the engine's held-out call log (<code>scripts/rally_gate_eval.py</code>), the gate in our
+  strategy code (a miss call trades only within 2.0 s of a bounce call, set before the test) removes
+  5 of the 7 calls on balls outside labelled flights
+  (4 of 5 between rallies) but keeps only 3 of
+  5 correct calls (2 at 0.5–0.8 s); about
+  8 phantom calls an hour remain, so it is not yet safe to trade.</li>
 <li><strong>Capacity.</strong> v2's OOS edge holds up to 1× size ($22,754 of capital); 5× loses. The CV book has no
   capacity at the pre-registered lag; post hoc its Sharpe halves at $40,000 (OOS) to $73,000
   (IS) of capital. At 1 s it could pay at most $1,644 a month for data post hoc and

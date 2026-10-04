@@ -905,6 +905,7 @@ def collect() -> tuple[Registry, dict]:
         rows_.append({"commit": c_, "time": pd.Timestamp(tm_).tz_convert("UTC").strftime("%Y-%m-%d %H:%M"), "subject": subj_})
     extra["trail"] = rows_[::-1]
     collect_final(N, extra)
+    collect_evidence(N)
     # ---------------------------------------------------------------- authors (research/compliance/TEAM.md)
     tm_ = ROOT / "research/compliance/TEAM.md"
     authors = "[Author names: team to fill]"
@@ -930,13 +931,18 @@ def collect() -> tuple[Registry, dict]:
          f"{V('ft.c.is')}\\,/\\,{V('ft.c.oos')}¢ net 30\\,s markout (IS\\,/\\,OOS); {V('ft.months.is')} and {V('ft.months.oos')} months positive", "confirmed"),
         ("Kalshi lead-lag", "Kalshi vs Polymarket on the same points",
          f"Kalshi first in {V('ev.kalshi.first')} of {V('ev.kalshi.n')} repricings (median {V('ev.kalshi.lead')}\\,s)", "lag mostly mechanical"),
+        ("Signal decay (TT5)", "with-jump markout at 1--2\\,s minus 10--30\\,s after a move",
+         f"OOS {V('decay.test.oos')}¢; whole year {V('decay.test.pool')}¢; fast tier {V('decay.fast.0.is')} to {V('decay.fast.12.is')}¢ (IS, 0 to 1--2\\,s)",
+         "decays in today's regime only"),
         ("Clocks", "when the book, the stamp and the tape move",
          f"book {V('lat.book_vs_stamp')}\\,s before the stamp ($n = {V('lat.n_points')}$); tape {V('ev.blocklag')}\\,s late", "measured"),
         ("Factor regression", "Fama--French three factors and momentum",
          f"$\\alpha$ $t = {V('fac.alpha_t')}$; largest factor $|t| = {V('fac.max_t')}$", "no factor exposure"),
         ("Copying the fast tier (v2 and relatives)",),
         ("v1", "copy the fast tier, dollar sizing; OOS opened once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
-        ("Sizing", f"{V('sel.sizing.n')} sizing policies, walk-forward", f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS", "adopted (v2)"),
+        ("Sizing", f"{V('sel.sizing.n')} sizing policies, walk-forward",
+         f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS; all {V('plat.sizing.pos')} with IS CI above zero (Sharpe {V('plat.sizing.sr')})",
+         "adopted (v2); plateau"),
         ("Exits", f"maker exit instead of holding ({V('ev.exit.n')} variants)",
          f"IS {V('ev.exit.c')}¢ {V('ev.exit.ci')} (1\\,s\\,/\\,5\\% regime); live fills adverse ({V('ev.livefill.fill30')} filled in 30\\,s)", "not adopted"),
         ("Trade selection", f"which fast-tier trades to take ({V('ev.sel.n')} variants)",
@@ -957,7 +963,7 @@ def collect() -> tuple[Registry, dict]:
          f"Sharpe {V('v2s.is.sr')}\\,/\\,{V('v2s.oos.sr')}; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}", "fail (blind)"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
         ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
-         f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')}; $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
+         f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')} ({V('plat.pbo')} by block choice); $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
         ("Blind forward test", "v2 on new matches, CV rule v3 as secondary", "FWD", ""),
         ("Being fast ourselves (computer vision)",),
         ("H3 early call", "table-tennis MISS call 50\\,ms before contact, precision $\\geq$0.95",
@@ -965,8 +971,14 @@ def collect() -> tuple[Registry, dict]:
          "precision passes; recall low"),
         ("Spin model, table tennis", "spin-aware early call, held-out footage",
          f"{V('spin.tt.tp50')}/{V('spin.tt.calls50')} right at 50\\,ms vs the frozen model's {V('cv.tt.tp50')}/{V('cv.tt.called50')} (both offline)", "not adopted"),
-        ("Tennis tracker", "spin-aware landing model (simulated physics)",
+        ("Tennis tracker, real clip", "our tennis tracker on a Pexels rally (no labels)",
+         f"ball in {V('tn.real.ball')} of {V('tn.real.frames')} frames; {V('tn.real.spot')} spot-checks on the ball; court lines {V('tn.real.court_px')}\\,px (median)",
+         "tracks; no in/out calls"),
+        ("Tennis spin model", "spin-aware landing model (simulated physics)",
          f"{V('cv.spin.bls200')} vs {V('cv.spin.base200')}\\,cm at 200\\,ms; OUT precision {V('spin.out.prec200')}, recall {V('spin.out.rec200')}", "simulation only"),
+        ("Rally gate", f"a miss call trades only within {V('gate.s')}\\,s of a bounce call (engine log; {V('gate.sweep')}\\,s also run)",
+         f"removes {V('gate.out.removed')} of {V('gate.out.total')} calls on unlabelled balls; keeps {V('gate.correct.kept')} of {V('gate.correct.total')} right ones ({V('gate.correct.kept_lo')} at {V('gate.lo_range')}\\,s)",
+         "not enough"),
         ("GPU engine", "streamed causal engine on one L4", f"{V('cv.eng.fps')}\\,fps; {V('cv.eng.p50')}\\,ms p50; {V('cv.eng.dropped')} frames dropped", "measured"),
         ("WebRTC pipeline", "our clip over WebRTC into the engine", f"{V('cv.webrtc')} frame to call; video leg {V('webrtc.leg')}\\,ms", "measured"),
         ("End to end", "video frame to unsigned order on a live book",
@@ -1263,6 +1275,93 @@ def collect_final(N: Registry, extra: dict) -> None:
     N.add("ev.blocklag", num(hl["median_lag_s"], 2), hl["median_lag_s"], "research/v2/blocklag/results.json::median_lag_s")
 
 
+def collect_evidence(N: Registry) -> None:
+    """Keys added for the last revision (new keys only; every earlier key is unchanged): the tennis tracker on a real
+    licensed rally, the rally-in-progress gate replayed on the engine's held-out call log, the parameter plateau
+    (sizing grid, PBO across block choices, the latency curve) and the fast tier's months and decay in seconds."""
+    # ---------------------------------------------------------------- real tennis footage (Pexels rally)
+    TD = J("results/viz/v60_assets/tennis_real/tennis_detections.json")
+    s0 = "results/viz/v60_assets/tennis_real/tennis_detections.json"
+    st_ = TD["stats"]
+    N.add("tn.real.frames", intc(st_["frames"]), st_["frames"], s0 + "::stats.frames")
+    N.add("tn.real.ball", pct(st_["ball_detected_share"] * 100, 0), st_["ball_detected_share"], s0 + "::stats.ball_detected_share")
+    N.add("tn.real.ball_n", intc(st_["ball_frames_detected"]), st_["ball_frames_detected"], s0 + "::stats.ball_frames_detected")
+    qa = TD["qa"]
+    mq = re.match(r"(\d+) of (\d+) sampled tracked positions are on the ball in play", qa["result_by_eye"])
+    assert mq and int(mq.group(2)) == len(qa["frames"]), qa["result_by_eye"]
+    N.add("tn.real.spot", f"{mq.group(1)}/{mq.group(2)}", [int(mq.group(1)), int(mq.group(2))], s0 + "::qa.result_by_eye (by-eye check of qa.frames)")
+    ct = st_["court"]
+    N.add("tn.real.court_frames", intc(ct["frames_registered"]), ct["frames_registered"], s0 + "::stats.court.frames_registered")
+    N.add("tn.real.court_px", num(ct["line_fit_px_median_p90_max"][0], 2), ct["line_fit_px_median_p90_max"][0],
+          s0 + "::stats.court.line_fit_px_median_p90_max[0]")
+    # ---------------------------------------------------------------- rally gate (scripts/rally_gate_eval.py)
+    RGE = J("results/engine/rally_gate_eval.json")
+    s1 = "results/engine/rally_gate_eval.json::results.emit"
+    ap = next(r for r in RGE["results"]["emit"].values() if r["a_priori"])
+    sw = [r for r in RGE["results"]["emit"].values() if not r["a_priori"]]
+    N.add("gate.s", f"{ap['gate_s']:.1f}", ap["gate_s"], f"{s1}.{ap['gate_s']:g}.gate_s (a priori value)")
+    for k, f in (("gate.out.removed", "outside_flights_removed"), ("gate.out.total", "outside_flights_total"),
+                 ("gate.between.removed", "between_rallies_removed"), ("gate.between.total", "between_rallies_total"),
+                 ("gate.correct.kept", "correct_kept"), ("gate.correct.total", "correct_total")):
+        N.add(k, f"{ap[f]:g}", ap[f], f"{s1}.{ap['gate_s']:g}.{f}")
+    N.add("gate.hr", num(ap["outside_flights_per_hour_gated"], 0), ap["outside_flights_per_hour_gated"],
+          f"{s1}.{ap['gate_s']:g}.outside_flights_per_hour_gated")
+    lo = min(sw, key=lambda r: r["gate_s"])
+    kept_lo = sorted({r["correct_kept"] for r in sw})
+    N.add("gate.n", intc(len(RGE["results"]["emit"])), len(RGE["results"]["emit"]), f"{s1} (gate values run, none chosen)")
+    N.add("gate.sweep", f"{min(r['gate_s'] for r in sw):g}–{max(r['gate_s'] for r in sw):g}",
+          [r["gate_s"] for r in sw], f"{s1}.*.gate_s (sweep values)")
+    N.add("gate.correct.kept_lo", f"{lo['correct_kept']:g}", lo["correct_kept"], f"{s1}.{lo['gate_s']:g}.correct_kept")
+    N.add("gate.correct.kept_range", "–".join(f"{x:g}" for x in (kept_lo[0], kept_lo[-1])) if len(kept_lo) > 1 else f"{kept_lo[0]:g}",
+          kept_lo, f"{s1}.*.correct_kept (min-max over the sweep)")
+    lo_g = [r["gate_s"] for r in sw if r["correct_kept"] == lo["correct_kept"]]
+    N.add("gate.lo_range", f"{min(lo_g):g}–{max(lo_g):g}", lo_g, f"{s1}.*.gate_s where correct_kept == gate.correct.kept_lo")
+    # ---------------------------------------------------------------- plateau: sizing grid, PBO by block choice, latency curve
+    pol = pd.read_csv(ROOT / "research/v2/sizing/out/policies.csv")
+    pr = pol[(pol.measure == "res") & (pol.fee_mode == "actual")]
+    cil = pr.per_share_ci_c.apply(lambda s_: json.loads(s_)[0])
+    RGr = J("results/rigor/rigor.json")
+    assert len(pr) == RGr["inputs"]["sizing_rebuild"]["n_res"] == int(N.raw("sel.sizing.n")), (len(pr), N.raw("sel.sizing.n"))
+    sr_rng = RGr["psr_dsr"]["variance_sources"]["sizing_grid_55"]["sr_ann_range"]
+    assert abs(sr_rng[0] - pr.sharpe_ann.min()) < 1e-9 and abs(sr_rng[1] - pr.sharpe_ann.max()) < 1e-9
+    sp0 = "research/v2/sizing/out/policies.csv[measure == res, fee_mode == actual]"
+    N.add("plat.sizing.pos", intc((cil > 0).sum()), int((cil > 0).sum()), sp0 + " count(per_share_ci_c[0] > 0)")
+    N.add("plat.sizing.cilo", num(cil.min(), 2), float(cil.min()), sp0 + " min(per_share_ci_c[0])")
+    N.add("plat.sizing.sr", f"{sr_rng[0]:.1f}–{sr_rng[1]:.1f}", sr_rng,
+          "results/rigor/rigor.json::psr_dsr.variance_sources.sizing_grid_55.sr_ann_range")
+    VF = J("research/rigor/out/verify.json")["pbo"]
+    pk_ = [k for k in VF if k.startswith("sharpe")]
+    pv = [VF[k]["pbo"] for k in pk_]
+    assert abs(VF["sharpe"]["pbo"] - RGr["pbo_cscv"]["lowloss_24_sharpe"]["pbo"]) < 1e-12
+    N.add("plat.pbo", f"{min(pv) * 100:.0f}–{max(pv) * 100:.0f}%", dict(zip(pk_, pv)),
+          "research/rigor/out/verify.json::pbo.sharpe* (v2-safe grid, Sharpe rule; min-max over block choices)")
+    SW = J("results/tier0/latency_sweep.json")["video_own120"]
+    rises, ngrid = [], None
+    for reading in ("tournament", "tournament_lagcal"):
+        ks = sorted(SW[reading], key=float)
+        ngrid = len(ks)
+        for P in ("IS", "burned_OOS"):
+            ys = [SW[reading][k][P]["usd_per_day"] for k in ks]
+            rises += [b_ - a_ for a_, b_ in zip(ys, ys[1:])]
+    N.add("plat.lat.n", intc(ngrid), ngrid, "results/tier0/latency_sweep.json::video_own120.tournament (grid of feed delays)")
+    N.add("plat.lat.lo", f"{float(min(ks, key=float)):g}", float(min(ks, key=float)), "results/tier0/latency_sweep.json::video_own120 (smallest delay)")
+    N.add("plat.lat.hi", f"{float(max(ks, key=float)):g}", float(max(ks, key=float)), "results/tier0/latency_sweep.json::video_own120 (largest delay)")
+    N.add("plat.lat.rise", usd(max(rises), 2), max(rises),
+          "D: largest rise in $ a day between neighbouring delays, pre-registered and post hoc readings, IS and burned OOS")
+    # ---------------------------------------------------------------- fast tier: calendar months, decay in seconds
+    AS = J("results/alpha/alpha.json")["A_source"]
+    mo = [(m_["month"], m_["fast_net30_c"]) for P in ("IS", "OOS") for m_ in AS[P]["months"]]
+    cal_m = sorted({m_ for m_, _ in mo})
+    assert all(v_ > 0 for _, v_ in mo)
+    N.add("ft.months.cal", intc(len(cal_m)), cal_m,
+          "results/alpha/alpha.json::A_source.{IS,OOS}.months[*].fast_net30_c (calendar months, all > 0; Aug split at the hold-out)")
+    DC = J("results/decay/decay.json")["tennis"]["subsets"]
+    for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+        for b_, k in (("1-2", "12"), ("2-3", "23")):
+            v_ = DC[P]["curves"]["fast"]["net30"][b_]["mean_c"]
+            N.add(f"decay.fast.{k}.{per}", sgn(v_), v_, f"results/decay/decay.json::tennis.subsets.{P}.curves.fast.net30.{b_}.mean_c")
+
+
 # ================================================================================================ outputs
 def write_numbers(N: Registry, extra: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
@@ -1291,6 +1390,22 @@ def render_tex(N: Registry, extra: dict) -> Path:
     p = PAPER / "note.tex"
     p.write_text(out, encoding="utf-8")
     return p
+
+
+def prepare_logo() -> Path:
+    """The event's own logo (docs/brand/gqh_wallie.png) cropped to the drawing for the page-1 title block: the source
+    has wide empty borders and a stray light column on its right edge. Written to docs/paper/gqh_logo.png."""
+    from PIL import Image
+    src = ROOT / "docs/brand/gqh_wallie.png"
+    im = Image.open(src).convert("RGBA")
+    a = np.asarray(im).astype(int)
+    ink = (a[..., 3] > 128) & (a[..., :3].min(axis=2) < 200)
+    rows, cols = np.where(ink.sum(1) > 3)[0], np.where(ink.sum(0) > 3)[0]
+    pad = 6
+    box = (max(cols[0] - pad, 0), max(rows[0] - pad, 0), min(cols[-1] + pad + 1, im.width), min(rows[-1] + pad + 1, im.height))
+    out = PAPER / "gqh_logo.png"
+    im.crop(box).save(out, dpi=(300, 300))
+    return out
 
 
 def compile_tex(tex_path: Path) -> tuple[Path, str]:
@@ -1469,12 +1584,17 @@ and no order was ever sent.
 
 ## Abstract
 
-Polymarket prices on tennis matches are win probabilities, and each point moves them by an amount we can compute. In
-public data on {v('univ.matches')} matches, the wallets that trade within 3 s of a point (the fast tier) earn after fees
-in every month, in and out of sample, while everyone else loses. Copying them at their own prices has a Sharpe ratio of
-{v('v2.is.sr')} in sample and {v('v2.oos.sr')} out of sample but loses once fees double. A computer-vision trader,
-simulated with an assumed video delay (we did not buy a feed), pre-registered, makes {v('sc.pre.oos.v1.usd')} a day out of sample at 1 s ({v('sc.cal.oos.v1.usd')} post hoc);
-a replay on real order books loses.
+After each point, a Polymarket tennis price (a win probability) is set by whoever learns the point first. In public
+data on {v('univ.matches')} matches, wallets that repeatedly trade within 3 s of a point (the fast tier, picked on past
+months) earn after fees in all
+{v('ft.months.cal')} months, in and out of sample, while everyone else loses; copying them has no factor exposure and an
+out-of-sample Sharpe ratio of {v('v2.oos.sr')} ({v('v2.is.sr')} in sample) that doubled fees erase. About half the edge
+is gone within 1–2 s ({v('decay.fast.0.is')}¢ to {v('decay.fast.12.is')}¢ a share in sample), and the first second of
+video delay costs a simulated computer-vision (CV) trader {v('cv.pre.persec.range')} a day; our pipeline needs
+{v('e2e.ours')} ms. With an assumed feed delay (no feed purchased), that trader makes {v('sc.pre.oos.v05.usd')},
+{v('sc.pre.oos.v1.usd')} and {v('sc.pre.oos.v3.usd')} a day out of sample at 0.5, 1 and 3 s pre-registered
+({v('sc.cal.oos.v05.usd')}, {v('sc.cal.oos.v1.usd')}, {v('sc.cal.oos.v3.usd')} post hoc). Every blind test of a book we
+could trade failed, and so did a replay on real order books.
 
 ## Table 1 of the PDF: our copy of the fast tier's trades (v2)
 
@@ -1518,7 +1638,20 @@ matches recorded live against their real order books calls every point ex ante a
   execute {v('e2e.total')} ms after the point ends, inside the organizers' 3,000 ms bar.
 - **CV on real held-out table-tennis footage.** The live causal engine called {v('cv.eng.tp')} of {v('cv.eng.nmiss')}
   balls that went out early (median lead {v('cv.eng.lead')} ms), none wrongly, at {v('cv.eng.fps')} fps on one L4 GPU.
-  Tennis is simulated physics only.
+  On a freely licensed real tennis rally (Pexels), our tennis tracker found the ball in {v('tn.real.ball')} of
+  {v('tn.real.frames')} frames ({v('tn.real.spot')} random spot-checks on the ball in play) and fitted the court lines in
+  every frame ({v('tn.real.court_px')} px median); we make no in/out calls on single-camera tennis footage, and tennis
+  trading is simulated.
+- **Nearby settings also work.** All {v('plat.sizing.pos')} sizing rules have a per-share 95% CI above zero in sample
+  (Sharpe {v('plat.sizing.sr')}); the v2-safe grid's probability of backtest overfitting is {v('plat.pbo')} across
+  block choices; the CV profit falls across all {v('plat.lat.n')} feed delays from {v('plat.lat.lo')} to
+  {v('plat.lat.hi')} s, never rising by more than {v('plat.lat.rise')} a day.
+- **Rally gate (risk).** Replayed on the engine's held-out call log (`scripts/rally_gate_eval.py`), the gate in our
+  strategy code (a miss call trades only within {v('gate.s')} s of a bounce call, set before the test) removes
+  {v('gate.out.removed')} of the {v('gate.out.total')} calls on balls outside labelled flights
+  ({v('gate.between.removed')} of {v('gate.between.total')} between rallies) but keeps only {v('gate.correct.kept')} of
+  {v('gate.correct.total')} correct calls ({v('gate.correct.kept_lo')} at {v('gate.lo_range')} s); about
+  {v('gate.hr')} phantom calls an hour remain, so it is not yet safe to trade.
 - **Capacity.** v2's OOS edge holds up to 1× size ({v('cap.1x.oos.capital')} of capital); 5× loses. The CV book has no
   capacity at the pre-registered lag; post hoc its Sharpe halves at {v('capcv.half.oos')} (OOS) to {v('capcv.half.is')}
   (IS) of capital. At 1 s it could pay at most {v('cv.cal.oos.maxlic')} a month for data post hoc and
@@ -1552,6 +1685,7 @@ def main() -> int:
     if not a.no_figures:
         import paper_figures_v2  # the house-style figures (results/paper/v2); paper_figures.py keeps the loaders
         paper_figures_v2.main()
+    prepare_logo()
     texp = render_tex(N, extra)
     if not Path(TECTONIC).exists():
         # judges without tectonic: numbers, figures and note.tex are regenerated; the committed PDF stands

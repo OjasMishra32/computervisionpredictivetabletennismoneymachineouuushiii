@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T04:02:28+00:00",
+ "generated_utc": "2026-10-04T04:42:34+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -3713,6 +3713,202 @@
    "value": "1.98",
    "raw": 1.9760000705718994,
    "source": "research/v2/blocklag/results.json::median_lag_s"
+  },
+  "tn.real.frames": {
+   "value": "300",
+   "raw": 300,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.frames"
+  },
+  "tn.real.ball": {
+   "value": "89%",
+   "raw": 0.89,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.ball_detected_share"
+  },
+  "tn.real.ball_n": {
+   "value": "267",
+   "raw": 267,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.ball_frames_detected"
+  },
+  "tn.real.spot": {
+   "value": "48/48",
+   "raw": [
+    48,
+    48
+   ],
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::qa.result_by_eye (by-eye check of qa.frames)"
+  },
+  "tn.real.court_frames": {
+   "value": "300",
+   "raw": 300,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.court.frames_registered"
+  },
+  "tn.real.court_px": {
+   "value": "0.36",
+   "raw": 0.356,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.court.line_fit_px_median_p90_max[0]"
+  },
+  "gate.s": {
+   "value": "2.0",
+   "raw": 2.0,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.gate_s (a priori value)"
+  },
+  "gate.out.removed": {
+   "value": "5",
+   "raw": 5,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.outside_flights_removed"
+  },
+  "gate.out.total": {
+   "value": "7",
+   "raw": 7,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.outside_flights_total"
+  },
+  "gate.between.removed": {
+   "value": "4",
+   "raw": 4,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.between_rallies_removed"
+  },
+  "gate.between.total": {
+   "value": "5",
+   "raw": 5,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.between_rallies_total"
+  },
+  "gate.correct.kept": {
+   "value": "3",
+   "raw": 3,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.correct_kept"
+  },
+  "gate.correct.total": {
+   "value": "5",
+   "raw": 5,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.correct_total"
+  },
+  "gate.hr": {
+   "value": "8",
+   "raw": 8.5,
+   "source": "results/engine/rally_gate_eval.json::results.emit.2.outside_flights_per_hour_gated"
+  },
+  "gate.n": {
+   "value": "4",
+   "raw": 4,
+   "source": "results/engine/rally_gate_eval.json::results.emit (gate values run, none chosen)"
+  },
+  "gate.sweep": {
+   "value": "0.5–1.2",
+   "raw": [
+    0.5,
+    0.8,
+    1.2
+   ],
+   "source": "results/engine/rally_gate_eval.json::results.emit.*.gate_s (sweep values)"
+  },
+  "gate.correct.kept_lo": {
+   "value": "2",
+   "raw": 2,
+   "source": "results/engine/rally_gate_eval.json::results.emit.0.5.correct_kept"
+  },
+  "gate.correct.kept_range": {
+   "value": "2–3",
+   "raw": [
+    2,
+    3
+   ],
+   "source": "results/engine/rally_gate_eval.json::results.emit.*.correct_kept (min-max over the sweep)"
+  },
+  "gate.lo_range": {
+   "value": "0.5–0.8",
+   "raw": [
+    0.5,
+    0.8
+   ],
+   "source": "results/engine/rally_gate_eval.json::results.emit.*.gate_s where correct_kept == gate.correct.kept_lo"
+  },
+  "plat.sizing.pos": {
+   "value": "55",
+   "raw": 55,
+   "source": "research/v2/sizing/out/policies.csv[measure == res, fee_mode == actual] count(per_share_ci_c[0] > 0)"
+  },
+  "plat.sizing.cilo": {
+   "value": "0.61",
+   "raw": 0.6140051794554487,
+   "source": "research/v2/sizing/out/policies.csv[measure == res, fee_mode == actual] min(per_share_ci_c[0])"
+  },
+  "plat.sizing.sr": {
+   "value": "4.1–16.8",
+   "raw": [
+    4.104496226060634,
+    16.76858268289981
+   ],
+   "source": "results/rigor/rigor.json::psr_dsr.variance_sources.sizing_grid_55.sr_ann_range"
+  },
+  "plat.pbo": {
+   "value": "9–24%",
+   "raw": {
+    "sharpe": 0.15423465423465424,
+    "sharpe_equal_blocks_192d": 0.1926961926961927,
+    "sharpe_dedup_twins": 0.09222999222999223,
+    "sharpe_S8": 0.24285714285714285,
+    "sharpe_S10": 0.2222222222222222,
+    "sharpe_S12": 0.20238095238095238,
+    "sharpe_S14": 0.17453379953379952
+   },
+   "source": "research/rigor/out/verify.json::pbo.sharpe* (v2-safe grid, Sharpe rule; min-max over block choices)"
+  },
+  "plat.lat.n": {
+   "value": "14",
+   "raw": 14,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament (grid of feed delays)"
+  },
+  "plat.lat.lo": {
+   "value": "0",
+   "raw": 0.0,
+   "source": "results/tier0/latency_sweep.json::video_own120 (smallest delay)"
+  },
+  "plat.lat.hi": {
+   "value": "60",
+   "raw": 60.0,
+   "source": "results/tier0/latency_sweep.json::video_own120 (largest delay)"
+  },
+  "plat.lat.rise": {
+   "value": "$0.09",
+   "raw": 0.08999999999999986,
+   "source": "D: largest rise in $ a day between neighbouring delays, pre-registered and post hoc readings, IS and burned OOS"
+  },
+  "ft.months.cal": {
+   "value": "11",
+   "raw": [
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10"
+   ],
+   "source": "results/alpha/alpha.json::A_source.{IS,OOS}.months[*].fast_net30_c (calendar months, all > 0; Aug split at the hold-out)"
+  },
+  "decay.fast.12.is": {
+   "value": "+0.59",
+   "raw": 0.5854,
+   "source": "results/decay/decay.json::tennis.subsets.IS.curves.fast.net30.1-2.mean_c"
+  },
+  "decay.fast.23.is": {
+   "value": "+0.61",
+   "raw": 0.6092,
+   "source": "results/decay/decay.json::tennis.subsets.IS.curves.fast.net30.2-3.mean_c"
+  },
+  "decay.fast.12.oos": {
+   "value": "+0.41",
+   "raw": 0.4133,
+   "source": "results/decay/decay.json::tennis.subsets.burned_OOS.curves.fast.net30.1-2.mean_c"
+  },
+  "decay.fast.23.oos": {
+   "value": "−0.02",
+   "raw": -0.0165,
+   "source": "results/decay/decay.json::tennis.subsets.burned_OOS.curves.fast.net30.2-3.mean_c"
   }
  }
 }
