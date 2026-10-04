@@ -5,6 +5,7 @@
     python scripts/cv_causal_points.py                  # IS only -> results/tier0/causal_points.json
     python scripts/cv_causal_points.py --oos            # IS + OOS (reads data/locked/oos_prints.parquet once; logged)
     python scripts/cv_causal_points.py --smoke          # 2 seeds, IS, print only
+    add --workers N to run seeds in parallel (same results)
 
 WHY. Every CV P&L number before this script came from src/tier0.simulate on jump_table(): only the historical
 >= 4c jumps, selected on the realised future move and traded in its realised direction. That is a conditional
@@ -171,7 +172,7 @@ def run_seed(c: dict, per: str, seed: int, todo: list[tuple[str, str, float]]) -
         if ph_key not in tables:
             P = T.point_table(c["prints"][per], c["u"], c["gap_s"], s, c["phantom"][ph_key], vol_mult=c["vmult"])
             P["tour"] = P.cond.map(c["tour"]).astype(int)
-            tables[ph_key] = (P, T.draws(len(P), s, max(c["n_tour"], 1)), T.period_days(P, "delay1"))
+            tables[ph_key] = (P, T.point_draws(P, s, max(c["n_tour"], 1)), T.period_days(P, "delay1"))
         P, dr, days = tables[ph_key]
         sc, cvs = scenario(sens, rd, V, c)
         calls = T.simulate(P, c["M"], sc, dr, c["pools"], cvs, c["mix"])
@@ -220,23 +221,40 @@ def summarise(rows: list[dict]) -> dict:
     return out
 
 
+_C: dict = {}
+
+
+def _job(args: tuple[str, int]) -> list[dict]:
+    per, s = args
+    return run_seed(_C, per, s, cells())
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--oos", action="store_true", help="also run the OOS period (one logged read)")
     ap.add_argument("--smoke", action="store_true", help="2 seeds, IS, print only")
     ap.add_argument("--seeds", type=int, default=SEEDS)
     ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--workers", type=int, default=1, help="seeds in parallel (fork); results do not depend on it")
     a = ap.parse_args()
     periods = ["IS", "OOS"] if a.oos else ["IS"]
     seeds = 2 if a.smoke else a.seeds
     t0 = time.time()
     c = context(periods)
-    todo = cells()
+    _C.update(c)
+    jobs = [(per, s) for per in periods for s in range(seeds)]
     rows = []
-    for per in periods:
-        for s in range(seeds):
-            rows += run_seed(c, per, s, todo)
-            print(f"{per} seed {s} done ({time.time() - t0:.0f} s)", flush=True)
+    if a.workers > 1:
+        import multiprocessing as mp
+        from concurrent.futures import ProcessPoolExecutor
+        with ProcessPoolExecutor(a.workers, mp_context=mp.get_context("fork")) as ex:
+            for j, r in zip(jobs, ex.map(_job, jobs)):
+                rows += r
+                print(f"{j[0]} seed {j[1]} done ({time.time() - t0:.0f} s)", flush=True)
+    else:
+        for j in jobs:
+            rows += _job(j)
+            print(f"{j[0]} seed {j[1]} done ({time.time() - t0:.0f} s)", flush=True)
     res = summarise(rows)
     for k, v in res.items():
         m = v["mean"]

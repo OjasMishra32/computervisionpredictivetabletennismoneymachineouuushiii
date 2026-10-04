@@ -1219,8 +1219,24 @@ def point_table(prints: pd.DataFrame, U: pd.DataFrame, gap_s: float, seed: int, 
     if vol_mult is not None:
         P["vol_exante"] = P.prestart_usd.to_numpy(float) * vol_mult
     P = P.sort_values(["cond", "onset_ts"], kind="stable").reset_index(drop=True)
-    P["row"] = np.arange(len(P))
+    # draw index: real points first (0..n-1, the same with or without false calls), then the false calls
+    ph = P.phantom.to_numpy(bool)
+    row = np.empty(len(P), int)
+    row[~ph] = np.arange(int((~ph).sum()))
+    row[ph] = int((~ph).sum()) + np.arange(int(ph.sum()))
+    P["row"] = row
     return P
+
+
+def point_draws(P: pd.DataFrame, seed: int, n_tour: int = 4096) -> dict:
+    """draws() for a point_table: the real points get draws(n_points, seed), so they are identical with or without
+    false calls; the false calls get a separate stream appended (rows n_points..)."""
+    n_ph = int(P.phantom.sum())
+    a = draws(len(P) - n_ph, seed, n_tour)
+    if n_ph == 0:
+        return a
+    b = draws(n_ph, seed + 7_919_000, n_tour)
+    return {k: (np.concatenate([a[k], b[k]]) if k != "tour" else a[k]) for k in a}
 
 
 def daily_stop(calls: pd.DataFrame, usd: float = 1000.0, mark_delay: float = POST_W) -> tuple[pd.DataFrame, int]:
@@ -1258,5 +1274,5 @@ def as_dict(sc: Scenario) -> dict:
 
 __all__ = ["ASSUMED", "Scenario", "PRIMARY", "CORRECTED", "simulate", "metrics", "jump_table", "live_points",
            "live_edge_curve", "post_prices", "tournament_codes", "calibrate_stamp_lag", "point_mix", "cv_systems",
-           "draws", "region_of", "replace", "TRADE_SET_LABEL", "engine_cv_system", "point_table", "point_gap_s",
+           "draws", "region_of", "replace", "TRADE_SET_LABEL", "engine_cv_system", "point_table", "point_draws", "point_gap_s",
            "exante_volume_multiplier", "daily_stop"]

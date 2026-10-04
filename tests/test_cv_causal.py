@@ -89,7 +89,7 @@ def _table(pr, U, seed=0, phantom=10.0):
 
 
 def _sim(P, U, seed=0):
-    return T.simulate(P, U, SC, T.draws(len(P), seed, 8), {"all": _pool()}, CVS, MIX)
+    return T.simulate(P, U, SC, T.point_draws(P, seed, 8), {"all": _pool()}, CVS, MIX)
 
 
 def _decisions(calls: pd.DataFrame) -> pd.DataFrame:
@@ -172,10 +172,15 @@ def test_false_calls_buy_the_called_token_at_stale_plus_slip():
     stale = np.where(d > 0, ref, 1 - ref)
     assert np.allclose(f.q.to_numpy(), np.clip(stale + SC.slip, 0.01, 0.99))
     assert np.allclose(f.edge_q.to_numpy(), stale - f.q.to_numpy())
-    # same points with or without false calls (separate random stream)
+    # same points, called the same way, with or without false calls (separate random streams)
     P0 = _table(_prints(U), U, phantom=0.0)
     assert np.allclose(P0.onset_ts.to_numpy(), P[~P.phantom].onset_ts.to_numpy())
     assert (P0.dir.to_numpy() == P[~P.phantom].dir.to_numpy()).all()
+    assert (P0.row.to_numpy() == P[~P.phantom].row.to_numpy()).all()
+    P0["tour"] = P[~P.phantom].tour.to_numpy()
+    c0 = _sim(P0, U)
+    pd.testing.assert_frame_equal(_decisions(c0.assign(phantom=False)),
+                                  _decisions(calls[~calls.phantom]).assign(phantom=False))
 
 
 def test_point_book_metrics_split_false_calls():
