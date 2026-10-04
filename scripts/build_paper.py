@@ -392,12 +392,14 @@ def collect() -> tuple[Registry, dict]:
     # ---------------------------------------------------------------- CV strategy at the 1 s baseline (12.7, Table 2)
     df = pd.read_csv(ROOT / "results/tier0/latency_sweep.csv")
     df = df[(df.source == "video") & (df.cv == "own120")]
+    # order: the pre-registered reading (cv.pre.*) first, then the post hoc estimate (cv.cal.*)
+    # (research/compliance/PAPER_REQUIREMENTS.md, addendum after the red team)
+    N.add("cv.pre.lag", num(SW["model"]["revised_primary"]["stamp_lag"], 1), SW["model"]["revised_primary"]["stamp_lag"],
+          "results/tier0/latency_sweep.json::model.revised_primary.stamp_lag")
     mcal = re.search(r"([0-9.]+) s", SW["grids"]["video_stamp_lag_sensitivity"]["tournament_lagcal"])
     N.add("cv.cal.lag", mcal.group(1), float(mcal.group(1)),
           "results/tier0/latency_sweep.json::grids.video_stamp_lag_sensitivity.tournament_lagcal (regex)")
-    N.add("cv.pre.lag", num(SW["model"]["revised_primary"]["stamp_lag"], 1), SW["model"]["revised_primary"]["stamp_lag"],
-          "results/tier0/latency_sweep.json::model.revised_primary.stamp_lag")
-    for rk, reading in (("cal", "tournament_lagcal"), ("pre", "tournament")):
+    for rk, reading in (("pre", "tournament"), ("cal", "tournament_lagcal")):
         for per, P in (("is", "IS"), ("oos", "burned_OOS")):
             c = SW["video_own120"][reading]["1"][P]
             s0 = f"results/tier0/latency_sweep.json::video_own120.{reading}.1.{P}"
@@ -440,7 +442,7 @@ def collect() -> tuple[Registry, dict]:
     cbs = N.raw("cv.pre.lag") - N.raw("cv.pre.be.is") - li["cv_assumed_s"]
     N.add("cv.call_before_stamp", num(cbs, 2), cbs, "D: cv.pre.lag - cv.pre.be.is - cv.inf")
     fixed = FIN["strategies"]["v2"]["cost"]["daily"]
-    for rk in ("cal", "pre"):
+    for rk in ("pre", "cal"):
         v = N.raw(f"cv.{rk}.oos.usd") - fixed["central"]
         N.add(f"cv.{rk}.oos.net_central", usd(v, signed=True), v,
               "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central")
@@ -450,6 +452,134 @@ def collect() -> tuple[Registry, dict]:
     N.add("cv.seeds", intc(SW["grids"]["seeds"]), SW["grids"]["seeds"], "results/tier0/latency_sweep.json::grids.seeds")
     N.add("cv.runs", intc(SW["run"]["n_runs"]), SW["run"]["n_runs"], "results/tier0/latency_sweep.json::run.n_runs")
     extra["sweep"] = SW
+
+    # ---------------------------------------------------------------- the 1 s cell under the red team's readings
+    # (PAPER_REQUIREMENTS.md addendum; results/redteam/ derives these from committed files, no new evaluation)
+    RD = J("results/redteam/derived.json")["keys"]
+
+    def dk(key):
+        return RD[key]["value"]
+
+    def dsrc(key):
+        return f"results/redteam/derived.json::keys.{key} <- {RD[key]['source']}"
+    SL = J("results/redteam/stamp_lag.json")
+    lo_, hi_ = SL["bootstrap"]["median_L_ci95_s"]
+    N.add("cv.cal.lag_ci", f"{lo_:.2f}\u2013{hi_:.2f}", [lo_, hi_], "results/redteam/stamp_lag.json::bootstrap.median_L_ci95_s")
+    base_l = SL["base"]["stamp_lag_median_s"]
+    rt = next(r for r in SL["reaction_time"] if abs(r["stamp_lag_median_s"] - base_l) < 1e-9)
+    N.add("cv.cal.react", f"{rt['react_s']:g}", rt["react_s"],
+          "results/redteam/stamp_lag.json::reaction_time[stamp_lag_median_s == base.stamp_lag_median_s].react_s")
+    N.add("cv.cal.n", intc(SL["base"]["n_points"]), SL["base"]["n_points"], "results/redteam/stamp_lag.json::base.n_points")
+    N.add("cv.L_bot", num(dk("cv.L_bot"), 2), dk("cv.L_bot"), dsrc("cv.L_bot"))
+    for per in ("is", "oos"):
+        N.add(f"cv.at_lo.{per}.usd", usd(dk(f"cv.at_L_boot_lo.{per}.usd"), signed=True), dk(f"cv.at_L_boot_lo.{per}.usd"),
+              dsrc(f"cv.at_L_boot_lo.{per}.usd"))
+    N.add("cv.cal.shift", num(dk("cv.cal.shift"), 2), dk("cv.cal.shift"), dsrc("cv.cal.shift"))
+    # per point: the same post hoc inference applied point by point (stamp_calibrated); stamp noise at L = 2.0 (stamp)
+    for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+        sc_ = SW["video_own120"]["stamp_calibrated"]
+        s0 = f"results/tier0/latency_sweep.json::video_own120.stamp_calibrated"
+        N.add(f"cv.stc.{per}.usd", usd(sc_["1"][P]["usd_per_day"], signed=True), sc_["1"][P]["usd_per_day"], f"{s0}.1.{P}.usd_per_day")
+        N.add(f"cv.stc.{per}.v0", usd(sc_["0"][P]["usd_per_day"], signed=True), sc_["0"][P]["usd_per_day"], f"{s0}.0.{P}.usd_per_day")
+        b_ = SW["breakeven_video_delay"]["stamp_calibrated"][P]["breakeven_V_s_seed_mean_curve"]
+        N.add(f"cv.stc.be.{per}", num(b_, 2), b_,
+              f"results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.{P}.breakeven_V_s_seed_mean_curve")
+    # live causal engine's own calls at V = 1 (results/redteam/causal_cv.json; same sweep, CV table swapped)
+    CC = J("results/redteam/causal_cv.json")
+    for rk, reading in (("pre", "tournament"), ("cal", "tournament_lagcal")):
+        for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+            v = CC["cells_V1"][reading][P]["usd_per_day"]
+            N.add(f"cv.eng.{rk}.{per}.usd", usd(v, signed=True), v, f"results/redteam/causal_cv.json::cells_V1.{reading}.{P}.usd_per_day")
+    N.add("cv.eng.tp", intc(dk("eng.tp")), dk("eng.tp"), dsrc("eng.tp"))
+    N.add("cv.eng.nmiss", intc(dk("eng.nmiss")), dk("eng.nmiss"), dsrc("eng.nmiss"))
+    N.add("cv.eng.wil_lo", f"{dk('eng.wil_lo'):.0f}%", dk("eng.wil_lo"), dsrc("eng.wil_lo"))
+    N.add("cv.eng.lead", num(dk("eng.lead_med"), 0), dk("eng.lead_med"), dsrc("eng.lead_med"))
+    N.add("cv.phantom.hr", num(dk("eng.phantom_miss_per_hour"), 0), dk("eng.phantom_miss_per_hour"), dsrc("eng.phantom_miss_per_hour"))
+    N.add("cv.phantom.pre", num(dk("eng.phantom_budget_per_day.pre"), 1), dk("eng.phantom_budget_per_day.pre"),
+          dsrc("eng.phantom_budget_per_day.pre"))
+    N.add("cv.phantom.cal", num(dk("eng.phantom_budget_per_day.cal"), 0), dk("eng.phantom_budget_per_day.cal"),
+          dsrc("eng.phantom_budget_per_day.cal"))
+    # wrong calls, the value of a second, pessimistic CV (sweep CSV / JSON at V = 1)
+    for rk, reading in (("pre", "tournament"), ("cal", "tournament_lagcal")):
+        for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+            row = df[(df.reading == reading) & (df.period == P) & (np.isclose(df.x_s, 1.0))].iloc[0]
+            csrc = f"results/tier0/latency_sweep.csv[video,own120,{reading},{P},x_s=1]"
+            N.add(f"cv.{rk}.{per}.wrong_usd", usd(row.pnl_wrong_usd), row.pnl_wrong_usd, csrc + " pnl_wrong_usd")
+            N.add(f"cv.{rk}.{per}.cap", usd(row.capital_usd), row.capital_usd, csrc + " capital_usd")
+            v0 = SW["video_own120"][reading]["0"][P]["usd_per_day"]
+            v1 = SW["video_own120"][reading]["1"][P]["usd_per_day"]
+            N.add(f"cv.{rk}.{per}.persec", usd(v0 - v1, signed=True), v0 - v1,
+                  f"D: latency_sweep.json::video_own120.{reading}.0.{P}.usd_per_day - .1.{P}.usd_per_day")
+    pv = [N.raw(f"cv.pre.{p}.persec") for p in ("is", "oos")]
+    N.add("cv.pre.persec.range", f"${min(pv):,.0f}\u2013{max(pv):,.0f}", pv, "D: min/max of cv.pre.{is,oos}.persec")
+    for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+        v = SW["video_cv_pessimistic"]["tournament"]["1"][P]["usd_per_day"]
+        N.add(f"cv.pess.{per}.usd", usd(v, signed=True), v, f"results/tier0/latency_sweep.json::video_cv_pessimistic.tournament.1.{P}.usd_per_day")
+    T0R = J("results/tier0/results.json")
+    lp = T0R["inputs"]["live_pool_sizes"]
+    N.add("cv.pool.d3", intc(lp["D>=3c"]), lp["D>=3c"], "results/tier0/results.json::inputs.live_pool_sizes.D>=3c")
+    N.add("cv.pool.all", intc(lp["all"]), lp["all"], "results/tier0/results.json::inputs.live_pool_sizes.all")
+    N.add("cv.pool482.oos", f"{sgn(dk('cv.pool482.oos.c'))} {ci(dk('cv.pool482.oos.ci'))}", [dk("cv.pool482.oos.c"), dk("cv.pool482.oos.ci")],
+          dsrc("cv.pool482.oos.c") + " ; " + dsrc("cv.pool482.oos.ci"))
+    # business case (derived.json): most the 10-match book can pay for data; stamp lag needed for the cheapest stack
+    for rk in ("pre", "cal"):
+        N.add(f"cv.{rk}.oos.maxlic", usd(dk(f"cv.{rk}.oos.maxlic")), dk(f"cv.{rk}.oos.maxlic"), dsrc(f"cv.{rk}.oos.maxlic"))
+    lfl = [dk("cv.L_for_low.is"), dk("cv.L_for_low.oos")]
+    N.add("cv.L_go", f"{max(lfl):.1f}", max(lfl), dsrc("cv.L_for_low.is") + " ; " + dsrc("cv.L_for_low.oos") + " (max of IS and OOS, 1 dp: the stricter)")
+    N.add("cv.L_go.range", f"{lfl[0]:.2f}\u2013{lfl[1]:.2f}", lfl, dsrc("cv.L_for_low.is") + " ; " + dsrc("cv.L_for_low.oos"))
+    lc_ = [str(dk("cv.L_for_central.is")), str(dk("cv.L_for_central.oos"))]
+    mlc = [re.fullmatch(r"not covered at any L <= ([0-9.]+)", x) for x in lc_]
+    if not all(mlc):  # the text says "covered at no L <= x"; a covered value would need a different sentence
+        raise KeyError(f"COURTSIDE: cv.L_for_central changed: {lc_}")
+    N.add("cv.L_central", mlc[0].group(1), lc_, dsrc("cv.L_for_central.is") + " ; " + dsrc("cv.L_for_central.oos"))
+    vb = dk("venue.reprices_0_100ms_after_second")
+    N.add("venue.batch", pct(vb * 100, 0), vb, dsrc("venue.reprices_0_100ms_after_second"))
+    # end-to-end timing proof (paper; no order sent): results/e2e/summary.json
+    E2 = J("results/e2e/summary.json")
+    N.add("e2e.ours", num(E2["our_pipeline_frame_to_order_ready_ms"]["p50"], 0), E2["our_pipeline_frame_to_order_ready_ms"]["p50"],
+          "results/e2e/summary.json::our_pipeline_frame_to_order_ready_ms.p50")
+    tt_ = E2["budget_with_1s_simulated_feed"]["total_ms"]["p50"]
+    N.add("e2e.total", intc(tt_), tt_, "results/e2e/summary.json::budget_with_1s_simulated_feed.total_ms.p50")
+    N.add("e2e.n", intc(E2["counts"]["complete_order_traces"]), E2["counts"]["complete_order_traces"],
+          "results/e2e/summary.json::counts.complete_order_traces")
+    N.add("e2e.sent", intc(E2["counts"]["orders_sent"]), E2["counts"]["orders_sent"], "results/e2e/summary.json::counts.orders_sent")
+    # capacity of the CV book (results/capacity/capacity.json; 10 covered matches a day, phi 0.5, growth 1)
+    CAPA = J("results/capacity/capacity.json")["answers"]["cv"]
+    for per, P in (("is", "IS"), ("oos", "burned_OOS")):
+        for cov, k in (("cov10", "half"), ("covall", "halfall")):
+            h_ = CAPA[f"lagcal|phi0.5|{cov}|g1|{P}"]["at_half_sharpe"]
+            s0 = f"results/capacity/capacity.json::answers.cv.lagcal|phi0.5|{cov}|g1|{P}.at_half_sharpe"
+            N.add(f"capcv.{k}.{per}", usd(round(h_["capital_usd"], -3)), h_["capital_usd"], s0 + ".capital_usd")
+            N.add(f"capcv.{k}.{per}.day", usd(h_["pnl_per_day_usd"]), h_["pnl_per_day_usd"], s0 + ".pnl_per_day_usd")
+        sr0 = CAPA[f"prereg|phi0.5|cov10|g1|{P}"]["sharpe_ref_smallest_size"]
+        N.add(f"capcv.pre.sr0.{per}", num(sr0, 1), sr0, f"results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|{P}.sharpe_ref_smallest_size")
+        cf = CAPA[f"lagcal|phi0.5|covall|g1|{P}"]["fixed_costs"]["camera_free_central"]
+        s0 = f"results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|{P}.fixed_costs.camera_free_central"
+        N.add(f"capcv.cf.{per}", usd(round(cf["capital_needed_usd"], -3)), cf["capital_needed_usd"], s0 + ".capital_needed_usd")
+        N.add(f"capcv.cf.{per}.cost", usd(cf["cost_usd_per_day"]), cf["cost_usd_per_day"], s0 + ".cost_usd_per_day")
+    adv = CAPA["lagcal|phi0.5|cov10|g1|IS"]["at_half_sharpe"]["last_cell_above"]
+    s0 = "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above"
+    N.add("capcv.share_inplay", pct(adv["share_of_inplay_volume_pct"], 2), adv["share_of_inplay_volume_pct"], s0 + ".share_of_inplay_volume_pct")
+    N.add("capcv.share_fast", pct(adv["share_of_fasttier_03s_volume_pct"], 0), adv["share_of_fasttier_03s_volume_pct"],
+          s0 + ".share_of_fasttier_03s_volume_pct")
+    # pre-registration trail of the tier-0 (CV) simulation
+    pre_t0 = (ROOT / "research/v2/tier0/PREREG.md").read_text()
+    mw = re.search(r"Written (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC", pre_t0)
+    N.add("t0.prereg.written", mw.group(2), f"{mw.group(1)} {mw.group(2)}", "research/v2/tier0/PREREG.md (line 'Written ... UTC')")
+    gl0 = subprocess.run(["git", "log", "--diff-filter=A", "--format=%h %aI", "--", "research/v2/tier0/PREREG.md"], cwd=ROOT,
+                         capture_output=True, text=True).stdout.strip().splitlines()
+    c0_, t0_ = gl0[-1].split()
+    N.add("t0.prereg.commit", c0_, c0_, "git log --diff-filter=A -- research/v2/tier0/PREREG.md")
+    N.add("t0.prereg.time", pd.Timestamp(t0_).tz_convert("UTC").strftime("%H:%M"), t0_, "git log --diff-filter=A -- research/v2/tier0/PREREG.md")
+    pk = next(ln for ln in (ROOT / "results/oos_peeks.log").read_text().splitlines()
+              if re.search(r"tier0 counterfactual grid evaluated on burned OOS", ln))
+    N.add("t0.oos_first", pd.Timestamp(pk.split()[0]).strftime("%H:%M"), pk.split()[0],
+          "results/oos_peeks.log (first line 'tier0 counterfactual grid evaluated on burned OOS')")
+    dev0 = (ROOT / "research/v2/tier0/DEVIATIONS.md").read_text()
+    n_t = len(re.findall(r"^### T\d+\.", dev0, re.M))
+    n_v = len(re.findall(r"^### V\d+\.", dev0, re.M))
+    N.add("t0.dev.n", intc(n_t + n_v), n_t + n_v, "D: count of '### T<n>.' and '### V<n>.' headings in research/v2/tier0/DEVIATIONS.md")
+    N.add("t0.dev.span", f"T1\u2013T{n_t}, V1\u2013V{n_v}", [n_t, n_v], "research/v2/tier0/DEVIATIONS.md headings")
 
     # ---------------------------------------------------------------- market-side decay (12.8)
     sub = DJ["tennis"]["subsets"]
@@ -482,6 +612,20 @@ def collect() -> tuple[Registry, dict]:
     N.add("rp.matches", intc(len(RP["matches"])), len(RP["matches"]), "results/replay/replay.json::matches (len)")
     N.add("rp.replayable", intc(a["replayable_points"]), a["replayable_points"], s0 + ".replayable_points")
     N.add("rp.official", intc(a["official_points"]), a["official_points"], s0 + ".official_points")
+    N.add("rp.recv_ms", intc(J("results/replay/audit.json")["recv_latency_ms"]), J("results/replay/audit.json")["recv_latency_ms"],
+          "results/replay/audit.json::recv_latency_ms")
+    # ex-ante selective replay (EXPLORATORY, added after the all-points replay; results/replay/selective/selective.json)
+    SEL = J("results/replay/selective/selective.json")
+    sc4 = SEL["cells"]["T4c|lag2|V1"]["all"]
+    s0 = "results/replay/selective/selective.json::cells.T4c|lag2|V1.all"
+    N.add("rp.sel.t4.c", sgn(sc4["per_share_mark_c"]), sc4["per_share_mark_c"], s0 + ".per_share_mark_c")
+    N.add("rp.sel.t4.ci", ci(sc4["per_share_mark_ci95_c"]), sc4["per_share_mark_ci95_c"], s0 + ".per_share_mark_ci95_c")
+    N.add("rp.sel.t4.fills", intc(sc4["fills"]), sc4["fills"], s0 + ".fills")
+    sel2 = [c for c in SEL["cells"].values() if c["T"] is not None and c["lag"] == 2.0]
+    nneg2 = sum(1 for c in sel2 if c["all"]["per_share_mark_c"] < 0)
+    N.add("rp.sel.neg2", f"{nneg2} of {len(sel2)}", [nneg2, len(sel2)],
+          "D: selective.json cells with T set and lag 2.0 whose all.per_share_mark_c < 0")
+    extra["selective"] = SEL["cells"]
 
     # ---------------------------------------------------------------- blind tests and failures (12.10, Table 3)
     for k, key in (("h1", "J0.04_H30"), ("h2", "lo0.85_hi0.97"), ("h5", "J0.04_W30")):
@@ -546,6 +690,14 @@ def collect() -> tuple[Registry, dict]:
           "results/risk/risk_stats.json::liquidity_capital.is_eval.capital_usd_3x_peak_realised")
     N.add("liq.trade_med", usd(lc["usd_per_trade_quantiles"]["0.5"]), lc["usd_per_trade_quantiles"]["0.5"],
           "results/risk/risk_stats.json::liquidity_capital.is_eval.usd_per_trade_quantiles.0.5")
+    ml = rc["net_cap_shares"] * rc["zone"][1]
+    N.add("risk.maxloss", usd(ml), ml, "D: " + rs0 + ".net_cap_shares x zone[1] (held to resolution, before fees)")
+    # months for v2's OOS edge to reach the half-size trigger / zero if it fell at the fast tier's IS pace
+    slope = abs(hd["fast_tier_slope_c_per_month"]["IS"])
+    m_half = (N.raw("v2.oos.c") - 0.3) / slope
+    m_zero = N.raw("v2.oos.c") / slope
+    N.add("risk.months_half", num(m_half, 1), m_half, "D: (v2.oos.c - 0.3) / |ft.slope| (extrapolation)")
+    N.add("risk.months_zero", num(m_zero, 1), m_zero, "D: v2.oos.c / |ft.slope| (extrapolation)")
     tm = PM["p25_kill_rules_is"]["trailing_30d_edge_rule_v2_is"]["trailing_edge_c_min"]
     N.add("risk.trail_min", sgn(tm), tm, "results/financials/pm_compute.json::p25_kill_rules_is.trailing_30d_edge_rule_v2_is.trailing_edge_c_min")
     sc = FIN["strategies"]["v2"]["scaling"]
@@ -730,7 +882,9 @@ def write_numbers(N: Registry, extra: dict) -> None:
     (OUT / "policy.json").write_text(json.dumps(extra["policy"], indent=1))
     (OUT / "variants.json").write_text(json.dumps(extra["variants"], indent=1))
     (OUT / "peeks.json").write_text(json.dumps(extra["peeks"], indent=1, ensure_ascii=False))
-    lines = ["% generated by scripts/build_paper.py from results/paper/numbers.json; do not edit"]
+    lines = ["% generated by scripts/build_paper.py from results/paper/numbers.json; do not edit",
+             "% CV readings: cv.pre.* = the pre-registered stamp-lag reading (listed first), cv.cal.* = the post hoc "
+             "estimate; the CV trade set is selected on outcomes, not ex ante"]
     for k, v in N.d.items():
         lines.append(f"\\expandafter\\def\\csname cs@{k}\\endcsname{{{tex(v['value'])}}}")
     (PAPER / "numbers.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -818,7 +972,7 @@ def checks(pdf: Path, tex_log: str) -> dict:
     if margin_viol:
         res["fail"].append(f"{len(margin_viol)} spans inside the 1 in margins")
     res["float_pages"] = float_pages
-    for f in ("Figure 1", "Figure 2", "Figure 3", "Table 1", "Table 2", "Table 3"):
+    for f in ("Figure 1", "Figure 2", "Table 1", "Table 2", "Table 3"):
         if f not in float_pages:
             res["fail"].append(f"{f} not found on pages 1-{last}")
     full_main = " ".join(main_text)
@@ -880,31 +1034,42 @@ def write_companion(N: Registry) -> None:
 PDF is read from `results/paper/numbers.json`, which records the source file and key of each). This file is a short
 readable companion; where the two differ, the PDF wins.
 
-**Labels.** CV-strategy results: {CV_LABEL}; simulated at a 1 s licensed-feed baseline. v2 results are measured at
-the fast tier's own fills: the opportunity at their speed, not our execution. Real money: none.
+**Labels.** CV-strategy results: {CV_LABEL}; simulated at a 1 s licensed-feed baseline; the trade set is the historical
+points the market later repriced ≥ 4¢ (selected on outcomes, not ex ante). The pre-registered stamp-lag reading comes
+first; the post hoc estimate (95% CI {v('cv.cal.lag_ci')} s) second. v2 results are measured at the fast tier's own
+fills: the opportunity at their speed, not our execution. "OOS" for v2 and the CV simulation is a burned (non-blind)
+hold-out. Real money: none.
 
 ## Abstract
 
-We study who profits from speed in Polymarket's in-play tennis moneylines, using public trade tapes for
-{v('univ.matches')} matches ({v('univ.volume')} traded). A walk-forward fast tier of wallets trading within 3 s of a
-score move earns {v('ft.c.is')}¢ per share after fees in sample and {v('ft.c.oos')}¢ out of sample (positive in
-{v('ft.months.is')} and {v('ft.months.oos')} months); every other taker loses, and copying the same trades 3 s later
-loses. At the fast tier's own fills a frozen book (v2) earns {v('v2.oos.c')}¢ per share out of sample (Sharpe
+In-play tennis prediction markets are priced by whoever learns the point first. We measure who that is, what they
+earn and what each second is worth, from public trade tapes of {v('univ.matches')} Polymarket tennis matches
+({v('univ.volume')} traded). A walk-forward fast tier of wallets trading within 3 s of a score move earns {v('ft.c.is')}¢
+per share after fees in sample and {v('ft.c.oos')}¢ in its single out-of-sample run ({v('ft.months.is')} and
+{v('ft.months.oos')} months positive); other takers lose, and copying the same trades 3 s later loses. At the fast
+tier's own fills a frozen book (v2) earns {v('v2.oos.c')}¢ per share on a burned (non-blind) hold-out (Sharpe
 {v('v2.oos.sr')}) but turns negative when fees double ({v('v2.oos.fx2.c')}¢). Simulated at a 1 s licensed-feed
-baseline ({CV_LABEL}), the computer-vision trader earns {v('cv.cal.oos.usd')}/day out of sample under a calibrated,
-post hoc stamp lag and {v('cv.pre.oos.usd')}/day under the pre-registered one, which breaks even at
-{v('cv.pre.be.range')} s of feed delay.
+baseline ({CV_LABEL}), the computer-vision trader earns {v('cv.pre.oos.usd')}/day on that hold-out at the
+pre-registered stamp lag (break-even {v('cv.pre.be.range')} s of feed delay; each second of delay costs it
+{v('cv.pre.persec.range')} a day) and {v('cv.cal.oos.usd')}/day at a post hoc estimate, on trades selected on
+outcomes. A replay on the real books of {v('rp.matches')} matches recorded on 2026-10-03 loses in {v('rp.cells_neg')} of
+{v('rp.cells')} settings, and an ex-ante swing filter loses in {v('rp.sel.neg2')} cells.
 
 ## Main result: the CV strategy at the 1 s baseline (Table 2 of the PDF)
 
 | Reading at V = 1 s | IS $/day [seed CI] | IS Sharpe | OOS $/day [seed CI] | OOS Sharpe | OOS ¢/share [CI] | Break-even V (IS / OOS) |
 |---|---|---|---|---|---|---|
-| Calibrated stamp lag {v('cv.cal.lag')} s (calibrated, post hoc) | {v('cv.cal.is.usd')} {v('cv.cal.is.usd_ci')} | {v('cv.cal.is.sr')} | {v('cv.cal.oos.usd')} {v('cv.cal.oos.usd_ci')} | {v('cv.cal.oos.sr')} | {v('cv.cal.oos.c')} {v('cv.cal.oos.c_ci')} | {v('cv.cal.be.is')} / {v('cv.cal.be.oos')} s |
 | Pre-registered stamp lag {v('cv.pre.lag')} s | {v('cv.pre.is.usd')} {v('cv.pre.is.usd_ci')} | {v('cv.pre.is.sr')} | {v('cv.pre.oos.usd')} {v('cv.pre.oos.usd_ci')} | {v('cv.pre.oos.sr')} | {v('cv.pre.oos.c')} {v('cv.pre.oos.c_ci')} | {v('cv.pre.be.is')} / {v('cv.pre.be.oos')} s |
+| Post hoc estimate {v('cv.cal.lag')} s [{v('cv.cal.lag_ci')}] | {v('cv.cal.is.usd')} {v('cv.cal.is.usd_ci')} | {v('cv.cal.is.sr')} | {v('cv.cal.oos.usd')} {v('cv.cal.oos.usd_ci')} | {v('cv.cal.oos.sr')} | {v('cv.cal.oos.c')} {v('cv.cal.oos.c_ci')} | {v('cv.cal.be.is')} / {v('cv.cal.be.oos')} s |
 
-At stamp lag 1.0 s the same trader loses ({v('cv.lag1.is.usd')} IS, {v('cv.lag1.oos.usd')} OOS per day). A replay of
-{v('rp.matches')} matches recorded live on 2026-10-03 against their real books loses in {v('rp.cells_neg')} of
-{v('rp.cells')} settings ({v('rp.v1l2.c')}¢ per share at V = 1 s, stamp lag 2 s).
+The post hoc estimate assumes the first informed prints are courtside humans reacting in {v('cv.cal.react')} s; at its
+interval's low end the 1 s cell is about {v('cv.at_lo.is.usd')} / {v('cv.at_lo.oos.usd')} a day, and the same inference
+read per point loses ({v('cv.stc.is.usd')} / {v('cv.stc.oos.usd')}; break-even {v('cv.stc.be.is')} / {v('cv.stc.be.oos')} s).
+With the live causal engine's own calls ({v('cv.eng.tp')} of {v('cv.eng.nmiss')} misses called, no false call) the cells
+are {v('cv.eng.pre.is.usd')} / {v('cv.eng.pre.oos.usd')} (pre-registered) and {v('cv.eng.cal.is.usd')} /
+{v('cv.eng.cal.oos.usd')} (post hoc); the offline evaluation with a look-ahead feature called {v('cv.tt.tp50')} of
+{v('cv.tt.called50')} at 50 ms. At stamp lag 1.0 s the trader loses ({v('cv.lag1.is.usd')} IS, {v('cv.lag1.oos.usd')} OOS
+per day). Go/no-go: a measured stamp lag L ≥ {v('cv.L_go')} s pays for the cheapest data stack.
 
 ## v2 at the fast tier's own fills (Table 1 of the PDF)
 
@@ -919,14 +1084,22 @@ At stamp lag 1.0 s the same trader loses ({v('cv.lag1.is.usd')} IS, {v('cv.lag1.
 | Fees ×2, ¢/share [CI] | {v('v2.is.fx2.c')} {v('v2.is.fx2.ci')} | {v('v2.oos.fx2.c')} {v('v2.oos.fx2.ci')} |
 | All costs ×2, ¢/share [CI] | {v('v2.is.cx2.c')} {v('v2.is.cx2.ci')} | {v('v2.oos.cx2.c')} {v('v2.oos.cx2.ci')} |
 
+## Capacity and the business case (Section 7 of the PDF)
+
+At the post hoc estimate the CV book's Sharpe halves at {v('capcv.half.oos')} of capital OOS and {v('capcv.half.is')} IS
+(10 matches a day); at the pre-registered lag it has no capacity (Sharpe {v('capcv.pre.sr0.is')} / {v('capcv.pre.sr0.oos')}
+at the smallest size). The 10-match book can pay at most {v('cv.cal.oos.maxlic')} (post hoc) or {v('cv.pre.oos.maxlic')}
+(pre-registered) a month for data, against an assumed licence of {v('fin.feed.low')}–{v('fin.feed.high')}.
+
 ## What failed or is pending
 
 Fees ×2 out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets (blind, {v('u2.verdict')});
-tier-0 v3 frozen rule (blind, {v('t3.verdict')}); maker v1 (blind, {v('mk.verdict')}, {v('mk.oos.usd')}); table tennis
-(untestable, median spread {v('tt.spread')}¢); v2 out of sample after a central feed licence
-({v('fin.v2.oos.net_central')}/day); the live-book replay ({v('rp.v1l2.c')}¢ at 1 s). Forward test: {v('fwd.cell')}.
-Live paper session: {v('live.cell')}. Variants tried: {v('var.total')}. Logged reads of held-out data:
-{v('peeks.n')} (full list in Table A6 of the PDF).
+the CV simulation's frozen v3 rule (blind, {v('t3.verdict')}); maker v1 (blind, {v('mk.verdict')}, {v('mk.oos.usd')}); table
+tennis (untestable, median spread {v('tt.spread')}¢); v2 out of sample after a central feed licence
+({v('fin.v2.oos.net_central')}/day); the live-book replay ({v('rp.v1l2.c')}¢ at 1 s) and its ex-ante filter
+({v('rp.sel.t4.c')}¢). Forward test: {v('fwd.cell')}. Live paper session: {v('live.cell')}. Variants tried:
+{v('var.total')}. Logged reads of held-out data: {v('peeks.n')} (full list in Table A8 of the PDF). Rules changed after a
+look: {v('peeks.rule_changes')} for v2, {v('t0.dev.n')} for the CV simulation ({v('t0.dev.span')}).
 
 Reproduce: `bash reproduce.sh` (regenerates the result files, every figure and this paper).
 """

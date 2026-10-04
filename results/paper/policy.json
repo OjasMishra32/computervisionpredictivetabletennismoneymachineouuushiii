@@ -40,11 +40,11 @@
  },
  "trailing_edge_half_c": {
   "value": 0.3,
-  "source": "docs/RISK.md:62"
+  "source": "docs/RISK.md:83"
  },
  "drawdown_stop_pct": {
   "value": 5,
-  "source": "docs/RISK.md:61"
+  "source": "docs/RISK.md:82"
  },
  "rule_changes_after_a_look": {
   "value": 2,

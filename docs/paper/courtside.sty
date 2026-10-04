@@ -27,7 +27,7 @@
 
 % Track rule: 11 pt everywhere in the main text. LaTeX's "11pt" is 10.95 TeX pt = 10.91 PostScript pt, so the body
 % is set at 11.04 TeX pt (11.0 pt in the PDF); every smaller size command prints at that size.
-\renewcommand\normalsize{\fontsize{11.04}{13.55}\selectfont
+\renewcommand\normalsize{\fontsize{11.04}{13.2}\selectfont
   \abovedisplayskip 4pt plus 2pt minus 2pt\belowdisplayskip 4pt plus 2pt minus 2pt
   \abovedisplayshortskip 2pt plus 2pt\belowdisplayshortskip 3pt plus 2pt}
 \normalsize
@@ -87,6 +87,9 @@
 \setlength\abovedisplayshortskip{2pt plus 2pt}
 \setlength\belowdisplayshortskip{3pt plus 2pt}
 \setlist{itemsep=1pt,parsep=0pt,topsep=2pt,partopsep=0pt,leftmargin=1.1em}
+% list boundaries are not preferred page breaks: a page may break inside a list item rather than leave the bottom
+% of the page empty (the main text has a hard 5-page budget)
+\makeatletter\@itempenalty=0 \@beginparpenalty=0 \@endparpenalty=0 \makeatother
 
 % ---------------------------------------------------------------- headings (house style: "1   Introduction")
 \titleformat{\section}{\normalfont\fontsize{14}{17}\selectfont}{\thesection}{1.0em}{}

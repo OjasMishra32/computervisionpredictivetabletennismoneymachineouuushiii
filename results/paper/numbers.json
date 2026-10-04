@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-03T23:11:41+00:00",
+ "generated_utc": "2026-10-04T00:53:35+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -862,181 +862,15 @@
    ],
    "source": "results/tier0/latency_sweep.json::grids.stamp_lag_s"
   },
-  "cv.cal.lag": {
-   "value": "3.14",
-   "raw": 3.14,
-   "source": "results/tier0/latency_sweep.json::grids.video_stamp_lag_sensitivity.tournament_lagcal (regex)"
-  },
   "cv.pre.lag": {
    "value": "2.0",
    "raw": 2.0,
    "source": "results/tier0/latency_sweep.json::model.revised_primary.stamp_lag"
   },
-  "cv.cal.is.usd": {
-   "value": "+$94",
-   "raw": 94.35,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
-  },
-  "cv.cal.is.usd_ci": {
-   "value": "[51, 125]",
-   "raw": [
-    51.3,
-    125.01
-   ],
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day_seed_ci95"
-  },
-  "cv.cal.is.c": {
-   "value": "+1.11",
-   "raw": 1.113,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
-  },
-  "cv.cal.is.c_ci": {
-   "value": "[0.85, 1.38]",
-   "raw": [
-    0.849,
-    1.375
-   ],
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share_ci95"
-  },
-  "cv.cal.is.sr": {
-   "value": "11.9",
-   "raw": 11.95,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
-  },
-  "cv.cal.is.wrong": {
-   "value": "12%",
-   "raw": 0.1208,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.wrong_call_share_of_trades"
-  },
-  "cv.cal.is.ret": {
-   "value": "118",
-   "raw": 117.81268269428003,
-   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] pnl_per_day_usd*365/capital_usd"
-  },
-  "cv.cal.is.vol": {
-   "value": "9.9",
-   "raw": 9.85568436881723,
-   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] ret/sharpe_ann"
-  },
-  "cv.cal.is.dd": {
-   "value": "−1.6",
-   "raw": -0.015857314667946248,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] max_dd_usd/capital_usd"
-  },
-  "cv.cal.is.worstday": {
-   "value": "−$223",
-   "raw": -223.42355,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] worst_day_usd"
-  },
-  "cv.cal.is.tpd": {
-   "value": "65",
-   "raw": 64.94563106796116,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] n_trades/days"
-  },
-  "cv.cal.is.days": {
-   "value": "103",
-   "raw": 103.0,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] days"
-  },
-  "cv.cal.be.is": {
-   "value": "2.23",
-   "raw": 2.23,
-   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_mean_curve"
-  },
-  "cv.cal.be_ci.is": {
-   "value": "[2.18, 3.39]",
-   "raw": [
-    2.182,
-    3.386
-   ],
-   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_bootstrap_ci95"
-  },
-  "cv.cal.oos.usd": {
-   "value": "+$57",
-   "raw": 56.59,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
-  },
-  "cv.cal.oos.usd_ci": {
-   "value": "[1, 130]",
-   "raw": [
-    0.65,
-    129.52
-   ],
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day_seed_ci95"
-  },
-  "cv.cal.oos.c": {
-   "value": "+0.66",
-   "raw": 0.655,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
-  },
-  "cv.cal.oos.c_ci": {
-   "value": "[0.10, 1.19]",
-   "raw": [
-    0.098,
-    1.189
-   ],
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share_ci95"
-  },
-  "cv.cal.oos.sr": {
-   "value": "8.8",
-   "raw": 8.85,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
-  },
-  "cv.cal.oos.wrong": {
-   "value": "16%",
-   "raw": 0.1597,
-   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.wrong_call_share_of_trades"
-  },
-  "cv.cal.oos.ret": {
-   "value": "91",
-   "raw": 91.49682331148603,
-   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] pnl_per_day_usd*365/capital_usd"
-  },
-  "cv.cal.oos.vol": {
-   "value": "10.3",
-   "raw": 10.339266656287796,
-   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] ret/sharpe_ann"
-  },
-  "cv.cal.oos.dd": {
-   "value": "−1.6",
-   "raw": -0.016079028187689064,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] max_dd_usd/capital_usd"
-  },
-  "cv.cal.oos.worstday": {
-   "value": "−$192",
-   "raw": -191.88426,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] worst_day_usd"
-  },
-  "cv.cal.oos.tpd": {
-   "value": "55",
-   "raw": 55.2975,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] n_trades/days"
-  },
-  "cv.cal.oos.days": {
-   "value": "40",
-   "raw": 40.0,
-   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] days"
-  },
-  "cv.cal.be.oos": {
-   "value": "2.14",
-   "raw": 2.14,
-   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_mean_curve"
-  },
-  "cv.cal.be_ci.oos": {
-   "value": "[1.59, 2.19]",
-   "raw": [
-    1.591,
-    2.193
-   ],
-   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_bootstrap_ci95"
-  },
-  "cv.cal.be.range": {
-   "value": "2.1–2.2",
-   "raw": [
-    2.14,
-    2.23
-   ],
-   "source": "D: min/max of the IS and OOS break-evens"
+  "cv.cal.lag": {
+   "value": "3.14",
+   "raw": 3.14,
+   "source": "results/tier0/latency_sweep.json::grids.video_stamp_lag_sensitivity.tournament_lagcal (regex)"
   },
   "cv.pre.is.usd": {
    "value": "+$15",
@@ -1204,6 +1038,172 @@
    ],
    "source": "D: min/max of the IS and OOS break-evens"
   },
+  "cv.cal.is.usd": {
+   "value": "+$94",
+   "raw": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  "cv.cal.is.usd_ci": {
+   "value": "[51, 125]",
+   "raw": [
+    51.3,
+    125.01
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day_seed_ci95"
+  },
+  "cv.cal.is.c": {
+   "value": "+1.11",
+   "raw": 1.113,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
+  },
+  "cv.cal.is.c_ci": {
+   "value": "[0.85, 1.38]",
+   "raw": [
+    0.849,
+    1.375
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share_ci95"
+  },
+  "cv.cal.is.sr": {
+   "value": "11.9",
+   "raw": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  "cv.cal.is.wrong": {
+   "value": "12%",
+   "raw": 0.1208,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.wrong_call_share_of_trades"
+  },
+  "cv.cal.is.ret": {
+   "value": "118",
+   "raw": 117.81268269428003,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.cal.is.vol": {
+   "value": "9.9",
+   "raw": 9.85568436881723,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.cal.is.dd": {
+   "value": "−1.6",
+   "raw": -0.015857314667946248,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.cal.is.worstday": {
+   "value": "−$223",
+   "raw": -223.42355,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] worst_day_usd"
+  },
+  "cv.cal.is.tpd": {
+   "value": "65",
+   "raw": 64.94563106796116,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] n_trades/days"
+  },
+  "cv.cal.is.days": {
+   "value": "103",
+   "raw": 103.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] days"
+  },
+  "cv.cal.be.is": {
+   "value": "2.23",
+   "raw": 2.23,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be_ci.is": {
+   "value": "[2.18, 3.39]",
+   "raw": [
+    2.182,
+    3.386
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.cal.oos.usd": {
+   "value": "+$57",
+   "raw": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  "cv.cal.oos.usd_ci": {
+   "value": "[1, 130]",
+   "raw": [
+    0.65,
+    129.52
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "cv.cal.oos.c": {
+   "value": "+0.66",
+   "raw": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
+  },
+  "cv.cal.oos.c_ci": {
+   "value": "[0.10, 1.19]",
+   "raw": [
+    0.098,
+    1.189
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share_ci95"
+  },
+  "cv.cal.oos.sr": {
+   "value": "8.8",
+   "raw": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  "cv.cal.oos.wrong": {
+   "value": "16%",
+   "raw": 0.1597,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.wrong_call_share_of_trades"
+  },
+  "cv.cal.oos.ret": {
+   "value": "91",
+   "raw": 91.49682331148603,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] pnl_per_day_usd*365/capital_usd"
+  },
+  "cv.cal.oos.vol": {
+   "value": "10.3",
+   "raw": 10.339266656287796,
+   "source": "D: results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] ret/sharpe_ann"
+  },
+  "cv.cal.oos.dd": {
+   "value": "−1.6",
+   "raw": -0.016079028187689064,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] max_dd_usd/capital_usd"
+  },
+  "cv.cal.oos.worstday": {
+   "value": "−$192",
+   "raw": -191.88426,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] worst_day_usd"
+  },
+  "cv.cal.oos.tpd": {
+   "value": "55",
+   "raw": 55.2975,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] n_trades/days"
+  },
+  "cv.cal.oos.days": {
+   "value": "40",
+   "raw": 40.0,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] days"
+  },
+  "cv.cal.be.oos": {
+   "value": "2.14",
+   "raw": 2.14,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.cal.be_ci.oos": {
+   "value": "[1.59, 2.19]",
+   "raw": [
+    1.591,
+    2.193
+   ],
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.tournament_lagcal.burned_OOS.breakeven_V_s_seed_bootstrap_ci95"
+  },
+  "cv.cal.be.range": {
+   "value": "2.1–2.2",
+   "raw": [
+    2.14,
+    2.23
+   ],
+   "source": "D: min/max of the IS and OOS break-evens"
+  },
   "cv.lag1.is.usd": {
    "value": "−$6",
    "raw": -6.27,
@@ -1229,14 +1229,14 @@
    "raw": 0.891,
    "source": "D: cv.pre.lag - cv.pre.be.is - cv.inf"
   },
-  "cv.cal.oos.net_central": {
-   "value": "−$110",
-   "raw": -110.33876164383562,
-   "source": "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central"
-  },
   "cv.pre.oos.net_central": {
    "value": "−$163",
    "raw": -162.57876164383563,
+   "source": "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central"
+  },
+  "cv.cal.oos.net_central": {
+   "value": "−$110",
+   "raw": -110.33876164383562,
    "source": "D: cv.<r>.oos.usd - results/financials/financials.json::strategies.v2.cost.daily.central"
   },
   "cv.v0.check": {
@@ -1253,6 +1253,397 @@
    "value": "18,880",
    "raw": 18880,
    "source": "results/tier0/latency_sweep.json::run.n_runs"
+  },
+  "cv.cal.lag_ci": {
+   "value": "2.23–3.22",
+   "raw": [
+    2.225,
+    3.222
+   ],
+   "source": "results/redteam/stamp_lag.json::bootstrap.median_L_ci95_s"
+  },
+  "cv.cal.react": {
+   "value": "0.25",
+   "raw": 0.25,
+   "source": "results/redteam/stamp_lag.json::reaction_time[stamp_lag_median_s == base.stamp_lag_median_s].react_s"
+  },
+  "cv.cal.n": {
+   "value": "49",
+   "raw": 49,
+   "source": "results/redteam/stamp_lag.json::base.n_points"
+  },
+  "cv.L_bot": {
+   "value": "2.85",
+   "raw": 2.847,
+   "source": "results/redteam/derived.json::keys.cv.L_bot <- results/redteam/stamp_lag.json::machines_20ms_london.stamp_lag_median_s (react 20 ms, London 2 ms)"
+  },
+  "cv.at_lo.is.usd": {
+   "value": "+$19",
+   "raw": 19.0,
+   "source": "results/redteam/derived.json::keys.cv.at_L_boot_lo.is.usd <- derived"
+  },
+  "cv.at_lo.oos.usd": {
+   "value": "+$8",
+   "raw": 8.3,
+   "source": "results/redteam/derived.json::keys.cv.at_L_boot_lo.oos.usd <- derived"
+  },
+  "cv.cal.shift": {
+   "value": "0.14",
+   "raw": 0.14,
+   "source": "results/redteam/derived.json::keys.cv.cal.shift <- derived"
+  },
+  "cv.stc.is.usd": {
+   "value": "−$17",
+   "raw": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.1.IS.usd_per_day"
+  },
+  "cv.stc.is.v0": {
+   "value": "+$199",
+   "raw": 198.82,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.0.IS.usd_per_day"
+  },
+  "cv.stc.be.is": {
+   "value": "0.34",
+   "raw": 0.338,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.stc.oos.usd": {
+   "value": "−$17",
+   "raw": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.1.burned_OOS.usd_per_day"
+  },
+  "cv.stc.oos.v0": {
+   "value": "+$133",
+   "raw": 132.53,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.0.burned_OOS.usd_per_day"
+  },
+  "cv.stc.be.oos": {
+   "value": "0.29",
+   "raw": 0.295,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "cv.eng.pre.is.usd": {
+   "value": "+$17",
+   "raw": 17.02,
+   "source": "results/redteam/causal_cv.json::cells_V1.tournament.IS.usd_per_day"
+  },
+  "cv.eng.pre.oos.usd": {
+   "value": "+$4",
+   "raw": 3.81,
+   "source": "results/redteam/causal_cv.json::cells_V1.tournament.burned_OOS.usd_per_day"
+  },
+  "cv.eng.cal.is.usd": {
+   "value": "+$98",
+   "raw": 98.0,
+   "source": "results/redteam/causal_cv.json::cells_V1.tournament_lagcal.IS.usd_per_day"
+  },
+  "cv.eng.cal.oos.usd": {
+   "value": "+$57",
+   "raw": 57.42,
+   "source": "results/redteam/causal_cv.json::cells_V1.tournament_lagcal.burned_OOS.usd_per_day"
+  },
+  "cv.eng.tp": {
+   "value": "4",
+   "raw": 4,
+   "source": "results/redteam/derived.json::keys.eng.tp <- results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online[\"50ms\"].tp"
+  },
+  "cv.eng.nmiss": {
+   "value": "41",
+   "raw": 41,
+   "source": "results/redteam/derived.json::keys.eng.nmiss <- results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.n_miss"
+  },
+  "cv.eng.wil_lo": {
+   "value": "51%",
+   "raw": 51,
+   "source": "results/redteam/derived.json::keys.eng.wil_lo <- results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online[\"50ms\"].precision_wilson95[0] (x100, %)"
+  },
+  "cv.eng.lead": {
+   "value": "162",
+   "raw": 162.5,
+   "source": "results/redteam/derived.json::keys.eng.lead_med <- results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.median (ms)"
+  },
+  "cv.phantom.hr": {
+   "value": "30",
+   "raw": 29.6,
+   "source": "results/redteam/derived.json::keys.eng.phantom_miss_per_hour <- results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.calls.unmatched.MISS (7) / stream.video_s (851.0) x 3600; 5 of them between rallies"
+  },
+  "cv.phantom.pre": {
+   "value": "2.5",
+   "raw": 2.5,
+   "source": "results/redteam/derived.json::keys.eng.phantom_budget_per_day.pre <- derived"
+  },
+  "cv.phantom.cal": {
+   "value": "32",
+   "raw": 32.3,
+   "source": "results/redteam/derived.json::keys.eng.phantom_budget_per_day.cal <- derived"
+  },
+  "cv.pre.is.wrong_usd": {
+   "value": "−$2,403",
+   "raw": -2402.53521,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] pnl_wrong_usd"
+  },
+  "cv.pre.is.cap": {
+   "value": "$17,796",
+   "raw": 17795.91332,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] capital_usd"
+  },
+  "cv.pre.is.persec": {
+   "value": "+$74",
+   "raw": 74.01,
+   "source": "D: latency_sweep.json::video_own120.tournament.0.IS.usd_per_day - .1.IS.usd_per_day"
+  },
+  "cv.pre.oos.wrong_usd": {
+   "value": "−$938",
+   "raw": -937.87316,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] pnl_wrong_usd"
+  },
+  "cv.pre.oos.cap": {
+   "value": "$13,800",
+   "raw": 13800.16993,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] capital_usd"
+  },
+  "cv.pre.oos.persec": {
+   "value": "+$42",
+   "raw": 42.08,
+   "source": "D: latency_sweep.json::video_own120.tournament.0.burned_OOS.usd_per_day - .1.burned_OOS.usd_per_day"
+  },
+  "cv.cal.is.wrong_usd": {
+   "value": "−$4,141",
+   "raw": -4140.92421,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] pnl_wrong_usd"
+  },
+  "cv.cal.is.cap": {
+   "value": "$29,230",
+   "raw": 29229.87654,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] capital_usd"
+  },
+  "cv.cal.is.persec": {
+   "value": "+$104",
+   "raw": 104.31,
+   "source": "D: latency_sweep.json::video_own120.tournament_lagcal.0.IS.usd_per_day - .1.IS.usd_per_day"
+  },
+  "cv.cal.oos.wrong_usd": {
+   "value": "−$1,270",
+   "raw": -1269.8553,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] pnl_wrong_usd"
+  },
+  "cv.cal.oos.cap": {
+   "value": "$22,576",
+   "raw": 22576.09762,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] capital_usd"
+  },
+  "cv.cal.oos.persec": {
+   "value": "+$73",
+   "raw": 72.79999999999998,
+   "source": "D: latency_sweep.json::video_own120.tournament_lagcal.0.burned_OOS.usd_per_day - .1.burned_OOS.usd_per_day"
+  },
+  "cv.pre.persec.range": {
+   "value": "$42–74",
+   "raw": [
+    74.01,
+    42.08
+   ],
+   "source": "D: min/max of cv.pre.{is,oos}.persec"
+  },
+  "cv.pess.is.usd": {
+   "value": "+$8",
+   "raw": 8.18,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament.1.IS.usd_per_day"
+  },
+  "cv.pess.oos.usd": {
+   "value": "−$13",
+   "raw": -12.6,
+   "source": "results/tier0/latency_sweep.json::video_cv_pessimistic.tournament.1.burned_OOS.usd_per_day"
+  },
+  "cv.pool.d3": {
+   "value": "265",
+   "raw": 265,
+   "source": "results/tier0/results.json::inputs.live_pool_sizes.D>=3c"
+  },
+  "cv.pool.all": {
+   "value": "482",
+   "raw": 482,
+   "source": "results/tier0/results.json::inputs.live_pool_sizes.all"
+  },
+  "cv.pool482.oos": {
+   "value": "+0.25 [−0.35, 0.86]",
+   "raw": [
+    0.25,
+    [
+     -0.35,
+     0.86
+    ]
+   ],
+   "source": "results/redteam/derived.json::keys.cv.pool482.oos.c <- results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0) ; results/redteam/derived.json::keys.cv.pool482.oos.ci <- results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*"
+  },
+  "cv.pre.oos.maxlic": {
+   "value": "$55",
+   "raw": 55,
+   "source": "results/redteam/derived.json::keys.cv.pre.oos.maxlic <- derived"
+  },
+  "cv.cal.oos.maxlic": {
+   "value": "$1,644",
+   "raw": 1644,
+   "source": "results/redteam/derived.json::keys.cv.cal.oos.maxlic <- derived"
+  },
+  "cv.L_go": {
+   "value": "3.0",
+   "raw": 2.98,
+   "source": "results/redteam/derived.json::keys.cv.L_for_low.is <- derived ; results/redteam/derived.json::keys.cv.L_for_low.oos <- derived (max of IS and OOS, 1 dp: the stricter)"
+  },
+  "cv.L_go.range": {
+   "value": "2.87–2.98",
+   "raw": [
+    2.87,
+    2.98
+   ],
+   "source": "results/redteam/derived.json::keys.cv.L_for_low.is <- derived ; results/redteam/derived.json::keys.cv.L_for_low.oos <- derived"
+  },
+  "cv.L_central": {
+   "value": "3.0",
+   "raw": [
+    "not covered at any L <= 3.0",
+    "not covered at any L <= 3.0"
+   ],
+   "source": "results/redteam/derived.json::keys.cv.L_for_central.is <- derived ; results/redteam/derived.json::keys.cv.L_for_central.oos <- derived"
+  },
+  "venue.batch": {
+   "value": "35%",
+   "raw": 0.349,
+   "source": "results/redteam/derived.json::keys.venue.reprices_0_100ms_after_second <- results/redteam/stamp_lag.json::whole_second_clock"
+  },
+  "e2e.ours": {
+   "value": "54",
+   "raw": 54.13,
+   "source": "results/e2e/summary.json::our_pipeline_frame_to_order_ready_ms.p50"
+  },
+  "e2e.total": {
+   "value": "2,119",
+   "raw": 2118.595,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.total_ms.p50"
+  },
+  "e2e.n": {
+   "value": "24",
+   "raw": 24,
+   "source": "results/e2e/summary.json::counts.complete_order_traces"
+  },
+  "e2e.sent": {
+   "value": "0",
+   "raw": 0,
+   "source": "results/e2e/summary.json::counts.orders_sent"
+  },
+  "capcv.half.is": {
+   "value": "$74,000",
+   "raw": 73892.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.capital_usd"
+  },
+  "capcv.half.is.day": {
+   "value": "$181",
+   "raw": 180.6,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.pnl_per_day_usd"
+  },
+  "capcv.halfall.is": {
+   "value": "$164,000",
+   "raw": 164216.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.capital_usd"
+  },
+  "capcv.halfall.is.day": {
+   "value": "$481",
+   "raw": 480.8,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.pnl_per_day_usd"
+  },
+  "capcv.pre.sr0.is": {
+   "value": "2.7",
+   "raw": 2.745,
+   "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|IS.sharpe_ref_smallest_size"
+  },
+  "capcv.cf.is": {
+   "value": "$52,000",
+   "raw": 51548.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.fixed_costs.camera_free_central.capital_needed_usd"
+  },
+  "capcv.cf.is.cost": {
+   "value": "$242",
+   "raw": 241.6,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.fixed_costs.camera_free_central.cost_usd_per_day"
+  },
+  "capcv.half.oos": {
+   "value": "$41,000",
+   "raw": 41105.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.capital_usd"
+  },
+  "capcv.half.oos.day": {
+   "value": "$66",
+   "raw": 66.5,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
+  },
+  "capcv.halfall.oos": {
+   "value": "$96,000",
+   "raw": 95790.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.capital_usd"
+  },
+  "capcv.halfall.oos.day": {
+   "value": "$251",
+   "raw": 251.4,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
+  },
+  "capcv.pre.sr0.oos": {
+   "value": "0.9",
+   "raw": 0.909,
+   "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|burned_OOS.sharpe_ref_smallest_size"
+  },
+  "capcv.cf.oos": {
+   "value": "$99,000",
+   "raw": 99419.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.fixed_costs.camera_free_central.capital_needed_usd"
+  },
+  "capcv.cf.oos.cost": {
+   "value": "$256",
+   "raw": 256.15,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.fixed_costs.camera_free_central.cost_usd_per_day"
+  },
+  "capcv.share_inplay": {
+   "value": "0.15%",
+   "raw": 0.1494,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above.share_of_inplay_volume_pct"
+  },
+  "capcv.share_fast": {
+   "value": "6%",
+   "raw": 6.013,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above.share_of_fasttier_03s_volume_pct"
+  },
+  "t0.prereg.written": {
+   "value": "17:25",
+   "raw": "2026-10-03 17:25",
+   "source": "research/v2/tier0/PREREG.md (line 'Written ... UTC')"
+  },
+  "t0.prereg.commit": {
+   "value": "a5769c7",
+   "raw": "a5769c7",
+   "source": "git log --diff-filter=A -- research/v2/tier0/PREREG.md"
+  },
+  "t0.prereg.time": {
+   "value": "19:24",
+   "raw": "2026-10-03T15:24:26-04:00",
+   "source": "git log --diff-filter=A -- research/v2/tier0/PREREG.md"
+  },
+  "t0.oos_first": {
+   "value": "17:29",
+   "raw": "2026-10-03T17:29:29.198786+00:00",
+   "source": "results/oos_peeks.log (first line 'tier0 counterfactual grid evaluated on burned OOS')"
+  },
+  "t0.dev.n": {
+   "value": "13",
+   "raw": 13,
+   "source": "D: count of '### T<n>.' and '### V<n>.' headings in research/v2/tier0/DEVIATIONS.md"
+  },
+  "t0.dev.span": {
+   "value": "T1–T3, V1–V10",
+   "raw": [
+    3,
+    10
+   ],
+   "source": "research/v2/tier0/DEVIATIONS.md headings"
   },
   "decay.test.oos": {
    "value": "+0.66 [0.45, 0.87]",
@@ -1386,6 +1777,37 @@
    "value": "994",
    "raw": 994,
    "source": "results/replay/replay.json::cells.V1|lag2|lead_model|florida.all.official_points"
+  },
+  "rp.recv_ms": {
+   "value": "66",
+   "raw": 66,
+   "source": "results/replay/audit.json::recv_latency_ms"
+  },
+  "rp.sel.t4.c": {
+   "value": "−0.95",
+   "raw": -0.9549969691654833,
+   "source": "results/replay/selective/selective.json::cells.T4c|lag2|V1.all.per_share_mark_c"
+  },
+  "rp.sel.t4.ci": {
+   "value": "[−1.64, −0.40]",
+   "raw": [
+    -1.637006592139831,
+    -0.39960538390112754
+   ],
+   "source": "results/replay/selective/selective.json::cells.T4c|lag2|V1.all.per_share_mark_ci95_c"
+  },
+  "rp.sel.t4.fills": {
+   "value": "63",
+   "raw": 63,
+   "source": "results/replay/selective/selective.json::cells.T4c|lag2|V1.all.fills"
+  },
+  "rp.sel.neg2": {
+   "value": "9 of 9",
+   "raw": [
+    9,
+    9
+   ],
+   "source": "D: selective.json cells with T set and lag 2.0 whose all.per_share_mark_c < 0"
   },
   "h1.is.c": {
    "value": "−1.61",
@@ -1642,6 +2064,21 @@
    "value": "$11",
    "raw": 11.17,
    "source": "results/risk/risk_stats.json::liquidity_capital.is_eval.usd_per_trade_quantiles.0.5"
+  },
+  "risk.maxloss": {
+   "value": "$95",
+   "raw": 95.0,
+   "source": "D: results/engine/demo_run_L4.json::risk_config.net_cap_shares x zone[1] (held to resolution, before fees)"
+  },
+  "risk.months_half": {
+   "value": "1.5",
+   "raw": 1.4951768546795743,
+   "source": "D: (v2.oos.c - 0.3) / |ft.slope| (extrapolation)"
+  },
+  "risk.months_zero": {
+   "value": "3.0",
+   "raw": 2.996678356181076,
+   "source": "D: v2.oos.c / |ft.slope| (extrapolation)"
   },
   "risk.trail_min": {
    "value": "+0.74",
@@ -2011,12 +2448,12 @@
   "pol.trail_half": {
    "value": "0.3",
    "raw": 0.3,
-   "source": "results/paper/policy.json::trailing_edge_half_c <- docs/RISK.md:62"
+   "source": "results/paper/policy.json::trailing_edge_half_c <- docs/RISK.md:83"
   },
   "pol.dd_stop": {
    "value": "5%",
    "raw": 5,
-   "source": "results/paper/policy.json::drawdown_stop_pct <- docs/RISK.md:61"
+   "source": "results/paper/policy.json::drawdown_stop_pct <- docs/RISK.md:82"
   },
   "pol.n0": {
    "value": "200",
@@ -2059,8 +2496,8 @@
    "source": "results/tier0/latency_sweep.csv rows"
   },
   "peeks.n": {
-   "value": "69",
-   "raw": 69,
+   "value": "76",
+   "raw": 76,
    "source": "results/oos_peeks.log (lines at build time)"
   },
   "peeks.blind": {
@@ -2069,8 +2506,8 @@
    "source": "D: keyword class 'blind first run' over results/oos_peeks.log"
   },
   "peeks.nonblind": {
-   "value": "13",
-   "raw": 13,
+   "value": "16",
+   "raw": 16,
    "source": "D: keyword class 'non-blind' over results/oos_peeks.log"
   },
   "peeks.desc": {
@@ -2079,13 +2516,13 @@
    "source": "D: keyword class 'descriptive' over results/oos_peeks.log"
   },
   "peeks.audit": {
-   "value": "22",
-   "raw": 22,
+   "value": "25",
+   "raw": 25,
    "source": "D: keyword class 'audit' over results/oos_peeks.log"
   },
   "peeks.live": {
-   "value": "20",
-   "raw": 20,
+   "value": "21",
+   "raw": 21,
    "source": "D: keyword class 'live' over results/oos_peeks.log"
   },
   "peeks.other": {

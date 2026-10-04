@@ -12,20 +12,18 @@
   {Gator Quant Hacks 2026 \textperiodcentered{} Systematic Trading Track \textperiodcentered{} University of Florida}
   {October 4, 2026}{}
 \unmarkedfootnote{Reproduce: \texttt{bash reproduce.sh}
-(\url{https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii}). Real money: none
-(Participant Terms 5.3). CV-strategy results: assumed feed latency (licensed feed not purchased); parameters measured. We hold no licensed feed, no match footage and no camera
-at any court.}
+(\url{https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii}). Paper only; no
+licensed feed, match footage or court camera is held.}
 
 \begin{csabstract}
-We study who profits from speed in Polymarket's in-play tennis moneylines, using public trade tapes for
-13,084 matches. A walk-forward fast tier of wallets trading within
-3\,s of a score move earns +0.93¢ per share after fees in sample and +0.75¢ out of sample
-(9/9 and 3/3 months positive); other takers lose, and copying its trades 3\,s
-later loses. At the fast tier's own fills a frozen book earns +0.60¢ per share out of sample
-(Sharpe 6.7) but turns negative when fees double. Simulated at a 1\,s licensed-feed baseline
-(assumed feed latency (licensed feed not purchased); parameters measured), a computer-vision (CV) trader earns +\$57 a day out of sample under a calibrated,
-post hoc stamp lag and +\$4 under the pre-registered one, which breaks even at
-1.0–1.1\,s of feed delay. Real money: none.
+In-play tennis prediction markets are priced by whoever learns the point first. We measure who that is, what they earn
+and what each second is worth, from public trade tapes of 13,084 Polymarket tennis matches. A walk-forward fast tier of wallets trading within 3\,s of a score move earns
++0.93¢ per share after fees in sample and +0.75¢ in its single out-of-sample run; other
+takers lose. At its own fills a frozen book earns +0.60¢ on a burned (non-blind) hold-out, but not with
+fees doubled. Simulated at a 1\,s licensed-feed baseline (assumed feed latency (licensed feed not purchased); parameters measured), a computer-vision (CV) trader earns
++\$4 a day on that hold-out at the pre-registered stamp lag, where each second of feed delay costs
+\$42–74 a day, and +\$57 at a post hoc estimate, on trades selected on
+outcomes; a replay on real books loses. Real money: none.
 
 \vspace{2pt}\noindent\textbf{JEL:} G14, G12, C58.\enspace \textbf{Keywords:} prediction markets; latency arbitrage;
 in-play betting; tennis; computer vision; market microstructure.
@@ -33,20 +31,18 @@ in-play betting; tennis; computer vision; market microstructure.
 
 % ======================================================================================== 1 Summary
 \section{Summary}\label{sec:summary}
-In-play tennis prediction markets are priced by whoever learns the point first. We measure who that is, what they earn
-and what each second of speed is worth; our CV calls the point before the ball lands, and we price the feed it needs.
+Our CV calls the point before the ball lands; we price the feed it needs.
 \begin{keybox}
-\item \textbf{Strategy.} Call the point with CV before the ball lands; take the stale quote inside the
-1\,s taker delay. CV results: assumed feed latency (licensed feed not purchased); parameters measured.
-\item \textbf{Edge.} The book reprices 1.2\,s \emph{before} the official stamp. The fast tier
-earns +0.93\,/\,+0.75¢ per share after fees (IS\,/\,OOS) every month; other takers lose
-−0.89\,/\,−1.43¢.
-\item \textbf{Headline OOS.} At fast-tier fills: +0.60¢ [0.09, 1.13], Sharpe
-6.7. At the 1\,s baseline: +\$57/day (Sharpe 8.8; calibrated,
-post hoc) or +\$4/day (Sharpe 0.3; pre-registered); break-even delay
-2.1–2.2 or 1.0–1.1\,s, so public streams and score feeds lose.
-\item \textbf{What failed.} Fees \(\times\)2 OOS (−0.34¢); every blind test of a tradable book; the
-live-book replay; table tennis; OOS after a central feed licence (−\$75/day). Real money: none.
+\item \textbf{Strategy and edge.} Call the point with CV; lift the stale resting quote inside the 1\,s
+taker delay. The book reprices 1.2\,s \emph{before} the official stamp; the fast tier earns
++0.93\,/\,+0.75¢ a share after fees (IS\,/\,OOS) every month; other takers lose.
+\item \textbf{Headline, burned OOS.} v2 at fast-tier fills: +0.60¢ [0.09, 1.13], Sharpe
+6.7. CV at the 1\,s baseline (assumed feed latency (licensed feed not purchased); parameters measured): +\$4/day (Sharpe 0.3) at the pre-registered \(L = 2.0\)\,s,
++\$57/day (Sharpe 8.8) at the post hoc \(L = 3.14\)\,s
+[2.23–3.22]; trades selected on outcomes, not ex ante.
+\item \textbf{Failed; decision.} Fees \(\times\)2 OOS (−0.34¢); every blind test of a tradable book;
+the replay on real books; table tennis. Go only on a measured stamp lag \(L \geq 3.0\)\,s, which pays
+for the cheapest data stack. Real money: none.
 \end{keybox}
 
 % ======================================================================================== 2 Hypothesis
@@ -58,36 +54,39 @@ Win probability is a known function of the score. The leverage of point \(k\),
 follows from the exact point-level Markov chain \citep{klaassen2001}, with mean \(|\Delta(k)|\) of 5.7\%
 over the 161 points of a simulated ATP best-of-three. Each point moves fair value by a known amount
 at a known instant, and the news reaches traders in tiers (Fig.~\ref{fig:ladder}a): in-venue tracking; the official
-stamp, an unmeasured 1–3\,s later; licensed video, 0.5–8\,s (vendor-stated);
-public streams, \(\geq\)12.2\,s (preliminary); score feeds, 28.2--44.1\,s behind
-the book, which reprices a median 1.2\,s \emph{before} the stamp (\(n = 482\)).
+stamp (unmeasured, 1–3\,s later); licensed video (0.5–8\,s, vendor-stated);
+public streams (\(\geq\)12.2\,s); score feeds (28.2--44.1\,s after
+the book, which reprices a median 1.2\,s \emph{before} the stamp, \(n = 482\)).
+Makers whose quotes are stale when a point ends are picked off by whoever learns it first: the adverse selection of
+\citet{glosten1985}, the stale-quote sniping of \citet{budish2015} and \citet{aquilina2022}, the toxic arbitrage of
+\citet{foucault2017}.
 \begin{hypbox}
 \textbf{H6.} \emph{Universe:} Polymarket ATP/WTA/Challenger moneylines. \emph{Behaviour:} wallets trading 0--3\,s
-after a score move. \emph{Horizon:} 30\,s markout. \emph{Counterparty:} slower takers on an older tier.
-\emph{Persistence:} physics, data licensing, the 1\,s taker delay. \emph{Prediction:} fast wallets chosen on past months
-keep a positive net markout each month and out of sample. \emph{Falsifier:} \(\leq 0\) in over a third of months, or
-out of sample. \emph{Trail:} H1--H4 committed before any result (\texttt{7232986},
-2026-10-03 09:50 UTC); H6 written in sample and frozen before the OOS opened; v2 in
-\texttt{HYPOTHESIS\_V2.md}; changes in \texttt{DEVIATIONS.md}.
+after a score move. \emph{Horizon:} 30\,s markout. \emph{Counterparty:} the resting maker who has not yet cancelled a
+stale quote. \emph{Persistence:} physics and data licences decide who learns first; the 1\,s taker delay lets makers
+cancel, so only news that leads the reprice by over a second pays (a barrier to entry; the cost \(D\) in
+Eq.~\ref{eq:budget}). \emph{Prediction:} fast wallets chosen on past months keep a positive net markout each month and
+out of sample. \emph{Falsifier:} \(\leq 0\) in over a third of months, or out of sample. \emph{Trail:} H1--H4 committed
+before any result (\texttt{7232986}); H6 frozen before the OOS opened; changes in
+\texttt{DEVIATIONS.md}.
 \end{hypbox}
-The edge is a structural constraint, not a risk premium, and tracks the structure: v2 earns +1.96,
-+1.36, +1.45 and +1.02¢ per share in the 3\,s/0\%, 3\,s/3\%,
-1\,s/3\% and 1\,s/5\% delay/fee regimes. The fast tier grew from 4 to 131
-wallets; its edge shrank 0.20¢ a month (\(t = −3.98\)) but stayed positive. Latency races
-\citep{budish2015,aquilina2022} and in-play mispricing \citep{croxson2014,brown2012,brown2014} are known; new here: a
-wallet-level map of the latency tier, a timing of every public source, a price on each second.
+The rent tracks the structure (v2: +1.96, +1.36, +1.45,
++1.02¢ in the 3\,s/0\%, 3\,s/3\%, 1\,s/3\%, 1\,s/5\% delay/fee regimes) and is being competed away: the
+fast tier grew from 4 to 131 wallets as its edge fell
+0.20¢ a month (\(t = −3.98\)); five wallets carry 81\%\,/\,142\%
+of v2's P\&L; the venue now buys official data and streams the ATP itself \citep{gi2026,prn2026}. In-play mispricing
+is known \citep{croxson2014,brown2012,brown2014}; new here: a wallet-level map of the latency tier, a timing of every
+public source, a price on each second.
 
 % ======================================================================================== 3 Data
 \section{Data and universe}\label{sec:data}
 13,084 resolved ATP/WTA/Challenger singles moneylines with \(\geq\)\$5,000 volume,
-Oct 8, 2025 to Oct 3, 2026: binary contracts on a public order book with free trade data. IS is the
-first 80\% of matches by start time; OOS the last 2,617 from 2026-08-25 14:15 UTC
-(21.2\% of volume; burned for v2). A blind test on 11,307 smaller markets checks the
-volume filter's survivorship. 6 tapes may be truncated (kept); 2,889 early
-matches without a fee schedule pay 0\%; 2.89\% settle 50/50 (kept); tape stamps lag
-1.98\,s. Sources: Polymarket APIs and sports websocket \citep{pmapi}; ESPN and WTA, latency only
-\citep{espn,wtaapi}; Kalshi \citep{kalshiapi}; \citet{french}; OpenTTGames \citep{voeikov2020}; BlurBall and
-WASB-SBDT weights \citep{gossard2026,tarashima2023}.
+Oct 8, 2025 to Oct 3, 2026, on a public order book. IS: the first 80\% of matches by start time; OOS: the last 2,617 from 2026-08-25 14:15 UTC (21.2\% of
+volume; burned for v2 and CV). A blind test on 11,307 smaller markets checks survivorship.
+6 tapes may be truncated, 2,889 early matches pay no fee, 2.89\%
+settle 50/50 (all kept); tape stamps lag 1.98\,s. Sources: Polymarket APIs and sports websocket
+\citep{pmapi}; ESPN and WTA, latency only \citep{espn,wtaapi}; Kalshi \citep{kalshiapi}; \citet{french}; OpenTTGames
+\citep{voeikov2020}; BlurBall and WASB-SBDT weights \citep{gossard2026,tarashima2023}.
 
 % ======================================================================================== 4 Methodology
 \section{Methodology}\label{sec:method}
@@ -98,18 +97,26 @@ v2 copies qualifying prints, sized \(\propto 1/\sqrt{q(1-q)}\), at most \$1,000 
 100 shares net per match, held to resolution, at the fast tier's own prices: \emph{the opportunity at
 their speed, not our execution}.
 
-\para{CV strategy} Our tracker gets 11 of 11 out-calls right 50\,ms before
-contact on held-out 120\,fps table-tennis video (Fig.~\ref{fig:ladder}b) and streams 102,120 frames at
-119.9\,fps on one GPU with 0 drops. With the bounce at time zero, an order wins
-only if
+\para{CV strategy} Streamed causally on held-out 120\,fps table-tennis video, our live engine calls
+4 of 41 misses before contact, none wrongly (Wilson lower bound
+51\%; median lead 162\,ms);
+an offline evaluation with a look-ahead feature called 11 of 11 at 50\,ms (Fig.~\ref{fig:ladder}b). Frame to order-ready over
+WebRTC takes 54\,ms; with a simulated 1\,s feed, network and venue hold, 2,119\,ms, under
+the organiser's 3\,s bar (\texttt{results/e2e}, paper). With the bounce at time zero an order wins only if
 \begin{equation}\label{eq:budget}
   V + \delta + D - \ell \;<\; L + R \quad\Longleftrightarrow\quad V \;<\; L + R - D - \delta + \ell ,
 \end{equation}
-where \(V\) is the feed delay, \(\delta\) the inference (20\,ms), network and gateway delays, \(D\) the
-1\,s taker delay, \(\ell\) the CV call lead, \(L\) the stamp lag and \(R\) the reprice relative to
-the stamp. \(R\), depth, network and fees are measured on 482 live points; \(V\) and \(L\) are
-assumed: \(V\) runs 0--60\,s (20 seeds per cell) and the unmeasured \(L\) gets two readings,
-pre-registered 2.0\,s and calibrated, post hoc 3.14\,s.
+where \(V\) is the feed delay, \(\delta\) the inference (20\,ms), network and gateway, \(D\) the
+1\,s taker delay, \(\ell\) the call lead, \(L\) the stamp lag and \(R\) the reprice relative to the
+stamp, measured on 482 live points (fills draw on the 265 whose book moved
+\(\geq\)3¢); \(V\) runs 0--60\,s, 20 seeds a cell. The trade set is every historical point the market
+later repriced \(\geq\)4¢: \emph{selected on outcomes, not ex ante}. \(L\) is unmeasured:
+pre-registered 2.0\,s, or a post hoc estimate of 3.14\,s (95\% CI
+2.23–3.22\,s; two modes, as the stamp has 1\,s resolution) that assumes the first informed prints are
+courtside humans reacting in 0.25\,s (who would also queue ahead of a 1\,s-feed order). Free of \(L\), the call must land
+\(\geq\)0.89\,s before the umpire's stamp; \(V = 1\)\,s at \(L = 3.14\)\,s
+equals a camera 0.14\,s \emph{ahead} of the bounce at \(L = 2.0\)\,s. Its
+pre-registration set no pass/fail rule; the blind test of the frozen v3 rule did, and failed (Table~\ref{tab:fail}).
 
 \para{Costs} Each match's own taker fee,
 \begin{equation}\label{eq:fee}
@@ -117,39 +124,28 @@ pre-registered 2.0\,s and calibrated, post hoc 3.14\,s.
 \end{equation}
 with \(r = 5\%\) today (250\,bps at \(q = 0.5\)): 120\,/\,179\,bps
 on v2's trades (IS\,/\,OOS). Spreads are paid as traded. Stresses: ½ and 1 tick worse entry, fees \(\times\)2,
-all costs \(\times\)2 (\(\approx\)+99\,bps more). \para{Validation} Monthly walk-forward inside IS;
-past-month qualification; the fee in force; the onset look-ahead fixed (D9); every OOS read logged.
+all costs \(\times\)2 (\(\approx\)+99\,bps more). \para{Validation} Walk-forward inside IS; the fee in force;
+the onset look-ahead fixed (D9); every read of held-out data logged.
 
 % ---------------------------------------------------------------------------------------- floats
 \begin{figure}[t]
-\includegraphics{../../results/paper/fig1_latency_cv.pdf}
-\caption{\emph{The race is decided inside the venue's 1\,s taker delay; only in-venue information beats the book.}
-(a)~Delay after the bounce (log): orange = ours (WebRTC: our own clip, loopback, 46 ms p50, 67 ms p99); hatched =
-vendor-stated or model range. (b)~Early out-calls, held-out 120\,fps table-tennis video (41 out,
-130 in; band: Wilson 95\%). Source: Polymarket and WTA feeds; \texttt{results/\{tracking,engine,webrtc\}}.}
-\label{fig:ladder}
-\end{figure}
-
-\begin{figure}[t]
 \includegraphics{../../results/paper/fig2_speed_edge.pdf}
 \caption{\emph{Speed is the edge.} (a)~Monthly net 30\,s markout after fees; filled = IS, hollow = OOS. (b)~v2 net
-P\&L at the fast tier's own fills (the opportunity at their speed, not our execution), base and costs doubled; solid =
-IS, dashed = OOS; labels: IS\,|\,OOS totals. Source: \texttt{results/\{alpha,lowloss,v2\}}.}
+P\&L at the fast tier's own fills, base and costs doubled; solid =
+IS, dashed = burned OOS; labels: IS\,|\,OOS totals. Source: \texttt{results/\{alpha,lowloss,v2\}}.}
 \label{fig:edge}
 \end{figure}
 
-\begin{table}[b]
+\begin{table}[t]
 \caption{\emph{v2 earns in both periods at the fast tier's own fills; its OOS edge does not survive doubled fees.}}
 \label{tab:v2}
 \tabnums
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrr@{}}
 \toprule
- & In sample & Burned OOS \\
+ & In sample & Burned OOS (non-blind) \\
  & Feb 1--Aug 25, 206\,d & Aug 25--Oct 3, 40\,d \\
 \midrule
-Trades (matches) & 55,662 (7,639) & 10,412 (2,003) \\
 Net ¢ per share [95\% CI] & +1.38 [1.17, 1.59] & +0.60 [0.09, 1.13] \\
-Net edge\,/\,fee, bps of notional & 273\,/\,120 & 114\,/\,179 \\
 Annualised return\,/\,volatility & 253\%\,/\,17.5\% & 148\%\,/\,22.2\% \\
 Sharpe, annualised [bootstrap 95\% CI] & 14.5 [11.9, 17.4] & 6.7 [1.9, 12.3] \\
 Max drawdown\,/\,worst day, \% of capital & −2.0\%\,/\,−1.9\% & −2.1\%\,/\,−2.1\% \\
@@ -160,9 +156,10 @@ Turnover (\(\times\) capital a year)\,/\,months positive & 93\,/\,7/7 & 129\,/\,
 \quad All costs \(\times\)2 [CI] & +0.27 [0.07, 0.48] & −0.84 [−1.36, −0.31] \\
 \bottomrule
 \end{tabular*}
-\tabnotes{\emph{Notes:} held to resolution, net of fees and spreads; capital 3\(\times\) peak locked
-(\$28,302\,/\,\$22,754); CIs by match (by wallet, OOS: [−0.45, 2.38]).
-\emph{Source:} \texttt{results/v2/}.}
+\tabnotes{\emph{Notes:} 55,662\,/\,10,412 trades in
+7,639\,/\,2,003 matches, held to resolution, net of fees and spreads (net edge 273\,/\,114\,bps
+of notional); capital 3\(\times\) peak locked (\$28,302\,/\,\$22,754); CIs by match (by wallet,
+OOS: [−0.45, 2.38]). \emph{Source:} \texttt{results/v2/}.}
 \end{table}
 
 % ======================================================================================== 5 Results
@@ -175,51 +172,60 @@ worse entry (+0.10¢) and negative with fees doubled (−0.34¢,
 16.8 to 14.5. The rest is about 270 small, nearly
 independent bets a day (same-day correlation 0.0013). The deflated Sharpe \citep{bailey2014} is
 0.997 IS at \(N = 3,386\) but 0.075–0.839 OOS: 40 days cannot rule out luck.
-The CV Sharpe is a simulation's seed mean and ignores model risk.
-\para{The 1\,s baseline} Table~\ref{tab:cv} and Fig.~\ref{fig:decay} give the main result. The two readings bracket it:
-+\$57/day OOS (Sharpe 8.8) calibrated against +\$4/day
-(Sharpe 0.3, −0.38¢ per share) pre-registered. Public streams and score feeds sit far
-right of break-even; under the stamp-noise reading the trader loses at every \(V\) (Table~\ref{tab:A-usd}). A replay of 9 matches recorded live on 2026-10-03 against their real books
-loses in 36 of 36 settings (−0.94¢ at \(V = 1\)\,s;
-Fig.~\ref{fig:decay}d): it trades every point, not only \(\geq\)4¢ jumps; one day, an illustration.
-Every blind test of a tradable book failed (Table~\ref{tab:fail}); the fast-minus-others gap stayed positive wherever measured.
+The CV Sharpe is a seed mean over trades selected on outcomes.
+\para{The 1\,s baseline} At the pre-registered lag the CV trader makes +\$15\,/\,+\$4
+a day (IS\,/\,OOS; Sharpe 2.1\,/\,0.3); at the post hoc estimate
++\$94\,/\,+\$57 (Sharpe 11.9\,/\,8.8;
+Table~\ref{tab:cv}, Fig.~\ref{fig:decay}). That figure is fragile: at its interval's low end it is about
++\$19\,/\,+\$8, and the same inference read per point falls to
+−\$17 (break-even 0.34\,/\,0.29\,s). The live engine's own
+calls barely move the cells. Two biases flatter the sweep: trades chosen on outcomes, and a reprice timed
+66\,ms late. The tests free of them lose: a replay of 9 matches
+recorded live on 2026-10-03 on their real books loses in 36 of 36 settings
+(−0.94¢ at \(V = 1\)\,s; Fig.~\ref{fig:replay}), and an ex-ante Markov-swing filter (exploratory) in
+9 of 9 cells (Table~\ref{tab:A-sel}), so the feed delay, not the selection, sinks the 1\,s trader; the
+frozen v3 rule failed blind (Table~\ref{tab:fail}).
 
 \begin{figure}[t]
 \includegraphics{../../results/paper/fig3_signal_decay.pdf}
-\caption{\emph{Signal decay: each second of feed latency costs the edge.} (a)~\$/day, (b)~Sharpe against feed delay
-\(V\) for both stamp lags; solid = IS, dashed = OOS; bands: 20 seeds; circles: break-even.
-(c)~Net markout by seconds since the move. (d)~Replay of 9 live-recorded matches on real books;
-\(\times\): sweep. Simulated at an assumed feed latency (licensed feed not purchased); parameters measured. Source: \texttt{results/\{tier0,decay,replay\}}.}
+\caption{\emph{Signal decay: each second of feed latency costs the edge.} (a)~\$/day and (b)~Sharpe against feed
+delay \(V\) at the pre-registered (black) and post hoc (orange) stamp lag; solid = IS, dashed = burned OOS; bands:
+20 seeds; circles: break-even; shading: venue, licensed video, score feeds; dotted: 1\,s, public stream. (c)~Net markout by seconds since the move. Simulated: assumed feed latency (licensed feed not purchased); parameters measured; trades selected on outcomes. Source: \texttt{results/\{tier0,decay\}}.}
 \label{fig:decay}
 \end{figure}
 
 \begin{table}[t]
-\caption{\emph{Main result: simulated at a 1\,s licensed-feed baseline; assumed feed latency (licensed feed not purchased); parameters measured.}}
+\caption{\emph{Main result: the CV trader simulated at a 1\,s licensed-feed baseline; assumed feed latency (licensed feed not purchased); parameters measured; trade set:
+historical points the market later repriced \(\geq\)4¢ (selected on outcomes, not ex ante).}}
 \label{tab:cv}
 \tabnums
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
 \toprule
- & \multicolumn{2}{c}{Calibrated \(L = 3.14\)\,s (post hoc)} & \multicolumn{2}{c}{Pre-registered \(L = 2.0\)\,s} \\
+ & \multicolumn{2}{c}{Pre-registered \(L = 2.0\)\,s} & \multicolumn{2}{c}{Post hoc estimate \(L = 3.14\)\,s} \\
 \cmidrule(lr){2-3}\cmidrule(l){4-5}
 At \(V = 1\)\,s & IS & OOS & IS & OOS \\
 \midrule
-Net \$ per day [seed 95\%] & +\$94 [51, 125] & +\$57 [1, 130] & +\$15 [−9, 43] & +\$4 [−36, 62] \\
-Net ¢ per share & +1.11 & +0.66 & +0.40 & −0.38 \\
-\quad 95\% CI & [0.85, 1.38] & [0.10, 1.19] & [−0.32, 1.08] & [−2.08, 1.21] \\
-Sharpe, annualised & 11.9 & 8.8 & 2.1 & 0.3 \\
-Ann. return\,/\,vol, \% & 118\,/\,9.9 & 91\,/\,10.3 & 30\,/\,14.1 & 11\,/\,33.4 \\
-Max DD \%\,/\,worst day & −1.6\,/\,−\$223 & −1.6\,/\,−\$192 & −6.6\,/\,−\$263 & −5.3\,/\,−\$228 \\
-Break-even \(V\), s [95\% CI] & 2.23 & 2.14 & 1.09 & 1.01 \\
- & [2.18, 3.39] & [1.59, 2.19] & [1.03, 2.04] & [0.43, 1.05] \\
+Net \$ per day [seed 95\%] & +\$15 [−9, 43] & +\$4 [−36, 62] & +\$94 [51, 125] & +\$57 [1, 130] \\
+Net ¢ per share & +0.40 & −0.38 & +1.11 & +0.66 \\
+\quad 95\% CI & [−0.32, 1.08] & [−2.08, 1.21] & [0.85, 1.38] & [0.10, 1.19] \\
+Return\,/\,vol, \% a year\,/\,Sharpe & 30\,/\,14.1\,/\,2.1 & 11\,/\,33.4\,/\,0.3 & 118\,/\,9.9\,/\,11.9 & 91\,/\,10.3\,/\,8.8 \\
+Max DD \%\,/\,worst day & −6.6\,/\,−\$263 & −5.3\,/\,−\$228 & −1.6\,/\,−\$223 & −1.6\,/\,−\$192 \\
+Wrong calls: share\,/\,P\&L & 35\%\,/\,−\$2,403 & 47\%\,/\,−\$938 & 12\%\,/\,−\$4,141 & 16\%\,/\,−\$1,270 \\
+Break-even feed delay \(V\), s & 1.09 & 1.01 & 2.23 & 2.14 \\
+\$/day, live engine's calls & +\$17 & +\$4 & +\$98 & +\$57 \\
+\$/day gained, \(V\): 1\,s \(\to\) 0 & +\$74 & +\$42 & +\$104 & +\$73 \\
 \bottomrule
 \end{tabular*}
-\tabnotes{\emph{Notes:} means of 20 draws; IS: 1\,s-delay matches (103\,d); OOS burned
-(40\,d); vol = return/Sharpe; 24--65 trades a day; no daily
-path stored (equity curve: v2). At \(L = 1\)\,s: −\$6\,/\,−\$11 a day.}
+\tabnotes{\emph{Notes:} 20 draws; 10 matches a day; IS 103\,d, OOS
+40\,d (burned); 24--65 trades a
+day; no daily path (equity curve: v2). Post hoc \(L\): 95\% CI 2.23–3.22\,s. At \(L = 1\)\,s:
+−\$6\,/\,−\$11 a day. \emph{Pre-registered:} \texttt{PREREG.md}, written
+17:25 UTC before the first P\&L, committed with the results (\texttt{a5769c7},
+19:24); timing per tournament from V3.}
 \end{table}
 
-\begin{table}[b]
-\caption{\emph{Every blind test of a tradable book failed or is pending.}}
+\begin{table}[t]
+\caption{\emph{Robustness: every blind or ex-ante test of a tradable book failed.}}
 \label{tab:fail}
 \tabnums
 \begin{tabularx}{\textwidth}{@{}Xrrl@{}}
@@ -229,55 +235,77 @@ Test, ¢ per share & IS & OOS or blind & Verdict \\
 H1\,\textperiodcentered\,H2\,\textperiodcentered\,H5 (post hoc) & −1.61\,\textperiodcentered\,−0.41\,\textperiodcentered\,+0.22 & −2.08\,\textperiodcentered\,+0.80\,\textperiodcentered\,+0.16 & fail\,\textperiodcentered\,none\,\textperiodcentered\,n.s. \\
 v1 copy fast tier (OOS opened once) & +1.16 & +0.57 (−\$36,056) & fail \\
 v2, 11,307 unseen markets (blind) & +2.02 & +1.22 [−0.19, 2.65] & fail \\
-Tier-0 v3 rule, unseen markets (blind) & −0.22 & −0.52 & fail \\
+CV v3 rule, unseen markets (blind) & −0.22 & −0.52 & fail \\
 Maker v1 (blind), per fill & +2.02 & +1.87 [−0.14, 3.86] & fail, −\$379 \\
 v2 after fixed costs, \$ a day & +\$29 & −\$75 & fail OOS \\
 Table tennis TT1--TT5, 27 matches & \multicolumn{2}{r}{no fast wallet qualifies} & untestable \\
-Replay on live books, \(V = 1\)\,s & & −0.94 [−1.28, −0.58] & loses \\
-Forward test\,\textperiodcentered\,live paper session & & \multicolumn{2}{r}{pending\,\textperiodcentered\,pending} \\
+CV replay on live books, \(V = 1\)\,s & & −0.94 [−1.28, −0.58] & loses \\
+\quad ex-ante swing \(\geq\)4¢ (exploratory) & & −0.95 [−1.64, −0.40] & loses \\
 \bottomrule
 \end{tabularx}
 \tabnotes{\emph{Notes:} \textbf{4,219 variants tried} (Table~\ref{tab:A-var}). Fast minus others,
-unseen markets: +3.09\,/\,+2.16¢ (the latency gap held). Held-out data read 69 times
-(7 blind first runs, 13 non-blind, 5 descriptive,
-22 audits, 20 replay/live, 2 other; Table~\ref{tab:A-peeks});
-rules changed after a look 2 times.}
+unseen markets: +3.09\,/\,+2.16¢. Held-out data read 76 times
+(7 blind first runs, 16 non-blind, 5 descriptive,
+25 audits, 21 replay/live, 2 other; Table~\ref{tab:A-peeks});
+rules changed after a look: 2 for v2, 13 for the CV simulation
+(T1–T3, V1–V10).}
 \end{table}
 
 % ======================================================================================== 6 Risk
 \section{Risk management}\label{sec:risk}
 \begin{itemize}
-\item \textbf{Limits.} \$1,000 per order, 100 shares net per match, zone
-0.05–0.95; capital 3\(\times\) peak locked (\$28,302); worst day −\$551\,/\,−\$469
-(IS\,/\,OOS). Kill switches in code (\texttt{engine/risk/}): daily stop \$1,000
-(3.86\,\(\sigma\)), stale feed \(>\)2\,s or vision
-\(>\)1\,s, latency above its rolling p95.
-\item \textbf{De-risking, set in advance.} Halve size if the trailing 30-day edge is below 0.3¢
-(IS minimum +0.74¢); stop at \(\leq 0\), at a 5\% drawdown, or on a fee or delay change.
-\item \textbf{Largest risks.} Venue rules (doubled fees erase the OOS edge); crowding (top five wallets:
-81\%\,/\,142\% of P\&L); tails (kurtosis 4.30\,/\,3.26);
-legal (courtsiding breaches ticket terms, \citealp{itf2026}). Factors \citep{fama1993,carhart1997}: \(\alpha\)
-\(t = 8.48\), max \(|t| = 1.36\), R² 3.3\% (IS; Table~\ref{tab:A-factor}).
+\item \textbf{Limits, in code} (\texttt{engine/risk/}). \$1,000 per order, 100
+shares net per match, zone 0.05–0.95: one match can lose at most \$95 plus fees. Capital
+3\(\times\) peak locked (v2 \$28,302; CV \$13,800--\$29,230). Kill
+switches: stale feed \(>\)2\,s, vision \(>\)1\,s, latency above its
+rolling p95, manual; the \$1,000 daily stop (3.86\,\(\sigma\) of v2's
+daily P\&L) is a disaster stop.
+\item \textbf{CV model risk.} Wrong calls always fill (Table~\ref{tab:cv}). MISS calls trade only at confidence
+\(\geq\)0.95 and positive edge after the fee (code); live use needs 73 audited correct calls in a row, and a confirmed
+false call halts the day (policy). Phantom calls outside play (about 30 an hour) erase the
+1\,s OOS P\&L at 2.5 (pre-registered) or 32 (post hoc) a day, so the
+rally-state gate (coded, off, unevaluated) must be on. Betting video at 25--50\,fps without early calls gives
++\$8\,/\,−\$13 a day (pre-registered).
+\item \textbf{De-risking, set in advance} (policy, not code; it never fired in sample, so it is untested on a decline).
+Halve size if the trailing 30-day edge is below 0.3¢ (IS minimum +0.74¢);
+stop at \(\leq 0\), a 5\% drawdown, or a fee or delay change. At the fast tier's decay, v2's OOS
++0.60¢ halves size in 1.5 months and stops in 3.0. The CV
+book starts only on a measured \(L \geq 3.0\)\,s.
+\item \textbf{Tail, venue, legal.} Fees \(\times\)2 erase v2's OOS edge; kurtosis
+4.30\,/\,3.26. The UMA oracle settles (disputes: 4--6 days); collateral is pUSD,
+so only working capital sits on the venue \citep{pmuma}; US persons are close-only \citep{pmgeoblock}; courtsiding
+breaches ticket terms \citep{itf2026}. Factors \citep{fama1993,carhart1997}: \(\alpha\) \(t = 8.48\),
+max \(|t| = 1.36\), R² 3.3\% (IS; Table~\ref{tab:A-factor}).
 \end{itemize}
 
 % ======================================================================================== 7 Liquidity
 \section{Liquidity and capacity}\label{sec:liq}
-v2 trades \$7,182 a day, 0.07\% of match volume. Its OOS per-share CI
-excludes zero only up to 1\(\times\) size (\$22,754 of capital); 2\(\times\) spans zero and
-5\(\times\) loses (Fig.~\ref{fig:cap}a). Median stale depth before a reprice: \$222,
-\$379, \$564 at 0, 1, 2\,s; spread 1¢. Fees bind: the OOS
-break-even fee is 8.2\%, or 2.4\% after an assumed
-\$5,000-a-month feed licence, which takes the 1\,s-baseline OOS P\&L to
-−\$110 (calibrated) or −\$163 (pre-registered) a day (Fig.~\ref{fig:cap}b).
+v2 trades \$7,182 a day, 0.07\% of match volume; its OOS CI excludes zero
+only up to 1\(\times\) size (\$22,754) and 5\(\times\) loses (Fig.~\ref{fig:cap}a). Median stale
+depth before a reprice: \$222\,/\,\$379\,/\,\$564 at
+0\,/\,1\,/\,2\,s; spread 1¢. The CV book (Table~\ref{tab:cv}: 10 matches a day, half the stale
+depth) at the post hoc estimate halves its Sharpe at \$41,000 of capital OOS
+(\$66/day) and \$74,000 IS (\$181/day), or
+\$96,000\,/\,\$164,000 covering every match; at the pre-registered lag its Sharpe
+is 2.7\,/\,0.9 at the smallest size: no capacity. Its notional is
+0.15\% of in-play volume but 6\% of the fast tier's 0--3\,s volume: the
+seconds after each point bind. Fixed costs decide: the book can pay at most \$1,644 a month for
+data OOS (post hoc) or \$55 (pre-registered), against an assumed licence of
+\$1,250--\$10,000; the central \$167-a-day stack is covered at no
+\(L \leq 3.0\)\,s, the cheapest (\$42) only at \(L \geq\) 2.87–2.98\,s.
+Covering every match, the camera-free stack (\$242--\$256 a day) breaks
+even from about \$52,000 (IS) and \$99,000 (OOS) of capital (\texttt{results/capacity}); v2's
+OOS break-even fee is 8.2\% (Fig.~\ref{fig:cap}b).
 
 % ======================================================================================== 8 Limitations
 \section{Limitations and next steps}\label{sec:limits}
-The key uncertainty is the stamp lag \(L\) (Eq.~\ref{eq:budget}), which moves the break-even one for one; one live
-session with a licensed low-latency feed, timing bounce against stamp, would measure it. Licensing that feed turns the
-simulation into deployment (Polymarket US already licenses official data and live streams: Genius Sports for selected
-leagues, ATP Tour streaming rights; \citealp{gi2026,prn2026}); a faster feed moves left on the curve
-(Fig.~\ref{fig:decay}a); then an organiser-consented venue camera. Risks: fee rises, a longer delay, faster rivals,
-wallet exits, legal access. Table tennis is illiquid (median spread 94¢).\label{lastmain}
+We hold a cheap real option on one number, the stamp lag \(L\), which moves the break-even one for one
+(Eq.~\ref{eq:budget}). A live session with a licensed low-latency feed and small test orders measures it, and whether
+delayed orders are released on a 1\,s clock (35\% of reprices land just after a whole second); go if
+\(L \geq 3.0\)\,s. Licensing turns the simulation into deployment (Polymarket itself buys official data;
+\citealp{gi2026}); a faster feed moves left on the curve (Fig.~\ref{fig:decay}a). CV accuracy is from table tennis
+(illiquid: spread 94¢); tennis is simulated (Fig.~\ref{fig:spin}). Forward test: pending (runs once, Oct 4);
+live paper session: pending (paper; 0 fills so far).\label{lastmain}
 
 % ======================================================================================== References
 \clearpage
@@ -298,15 +326,26 @@ disclosures].
 Everything a judge needs for scoring is in the five main pages; this appendix gives the full grids, logs and tallies
 behind them. Every appendix float repeats its label.
 
-\begin{figure}[!ht]
+\begin{figure}[!htbp]
+\includegraphics{../../results/paper/fig1_latency_cv.pdf}
+\caption{\emph{The race is decided inside the venue's 1\,s taker delay; only in-venue information beats the book.}
+(a)~Delay after the bounce (log): orange = ours (WebRTC: our own clip, loopback, 46 ms p50, 67 ms p99); hatched =
+vendor-stated or model range. (b)~Early out-calls on held-out 120\,fps table-tennis video (41 out,
+130 in): the live causal engine (orange; 4 of 41 misses
+called, no false call) against the offline evaluation with a look-ahead feature (grey; band: Wilson 95\%). Source:
+Polymarket and WTA feeds; \texttt{results/\{tracking,engine,webrtc\}}.}
+\label{fig:ladder}
+\end{figure}
+
+\begin{figure}[!htbp]
 \includegraphics{../../results/paper/figA1_capacity.pdf}
 \caption{\emph{Capacity is small and costs bind.} (a)~v2 net edge by size (caps scaled; optimistic at large size); filled
-= IS, hollow = OOS. (b)~\$/day: gross, net of fees, after fixed costs (low--high); CV: 1\,s baseline, OOS,
-assumed feed latency (licensed feed not purchased); parameters measured. Source: \texttt{results/financials}.}
+= IS, hollow = OOS. (b)~\$/day: gross, net of fees, after fixed costs (low--high); CV pre\,/\,post: the 1\,s baseline, burned OOS, at
+the pre-registered\,/\,post hoc stamp lag; assumed feed latency (licensed feed not purchased); parameters measured. Source: \texttt{results/financials}.}
 \label{fig:cap}
 \end{figure}
 
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{Latency sweep, every reading: Net \$ per day against feed delay \(V\) (s), IS and burned OOS.} Simulated:
 assumed feed latency (licensed feed not purchased); parameters measured.}
 \label{tab:A-usd}
@@ -316,25 +355,27 @@ assumed feed latency (licensed feed not purchased); parameters measured.}
 \toprule
 Stamp lag reading & & 0 & 0.5 & 1 & 2 & 5 & 10 & 60 \\
 \midrule
-calibrated 3.14 s (post hoc) & IS & 199 & 133 & 94 & 15 & −13 & −13 & −17 \\
- & OOS & 129 & 81 & 57 & 7 & −13 & −13 & −17 \\
 pre-registered 2.0 s & IS & 89 & 28 & 15 & −6 & −13 & −14 & −17 \\
  & OOS & 46 & 15 & 4 & −11 & −13 & −13 & −17 \\
+post hoc estimate 3.14 s & IS & 199 & 133 & 94 & 15 & −13 & −13 & −17 \\
+ & OOS & 129 & 81 & 57 & 7 & −13 & −13 & −17 \\
 stress 1.0 s & IS & 15 & −5 & −6 & −13 & −13 & −14 & −17 \\
  & OOS & 4 & −11 & −11 & −13 & −13 & −13 & −17 \\
 lag 3.0 s & IS & 189 & 121 & 89 & 15 & −13 & −13 & −17 \\
  & OOS & 117 & 76 & 46 & 4 & −13 & −13 & −17 \\
-stamp-noise reading & IS & −30 & −17 & −17 & −17 & −17 & −17 & −17 \\
+per point, 2.0 s & IS & −30 & −17 & −17 & −17 & −17 & −17 & −17 \\
  & OOS & −26 & −17 & −17 & −17 & −17 & −17 & −17 \\
-stamp-noise, calibrated & IS & 199 & −45 & −17 & −17 & −17 & −17 & −17 \\
+per point, post hoc & IS & 199 & −45 & −17 & −17 & −17 & −17 & −17 \\
  & OOS & 133 & −40 & −17 & −17 & −17 & −17 & −17 \\
 \bottomrule
 \end{tabular*}
-\tabnotes{\emph{Notes:} seed means over 20 draws per cell (18,880 runs in all). The
-stamp-noise readings spread the reprice time by umpire-stamp noise instead of by tournament. \emph{Source:}
+\tabnotes{\emph{Notes:} seed means over 20 draws per cell (18,880 runs in all); trade
+set selected on outcomes, not ex ante. The per-point readings treat the spread of the reprice time as umpire-stamp
+noise, so the reprice comes a fixed time after the bounce: at the pre-registered lag, and at the post hoc inference
+applied point by point (which wins only below 0.34\,s). \emph{Source:}
 \texttt{results/tier0/latency\_sweep.json::video\_own120}.}
 \end{table}
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{Latency sweep, every reading: Annualised Sharpe against feed delay \(V\) (s), IS and burned OOS.} Simulated:
 assumed feed latency (licensed feed not purchased); parameters measured.}
 \label{tab:A-sr}
@@ -344,60 +385,96 @@ assumed feed latency (licensed feed not purchased); parameters measured.}
 \toprule
 Stamp lag reading & & 0 & 0.5 & 1 & 2 & 5 & 10 & 60 \\
 \midrule
-calibrated 3.14 s (post hoc) & IS & 22.9 & 15.5 & 11.9 & 2.2 & −2.7 & −2.7 & −3.4 \\
- & OOS & 19.6 & 12.2 & 8.8 & 0.9 & −2.6 & −2.6 & −3.2 \\
 pre-registered 2.0 s & IS & 11.4 & 4.0 & 2.1 & −1.4 & −2.7 & −2.9 & −3.4 \\
  & OOS & 7.3 & 2.1 & 0.3 & −2.3 & −2.6 & −2.6 & −3.2 \\
+post hoc estimate 3.14 s & IS & 22.9 & 15.5 & 11.9 & 2.2 & −2.7 & −2.7 & −3.4 \\
+ & OOS & 19.6 & 12.2 & 8.8 & 0.9 & −2.6 & −2.6 & −3.2 \\
 stress 1.0 s & IS & 2.1 & −1.3 & −1.4 & −2.6 & −2.7 & −2.9 & −3.4 \\
  & OOS & 0.3 & −2.3 & −2.3 & −2.6 & −2.6 & −2.6 & −3.2 \\
 lag 3.0 s & IS & 21.8 & 14.4 & 11.4 & 2.1 & −2.7 & −2.7 & −3.4 \\
  & OOS & 17.5 & 11.4 & 7.3 & 0.3 & −2.6 & −2.6 & −3.2 \\
-stamp-noise reading & IS & −5.9 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 \\
+per point, 2.0 s & IS & −5.9 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 \\
  & OOS & −5.0 & −3.2 & −3.2 & −3.2 & −3.2 & −3.2 & −3.2 \\
-stamp-noise, calibrated & IS & 25.1 & −8.7 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 \\
+per point, post hoc & IS & 25.1 & −8.7 & −3.4 & −3.4 & −3.4 & −3.4 & −3.4 \\
  & OOS & 21.2 & −7.6 & −3.2 & −3.2 & −3.2 & −3.2 & −3.2 \\
 \bottomrule
 \end{tabular*}
-\tabnotes{\emph{Notes:} seed means over 20 draws per cell (18,880 runs in all). The
-stamp-noise readings spread the reprice time by umpire-stamp noise instead of by tournament. \emph{Source:}
+\tabnotes{\emph{Notes:} seed means over 20 draws per cell (18,880 runs in all); trade
+set selected on outcomes, not ex ante. The per-point readings treat the spread of the reprice time as umpire-stamp
+noise, so the reprice comes a fixed time after the bounce: at the pre-registered lag, and at the post hoc inference
+applied point by point (which wins only below 0.34\,s). \emph{Source:}
 \texttt{results/tier0/latency\_sweep.json::video\_own120}.}
 \end{table}
 
-\begin{figure}[!ht]
+\begin{table}[!htbp]
+\caption{\emph{Replay on 9 matches' real books (2026-10-03): calling every point or only an ex-ante Markov swing
+\(\geq T\) loses at every \(V\) at the pre-registered lag.} Net ¢ per share marked at +30\,s [match-clustered 95\%
+CI] (fills). Exploratory: the selective variant was added after the all-points replay; one day; assumed feed latency.}
+\label{tab:A-sel}
+\tabnums\setlength\tabcolsep{4pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrr@{}}
+\toprule
+Lag & Points traded & \(V = 0\) & \(V = 0.5\)\,s & \(V = 1\)\,s \\
+\midrule
+2.0\,s & every point & −0.61 [−0.90, −0.38] (172) & −0.66 [−0.96, −0.41] (167) & −0.94 [−1.28, −0.58] (149) \\
+ & swing \(\geq\)2¢ & −0.55 [−0.91, −0.22] (140) & −0.61 [−1.02, −0.23] (134) & −0.92 [−1.35, −0.49] (114) \\
+ & swing \(\geq\)4¢ & −0.37 [−0.75, 0.11] (88) & −0.50 [−0.93, −0.10] (81) & −0.95 [−1.64, −0.40] (63) \\
+ & swing \(\geq\)6¢ & −0.36 [−0.99, −0.09] (48) & −0.22 [−0.91, 0.20] (47) & −0.26 [−1.35, 0.53] (33) \\
+3.0\,s & every point & −0.05 [−0.37, 0.27] (227) & −0.30 [−0.64, 0.03] (208) & −0.66 [−0.96, −0.35] (156) \\
+ & swing \(\geq\)2¢ & +0.05 [−0.30, 0.47] (197) & −0.25 [−0.65, 0.23] (178) & −0.62 [−1.03, −0.18] (125) \\
+ & swing \(\geq\)4¢ & +0.55 [0.09, 1.14] (130) & +0.06 [−0.54, 0.79] (119) & −0.42 [−0.92, 0.39] (72) \\
+ & swing \(\geq\)6¢ & +0.32 [−0.46, 1.51] (69) & −0.21 [−1.31, 1.17] (56) & −0.45 [−0.94, 0.07] (29) \\
+\bottomrule
+\end{tabular*}
+\tabnotes{\emph{Notes:} seed 0; stamp lag 2.0\,s pre-registered, 3.0\,s an optimistic sensitivity. \emph{Source:}
+\texttt{results/replay/selective/selective.json}, \texttt{research/replay/SELECTIVE.md}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics{../../results/paper/figA_replay.pdf}
+\caption{\emph{Replayed on 9 matches' real order books (recorded 2026-10-03), the 1\,s trader loses at every stamp
+lag and feed delay.} Every point called; net ¢ per share marked at +30\,s, match-clustered 95\% CI; \(\times\): the
+sweep's OOS curve. One day; assumed feed latency (licensed feed not purchased); paper only. Source:
+\texttt{results/replay/replay.json}.}
+\label{fig:replay}
+\end{figure}
+
+\begin{figure}[!htbp]
 \includegraphics{../../results/paper/figA2_sweep_lags.pdf}
 \caption{\emph{The break-even shifts one for one with the stamp lag.} Net \$/day against feed delay for every stamp-lag
 reading, (a)~IS and (b)~burned OOS. Simulated: assumed feed latency (licensed feed not purchased); parameters measured. Source: \texttt{results/tier0/latency\_sweep.csv}.}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[!htbp]
 \includegraphics{../../results/paper/figA3_regime_month.pdf}
 \caption{\emph{v2's edge falls as the venue's protection falls, and stays positive in every in-sample regime.}
 (a)~Net ¢ per share by venue regime (taker delay\,/\,fee) with 95\% CIs; (b)~net P\&L by month. Measured at the fast
 tier's own fills: the opportunity at their speed, not our execution. Source: \texttt{results/risk/risk\_stats.json}.}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[!htbp]
 \includegraphics{../../results/paper/figA4_forest.pdf}
 \caption{\emph{Every test on one axis.} Point estimates and 95\% CIs, net ¢ per share; orange = CI above zero, hollow = the test failed or has no edge. Source: as Table~\ref{tab:fail}.}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[!htbp]
 \includegraphics{../../results/paper/figA5_concentration.pdf}
 \caption{\emph{v2 P\&L is concentrated in a few copied wallets.} Share of v2 P\&L carried by the top 1, 5 and 10
 wallets, matches and days (above 100\% means the rest lost money). Source: \texttt{results/alpha/alpha.json}.}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[!htbp]
 \centering
 \includegraphics{../../results/paper/figA6_spin_sim.pdf}
 \caption{\emph{Simulation: a spin-aware tennis filter cuts landing error.} Landing-point error against lead before the
 bounce for a 340\,fps, 3.6\,mm-noise ball tracker (simulation; no tennis video was used). At 200\,ms:
 5.76\,cm without spin, 0.57\,cm with it. Source:
 \texttt{results/spin/tennis/key\_numbers.json}.}
+\label{fig:spin}
 \end{figure}
 
-\clearpage
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{Factor regressions: v2's daily return has no meaningful equity-factor exposure.} Fama--French three
 factors plus momentum, Newey--West 5 lags.}
 \label{tab:A-factor}
@@ -415,7 +492,7 @@ File (5 OOS days) & 0.79 (8.5) & 0.17 (1.3) & 0.09 (0.5) & 0.06 (0.6) & 0.03 (0.
 \emph{Source:} \texttt{results/alpha/alpha.json::C\_factor\_neutral}; \citet{french}.}
 \end{table}
 
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{Variant tally: 4,219 configurations tried; the sensitivities chose nothing.}}
 \label{tab:A-var}
 \begin{tabularx}{\textwidth}{@{}Xrl@{}}
@@ -439,7 +516,7 @@ table-tennis tests TT1-TT5 & 5 & none (untestable) \\
 \tabnotes{\emph{Source:} \texttt{results/paper/variants.json} (each count's source file is listed there).}
 \end{table}
 
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{Fixed-cost assumptions behind Fig.~\ref{fig:cap}b (\$ per month unless stated).}}
 \label{tab:A-costs}
 \tabnums
@@ -463,7 +540,7 @@ reported figures (bases and URLs in the source file). \emph{Source:}
 \texttt{results/financials/financials.json::cost\_assumptions}.}
 \end{table}
 
-\begin{table}[!ht]
+\begin{table}[!htbp]
 \caption{\emph{The latency ladder: method and source of every row of Fig.~\ref{fig:ladder}a.}}
 \label{tab:A-ladder}
 \begin{tabularx}{\textwidth}{@{}lrX@{}}
@@ -489,7 +566,7 @@ TV and public streams, general & 0.9--60\,s & published comparisons \citep{ispre
 
 \clearpage
 \begin{longtable}{@{}p{0.85in}p{0.95in}p{4.35in}@{}}
-\caption{\emph{Every logged read of held-out data (69 lines of \texttt{results/oos\_peeks.log} at build
+\caption{\emph{Every logged read of held-out data (76 lines of \texttt{results/oos\_peeks.log} at build
 time), with its class.}}\label{tab:A-peeks}\\
 \toprule
 UTC & Class & What was read (truncated) \\
@@ -570,6 +647,13 @@ UTC & Class & What was read (truncated) \\
 10-03 22:18 & non-blind & capacity study: burned OOS size/\allowbreak{}cap/\allowbreak{}coverage grid (non-\allowbreak{}blind,\allowbreak{} no parameter chosen) [scripts/\allowbreak{}capacity\_\allowbreak{}study.py: local v2 1x check,\allowbreak{} then the HiPerGator \ldots \\
 10-03 22:24 & live & match replay: forward live recordings of 2026-\allowbreak{}10-\allowbreak{}03 used for a labelled 1 s-\allowbreak{}feed counterfactual replay (no parameter chosen) [audit: scripts/\allowbreak{}match\_\allowbreak{}rep\ldots \\
 10-03 23:01 & live & match replay selective variant: exploratory,\allowbreak{} post hoc (forward live recordings of 2026-\allowbreak{}10-\allowbreak{}03) [scripts/\allowbreak{}match\_\allowbreak{}replay\_\allowbreak{}selective.py: the replay restricte\ldots \\
+10-03 23:17 & audit & capacity study: burned OOS size/\allowbreak{}cap/\allowbreak{}coverage grid (non-\allowbreak{}blind,\allowbreak{} no parameter chosen) [audit of commit f9d8f94: independent recompute of 5 grid cells inc\ldots \\
+10-03 23:18 & non-blind & redteam causal-\allowbreak{}CV cell (INTEGRATION\_\allowbreak{}TODO C5; scripts/\allowbreak{}redteam\_\allowbreak{}causal\_\allowbreak{}cv.py): own120\_\allowbreak{}engine = live causal engine recall/\allowbreak{}precision at V 0-\allowbreak{}3 s under tourn\ldots \\
+10-03 23:23 & non-blind & backtest example match (video asset): latency-\allowbreak{}sweep rerun at V=1 s,\allowbreak{} calibrated reading,\allowbreak{} read burned OOS prints for per-\allowbreak{}match P\&L (non-\allowbreak{}blind,\allowbreak{} illustrat\ldots \\
+10-03 23:24 & live & match replay selective variant: exploratory,\allowbreak{} post hoc (forward live recordings of 2026-\allowbreak{}10-\allowbreak{}03) [audit of commit b20a4e4: adversarial check of scripts/\allowbreak{}m\ldots \\
+10-04 00:28 & non-blind & capacity study: burned OOS size/\allowbreak{}cap/\allowbreak{}coverage grid (non-\allowbreak{}blind,\allowbreak{} no parameter chosen) [fix pass after the capacity and e2e verifiers: pre-\allowbreak{}flight test of \ldots \\
+10-04 00:28 & audit & capacity study: burned OOS size/\allowbreak{}cap/\allowbreak{}coverage grid (non-\allowbreak{}blind,\allowbreak{} no parameter chosen) [scripts/\allowbreak{}capacity\_\allowbreak{}study.py -\allowbreak{}-\allowbreak{}grid on Ojasvas-\allowbreak{}MacBook-\allowbreak{}Air-\allowbreak{}3.local,\allowbreak{} r\ldots \\
+10-04 00:36 & audit & capacity study: burned OOS size/\allowbreak{}cap/\allowbreak{}coverage grid (non-\allowbreak{}blind,\allowbreak{} no parameter chosen) [scripts/\allowbreak{}capacity\_\allowbreak{}study.py -\allowbreak{}-\allowbreak{}grid -\allowbreak{}-\allowbreak{}resume on Ojasvas-\allowbreak{}MacBook-\allowbreak{}Air-\allowbreak{}3\ldots \\
 \end{longtable}
 
 \begin{longtable}{@{}p{0.7in}p{1.15in}p{4.3in}@{}}
@@ -597,7 +681,7 @@ Commit & UTC & Subject \\
 \texttt{342d515} & 2026-10-03 17:30 & Pre-\allowbreak{}register v2-\allowbreak{}safe (loss-\allowbreak{}averse,\allowbreak{} chosen on IS only) \\
 \texttt{c29734b} & 2026-10-03 18:26 & Pre-\allowbreak{}register maker v1 blind OOS test and live paper session \\
 \texttt{0f01362} & 2026-10-03 18:31 & Pre-\allowbreak{}register table tennis study (TT1-\allowbreak{}TT5) before fetching tapes \\
-\texttt{a5769c7} & 2026-10-03 19:24 & Tier-\allowbreak{}0 CV-\allowbreak{}edge counterfactual (assumed licensed feed + courtside camera; measured parameters): pre-\allowbreak{}registration,\allowbreak{} origina \\
+\texttt{a5769c7} & 2026-10-03 19:24 & Tier-\allowbreak{}0 CV-\allowbreak{}edge counterfactual (assumed licensed feed + courtside camera; measured parameters): pre-\allowbreak{}registration,\allowbreak{} original run,\allowbreak{} two verifier reports,\allowbreak{} revision with live-\allowbreak{}book fill pricing; original kept as record \\
 \texttt{ba0c3d4} & 2026-10-03 20:16 & Pre-\allowbreak{}register frozen tier-\allowbreak{}0 v3 and its blind tests \\
 \texttt{0e083ed} & 2026-10-03 21:14 & Match replay protocol: selection rule and per-\allowbreak{}point procedure,\allowbreak{} written before any P\&L \\
 \end{longtable}

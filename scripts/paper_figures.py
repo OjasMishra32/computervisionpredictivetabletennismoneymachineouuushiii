@@ -212,7 +212,7 @@ def fig1() -> list[str]:
     """(a) information-tier ladder on one log axis; (b) held-out early-call precision/recall."""
     fig = plt.figure(figsize=(FIG_W, 1.85))
     axa = fig.add_axes([0.335, 0.285, 0.30, 0.70])
-    axb = fig.add_axes([0.745, 0.285, 0.245, 0.585])
+    axb = fig.add_axes([0.725, 0.285, 0.265, 0.585])
 
     sweep = load("results/tier0/latency_sweep.json")
     ovo = load("results/engine/online_vs_offline.json")
@@ -295,39 +295,42 @@ def fig1() -> list[str]:
         ax.text(0.11, i_stamp, f"book {MINUS}{b:.1f} s", ha="right", va="center", fontsize=FS, color=ORANGE)
     fig.text(0.008, 0.975, "(a)", ha="left", va="top", fontsize=FS, fontweight="semibold")
 
-    # (b) early calls on held-out 120 fps table-tennis video
+    # (b) early calls on held-out 120 fps table-tennis video: the live causal engine leads (orange); the offline
+    # evaluation (snapshot rule with a look-ahead feature) is shown in grey and labelled as such
     tr = load("results/tracking/summary.json")
+    eng = (ovo or {}).get("runs", {}).get("fp16_cl_fuse_compile_b1_realtime", {}).get("A_engine_calls", {}).get("online")
     ax = axb
-    if not tr:
-        pending(ax, "results/tracking/summary.json")
+    if not tr or not eng:
+        pending(ax, "results/tracking/summary.json, results/engine/online_vs_offline.json")
     else:
         ec = tr["early_call"]
         leads = [0, 25, 50, 100, 150, 200]
         snap = ec["precision_recall_test_snapshot"]
-        onl = ec["precision_recall_test_online"]
         P = [snap[f"{l}ms"]["precision"] for l in leads]
         R = [snap[f"{l}ms"]["recall"] for l in leads]
         Wlo = [snap[f"{l}ms"]["precision_wilson95"][0] for l in leads]
         Whi = [snap[f"{l}ms"]["precision_wilson95"][1] for l in leads]
-        Ro = [onl[f"{l}ms"]["recall"] for l in leads]
-        ax.fill_between(leads, Wlo, Whi, color=ORANGE, alpha=0.14, lw=0)
-        ax.plot(leads, P, color=ORANGE, marker="o", ms=3.2)
-        ax.plot(leads, R, color=DGREY, marker="o", ms=3.2)
-        ax.plot(leads, Ro, color=DGREY, ls="--", marker="o", ms=3.2, mfc="white")
+        Pe = [eng[f"{l}ms"]["precision"] for l in leads]
+        Re = [eng[f"{l}ms"]["recall"] for l in leads]
+        ax.fill_between(leads, Wlo, Whi, color=LGREY, alpha=0.45, lw=0)
+        ax.plot(leads, P, color=MGREY, marker="o", ms=3.0, mfc="white", lw=0.9)
+        ax.plot(leads, R, color=MGREY, ls=(0, (3, 1.5)), marker="o", ms=3.0, mfc="white", lw=0.9)
+        ax.plot(leads, Pe, color=ORANGE, marker="o", ms=3.4, lw=1.3, zorder=4)
+        ax.plot(leads, Re, color=ORANGE, ls=(0, (3, 1.5)), marker="o", ms=3.4, lw=1.3, zorder=4)
         ax.set_xlim(-8, 208)
         ax.set_ylim(0, 1.04)
         ax.set_xticks([0, 100, 200])
         ax.set_yticks([0, 0.5, 1.0])
         ax.set_yticklabels(["0", "0.5", "1"])
         ax.set_xlabel("call lead (ms)")
-        s50 = snap["50ms"]
-        ax.text(0.0, 1.03, f"{s50['tp']} of {s50['tp'] + s50['fp']} correct at 50 ms", transform=ax.transAxes,
+        e50 = eng["50ms"]
+        ax.text(0.0, 1.03, f"{e50['tp']} of {e50['tp'] + e50['fn']} called, 0 false", transform=ax.transAxes,
                 ha="left", va="bottom", fontsize=FS, color=ORANGE)
-        ax.text(8, 0.80, "precision", ha="left", va="center", fontsize=FS, color=ORANGE)
-        ax.text(35, 0.50, "recall", ha="left", va="center", fontsize=FS, color=DGREY)
-        ax.annotate("online rule", xy=(100, Ro[3]), xytext=(112, 0.36), fontsize=FS, color=DGREY, ha="left",
+        ax.text(6, 0.87, "precision", ha="left", va="center", fontsize=FS, color=ORANGE)
+        ax.text(205, 0.2, "recall", ha="right", va="center", fontsize=FS, color=ORANGE)
+        ax.annotate("offline,\nlook-ahead", xy=(25, R[1]), xytext=(60, 0.52), fontsize=FS, color=DGREY, ha="left",
                     va="center", arrowprops=dict(arrowstyle="-", color=DGREY, lw=0.6))
-    fig.text(0.685, 0.975, "(b)", ha="left", va="top", fontsize=FS, fontweight="semibold")
+    fig.text(0.655, 0.975, "(b)", ha="left", va="top", fontsize=FS, fontweight="semibold")
     return save(fig, "fig1_latency_cv")
 
 
@@ -372,9 +375,9 @@ def v2_daily_paths():
 
 
 def fig2() -> list[str]:
-    fig = plt.figure(figsize=(FIG_W, 1.75))
-    axa = fig.add_axes([0.075, 0.145, 0.385, 0.765])
-    axb = fig.add_axes([0.585, 0.145, 0.255, 0.765])
+    fig = plt.figure(figsize=(FIG_W, 1.6))
+    axa = fig.add_axes([0.075, 0.16, 0.385, 0.71])
+    axb = fig.add_axes([0.585, 0.16, 0.255, 0.71])
 
     al = load("results/alpha/alpha.json")
     ax = axa
@@ -469,12 +472,16 @@ def draw_bands(ax, pub, m1) -> None:
 
 
 def fig3() -> list[str]:
-    fig = plt.figure(figsize=(FIG_W, 3.1))
-    L, W, G = 0.087, 0.385, 0.128
-    axa = fig.add_axes([L, 0.625, W, 0.31])
-    axb = fig.add_axes([L + W + G, 0.625, W, 0.31])
-    axc = fig.add_axes([L, 0.155, W, 0.285])
-    axd = fig.add_axes([L + W + G, 0.155, W, 0.285])
+    """Centrepiece, one row: (a) $/day and (b) Sharpe against feed delay V (log) at both stamp-lag readings, with the
+    source-class bands and the 1 s licensed-feed baseline; (c) market-side decay of the net markout within a point.
+    The live-book replay that used to be panel (d) is drawn on its own as Fig. A (fig_replay)."""
+    fig = plt.figure(figsize=(FIG_W, 1.9))
+    H = 1.9
+    bot, top = 0.50 / H, 0.29 / H
+    hgt = 1 - bot - top
+    axa = fig.add_axes([0.50 / FIG_W, bot, 1.50 / FIG_W, hgt])
+    axb = fig.add_axes([2.62 / FIG_W, bot, 1.50 / FIG_W, hgt])
+    axc = fig.add_axes([4.66 / FIG_W, bot, 1.80 / FIG_W, hgt])
 
     sw = load("results/tier0/latency_sweep.json")
     curves = sweep_curves()
@@ -496,63 +503,45 @@ def fig3() -> list[str]:
                 c = c[c.x_s >= 0.05]
                 ax.fill_between(c.x_s, c[lo_k], c[hi_k], color=col, alpha=0.10 if col == ORANGE else 0.07, lw=0,
                                 zorder=1)
-                ax.plot(c.x_s, c[metric], color=col, ls=ls, lw=1.3, zorder=3)
+                ax.plot(c.x_s, c[metric], color=col, ls=ls, lw=1.25, zorder=3)
         if metric == "pnl_per_day_usd":
-            ax.set_ylim(-75, 255)
+            ax.set_ylim(-60, 250)
             ax.set_yticks([0, 100, 200])
         else:
-            ax.set_ylim(-16, 28)
+            ax.set_ylim(-14, 27)
             ax.set_yticks([-10, 0, 10, 20])
         draw_bands(ax, pub, m1)
         zero_line(ax)
         ax.xaxis.set_major_locator(FixedLocator([0.1, 1, 10]))
         ax.xaxis.set_minor_locator(FixedLocator([0.05, 0.2, 0.5, 2, 5, 20, 60]))
         ax.xaxis.set_major_formatter(FuncFormatter(lambda v, p: f"{v:g}"))
-        ax.xaxis.set_minor_formatter(FuncFormatter(lambda v, p: f"{v:g}" if v in (0.5, 5, 60) else ""))
-        ax.set_xlabel("feed delay V (s, log scale)")
+        ax.xaxis.set_minor_formatter(FuncFormatter(lambda v, p: ""))
+        ax.set_xlabel("feed delay V (s, log)")
         ax.set_ylabel(ylab)
-        # source-class tags above the axes
         tr = ax.get_xaxis_transform()
         if letter == "a":
             ax.text(0.085, 1.01, "venue", transform=tr, ha="center", va="bottom", fontsize=FS, color=DGREY)
-            ax.text(2.0, 1.01, "licensed video", transform=tr, ha="center", va="bottom", fontsize=FS, color=BLUE)
+            ax.text(2.0, 1.01, "licensed", transform=tr, ha="center", va="bottom", fontsize=FS, color=BLUE)
             if m1:
-                ax.text(36, 1.01, "feeds", transform=tr, ha="center", va="bottom", fontsize=FS, color=DGREY)
-        else:
-            ax.text(0.97, 1.01, "1 s licensed feed", transform=tr, ha="left", va="bottom", fontsize=FS,
-                    color=BLACK)
-            tag(ax, LABEL_CV, x=0.02, y=0.03, ha="left", va="bottom")
-        if pub:
-            ax.text(pub * 1.12, 0.97, "stream", transform=tr, ha="left", va="top", rotation=90, fontsize=FS,
-                    color=DGREY)
-        be = sw["breakeven_video_delay"]
-        if metric == "pnl_per_day_usd":
+                ax.text(60, 1.01, "feeds", transform=tr, ha="right", va="bottom", fontsize=FS, color=DGREY)
+            be = sw["breakeven_video_delay"]
             for reading, col in readings:
                 xs = [be[reading][p]["breakeven_V_s_seed_mean_curve"] for p in ("IS", "burned_OOS")]
-                ax.plot(xs, [0, 0], ls="none", marker="o", ms=5, mfc="white", mec=col, mew=1.1, zorder=6)
-            bc = [be["tournament_lagcal"][p]["breakeven_V_s_seed_mean_curve"] for p in ("IS", "burned_OOS")]
-            bp = [be["tournament"][p]["breakeven_V_s_seed_mean_curve"] for p in ("IS", "burned_OOS")]
-            ax.text(max(bc) * 1.1, 4, f"{min(bc):.1f}–{max(bc):.1f} s", color=ORANGE, fontsize=FS,
-                    ha="left", va="bottom", zorder=8)
-            ax.text(min(bp) / 1.12, -22, f"{min(bp):.1f}–{max(bp):.1f} s", color=BLACK, fontsize=FS,
-                    ha="right", va="center", zorder=8)
-            ax.text(0.058, 234, "calibrated lag, post hoc", color=ORANGE, fontsize=FS, ha="left", va="center",
-                    zorder=9, bbox=dict(boxstyle="square,pad=0.05", fc="white", ec="none", alpha=0.85))
-            ax.text(0.058, 78, "pre-registered lag", color=BLACK, fontsize=FS, ha="left", va="center", zorder=9)
+                ax.plot(xs, [0, 0], ls="none", marker="o", ms=4.6, mfc="white", mec=col, mew=1.1, zorder=6)
+            ax.text(58, 200, "post hoc", color=ORANGE, fontsize=FS, ha="right", va="center", zorder=9,
+                    bbox=dict(boxstyle="square,pad=0.05", fc="white", ec="none", alpha=0.85))
+            ax.text(58, 125, "pre-reg.", color=BLACK, fontsize=FS, ha="right", va="center", zorder=9,
+                    bbox=dict(boxstyle="square,pad=0.05", fc="white", ec="none", alpha=0.85))
         else:
+            ax.text(1.0, 1.01, "1 s feed", transform=tr, ha="center", va="bottom", fontsize=FS, color=BLACK)
             v = sw["video_own120"]
-            labs = []
             for reading, col in readings:
                 for p in ("IS", "burned_OOS"):
                     sr = v[reading]["1"][p]["sharpe_ann"]
                     ax.plot([1.0], [sr], marker="o", ms=3.8, color=col, mfc=col if p == "IS" else "white", mew=1.0,
                             zorder=7)
-                    labs.append((sr, col, f"{sr:.1f} {'IS' if p == 'IS' else 'OOS'}"))
-            ys = [23.5, 18.0, 12.5, 7.0]
-            for (sr, col, t), y in zip(labs, ys):
-                ax.text(2.6, y, t, color=col, fontsize=FS, ha="left", va="center", zorder=8)
-                ax.plot([1.05, 2.5], [sr, y], color=col, lw=0.5, zorder=6)
-        panel(ax, letter, x=-0.13 if letter == "a" else -0.17)
+            tag(ax, LABEL_CV, x=0.02, y=0.02, ha="left", va="bottom")
+        panel(ax, letter, x=-0.20)
 
     # (c) market-side decay within a point
     dj = load("results/decay/decay.json")
@@ -561,7 +550,7 @@ def fig3() -> list[str]:
         pending(ax, "results/decay/decay.json")
     else:
         bins = ["0-0.25", "0.25-0.5", "0.5-1", "1-2", "2-3", "3-5", "5-10", "10-30", "baseline"]
-        ticklab = ["0", "", "", "1", "2", "3", "5", "10", "base"]
+        ticklab = ["0", "", "", "1", "", "3", "", "10", ""]
         xs = np.arange(len(bins))
         sub = dj["tennis"]["subsets"]
         for who, col in (("fast", ORANGE), ("others", BLACK)):
@@ -574,78 +563,78 @@ def fig3() -> list[str]:
                 ax.plot(x[3:8], ys[3:8], color=col, ls=ls, lw=1.1, zorder=3)
                 ax.errorbar(x, ys, yerr=[ys - lo, hi - ys], fmt="none", ecolor=col, elinewidth=0.7, capsize=0,
                             zorder=3)
-                ax.plot(x, ys, ls="none", marker="o", ms=3.4, color=col, mfc=mfc, mec=col, mew=0.9, zorder=4)
+                ax.plot(x, ys, ls="none", marker="o", ms=3.2, color=col, mfc=mfc, mec=col, mew=0.9, zorder=4)
         ax.add_patch(Rectangle((0.55, -2.4), 1.9, 4.2, facecolor="none", edgecolor=LGREY, hatch="////", lw=0,
                                zorder=0))
-        ax.text(1.5, -0.3, "not resolvable", ha="center", va="center", rotation=90, fontsize=FS, color=DGREY,
-                bbox=dict(boxstyle="square,pad=0.1", fc="white", ec="none"))
         ax.axvline(7.5, color=LGREY, lw=0.6)
         zero_line(ax)
         ax.set_xlim(-0.5, len(bins) - 0.5)
-        ax.set_ylim(-2.4, 1.6)
+        ax.set_ylim(-2.4, 1.7)
         ax.set_yticks([-2, -1, 0, 1])
         ax.set_xticks(xs)
         ax.set_xticklabels(ticklab)
         ax.tick_params(axis="x", which="major", length=2)
-        ax.set_xlabel("seconds since the score move")
+        ax.set_xlabel("s since the score move")
         ax.set_ylabel("¢ per share")
-        ax.text(5.0, 1.32, "fast tier", color=ORANGE, fontsize=FS, ha="center", va="center")
-        ax.text(5.0, -1.85, "other takers", color=BLACK, fontsize=FS, ha="center", va="center")
-    panel(ax, "c", x=-0.13)
+        ax.text(5.0, 1.38, "fast tier", color=ORANGE, fontsize=FS, ha="center", va="center")
+        ax.text(5.0, -1.85, "others", color=BLACK, fontsize=FS, ha="center", va="center")
+        ax.text(8.0, 1.42, "base", color=DGREY, fontsize=FS, ha="center", va="center")
+    panel(ax, "c", x=-0.17)
+    return save(fig, "fig3_signal_decay")
 
-    # (d) replay on live-recorded books
+
+def fig_replay() -> list[str]:
+    """Live-book replay of the 1 s trader (9 matches recorded 2026-10-03), every point, three stamp lags."""
+    fig = plt.figure(figsize=(FIG_W * 0.62, 2.1))
+    ax = fig.add_axes([0.15, 0.22, 0.62, 0.66])
     rp = load("results/replay/replay.json")
-    ax = axd
     if not rp:
         pending(ax, "results/replay/replay.json")
-    else:
-        Vs = [0.0, 0.5, 1.0]
-        keyv = {0.0: "0", 0.5: "0.5", 1.0: "1"}
-        cols = {1: "#A8A8A8", 2: BLACK, 3: ORANGE}
-        ends = []
-        for lag, off in ((1, -0.035), (2, 0.0), (3, 0.035)):
-            ys, lo, hi = [], [], []
-            for v in Vs:
-                a = rp["cells"][f"V{keyv[v]}|lag{lag}|lead_model|florida"]["all"]
-                ys.append(a["per_share_mark_c"]); lo.append(a["per_share_mark_ci95_c"][0])
-                hi.append(a["per_share_mark_ci95_c"][1])
-            x = np.array(Vs) + off
-            ys, lo, hi = map(np.array, (ys, lo, hi))
-            ax.errorbar(x, ys, yerr=[ys - lo, hi - ys], color=cols[lag], lw=1.2, marker="o", ms=3.6, elinewidth=0.7,
-                        capsize=0, zorder=3)
-            ends.append((lag, ys[-1]))
-        # direct labels at the right end, spread so they never overlap
-        ypos = sorted(ends, key=lambda t: t[1])
-        placed = []
-        for lag, y in ypos:
-            yy = y if not placed else max(y, placed[-1] + 0.45)
-            placed.append(yy)
-            ax.text(1.09, yy, f"lag {lag} s", color=cols[lag], fontsize=FS, ha="left", va="center")
-        ref = rp.get("sweep_reference", {})
-        if ref.get("headline_reading_OOS_c"):
-            r = ref["headline_reading_OOS_c"]
-            ax.plot(Vs, [r["V0"], r["V0.5"], r["V1"]], ls="none", marker="x", ms=5, color=DGREY, mew=1.0, zorder=4)
-            ax.text(0.08, r["V0"], "sweep, OOS", fontsize=FS, color=DGREY, ha="left", va="center")
-        zero_line(ax)
-        neg = sum(1 for c in rp["cells"].values() if c["all"]["per_share_mark_c"] < 0)
-        ax.text(0.99, 0.99, f"{neg} of {len(rp['cells'])} cells < 0", transform=ax.transAxes, fontsize=FS,
-                ha="right", va="top", color=BLACK)
-        ax.set_xlim(-0.12, 1.45)
-        ax.set_xticks(Vs)
-        ax.set_xticklabels(["0", "0.5", "1"])
-        ax.set_ylim(-2.0, 1.3)
-        ax.set_yticks([-2, -1, 0, 1])
-        ax.set_xlabel("assumed feed delay V (s)")
-        ax.set_ylabel("¢ per share")
-    panel(ax, "d", x=-0.17)
-    return save(fig, "fig3_signal_decay")
+        return save(fig, "figA_replay")
+    Vs = [0.0, 0.5, 1.0]
+    keyv = {0.0: "0", 0.5: "0.5", 1.0: "1"}
+    cols = {1: "#A8A8A8", 2: BLACK, 3: ORANGE}
+    ends = []
+    for lag, off in ((1, -0.035), (2, 0.0), (3, 0.035)):
+        ys, lo, hi = [], [], []
+        for v in Vs:
+            a = rp["cells"][f"V{keyv[v]}|lag{lag}|lead_model|florida"]["all"]
+            ys.append(a["per_share_mark_c"]); lo.append(a["per_share_mark_ci95_c"][0])
+            hi.append(a["per_share_mark_ci95_c"][1])
+        x = np.array(Vs) + off
+        ys, lo, hi = map(np.array, (ys, lo, hi))
+        ax.errorbar(x, ys, yerr=[ys - lo, hi - ys], color=cols[lag], lw=1.2, marker="o", ms=3.6, elinewidth=0.7,
+                    capsize=0, zorder=3)
+        ends.append((lag, ys[-1]))
+    placed = []
+    for lag, y in sorted(ends, key=lambda t: t[1]):
+        yy = y if not placed else max(y, placed[-1] + 0.45)
+        placed.append(yy)
+        ax.text(1.09, yy, f"lag {lag} s", color=cols[lag], fontsize=FS, ha="left", va="center")
+    ref = rp.get("sweep_reference", {})
+    if ref.get("headline_reading_OOS_c"):
+        r = ref["headline_reading_OOS_c"]
+        ax.plot(Vs, [r["V0"], r["V0.5"], r["V1"]], ls="none", marker="x", ms=5, color=DGREY, mew=1.0, zorder=4)
+        ax.text(0.08, r["V0"], "sweep, OOS", fontsize=FS, color=DGREY, ha="left", va="center")
+    zero_line(ax)
+    neg = sum(1 for c in rp["cells"].values() if c["all"]["per_share_mark_c"] < 0)
+    ax.text(0.99, 1.02, f"{neg} of {len(rp['cells'])} cells < 0", transform=ax.transAxes, fontsize=FS,
+            ha="right", va="bottom", color=BLACK)
+    ax.set_xlim(-0.12, 1.45)
+    ax.set_xticks(Vs)
+    ax.set_xticklabels(["0", "0.5", "1"])
+    ax.set_ylim(-2.0, 1.3)
+    ax.set_yticks([-2, -1, 0, 1])
+    ax.set_xlabel("assumed feed delay V (s)")
+    ax.set_ylabel("¢ per share, marked")
+    return save(fig, "figA_replay")
 
 
 # ============================================================================================ Fig. 4
 def fig4() -> list[str]:
-    fig = plt.figure(figsize=(FIG_W, 1.65))
-    axa = fig.add_axes([0.075, 0.30, 0.36, 0.62])
-    axb = fig.add_axes([0.575, 0.30, 0.415, 0.62])
+    fig = plt.figure(figsize=(FIG_W, 2.1))
+    axa = fig.add_axes([0.105, 0.25, 0.335, 0.64])
+    axb = fig.add_axes([0.585, 0.25, 0.405, 0.64])
     fin = load("results/financials/financials.json")
     sw = load("results/tier0/latency_sweep.json")
     ax = axa
@@ -688,8 +677,8 @@ def fig4() -> list[str]:
         groups.append((f"v2\n{per}", w["gross_edge"], w["net_trading"], False))
     if sw:
         cv = sw["video_own120"]
-        groups.append(("CV cal.\n1 s OOS", None, cv["tournament_lagcal"]["1"]["burned_OOS"]["usd_per_day"], True))
-        groups.append(("CV pre.\n1 s OOS", None, cv["tournament"]["1"]["burned_OOS"]["usd_per_day"], True))
+        groups.append(("CV pre\n1 s OOS", None, cv["tournament"]["1"]["burned_OOS"]["usd_per_day"], True))
+        groups.append(("CV post\n1 s OOS", None, cv["tournament_lagcal"]["1"]["burned_OOS"]["usd_per_day"], True))
     for gi, (name, gross, net, is_cv) in enumerate(groups):
         x0 = gi
         after = net - fixed["central"]
@@ -705,7 +694,7 @@ def fig4() -> list[str]:
     ax.set_xticklabels([g[0] for g in groups])
     ax.tick_params(axis="x", length=0)
     ax.set_xlim(-0.55, len(groups) - 0.45)
-    ax.set_ylim(-430, 340)
+    ax.set_ylim(-540, 720)
     ax.set_yticks([-300, -200, -100, 0, 100, 200, 300])
     ax.set_ylabel("$ per day")
     handles = [Patch(fc="#C8C8C8", ec="none", label="gross"), Patch(fc=ORANGE, ec=ORANGE, label="net of fees"),
@@ -825,7 +814,7 @@ def figA3() -> list[str]:
         return save(fig, "figA2_sweep_lags")
     cols = {"tournament_lag1": MGREY, "tournament": BLACK, "tournament_lagcal": ORANGE, "tournament_lag3": BLUE}
     labs = {"tournament_lag1": "lag 1.0 s (stress)", "tournament": "lag 2.0 s (pre-reg.)",
-            "tournament_lagcal": "lag 3.14 s (calibrated)", "tournament_lag3": "lag 3.0 s"}
+            "tournament_lagcal": "lag 3.14 s (post hoc)", "tournament_lag3": "lag 3.0 s"}
     for ax, period, letter in ((axa, "IS", "a"), (axb, "burned_OOS", "b")):
         ax.set_xscale("log"); ax.set_xlim(0.05, 60)
         for r, col in cols.items():
@@ -898,7 +887,7 @@ def figA5() -> list[str]:
 
 
 # keys follow the paper's numbering (Fig. 4 was moved to the appendix as Fig. A1 to keep the main text at 5 pages)
-FIGS = {"fig1": fig1, "fig2": fig2, "fig3": fig3, "figA1": fig4, "figA2": figA3, "figA3": figA1, "figA4": figA2,
+FIGS = {"fig1": fig1, "fig2": fig2, "fig3": fig3, "figA_replay": fig_replay, "figA1": fig4, "figA2": figA3, "figA3": figA1, "figA4": figA2,
         "figA5": figA5, "figA6": figA4}
 
 
