@@ -1,5 +1,5 @@
 {
- "label": "COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.",
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante: a conditional benchmark (src/tier0.TRADE_SET_LABEL['jumps']), not a tradable book; the causal every-point book is scripts/cv_causal_points.py.",
  "strategy": "S2: paper Table-2 CV trader (tier-0 revised primary, T.CORRECTED; takes stale depth to the realised new mid)",
  "coverage": "cov10 (10 matches a day)",
  "readings": {

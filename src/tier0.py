@@ -17,12 +17,16 @@ stale depth it gets) is a model built from our own measurements plus the stated 
   * endings  Jeff Sackmann's Match Charting Project, 2020s point files (CC BY-NC-SA 4.0)
   * network  London one-way latency by venue region: an assumption (REGION_MS)
 
-TRADE SET (selected on realised market moves). The calls are the historical >= 4c jumps found by
-src.tiers.jump_onsets, which compares the VWAP of the NEXT 10 s with the previous 60 s. A tier-0 trader
-with the point outcome and a Markov fair value (src/markov.py) would pick a DIFFERENT set: on the live day
-only 63 % of detector jumps map to one same-direction official point, 42 % of detector windows hold 2+
-points, and a third of matched single-point moves are < 4c (research/v2/tier0/verify_out). So the trade
-set is not ex-ante; per-share P&L is reported by jump-size bucket to show how much rides on large moves.
+TRADE SET. Two trade sets, selected by the table passed to simulate():
+  jumps   (jump_table; the committed results) the historical >= 4c jumps found by src.tiers.jump_onsets, which
+          compares the VWAP of the NEXT 10 s with the previous 60 s, signed by the realised jump direction. This is
+          selected on the realised future move, so it is a CONDITIONAL BENCHMARK, not a tradable book
+          (TRADE_SET_LABEL['jumps']). A tier-0 trader would pick a DIFFERENT set: on the live day only 63 % of
+          detector jumps map to one same-direction official point, 42 % of detector windows hold 2+ points, and a
+          third of matched single-point moves are < 4c (research/v2/tier0/verify_out).
+  points  (point_table; review fix D2, 2026-10-04) every point of every covered match, including points that do
+          not move the price and calls that lose, plus the frozen classifier's measured false calls; the order's
+          match, time, token and size use only information available before it (TRADE_SET_LABEL['points']).
 
 The parameters are pre-registered in research/v2/tier0/PREREG.md; nothing is fitted to P&L. The verifier
 corrections (live-book fill price, limit-order fills, timing readings, literal coverage, stale-price
@@ -725,6 +729,10 @@ class Scenario:
     alloc: str = "best"           # how our phi share of the stale depth is priced. best (committed): our n shares
     #                               are the first n of the book, the fast tier takes the worse levels | prorata: we
     #                               take phi of every level, so our n shares price as the first n / phi of the book
+    # ---- causal every-point book (review fix D2, 2026-10-04); default = the committed model
+    vol_src: str = "final"        # match size for the depth scale. final (committed): the match's FINAL volume, known
+    #                               only after it ends | prestart: ex-ante size = pre-start $ volume x the IS median
+    #                               final/pre-start ratio (column vol_exante, see exante_volume_multiplier)
 
     def key(self) -> str:
         k = (f"{self.cv}|lag{self.stamp_lag:g}|phi{self.phi:g}|cov{self.coverage}|pev{self.p_event:g}|"
@@ -733,6 +741,8 @@ class Scenario:
             k += f"|{self.price}|{self.order}|{self.r_mode}|w{self.wrong_price}"
         if self.depth_cap or self.extrap != "all" or self.alloc != "best":
             k += f"|dcap{int(self.depth_cap)}|x{self.extrap}|{self.alloc}"
+        if self.vol_src != "final":
+            k += f"|vol{self.vol_src}"
         return k
 
 
@@ -798,7 +808,14 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
       order='limit'  correct calls fill only if they arrive >= queue_s before the reprice (a 1 s-delayed
                      order cannot see the book, so it cannot 'never chase' and also fill at a moved price).
                      Wrong calls are unchanged: their book moves toward the order, so they fill late too.
-      r_mode         point (pre-registered) / tournament / stamp: see Scenario."""
+      r_mode         point (pre-registered) / tournament / stamp: see Scenario.
+
+    TRADE SET. Whatever rows J holds are the calls. J = jump_table(): the historical >= 4c jumps, selected on the
+    realised future move and signed by it (TRADE_SET_LABEL['jumps']: a conditional benchmark, not tradable).
+    J = point_table(): every point of every covered match plus the classifier's false calls, with no price at or
+    after the point used to select, sign or size an order (TRADE_SET_LABEL['points']). Rows with phantom == True
+    are false calls (no point happened): the called token is bought at its stale price + slip and the book does
+    not move, so they lose the spread and the fee on average."""
     cov = coverage_set(M, sc.coverage, sc.regime)
     X = J[J.cond.isin(cov)]
     ref = X[sc.stale].to_numpy()
@@ -808,6 +825,9 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
     X = X[ok]
     q_c0 = q_c0[ok]
     dirn = dirn[ok]
+    ref = ref[ok]
+    has_ph = "phantom" in X.columns
+    ph = X["phantom"].to_numpy(bool) if has_ph else np.zeros(len(X), bool)
     r = X.row.to_numpy()
     n = len(X)
     if n == 0:
@@ -839,9 +859,15 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
         raise ValueError(sc.r_mode)
     tau = t_rep - arrival
     # depth scaled to the historical match's size
-    ratio = X.volume.to_numpy(float) / pool.V_live.to_numpy()[pidx]
+    if sc.vol_src == "final":
+        vol = X.volume.to_numpy(float)
+    elif sc.vol_src == "prestart":
+        vol = X["vol_exante"].to_numpy(float)
+    else:
+        raise ValueError(sc.vol_src)
+    ratio = vol / pool.V_live.to_numpy()[pidx]
     scale = {"cap1": np.minimum(1.0, ratio), "none": np.ones(n), "sym3": np.minimum(3.0, ratio)}[sc.vol_scale]
-    correct = dr["prec"][r] < prec
+    correct = (dr["prec"][r] < prec) & ~ph
     size = X["size"].to_numpy()
     # move already made by the book at arrival, as a fraction of the jump (0 before the reprice,
     # half at the reprice, all of it 0.5 s later)
@@ -894,6 +920,13 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
     q = np.where(correct, q_c, q_w)
     sh = np.where(correct, sh_c, sh_w)
     tok0 = np.where(correct, dirn > 0, dirn < 0)           # did we buy outcome 0's token?
+    if has_ph:
+        # false call: dirn is the CALLED side; buy that token at its stale price + slip, full size (the book is quiet
+        # and does not move, so the order fills; more shares only lose more)
+        q_ph = np.clip(np.where(dirn > 0, ref, 1 - ref) + sc.slip, 0.01, 0.99)
+        q = np.where(ph, q_ph, q)
+        sh = np.where(ph, sc.trade_cap / q_ph, sh)
+        tok0 = np.where(ph, dirn > 0, tok0)
     res0 = X.res0.to_numpy(float)
     payout = np.where(tok0, res0, 1 - res0)
     rate = X.fee_rate.to_numpy(float)
@@ -904,8 +937,11 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
                       "dep_c": dep_c, "size": size, "rate": rate, "edge_c": e_c, "i": np.arange(n),
                       "at_cap": np.where(correct, dep_c >= sc.trade_cap, dep_w >= sc.trade_cap),
                       "cap_sh": np.where(correct, cap_c, cap_w)})
+    if has_ph:
+        T["phantom"] = ph
     T = T.sort_values(["cond", "ts"], kind="stable").reset_index(drop=True)
     T["shares"] = _net_cap(T, sc.net_cap)
+    not_ph = ~T.phantom.to_numpy(bool) if has_ph else np.ones(len(T), bool)
     # re-price live fills for the shares actually sent after the net cap (fewer shares -> the better
     # levels of the book); shares are unchanged
     if sc.price == "live":
@@ -918,7 +954,7 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
         T.loc[m, "edge_c"] = e2
         T.loc[m, "fee_ps"] = T.rate.to_numpy()[m] * qn * (1 - qn)
     if sc.wrong_price == "live":
-        m = (~T.correct & (T.shares > 1e-9)).to_numpy()
+        m = (~T.correct & (T.shares > 1e-9)).to_numpy() & not_ph
         i = T.i.to_numpy()[m]
         w2 = curve_per_share(pool, "W", pidx[i], T.shares.to_numpy()[m], scale[i], tau[i], "spread", sc.extrap)
         qn = np.clip(post_l[i] + w2, 0.01, 0.99)
@@ -929,6 +965,14 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
         # per-share edge implied by the fill price actually charged (q is clipped to [0.01, 0.99]; edge_c is not)
         i = T.i.to_numpy()
         T["edge_q"] = np.where(T.correct.to_numpy(), post_tok[i] - T.q.to_numpy(), post_l[i] - T.q.to_numpy())
+        if has_ph:
+            # false calls: edge vs the called token's stale price (-slip unless clipped); mark_px = the price each
+            # position is marked at POST_W s after the order (post-point token price; stale price for a false
+            # call), used only by daily_stop()
+            stale_tok = np.where(dirn > 0, ref, 1 - ref)[i]
+            T["edge_q"] = np.where(not_ph, T.edge_q.to_numpy(), stale_tok - T.q.to_numpy())
+            T["mark_px"] = np.where(~not_ph, stale_tok,
+                                    np.where(T.correct.to_numpy(), post_tok[i], post_l[i]))
     T["pnl_ps"] = T.payout - T.q - T.fee_ps
     T["pnl"] = T.shares * T.pnl_ps
     T["usd_in"] = T.shares * T.q
@@ -989,7 +1033,10 @@ def metrics(calls: pd.DataFrame, days: pd.DatetimeIndex, n_boot: int = 1000, see
     sd = daily.std()
     good = tr[tr.correct]
     n_days = len(days)
-    return {
+    has_ph = "phantom" in calls.columns
+    if has_ph:          # point book: timing shares are over calls on real points (a false call has no reprice)
+        calls = calls[~calls.phantom.to_numpy(bool)]
+    out = {
         "n_calls": int(n_calls), "n_trades": int(len(tr)), "n_trades_correct": int(len(good)),
         "n_matches": int(len(g)), "fill_rate": float(len(good) / n_calls) if n_calls else float("nan"),
         "wrong_call_share_of_trades": float(1 - len(good) / len(tr)),
@@ -1017,6 +1064,202 @@ def metrics(calls: pd.DataFrame, days: pd.DatetimeIndex, n_boot: int = 1000, see
         "share_fills_at_trade_cap": float(tr.at_cap.mean()),
         "capacity_stale_usd_per_day": float(calls[calls.correct].dep_c.sum() / n_days),
     }
+    if has_ph:
+        f = tr.phantom.to_numpy(bool)
+        out.update({"n_trades_phantom": int(f.sum()), "pnl_phantom_usd": float(tr.pnl[f].sum()),
+                    "pnl_wrong_usd": float(tr[~tr.correct & ~f].pnl.sum()),
+                    "n_trades_wrong_on_points": int((~tr.correct & ~f).sum())})
+    return out
+
+
+# ============================================================== causal every-point book (review fix D2)
+TRADE_SET_LABEL = {
+    "jumps": "conditional benchmark: only the historical >= 4c jumps, selected on the realised future move and "
+             "signed by its realised direction; not tradable",
+    "points": "causal: every point of every covered match (plus the classifier's false calls), selected, signed "
+              "and sized only from information available before the order; fills priced off the post-point "
+              "price and the measured live book (an upper bound on fills)",
+}
+ENGINE_CALLS = ROOT / "results/engine/online_vs_offline.json"
+ENGINE_GATE = ROOT / "results/engine/rally_gate_eval.json"
+FROZEN_MODEL = ROOT / "models/vision/frozen_call_model.pkl"
+ENGINE_RUN = "fp16_cl_fuse_compile_b1_realtime"
+ENGINE_GATE_S = "2"           # the a-priori rally gate (engine/strategy.py comment for any live use); "none" = off
+
+
+def _sha256(path: Path) -> str | None:
+    import hashlib
+    if not path.exists():
+        return None
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for b in iter(lambda: fh.read(1 << 20), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
+def engine_cv_system(gate: str = ENGINE_GATE_S) -> dict:
+    """MEASURED held-out call behaviour of the frozen call model (models/vision/frozen_call_model.pkl) as streamed
+    by the live engine on the held-out test videos (results/engine/online_vs_offline.json, A_engine_calls: the
+    CallEvents the engine emitted, scored on the 171 labelled test flights) and its false-call rate
+    (results/engine/rally_gate_eval.json: MISS calls on balls outside every labelled flight, per hour of video).
+    No model is refit or re-run here.
+
+    recall(L)    engine MISS calls at least L ms before T_ref / MISS flights, x the share of correct early calls
+                 the rally gate keeps (gate '2': the a-priori 2 s; 'none': ungated)
+    precision(L) engine precision on the labelled flights (MISS calls on MISS flights / all called flights)
+    phantom_per_h  false calls per hour after the gate; simulated as phantom trades (point_table)
+    Same table format as cv_systems(); out balls the engine does not call early, and every other ending, are called
+    at the event (lead 0) with precision Scenario.p_event, as in the committed model."""
+    run = json.loads(ENGINE_CALLS.read_text())["runs"][ENGINE_RUN]
+    A = run["A_engine_calls"]["online"]
+    leads = [0, 25, 50, 100, 150, 200]
+    g = json.loads(ENGINE_GATE.read_text())
+    secs = float(g["counts"]["video_seconds"])
+    if gate == "none":
+        e = g["results"]["emit"]["2"]
+        keep, ph, n_ph = 1.0, float(e["outside_flights_per_hour_ungated"]), int(e["outside_flights_total"])
+    else:
+        e = g["results"]["emit"][gate]
+        keep = e["correct_early_kept"] / e["correct_early_total"]
+        ph = float(e["outside_flights_per_hour_gated"])
+        n_ph = int(e["outside_flights_total"] - e["outside_flights_removed"])
+    from scipy.stats import chi2
+    ci = [float(chi2.ppf(0.025, 2 * n_ph) / 2) if n_ph else 0.0, float(chi2.ppf(0.975, 2 * n_ph + 2) / 2)]
+    rec = [A[f"{L}ms"]["recall"] * keep for L in leads]
+    prec = [A[f"{L}ms"]["precision"] for L in leads]
+    usable = [L for L, p, r_ in zip(leads, prec, rec) if p is not None and p >= 0.95 and r_ > 0]
+    return {"leads_ms": leads, "recall": [[r_] for r_ in rec], "precision": [p if p is not None else 0.0 for p in prec],
+            "bins_w": [1.0], "max_lead_ms": max(usable) if usable else 0, "t_inf": T_INF,
+            "phantom_per_h": ph, "phantom_n": n_ph, "phantom_video_s": secs,
+            "phantom_per_h_ci95": [round(x * 3600.0 / secs, 2) for x in ci],
+            "gate": gate, "gate_keep_correct_early": keep,
+            "precision_n": [A[f"{L}ms"]["tp"] + A[f"{L}ms"]["fp"] for L in leads],
+            "inputs": {"results/engine/online_vs_offline.json": _sha256(ENGINE_CALLS),
+                       "results/engine/rally_gate_eval.json": _sha256(ENGINE_GATE),
+                       "models/vision/frozen_call_model.pkl": _sha256(FROZEN_MODEL)}}
+
+
+def exante_volume_multiplier(U: pd.DataFrame) -> float:
+    """Median of final / pre-start $ volume over IN-SAMPLE universe matches with pre-start volume > 0. Turns a
+    match's pre-start volume (known before the first point) into an ex-ante estimate of its final size, the unit
+    the live depth is scaled in. Computed from IS matches only."""
+    m = U[(~U.oos.astype(bool)) & (U.prestart_usd > 0) & (U.volume > 0)]
+    return float(np.median(m.volume.to_numpy(float) / m.prestart_usd.to_numpy(float)))
+
+
+def point_gap_s() -> float:
+    """Mean seconds between consecutive official points on the live day (gaps < 600 s; research/v2/latency)."""
+    m1 = pd.read_csv(LAT / "m1_points.csv", usecols=["slug", "T_ms"])
+    gaps = m1.sort_values(["slug", "T_ms"]).groupby("slug").T_ms.diff().dropna() / 1000.0
+    return float(gaps[gaps < 600].mean())
+
+
+def _vwap(ts, cpv, cv, lo, hi):
+    a = np.searchsorted(ts, lo, "left")
+    b = np.searchsorted(ts, hi, "left")
+    w = cv[b] - cv[a]
+    return np.where(w > 0, (cpv[b] - cpv[a]) / np.where(w > 0, w, 1), np.nan)
+
+
+def point_table(prints: pd.DataFrame, U: pd.DataFrame, gap_s: float, seed: int, phantom_per_h: float = 0.0,
+                vol_mult: float | None = None, min_prints: int = 20) -> pd.DataFrame:
+    """CAUSAL TRADE SET: every point of every match in `prints` (cond, ts, p, usd: in-play outcome-0 prints), plus
+    the classifier's false calls. No historical point stamps exist, so points are spaced gap_s apart over each
+    match's in-play window (first to last in-play print); a point's existence is not a decision.
+
+    Per point tp (no price at or after tp enters any of these):
+      ref / ref_short  VWAP of prints in [tp-63, tp-3) / [tp-33, tp-1): the stale price the order sees
+      dir              the point winner (+1 = outcome 0). Historical point winners are unknown, so it is a fair coin
+                       from rng([seed, 1]), independent of every price; simulate() then has the classifier call it
+                       correctly with the measured precision. The traded token never depends on the later move.
+      size             0: no realised move is used. It only sets the fallback post-point price when no print
+                       follows the point (28 % of IS points): the stale price, i.e. no move. With a coin-flip winner the
+                       expected P&L of a correct call is then the measured live edge, as it is when post30 exists
+                       (payout - post-point price has mean ~0 for either token); assuming a move (e.g. +3.3c) would
+                       charge correct calls a move the coin-flip winner's payout cannot earn back.
+    Pricing only (never a decision): post30 = VWAP of prints in [tp, tp+30), the post-point price a fill is priced
+    off (simulate, price='live').
+    False calls (phantom == True): Poisson at phantom_per_h per in-play hour, uniform times, called side a fair
+    coin, all from rng([seed, 2]) (so the points are the same with or without them).
+    vol_mult: if given, vol_exante = prestart_usd x vol_mult (Scenario.vol_src='prestart')."""
+    rng_d = np.random.default_rng([seed, 1])
+    rng_p = np.random.default_rng([seed, 2])
+    rows = []
+    for cnd, g in prints.groupby("cond", sort=True):
+        ts = g.ts.to_numpy(float)
+        if len(ts) < min_prints:
+            continue
+        o = np.argsort(ts, kind="stable")
+        ts, p, usd = ts[o], g.p.to_numpy(float)[o], g.usd.to_numpy(float)[o]
+        t0, t1 = ts[0], ts[-1]
+        n = int((t1 - t0) // gap_s)
+        cpv = np.concatenate([[0.0], np.cumsum(p * usd)])
+        cv = np.concatenate([[0.0], np.cumsum(usd)])
+        n_ph = int(rng_p.poisson(phantom_per_h * (t1 - t0) / 3600.0)) if phantom_per_h > 0 else 0
+        t_ph = np.sort(rng_p.uniform(t0, t1, n_ph)) if n_ph else np.zeros(0)
+        d_ph = rng_p.choice([-1.0, 1.0], n_ph) if n_ph else np.zeros(0)
+        if n < 1 and n_ph == 0:
+            continue
+        tp = t0 + gap_s * (np.arange(max(n, 0)) + 0.5)
+        d_pt = rng_d.choice([-1.0, 1.0], len(tp)) if len(tp) else np.zeros(0)
+        t_all = np.concatenate([tp, t_ph])
+        rows.append(pd.DataFrame({
+            "cond": cnd, "onset_ts": t_all, "detect_ts": t_all, "dir": np.concatenate([d_pt, d_ph]), "size": 0.0,
+            "ref": _vwap(ts, cpv, cv, t_all - 63, t_all - 3), "ref_short": _vwap(ts, cpv, cv, t_all - 33, t_all - 1),
+            "post30": _vwap(ts, cpv, cv, t_all, t_all + POST_W),
+            "phantom": np.concatenate([np.zeros(len(tp), bool), np.ones(n_ph, bool)])}))
+    cols = ["cond", "onset_ts", "detect_ts", "dir", "size", "ref", "ref_short", "post30", "phantom"]
+    P = pd.concat(rows, ignore_index=True) if rows else pd.DataFrame(columns=cols)
+    keep = [c for c in ("cond", "slug", "title", "series", "league", "start", "end", "res0", "volume", "fee_rate",
+                        "delay", "oos", "prestart_usd") if c in U.columns]
+    P = P.merge(U[keep], on="cond", how="left", validate="many_to_one")
+    P["region"] = [region_of(a, b) for a, b in zip(P.league, P.title)]
+    P["men"] = P.series.isin(["atp", "challenger"])
+    if vol_mult is not None:
+        P["vol_exante"] = P.prestart_usd.to_numpy(float) * vol_mult
+    P = P.sort_values(["cond", "onset_ts"], kind="stable").reset_index(drop=True)
+    # draw index: real points first (0..n-1, the same with or without false calls), then the false calls
+    ph = P.phantom.to_numpy(bool)
+    row = np.empty(len(P), int)
+    row[~ph] = np.arange(int((~ph).sum()))
+    row[ph] = int((~ph).sum()) + np.arange(int(ph.sum()))
+    P["row"] = row
+    return P
+
+
+def point_draws(P: pd.DataFrame, seed: int, n_tour: int = 4096) -> dict:
+    """draws() for a point_table: the real points get draws(n_points, seed), so they are identical with or without
+    false calls; the false calls get a separate stream appended (rows n_points..)."""
+    n_ph = int(P.phantom.sum())
+    a = draws(len(P) - n_ph, seed, n_tour)
+    if n_ph == 0:
+        return a
+    b = draws(n_ph, seed + 7_919_000, n_tour)
+    return {k: (np.concatenate([a[k], b[k]]) if k != "tour" else a[k]) for k in a}
+
+
+def daily_stop(calls: pd.DataFrame, usd: float = 1000.0, mark_delay: float = POST_W) -> tuple[pd.DataFrame, int]:
+    """The stated daily stop on the simulated book, using only what is observable at the time: each fill is marked
+    at mark_px (simulate: the post-point price, or the stale price for a false call) mark_delay s after its order.
+    When the day's running marked P&L (UTC day, fills in time order) first falls below -usd, every later order that
+    day (ts >= that fill's ts + mark_delay) is dropped. Returns (calls kept, number of days the stop fired)."""
+    if calls.empty or "mark_px" not in calls.columns:
+        return calls, 0
+    tr = calls[calls.shares > 1e-9].sort_values("ts", kind="stable")
+    mark = tr.shares * (tr.mark_px - tr.q - tr.fee_ps)
+    drop = []
+    fired = 0
+    for d, g in tr.assign(mark=mark).groupby("date", sort=False):
+        c = g.mark.cumsum().to_numpy()
+        k = np.flatnonzero(c < -usd)
+        if len(k):
+            fired += 1
+            t_stop = g.ts.to_numpy()[k[0]] + mark_delay
+            drop.append(g.index[g.ts.to_numpy() >= t_stop])
+    if not drop:
+        return calls, 0
+    return calls.drop(index=np.concatenate([np.asarray(x) for x in drop])), fired
 
 
 def period_days(J: pd.DataFrame, regime: str) -> pd.DatetimeIndex:
@@ -1031,4 +1274,5 @@ def as_dict(sc: Scenario) -> dict:
 
 __all__ = ["ASSUMED", "Scenario", "PRIMARY", "CORRECTED", "simulate", "metrics", "jump_table", "live_points",
            "live_edge_curve", "post_prices", "tournament_codes", "calibrate_stamp_lag", "point_mix", "cv_systems",
-           "draws", "region_of", "replace"]
+           "draws", "region_of", "replace", "TRADE_SET_LABEL", "engine_cv_system", "point_table", "point_draws", "point_gap_s",
+           "exante_volume_multiplier", "daily_stop"]

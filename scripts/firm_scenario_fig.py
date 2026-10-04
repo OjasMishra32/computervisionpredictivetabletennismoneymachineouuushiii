@@ -1,4 +1,5 @@
-"""Paper figure: "if we were a quant firm with a licensed 0.5 s feed" (fresh-holdout scenario).
+"""Paper figure: "if we were a quant firm with a licensed 0.5 s feed" (fresh-holdout scenario), on the CONDITIONAL
+jump-set benchmark (trades = the historical >= 4c jumps, selected on outcomes; not a tradable book).
 
     COUNTERFACTUAL WITH ASSUMED DATA. Real: Polymarket prices, fills (public trade tapes), match results, taker fees
     and the venue's 1 s order delay. Simulated: the camera/CV calls, made at an ASSUMED licensed-feed delay V.
@@ -43,11 +44,13 @@ FH = ROOT / "results/fresh_holdout"
 OUT = ROOT / "results/scenario"
 NAME = "fig_firm_05s"
 STRAT = "S2"
-LABEL_FIG = ("Real Polymarket prices, fills, fees and venue delay; simulated camera calls at an assumed licensed-feed "
-             "delay (no feed purchased).")
+LABEL_FIG = ("Conditional benchmark. Real Polymarket prices, fills, fees and venue delay; calls simulated at an assumed "
+             "feed delay (no feed purchased), only on the historical >=4c jumps.")
 LABEL_LONG = ("COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue "
               "delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video "
-              "watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.")
+              "watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante: "
+              "a conditional benchmark (src/tier0.TRADE_SET_LABEL['jumps']), not a tradable book; the causal "
+              "every-point book is scripts/cv_causal_points.py.")
 READ_LAB = {"pre": "pre-registered stamp lag 2.0 s", "cal": "post hoc stamp lag 3.142 s"}
 
 W, H = fs.FIG_W, 2.45
@@ -419,7 +422,8 @@ def caption(N: dict) -> str:
     nm = sorted(round(f[f"{rd}|V0.5"]["n_matches_traded_seed_mean"]) for rd in READ_LAB)
     s1 = (f"Counterfactual with assumed data: real Polymarket prices, fills, taker fees and the venue{fs.RSQUO}s 1{fs.THIN}s "
           f"order delay, with the camera calls simulated at an assumed licensed-feed delay (no feed purchased, no "
-          f"order placed); (a) cumulative P&L of the paper{fs.RSQUO}s Table 2 CV trader on 10 matches a day at a "
+          f"order placed); (a) cumulative P&L of the conditional jump-set benchmark (the paper{fs.RSQUO}s Table 2 CV trader, "
+          f"trading only the historical jumps of at least 4{fs.CENT}) on 10 matches a day at a "
           f"0.5{fs.THIN}s feed (mean of 20 seeds, whiskers 10{fs.NDASH}90{fs.THIN}% of seeds) under the pre-registered "
           f"2.0{fs.THIN}s stamp lag (black) and the post hoc 3.14{fs.THIN}s lag (orange), dotted lines the same two "
           f"readings at 1{fs.THIN}s and 3{fs.THIN}s (only the post hoc ones are labelled), end labels the burned-OOS $/day and annualised Sharpe "
@@ -443,7 +447,8 @@ def caption(N: dict) -> str:
           f"the fills of all 20 seeds (dots; the ledger seed filled none) and the 20-seed mean P&L marked to the "
           f"1{fs.THIN}s price (UTC), {fs.usd(pm['cal']['mean_usd'], 1, sign=True)} post hoc and "
           f"{fs.usd(pm['pre']['mean_usd'], 1, sign=True)} pre-registered at resolution; in both panels the trades are "
-          f"the historical price jumps of at least 4{fs.CENT}, which are selected on outcomes.")
+          f"the historical price jumps of at least 4{fs.CENT}, which are selected on outcomes, so neither panel is a "
+          f"tradable book.")
     return "\n".join([s1, s2, s3]) + "\n"
 
 
