@@ -1,0 +1,1843 @@
+{
+ "summary": "146 headline numbers (154 checks, some by two routes) re-derived in SQL from row-level files: 136 \u2713, 10 \u2717",
+ "rows": [
+  {
+   "key": "calc.is.mean",
+   "printed": "$196.24",
+   "value": 196.2413552994137,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L",
+   "stored": 196.24135529941367,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.mean_daily_usd"
+  },
+  {
+   "key": "calc.oos.mean",
+   "printed": "$92.19",
+   "value": 92.18839800484173,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L",
+   "stored": 92.18839800484172,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.mean_daily_usd"
+  },
+  {
+   "key": "tab.v2.is.usd",
+   "printed": "+$196",
+   "value": 196.2413552994137,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L",
+   "stored": 196.24135529941364,
+   "source": "D: results/v2/causal.json::causal/is_eval/slip0.0 total_pnl_usd / days"
+  },
+  {
+   "key": "tab.v2.oos.usd",
+   "printed": "+$92",
+   "value": 92.18839800484173,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L",
+   "stored": 92.18839800484167,
+   "source": "D: results/v2/causal.json::causal/burned_oos/slip0.0 total_pnl_usd / days"
+  },
+  {
+   "key": "v2.is.days",
+   "printed": "206",
+   "value": 206.0,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "calendar days",
+   "stored": 206,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.days"
+  },
+  {
+   "key": "v2.is.dd",
+   "printed": "\u22122.0%",
+   "value": -2.0120402719953496,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "max drawdown of cumulative P&L / capital, %",
+   "stored": -2.0120402719953496,
+   "source": "results/v2/note_metrics.json::is.max_dd_pct"
+  },
+  {
+   "key": "v2.is.kurt",
+   "printed": "4.30",
+   "value": 4.295491038665976,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "Pearson kurtosis = excess kurtosis + 3",
+   "stored": 4.295491038665969,
+   "source": "results/v2/note_metrics.json::is.kurtosis_pearson"
+  },
+  {
+   "key": "v2.is.pnl",
+   "printed": "+$40,426",
+   "value": 40425.71919167922,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sum of daily P&L",
+   "stored": 40425.71919167921,
+   "source": "results/v2/causal.json::causal/is_eval/slip0.0.total_pnl_usd"
+  },
+  {
+   "key": "v2.is.ret",
+   "printed": "253%",
+   "value": 253.08163415884616,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L x 365 / capital, %",
+   "stored": 253.0816341588461,
+   "source": "results/v2/note_metrics.json::is.ann_return_pct"
+  },
+  {
+   "key": "v2.is.skew",
+   "printed": "+0.53",
+   "value": 0.5345103599734673,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sample skewness of daily P&L",
+   "stored": 0.5345103599734671,
+   "source": "results/v2/note_metrics.json::is.skew"
+  },
+  {
+   "key": "v2.is.sr",
+   "printed": "14.5",
+   "value": 14.483153541485255,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean / sample sd of daily P&L x sqrt(365)",
+   "stored": 14.483153541485253,
+   "source": "results/v2/note_metrics.json::is.sharpe_ann"
+  },
+  {
+   "key": "v2.is.vol",
+   "printed": "17.5%",
+   "value": 17.474207770698847,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sd of daily P&L x sqrt(365) / capital, %",
+   "stored": 17.474207770698847,
+   "source": "results/v2/note_metrics.json::is.ann_vol_pct"
+  },
+  {
+   "key": "v2.is.worstday",
+   "printed": "\u22121.9%",
+   "value": -1.9460007935673853,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "worst day / capital, %",
+   "stored": -1.9460007935673853,
+   "source": "results/v2/note_metrics.json::is.worst_day_pct"
+  },
+  {
+   "key": "v2.is.worstmonth",
+   "printed": "+$2,543",
+   "value": 2542.564726297649,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "worst calendar month (dates + 1 day)",
+   "stored": 2542.5647262976495,
+   "source": "results/v2/note_metrics.json::is.worst_month_usd"
+  },
+  {
+   "key": "v2.oos.days",
+   "printed": "40",
+   "value": 40.0,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "calendar days",
+   "stored": 40,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.days"
+  },
+  {
+   "key": "v2.oos.dd",
+   "printed": "\u22122.1%",
+   "value": -2.0630607174176805,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "max drawdown of cumulative P&L / capital, %",
+   "stored": -2.0630607174176805,
+   "source": "results/v2/note_metrics.json::burned_oos.max_dd_pct"
+  },
+  {
+   "key": "v2.oos.kurt",
+   "printed": "3.26",
+   "value": 3.2596989987050105,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "Pearson kurtosis = excess kurtosis + 3",
+   "stored": 3.259698998705011,
+   "source": "results/v2/note_metrics.json::burned_oos.kurtosis_pearson"
+  },
+  {
+   "key": "v2.oos.pnl",
+   "printed": "+$3,688",
+   "value": 3687.535920193669,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sum of daily P&L",
+   "stored": 3687.5359201936667,
+   "source": "results/v2/causal.json::causal/burned_oos/slip0.0.total_pnl_usd"
+  },
+  {
+   "key": "v2.oos.ret",
+   "printed": "148%",
+   "value": 147.88035894965824,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean daily P&L x 365 / capital, %",
+   "stored": 147.88035894965816,
+   "source": "results/v2/note_metrics.json::burned_oos.ann_return_pct"
+  },
+  {
+   "key": "v2.oos.skew",
+   "printed": "+0.33",
+   "value": 0.325637667308148,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sample skewness of daily P&L",
+   "stored": 0.3256376673081488,
+   "source": "results/v2/note_metrics.json::burned_oos.skew"
+  },
+  {
+   "key": "v2.oos.sr",
+   "printed": "6.7",
+   "value": 6.6675518672009755,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "mean / sample sd of daily P&L x sqrt(365)",
+   "stored": 6.667551867200974,
+   "source": "results/v2/note_metrics.json::burned_oos.sharpe_ann"
+  },
+  {
+   "key": "v2.oos.vol",
+   "printed": "22.2%",
+   "value": 22.179108898591608,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "sd of daily P&L x sqrt(365) / capital, %",
+   "stored": 22.17910889859161,
+   "source": "results/v2/note_metrics.json::burned_oos.ann_vol_pct"
+  },
+  {
+   "key": "v2.oos.worstday",
+   "printed": "\u22122.1%",
+   "value": -2.0630607174176805,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "worst day / capital, %",
+   "stored": -2.0630607174176805,
+   "source": "results/v2/note_metrics.json::burned_oos.worst_day_pct"
+  },
+  {
+   "key": "v2.oos.worstmonth",
+   "printed": "\u2212$434",
+   "value": -434.15306795796744,
+   "ok": true,
+   "rule": "exact",
+   "file": "01_v2_daily.sql",
+   "how": "worst calendar month (dates + 1 day)",
+   "stored": -434.1530679579675,
+   "source": "results/v2/note_metrics.json::burned_oos.worst_month_usd"
+  },
+  {
+   "key": "cv.cal.is.c",
+   "printed": "+1.11",
+   "value": 1.1129632999999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of cents/share, 1 s",
+   "stored": 1.113,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
+  },
+  {
+   "key": "cv.cal.is.dd",
+   "printed": "\u22121.6",
+   "value": -1.5857314759883494,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean drawdown / mean capital, %, 1 s",
+   "stored": -0.015857314667946248,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] max_dd_usd/capital_usd"
+  },
+  {
+   "key": "cv.cal.is.sr",
+   "printed": "11.9",
+   "value": 11.9537837,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of Sharpe, 1 s",
+   "stored": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  {
+   "key": "cv.cal.is.tpd",
+   "printed": "65",
+   "value": 64.94563106796116,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean trades / mean days, 1 s",
+   "stored": 64.94563106796116,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] n_trades/days"
+  },
+  {
+   "key": "cv.cal.is.usd",
+   "printed": "+$94",
+   "value": 94.34658164999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day, 1 s",
+   "stored": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  {
+   "key": "cv.cal.is.worstday",
+   "printed": "\u2212$223",
+   "value": -223.42354765,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the worst day, 1 s",
+   "stored": -223.42355,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,IS,x_s=1] worst_day_usd"
+  },
+  {
+   "key": "cv.cal.is.wrong",
+   "printed": "12%",
+   "value": 0.12076449999999998,
+   "ok": true,
+   "rule": "x100",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean share of trades on wrong calls, 1 s",
+   "stored": 0.1208,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.wrong_call_share_of_trades"
+  },
+  {
+   "key": "cv.cal.oos.c",
+   "printed": "+0.66",
+   "value": 0.6545677999999999,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of cents/share, 1 s",
+   "stored": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "cv.cal.oos.dd",
+   "printed": "\u22121.6",
+   "value": -1.6079028115108331,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean drawdown / mean capital, %, 1 s",
+   "stored": -0.016079028187689064,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] max_dd_usd/capital_usd"
+  },
+  {
+   "key": "cv.cal.oos.sr",
+   "printed": "8.8",
+   "value": 8.849450050000002,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of Sharpe, 1 s",
+   "stored": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "cv.cal.oos.tpd",
+   "printed": "55",
+   "value": 55.2975,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean trades / mean days, 1 s",
+   "stored": 55.2975,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] n_trades/days"
+  },
+  {
+   "key": "cv.cal.oos.usd",
+   "printed": "+$57",
+   "value": 56.59290985,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day, 1 s",
+   "stored": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "cv.cal.oos.worstday",
+   "printed": "\u2212$192",
+   "value": -191.8842581,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the worst day, 1 s",
+   "stored": -191.88426,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament_lagcal,burned_OOS,x_s=1] worst_day_usd"
+  },
+  {
+   "key": "cv.cal.oos.wrong",
+   "printed": "16%",
+   "value": 0.15970609999999996,
+   "ok": true,
+   "rule": "x100",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean share of trades on wrong calls, 1 s",
+   "stored": 0.1597,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.wrong_call_share_of_trades"
+  },
+  {
+   "key": "cv.pre.is.c",
+   "printed": "+0.40",
+   "value": 0.4010279,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of cents/share, 1 s",
+   "stored": 0.401,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share"
+  },
+  {
+   "key": "cv.pre.is.dd",
+   "printed": "\u22126.6",
+   "value": -6.586357479850652,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean drawdown / mean capital, %, 1 s",
+   "stored": -0.06586357490754513,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] max_dd_usd/capital_usd"
+  },
+  {
+   "key": "cv.pre.is.sr",
+   "printed": "2.1",
+   "value": 2.15271805,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of Sharpe, 1 s",
+   "stored": 2.15,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.sharpe_ann"
+  },
+  {
+   "key": "cv.pre.is.tpd",
+   "printed": "26",
+   "value": 25.618932038834952,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean trades / mean days, 1 s",
+   "stored": 25.618932038834952,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] n_trades/days"
+  },
+  {
+   "key": "cv.pre.is.usd",
+   "printed": "+$15",
+   "value": 14.780352449999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day, 1 s",
+   "stored": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day"
+  },
+  {
+   "key": "cv.pre.is.worstday",
+   "printed": "\u2212$263",
+   "value": -263.49888975,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the worst day, 1 s",
+   "stored": -263.49889,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,IS,x_s=1] worst_day_usd"
+  },
+  {
+   "key": "cv.pre.is.wrong",
+   "printed": "35%",
+   "value": 0.34835180000000016,
+   "ok": true,
+   "rule": "x100",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean share of trades on wrong calls, 1 s",
+   "stored": 0.3484,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.wrong_call_share_of_trades"
+  },
+  {
+   "key": "cv.pre.oos.c",
+   "printed": "\u22120.38",
+   "value": -0.38262370000000007,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of cents/share, 1 s",
+   "stored": -0.383,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "cv.pre.oos.dd",
+   "printed": "\u22125.3",
+   "value": -5.274679992195602,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean drawdown / mean capital, %, 1 s",
+   "stored": -0.052746799763501176,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] max_dd_usd/capital_usd"
+  },
+  {
+   "key": "cv.pre.oos.sr",
+   "printed": "0.3",
+   "value": 0.34441839999999996,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of Sharpe, 1 s",
+   "stored": 0.34,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "cv.pre.oos.tpd",
+   "printed": "24",
+   "value": 24.286250000000003,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "mean trades / mean days, 1 s",
+   "stored": 24.286250000000003,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] n_trades/days"
+  },
+  {
+   "key": "cv.pre.oos.usd",
+   "printed": "+$4",
+   "value": 4.345362700000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day, 1 s",
+   "stored": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "cv.pre.oos.worstday",
+   "printed": "\u2212$228",
+   "value": -228.38482009999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the worst day, 1 s",
+   "stored": -228.38482,
+   "source": "results/tier0/latency_sweep.csv[video,own120,tournament,burned_OOS,x_s=1] worst_day_usd"
+  },
+  {
+   "key": "cv.pre.oos.wrong",
+   "printed": "47%",
+   "value": 0.47227905000000003,
+   "ok": true,
+   "rule": "x100",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean share of trades on wrong calls, 1 s",
+   "stored": 0.4723,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.wrong_call_share_of_trades"
+  },
+  {
+   "key": "sc.cal.is.v05.c",
+   "printed": "+1.21",
+   "value": 1.2106370499999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 1.211,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.is.v05.cci",
+   "printed": "[1.00, 1.42]",
+   "value": [
+    1.0018165499999998,
+    1.4211728499999998
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    1.002,
+    1.421
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.is.v05.sr",
+   "printed": "15.5",
+   "value": 15.500267149999996,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 15.5,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.is.v05.uci",
+   "printed": "[80, 168]",
+   "value": [
+    79.92117995,
+    167.55822552499998
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    79.92,
+    167.56
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.is.v05.usd",
+   "printed": "+$133",
+   "value": 133.25877274999996,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 133.26,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.usd_per_day"
+  },
+  {
+   "key": "sc.cal.is.v1.c",
+   "printed": "+1.11",
+   "value": 1.1129632999999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 1.113,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.is.v1.cci",
+   "printed": "[0.85, 1.38]",
+   "value": [
+    0.84943865,
+    1.3745224500000002
+   ],
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    0.849,
+    1.375
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.is.v1.sr",
+   "printed": "11.9",
+   "value": 11.9537837,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.is.v1.uci",
+   "printed": "[51, 125]",
+   "value": [
+    51.297243224999995,
+    125.01084792500001
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    51.3,
+    125.01
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.is.v1.usd",
+   "printed": "+$94",
+   "value": 94.34658164999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  {
+   "key": "sc.cal.is.v3.c",
+   "printed": "\u22120.79",
+   "value": -0.7890925999999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -0.789,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.is.v3.cci",
+   "printed": "[\u22122.26, 0.60]",
+   "value": [
+    -2.25969215,
+    0.5967260999999999
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -2.26,
+    0.597
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.is.v3.sr",
+   "printed": "\u22121.4",
+   "value": -1.3844416,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": -1.38,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.is.v3.uci",
+   "printed": "[\u221224, 34]",
+   "value": [
+    -23.984349575,
+    34.23504862499998
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -23.98,
+    34.24
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.is.v3.usd",
+   "printed": "\u2212$6",
+   "value": -5.9172806,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": -5.92,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.usd_per_day"
+  },
+  {
+   "key": "sc.cal.oos.v05.c",
+   "printed": "+0.82",
+   "value": 0.8171488499999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 0.817,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.oos.v05.cci",
+   "printed": "[0.39, 1.25]",
+   "value": [
+    0.3874493,
+    1.2488065000000002
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    0.387,
+    1.249
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v05.sr",
+   "printed": "12.2",
+   "value": 12.157582450000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 12.16,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.oos.v05.uci",
+   "printed": "[15, 157]",
+   "value": [
+    15.460691075,
+    156.96163729999998
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    15.46,
+    156.96
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v05.usd",
+   "printed": "+$81",
+   "value": 81.34845555000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 81.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "sc.cal.oos.v1.c",
+   "printed": "+0.66",
+   "value": 0.6545677999999999,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.oos.v1.cci",
+   "printed": "[0.10, 1.19]",
+   "value": [
+    0.09781695,
+    1.18864005
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    0.098,
+    1.189
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v1.sr",
+   "printed": "8.8",
+   "value": 8.849450050000002,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.oos.v1.uci",
+   "printed": "[1, 130]",
+   "value": [
+    0.6459475500000004,
+    129.515868925
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    0.65,
+    129.52
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v1.usd",
+   "printed": "+$57",
+   "value": 56.59290985,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "sc.cal.oos.v3.c",
+   "printed": "\u22121.47",
+   "value": -1.46573945,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -1.466,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.cal.oos.v3.cci",
+   "printed": "[\u22124.45, 1.34]",
+   "value": [
+    -4.447897899999999,
+    1.3436019999999997
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -4.448,
+    1.344
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v3.sr",
+   "printed": "\u22122.4",
+   "value": -2.3507338,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": -2.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.cal.oos.v3.uci",
+   "printed": "[\u221241, 37]",
+   "value": [
+    -41.008923825,
+    36.99709732499994
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -41.01,
+    37.0
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.cal.oos.v3.usd",
+   "printed": "\u2212$11",
+   "value": -11.383971999999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": -11.38,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.is.v05.c",
+   "printed": "+0.61",
+   "value": 0.61312415,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 0.613,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.is.v05.cci",
+   "printed": "[0.08, 1.14]",
+   "value": [
+    0.07713485,
+    1.1383290000000001
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    0.077,
+    1.138
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.is.v05.sr",
+   "printed": "4.0",
+   "value": 3.9990423,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 4.0,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.is.v05.uci",
+   "printed": "[\u22121, 59]",
+   "value": [
+    -0.9758901999999994,
+    59.47912797499999
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -0.98,
+    59.48
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.is.v05.usd",
+   "printed": "+$28",
+   "value": 28.42909495,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 28.43,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.is.v1.c",
+   "printed": "+0.40",
+   "value": 0.4010279,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": 0.401,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.is.v1.cci",
+   "printed": "[\u22120.32, 1.08]",
+   "value": [
+    -0.32408105,
+    1.0784009499999996
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -0.324,
+    1.078
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.is.v1.sr",
+   "printed": "2.1",
+   "value": 2.15271805,
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 2.15,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.is.v1.uci",
+   "printed": "[\u22129, 43]",
+   "value": [
+    -8.763339149999998,
+    43.150838925
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -8.76,
+    43.15
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.is.v1.usd",
+   "printed": "+$15",
+   "value": 14.780352449999999,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.is.v3.c",
+   "printed": "\u22121.35",
+   "value": -1.3492843999999997,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -1.349,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.is.v3.cci",
+   "printed": "[\u22123.15, 0.37]",
+   "value": [
+    -3.1466036,
+    0.36684345
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -3.147,
+    0.367
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.is.v3.sr",
+   "printed": "\u22122.6",
+   "value": -2.59444765,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": -2.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.is.v3.uci",
+   "printed": "[\u221224, 19]",
+   "value": [
+    -24.22657735,
+    18.776684599999946
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -24.23,
+    18.78
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.is.v3.usd",
+   "printed": "\u2212$13",
+   "value": -12.6811208,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": -12.68,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.oos.v05.c",
+   "printed": "\u22120.02",
+   "value": -0.017800500000000007,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -0.018,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.oos.v05.cci",
+   "printed": "[\u22121.22, 1.09]",
+   "value": [
+    -1.2212305,
+    1.0855522499999999
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -1.221,
+    1.086
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v05.sr",
+   "printed": "2.1",
+   "value": 2.14106975,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 2.14,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.oos.v05.uci",
+   "printed": "[\u221230, 81]",
+   "value": [
+    -29.721022174999998,
+    81.23046352499999
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -29.72,
+    81.23
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v05.usd",
+   "printed": "+$15",
+   "value": 15.164387499999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 15.16,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.oos.v1.c",
+   "printed": "\u22120.38",
+   "value": -0.38262370000000007,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -0.383,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.oos.v1.cci",
+   "printed": "[\u22122.08, 1.21]",
+   "value": [
+    -2.08257745,
+    1.20466295
+   ],
+   "ok": false,
+   "rule": "differs",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -2.083,
+    1.205
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v1.sr",
+   "printed": "0.3",
+   "value": 0.34441839999999996,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": 0.34,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.oos.v1.uci",
+   "printed": "[\u221236, 62]",
+   "value": [
+    -36.415861799999995,
+    62.491878024999984
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -36.42,
+    62.49
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v1.usd",
+   "printed": "+$4",
+   "value": 4.345362700000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "sc.pre.oos.v3.c",
+   "printed": "\u22121.69",
+   "value": -1.6901977000000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of net cents/share",
+   "stored": -1.69,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.net_c_per_share"
+  },
+  {
+   "key": "sc.pre.oos.v3.cci",
+   "printed": "[\u22124.85, 1.32]",
+   "value": [
+    -4.845700849999999,
+    1.3235719000000001
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed cents/share CI bounds",
+   "stored": [
+    -4.846,
+    1.324
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.net_c_per_share_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v3.sr",
+   "printed": "\u22122.6",
+   "value": -2.57603265,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of the per-seed Sharpe",
+   "stored": -2.58,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "sc.pre.oos.v3.uci",
+   "printed": "[\u221241, 34]",
+   "value": [
+    -41.008923825,
+    34.03560169999995
+   ],
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "2.5-97.5 % of the 20 seed $/day values",
+   "stored": [
+    -41.01,
+    34.04
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.usd_per_day_seed_ci95"
+  },
+  {
+   "key": "sc.pre.oos.v3.usd",
+   "printed": "\u2212$13",
+   "value": -12.667515700000001,
+   "ok": true,
+   "rule": "exact",
+   "file": "02_cv_cells_seeds.sql",
+   "how": "20-seed mean of $/day",
+   "stored": -12.67,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "cv.cal.is.sr",
+   "printed": "11.9",
+   "value": 11.953783610843448,
+   "ok": false,
+   "rule": "differs",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "per-seed Sharpe from daily P&L, mean over 20 seeds",
+   "stored": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  {
+   "key": "cv.cal.is.usd",
+   "printed": "+$94",
+   "value": 94.3465816014789,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "mean daily P&L over seeds and days",
+   "stored": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  {
+   "key": "cv.cal.oos.sr",
+   "printed": "8.8",
+   "value": 8.849450039369135,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "per-seed Sharpe from daily P&L, mean over 20 seeds",
+   "stored": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "cv.cal.oos.usd",
+   "printed": "+$57",
+   "value": 56.59290984421149,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "mean daily P&L over seeds and days",
+   "stored": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "cv.pre.is.sr",
+   "printed": "2.1",
+   "value": 2.152718171260275,
+   "ok": false,
+   "rule": "differs",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "per-seed Sharpe from daily P&L, mean over 20 seeds",
+   "stored": 2.15,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.sharpe_ann"
+  },
+  {
+   "key": "cv.pre.is.usd",
+   "printed": "+$15",
+   "value": 14.780352415908894,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "mean daily P&L over seeds and days",
+   "stored": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day"
+  },
+  {
+   "key": "cv.pre.oos.sr",
+   "printed": "0.3",
+   "value": 0.3444183968369664,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "per-seed Sharpe from daily P&L, mean over 20 seeds",
+   "stored": 0.34,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.sharpe_ann"
+  },
+  {
+   "key": "cv.pre.oos.usd",
+   "printed": "+$4",
+   "value": 4.345362716246827,
+   "ok": true,
+   "rule": "exact",
+   "file": "03_cv_daily_sharpe.sql",
+   "how": "mean daily P&L over seeds and days",
+   "stored": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day"
+  },
+  {
+   "key": "t3.is.c",
+   "printed": "\u22120.22",
+   "value": -0.21971114634209804,
+   "ok": true,
+   "rule": "exact",
+   "file": "04_tier0_v3_blind.sql",
+   "how": "per-seed total P&L / total shares, mean over 20 seeds",
+   "stored": -0.2197,
+   "source": "results/tier0_v3/blind.json::sets.u2_is.primary.per_share_c"
+  },
+  {
+   "key": "t3.oos.c",
+   "printed": "\u22120.52",
+   "value": -0.5168827222038385,
+   "ok": true,
+   "rule": "exact",
+   "file": "04_tier0_v3_blind.sql",
+   "how": "per-seed total P&L / total shares, mean over 20 seeds",
+   "stored": -0.5169,
+   "source": "results/tier0_v3/blind.json::sets.u2_oos.primary.per_share_c"
+  },
+  {
+   "key": "fresh.s1.cal.v05.usd",
+   "printed": "+$18.3",
+   "value": 18.26711525,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": 18.2671,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s1.cal.v1.usd",
+   "printed": "\u2212$1.5",
+   "value": -1.4944669249999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -1.4945,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s1.cal.v3.usd",
+   "printed": "\u2212$24.7",
+   "value": -24.666122499999997,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -24.6661,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s1.pre.v05.usd",
+   "printed": "\u2212$23.5",
+   "value": -23.500615749999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -23.5006,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s1.pre.v1.usd",
+   "printed": "\u2212$22.4",
+   "value": -22.368940375,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -22.3689,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s1.pre.v3.usd",
+   "printed": "\u2212$25.6",
+   "value": -25.643312375,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -25.6433,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.cal.v05.usd",
+   "printed": "+$50.8",
+   "value": 50.7568044,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": 50.7568,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.cal.v1.usd",
+   "printed": "+$20.2",
+   "value": 20.197807674999996,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": 20.1978,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.cal.v3.usd",
+   "printed": "\u2212$28.3",
+   "value": -28.297880075000002,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -28.2979,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.pre.v05.usd",
+   "printed": "\u2212$20.5",
+   "value": -20.4958374,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -20.4958,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.pre.v1.usd",
+   "printed": "\u2212$28.1",
+   "value": -28.140614425000003,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -28.1406,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.s2.pre.v3.usd",
+   "printed": "\u2212$31.4",
+   "value": -31.359901999999998,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "mean over 20 seeds of mean daily P&L",
+   "stored": -31.3599,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  {
+   "key": "fresh.show.cal",
+   "printed": "+$12.4",
+   "value": 12.375997357333208,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "showcase match, S2 at 0.5 s: total P&L over 20 seeds / 20",
+   "stored": 12.38,
+   "source": "results/fresh_holdout/results.json::showcase.pnl_20_seed_mean_usd.S2|cal|V0.5.mean_usd"
+  },
+  {
+   "key": "fresh.show.pre",
+   "printed": "\u2212$6.4",
+   "value": -6.415964789988624,
+   "ok": true,
+   "rule": "exact",
+   "file": "05_fresh_holdout.sql",
+   "how": "showcase match, S2 at 0.5 s: total P&L over 20 seeds / 20",
+   "stored": -6.42,
+   "source": "results/fresh_holdout/results.json::showcase.pnl_20_seed_mean_usd.S2|pre|V0.5.mean_usd"
+  },
+  {
+   "key": "capcv.half.is",
+   "printed": "$73,000",
+   "value": 73288.50345699236,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital where the seed-mean Sharpe halves (log-linear)",
+   "stored": 73288.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.capital_usd"
+  },
+  {
+   "key": "capcv.half.is.day",
+   "printed": "$183",
+   "value": 183.44632437837745,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "$/day where Sharpe halves",
+   "stored": 183.4,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.half.oos",
+   "printed": "$40,000",
+   "value": 40245.108146282706,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital where the seed-mean Sharpe halves (log-linear)",
+   "stored": 40245.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.capital_usd"
+  },
+  {
+   "key": "capcv.half.oos.day",
+   "printed": "$68",
+   "value": 67.47199355206888,
+   "ok": false,
+   "rule": "differs",
+   "file": "06_capacity_seeds.sql",
+   "how": "$/day where Sharpe halves",
+   "stored": 67.5,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.halfall.is",
+   "printed": "$165,000",
+   "value": 164684.5654360187,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital where the seed-mean Sharpe halves (log-linear)",
+   "stored": 164685.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.capital_usd"
+  },
+  {
+   "key": "capcv.halfall.is.day",
+   "printed": "$517",
+   "value": 517.2422657874891,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "$/day where Sharpe halves",
+   "stored": 517.2,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.halfall.oos",
+   "printed": "$97,000",
+   "value": 96925.96743506222,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital where the seed-mean Sharpe halves (log-linear)",
+   "stored": 96926.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.capital_usd"
+  },
+  {
+   "key": "capcv.halfall.oos.day",
+   "printed": "$278",
+   "value": 277.7731668020231,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "$/day where Sharpe halves",
+   "stored": 277.8,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.pmax.is",
+   "printed": "$219,000",
+   "value": 219200.7859375,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital of the highest-$/day cell",
+   "stored": 219200.8,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.capital_usd"
+  },
+  {
+   "key": "capcv.pmax.is.day",
+   "printed": "$339",
+   "value": 338.9824730873108,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "highest seed-mean $/day",
+   "stored": 339.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.pmax.is.sr",
+   "printed": "2.0",
+   "value": 1.9853072106838225,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "Sharpe of the highest-$/day cell",
+   "stored": 1.9853,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.sharpe_ann"
+  },
+  {
+   "key": "capcv.pmax.oos",
+   "printed": "$83,000",
+   "value": 83047.1826171875,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "capital of the highest-$/day cell",
+   "stored": 83047.2,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.capital_usd"
+  },
+  {
+   "key": "capcv.pmax.oos.day",
+   "printed": "$177",
+   "value": 176.86962127685547,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "highest seed-mean $/day",
+   "stored": 176.9,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.pnl_per_day_usd"
+  },
+  {
+   "key": "capcv.pmax.oos.sr",
+   "printed": "1.3",
+   "value": 1.2892066359519958,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "Sharpe of the highest-$/day cell",
+   "stored": 1.2892,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.sharpe_ann"
+  },
+  {
+   "key": "capcv.pre.sr0.is",
+   "printed": "2.7",
+   "value": 2.7242638573050497,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "seed-mean Sharpe at the smallest size (top-10 matches)",
+   "stored": 2.724,
+   "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|IS.sharpe_ref_smallest_size"
+  },
+  {
+   "key": "capcv.pre.sr0.oos",
+   "printed": "0.8",
+   "value": 0.8503685094416141,
+   "ok": false,
+   "rule": "differs",
+   "file": "06_capacity_seeds.sql",
+   "how": "seed-mean Sharpe at the smallest size (top-10 matches)",
+   "stored": 0.85,
+   "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|burned_OOS.sharpe_ref_smallest_size"
+  },
+  {
+   "key": "capcv.sr0.is",
+   "printed": "13.6",
+   "value": 13.634212517738343,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "seed-mean Sharpe at the smallest size (top-10 matches)",
+   "stored": 13.634,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.sharpe_ref_smallest_size"
+  },
+  {
+   "key": "capcv.sr0.oos",
+   "printed": "10.6",
+   "value": 10.59059789776802,
+   "ok": true,
+   "rule": "exact",
+   "file": "06_capacity_seeds.sql",
+   "how": "seed-mean Sharpe at the smallest size (top-10 matches)",
+   "stored": 10.591,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.sharpe_ref_smallest_size"
+  }
+ ]
+}
