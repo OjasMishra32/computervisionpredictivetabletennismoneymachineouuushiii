@@ -15,18 +15,56 @@ SELECT m.title, m.outcome, b.bucket, round(b.mid, 4) AS mid, round(b.spread, 4) 
 FROM bars_1s b JOIN busiest USING (asset_id) JOIN markets m USING (asset_id)
 ORDER BY b.bucket;
 
--- name: jumps_and_who_trades
--- Every price jump (the repo's 4c detector, in SQL) and the trading that follows it: dollars traded in the
+-- name: points_and_who_trades
+-- Every point the in-database job found (jump_events), and the trading that follows: dollars traded in the
 -- first 3 s after detection vs the next 27 s. The thesis says the first seconds are where the money moves.
 SET search_path = courtside, public;
 SELECT m.title, m.outcome, j.detected_at, j.move_cents, j.direction,
        coalesce(sum(t.size * t.price) FILTER (WHERE t.ts <  j.detected_at + interval '3 seconds'), 0)  AS usd_first_3s,
        coalesce(sum(t.size * t.price) FILTER (WHERE t.ts >= j.detected_at + interval '3 seconds'), 0)  AS usd_next_27s
-FROM jumps j
+FROM jump_events j
 JOIN markets m USING (asset_id)
 LEFT JOIN trades t ON t.asset_id = j.asset_id AND t.ts >= j.detected_at AND t.ts < j.detected_at + interval '30 seconds'
 GROUP BY m.title, m.outcome, j.detected_at, j.move_cents, j.direction
 ORDER BY abs(j.move_cents) DESC;
+
+-- name: who_gets_paid
+-- The paper's Figure 1, recomputed from live wallet trades: cents per share 5 s and 30 s after the trade,
+-- by how soon after a point it was made.
+SET search_path = courtside, public;
+SELECT * FROM who_gets_paid
+ORDER BY array_position(ARRAY['0-3 s','3-10 s','10-60 s','60 s+','no recent point'], after_point);
+
+-- name: fast_tier
+-- Wallets that trade within 3 s of points, ranked by marked-to-market P&L.
+SET search_path = courtside, public;
+SELECT left(wallet, 6) || '...' || right(wallet, 4) AS wallet, fast_trades, tokens, usd, cents_per_share_30s, pnl_usd_30s
+FROM fast_tier LIMIT 10;
+
+-- name: time_travel_book
+-- Rebuild the full order book at any instant (book_at): the biggest point, 10 s before, at detection and
+-- 10 s after. Shows the book emptying and refilling around a point.
+SET search_path = courtside, public;
+WITH j AS (SELECT asset_id, detected_at FROM jump_events ORDER BY abs(move_cents) DESC LIMIT 1)
+SELECT v.moment, v.at,
+       max(b.price) FILTER (WHERE b.side = 'bid') AS best_bid,
+       min(b.price) FILTER (WHERE b.side = 'ask') AS best_ask,
+       round(sum(b.size) FILTER (WHERE b.side = 'bid' AND b.price >= (SELECT max(price) FROM book_at(j.asset_id, v.at) WHERE side = 'bid') - 0.05)) AS bid_shares_within_5c,
+       round(sum(b.size) FILTER (WHERE b.side = 'ask' AND b.price <= (SELECT min(price) FROM book_at(j.asset_id, v.at) WHERE side = 'ask') + 0.05)) AS ask_shares_within_5c
+FROM j,
+     LATERAL (VALUES (1, '10 s before', j.detected_at - interval '10 seconds'), (2, 'at detection', j.detected_at),
+                     (3, '10 s after', j.detected_at + interval '10 seconds')) AS v(k, moment, at),
+     LATERAL book_at(j.asset_id, v.at) b
+GROUP BY v.k, v.moment, v.at, j.asset_id ORDER BY v.k;
+
+-- name: candles_1m
+-- Hierarchical continuous aggregate: 1-minute candles built from the 1-second bars.
+SET search_path = courtside, public;
+SELECT c.minute, m.title, m.outcome, round(c.open, 3) AS open, round(c.high, 3) AS high, round(c.low, 3) AS low,
+       round(c.close, 3) AS close, round(c.avg_spread, 4) AS avg_spread, c.updates
+FROM candles_1m c JOIN markets m USING (asset_id)
+WHERE m.market_type = 'moneyline'
+ORDER BY c.high - c.low DESC LIMIT 10;
 
 -- name: compression
 -- How much Tiger Data's columnar compression saves on tick data.
