@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T03:03:59+00:00",
+ "generated_utc": "2026-10-04T03:06:58+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -2530,20 +2530,15 @@
    "raw": 2,
    "source": "D: keyword class 'other' over results/oos_peeks.log"
   },
-  "fwd.notrun": {
-   "value": "not run (submitted before the forward window closed)",
-   "raw": "2026-10-04T02:18:17Z",
-   "source": "HYPOTHESIS_V2.md::Amendment A3; research/v2/maker/DEVIATIONS_LIVE.md L15"
-  },
   "fwd.cell": {
-   "value": "pending (runs once, Oct 4)",
-   "raw": null,
-   "source": "results/v2/forward.json (absent at build time)"
+   "value": "runs 2026-10-04 11:30 UTC (pre-registered)",
+   "raw": "2026-10-04T02:59:14Z",
+   "source": "HYPOTHESIS_V2.md::Amendment A4 (results/v2/forward.json absent at build time)"
   },
   "fwd.status": {
-   "value": "pending",
+   "value": "runs once",
    "raw": null,
-   "source": "results/v2/forward.json (absent at build time)"
+   "source": "HYPOTHESIS_V2.md::Amendment A4"
   },
   "live.cell": {
    "value": "stopped by a team decision after 0 fills; not used",

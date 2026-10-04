@@ -828,9 +828,11 @@ def collect() -> tuple[Registry, dict]:
     fwd_p = ROOT / "results/v2/forward.json"
     hv2 = (ROOT / "HYPOTHESIS_V2.md").read_text()
     a3 = re.search(r"^## Amendment A3 \(([^)]+)\): forward test not run", hv2, re.M)
-    if a3 and not fwd_p.exists():
-        N.add("fwd.notrun", "not run (submitted before the forward window closed)", a3.group(1),
-              "HYPOTHESIS_V2.md::Amendment A3; research/v2/maker/DEVIATIONS_LIVE.md L15")
+    a4 = re.search(r"^## Amendment A4 \(([^)]+)\): forward test reinstated", hv2, re.M)
+    v3_p = ROOT / "results/tier0_v3/forward/results.json"
+    # ONE slot for the blind forward test (research/compliance/PAPER_REQUIREMENTS.md, addendum 2026-10-04T02:59Z): it
+    # fills from results/v2/forward.json (and the tier-0 v3 forward secondary) at build time; until then it says when
+    # the pre-registered run happens. The live paper session stays out of the results.
     if fwd_p.exists():
         F = json.loads(fwd_p.read_text())
 
@@ -838,15 +840,28 @@ def collect() -> tuple[Registry, dict]:
             return f"{sgn(v[0])} {ci(v[1:3])}" if isinstance(v, list) and len(v) >= 3 else str(v)
         parts = []
         if "primary_A_fast_minus_others_c" in F:
-            parts.append(f"A {tri(F['primary_A_fast_minus_others_c'])} {F.get('verdict_A_fast_tier', '')}".strip())
+            parts.append(f"A {tri(F['primary_A_fast_minus_others_c'])}¢ {F.get('verdict_A_fast_tier', '')}".strip())
         if "primary_m30_per_share_c" in F:
-            parts.append(f"B {tri(F['primary_m30_per_share_c'])} {F.get('verdict_B_v2_book', '')}".strip())
+            parts.append(f"B {tri(F['primary_m30_per_share_c'])}¢ {F.get('verdict_B_v2_book', '')}".strip())
         if "v2_trades" in F:
             parts.append(f"n = {intc(F['v2_trades'])}")
-        cell = " \u00b7 ".join(parts) if parts else "see results/v2/forward.json"
+        if v3_p.exists():
+            try:
+                R3 = json.loads(v3_p.read_text())["results"]["frozen_v3"]["primary (lag 2.0 | tournament | trunc 0 | queue 0)"]["full_window"]
+                parts.append(f"v3 {sgn(R3['per_share_c'])}¢ [{num(R3['per_share_ci95_c_lo'])}, {num(R3['per_share_ci95_c_hi'])}]")
+            except (KeyError, TypeError):
+                parts.append("v3: see results/tier0_v3/forward/results.json")
+        cell = " · ".join(parts) if parts else "see results/v2/forward.json"
         status = " / ".join(str(F.get(k)) for k in ("verdict_A_fast_tier", "verdict_B_v2_book") if F.get(k)) or "reported"
-        N.add("fwd.cell", cell, F, "results/v2/forward.json")
+        N.add("fwd.cell", cell, F, "results/v2/forward.json" + (" ; results/tier0_v3/forward/results.json" if v3_p.exists() else ""))
         N.add("fwd.status", status, status, "results/v2/forward.json::verdict_*")
+    elif a4:
+        N.add("fwd.cell", "runs 2026-10-04 11:30 UTC (pre-registered)", a4.group(1),
+              "HYPOTHESIS_V2.md::Amendment A4 (results/v2/forward.json absent at build time)")
+        N.add("fwd.status", "runs once", None, "HYPOTHESIS_V2.md::Amendment A4")
+    elif a3:
+        N.add("fwd.cell", "not run (submitted before the forward window closed)", a3.group(1), "HYPOTHESIS_V2.md::Amendment A3")
+        N.add("fwd.status", "not run", None, "HYPOTHESIS_V2.md::Amendment A3")
     else:
         N.add("fwd.cell", "pending (runs once, Oct 4)", None, "results/v2/forward.json (absent at build time)")
         N.add("fwd.status", "pending", None, "results/v2/forward.json (absent at build time)")
@@ -1494,8 +1509,9 @@ own call table it is {v('cv.eng.pre.is.usd')} / {v('cv.eng.pre.oos.usd')} (pre-r
 Fees ×2 out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets (blind, {v('u2.verdict')});
 v2-safe's blind test ({v('v2s.u2.verdict')}); the CV simulation's frozen v3 rule (blind, {v('t3.verdict')}); maker v1 (blind,
 {v('mk.verdict')}, {v('mk.oos.usd')}); table tennis markets (untestable, median spread {v('tt.spread')}¢); v2 out of sample
-after a central feed licence ({v('fin.v2.oos.net_central')}/day); the live-book replay and its ex-ante filter. Forward test
-and live paper session: {v('fwd.notrun')} (`HYPOTHESIS_V2.md` A3). Variants tried: {v('var.total')}. Logged reads of
+after a central feed licence ({v('fin.v2.oos.net_central')}/day); the live-book replay and its ex-ante filter. Blind
+forward test (v2; tier-0 v3 secondary): {v('fwd.cell')} (`HYPOTHESIS_V2.md` A4). The live paper session was stopped and is
+not used. Variants tried: {v('var.total')}. Logged reads of
 held-out data: {v('peeks.n')} (Table A9 of the PDF). Everything we tested, with its best result, is Table A1 of the PDF;
 every formula with a worked example is the appendix "Calculations".
 
