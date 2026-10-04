@@ -22,23 +22,29 @@ def _has_history() -> bool:
     return P.Git(ROOT).commit_time("7232986") is not None
 
 
+def record_logs() -> dict:
+    """The read logs as committed when the git history is present. `bash run.sh replay` (judge quick path) and other
+    local runs append lines to the working-tree log that record that run; the registry maps the committed record."""
+    return P.read_logs(ROOT, "HEAD" if _has_history() else None)
+
+
 needs_git = pytest.mark.skipif(not _has_history(), reason="needs the repository's full git history")
 
 
 # --------------------------------------------------------------------------- the committed registry
 @needs_git
 def test_committed_registry_passes_check():
-    assert P.validate(load_registry(), ROOT) == []
+    assert P.validate(load_registry(), ROOT, logs=record_logs()) == []
 
 
 @needs_git
 def test_cli_check_exits_zero(capsys):
-    assert P.main(["check"]) == 0
+    assert P.main(["check", "--committed"]) == 0
     assert "provenance: OK" in capsys.readouterr().out
 
 
 def test_every_log_line_mapped_exactly_once():
-    reg, logs = load_registry(), P.read_logs(ROOT)
+    reg, logs = load_registry(), record_logs()
     for logname in (P.OOS_LOG, *P.AUX_LOGS):
         mapped = []
         for ev in reg["events"]:
@@ -49,13 +55,13 @@ def test_every_log_line_mapped_exactly_once():
 
 
 def test_summary_and_log_lines_match_recomputation():
-    reg, logs = load_registry(), P.read_logs(ROOT)
+    reg, logs = load_registry(), record_logs()
     assert reg["log_lines"] == P.compute_log_lines(reg, logs)
     assert reg["summary"] == P.compute_summary(reg, logs)
 
 
 def test_build_is_idempotent():
-    reg, logs = load_registry(), P.read_logs(ROOT)
+    reg, logs = load_registry(), record_logs()
     assert P.build(copy.deepcopy(reg), logs) == reg
 
 

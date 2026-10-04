@@ -2,6 +2,7 @@
 """Experiment registry: validate and summarise results/provenance/experiments.json.
 
     python scripts/provenance.py check      # validate; exit 1 on any error (default)
+    python scripts/provenance.py check --committed   # against the read logs as committed (git HEAD)
     python scripts/provenance.py build      # recompute derived fields, write them, then check
     python scripts/provenance.py summary    # print the derived summary as JSON
 
@@ -127,11 +128,20 @@ def log_line_utc(raw: str) -> datetime:
     return d.astimezone(timezone.utc).replace(microsecond=0)
 
 
-def read_logs(repo: Path) -> dict[str, list[str]]:
+def read_logs(repo: Path, rev: str | None = None) -> dict[str, list[str]]:
+    """The read logs in the working tree, or as committed at `rev` (e.g. "HEAD"). Running `bash run.sh replay` or
+    a reproduction in a checkout appends lines to the working-tree log that record that run, not an evaluation by
+    the authors; the committed record is what the registry maps. A log not in git at `rev` is read from disk."""
     logs = {}
     for rel in (OOS_LOG, *AUX_LOGS):
-        p = Path(repo) / rel
-        logs[rel] = [l for l in p.read_text().splitlines() if l.strip()] if p.exists() else []
+        text = None
+        if rev is not None:
+            r = subprocess.run(["git", "-C", str(repo), "show", f"{rev}:{rel}"], capture_output=True, text=True)
+            text = r.stdout if r.returncode == 0 else None
+        if text is None:
+            p = Path(repo) / rel
+            text = p.read_text() if p.exists() else ""
+        logs[rel] = [l for l in text.splitlines() if l.strip()]
     return logs
 
 
@@ -537,11 +547,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("cmd", nargs="?", default="check", choices=("check", "build", "summary"))
     ap.add_argument("--registry", default=REGISTRY)
     ap.add_argument("--repo", default=str(ROOT))
+    ap.add_argument("--committed", action="store_true",
+                    help="read the logs as committed at git HEAD (ignores lines a local replay or reproduction "
+                         "appended to the working-tree log)")
     a = ap.parse_args(argv)
     repo = Path(a.repo)
     path = repo / a.registry
     reg = load(path)
-    logs = read_logs(repo)
+    logs = read_logs(repo, "HEAD" if a.committed else None)
     if a.cmd == "build":
         write(path, build(reg, logs))
     if a.cmd == "summary":
