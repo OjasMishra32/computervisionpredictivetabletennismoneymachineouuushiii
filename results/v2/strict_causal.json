@@ -1,0 +1,361 @@
+{
+  "schema": "courtside.v2.strict/1",
+  "generated_utc": "2026-10-04T09:51:06.331055+00:00",
+  "git_head": "84545225ec08fff87e9802a8600f295f009b64d4",
+  "periods_run": [
+    "IS",
+    "OOS"
+  ],
+  "rule": "prints with ts > detection second (the print that fires the detector, prints before it and the rest of its second are excluded because second-resolution block times cannot order them); 0-3 s window = 0 < ts - detect <= 3; qualification, filter and book re-derived",
+  "labels": {
+    "IS": "event study at the fast tier's own fills on strict labels (observational; a copier cannot get these prices)",
+    "OOS": "event study at the fast tier's own fills on strict labels (observational; a copier cannot get these prices)",
+    "copier": "executable copier on the strict trades: acts after the fast print plus network leg, taker hold and block lag; same shares; copier price impact ignored",
+    "frozen_T3e": "unchanged frozen rule at the fast tier's own fills (event study); reproduced here"
+  },
+  "tape_order": {
+    "raw_tape_columns": [
+      "timestamp",
+      "side",
+      "outcomeIndex",
+      "price",
+      "size",
+      "proxyWallet",
+      "transactionHash",
+      "p0"
+    ],
+    "order_col": null,
+    "note": "no block, transaction or log index in the public tapes, so prints inside one second cannot be ordered; the whole detection second is excluded"
+  },
+  "timing": {
+    "tau": "max(fast print block time, detection second) + network leg + taker hold (trade delay) + block lag",
+    "block_lag_s": {
+      "median": 1.9760000705718994,
+      "p90": 2.9739999771118164,
+      "n": 5472
+    },
+    "net_s": 0.067,
+    "taker_hold_s": "trade's own `delay` (3 s before May 2026, 1 s after)",
+    "source": "results/decay/decay.json::latency_inputs (block_lag_s, net_florida_s)"
+  },
+  "frozen_T3e_reproduction": {
+    "IS": {
+      "n_trades": 55662,
+      "per_share_c": 1.3814511010237975,
+      "reference_n_trades": 55662,
+      "reference_per_share_c": 1.3814511010237975,
+      "equal": true
+    },
+    "OOS": {
+      "n_trades": 10412,
+      "per_share_c": 0.598736335564979,
+      "reference_n_trades": 10412,
+      "reference_per_share_c": 0.598736335564979,
+      "equal": true
+    }
+  },
+  "same_second_share_of_old": {
+    "IS": {
+      "pnl": 0.9774683546903974,
+      "trades": 0.8498077683159068,
+      "pnl_usd_detection_second": 39514.861225466695,
+      "pnl_usd_total": 40425.71919167921
+    },
+    "OOS": {
+      "pnl": 0.9918153131184564,
+      "trades": 0.8945447560507107,
+      "pnl_usd_detection_second": 3657.354593322437,
+      "pnl_usd_total": 3687.5359201936667
+    }
+  },
+  "IS": {
+    "label": "event study at the fast tier's own fills on strict labels (observational; a copier cannot get these prices)",
+    "n_trades": 8756,
+    "n_matches": 4090,
+    "c_share": 0.3329675046984033,
+    "c_share_ci95": [
+      -0.5504811142409429,
+      1.214514837690606
+    ],
+    "usd_day": 7.244332138759937,
+    "sharpe": 0.8861487467392413,
+    "ret_ann": 0.4697270530975013,
+    "vol_ann": 0.530076981800126,
+    "max_dd_usd": -2125.0345849585383,
+    "turnover_x": 40.43031327754374,
+    "fees_x2_c_share": -0.32678160277181095,
+    "total_pnl_usd": 1492.332420584547,
+    "total_pnl_ci_usd": [
+      -2509.877023812472,
+      5407.501121113974
+    ],
+    "usd_traded": 227589.77753722068,
+    "capital_usd": 5629.18659508956,
+    "max_dd_pct": -37.75029569657975,
+    "worst_day_usd": -381.10755296469125,
+    "months_positive": 5,
+    "months_total": 7,
+    "days": 206,
+    "same_second_share_of_old_pnl": 0.9774683546903974,
+    "same_second_share_of_old_trades": 0.8498077683159068
+  },
+  "OOS": {
+    "label": "event study at the fast tier's own fills on strict labels (observational; a copier cannot get these prices)",
+    "n_trades": 1617,
+    "n_matches": 959,
+    "c_share": 0.761801565191818,
+    "c_share_ci95": [
+      -1.1870172681444247,
+      2.6537752541504895
+    ],
+    "usd_day": 20.612798237856516,
+    "sharpe": 2.431114250149182,
+    "ret_ann": 1.3818161646542595,
+    "vol_ann": 0.5683879992762438,
+    "max_dd_usd": -394.3105407380773,
+    "turnover_x": 10.832088312866293,
+    "fees_x2_c_share": -0.12503633141905524,
+    "total_pnl_usd": 824.5119295142607,
+    "total_pnl_ci_usd": [
+      -1312.3096218241803,
+      2820.967814185116
+    ],
+    "usd_traded": 58978.23072175617,
+    "capital_usd": 5444.770114337247,
+    "max_dd_pct": -7.2420053089068555,
+    "worst_day_usd": -264.8062267135033,
+    "months_positive": 1,
+    "months_total": 3,
+    "days": 40,
+    "same_second_share_of_old_pnl": 0.9918153131184564,
+    "same_second_share_of_old_trades": 0.8945447560507107
+  },
+  "copier": {
+    "central": {
+      "what": "block lag median + network leg; first same-side print at/after tau (fallback: mid + proxy half-spread at the first print at/after tau)",
+      "IS": {
+        "n_trades": 8755,
+        "n_matches": 4090,
+        "c_share": -1.4171875542515335,
+        "c_share_ci95": [
+          -2.312707881839658,
+          -0.504493984447065
+        ],
+        "usd_day": -30.83142502781815,
+        "sharpe": -3.8503642462814995,
+        "ret_ann": -1.9384129552607645,
+        "vol_ann": 0.5034362546693582,
+        "max_dd_usd": -6624.378824244586,
+        "turnover_x": 40.554344897580016,
+        "fees_x2_c_share": -2.068871009440516,
+        "total_pnl_usd": -6351.273555730539,
+        "total_pnl_ci_usd": [
+          -10284.984549341765,
+          -2258.801414431621
+        ],
+        "usd_traded": 235438.53641560214,
+        "capital_usd": 5805.507079702608,
+        "max_dd_pct": -114.10508562473281,
+        "worst_day_usd": -403.14525801627406,
+        "months_positive": 0,
+        "months_total": 7,
+        "days": 206,
+        "entry_cost_vs_fast_fill_c_share_weighted": 1.757934770664358,
+        "n_attempted_trades": 8756,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 0.8493432324386065,
+        "share_beyond_tape_end": 0.00011420740063956144,
+        "median_tau_minus_fast_print_s": 3.0429999828338623
+      },
+      "OOS": {
+        "n_trades": 1616,
+        "n_matches": 958,
+        "c_share": -1.0197839149510575,
+        "c_share_ci95": [
+          -2.997786316155362,
+          0.8430880844900117
+        ],
+        "usd_day": -27.591564545996704,
+        "sharpe": -3.2013445371878135,
+        "ret_ann": -1.7888717094176299,
+        "vol_ann": 0.5587876245863386,
+        "max_dd_usd": -1030.4286649999744,
+        "turnover_x": 10.820972705845737,
+        "fees_x2_c_share": -1.8883822631177123,
+        "total_pnl_usd": -1103.6625818398682,
+        "total_pnl_ci_usd": [
+          -3220.967525980583,
+          900.0044990452136
+        ],
+        "usd_traded": 60919.495418018996,
+        "capital_usd": 5629.7614894739445,
+        "max_dd_pct": -18.303238368562923,
+        "worst_day_usd": -294.5200026732251,
+        "months_positive": 0,
+        "months_total": 3,
+        "days": 40,
+        "entry_cost_vs_fast_fill_c_share_weighted": 1.7991833272400986,
+        "n_attempted_trades": 1617,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 0.724009900990099,
+        "share_beyond_tape_end": 0.0006184291898577613,
+        "median_tau_minus_fast_print_s": 3.0429999828338623
+      }
+    },
+    "harsh": {
+      "what": "block lag p90 + network leg; same price rule as central",
+      "IS": {
+        "n_trades": 8755,
+        "n_matches": 4090,
+        "c_share": -1.4400474344566287,
+        "c_share_ci95": [
+          -2.3316977927289324,
+          -0.5370164124092451
+        ],
+        "usd_day": -31.328749944745272,
+        "sharpe": -3.9105511075423416,
+        "ret_ann": -1.9667971308066405,
+        "vol_ann": 0.5029462796211122,
+        "max_dd_usd": -6664.440047748967,
+        "turnover_x": 40.51261824487795,
+        "fees_x2_c_share": -2.09170803632136,
+        "total_pnl_usd": -6453.722488617526,
+        "total_pnl_ci_usd": [
+          -10374.728667099704,
+          -2377.764135969411
+        ],
+        "usd_traded": 235541.08776804083,
+        "capital_usd": 5814.017902874508,
+        "max_dd_pct": -114.62709883390627,
+        "worst_day_usd": -405.1024470763092,
+        "months_positive": 0,
+        "months_total": 7,
+        "days": 206,
+        "entry_cost_vs_fast_fill_c_share_weighted": 1.780817504193706,
+        "n_attempted_trades": 8756,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 0.8383780696744717,
+        "share_beyond_tape_end": 0.00011420740063956144,
+        "median_tau_minus_fast_print_s": 4.040999889373779
+      },
+      "OOS": {
+        "n_trades": 1616,
+        "n_matches": 958,
+        "c_share": -1.0456402527990876,
+        "c_share_ci95": [
+          -3.0526921084880976,
+          0.8153387315026563
+        ],
+        "usd_day": -28.291140999593996,
+        "sharpe": -3.285280758606686,
+        "ret_ann": -1.8342280554480412,
+        "vol_ann": 0.5583169872598505,
+        "max_dd_usd": -1045.5505807965742,
+        "turnover_x": 10.825965842938855,
+        "fees_x2_c_share": -1.9141211740058266,
+        "total_pnl_usd": -1131.6456399837598,
+        "total_pnl_ci_usd": [
+          -3275.1603056144936,
+          886.6900474817342
+        ],
+        "usd_traded": 60947.605561656055,
+        "capital_usd": 5629.761486953944,
+        "max_dd_pct": -18.571845063409302,
+        "worst_day_usd": -292.4730026732251,
+        "months_positive": 0,
+        "months_total": 3,
+        "days": 40,
+        "entry_cost_vs_fast_fill_c_share_weighted": 1.8251570920480447,
+        "n_attempted_trades": 1617,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 0.7172029702970297,
+        "share_beyond_tape_end": 0.0006184291898577613,
+        "median_tau_minus_fast_print_s": 4.040999889373779
+      }
+    },
+    "optimistic": {
+      "what": "block lag median + network leg; last same-side print at/before tau, which can be the fast wallet's own fill (upper bound, not attainable in general)",
+      "IS": {
+        "n_trades": 8755,
+        "n_matches": 4090,
+        "c_share": -0.5792952698103353,
+        "c_share_ci95": [
+          -1.4650072983892635,
+          0.3289500376268771
+        ],
+        "usd_day": -12.60277697651656,
+        "sharpe": -1.5692075110650718,
+        "ret_ann": -0.8028107085669617,
+        "vol_ann": 0.5116026420381253,
+        "max_dd_usd": -3303.5925832005587,
+        "turnover_x": 40.43261120708027,
+        "fees_x2_c_share": -1.2330302825211985,
+        "total_pnl_usd": -2596.1720571624114,
+        "total_pnl_ci_usd": [
+          -6514.0513553057235,
+          1471.115215122722
+        ],
+        "usd_traded": 231674.24064842946,
+        "capital_usd": 5729.885697015292,
+        "max_dd_pct": -57.65547094458457,
+        "worst_day_usd": -390.58134683564464,
+        "months_positive": 4,
+        "months_total": 7,
+        "days": 206,
+        "entry_cost_vs_fast_fill_c_share_weighted": 0.9179909287012794,
+        "n_attempted_trades": 8756,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 1.0,
+        "share_beyond_tape_end": 0.00011420740063956144,
+        "median_tau_minus_fast_print_s": 3.0429999828338623
+      },
+      "OOS": {
+        "n_trades": 1616,
+        "n_matches": 958,
+        "c_share": 0.1291569438192907,
+        "c_share_ci95": [
+          -1.837397468314292,
+          1.960883019454565
+        ],
+        "usd_day": 3.4945071202899483,
+        "sharpe": 0.41323588292538893,
+        "ret_ann": 0.2323818174396212,
+        "vol_ann": 0.5623466573002771,
+        "max_dd_usd": -549.4421442256038,
+        "turnover_x": 10.869743110005933,
+        "fees_x2_c_share": -0.7526642479748289,
+        "total_pnl_usd": 139.78028481159794,
+        "total_pnl_ci_usd": [
+          -1986.324619275271,
+          2083.1346368862005
+        ],
+        "usd_traded": 59661.74211018171,
+        "capital_usd": 5488.790443930661,
+        "max_dd_pct": -10.010259087831642,
+        "worst_day_usd": -269.0333211249925,
+        "months_positive": 1,
+        "months_total": 3,
+        "days": 40,
+        "entry_cost_vs_fast_fill_c_share_weighted": 0.6370196248422862,
+        "n_attempted_trades": 1617,
+        "n_unsupported_fills": 1,
+        "share_same_side_print": 1.0,
+        "share_beyond_tape_end": 0.0006184291898577613,
+        "median_tau_minus_fast_print_s": 3.0429999828338623
+      }
+    }
+  },
+  "n_wallets_by_month_strict": {
+    "2025-12": 0,
+    "2026-01": 0,
+    "2026-02": 3,
+    "2026-03": 5,
+    "2026-04": 6,
+    "2026-05": 10,
+    "2026-06": 16,
+    "2026-07": 25,
+    "2026-08": 28,
+    "2026-09": 33,
+    "2026-10": 40
+  }
+}

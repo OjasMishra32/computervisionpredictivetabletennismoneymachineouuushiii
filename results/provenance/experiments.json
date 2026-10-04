@@ -204,7 +204,8 @@
     "R_v2safe_oos",
     "R_v2safe_u2",
     "R_wcap_oos",
-    "R_capacity"
+    "R_capacity",
+    "R_v2_strict"
    ],
    "oos_informed": true
   },
@@ -252,7 +253,8 @@
    ],
    "oos_log_lines": [],
    "touches": [
-    "R_v2_oos"
+    "R_v2_oos",
+    "R_v2_strict"
    ],
    "oos_informed": false
   },
@@ -406,7 +408,8 @@
    "touches": [
     "R_cv_table2_pre",
     "R_cv_table2_post",
-    "R_fresh"
+    "R_fresh",
+    "R_cv_causal_points"
    ],
    "oos_informed": true
   },
@@ -589,7 +592,8 @@
     "R_fresh",
     "R_v3_oos",
     "R_v3_u2",
-    "R_capacity"
+    "R_capacity",
+    "R_cv_causal_points"
    ],
    "oos_informed": true,
    "sub_directions": {
@@ -624,7 +628,8 @@
     "R_fresh",
     "R_v3_oos",
     "R_v3_u2",
-    "R_capacity"
+    "R_capacity",
+    "R_cv_causal_points"
    ],
    "oos_informed": true
   },
@@ -1154,7 +1159,8 @@
    "touches": [
     "R_cv_table2_post",
     "R_fresh",
-    "R_capacity"
+    "R_capacity",
+    "R_cv_causal_points"
    ],
    "oos_informed": true
   },
@@ -1625,6 +1631,118 @@
     "R_cv_table2_post"
    ],
    "oos_informed": false
+  },
+  {
+   "id": "E60",
+   "utc": "2026-10-04T08:50:47Z",
+   "time_source": "commit",
+   "commit": "844a978",
+   "kind": "e",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "oos_selected": false,
+   "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)",
+   "summary": "Review fix D1 (external code review, not an OOS value): v2's 0-3 s window counted the print that fires the detector and the rest of its second (85% of T3e IS trades, 97.7% of its P&L, fall in the detection second). 844a978 adds strict detection labels (prints after the detection second; tapes carry no within-second order) and an executable copier priced after the network leg, taker hold and block lag; a63ec74 rejects copier fills after the recorded tape ends. The frozen T3e rule is kept unchanged as the event study.",
+   "printed_text": "After review, v2 and its copier were re-timed to use only prints after the detecting print's second; the copier's estimates stay negative.",
+   "evidence": [
+    "commit:844a978",
+    "commit:a63ec74",
+    "src/v2.py",
+    "scripts/v2_strict.py",
+    "results/v2/strict_causal.json"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2_copier",
+    "R_v2_strict"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E61",
+   "utc": "2026-10-04T08:55:55Z",
+   "time_source": "commit",
+   "commit": "37e10c7",
+   "kind": "e",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "oos_selected": false,
+   "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)",
+   "summary": "Review fix D2 (external code review, not an OOS value): every CV trader P&L traded only the historical >= 4c jumps in their realised direction. 37e10c7 adds the causal trade set (every point of every covered match, the frozen call model's measured calls and false calls, ex-ante depth) to the same tier-0 simulator; be0c74b and 415f8db fix seed draws and parallel workers. Cells, 20 seeds, metrics and the primary cell are fixed in scripts/cv_causal_points.py. The jump set stays as a labelled conditional benchmark.",
+   "printed_text": "After review, simulated CV trades were taken on every point from the call model's calls, not only on later price jumps; this lowered simulated P&L.",
+   "evidence": [
+    "commit:37e10c7",
+    "commit:be0c74b",
+    "commit:415f8db",
+    "src/tier0.py",
+    "scripts/cv_causal_points.py",
+    "results/tier0/causal_points.json"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_causal_points"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E62",
+   "utc": "2026-10-04T09:47:27Z",
+   "utc_end": "2026-10-04T09:51:06Z",
+   "time_source": "log",
+   "commit": "8454522",
+   "commit_role": "code",
+   "subject_commit": "a63ec74",
+   "kind": "b",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Recompute: scripts/v2_strict.py --oos (reproduce.sh step s03_v2_strict) run once on IS and the already-read OOS with the merged code: the frozen T3e book reproduced exactly (55,662 IS / 10,412 OOS trades; 97.7% IS and 99.2% OOS of its P&L in the detection second); the copier stress and the strict-label event study (T3f, computed on this OOS by the verifiers in E08) re-run under the E60 fixes. Copier central OOS -1.02c [-3.00, +0.84], -27.59 $/day. No parameter, threshold or rule chosen.",
+   "evidence": [
+    "results/oos_peeks.log:112",
+    "results/v2/strict_causal.json",
+    "scripts/v2_strict.py",
+    "reproduce.sh"
+   ],
+   "oos_log_lines": [
+    112
+   ],
+   "touches": [
+    "R_v2_copier",
+    "R_v2_strict"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E63",
+   "utc": "2026-10-04T09:47:34Z",
+   "utc_end": "2026-10-04T09:57:25Z",
+   "time_source": "log",
+   "commit": "8454522",
+   "commit_role": "code",
+   "subject_commit": "88e314f",
+   "kind": "b",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Recompute: scripts/cv_causal_points.py --oos (reproduce.sh step s03_cv_causal) on IS and the already-read OOS under the E61 fixes. Line 113: the first attempt stopped before computing any OOS statistic (spawned workers loaded the IS file for the OOS period); line 114: the same frozen step re-run after the loader fix 88e314f (IS cells identical to the IS-only run at 415f8db). Primary cell (tournament_L2.0, V = 0.5 s) OOS -145.69 $/day, mean of 20 seeds; fills an upper bound. No parameter or rule chosen.",
+   "evidence": [
+    "results/oos_peeks.log:113",
+    "results/oos_peeks.log:114",
+    "results/tier0/causal_points.json",
+    "scripts/cv_causal_points.py",
+    "reproduce.sh",
+    "commit:88e314f"
+   ],
+   "oos_log_lines": [
+    113,
+    114
+   ],
+   "touches": [
+    "R_cv_causal_points"
+   ],
+   "oos_informed": false
   }
  ],
  "results": [
@@ -1738,7 +1856,7 @@
   },
   {
    "id": "R_v2_copier",
-   "paper": "v2 copier at our latency (copier stress)",
+   "paper": "v2 copier at our latency: the corrected copier on strict-timing trades (results/v2/strict_causal.json::copier, E60, E62); the pre-fix copier stress in results/rigor/psr.json (E52) is a historical diagnostic",
    "period": "OOS",
    "kind": "executable",
    "label": "burned-non-blind",
@@ -1751,10 +1869,30 @@
    "events": [
     "E06",
     "E10",
-    "E52"
+    "E52",
+    "E60",
+    "E62"
    ],
    "paper_keys": [
     "copier.*"
+   ]
+  },
+  {
+   "id": "R_v2_strict",
+   "paper": "v2 on executable timing (strict labels) at the fast tier's own fills: observational event study (results/v2/strict_causal.json IS/OOS)",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; v2 re-derived on prints after the detection second, priced at the fast tier's own fills",
+   "flags": [
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E08",
+    "E60",
+    "E62"
    ]
   },
   {
@@ -1921,6 +2059,30 @@
     "cv.cal*",
     "pp.cal*",
     "sc.cal*"
+   ]
+  },
+  {
+   "id": "R_cv_causal_points",
+   "paper": "Causal CV selection: every point of every covered match with the frozen call model's measured calls and false calls (results/tier0/causal_points.json); fills an upper bound",
+   "period": "OOS",
+   "kind": "sim_upper_bound",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; CV trades chosen before each point from the call model; simulated fills are an upper bound",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E14",
+    "E21",
+    "E22",
+    "E41",
+    "E61",
+    "E63"
+   ],
+   "paper_keys": [
+    "cvx.*"
    ]
   },
   {
@@ -2849,16 +3011,34 @@
    "raw_ts": "2026-10-04T06:34:01.865414+00:00",
    "utc": "2026-10-04T06:34:01Z",
    "event": "E59"
+  },
+  {
+   "line": 112,
+   "raw_ts": "2026-10-04T09:47:27.080161+00:00",
+   "utc": "2026-10-04T09:47:27Z",
+   "event": "E62"
+  },
+  {
+   "line": 113,
+   "raw_ts": "2026-10-04T09:47:34.354018+00:00",
+   "utc": "2026-10-04T09:47:34Z",
+   "event": "E63"
+  },
+  {
+   "line": 114,
+   "raw_ts": "2026-10-04T09:53:06.591803+00:00",
+   "utc": "2026-10-04T09:53:06Z",
+   "event": "E63"
   }
  ],
  "summary": {
-  "n_events": 61,
+  "n_events": 65,
   "n_events_by_kind": {
    "a": 10,
-   "b": 9,
+   "b": 11,
    "c": 19,
    "d": 9,
-   "e": 6,
+   "e": 8,
    "f": 5,
    "protocol": 3
   },
@@ -3002,6 +3182,26 @@
     "direction": "n/a (new rule; selection in sample only)",
     "oos_selected": false,
     "printed_text": "The per-wallet cap was designed because the OOS showed five wallets carried 142% of v2's OOS P&L; it was selected in sample."
+   },
+   {
+    "id": "E60",
+    "utc": "2026-10-04T08:50:47Z",
+    "family": "v2",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)",
+    "oos_selected": false,
+    "printed_text": "After review, v2 and its copier were re-timed to use only prints after the detecting print's second; the copier's estimates stay negative."
+   },
+   {
+    "id": "E61",
+    "utc": "2026-10-04T08:55:55Z",
+    "family": "cv",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)",
+    "oos_selected": false,
+    "printed_text": "After review, simulated CV trades were taken on every point from the call model's calls, not only on later price jumps; this lowered simulated P&L."
    }
   ],
   "design_choices_after_oos": [
@@ -3050,6 +3250,18 @@
     "family": "capacity",
     "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
     "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly."
+   },
+   {
+    "id": "E60",
+    "family": "v2",
+    "direction": "copier central per share IS -0.47 -> -1.42c, OOS -1.37 -> -1.02c; $/day IS -67 -> -31, OOS -211 -> -28 (strict book: 8,755 IS / 1,616 OOS trades); point estimates stay negative (E62)",
+    "printed_text": "After review, v2 and its copier were re-timed to use only prints after the detecting print's second; the copier's estimates stay negative."
+   },
+   {
+    "id": "E61",
+    "family": "cv",
+    "direction": "V = 0.5 s OOS $/day, conditional jump set -> causal every point: pre-registered stamp lag +15 -> -146, post hoc 3.14 s lag +81 -> +65 (E63)",
+    "printed_text": "After review, simulated CV trades were taken on every point from the call model's calls, not only on later price jumps; this lowered simulated P&L."
    }
   ],
   "decisions_after_non_oos_look": [
@@ -3168,7 +3380,9 @@
    "E40",
    "E55",
    "E57",
-   "E58"
+   "E58",
+   "E62",
+   "E63"
   ],
   "diagnostics": [
    "E03",
@@ -3201,7 +3415,7 @@
    "E08",
    "E09"
   ],
-  "log_lines_total": 111,
+  "log_lines_total": 114,
   "log_lines_unmapped": 0,
   "aux_log_lines_total": {
    "results/tracking/test_peeks.log": 2,
@@ -3217,11 +3431,13 @@
     "R_v2_oos",
     "R_v2_stress",
     "R_v2_copier",
+    "R_v2_strict",
     "R_v2safe_oos",
     "R_wcap_oos",
     "R_cv_prereg_record",
     "R_cv_table2_pre",
     "R_cv_table2_post",
+    "R_cv_causal_points",
     "R_v3_oos",
     "R_capacity",
     "R_tracking_relabel",
