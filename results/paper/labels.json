@@ -8,6 +8,10 @@
    "2",
    "1"
   ],
+  "tab:data": [
+   "\\caption@xref {tab:data",
+   " on input line 86"
+  ],
   "sec:data": [
    "3",
    "2"
@@ -18,34 +22,26 @@
   ],
   "eq:budget": [
    "1",
-   "2"
-  ],
-  "tab:head": [
-   "1",
    "3"
   ],
   "sec:results": [
    "5",
    "3"
   ],
-  "fig:f2t": [
+  "tab:head": [
    "1",
-   "3"
-  ],
-  "fig:edge": [
-   "2",
    "4"
   ],
-  "tab:lat": [
-   "2",
+  "fig:edge": [
+   "1",
    "4"
   ],
   "sec:risk": [
    "6",
    "4"
   ],
-  "fig:speed": [
-   "3",
+  "tab:lat": [
+   "2",
    "5"
   ],
   "sec:liq": [
@@ -64,25 +60,33 @@
    "A1",
    "9"
   ],
-  "fig:regime": [
+  "fig:f2t": [
    "A1",
    "11"
   ],
-  "fig:replay": [
+  "fig:speed": [
    "A2",
    "12"
   ],
-  "fig:race": [
+  "fig:regime": [
    "A3",
-   "13"
+   "12"
   ],
-  "fig:capacity": [
+  "fig:replay": [
    "A4",
    "13"
   ],
-  "fig:cap": [
+  "fig:race": [
    "A5",
    "14"
+  ],
+  "fig:capacity": [
+   "A6",
+   "14"
+  ],
+  "fig:cap": [
+   "A7",
+   "15"
   ]
  },
  "appendix": {

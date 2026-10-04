@@ -10,7 +10,7 @@
   {
    "check": "2 pre-registered before post hoc (paper: docs/paper/note.tex)",
    "status": "PASS",
-   "detail": "first pre-registered line 32, first post hoc $ line 32 (heuristic)",
+   "detail": "first pre-registered line 40, first post hoc $ line 41 (heuristic)",
    "where": []
   },
   {
@@ -22,7 +22,7 @@
   {
    "check": "2 pre-registered before post hoc (paper: docs/NOTE.md)",
    "status": "PASS",
-   "detail": "first pre-registered line 21, first post hoc $ line 21 (heuristic)",
+   "detail": "first pre-registered line 28, first post hoc $ line 28 (heuristic)",
    "where": []
   },
   {
@@ -54,8 +54,8 @@
    "status": "PASS",
    "detail": "3 line(s) say 'not ex ante' or 'selected on outcomes'",
    "where": [
-    "docs/paper/note.tex:117: 4\u00a2, so they are \\emph{selected on outcomes, not ex ante}.",
-    "docs/paper/note.tex:205: price later moved \\(\\geq\\)4\u00a2, selected on outcomes, not ex ante. Call rates are the offline rule's",
+    "docs/paper/note.tex:156: \\emph{selected on outcomes, not ex ante}.",
+    "docs/paper/note.tex:253: price later moved \\(\\geq\\)4\u00a2, selected on outcomes, not ex ante. Call rates are the offline rule's;",
     "docs/paper/numbers.tex:2: % CV readings: cv.pre.* = the pre-registered stamp-lag reading (listed first), cv.cal.* = the post hoc estimate; the CV trade set is selecte"
    ]
   },
@@ -84,11 +84,11 @@
   {
    "check": "5 per-point reading shown (paper)",
    "status": "PASS",
-   "detail": "7 line(s)",
+   "detail": "6 line(s)",
    "where": [
-    "docs/paper/note.tex:222: Read per point, the post hoc inference loses (\u2212\\$17 a day at 1\\,s). Every reading loses at 3\\,s,",
     "docs/paper/numbers.tex:239: \\expandafter\\def\\csname cs@cv.stc.is.usd\\endcsname{\u2212\\$17}",
-    "docs/paper/numbers.tex:240: \\expandafter\\def\\csname cs@cv.stc.is.v0\\endcsname{+\\$199}"
+    "docs/paper/numbers.tex:240: \\expandafter\\def\\csname cs@cv.stc.is.v0\\endcsname{+\\$199}",
+    "docs/paper/numbers.tex:241: \\expandafter\\def\\csname cs@cv.stc.be.is\\endcsname{0.34}"
    ]
   },
   {
@@ -110,12 +110,12 @@
   {
    "check": "6 Dom: latency proof + capacity (paper)",
    "status": "PASS",
-   "detail": "e2e lines 11, capacity lines 11",
+   "detail": "e2e lines 11, capacity lines 10",
    "where": [
-    "docs/paper/note.tex:128: is simulated; order built, not sent. Shaded: when the book reprices. Source: \\texttt{results/e2e}.}",
+    "docs/paper/note.tex:486: is simulated; order built, not sent. Shaded: when the book reprices. Source: \\texttt{results/e2e}.}",
     "docs/paper/numbers.tex:280: \\expandafter\\def\\csname cs@e2e.ours\\endcsname{54}",
-    "docs/paper/note.tex:254: \\section{Liquidity and capacity}\\label{sec:liq}",
-    "docs/paper/note.tex:257: CV book has no capacity at the pre-registered lag (Sharpe 2.7 IS, 0.8"
+    "docs/paper/note.tex:306: \\section{Liquidity and capacity}\\label{sec:liq}",
+    "docs/paper/note.tex:310: \\$177 a day (on \\$83,000 OOS; Fig.~\\ref{fig:capacity}); pre-registered, none"
    ]
   },
   {
@@ -208,7 +208,7 @@
   {
    "check": "peek log line count (quote this number)",
    "status": "PASS",
-   "detail": "77 lines in results/oos_peeks.log",
+   "detail": "85 lines in results/oos_peeks.log",
    "where": []
   },
   {

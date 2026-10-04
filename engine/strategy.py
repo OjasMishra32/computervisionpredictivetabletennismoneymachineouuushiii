@@ -104,6 +104,9 @@ class StrategyConfig:
     #                                    off by default so the committed demo and e2e runs reproduce). The live
     #                                    engine made 7 MISS calls on balls outside the scored flights in 851 s of
     #                                    held-out video, 5 between rallies (results/engine/online_vs_offline.json).
+    #                                    Evaluated on the held-out call log by scripts/rally_gate_eval.py
+    #                                    (results/engine/rally_gate_eval.json): at 2.0 s it keeps 3 of 5 correct MISS
+    #                                    calls and removes 5 of 7 calls on unlabelled balls.
 
 
 @dataclass

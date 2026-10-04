@@ -154,3 +154,21 @@ paper items; 22 (Polymarket vs the track's market list) is still the open organi
 - **E11 `results/redteam/acceptance.json`**: the paper owner's strict run passed (0 FAIL, 0 WARN) but its rewrite of
   this file was reverted (not a paper file). After E2, run `bash run.sh redteam` and commit it.
 - **V1-V8** (video) are unchanged by this pass.
+
+## Paper revision of 2026-10-04 ~06:00 UTC (data coverage, CV-forward framing, judge edits)
+
+- Paper: new title (COURTSIDE: Calling the Point Before It Lands / Predictive Ball Tracking and the Value of Speed in
+  In-Play Tennis Markets); abstract and Section 1 lead with the ball-tracking engine; an uncaptioned data table on page 2
+  (13,084 Polymarket ATP/WTA matches incl. 1,310 Grand Slam; 5,889 charted matches; TrackNet broadcast set; OpenTTGames;
+  Pexels) from `results/data_coverage.json`; the false sentence "no in/out calls on single-camera tennis footage" is
+  replaced by the TrackNet broadcast result (`results/tennis_tracking/summary.json`, detector leakage stated); blind-test
+  paragraph with the pre-registered secondary statistics; Table 2 notes no longer say "look-ahead feature"; clean vs
+  burned evidence stated; Table 1 CI labels fixed (Sharpe: block bootstrap; ¢: by match, by wallet OOS [−0.45, 2.38]);
+  Section 7 opens with the capital answer. The "one match can lose at most $95" claim is corrected from
+  `results/v2/risk/per_match_loss.json` (worst match −$206 IS, −$154 OOS); the pre-registered per-wallet cap
+  (`results/v2/risk/wallet_cap.json`) is in Section 6 and Table A1. To stay at 5 main pages the frame-to-trade and
+  value-of-speed figures moved to Appendix C (Figs. A1, A2); the < 3 s proof stays in the Section 4 text (p50 2,119 ms,
+  p99 2,218 ms). numbers.json: 64 keys added; the only changed values are peeks.* (the peek log grew to 85 lines with
+  other sessions' wallet-cap and fresh-holdout reads, committed with this revision).
+- Closed: E1 (reproduce.sh runs rally_gate_eval.py and data_coverage.py), E3, E4, E7 (RISK.md only), E8, E9, E10, E11,
+  and E2 (docs regenerated). Skipped as not judged: E5 (Devpost template), E6 (deck), E7 for QA_PREP.

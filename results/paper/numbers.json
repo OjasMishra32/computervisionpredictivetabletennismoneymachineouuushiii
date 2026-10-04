@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T04:42:34+00:00",
+ "generated_utc": "2026-10-04T05:50:13+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -2496,8 +2496,8 @@
    "source": "results/tier0/latency_sweep.csv rows"
   },
   "peeks.n": {
-   "value": "77",
-   "raw": 77,
+   "value": "85",
+   "raw": 85,
    "source": "results/oos_peeks.log (lines at build time)"
   },
   "peeks.blind": {
@@ -2506,18 +2506,18 @@
    "source": "D: keyword class 'blind first run' over results/oos_peeks.log"
   },
   "peeks.nonblind": {
-   "value": "16",
-   "raw": 16,
+   "value": "18",
+   "raw": 18,
    "source": "D: keyword class 'non-blind' over results/oos_peeks.log"
   },
   "peeks.desc": {
-   "value": "5",
-   "raw": 5,
+   "value": "6",
+   "raw": 6,
    "source": "D: keyword class 'descriptive' over results/oos_peeks.log"
   },
   "peeks.audit": {
-   "value": "25",
-   "raw": 25,
+   "value": "27",
+   "raw": 27,
    "source": "D: keyword class 'audit' over results/oos_peeks.log"
   },
   "peeks.live": {
@@ -2526,8 +2526,8 @@
    "source": "D: keyword class 'live' over results/oos_peeks.log"
   },
   "peeks.other": {
-   "value": "2",
-   "raw": 2,
+   "value": "5",
+   "raw": 5,
    "source": "D: keyword class 'other' over results/oos_peeks.log"
   },
   "fwd.cell": {
@@ -3909,6 +3909,382 @@
    "value": "−0.02",
    "raw": -0.0165,
    "source": "results/decay/decay.json::tennis.subsets.burned_OOS.curves.fast.net30.2-3.mean_c"
+  },
+  "cov.pm.atp": {
+   "value": "8,554",
+   "raw": 8554,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.by_series.atp"
+  },
+  "cov.pm.wta": {
+   "value": "4,530",
+   "raw": 4530,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.by_series.wta"
+  },
+  "cov.gs.all": {
+   "value": "1,310",
+   "raw": 1310,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.total.all"
+  },
+  "cov.gs.main": {
+   "value": "928",
+   "raw": 928,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.total.main_draw"
+  },
+  "cov.gs.qual": {
+   "value": "382",
+   "raw": 382,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.total.qualifying"
+  },
+  "cov.gs.ao": {
+   "value": "415",
+   "raw": 415,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.australian_open.all"
+  },
+  "cov.gs.rg": {
+   "value": "412",
+   "raw": 412,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.roland_garros.all"
+  },
+  "cov.gs.uso": {
+   "value": "483",
+   "raw": 483,
+   "source": "results/data_coverage.json::polymarket_backtest_universe.grand_slam.us_open.all"
+  },
+  "cov.pool.n": {
+   "value": "7,755",
+   "raw": 7755,
+   "source": "results/data_coverage.json::tier0_pool_1s_delay.n_matches"
+  },
+  "cov.pool.gs": {
+   "value": "895",
+   "raw": 895,
+   "source": "results/data_coverage.json::tier0_pool_1s_delay.grand_slam.total.all"
+  },
+  "cov.pool.first": {
+   "value": "May 15",
+   "raw": "2026-05-15 08:30:00+00:00",
+   "source": "results/data_coverage.json::tier0_pool_1s_delay.first_start"
+  },
+  "cov.t0.is": {
+   "value": "681",
+   "raw": 680.55,
+   "source": "results/data_coverage.json::tier0_traded_matches.IS_mean"
+  },
+  "cov.t0.oos": {
+   "value": "246",
+   "raw": 245.65,
+   "source": "results/data_coverage.json::tier0_traded_matches.burned_OOS_mean"
+  },
+  "cov.v2.is": {
+   "value": "7,639",
+   "raw": 7639,
+   "source": "results/data_coverage.json::v2_backtest_matches.IS"
+  },
+  "cov.v2.oos": {
+   "value": "2,003",
+   "raw": 2003,
+   "source": "results/data_coverage.json::v2_backtest_matches.burned_OOS"
+  },
+  "cov.mcp.n": {
+   "value": "5,889",
+   "raw": 5889,
+   "source": "results/data_coverage.json::match_charting_project.n_matches"
+  },
+  "cov.mcp.men": {
+   "value": "3,337",
+   "raw": 3337,
+   "source": "results/data_coverage.json::match_charting_project.men.n_matches"
+  },
+  "cov.mcp.women": {
+   "value": "2,552",
+   "raw": 2552,
+   "source": "results/data_coverage.json::match_charting_project.women.n_matches"
+  },
+  "cov.mcp.points": {
+   "value": "901,233",
+   "raw": 901233,
+   "source": "results/data_coverage.json::match_charting_project.n_points"
+  },
+  "cov.mcp.years": {
+   "value": "2020–26",
+   "raw": [
+    2020,
+    2026
+   ],
+   "source": "results/data_coverage.json::match_charting_project.{men,women}.years"
+  },
+  "cov.tn.matches": {
+   "value": "10",
+   "raw": 10,
+   "source": "results/data_coverage.json::tracknet_broadcast_tennis.matches"
+  },
+  "cov.tn.clips": {
+   "value": "95",
+   "raw": 95,
+   "source": "results/data_coverage.json::tracknet_broadcast_tennis.clips"
+  },
+  "cov.tn.frames": {
+   "value": "19,835",
+   "raw": 19835,
+   "source": "results/data_coverage.json::tracknet_broadcast_tennis.frames_labelled"
+  },
+  "pm.out": {
+   "value": "36–41%",
+   "raw": [
+    0.362,
+    0.4125
+   ],
+   "source": "results/tier0/inputs/point_mix.json::{men,women}.out"
+  },
+  "pm.net": {
+   "value": "25–26%",
+   "raw": [
+    0.2521,
+    0.2596
+   ],
+   "source": "results/tier0/inputs/point_mix.json::{men,women}.net"
+  },
+  "pm.win": {
+   "value": "29–35%",
+   "raw": [
+    0.3515,
+    0.2916
+   ],
+   "source": "results/tier0/inputs/point_mix.json::{men,women}.winner"
+  },
+  "bt.bounces.test": {
+   "value": "132",
+   "raw": 132,
+   "source": "results/tennis_tracking/summary.json::n_bounces_evaluated.test"
+  },
+  "bt.bounces.all": {
+   "value": "399",
+   "raw": {
+    "train": 267,
+    "test": 132
+   },
+   "source": "results/tennis_tracking/summary.json::n_bounces_evaluated.{train,test} (sum)"
+  },
+  "bt.err0": {
+   "value": "17",
+   "raw": 16.7,
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.median_landing_err_cm.ground.0"
+  },
+  "bt.err.lead": {
+   "value": "0.7–1.2",
+   "raw": [
+    78.0,
+    70.6,
+    74.8,
+    88.5,
+    96.9,
+    116.2
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.median_landing_err_cm.learned.{33..300} (min-max, m)"
+  },
+  "bt.call.0": {
+   "value": "5 of 5",
+   "raw": [
+    5,
+    5
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.0.{tp,calls}"
+  },
+  "bt.call.33": {
+   "value": "3 of 3",
+   "raw": [
+    3,
+    3
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33.{tp,calls}"
+  },
+  "bt.call.67": {
+   "value": "3 of 4",
+   "raw": [
+    3,
+    4
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.67.{tp,calls}"
+  },
+  "bt.call.100": {
+   "value": "2 of 5",
+   "raw": [
+    2,
+    5
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.100.{tp,calls}"
+  },
+  "bt.rec0": {
+   "value": "50%",
+   "raw": 0.5,
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.0.recall"
+  },
+  "bt.maxlead": {
+   "value": "0",
+   "raw": 0,
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.max_lead_ms_with_train_precision_ge_95_and_3plus_calls"
+  },
+  "bt.lab67": {
+   "value": "3 of 3",
+   "raw": [
+    3,
+    3
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.labels.out_calls_margin_rule.ground.test_by_lead.67.{tp,calls}"
+  },
+  "bt.det.prec": {
+   "value": "97%",
+   "raw": 0.9738699218004959,
+   "source": "results/tennis_tracking/summary.json::detector_accuracy_vs_labels.test_games_8_10.precision_5px"
+  },
+  "bt.det.rec": {
+   "value": "94%",
+   "raw": 0.9424141749723145,
+   "source": "results/tennis_tracking/summary.json::detector_accuracy_vs_labels.test_games_8_10.recall_5px"
+  },
+  "u2.itf": {
+   "value": "10,855",
+   "raw": 10855,
+   "source": "results/expand/results.json::universe.u2_series.itf"
+  },
+  "u2.fmo.is.ci": {
+   "value": "[2.89, 3.28]",
+   "raw": [
+    2.8879461721128847,
+    3.278104369465202
+   ],
+   "source": "results/expand/results.json::fast_minus_others_u2.u2_is.ci_c"
+  },
+  "u2.fmo.oos.ci": {
+   "value": "[1.79, 2.53]",
+   "raw": [
+    1.7918111561611012,
+    2.532643728567625
+   ],
+   "source": "results/expand/results.json::fast_minus_others_u2.u2_oos.ci_c"
+  },
+  "u2.m30.oos.c": {
+   "value": "+0.59",
+   "raw": 0.5929102573880574,
+   "source": "results/expand/results.json::markout30.u2_oos.m30_per_share_c"
+  },
+  "u2.m30.oos.ci": {
+   "value": "[0.13, 1.03]",
+   "raw": [
+    0.13110631403841638,
+    1.0333676678502668
+   ],
+   "source": "results/expand/results.json::markout30.u2_oos.ci_c"
+  },
+  "u2.prereg.commit": {
+   "value": "337bf7c",
+   "raw": "337bf7c",
+   "source": "git log --diff-filter=A -- research/v2/expand/PREREG.md"
+  },
+  "cv.eng.cal.oos.sr": {
+   "value": "8.8",
+   "raw": 8.81,
+   "source": "results/redteam/causal_cv.json::cells_V1.tournament_lagcal.burned_OOS.sharpe_ann"
+  },
+  "conc.ex5.oos.c": {
+   "value": "−0.34",
+   "raw": -0.3386,
+   "source": "results/alpha/alpha.json::F_concentration.OOS.wallets.ex_top5_wallets.net_c_per_share"
+  },
+  "conc.ex5.oos.ci": {
+   "value": "[−1.20, 0.46]",
+   "raw": [
+    -1.1953,
+    0.4585
+   ],
+   "source": "results/alpha/alpha.json::F_concentration.OOS.wallets.ex_top5_wallets.ci95_c_match_clustered"
+  },
+  "risk.kill.days": {
+   "value": "0",
+   "raw": 0,
+   "source": "results/financials/pm_compute.json::p25_kill_rules_is.trailing_30d_edge_rule_v2_is.{days_half,days_stopped} (sum)"
+  },
+  "liq.stale_post": {
+   "value": "$0",
+   "raw": 0.0,
+   "source": "research/v2/latency/results.json::summary.stale_depth.post.median_usd"
+  },
+  "liq.stale.n": {
+   "value": "482",
+   "raw": 482,
+   "source": "research/v2/latency/results.json::summary.stale_depth.pre.n"
+  },
+  "risk.pm.worst.is": {
+   "value": "−$206",
+   "raw": -205.7602912085585,
+   "source": "results/v2/risk/per_match_loss.json::is.v2_uncapped.worst_match_pnl_usd"
+  },
+  "risk.pm.worst.oos": {
+   "value": "−$154",
+   "raw": -154.36883288014866,
+   "source": "results/v2/risk/per_match_loss.json::oos.v2_uncapped.worst_match_pnl_usd"
+  },
+  "wcap.W": {
+   "value": "$1,000",
+   "raw": 1000.0,
+   "source": "results/v2/risk/wallet_cap.json::frozen_rule.W_usd_per_wallet_day"
+  },
+  "wcap.commit": {
+   "value": "4a5a19d",
+   "raw": "4a5a19d3f06756d21a2d8e0a3d91173ece96755a 2026-10-04T01:34:45-04:00",
+   "source": "results/v2/risk/wallet_cap.json::prereg.commit"
+  },
+  "wcap.verdict": {
+   "value": "PASS",
+   "raw": {
+    "a_top5_share_lower_than_uncapped": true,
+    "b_per_share_ci_excludes_0": true,
+    "result": "PASS"
+   },
+   "source": "results/v2/risk/wallet_cap.json::verdict"
+  },
+  "wcap.n": {
+   "value": "12",
+   "raw": 12,
+   "source": "results/v2/risk/wallet_cap_is.json::variants (len; grid 6 x 2)"
+  },
+  "wcap.oos.c": {
+   "value": "+0.91",
+   "raw": 0.9133616361326782,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.per_share_c"
+  },
+  "wcap.oos.ci": {
+   "value": "[0.20, 1.66]",
+   "raw": [
+    0.19515922584377104,
+    1.657167154216984
+   ],
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.per_share_ci95_c_match"
+  },
+  "wcap.oos.sr": {
+   "value": "7.6",
+   "raw": 7.585972014694511,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.sharpe_ann_calendar"
+  },
+  "wcap.oos.top5": {
+   "value": "129%",
+   "raw": 1.290041633015488,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.top5_wallet_share_of_pnl"
+  },
+  "wcap.oos.worstday": {
+   "value": "−$284",
+   "raw": -283.50563732658975,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.worst_day_usd"
+  },
+  "wcap.base.oos.worstday": {
+   "value": "−$469",
+   "raw": -469.4297898304612,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.worst_day_usd"
+  },
+  "wcap.is.cost": {
+   "value": "37%",
+   "raw": 0.3701621164258012,
+   "source": "D: 1 - results/v2/risk/wallet_cap.json::is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd"
   }
  }
 }

@@ -906,6 +906,7 @@ def collect() -> tuple[Registry, dict]:
     extra["trail"] = rows_[::-1]
     collect_final(N, extra)
     collect_evidence(N)
+    collect_revision(N)  # before the appendix rows below, which use its keys
     # ---------------------------------------------------------------- authors (research/compliance/TEAM.md)
     tm_ = ROOT / "research/compliance/TEAM.md"
     authors = "[Author names: team to fill]"
@@ -961,6 +962,9 @@ def collect() -> tuple[Registry, dict]:
          f"IS {V('u2.is.c')}¢; OOS {V('u2.oos.c')}¢ {V('u2.oos.ci')}", "fail"),
         ("v2-safe", "net cap 50, fixed after v2's OOS losses",
          f"Sharpe {V('v2s.is.sr')}\\,/\\,{V('v2s.oos.sr')}; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}", "fail (blind)"),
+        ("Per-wallet cap", f"{V('wcap.W')} a wallet a day plus retirement, chosen on IS from {V('wcap.n')} variants, pre-registered",
+         f"OOS {V('wcap.oos.c')}¢ {V('wcap.oos.ci')}, Sharpe {V('wcap.oos.sr')}; top five {V('wcap.oos.top5')} (was {V('conc.top5.oos')})",
+         "pass (burned OOS)"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
         ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
          f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')} ({V('plat.pbo')} by block choice); $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
@@ -974,6 +978,9 @@ def collect() -> tuple[Registry, dict]:
         ("Tennis tracker, real clip", "our tennis tracker on a Pexels rally (no labels)",
          f"ball in {V('tn.real.ball')} of {V('tn.real.frames')} frames; {V('tn.real.spot')} spot-checks on the ball; court lines {V('tn.real.court_px')}\\,px (median)",
          "tracks; no in/out calls"),
+        ("Broadcast tennis", "single-camera landing and out calls, TrackNet games 8--10 (tuned on 1--7)",
+         f"out calls {V('bt.call.0')} at the bounce, {V('bt.call.33')} at 33\\,ms, {V('bt.call.67')} at 67\\,ms; landing {V('bt.err0')}\\,cm at the bounce, {V('bt.err.lead')}\\,m at 33--300\\,ms",
+         "bounce only at 95\\%; detector saw all games"),
         ("Tennis spin model", "spin-aware landing model (simulated physics)",
          f"{V('cv.spin.bls200')} vs {V('cv.spin.base200')}\\,cm at 200\\,ms; OUT precision {V('spin.out.prec200')}, recall {V('spin.out.rec200')}", "simulation only"),
         ("Rally gate", f"a miss call trades only within {V('gate.s')}\\,s of a bounce call (engine log; {V('gate.sweep')}\\,s also run)",
@@ -1362,6 +1369,156 @@ def collect_evidence(N: Registry) -> None:
             N.add(f"decay.fast.{k}.{per}", sgn(v_), v_, f"results/decay/decay.json::tennis.subsets.{P}.curves.fast.net30.{b_}.mean_c")
 
 
+def collect_revision(N: Registry) -> None:
+    """Keys added for the data-coverage and CV-forward revision (new keys only; every earlier key is unchanged): the
+    real data behind each result (results/data_coverage.json, scripts/data_coverage.py), how charted points end, the
+    single-camera out calls on real broadcast tennis (results/tennis_tracking/summary.json), the blind test's
+    pre-registered secondary statistics, wallet concentration, the kill rules replayed in sample and the stale
+    quotes seen from the maker side. Every value is read from a committed result file; nothing here evaluates."""
+    # ---------------------------------------------------------------- real data behind each result
+    DC = J("results/data_coverage.json")
+    s0 = "results/data_coverage.json::"
+    pu = DC["polymarket_backtest_universe"]
+    assert pu["n_matches"] == N.raw("univ.matches"), (pu["n_matches"], N.raw("univ.matches"))
+    assert pu["grand_slam"]["wimbledon"]["all"] == 0  # Wimbledon is a separate Polymarket series, outside the universe
+    N.add("cov.pm.atp", intc(pu["by_series"]["atp"]), pu["by_series"]["atp"], s0 + "polymarket_backtest_universe.by_series.atp")
+    N.add("cov.pm.wta", intc(pu["by_series"]["wta"]), pu["by_series"]["wta"], s0 + "polymarket_backtest_universe.by_series.wta")
+    gs = pu["grand_slam"]
+    N.add("cov.gs.all", intc(gs["total"]["all"]), gs["total"]["all"], s0 + "polymarket_backtest_universe.grand_slam.total.all")
+    N.add("cov.gs.main", intc(gs["total"]["main_draw"]), gs["total"]["main_draw"],
+          s0 + "polymarket_backtest_universe.grand_slam.total.main_draw")
+    N.add("cov.gs.qual", intc(gs["total"]["qualifying"]), gs["total"]["qualifying"],
+          s0 + "polymarket_backtest_universe.grand_slam.total.qualifying")
+    for k, slam in (("ao", "australian_open"), ("rg", "roland_garros"), ("uso", "us_open")):
+        N.add(f"cov.gs.{k}", intc(gs[slam]["all"]), gs[slam]["all"], s0 + f"polymarket_backtest_universe.grand_slam.{slam}.all")
+    tp = DC["tier0_pool_1s_delay"]
+    N.add("cov.pool.n", intc(tp["n_matches"]), tp["n_matches"], s0 + "tier0_pool_1s_delay.n_matches")
+    N.add("cov.pool.gs", intc(tp["grand_slam"]["total"]["all"]), tp["grand_slam"]["total"]["all"],
+          s0 + "tier0_pool_1s_delay.grand_slam.total.all")
+    N.add("cov.pool.first", pd.Timestamp(tp["first_start"]).strftime("%b %-d"), tp["first_start"], s0 + "tier0_pool_1s_delay.first_start")
+    tt = DC["tier0_traded_matches"]
+    N.add("cov.t0.is", intc(tt["IS_mean"]), tt["IS_mean"], s0 + "tier0_traded_matches.IS_mean")
+    N.add("cov.t0.oos", intc(tt["burned_OOS_mean"]), tt["burned_OOS_mean"], s0 + "tier0_traded_matches.burned_OOS_mean")
+    vb = DC["v2_backtest_matches"]
+    assert vb["IS"] == N.raw("v2.is.matches") and vb["burned_OOS"] == N.raw("v2.oos.matches"), (vb, N.raw("v2.is.matches"))
+    N.add("cov.v2.is", intc(vb["IS"]), vb["IS"], s0 + "v2_backtest_matches.IS")
+    N.add("cov.v2.oos", intc(vb["burned_OOS"]), vb["burned_OOS"], s0 + "v2_backtest_matches.burned_OOS")
+    mc = DC["match_charting_project"]
+    N.add("cov.mcp.n", intc(mc["n_matches"]), mc["n_matches"], s0 + "match_charting_project.n_matches")
+    N.add("cov.mcp.men", intc(mc["men"]["n_matches"]), mc["men"]["n_matches"], s0 + "match_charting_project.men.n_matches")
+    N.add("cov.mcp.women", intc(mc["women"]["n_matches"]), mc["women"]["n_matches"], s0 + "match_charting_project.women.n_matches")
+    N.add("cov.mcp.points", intc(mc["n_points"]), mc["n_points"], s0 + "match_charting_project.n_points")
+    yr = mc["men"]["years"] + mc["women"]["years"]
+    N.add("cov.mcp.years", f"{min(yr)}–{str(max(yr))[2:]}", [min(yr), max(yr)], s0 + "match_charting_project.{men,women}.years")
+    tn = DC["tracknet_broadcast_tennis"]
+    N.add("cov.tn.matches", intc(tn["matches"]), tn["matches"], s0 + "tracknet_broadcast_tennis.matches")
+    N.add("cov.tn.clips", intc(tn["clips"]), tn["clips"], s0 + "tracknet_broadcast_tennis.clips")
+    N.add("cov.tn.frames", intc(tn["frames_labelled"]), tn["frames_labelled"], s0 + "tracknet_broadcast_tennis.frames_labelled")
+    # how charted points end (the tier-0 simulation's point mix)
+    PMX = J("results/tier0/inputs/point_mix.json")
+    for k, f in (("out", "out"), ("net", "net"), ("win", "winner")):
+        v = [PMX["men"][f], PMX["women"][f]]
+        N.add(f"pm.{k}", f"{min(v) * 100:.0f}–{max(v) * 100:.0f}%", v, f"results/tier0/inputs/point_mix.json::{{men,women}}.{f}")
+    # ---------------------------------------------------------------- out calls from one broadcast camera (TrackNet set)
+    TT = J("results/tennis_tracking/summary.json")
+    s1 = "results/tennis_tracking/summary.json::"
+    nb = TT["n_bounces_evaluated"]
+    assert nb == tn["bounces_evaluated"], (nb, tn["bounces_evaluated"])
+    N.add("bt.bounces.test", intc(nb["test"]), nb["test"], s1 + "n_bounces_evaluated.test")
+    N.add("bt.bounces.all", intc(nb["train"] + nb["test"]), nb, s1 + "n_bounces_evaluated.{train,test} (sum)")
+    hl = TT["headline"]["tracknet"]
+    e0 = hl["median_landing_err_cm"]["ground"]["0"]
+    N.add("bt.err0", f"{e0:.0f}", e0, s1 + "headline.tracknet.median_landing_err_cm.ground.0")
+    le = [v for k, v in hl["median_landing_err_cm"]["learned"].items() if 33 <= int(k) <= 300]
+    N.add("bt.err.lead", f"{min(le) / 100:.1f}–{max(le) / 100:.1f}", le,
+          s1 + "headline.tracknet.median_landing_err_cm.learned.{33..300} (min-max, m)")
+    gr = hl["out_calls_margin_rule"]["ground"]
+    for L in ("0", "33", "67", "100"):
+        c = gr["test_by_lead"][L]
+        N.add(f"bt.call.{L}", f"{c['tp']} of {c['calls']}", [c["tp"], c["calls"]],
+              s1 + f"headline.tracknet.out_calls_margin_rule.ground.test_by_lead.{L}.{{tp,calls}}")
+    r0 = gr["test_by_lead"]["0"]["recall"]
+    assert abs(r0 - 0.5) < 1e-9, r0  # the text says "half the outs"
+    N.add("bt.rec0", pct(r0 * 100, 0), r0, s1 + "headline.tracknet.out_calls_margin_rule.ground.test_by_lead.0.recall")
+    ml = gr["max_lead_ms_with_train_precision_ge_95_and_3plus_calls"]
+    assert ml == 0, ml  # the text says only the bounce-time call met the 95% train precision rule
+    N.add("bt.maxlead", f"{ml}", ml, s1 + "headline.tracknet.out_calls_margin_rule.ground.max_lead_ms_with_train_precision_ge_95_and_3plus_calls")
+    lb = TT["headline"]["labels"]["out_calls_margin_rule"]["ground"]["test_by_lead"]["67"]
+    N.add("bt.lab67", f"{lb['tp']} of {lb['calls']}", [lb["tp"], lb["calls"]],
+          s1 + "headline.labels.out_calls_margin_rule.ground.test_by_lead.67.{tp,calls}")
+    da = TT["detector_accuracy_vs_labels"]
+    assert "all 10 games" in da["note"]  # detector leakage: the pretrained weights saw frames of every game
+    N.add("bt.det.prec", pct(da["test_games_8_10"]["precision_5px"] * 100, 0), da["test_games_8_10"]["precision_5px"],
+          s1 + "detector_accuracy_vs_labels.test_games_8_10.precision_5px")
+    N.add("bt.det.rec", pct(da["test_games_8_10"]["recall_5px"] * 100, 0), da["test_games_8_10"]["recall_5px"],
+          s1 + "detector_accuracy_vs_labels.test_games_8_10.recall_5px")
+    # ---------------------------------------------------------------- the blind test's pre-registered secondary statistics
+    EX = J("results/expand/results.json")
+    s2 = "results/expand/results.json::"
+    N.add("u2.itf", intc(EX["universe"]["u2_series"]["itf"]), EX["universe"]["u2_series"]["itf"], s2 + "universe.u2_series.itf")
+    for per in ("is", "oos"):
+        fc = EX["fast_minus_others_u2"][f"u2_{per}"]["ci_c"]
+        N.add(f"u2.fmo.{per}.ci", ci(fc), fc, s2 + f"fast_minus_others_u2.u2_{per}.ci_c")
+    m30 = EX["markout30"]["u2_oos"]
+    N.add("u2.m30.oos.c", sgn(m30["m30_per_share_c"]), m30["m30_per_share_c"], s2 + "markout30.u2_oos.m30_per_share_c")
+    N.add("u2.m30.oos.ci", ci(m30["ci_c"]), m30["ci_c"], s2 + "markout30.u2_oos.ci_c")
+    gl = subprocess.run(["git", "log", "--diff-filter=A", "--format=%h", "--", "research/v2/expand/PREREG.md"], cwd=ROOT,
+                        capture_output=True, text=True).stdout.strip().splitlines()
+    if not gl:
+        raise KeyError("COURTSIDE: missing number u2.prereg.commit (git log)")
+    N.add("u2.prereg.commit", gl[-1], gl[-1], "git log --diff-filter=A -- research/v2/expand/PREREG.md")
+    # ---------------------------------------------------------------- causal engine Sharpe, concentration, kill rules, stale quotes
+    CC = J("results/redteam/causal_cv.json")
+    v = CC["cells_V1"]["tournament_lagcal"]["burned_OOS"]["sharpe_ann"]
+    N.add("cv.eng.cal.oos.sr", num(v, 1), v, "results/redteam/causal_cv.json::cells_V1.tournament_lagcal.burned_OOS.sharpe_ann")
+    FC = J("results/alpha/alpha.json")["F_concentration"]["OOS"]["wallets"]["ex_top5_wallets"]
+    s3 = "results/alpha/alpha.json::F_concentration.OOS.wallets.ex_top5_wallets"
+    N.add("conc.ex5.oos.c", sgn(FC["net_c_per_share"]), FC["net_c_per_share"], s3 + ".net_c_per_share")
+    N.add("conc.ex5.oos.ci", ci(FC["ci95_c_match_clustered"]), FC["ci95_c_match_clustered"], s3 + ".ci95_c_match_clustered")
+    KR = J("results/financials/pm_compute.json")["p25_kill_rules_is"]
+    tr_ = KR["trailing_30d_edge_rule_v2_is"]
+    nf = tr_["days_half"] + tr_["days_stopped"]
+    assert nf == 0 and not KR["drawdown_5pct_stop_v2_is"]["fires"] and KR["daily_stop_1000_v2_is"]["fires_days"] == 0  # text: "none of these rules fires"
+    N.add("risk.kill.days", intc(nf), nf, "results/financials/pm_compute.json::p25_kill_rules_is.trailing_30d_edge_rule_v2_is.{days_half,days_stopped} (sum)")
+    LT = J("research/v2/latency/results.json")["summary"]["stale_depth"]
+    N.add("liq.stale_post", usd(LT["post"]["median_usd"]), LT["post"]["median_usd"],
+          "research/v2/latency/results.json::summary.stale_depth.post.median_usd")
+    N.add("liq.stale.n", intc(LT["pre"]["n"]), LT["pre"]["n"], "research/v2/latency/results.json::summary.stale_depth.pre.n")
+    # ---------------------------------------------------------------- per-match loss under the stated limits
+    # (results/v2/risk/per_match_loss.json): the net cap bounds the open position, not the loss of a match
+    PML = J("results/v2/risk/per_match_loss.json")
+    s4 = "results/v2/risk/per_match_loss.json::"
+    for per in ("is", "oos"):
+        v = PML[per]["v2_uncapped"]["worst_match_pnl_usd"]
+        N.add(f"risk.pm.worst.{per}", usd(v), v, s4 + f"{per}.v2_uncapped.worst_match_pnl_usd")
+    assert PML["is"]["v2_uncapped"]["with_1000_daily_stop"]["days_changed_by_stop"] == 0  # text: the stop never fired
+    # ---------------------------------------------------------------- per-wallet cap, pre-registered on IS, run once on the
+    # burned OOS (non-blind; research/v2/risk/PREREG_wallet_cap.md, scripts/v2_wallet_cap.py)
+    WC = J("results/v2/risk/wallet_cap.json")
+    s5 = "results/v2/risk/wallet_cap.json::"
+    fr = WC["frozen_rule"]
+    assert fr["variant"] == "W1000_Ron" and fr["retire"] and WC["first_run"]
+    N.add("wcap.W", usd(fr["W_usd_per_wallet_day"]), fr["W_usd_per_wallet_day"], s5 + "frozen_rule.W_usd_per_wallet_day")
+    N.add("wcap.commit", WC["prereg"]["commit"].split()[0][:7], WC["prereg"]["commit"], s5 + "prereg.commit")
+    N.add("wcap.verdict", WC["verdict"]["result"], WC["verdict"], s5 + "verdict")
+    WI = J("results/v2/risk/wallet_cap_is.json")
+    N.add("wcap.n", intc(len(WI["variants"])), len(WI["variants"]), "results/v2/risk/wallet_cap_is.json::variants (len; grid 6 x 2)")
+    wo = WC["oos"]["with_cap"]
+    N.add("wcap.oos.c", sgn(wo["per_share_c"]), wo["per_share_c"], s5 + "oos.with_cap.per_share_c")
+    N.add("wcap.oos.ci", ci(wo["per_share_ci95_c_match"]), wo["per_share_ci95_c_match"], s5 + "oos.with_cap.per_share_ci95_c_match")
+    N.add("wcap.oos.sr", num(wo["sharpe_ann_calendar"], 1), wo["sharpe_ann_calendar"], s5 + "oos.with_cap.sharpe_ann_calendar")
+    N.add("wcap.oos.top5", pct(wo["top5_wallet_share_of_pnl"] * 100, 0), wo["top5_wallet_share_of_pnl"],
+          s5 + "oos.with_cap.top5_wallet_share_of_pnl")
+    N.add("wcap.oos.worstday", usd(wo["worst_day_usd"]), wo["worst_day_usd"], s5 + "oos.with_cap.worst_day_usd")
+    bo = WC["oos"]["v2_uncapped"]
+    assert abs(bo["top5_wallet_share_of_pnl"] - N.raw("conc.top5.oos")) < 1e-3, (bo["top5_wallet_share_of_pnl"], N.raw("conc.top5.oos"))
+    N.add("wcap.base.oos.worstday", usd(bo["worst_day_usd"]), bo["worst_day_usd"], s5 + "oos.v2_uncapped.worst_day_usd")
+    wi = WC["is_joint_run"]
+    kept = wi["with_cap"]["pnl_usd"] / wi["v2_uncapped"]["pnl_usd"]
+    N.add("wcap.is.cost", pct((1 - kept) * 100, 0), 1 - kept,
+          "D: 1 - " + s5 + "is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd")
+
+
 # ================================================================================================ outputs
 def write_numbers(N: Registry, extra: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
@@ -1478,7 +1635,7 @@ def checks(pdf: Path, tex_log: str) -> dict:
         res["fail"].append(f"{len(margin_viol)} spans inside the 1 in margins")
     res["float_pages"] = float_pages
     # main text: the headline-metrics table and the latency-scenario table, and 3-4 figures (the rest is appendix)
-    for f in ("Figure 1", "Figure 2", "Figure 3", "Table 1", "Table 2"):
+    for f in ("Figure 1", "Table 1", "Table 2"):
         if f not in float_pages:
             res["fail"].append(f"{f} not found on pages 1-{last}")
     n_tab = sum(1 for k in float_pages if k.startswith("Table"))
@@ -1568,7 +1725,8 @@ def write_companion(N: Registry, extra: dict | None = None) -> None:
                        f"{v(f'sc.{rk}.oos.{vk}.c')} {v(f'sc.{rk}.oos.{vk}.cci')} |")
         return "\n".join(out)
     extra_fwd = (extra or {}).get("fwd_text", v("fwd.cell"))
-    md = f"""# COURTSIDE: Pricing the Value of Speed in In-Play Tennis Prediction Markets
+    md = f"""# COURTSIDE: Calling the Point Before It Lands
+## Predictive Ball Tracking and the Value of Speed in In-Play Tennis Markets
 
 {authors} · University of Florida · Gator Quant Hacks 2026 · Systematic Trading Track · October 4, 2026
 
@@ -1584,17 +1742,32 @@ and no order was ever sent.
 
 ## Abstract
 
-After each point, a Polymarket tennis price (a win probability) is set by whoever learns the point first. In public
-data on {v('univ.matches')} matches, wallets that repeatedly trade within 3 s of a point (the fast tier, picked on past
-months) earn after fees in all
-{v('ft.months.cal')} months, in and out of sample, while everyone else loses; copying them has no factor exposure and an
-out-of-sample Sharpe ratio of {v('v2.oos.sr')} ({v('v2.is.sr')} in sample) that doubled fees erase. About half the edge
-is gone within 1–2 s ({v('decay.fast.0.is')}¢ to {v('decay.fast.12.is')}¢ a share in sample), and the first second of
-video delay costs a simulated computer-vision (CV) trader {v('cv.pre.persec.range')} a day; our pipeline needs
-{v('e2e.ours')} ms. With an assumed feed delay (no feed purchased), that trader makes {v('sc.pre.oos.v05.usd')},
-{v('sc.pre.oos.v1.usd')} and {v('sc.pre.oos.v3.usd')} a day out of sample at 0.5, 1 and 3 s pre-registered
-({v('sc.cal.oos.v05.usd')}, {v('sc.cal.oos.v1.usd')}, {v('sc.cal.oos.v3.usd')} post hoc). Every blind test of a book we
-could trade failed, and so did a replay on real order books.
+We built a predictive ball-tracking engine that calls a point (ball out, or into the net) before the ball lands. On
+held-out real table-tennis video our live causal engine made its calls a median {v('cv.eng.lead')} ms before the ball
+reached the table end, none wrong but few ({v('cv.eng.tp')} of {v('cv.eng.nmiss')} misses), in real time at
+{v('cv.eng.fps')} fps; a frame becomes a ready order in {v('e2e.ours')} ms. On real broadcast tennis (one TV camera,
+held-out games) its out calls were right {v('bt.call.0')} at the bounce and {v('bt.call.33')} when 33 ms ahead. Speed is
+worth money because, in real Polymarket data on {v('univ.matches')} ATP and WTA matches ({v('cov.gs.all')} at Grand
+Slams), whoever learns the point first sets the price: wallets trading within 3 s of a point earn after fees in all
+{v('ft.months.cal')} months, and each second of feed delay costs a simulated computer-vision (CV) trader
+{v('cv.pre.persec.range')} a day. Copying those wallets at their own fills has a Sharpe ratio of {v('v2.is.sr')} in sample
+and {v('v2.oos.sr')} out of sample, which doubled fees erase. At an assumed 1 s feed our CV trader makes
+{v('sc.pre.oos.v1.usd')} a day out of sample pre-registered and {v('sc.cal.oos.v1.usd')} (Sharpe {v('sc.cal.oos.v1.sr')})
+post hoc. Every blind test of a book we could trade failed.
+
+## The real data behind every result
+
+Simulated: only when our CV would see each point (an assumed feed latency) and the spin-aware Hawk-Eye-class model.
+
+| Source | What is real | Matches | Period | Used for |
+|---|---|---|---|---|
+| Polymarket books and trades | prices, fills, fees, taker delays | {v('univ.matches')} ({v('cov.pm.atp')} ATP, {v('cov.pm.wta')} WTA); {v('cov.gs.all')} at Grand Slams (Australian Open {v('cov.gs.ao')}, Roland Garros {v('cov.gs.rg')}, US Open {v('cov.gs.uso')}) | Oct 2025 – Oct 2026 | fast tier; v2 (traded in {v('cov.v2.is')} IS, {v('cov.v2.oos')} OOS); CV trader ({v('cov.pool.n')} matches at a 1 s hold, about {v('cov.t0.is')} IS and {v('cov.t0.oos')} OOS traded per seed) |
+| Polymarket, held back | same | {v('u2.markets')} ({v('u2.itf')} ITF) | same | blind test |
+| Match Charting Project (Sackmann) | {v('cov.mcp.points')} charted points | {v('cov.mcp.n')} ({v('cov.mcp.men')} men, {v('cov.mcp.women')} women) | {v('cov.mcp.years')} | how points end (out {v('pm.out')}, net {v('pm.net')}, winner {v('pm.win')}) |
+| TrackNet broadcast set (Huang et al. 2019) | {v('cov.tn.frames')} labelled frames | {v('cov.tn.matches')} ({v('cov.tn.clips')} clips) | | court, landing and out-call models (tuned on games 1–7, tested once on 8–10) |
+| OpenTTGames; Pexels rally | 120 fps match video; phone video | {v('cv.eng.nmiss')} held-out misses; one rally | | early-call engine; tracker end to end |
+
+Wimbledon is listed under a separate Polymarket series and is outside our universe.
 
 ## Table 1 of the PDF: our copy of the fast tier's trades (v2)
 
@@ -1636,16 +1809,23 @@ matches recorded live against their real order books calls every point ex ante a
 - **Pipeline (paper; order built, not sent).** On our own footage a video frame becomes a built order in
   {v('e2e.ours')} ms. With a simulated 1 s feed, {v('e2e.net')} ms of network and the 1 s venue hold, the order can
   execute {v('e2e.total')} ms after the point ends, inside the organizers' 3,000 ms bar.
-- **CV on real held-out table-tennis footage.** The live causal engine called {v('cv.eng.tp')} of {v('cv.eng.nmiss')}
-  balls that went out early (median lead {v('cv.eng.lead')} ms), none wrongly, at {v('cv.eng.fps')} fps on one L4 GPU.
-  On a freely licensed real tennis rally (Pexels), our tennis tracker found the ball in {v('tn.real.ball')} of
-  {v('tn.real.frames')} frames ({v('tn.real.spot')} random spot-checks on the ball in play) and fitted the court lines in
-  every frame ({v('tn.real.court_px')} px median); we make no in/out calls on single-camera tennis footage, and tennis
-  trading is simulated.
+- **Vision on real video.** On the TrackNet broadcast set (tuned on games 1–7, tested once on games 8–10,
+  {v('bt.bounces.test')} bounces), one TV camera and the pretrained detector's own track put the landing point
+  {v('bt.err0')} cm off at the bounce and {v('bt.err.lead')} m off 33–300 ms ahead (median); out calls were right
+  {v('bt.call.0')} at the bounce, {v('bt.call.33')} at 33 ms and {v('bt.call.67')} at 67 ms ahead, and fail from 100 ms
+  ({v('bt.call.100')}). Only the bounce-time call met our 95% precision rule on the training games, and the detector
+  weights (not ours) saw frames of all ten games, so these are in-distribution numbers. On held-out table tennis the
+  live causal engine called {v('cv.eng.tp')} of {v('cv.eng.nmiss')} misses early (median lead {v('cv.eng.lead')} ms), none
+  wrongly, at {v('cv.eng.fps')} fps on one L4 GPU. On a Pexels rally our tennis tracker found the ball in
+  {v('tn.real.ball')} of {v('tn.real.frames')} frames. Tennis trading is simulated.
 - **Nearby settings also work.** All {v('plat.sizing.pos')} sizing rules have a per-share 95% CI above zero in sample
   (Sharpe {v('plat.sizing.sr')}); the v2-safe grid's probability of backtest overfitting is {v('plat.pbo')} across
   block choices; the CV profit falls across all {v('plat.lat.n')} feed delays from {v('plat.lat.lo')} to
   {v('plat.lat.hi')} s, never rising by more than {v('plat.lat.rise')} a day.
+- **Per-match loss and a per-wallet cap (risk).** The 100-share net cap limits the open position, not the loss:
+  the worst match lost {v('risk.pm.worst.is')} in sample and {v('risk.pm.worst.oos')} out of sample. A per-wallet cap
+  ({v('wcap.W')} a day plus retirement), chosen in sample and pre-registered, ran once on the burned OOS (non-blind):
+  {v('wcap.oos.c')}¢ {v('wcap.oos.ci')}, Sharpe {v('wcap.oos.sr')}; the top five wallets still carry {v('wcap.oos.top5')}.
 - **Rally gate (risk).** Replayed on the engine's held-out call log (`scripts/rally_gate_eval.py`), the gate in our
   strategy code (a miss call trades only within {v('gate.s')} s of a bounce call, set before the test) removes
   {v('gate.out.removed')} of the {v('gate.out.total')} calls on balls outside labelled flights

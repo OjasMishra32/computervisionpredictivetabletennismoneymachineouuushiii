@@ -38,7 +38,7 @@ found. Run `bash run.sh redteam` for the current acceptance table, and `bash run
 | C9 | DONE (script); run once after the pinned runs | `python scripts/forward_test_safe.py --end "<results/v2/forward.json window[1]>"` |
 | §6 ops | `bash run.sh preflight` added (read-only); the user actions remain the user's | §8 R-8 |
 | §7 acceptance | automated: `scripts/redteam_acceptance.py` (`--strict` before the final push) | 10 FAIL at 23:30 UTC, all in paper/video files owned by other workflows |
-| `engine/strategy.py` rally-state gate | DONE (code + 3 tests, after the e2e run finished and was committed): `StrategyConfig.rally_gate_s`, **off by default** so the committed demo/e2e reproduce; the HiPerGator evaluation on the full event log is QUEUED | §8 R-3 |
+| `engine/strategy.py` rally-state gate | DONE (code + 3 tests, after the e2e run finished and was committed): `StrategyConfig.rally_gate_s`, **off by default** so the committed demo/e2e reproduce; evaluated on the held-out call log (`scripts/rally_gate_eval.py`): keeps 3 of 5 correct calls, removes 5 of 7 calls on unlabelled balls | §8 R-3 |
 | CLEAN_CLONE N1 (`src/polymarket.py` back-off) | QUEUED until after 11:30 UTC: `src/polymarket.py` is on the pinned forward path | — |
 | CLEAN_CLONE N4, N5 (`scripts/live_paper.py`), N7 (`engine/run.py`), N10 (`docs/NOTE.md`), N11 | QUEUED → owners (live session running; e2e imports `engine.run`; paper workflow) | — |
 | CLEAN_CLONE N6 (publish the frozen model), N8 (commit live/e2e/capacity results), N13 (push) | USER: needs `gh release` / `git push`, which this pass may not do | §6 runbook |
@@ -489,7 +489,10 @@ load it like any results file (recompute with `python scripts/redteam_derived.py
 162.5 ms (the sheet's "163" was rounded); print "162.5 ms" or "about 160 ms", never 163.
 
 **R-3 (P1; U4, Q10) Rally-state gate. DONE in code at about 23:50 UTC, after the e2e run finished (`d11e74e`); the
-evaluation below is QUEUED.** The
+evaluation is DONE (2026-10-04, laptop replay of `results/engine/online_events_L4.jsonl` through
+`CourtsideStrategy.on_call`, `scripts/rally_gate_eval.py` -> `results/engine/rally_gate_eval.json`). The target "4 scored
+true positives kept" is NOT met: 2 of the 4 early true positives are kept at 1.2-2.0 s, because the engine made no bounce
+call in the 6-17 s before test_4 frames 5751 and 9837.** The
 live engine fired 7 MISS calls on balls outside the 171 scored flights in 851 s (`online_vs_offline.json::runs.
 fp16_cl_fuse_compile_b1_realtime.calls.unmatched`; about 30/hour; 5 between rallies). Ungated, at about $1.75 a
 phantom trade (100 shares × fee 1.25¢ + half spread 0.5¢), the held-out 1 s P&L survives about 32 phantom trades a

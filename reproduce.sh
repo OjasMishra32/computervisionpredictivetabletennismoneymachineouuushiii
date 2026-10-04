@@ -15,7 +15,9 @@ $PY scripts/v2_figures.py       # results/figures (earlier note figure, kept for
 $PY scripts/factor_regression.py
 $PY scripts/leverage_stats.py
 $PY scripts/paper_figures.py    # earlier figure set (results/paper/*.pdf; its loaders are shared with v2)
-$PY scripts/build_paper.py      # the paper's figures (results/paper/v2, scripts/paper_figures_v2.py), numbers.json +
+$PY scripts/rally_gate_eval.py  # rally gate on the engine's held-out call log (committed log, < 2 s) -> paper sec:method, Table A1
+$PY scripts/data_coverage.py    # real matches behind every result (event listing + committed result files) -> paper data table
+$PY scripts/build_paper.py     # the paper's figures (results/paper/v2, scripts/paper_figures_v2.py), numbers.json +
                                 # LaTeX via tectonic -> docs/NOTE.pdf (+ NOTE.md); fails on > 5 main pages, < 11 pt
                                 # text, margins, honesty grep; keeps the committed PDF (exit 0) if tectonic is missing
 $PY scripts/build_docs.py       # README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from results/paper/numbers.json

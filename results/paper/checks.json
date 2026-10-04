@@ -1,21 +1,19 @@
 {
  "fail": [],
  "main_pages": 5,
- "total_pages": 14,
+ "total_pages": 15,
  "min_font_size_main": null,
  "smallest_span_pt": 11.0,
  "spans_below_11pt": [],
  "n_spans_below_11pt": 0,
  "margin_violations": [],
  "float_pages": {
-  "Table 1": 3,
-  "Figure 1": 3,
-  "Figure 2": 4,
-  "Table 2": 4,
-  "Figure 3": 5
+  "Table 1": 4,
+  "Figure 1": 4,
+  "Table 2": 5
  },
  "main_tables": 2,
- "main_figures": 3,
+ "main_figures": 1,
  "honesty_hits": [],
  "post_hoc_count_main": 10,
  "offline_label_misses": [],

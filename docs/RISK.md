@@ -277,11 +277,10 @@ Each item has four parts. **(a)** what the risk is for this strategy. **(b)** it
   above used a look-ahead feature (`hb`, a whole-flight median) and kept deciding after a far-side bounce. Streamed
   causally on the same held-out games the engine called **4 of 41 misses** early, all correct (Wilson lower bound 51%),
   median lead 162.5 ms, and made 7 MISS calls on balls outside the 171 scored flights (5 between rallies). The
-  rally-state gate (`rally_gate_s`) is in the code but off by default and not yet evaluated.
+  rally-state gate (`rally_gate_s`) is in the code, off by default, and evaluated by `scripts/rally_gate_eval.py` (`results/engine/rally_gate_eval.json`): at 2.0 s it removes 5 of the 7 calls on unlabelled balls (4 of 5 between rallies) but keeps only 3 of the 5 correct calls (2 at 0.5-0.8 s); about 8 phantom calls an hour remain.
 - **(d)** Policy only: halt tier-0 for the day on any confirmed false call; go live only after 73 consecutive
   audited correct calls. No MISS call trades unless a rally-state gate says a rally is in progress: `StrategyConfig.rally_gate_s`
-  (2.0 s for any live use; off by default so the committed demo and e2e runs reproduce; not yet evaluated on the full
-  engine event log; tennis needs a serve detector).
+  (2.0 s for any live use; off by default so the committed demo and e2e runs reproduce; evaluated by `scripts/rally_gate_eval.py` (`results/engine/rally_gate_eval.json`): at 2.0 s it removes 5 of the 7 calls on unlabelled balls (4 of 5 between rallies) but keeps only 3 of the 5 correct calls (2 at 0.5-0.8 s); about 8 phantom calls an hour remain; tennis needs a serve detector).
 
 ### R8. Data risk
 - **(a)** Wrong timestamps, missing prints or feed gaps make the backtest see things in the wrong order, or not
