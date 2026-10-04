@@ -1,5 +1,10 @@
 """v2 with the causal (detection-time) window, on IS + burned OOS, plus slippage sensitivity.
-Burned OOS is non-blind (see HYPOTHESIS_V2.md); split by match start (universe().oos)."""
+Burned OOS is non-blind (see HYPOTHESIS_V2.md); split by match start (universe().oos).
+
+This is the frozen rule T3e. Its 0-3 s window starts in the detection SECOND, so it includes the print that
+fires the detector and prints before it in that second: the book is an observational event study at the fast
+tier's own fills, not an executable book. The executable version (strict labels plus a copier that acts after
+the fast print plus network leg, taker hold and block lag) is scripts/v2_strict.py."""
 import datetime as dt, json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
