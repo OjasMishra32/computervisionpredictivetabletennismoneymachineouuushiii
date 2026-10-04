@@ -1,0 +1,270 @@
+{
+ "what": "One TrackNet-dataset TEST bounce (broadcast tennis), court metres only (no image pixels): TrackNet's own ball track projected onto the court at every decision frame (= the 'ground' predictor), the labelled bounce and the margin-rule call at the 33 ms slot.",
+ "selection_rule": "test outs called OUT by the margin rule at the 33 ms slot on the TrackNet track (ground predictor; summary.json headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33); the one whose decision frame is earliest before the bounce (ties: nearest the line)",
+ "candidates": [
+  {
+   "fid": 53,
+   "lead_ms": 65.7658,
+   "d_true": 0.6292,
+   "ground_d": 1.3037
+  },
+  {
+   "fid": 57,
+   "lead_ms": 40.0,
+   "d_true": 0.6349,
+   "ground_d": 0.6498
+  },
+  {
+   "fid": 84,
+   "lead_ms": 40.0,
+   "d_true": 1.9292,
+   "ground_d": 2.2506
+  }
+ ],
+ "fid": 53,
+ "game": 10,
+ "clip": "Clip1",
+ "split": "test",
+ "serve": false,
+ "fps": 25.0,
+ "hit_frame": 251,
+ "bounce_frame_subframe": 281.6441,
+ "bounce_xy_m": [
+  1.4384,
+  12.5142
+ ],
+ "d_true_m": 0.6292,
+ "is_out": true,
+ "slot_ms": 33,
+ "tau_m": 0.35100000000000003,
+ "tau_source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33.tau_cm",
+ "call": {
+  "kdec": 280,
+  "lead_ms": 65.7658,
+  "ground_xy_m": [
+   1.2903,
+   13.1887
+  ],
+  "ground_d_m": 1.3037,
+  "err_cm": 69.0598
+ },
+ "frames": [
+  {
+   "kdec": 255,
+   "lead_ms": 1065.7658,
+   "n_obs": 4,
+   "x": -2.0498,
+   "y": -3.24,
+   "d": -2.0652
+  },
+  {
+   "kdec": 256,
+   "lead_ms": 1025.7658,
+   "n_obs": 5,
+   "x": -1.935,
+   "y": -1.7649,
+   "d": -2.18
+  },
+  {
+   "kdec": 257,
+   "lead_ms": 985.7658,
+   "n_obs": 6,
+   "x": -1.6907,
+   "y": -0.2838,
+   "d": -2.4243
+  },
+  {
+   "kdec": 258,
+   "lead_ms": 945.7658,
+   "n_obs": 7,
+   "x": -1.5412,
+   "y": 1.1816,
+   "d": -2.5738
+  },
+  {
+   "kdec": 259,
+   "lead_ms": 905.7658,
+   "n_obs": 8,
+   "x": -1.3726,
+   "y": 2.4693,
+   "d": -2.7424
+  },
+  {
+   "kdec": 260,
+   "lead_ms": 865.7658,
+   "n_obs": 9,
+   "x": -1.2014,
+   "y": 4.3214,
+   "d": -2.9136
+  },
+  {
+   "kdec": 261,
+   "lead_ms": 825.7658,
+   "n_obs": 10,
+   "x": -1.0827,
+   "y": 4.9794,
+   "d": -3.0323
+  },
+  {
+   "kdec": 262,
+   "lead_ms": 785.7658,
+   "n_obs": 11,
+   "x": -0.9197,
+   "y": 6.0049,
+   "d": -3.1953
+  },
+  {
+   "kdec": 263,
+   "lead_ms": 745.7658,
+   "n_obs": 12,
+   "x": -0.7488,
+   "y": 7.0806,
+   "d": -3.3662
+  },
+  {
+   "kdec": 264,
+   "lead_ms": 705.7658,
+   "n_obs": 13,
+   "x": -0.6154,
+   "y": 8.0174,
+   "d": -3.4996
+  },
+  {
+   "kdec": 265,
+   "lead_ms": 665.7658,
+   "n_obs": 14,
+   "x": -0.4286,
+   "y": 8.9966,
+   "d": -2.8884
+  },
+  {
+   "kdec": 266,
+   "lead_ms": 625.7658,
+   "n_obs": 15,
+   "x": -0.283,
+   "y": 9.81,
+   "d": -2.075
+  },
+  {
+   "kdec": 267,
+   "lead_ms": 585.7658,
+   "n_obs": 16,
+   "x": -0.1335,
+   "y": 10.4408,
+   "d": -1.4442
+  },
+  {
+   "kdec": 268,
+   "lead_ms": 545.7658,
+   "n_obs": 17,
+   "x": 0.022,
+   "y": 11.3057,
+   "d": -0.5793
+  },
+  {
+   "kdec": 269,
+   "lead_ms": 505.7658,
+   "n_obs": 18,
+   "x": 0.1272,
+   "y": 11.7513,
+   "d": -0.1337
+  },
+  {
+   "kdec": 270,
+   "lead_ms": 465.7658,
+   "n_obs": 19,
+   "x": 0.2314,
+   "y": 11.9802,
+   "d": 0.0952
+  },
+  {
+   "kdec": 271,
+   "lead_ms": 425.7658,
+   "n_obs": 20,
+   "x": 0.3914,
+   "y": 12.4412,
+   "d": 0.5562
+  },
+  {
+   "kdec": 272,
+   "lead_ms": 385.7658,
+   "n_obs": 21,
+   "x": 0.5544,
+   "y": 12.911,
+   "d": 1.026
+  },
+  {
+   "kdec": 273,
+   "lead_ms": 345.7658,
+   "n_obs": 22,
+   "x": 0.611,
+   "y": 13.1477,
+   "d": 1.2627
+  },
+  {
+   "kdec": 274,
+   "lead_ms": 305.7658,
+   "n_obs": 23,
+   "x": 0.773,
+   "y": 13.3929,
+   "d": 1.5079
+  },
+  {
+   "kdec": 275,
+   "lead_ms": 265.7658,
+   "n_obs": 24,
+   "x": 0.8311,
+   "y": 13.6341,
+   "d": 1.7491
+  },
+  {
+   "kdec": 276,
+   "lead_ms": 225.7658,
+   "n_obs": 25,
+   "x": 0.9893,
+   "y": 13.6439,
+   "d": 1.7589
+  },
+  {
+   "kdec": 277,
+   "lead_ms": 185.7658,
+   "n_obs": 26,
+   "x": 1.0354,
+   "y": 13.4089,
+   "d": 1.5239
+  },
+  {
+   "kdec": 278,
+   "lead_ms": 145.7658,
+   "n_obs": 27,
+   "x": 1.1404,
+   "y": 13.4153,
+   "d": 1.5303
+  },
+  {
+   "kdec": 279,
+   "lead_ms": 105.7658,
+   "n_obs": 28,
+   "x": 1.193,
+   "y": 13.4185,
+   "d": 1.5335
+  },
+  {
+   "kdec": 280,
+   "lead_ms": 65.7658,
+   "n_obs": 29,
+   "x": 1.2903,
+   "y": 13.1887,
+   "d": 1.3037
+  },
+  {
+   "kdec": 281,
+   "lead_ms": 25.7658,
+   "n_obs": 30,
+   "x": 1.3868,
+   "y": 12.9608,
+   "d": 1.0758
+  }
+ ],
+ "source": "work table of src/tennis_tracking/run_eval.py --stage final (table_tracknet.pkl, the run behind results/tennis_tracking/summary.json); checked here against predictions_at_leads.csv and flights.csv for this flight"
+}

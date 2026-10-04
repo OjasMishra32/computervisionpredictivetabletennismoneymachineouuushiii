@@ -1,0 +1,119 @@
+{
+ "script": "scripts/cv_teaser_fig.py",
+ "numbers": {
+  "a.shot_frames": {
+   "text": "35",
+   "raw": 35,
+   "source": "tennis_detections.json frames 172-206 (the drawn shot)"
+  },
+  "a.shot_detected": {
+   "text": "33",
+   "raw": 33,
+   "source": "tennis_detections.json frames[172..206].ball_xy non-null"
+  },
+  "a.clip_share": {
+   "text": "89%",
+   "raw": 0.89,
+   "source": "results/viz/v60_assets/tennis_real/tennis_detections.json::stats.ball_detected_share (267/300 frames; paper key tn.real.ball)"
+  },
+  "a.court_px": {
+   "text": "0.36",
+   "raw": 0.356,
+   "source": "tennis_detections.json::stats.court.line_fit_px_median_p90_max[0] (paper key tn.real.court_px)"
+  },
+  "b.lead_ms": {
+   "text": "66",
+   "raw": 65.7658,
+   "source": "results/cv_teaser/bounce_example.json::call.lead_ms (= results/tennis_tracking/predictions_at_leads.csv lead_ms, fid 53, lead 33, source tracknet)"
+  },
+  "b.tau_cm": {
+   "text": "35",
+   "raw": 35.1,
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33.tau_cm"
+  },
+  "b.d_hat_m": {
+   "text": "1.30",
+   "raw": 1.3037,
+   "source": "results/tennis_tracking/predictions_at_leads.csv ground_d (fid 53, lead 33, source tracknet)"
+  },
+  "b.d_true_cm": {
+   "text": "63",
+   "raw": 62.92,
+   "source": "results/tennis_tracking/flights.csv d_true (fid 53)"
+  },
+  "b.err_cm": {
+   "text": "69",
+   "raw": 69.05677808875824,
+   "source": "results/tennis_tracking/predictions_at_leads.csv ground_err_cm (fid 53, lead 33, source tracknet)"
+  },
+  "b.game": {
+   "text": "10",
+   "raw": 10,
+   "source": "results/tennis_tracking/flights.csv game (fid 53)"
+  },
+  "b.slot_calls": {
+   "text": "3 of 3",
+   "raw": [
+    3,
+    3
+   ],
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33.{tp,calls} (paper key bt.call.33)"
+  },
+  "b.maxlead": {
+   "text": "0",
+   "raw": 0,
+   "source": "results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.max_lead_ms_with_train_precision_ge_95_and_3plus_calls (paper key bt.maxlead)"
+  },
+  "c.lead_ms": {
+   "text": "162",
+   "raw": 162.5,
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.median (table tennis, held out; paper key cv.eng.lead)"
+  },
+  "c.lead_n": {
+   "text": "4 of 41",
+   "raw": [
+    4,
+    41
+   ],
+   "source": "results/engine/online_vs_offline.json::runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.miss_first_call_lead_ms.{n_called,n_miss} (paper keys cv.eng.tp, cv.eng.nmiss)"
+  },
+  "c.feed_s": {
+   "text": "1",
+   "raw": 1.0,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.feed_simulated_ms (SIMULATED)"
+  },
+  "c.ours_ms": {
+   "text": "54",
+   "raw": 54.13,
+   "source": "results/e2e/summary.json::our_pipeline_frame_to_order_ready_ms.p50 (paper key e2e.ours)"
+  },
+  "c.net_ms": {
+   "text": "65",
+   "raw": 64.506,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.network_one_way_ms.p50 (paper key e2e.net)"
+  },
+  "c.hold_s": {
+   "text": "1",
+   "raw": 1.0,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.venue_delay_ms.p50"
+  },
+  "c.live_s": {
+   "text": "1.96",
+   "raw": 1.9561359999999999,
+   "source": "D: feed + ours + net + hold - lead = e2e.total - cv.eng.lead (Eq. 1 left side; composite: table-tennis lead, tennis venue)"
+  },
+  "c.reprice_band_s": {
+   "text": "0.84–1.98",
+   "raw": [
+    0.84,
+    1.98
+   ],
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.reprice_band_ms (median reprice after the point under three stamp-lag readings; inferred, not measured)"
+  },
+  "c.e2e_total_ms": {
+   "text": "2,119",
+   "raw": 2118.595,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.total_ms.p50 (no lead credited; paper key e2e.total)"
+  }
+ }
+}
