@@ -12,21 +12,29 @@ usage() {
   cat <<'EOF'
 bash run.sh <command> [args]                                  (times: laptop, after setup)
 
-  setup [--full]      make .venv, pip install -r requirements.txt               ~1-3 min
+Judge quick path (~10 min, no data download, no keys):  setup, replay, redteam, tests
+One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, reproduce)
+
+  all                 setup + data (public crawl) + reproduce: every result, figure, the paper and the docs  ~1.5-2.5 h
+  setup [--full]      make .venv, pip install -r requirements.txt               ~1 min
                       --full also installs requirements-extra.txt (vision, deck: torch, onnxruntime...)
   tests               unit tests (pytest: tests/, engine/vision/tests/)          ~2-7 min (393 s on a loaded laptop)
   replay              10 min of recorded live Polymarket books (tests/fixtures/live_sample.jsonl.gz)
                       through the live paper trader and the engine's order books  ~15 s, no network
-  live [args]         live paper session on live public Polymarket data, read-only, until Ctrl-C
-                      (scripts/live_paper.py --test). Quoting starts after a warm-up of 50 public trades (the
-                      pre-registered trade-side check), so on a quiet tape it can quote nothing for a while;
-                      --minutes N counts from the start of quoting, not from launch (use Ctrl-C to stop earlier)
+  live [args]         the paper trader on live public Polymarket data, read-only, until Ctrl-C (a tool:
+                      scripts/live_paper.py --test; the pre-registered live session was stopped by a team decision
+                      and is not used, DEVIATIONS_LIVE.md L15). Quoting starts after a warm-up of 50 public trades,
+                      so on a quiet tape it can quote nothing for a while; --minutes N counts from the start of
+                      quoting, not from launch (use Ctrl-C to stop earlier)
   data [--smoke DAY] [--parallel]
                       public Polymarket crawl into data/ (scripts/fetch_polymarket.py), no keys.
                       ETA ~1-2 h for ~13k tapes; resumable: every read is cached in data/raw, rerun to continue.
                       --smoke DAY: event list + tapes of the matches starting on DAY (default 2026-01-15, 38 in-sample matches), ~1-3 min
-  reproduce           bash reproduce.sh: every number and figure in docs/NOTE.pdf (needs the full `data` crawl
-                      first; one smoke day is not enough for the walk-forward tables)        ~15 min
+  reproduce           bash reproduce.sh: every result file and figure, results/paper/numbers.json, docs/NOTE.pdf
+                      and the docs (needs the full `data` crawl first; one smoke day is not enough for the
+                      walk-forward tables)                                                   ~15-20 min
+  docs [--check]      README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from docs/templates/ and
+                      results/paper/numbers.json (scripts/build_docs.py); --check: exit 1 if stale     ~1 s
   engine [demo|books|live]
                       COURTSIDE engine, paper only. demo: vision calls -> paper decisions on a recorded book
                       (needs data/live, data/vision, models/); books: engine order books on the committed
@@ -43,8 +51,8 @@ bash run.sh <command> [args]                                  (times: laptop, af
                       derived Q&A number from its results file, claim/acceptance checks on the public text.
                       No network, no held-out read, nothing re-simulated                            ~10 s
   preflight           read-only readiness check before the one-shot forward runs (owner use, macOS):
-                      clock, disk, swap, power, live session, heavy jobs, pinned forward code unmodified,
-                      forward outputs, v2-safe plan, untracked results, local commits not yet pushed
+                      clock, disk, swap, power, heavy jobs, pinned forward code unmodified, forward outputs,
+                      v2-safe plan, docs up to date, untracked results, local commits not yet pushed
 EOF
 }
 
@@ -56,6 +64,17 @@ cmd=${1:-help}
 [ $# -gt 0 ] && shift
 
 case "$cmd" in
+  all)
+    bash "$HERE/run.sh" setup
+    bash "$HERE/run.sh" data
+    bash "$HERE/run.sh" reproduce "$@"
+    ;;
+
+  docs)
+    need_venv
+    "$PY" scripts/build_docs.py "$@"
+    ;;
+
   setup)
     [ -x .venv/bin/python ] || "$PYTHON" -m venv .venv
     .venv/bin/python -m pip install -q --upgrade pip
@@ -260,7 +279,7 @@ EOF
       pgrep -x caffeinate >/dev/null && ok "caffeinate running" || bad "no caffeinate (nohup caffeinate -dims -w <live_paper pid> &)"
     fi
     lp=$(pgrep -f "scripts/live_paper.py" | head -1 || true)
-    [ -n "$lp" ] && ok "live paper session running (pid $lp)" || bad "live paper session not running"
+    [ -z "$lp" ] && ok "no live paper session (stopped by team decision, DEVIATIONS_LIVE.md L15)" || echo "  info  a live_paper.py process is running (pid $lp); its results are not used"
     pgrep -f "src.live_recorder" >/dev/null && ok "live recorder running" || echo "  info  live recorder not running"
     heavy=$(pgrep -fl "make_video|e2e_run|engine.webrtc|capacity_study|cv_showcase|ffmpeg|latexmk|tier0_latency_sweep" | cut -c1-90 || true)
     [ -z "$heavy" ] && ok "no heavy jobs running" || { bad "heavy jobs running (stop them 11:25-11:50 UTC):"; echo "$heavy" | sed 's/^/          /'; }
@@ -270,6 +289,7 @@ EOF
     [ -f results/v2/forward.json ] && echo "  info  results/v2/forward.json exists (forward test already ran)" || ok "results/v2/forward.json absent (forward test not run yet)"
     [ -f results/tier0_v3/forward/results.json ] && echo "  info  tier-0 v3 forward result exists" || ok "tier-0 v3 forward result absent (not run yet)"
     "$PY" scripts/forward_test_safe.py --plan | "$PY" -c "import json,sys; d=json.load(sys.stdin); print('  info  v2-safe (C9) ready for its one run:', d['real_run_ready'], '|', '; '.join(d['problems']) or 'no problems')"
+    "$PY" scripts/build_docs.py --check >/dev/null 2>&1 && ok "README/DEVPOST/COMPLIANCE up to date with numbers.json" || bad "docs stale or a docs check failed: bash run.sh docs"
     unt=$(git status --porcelain --untracked-files=all -- results/live results/e2e results/capacity results/redteam results/v2 2>/dev/null | wc -l | tr -d ' ')
     echo "  info  $unt uncommitted file(s) under results/{live,e2e,capacity,redteam,v2} (commit when their owners finish; never data/ or models/)"
     ahead=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo "?")
