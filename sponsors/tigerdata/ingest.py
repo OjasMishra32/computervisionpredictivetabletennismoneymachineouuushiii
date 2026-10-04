@@ -188,6 +188,7 @@ def main(reset: bool):
             conn.execute(f"SELECT compress_chunk(c, if_not_compressed => true) FROM show_chunks('courtside.{h}') c")
             b, a = conn.execute(f"SELECT sum(before_compression_total_bytes), sum(after_compression_total_bytes) "
                                 f"FROM hypertable_compression_stats('courtside.{h}')").fetchone()
+            b, a = float(b), float(a)
             print(f"{h:16s} compressed {b / 1e6:7.1f} MB -> {a / 1e6:6.1f} MB  ({b / a:.1f}x)")
 
 

@@ -117,7 +117,7 @@ FROM mid_1s m
 LEFT JOIN trades_1s t USING (asset_id, bucket);
 
 -- The repo's jump detector, in SQL: the 10 s average mid vs the 60 s before it; a move of 4c or more
--- marks a point. Only the first second of each jump is kept.
+-- marks a point. Only liquid match-winner books (spread <= 5c); only the first second of each jump is kept.
 CREATE VIEW jumps AS
 WITH w AS (
     SELECT asset_id, bucket, mid,
@@ -125,7 +125,8 @@ WITH w AS (
                           RANGE BETWEEN interval '9 seconds' PRECEDING AND CURRENT ROW)                     AS mid_10s,
            avg(mid) OVER (PARTITION BY asset_id ORDER BY bucket
                           RANGE BETWEEN interval '70 seconds' PRECEDING AND interval '10 seconds' PRECEDING) AS mid_prior_60s
-    FROM mid_1s
+    FROM mid_1s JOIN markets mk USING (asset_id)
+    WHERE mk.market_type = 'moneyline' AND spread <= 0.05   -- liquid match-winner books only
 ), f AS (
     SELECT *, mid_10s - mid_prior_60s AS move,
            abs(mid_10s - mid_prior_60s) >= 0.04 AS is_jump
@@ -212,7 +213,10 @@ CREATE PROCEDURE detect_jumps(job_id int DEFAULT 0, config jsonb DEFAULT '{}') L
                               RANGE BETWEEN interval '9 seconds' PRECEDING AND CURRENT ROW)                     AS m10,
                avg(mid) OVER (PARTITION BY asset_id ORDER BY bucket
                               RANGE BETWEEN interval '70 seconds' PRECEDING AND interval '10 seconds' PRECEDING) AS m60
-        FROM courtside.mid_1s, since WHERE bucket > since.t - interval '80 seconds'
+        FROM courtside.mid_1s
+        JOIN courtside.markets mk USING (asset_id), since
+        WHERE bucket > since.t - interval '80 seconds'
+          AND mk.market_type = 'moneyline' AND spread <= 0.05   -- liquid match-winner books only
     ), f AS (
         SELECT *, m10 - m60 AS move, abs(m10 - m60) >= 0.04 AS is_jump,
                lag(abs(m10 - m60) >= 0.04) OVER (PARTITION BY asset_id ORDER BY bucket) AS was_jump

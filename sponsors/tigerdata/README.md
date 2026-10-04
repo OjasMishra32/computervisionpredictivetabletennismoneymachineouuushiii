@@ -51,7 +51,7 @@ echo 'TIGER_DATABASE_URL=postgres://...' >> .env                                
 | `wallet_trades` | live | Polymarket Data API (public proxy wallets) |
 | `jump_events` | computed | `detect_jumps` job |
 | `cv_calls` | 172 | `results/engine/online_events_L4.jsonl` (live engine, table-tennis footage) |
-| `pipeline_stages` | 3,236 | `results/e2e/trace.jsonl` (each stage, camera frame to fill) |
+| `pipeline_stages` | 3,188 | `results/e2e/trace.jsonl` (each stage, camera frame to fill) |
 | `markets` | 260 + live | recorder token index; Gamma for live matches |
 
 ## Measured numbers
