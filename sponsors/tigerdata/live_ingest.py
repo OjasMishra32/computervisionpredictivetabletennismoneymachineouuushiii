@@ -184,9 +184,13 @@ def moving(st: State) -> list[str]:
 
 
 def fetch_trades(cond: str) -> list[dict]:
+    """Recent trades for one match; [] on rate limits or network errors (the next poll catches up)."""
     for wait in (0, 2, 5):
         time.sleep(wait)
-        r = requests.get(DATA_TRADES, params={"market": cond, "limit": 200}, timeout=20)
+        try:
+            r = requests.get(DATA_TRADES, params={"market": cond, "limit": 200}, timeout=20)
+        except requests.RequestException:
+            continue
         if r.status_code != 429:
             return r.json() if r.ok else []
     return []
@@ -206,7 +210,11 @@ async def wallet_loop(st: State, stop: float, conn) -> None:
         conds = moving(st)
         if not conds:
             continue
-        rows = [r for part in await asyncio.gather(*(one(c) for c in conds)) for r in part]
+        try:
+            rows = [r for part in await asyncio.gather(*(one(c) for c in conds)) for r in part]
+        except Exception as ex:  # never let one bad poll stop the stream
+            print("wallet poll:", repr(ex)[:200], flush=True)
+            continue
         if conn is not None and rows:
             async with conn.cursor() as cur:
                 before = (await (await cur.execute("SELECT count(*) FROM courtside.wallet_trades")).fetchone())[0]
