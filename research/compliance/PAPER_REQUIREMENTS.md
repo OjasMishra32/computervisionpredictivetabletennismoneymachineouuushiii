@@ -43,3 +43,8 @@
   "offline evaluation with a look-ahead feature".
 - e2e: our part ~54 ms; 2,119 ms total with a simulated 1 s feed + network + 1 s venue hold, vs the 3,000 ms bar.
 - Read derived Q&A numbers from results/redteam/derived.json; run scripts/redteam_acceptance.py before the final commit.
+
+## Addendum (2026-10-04T02:18:17Z): no live/forward results
+The live paper session was stopped and the forward test was not run (HYPOTHESIS_V2.md A3). Remove every "pending" slot:
+state once, in the rigor/robustness table, "forward test and live paper session: not run (submitted before the forward
+window closed)". Do not present any live-session numbers.

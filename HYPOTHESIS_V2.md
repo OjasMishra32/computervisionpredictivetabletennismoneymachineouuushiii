@@ -96,3 +96,9 @@ started before v2-safe was frozen.
 | $ P&L | $25.5k | $40.4k |
 
 v2-safe lowers the cost of a losing day. It does not reduce how often one happens.
+
+## Amendment A3 (2026-10-04T02:18:17Z): forward test not run
+The team decided to submit before the pre-registered forward test window closes, so the forward test (scripts/forward_test.py)
+and the tier-0 v3 forward secondary (scripts/tier0_v3_forward.py) were NOT run and no forward-window data was read for
+them. The paper reports them as "not run (submitted before the forward window closed)". The live paper session was also
+stopped (research/v2/maker/DEVIATIONS_LIVE.md L15).

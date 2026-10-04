@@ -249,3 +249,8 @@ This changes the maker fill model: quotes are pulled during a gap.
 
 **Replays.** B2 replays of the new raw log use the fixed engine. The old session placed no order, so it has nothing
 to re-price.
+
+## L15 - session stopped by team decision (2026-10-04T02:18:17Z)
+The team decided to submit without the live paper session. The process (PID 2001) was stopped with SIGTERM at 2026-10-04T02:18:17Z,
+before the pre-registered end (2026-10-04 11:30 UTC). Its log and summary are kept as they stood (results/live/); no
+result from it is used or reported as evidence in the paper, deck or video.
