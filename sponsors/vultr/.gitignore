@@ -1,0 +1,6 @@
+out/*.jsonl
+out/*.log
+out/token_manifest.json
+!out/summary.json
+!out/dashboard.html
+!out/probe_*.json
