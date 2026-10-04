@@ -157,8 +157,13 @@ def main():
 
     st = t0["stresses_corrected"]
     pool = st["live pool = all 482 points"]["burned_OOS"]["mean"]
+    # the trade set is still the >=4c jump set: only the pool that timing and depth are drawn from is all 482 live
+    # points (scripts/tier0_backtest.py: replace(c, pool="all")). It is NOT an all-points book.
+    pool_label = "jump set (points that later moved >=4c); timing and depth drawn from all 482 live points; not an all-points book"
     put("cv.pool482.oos.c", pool["per_share_c"], f"{T0}::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0)", nd=2)
+    K["cv.pool482.oos.c"]["label"] = pool_label
     put("cv.pool482.oos.ci", [rnd(pool["per_share_ci95_c_lo"]), rnd(pool["per_share_ci95_c_hi"])], f"{T0}::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*")
+    K["cv.pool482.oos.ci"]["label"] = pool_label
     nc = st["net cap 1000"]["burned_OOS"]["mean"]
     put("cv.netcap1000.oos.usd", nc["pnl_per_day_usd"], f"{T0}::stresses_corrected[\"net cap 1000\"].burned_OOS.mean.pnl_per_day_usd (V = 0)", nd=0)
 

@@ -3,20 +3,25 @@
 Pipeline (docs/paper/PLAN.md section 1):
   1. read every number from committed result files into one registry -> results/paper/numbers.json
      (each entry: value as printed, raw value, source file::key). A missing key stops the build.
-  2. write results/paper/{policy,variants,peeks}.json and docs/paper/numbers.tex (one macro per key)
+  2. write results/paper/{policy,variants}.json and docs/paper/numbers.tex (one macro per key); counts of held-out
+     reads and of decisions made after a look come only from the experiment registry
+     (results/provenance/experiments.json::summary), never from counting log lines
   3. draw every figure (scripts/paper_figures_v2.py, house style docs/paper/figstyle.py) into results/paper/v2/
   4. render docs/paper/note.tex.j2 -> docs/paper/note.tex and compile with tectonic
   5. acceptance checks (PLAN section 15): main text <= 5 pages, every main-text span >= 11 pt (figure text
-     included), 1 in margins, honesty grep, LaTeX log clean, fonts embedded and ours -> results/paper/checks.json
+     included), 1 in margins, honesty grep, fact checks (registry counts and labels as printed, executable results
+     before benchmarks, no unsupported labels), LaTeX log clean, fonts embedded and ours -> results/paper/checks.json
   6. page renders at 110 dpi -> results/paper/pages/, copy to docs/NOTE.pdf, write docs/NOTE.md and docs/NOTE.html
 
 The one pending slot is the blind forward test (HYPOTHESIS_V2.md A4): it fills from results/v2/forward.json when that
 file exists and otherwise says when the pre-registered run happens. The live paper session was stopped and appears only
 as one line in the appendix records. scripts/forward_test.py is never imported or run here. Nothing here runs a new evaluation: it reads committed
-result files, and Fig. 2(b) re-draws the committed v2 trade file (IS and burned OOS) with the cost-stress lambdas,
+result files, and Fig. 2(b) re-draws the committed v2 trade file (IS and OOS) with the cost-stress lambdas,
 asserting the committed totals to the cent.
 
-Usage: .venv/bin/python scripts/build_paper.py [--no-figures] [--no-checks-fail]
+Usage: .venv/bin/python scripts/build_paper.py [--no-figures] [--numbers-only] [--strict]
+  --numbers-only  write results/paper/numbers.json, policy.json, variants.json and numbers.tex; no figures, no PDF
+  --strict        (default when COURTSIDE_STRICT=1) a missing experiment registry stops the build
 """
 from __future__ import annotations
 
@@ -140,6 +145,14 @@ def src_line(rel: str, pattern: str) -> str:
         if re.search(pattern, line):
             return f"{rel}:{i}"
     raise KeyError(f"policy constant not found: {pattern} in {rel}")
+
+
+def _int_const(rel: str, name: str) -> int:
+    """An integer constant 'NAME = 3_000' read from a source file (policy constants keep their code as the source)."""
+    mm = re.search(rf"^{name}\s*=\s*([0-9_]+)\b", (ROOT / rel).read_text(), re.M)
+    if not mm:
+        raise KeyError(f"policy constant not found: {name} in {rel}")
+    return int(mm.group(1).replace("_", ""))
 
 
 # ================================================================================================ numbers
@@ -362,6 +375,8 @@ def collect() -> tuple[Registry, dict]:
               f"results/webrtc/latency.json::{wr['key']}.{{p50,p99}}")
         N.add("cv.webrtc.n", intc(wr["n"]) if wr.get("n") else "n/a", wr.get("n"), f"results/webrtc/latency.json::{wr['key']}.n")
     else:
+        if strict_mode():
+            raise KeyError("COURTSIDE: results/webrtc/latency.json absent (strict mode prints no 'pending' value)")
         N.add("cv.webrtc", "pending", None, "results/webrtc/latency.json (absent at build time)")
         N.add("cv.webrtc.n", "n/a", None, "results/webrtc/latency.json (absent at build time)")
 
@@ -522,8 +537,9 @@ def collect() -> tuple[Registry, dict]:
     lp = T0R["inputs"]["live_pool_sizes"]
     N.add("cv.pool.d3", intc(lp["D>=3c"]), lp["D>=3c"], "results/tier0/results.json::inputs.live_pool_sizes.D>=3c")
     N.add("cv.pool.all", intc(lp["all"]), lp["all"], "results/tier0/results.json::inputs.live_pool_sizes.all")
+    # >=4c jump set with timing and depth drawn from all 482 live points: not an all-points book (never print it as one)
     N.add("cv.pool482.oos", f"{sgn(dk('cv.pool482.oos.c'))} {ci(dk('cv.pool482.oos.ci'))}", [dk("cv.pool482.oos.c"), dk("cv.pool482.oos.ci")],
-          dsrc("cv.pool482.oos.c") + " ; " + dsrc("cv.pool482.oos.ci"))
+          dsrc("cv.pool482.oos.c") + " ; " + dsrc("cv.pool482.oos.ci") + " [jump set; timing and depth from all 482 live points]")
     # business case (derived.json): most the 10-match book can pay for data; stamp lag needed for the cheapest stack
     for rk in ("pre", "cal"):
         N.add(f"cv.{rk}.oos.maxlic", usd(dk(f"cv.{rk}.oos.maxlic")), dk(f"cv.{rk}.oos.maxlic"), dsrc(f"cv.{rk}.oos.maxlic"))
@@ -578,11 +594,8 @@ def collect() -> tuple[Registry, dict]:
               if re.search(r"tier0 counterfactual grid evaluated on burned OOS", ln))
     N.add("t0.oos_first", pd.Timestamp(pk.split()[0]).strftime("%H:%M"), pk.split()[0],
           "results/oos_peeks.log (first line 'tier0 counterfactual grid evaluated on burned OOS')")
-    dev0 = (ROOT / "research/v2/tier0/DEVIATIONS.md").read_text()
-    n_t = len(re.findall(r"^### T\d+\.", dev0, re.M))
-    n_v = len(re.findall(r"^### V\d+\.", dev0, re.M))
-    N.add("t0.dev.n", intc(n_t + n_v), n_t + n_v, "D: count of '### T<n>.' and '### V<n>.' headings in research/v2/tier0/DEVIATIONS.md")
-    N.add("t0.dev.span", f"T1\u2013T{n_t}, V1\u2013V{n_v}", [n_t, n_v], "research/v2/tier0/DEVIATIONS.md headings")
+    # no count of DEVIATIONS headings is printed: those entries mix rule changes with reporting and stress notes;
+    # decisions made after a look are counted only from the experiment registry (collect_registry)
 
     # ---------------------------------------------------------------- market-side decay (12.8)
     sub = DJ["tennis"]["subsets"]
@@ -758,17 +771,20 @@ def collect() -> tuple[Registry, dict]:
         "lock_s": {"value": 4 * 3600, "source": src_line("src/v2.py", r"^LOCK_S")},
         "trailing_edge_half_c": {"value": 0.3, "source": src_line("docs/RISK.md", r"Trailing 30-day net edge < 0.3")},
         "drawdown_stop_pct": {"value": 5, "source": src_line("docs/RISK.md", r"Drawdown from equity peak > 5%")},
-        "rule_changes_after_a_look": {"value": 2, "source": src_line("DEVIATIONS.md", r"^## D9")},
+        "match_gross_cap_usd": {"value": _int_const("research/v2/sizing/engine.py", "BASE_MATCH_CAP"),
+                                "source": src_line("research/v2/sizing/engine.py", r"^BASE_MATCH_CAP\s*=")},
     }
     for k, key in (("pol.det_c", "detector_move_c"), ("pol.q_prints", "qualify_min_prints"),
                    ("pol.q_matches", "qualify_min_matches"), ("pol.q_t", "qualify_min_t"),
                    ("pol.trail_half", "trailing_edge_half_c"), ("pol.dd_stop", "drawdown_stop_pct"),
-                   ("pol.n0", "shrinkage_n0"), ("peeks.rule_changes", "rule_changes_after_a_look")):
+                   ("pol.n0", "shrinkage_n0")):
         v = policy[key]["value"]
         txt = f"{v:g}" if isinstance(v, (int, float)) else str(v)
         if key == "drawdown_stop_pct":
             txt += "%"
         N.add(k, txt, v, "results/paper/policy.json::" + key + " <- " + policy[key]["source"])
+    mc = policy["match_gross_cap_usd"]
+    N.add("risk.matchcap", usd(mc["value"]), mc["value"], "results/paper/policy.json::match_gross_cap_usd <- " + mc["source"])
     extra["policy"] = policy
 
     # ---------------------------------------------------------------- variants (12.12) -> variants.json
@@ -810,22 +826,10 @@ def collect() -> tuple[Registry, dict]:
     N.add("var.sweep", intc(sens["latency-sweep cells"]), sens["latency-sweep cells"], "results/tier0/latency_sweep.csv rows")
     extra["variants"] = {"families": variants, "total": total, "sensitivities_none_chosen": sens}
 
-    # ---------------------------------------------------------------- peeks (12.13) -> peeks.json
-    rules = [("live", r"REPLAY|live paper|session"), ("audit", r"audit|reproduc|RE-RUN|rebuild|recompute"),
-             ("descriptive", r"descriptive|no strategy|no P&L|plumbing|selection check|provenance"),
-             ("non-blind", r"non-blind"), ("blind first run", r"first run|first use|blind|PREREG")]
-    lines = [ln for ln in (ROOT / "results/oos_peeks.log").read_text().splitlines() if ln.strip()]
-    peeks = []
-    for ln in lines:
-        cls = next((c for c, rx in rules if re.search(rx, ln, re.I)), "other")
-        ts, _, desc = ln.partition(" ")
-        peeks.append({"utc": ts, "class": cls, "line": desc})
-    counts = {c: sum(1 for p in peeks if p["class"] == c) for c, _ in rules + [("other", "")]}
-    N.add("peeks.n", intc(len(peeks)), len(peeks), "results/oos_peeks.log (lines at build time)")
-    for c, k in (("blind first run", "blind"), ("non-blind", "nonblind"), ("descriptive", "desc"), ("audit", "audit"),
-                 ("live", "live"), ("other", "other")):
-        N.add(f"peeks.{k}", intc(counts[c]), counts[c], f"D: keyword class '{c}' over results/oos_peeks.log")
-    extra["peeks"] = {"n": len(peeks), "counts": counts, "rules": rules, "lines": peeks}
+    # ---------------------------------------------------------------- held-out reads and decisions after a look
+    # counted only from the experiment registry (results/provenance/experiments.json::summary); a line of
+    # results/oos_peeks.log is not a read (it also records reproductions, verifiers, replays and copies of one job)
+    collect_registry(N, extra)
 
     # ---------------------------------------------------------------- pending slots (12.14)
     fwd_p = ROOT / "results/v2/forward.json"
@@ -911,6 +915,7 @@ def collect() -> tuple[Registry, dict]:
     collect_evidence(N)
     collect_revision(N)  # before the appendix rows below, which use its keys
     collect_integration(N)  # the integration pass after the organizers' brief (new keys only)
+    collect_executable(N, extra)  # executable rows first; optional causal-selection block
     # ---------------------------------------------------------------- authors (research/compliance/TEAM.md)
     tm_ = ROOT / "research/compliance/TEAM.md"
     authors = "[Author names: team to fill]"
@@ -968,7 +973,7 @@ def collect() -> tuple[Registry, dict]:
          f"Sharpe {V('v2s.is.sr')}\\,/\\,{V('v2s.oos.sr')}; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}", "fail (blind)"),
         ("Per-wallet cap", f"{V('wcap.W')} a wallet a day plus retirement, chosen on IS from {V('wcap.n')} variants, pre-registered",
          f"OOS {V('wcap.oos.c')}¢ {V('wcap.oos.ci')}, Sharpe {V('wcap.oos.sr')}, {V('wcap.oos.pnl')} vs {V('wcap.base.oos.pnl')}; max DD {V('wcap.oos.maxdd')} vs {V('wcap.base.oos.maxdd')}; top five {V('wcap.oos.top5')} (was {V('conc.top5.oos')})",
-         "pass (burned OOS); a loss limit, backtest only"),
+         "pass (OOS, non-blind); a loss limit, backtest only"),
         ("Copier fill stress", "v2 filled after the venue hold and the measured block lag, on the real tape",
          f"next same-side print: IS {V('copier.is.c')}¢, OOS {V('copier.oos.c')}¢; optimistic: IS {V('copier.opt.is.c')}¢, OOS {V('copier.opt.oos.c')}¢ {V('copier.opt.oos.ci')}",
          "a copier loses"),
@@ -1031,7 +1036,6 @@ def collect() -> tuple[Registry, dict]:
     else:
         extra["fwd_text"] = N.text("fwd.cell")
     extra["fwd_verdict"] = {"not run": "not run", "runs once": "pending"}.get(N.text("fwd.status"), N.text("fwd.status"))
-    extra["peeks_late"] = sum(1 for p in extra["peeks"]["lines"] if "logged after" in p["line"].lower())
     return N, extra
 
 
@@ -1842,15 +1846,235 @@ def collect_integration(N: Registry) -> None:
         N.add("cvt." + k, TN[k]["text"], TN[k]["raw"], s9 + k + " <- " + str(TN[k]["source"])[:160])
 
 
+# ================================================================================================ registry, executable rows
+REGISTRY = "results/provenance/experiments.json"
+REGISTRY_SCHEMA = "courtside.provenance.experiments/1"
+CAUSAL_POINTS = "results/tier0/causal_points.json"
+CAUSAL_READINGS = ("point_L2.0", "tournament_L2.0")   # fully pre-registered timing first (registry E22)
+# Table 1 blocks and the registry results whose label_text Appendix D prints for them (fact check: each is printed)
+TABLE1_RESULTS = {"Executable copier": ("R_copier", "R_v2_copier"), "Live-book replay": ("R_replay",),
+                  "Causal CV selection": ("R_cv_causal_points", "R_cv_points"),
+                  "Fast tier's own fills (v2)": ("R_v2_is", "R_v2_oos"),
+                  "CV on later moves, pre-registered lag": ("R_cv_table2_pre",),
+                  "CV on later moves, post hoc lag": ("R_cv_table2_post",)}
+# what a profit number is (plan section 4.6 kinds); the registry's results[].paper_keys/kind override these
+KIND_PREFIX = (("copier.", "executable"), ("rp.", "executable"), ("cvx.", "sim_upper_bound"),
+               ("tab.v2.", "others_fills"), ("v2.", "others_fills"), ("v2s.", "others_fills"), ("wcap.", "others_fills"),
+               ("sc.", "conditional"), ("tab.cv.", "conditional"), ("cv.pre.", "conditional"),
+               ("cv.cal.", "conditional"), ("fresh.", "conditional"), ("pp.", "conditional"))
+EXECUTABLE_KINDS = ("executable",)
+
+
+def strict_mode() -> bool:
+    return os.environ.get("COURTSIDE_STRICT") == "1"
+
+
+def _count(x) -> int:
+    """A registry summary field is a count or a list of entries."""
+    if isinstance(x, bool) or not isinstance(x, (int, list, dict)):
+        raise KeyError(f"COURTSIDE: registry summary field is not a count or a list: {x!r}")
+    return x if isinstance(x, int) else len(x)
+
+
+def summary_sha(summary: dict) -> str:
+    import hashlib
+    return hashlib.sha256(json.dumps(summary, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+                          .encode()).hexdigest()
+
+
+def load_registry() -> dict | None:
+    p = ROOT / REGISTRY
+    if not p.exists():
+        if strict_mode():
+            raise KeyError(f"COURTSIDE: missing {REGISTRY} (strict mode; counts and labels come only from it)")
+        return None
+    R = json.loads(p.read_text())
+    if R.get("schema") != REGISTRY_SCHEMA:
+        raise KeyError(f"COURTSIDE: {REGISTRY} schema {R.get('schema')!r} != {REGISTRY_SCHEMA!r}")
+    if not isinstance(R.get("summary"), dict):
+        raise KeyError(f"COURTSIDE: {REGISTRY} has no summary (scripts/provenance.py writes it)")
+    return R
+
+
+def collect_registry(N: Registry, extra: dict) -> None:
+    """Counts of held-out evaluations and of decisions made after an OOS look, and the printed result labels, from
+    the experiment registry only. Nothing is counted from results/oos_peeks.log here."""
+    R = load_registry()
+    extra["registry"] = None
+    if R is None:
+        return
+    S = R["summary"]
+    src = REGISTRY + "::summary."
+    kinds = S.get("n_events_by_kind", {})
+    dec = list(S.get("oos_informed_decisions", []))
+    fixes = list(S.get("defect_fixes_after_oos", []))
+    for e in dec + fixes:
+        if not str(e.get("printed_text", "")).strip():
+            raise KeyError(f"COURTSIDE: registry event {e.get('id')} has no printed_text")
+    N.add("reg.n_events", intc(sum(kinds.values())), sum(kinds.values()), src + "n_events_by_kind (sum)")
+    N.add("reg.n_decisions", intc(len(dec)), len(dec), src + "oos_informed_decisions (len)")
+    N.add("reg.n_fixes", intc(len(fixes)), len(fixes), src + "defect_fixes_after_oos (len)")
+    for fam in ("v2", "cv"):
+        n = sum(1 for e in dec if str(e.get("family", "")).lower() == fam)
+        N.add(f"reg.n_decisions.{fam}", intc(n), n, src + f"oos_informed_decisions[family == {fam}] (len)")
+    for k, f in (("prereg", "preregistered_evaluations"), ("blind", "blind_evaluations"),
+                 ("repro", "reproductions"), ("diag", "diagnostics")):
+        if f in S:
+            N.add(f"reg.n_{k}", intc(_count(S[f])), _count(S[f]), src + f)
+    results = {r["id"]: r for r in R.get("results", []) if isinstance(r, dict) and "id" in r}
+    labels = []
+    for block, ids in TABLE1_RESULTS.items():
+        for rid in ids:
+            r = results.get(rid)
+            if r and str(r.get("label_text", "")).strip():
+                labels.append({"block": block, "id": rid, "label_text": r["label_text"], "kind": r.get("kind")})
+    kind_globs = [(g, r["kind"]) for r in results.values() if r.get("kind") for g in r.get("paper_keys", [])]
+    extra["registry"] = {"sha256": sha256_file(ROOT / REGISTRY), "summary_sha256": summary_sha(S),
+                         "decisions": dec, "fixes": fixes, "labels": labels, "kind_globs": kind_globs,
+                         "log_lines_unmapped": S.get("log_lines_unmapped")}
+
+
+def key_kind(key: str, kind_globs=()) -> str | None:
+    """The kind of a printed number: the registry's paper_keys globs first, then KIND_PREFIX."""
+    from fnmatch import fnmatchcase
+    for g, k in kind_globs:
+        if fnmatchcase(key, g):
+            return k
+    return next((k for pre, k in KIND_PREFIX if key.startswith(pre)), None)
+
+
+def collect_executable(N: Registry, extra: dict) -> None:
+    """Rows a trader at our latency could have run, net of costs (Table 1, first block): the copier filled after the
+    venue hold and the block lag (results/rigor/psr.json) and the replay on books recorded live
+    (results/replay/replay.json, pre-registered 2 s stamp lag). Optional block: causal CV selection on every eligible
+    point (results/tier0/causal_points.json, when present). Values are read, not computed; the text calls the
+    executable rows losses, so a sign change stops the build until the sentence is rewritten."""
+    PS = J("results/rigor/psr.json")
+    s0 = "results/rigor/psr.json::"
+    for per, P in (("is", "is"), ("oos", "oos")):
+        se = PS["series"][f"copier_central_{P}"]
+        N.add(f"copier.{per}.usd", usd(se["mean_daily_usd"], signed=True), se["mean_daily_usd"],
+              s0 + f"series.copier_central_{P}.mean_daily_usd")
+        N.add(f"copier.{per}.sr", num(se["sharpe_ann"], 1), se["sharpe_ann"], s0 + f"series.copier_central_{P}.sharpe_ann")
+        cc = PS["headline"][f"copier_central_{P}_ci95_c"]
+        N.add(f"copier.{per}.ci", ci(cc), cc, s0 + f"headline.copier_central_{P}_ci95_c")
+        h = PS["copier"][P]["harsh"]["per_share_c"]
+        N.add(f"copier.harsh.{per}.c", sgn(h), h, s0 + f"copier.{P}.harsh.per_share_c")
+    for per in ("is", "oos"):
+        if not (N.raw(f"copier.{per}.c") < 0 and N.raw(f"copier.{per}.usd") < 0):
+            raise KeyError(f"COURTSIDE: the text says the copier loses, but copier.{per} = {N.text(f'copier.{per}.c')}; "
+                           "rewrite the executable sentences")
+    RP = J("results/replay/replay.json")
+    for vk, V in (("v05", "0.5"), ("v1", "1")):
+        a = RP["cells"][f"V{V}|lag2|lead_model|florida"]["all"]
+        s1 = f"results/replay/replay.json::cells.V{V}|lag2|lead_model|florida.all"
+        if vk != "v1":   # rp.v1l2.* already exist (collect)
+            N.add(f"rp.{vk}l2.c", sgn(a["per_share_mark_c"]), a["per_share_mark_c"], s1 + ".per_share_mark_c")
+            N.add(f"rp.{vk}l2.ci", ci(a["per_share_mark_ci95_c"]), a["per_share_mark_ci95_c"], s1 + ".per_share_mark_ci95_c")
+        if vk != "v1":   # rp.v1l2.usd_mark already exists (collect)
+            N.add(f"rp.{vk}l2.usd_mark", usd(a["pnl_mark_usd"], signed=True), a["pnl_mark_usd"], s1 + ".pnl_mark_usd")
+        if a["per_share_mark_c"] >= 0:
+            raise KeyError(f"COURTSIDE: the text says the replay loses at V = {V} s; rewrite the sentence")
+    extra["causal"] = collect_causal(N)
+    extra["risk_controls"] = risk_controls(N, extra["causal"])
+
+
+def collect_causal(N: Registry) -> dict | None:
+    """Optional Table 1 block: CV trades chosen from information available before the order, on every eligible point
+    (schema courtside.cv.points/1). Absent file: no block (the paper says so in its limitations)."""
+    p = ROOT / CAUSAL_POINTS
+    if not p.exists():
+        return None
+    CP = json.loads(p.read_text())
+    cells = CP["cells"]
+    reading = next((r for r in CAUSAL_READINGS if f"{r}|V0.5|IS" in cells), None)
+    if reading is None:
+        raise KeyError(f"COURTSIDE: {CAUSAL_POINTS} has none of the readings {CAUSAL_READINGS}")
+    for vk, V in (("v05", "0.5"), ("v1", "1"), ("v3", "3")):
+        for per, P in (("is", "IS"), ("oos", "OOS")):
+            c = cells[f"{reading}|V{V}|{P}"]
+            halted = isinstance(c.get("halted"), dict)
+            d = c["halted"] if halted else c
+            s0 = f"{CAUSAL_POINTS}::cells.{reading}|V{V}|{P}" + (".halted" if halted else "")
+            k = f"cvx.{per}.{vk}"
+            for f, key, fmt in (("usd_day", "usd", lambda x: usd(x, signed=True)), ("c_share", "c", sgn),
+                                ("ret_ann", "ret", lambda x: pct(x, 0)), ("vol_ann", "vol", lambda x: pct(x, 1)),
+                                ("sharpe", "sr", lambda x: num(x, 1)), ("turnover_x", "to", intc),
+                                ("fees_x2_c_share", "fx2c", sgn)):
+                N.add(f"{k}.{key}", fmt(d[f]), d[f], f"{s0}.{f}")
+            dd = d["max_dd_usd"]
+            N.add(f"{k}.dd", usd(dd), dd, f"{s0}.max_dd_usd")
+    return {"reading": reading, "lag": reading.split("_L")[-1], "halted": isinstance(cells[f"{reading}|V1|IS"].get("halted"), dict),
+            "n_points": CP.get("n_points"), "source": CAUSAL_POINTS}
+
+
+def _has(rel: str, pattern: str) -> bool:
+    f = ROOT / rel
+    return f.exists() and re.search(pattern, f.read_text(), re.M) is not None
+
+
+def risk_controls(N: Registry, causal: dict | None) -> list[dict]:
+    """The risk table (Section 6): each control, whether it OPERATED in the backtests whose results we print, and its
+    status for deployment. 'operated' and 'engine code' are claims about code, so each needs its code evidence (a
+    missing pattern stops the build); 'proposed' is written policy only (docs/RISK.md). A control the backtests did
+    not apply says so, with any in-sample replay that checked it."""
+    v = N.text
+    halted = bool(causal and causal.get("halted"))
+    ev = {
+        "v2_caps": [("research/v2/sizing/engine.py", r"^BASE_USD_CAP\s*=\s*1_000"), ("research/v2/sizing/engine.py", r"^def apply_caps"),
+                    ("src/v2.py", r'zone="0\.05-0\.95"'), ("src/v2.py", r"net_cap=100")],
+        "cv_caps": [("src/tier0.py", r"trade_cap: float = 1000\.0"), ("src/tier0.py", r"net_cap: float = 100\.0"),
+                    ("src/tier0.py", r"^ZONE = \(0\.05, 0\.95\)")],
+        "cv_prec": [("src/tier0.py", r"p >= 0\.95")],
+        "match_cap": [("research/v2/sizing/engine.py", r"^BASE_MATCH_CAP\s*=")],
+        "engine_caps": [("engine/risk/limits.py", r"max_order_usd"), ("engine/risk/limits.py", r"net_cap_shares"),
+                        ("engine/risk/limits.py", r"V2_ZONE")],
+        "engine_stop": [("engine/risk/limits.py", r"daily_stop_usd")],
+        "engine_kill": [("engine/risk/limits.py", r"feed_stale_ms"), ("engine/risk/limits.py", r"vision_stale_ms"),
+                        ("engine/risk/limits.py", r"def kill\(")],
+        "policy": [("docs/RISK.md", r"policy only")],
+    }
+    for name, pats in ev.items():
+        miss = [f"{f}: /{pt}/" for f, pt in pats if not _has(f, pt)]
+        if miss:
+            raise KeyError(f"COURTSIDE: risk table evidence '{name}' not found: {miss}")
+    t = lambda k: tex(v(k))   # noqa: E731  (rows are LaTeX: values escaped here, the template prints them raw)
+    replay_is = "v2 IS replay: never fires"
+    rows = [
+        {"control": f"Order \\(\\leq\\) {t('risk.order_usd')}; net \\(\\leq\\) {t('risk.netcap')} shares a match; price {t('risk.zone')}",
+         "backtest": "operated (v2, CV)", "deploy": "engine code"},
+        {"control": f"{t('risk.matchcap')} gross a match", "backtest": "operated (v2)", "deploy": "proposed"},
+        {"control": "CV early calls only at leads with precision \\(\\geq\\)0.95", "backtest": "operated (CV)", "deploy": "proposed"},
+        {"control": f"{t('risk.daily_stop')} daily loss stop", "backtest": ("operated (causal CV)" if halted else replay_is),
+         "deploy": "engine code"},
+        {"control": f"Trailing edge \\(<\\) {t('pol.trail_half')}¢: half; \\(\\leq 0\\) or {t('pol.dd_stop')} drawdown: stop",
+         "backtest": replay_is, "deploy": "proposed"},
+        {"control": "One confirmed false CV call halts the day",
+         "backtest": ("operated (causal CV)" if halted else "not run (wrong calls kept)"), "deploy": "proposed"},
+        {"control": f"Stale feed ({t('risk.feed_stale')}\\,s) or vision ({t('risk.vision_stale')}\\,s), slow latency, kill",
+         "backtest": "not applicable", "deploy": "engine code"},
+        {"control": "Fee or hold change: no new risk until re-stressed", "backtest": "not run", "deploy": "proposed"},
+    ]
+    return rows
+
+
 # ================================================================================================ outputs
 def write_numbers(N: Registry, extra: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    reg = extra.get("registry")
+    globs = reg["kind_globs"] if reg else []
+    for k, e in N.d.items():
+        kd = key_kind(k, globs)
+        if kd:
+            e["kind"] = kd
     (OUT / "numbers.json").write_text(json.dumps({"generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                                                   "script": "scripts/build_paper.py", "label_cv": CV_LABEL,
+                                                  "registry": ({"path": REGISTRY, "sha256": reg["sha256"],
+                                                                "summary_sha256": reg["summary_sha256"]} if reg else None),
                                                   "numbers": N.d}, indent=1, default=str, ensure_ascii=False))
     (OUT / "policy.json").write_text(json.dumps(extra["policy"], indent=1))
     (OUT / "variants.json").write_text(json.dumps(extra["variants"], indent=1))
-    (OUT / "peeks.json").write_text(json.dumps(extra["peeks"], indent=1, ensure_ascii=False))
+    (OUT / "peeks.json").unlink(missing_ok=True)   # no longer written: log lines are not classified as reads here
     lines = ["% generated by scripts/build_paper.py from results/paper/numbers.json; do not edit",
              "% CV readings: cv.pre.* = the pre-registered stamp-lag reading (listed first), cv.cal.* = the post hoc "
              "estimate; the CV trade set is selected on outcomes, not ex ante"]
@@ -1902,6 +2126,102 @@ def compile_tex(tex_path: Path) -> tuple[Path, str]:
 FORBIDDEN = ["our feed", "our licensed", "licensed feed we", "we licensed", "we purchased", "we bought",
              "received video", "match footage we", "our camera at", "courtside camera we", "live atp data",
              "live wta data"]
+
+
+PROFIT_KEY = re.compile(r"\.(usd|usd_mark|c|sr)$")
+LOG_COUNT_TEXT = re.compile(r"\b\d[\d,]*\s+(?:logged\s+)?(?:held-out|out-of-sample|oos)\s+reads\b|"
+                            r"\b\d[\d,]*\s+(?:logged\s+)?reads\s+of\s+(?:held-out|out-of-sample)", re.I)
+
+
+def _norm(t: str) -> str:
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def profit_order(tpl: str, start: str, end: str, kind_globs=()) -> list[tuple[str, str]]:
+    """(key, kind) of each profit number in a template region, in reading order. Table macros count as their rows:
+    exrow = executable, cvxrow = causal selection (simulated upper bound), cvrow = conditional benchmark."""
+    i = tpl.find(start)
+    j = tpl.find(end, i + 1) if i >= 0 else -1
+    if i < 0 or j < 0:
+        return []
+    out = []
+    for mo in re.finditer(r"V\('([^']+)'\)|\b(exrow|cvxrow|cvrow)\(", tpl[i:j]):
+        if mo.group(1):
+            k = mo.group(1)
+            if PROFIT_KEY.search(k):
+                kd = key_kind(k, kind_globs)
+                if kd:
+                    out.append((k, kd))
+        else:
+            out.append((mo.group(2), {"exrow": "executable", "cvxrow": "sim_upper_bound", "cvrow": "conditional"}[mo.group(2)]))
+    return out
+
+
+def fact_checks(tex: str, tpl: str, numbers: dict, pdf_text: str) -> dict:
+    """Checks of what is printed against facts: the registry (counts, decision sentences, result labels), the kind
+    of each profit number (executable results lead the abstract and Table 1), and labels the evidence does not
+    support. Pure function of its inputs (tests/test_build_paper_facts.py)."""
+    res: dict = {"fail": []}
+    N = numbers.get("numbers", {})
+    low = _norm(pdf_text).lower()
+    if re.search(r"\bburned\b", low):
+        body = re.sub(r"(?m)%.*$", "", tex).lower()
+        where = ("the paper text" if re.search(r"\bburned\b", body) else
+                 "figure text (a figure script's label, e.g. scripts/firm_scenario_fig.py 'Burned OOS')")
+        res["fail"].append(f"the word 'burned' is printed in {where}; use the registry label, e.g. 'OOS, non-blind'")
+    bad_keys = sorted(k for k in N if k.startswith("peeks.") or "rule_changes" in k or k.startswith("t0.dev."))
+    if bad_keys:
+        res["fail"].append(f"log-line or invented counts in numbers.json: {bad_keys[:5]}")
+    if LOG_COUNT_TEXT.search(low):
+        res["fail"].append(f"a count of log lines is printed as reads: {LOG_COUNT_TEXT.search(low).group(0)!r}")
+    if re.search(r"no look-?ahead in the (tradable|executable)|all-points (version|book)", low):
+        res["fail"].append("an unsupported label is printed ('no look-ahead in the tradable book' / 'all-points')")
+    # registry: printed counts, decision sentences and labels equal the current registry
+    reg_meta = numbers.get("registry")
+    p = ROOT / REGISTRY
+    res["registry_present"] = p.exists()
+    globs = []
+    if p.exists():
+        R = json.loads(p.read_text())
+        S = R.get("summary", {})
+        res["registry_summary_sha"] = summary_sha(S)
+        if not reg_meta or reg_meta.get("summary_sha256") != res["registry_summary_sha"]:
+            res["fail"].append("results/paper/numbers.json was built from a different registry summary (rebuild)")
+        if S.get("log_lines_unmapped") not in (0, None):
+            res["fail"].append(f"registry: {S.get('log_lines_unmapped')} lines of results/oos_peeks.log map to no event")
+        dec, fixes = S.get("oos_informed_decisions", []), S.get("defect_fixes_after_oos", [])
+        want = {"reg.n_decisions": len(dec), "reg.n_fixes": len(fixes),
+                "reg.n_events": sum(S.get("n_events_by_kind", {}).values())}
+        for k, w in want.items():
+            if k in N and N[k]["raw"] != w:
+                res["fail"].append(f"{k} printed {N[k]['raw']} but the registry gives {w}")
+        flat_tex = _norm(tex)
+        miss = [e.get("id") for e in dec + fixes
+                if _norm(tex_escape(str(e.get("printed_text", "")).rstrip().rstrip("."))) not in flat_tex]
+        if miss:
+            res["fail"].append(f"registry events whose printed_text is not in the paper: {miss[:6]}")
+        results = {r.get("id"): r for r in R.get("results", []) if isinstance(r, dict)}
+        lab_miss = [rid for ids in TABLE1_RESULTS.values() for rid in ids
+                    if rid in results and str(results[rid].get("label_text", "")).strip()
+                    and _norm(tex_escape(results[rid]["label_text"])) not in flat_tex]
+        if lab_miss:
+            res["fail"].append(f"Table 1 result labels not printed as in the registry: {lab_miss}")
+        globs = [(g, r["kind"]) for r in results.values() if r.get("kind") for g in r.get("paper_keys", [])]
+    elif strict_mode():
+        res["fail"].append(f"{REGISTRY} missing (strict mode)")
+    # executable results lead: the first profit number of the abstract and of Table 1 is executable
+    for name, a, b in (("abstract", r"\begin{csabstract}", r"\end{csabstract}"), ("Table 1", r"\label{tab:head}", r"\end{tabular*}")):
+        order = profit_order(tpl, a, b, globs)
+        res[f"profit_order_{name}"] = order[:6]
+        if not order:
+            res["fail"].append(f"{name}: no profit number found in the template")
+        elif order[0][1] not in EXECUTABLE_KINDS:
+            res["fail"].append(f"{name}: the first profit number is {order[0][0]} ({order[0][1]}), not an executable result")
+    return res
+
+
+def tex_escape(s: str) -> str:
+    return tex(s)
 
 
 def checks(pdf: Path, tex_log: str) -> dict:
@@ -1976,17 +2296,13 @@ def checks(pdf: Path, tex_log: str) -> dict:
     hits_all = [f for f in FORBIDDEN if f in all_text]
     if hits_all:
         res["fail"].append(f"forbidden phrases (whole PDF): {hits_all}")
-    # INTEGRATION_TODO P-12 honesty guardrails: on pages 1-5, 'calibrated' never appears (the post hoc reading is
-    # called 'post hoc'), 'not ex ante' appears, 'post hoc' at least three times; nowhere 'calibrated from the data' or
-    # 'goes live'; '11 of 11' / '11/11' / '408 ms' only in a sentence that says 'offline'
+    # honesty guardrails that forbid false wording (kept): on pages 1-5 'calibrated' never appears (the post hoc
+    # reading is called 'post hoc'); nowhere 'calibrated from the data' or 'goes live'; '11 of 11' / '11/11' /
+    # '408 ms' only in a sentence that says 'offline'. No check demands a phrase or a phrase count: the fact checks
+    # below test what is printed against the registry, the result kinds and the code.
     flat_nh = re.sub(r"(\w)[\u2010\u2011-] (\w)", r"\1\2", flat)
     if "calibrated" in flat_nh:
         res["fail"].append("'calibrated' on pages 1-5 (use 'post hoc')")
-    if "not ex ante" not in flat_nh:
-        res["fail"].append("'not ex ante' missing on pages 1-5")
-    res["post_hoc_count_main"] = flat_nh.count("post hoc")
-    if res["post_hoc_count_main"] < 3:
-        res["fail"].append(f"'post hoc' appears {res['post_hoc_count_main']} times on pages 1-5 (< 3)")
     for bad in ("calibrated from the data", "goes live", "stricter readings"):
         if bad in all_text:
             res["fail"].append(f"forbidden phrase in the PDF: {bad!r}")
@@ -1997,10 +2313,12 @@ def checks(pdf: Path, tex_log: str) -> dict:
     res["offline_label_misses"] = off_bad
     if off_bad:
         res["fail"].append(f"'11 of 11' / '408 ms' without 'offline' in the same sentence: {off_bad[:3]}")
-    n_label = flat.replace("-\n", "").count("assumed feed latency")
-    res["cv_label_count_main"] = n_label
-    if n_label < 3:
-        res["fail"].append(f"CV label appears {n_label} times on pages 1-5 (< 3)")
+    numbers = json.loads((OUT / "numbers.json").read_text()) if (OUT / "numbers.json").exists() else {"numbers": {}}
+    tex_src = (PAPER / "note.tex").read_text() if (PAPER / "note.tex").exists() else ""
+    tpl_src = (PAPER / "note.tex.j2").read_text() if (PAPER / "note.tex.j2").exists() else ""
+    fc = fact_checks(tex_src, tpl_src, numbers, all_text)
+    res["facts"] = {k: v for k, v in fc.items() if k != "fail"}
+    res["fail"] += fc["fail"]
     lg = (PAPER / "note.log").read_text(errors="replace") if (PAPER / "note.log").exists() else tex_log
     over = [float(x) for x in re.findall(r"Overfull \\hbox \(([0-9.]+)pt too wide\)", lg)]
     res["overfull_hbox_pt"] = over
@@ -2056,12 +2374,12 @@ def write_companion(N: Registry, extra: dict | None = None) -> None:
 **The paper is [`docs/NOTE.pdf`](NOTE.pdf).** This page is a short companion built from the same numbers
 (`results/paper/numbers.json`, which names the source file of every value). If the two ever differ, the PDF wins.
 
-**How to read the labels.** The computer-vision (CV) results are simulated: {CV_LABEL}. Their trades are past points
-where the price later moved at least 4¢, so they are selected on outcomes, not ex ante. We show the pre-registered
-stamp-lag reading first and the post hoc estimate ({v('cv.cal.lag')} s, 95% CI {v('cv.cal.lag_ci')} s) second. v2 is our
-copy of the fast tier's trades at their own prices: it measures what their speed is worth, not what we could earn.
-"OOS" for v2 and the CV simulation is a burned hold-out (we had looked at it), not a blind one. No real money was used
-and no order was ever sent.
+**How to read the labels.** Executable results (what we could run at our latency, net of costs) come first. Two
+benchmarks follow and are not returns we could earn: v2, our copy of the fast tier's trades at their own prices, and
+the computer-vision (CV) trader, simulated ({CV_LABEL}), whose trades are past points where the price later moved at
+least 4¢ (selected on the outcome). We show the pre-registered stamp-lag reading first and the post hoc estimate
+({v('cv.cal.lag')} s, 95% CI {v('cv.cal.lag_ci')} s) second. v2 and the CV simulation were designed after we had read
+the hold-out, so their OOS results are non-blind. No real money was used and no order was ever sent.
 
 ## Abstract
 
@@ -2069,14 +2387,16 @@ We built a predictive ball-tracking engine that calls a point (ball out, or into
 held-out real table-tennis video our live causal engine made its calls a median {v('cv.eng.lead')} ms before the ball
 reached the table end, none wrong but few ({v('cv.eng.tp')} of {v('cv.eng.nmiss')} misses), in real time at
 {v('cv.eng.fps')} fps; a frame becomes a ready order in {v('e2e.ours')} ms. On real broadcast tennis (one TV camera,
-held-out games) its out calls were right {v('bt.call.0')} at the bounce and {v('bt.call.33')} when 33 ms ahead. Speed is
-worth money because, in real Polymarket data on {v('univ.matches')} ATP and WTA matches ({v('cov.gs.all')} at Grand
-Slams), whoever learns the point first sets the price: wallets trading within 3 s of a point earn after fees in all
-{v('ft.months.cal')} months, and each second of feed delay costs a simulated computer-vision (CV) trader
-{v('cv.pre.persec.range')} a day. Copying those wallets at their own fills has a Sharpe ratio of {v('v2.is.sr')} in sample
-and {v('v2.oos.sr')} out of sample, which doubled fees erase. At an assumed 1 s feed our CV trader makes
-{v('sc.pre.oos.v1.usd')} a day out of sample pre-registered and {v('sc.cal.oos.v1.usd')} (Sharpe {v('sc.cal.oos.v1.sr')})
-post hoc. Every blind test of a book we could trade failed.
+held-out games) its out calls were right {v('bt.call.0')} at the bounce and {v('bt.call.33')} when 33 ms ahead. In real
+Polymarket data on {v('univ.matches')} ATP and WTA matches ({v('cov.gs.all')} at Grand Slams), wallets trading within
+3 s of a point earn after fees in all {v('ft.months.cal')} months, but a copier we could run, filled after the venue's
+hold and the block lag, loses ({v('copier.is.c')}¢ a share in sample, {v('copier.oos.c')}¢ out of sample, after costs),
+as does a replay of live-recorded books calling every point ({v('rp.v05l2.c')}¢ at a 0.5 s feed). Two labelled
+benchmarks price the speed we lack: the fast tier's own fills (v2) have a Sharpe ratio of {v('v2.is.sr')} in sample and
+{v('v2.oos.sr')} out of sample, which doubled fees erase; a simulated CV trader on points that later moved, with an
+assumed licensed 0.5 s feed, makes {v('sc.pre.oos.v05.usd')} a day out of sample pre-registered and
+{v('sc.cal.oos.v05.usd')} post hoc ({v('sc.pre.oos.v1.usd')} and {v('sc.cal.oos.v1.usd')} at 1 s). Every blind test of
+a book we could trade failed.
 
 ## The real data behind every result
 
@@ -2092,12 +2412,23 @@ Simulated: only when our CV would see each point (an assumed feed latency) and t
 
 Wimbledon is listed under a separate Polymarket series and is outside our universe.
 
-## v2, our copy of the fast tier's trades (Table 1 of the PDF, top rows)
+## Executable: a copier and a live-book replay (Table 1 of the PDF, first rows)
+
+| | IS | OOS |
+|---|---|---|
+| Copier filled after the hold and the {v('copier.lag')} s block lag: $ a day | {v('copier.is.usd')} | {v('copier.oos.usd')} |
+| Copier: net ¢ a share [95% CI] / Sharpe | {v('copier.is.c')} {v('copier.is.ci')} / {v('copier.is.sr')} | {v('copier.oos.c')} {v('copier.oos.ci')} / {v('copier.oos.sr')} |
+
+A replay of {v('rp.matches')} matches recorded live (one day), calling every point at the pre-registered 2 s stamp lag,
+makes {v('rp.v05l2.c')}¢ a share {v('rp.v05l2.ci')} at a 0.5 s feed and {v('rp.v1l2.c')}¢ {v('rp.v1l2.ci')} at 1 s.
+
+## Benchmark: v2, the fast tier's own fills (not attainable by a copier)
 
 Sharpe uses daily P&L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
-corrects for {v('rig.N3386')} trials.
+corrects for {v('rig.N3386')} trials. {v('decay.sameblock.share')} of v2's profit is in trades stamped in the same block
+as the score move that selects them.
 
-| | IS | OOS (burned) |
+| | IS | OOS (non-blind) |
 |---|---|---|
 | Net ¢ a share [95% CI] | {v('v2.is.c')} {v('v2.is.ci')} | {v('v2.oos.c')} {v('v2.oos.ci')} |
 | Sharpe [95% CI] | {v('v2.is.sr')} {v('v2.is.sr_ci')} | {v('v2.oos.sr')} {v('v2.oos.sr_ci')} |
@@ -2109,10 +2440,11 @@ corrects for {v('rig.N3386')} trials.
 | PSR / MinTRL / haircut tests passed (of 6) | 6 | {v('rig2.v2oos.pass')} |
 | Net ¢, fees ×2 / all costs ×2 | {v('v2.is.fx2.c')} / {v('v2.is.cx2.c')} | {v('v2.oos.fx2.c')} / {v('v2.oos.cx2.c')} |
 
-## The CV strategy at three assumed feed delays (Table 1 of the PDF, lower rows)
+## Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table 1, lower rows)
 
-Simulated ({CV_LABEL}; {v('cv.seeds')} seeds a cell). Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed
-delay {v('cv.pre.be.is')} s IS, {v('cv.pre.be.oos')} s OOS):
+Simulated ({CV_LABEL}; {v('cv.seeds')} seeds a cell); trades only past points the price later moved at least 4¢ on,
+so every cell is an upper bound. Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed delay
+{v('cv.pre.be.is')} s IS, {v('cv.pre.be.oos')} s OOS):
 
 | Feed delay V | IS $/day | IS Sharpe | IS ¢/share [95% CI] | OOS $/day | OOS Sharpe | OOS ¢/share [95% CI] |
 |---|---|---|---|---|---|---|
@@ -2136,11 +2468,11 @@ matches recorded live against their real order books calls every point ex ante a
 
 Real Polymarket prices, fills, fees and the venue's 1 s hold; simulated camera calls at an assumed feed delay; no feed
 bought, no order placed. At 0.5 s the trader makes {v('sc.pre.is.v05.usd')} / {v('sc.cal.is.v05.usd')} a day in sample
-and {v('sc.pre.oos.v05.usd')} / {v('sc.cal.oos.v05.usd')} on the burned OOS (pre-registered / post hoc). A fresh holdout,
+and {v('sc.pre.oos.v05.usd')} / {v('sc.cal.oos.v05.usd')} OOS (pre-registered / post hoc), on points selected by their later move. A fresh holdout,
 pre-registered at `{v('fresh.prereg.commit')}` before its data were fetched ({v('fresh.covered')} newer matches,
 {v('fresh.days')} UTC days), returned {v('fresh.s2.pre.v05.usd')} / {v('fresh.s2.cal.v05.usd')} a day (CIs
 {v('fresh.s2.pre.v05.ci')}, {v('fresh.s2.cal.v05.ci')}): anecdotal, evidence neither for nor against an edge. The most a
-firm could pay a month for the feed is {v('fresh.lic.oos.pre')} / {v('fresh.lic.oos.cal')} on the burned OOS, against
+firm could pay a month for the feed is {v('fresh.lic.oos.pre')} / {v('fresh.lic.oos.cal')} OOS, against
 quotes of {v('fin.feed.low')}–{v('fin.feed.high')}. Fig. 3 of the PDF; `results/fresh_holdout/`, `results/scenario/`.
 
 ## Speed, capacity and what failed
@@ -2163,7 +2495,7 @@ quotes of {v('fin.feed.low')}–{v('fin.feed.high')}. Fig. 3 of the PDF; `result
   {v('plat.lat.hi')} s, never rising by more than {v('plat.lat.rise')} a day.
 - **Per-match loss and a per-wallet cap (risk).** The 100-share net cap limits the open position, not the loss:
   the worst match lost {v('risk.pm.worst.is')} in sample and {v('risk.pm.worst.oos')} out of sample. A per-wallet cap
-  ({v('wcap.W')} a day plus retirement), chosen in sample and pre-registered, ran once on the burned OOS (non-blind):
+  ({v('wcap.W')} a day plus retirement), chosen in sample and pre-registered, ran once on the OOS (non-blind):
   {v('wcap.oos.c')}¢ {v('wcap.oos.ci')}, Sharpe {v('wcap.oos.sr')}; the top five wallets still carry {v('wcap.oos.top5')}.
 - **Rally gate (risk).** Replayed on the engine's held-out call log (`scripts/rally_gate_eval.py`), the gate in our
   strategy code (a miss call trades only within {v('gate.s')} s of a bounce call, set before the test) removes
@@ -2179,8 +2511,13 @@ quotes of {v('fin.feed.low')}–{v('fin.feed.high')}. Fig. 3 of the PDF; `result
 - **What failed.** Doubled fees out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets
   (blind); v2-safe's blind test; the CV rule v3 (blind); the maker book (blind); table-tennis markets (untestable); v2
   after a central data licence ({v('fin.v2.oos.net_central')} a day); the live-book replay. Blind forward test:
-  {extra_fwd}. We tried {v('var.total')} variants and logged {v('peeks.n')} reads of held-out data (Appendix D of the
-  PDF). Every test is in Appendix B; every formula with a worked example is in Appendix A.
+  {extra_fwd}. We tried {v('var.total')} variants; the choices made after an OOS look are listed in Appendix D of the
+  PDF from `results/provenance/experiments.json`. Every test is in Appendix B; every formula with a worked example is
+  in Appendix A.
+- **Risk controls.** Table 2 of the PDF separates the controls that operated in the backtests (order, net and price
+  caps; the {v('risk.matchcap')} gross cap a match for v2) from those proposed for deployment (the false-call halt, the
+  trailing-edge and drawdown stops) or present only in the paper-trading engine (the {v('risk.daily_stop')} daily stop,
+  stale-feed and stale-vision stops).
 
 Reproduce: `bash reproduce.sh` (rebuilds the result files, every figure and this paper).
 """
@@ -2189,7 +2526,8 @@ Reproduce: `bash reproduce.sh` (rebuilds the result files, every figure and this
         import make_pdf  # same directory; renders the companion as print-styled HTML (fallback page)
         make_pdf.write_html()
     except ImportError:
-        pass
+        if strict_mode():
+            raise
 
 
 # ================================================================================================ main
@@ -2197,10 +2535,19 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-figures", action="store_true")
     ap.add_argument("--no-checks-fail", action="store_true", help="report failed checks but exit 0")
+    ap.add_argument("--numbers-only", action="store_true", help="numbers.json, policy.json, variants.json, numbers.tex only")
+    ap.add_argument("--strict", action="store_true", help="a missing experiment registry stops the build (COURTSIDE_STRICT=1)")
     a = ap.parse_args()
     if a.no_checks_fail:
         print("build_paper: --no-checks-fail cannot publish a verified paper; remove this option", file=sys.stderr)
         return 2
+    if a.strict:
+        os.environ["COURTSIDE_STRICT"] = "1"
+    if a.numbers_only:
+        N, extra = collect()
+        write_numbers(N, extra)
+        print(f"numbers: {len(N.d)} keys -> results/paper/numbers.json (numbers only; no figures, no PDF)")
+        return 0
     if not Path(TECTONIC).is_file() or not os.access(TECTONIC, os.X_OK):
         print("build_paper: an executable tectonic compiler is required to rebuild docs/NOTE.pdf", file=sys.stderr)
         return 2
@@ -2214,11 +2561,14 @@ def main() -> int:
     texp = render_tex(N, extra)
     pdf, log = compile_tex(texp)
     res = checks(pdf, log)
+    reg = (extra or {}).get("registry") if isinstance(extra, dict) else None
     res["build"] = {"numbers_sha256": sha256_file(OUT / "numbers.json"),
-                    "pdf_sha256": sha256_file(pdf)}
+                    "pdf_sha256": sha256_file(pdf),
+                    "registry_sha256": reg["sha256"] if reg else None,
+                    "registry_summary_sha256": reg["summary_sha256"] if reg else None}
     (OUT / "checks.json").write_text(json.dumps(res, indent=1, ensure_ascii=False))
     print(f"pages: main {res['main_pages']}, total {res['total_pages']}; smallest main-text span "
-          f"{res['smallest_span_pt']} pt; CV label x{res['cv_label_count_main']}; overfull {res['overfull_hbox_pt']}")
+          f"{res['smallest_span_pt']} pt; overfull {res['overfull_hbox_pt']}")
     for f in res["fail"]:
         print("CHECK FAILED:", f)
     if not res["ok"]:
@@ -2226,7 +2576,7 @@ def main() -> int:
         return 1
     atomic_copy(pdf, ROOT / "docs/NOTE.pdf")
     write_companion(N, extra)
-    print("wrote docs/NOTE.pdf, docs/NOTE.md, docs/NOTE.html, results/paper/{numbers,policy,variants,peeks,checks}.json")
+    print("wrote docs/NOTE.pdf, docs/NOTE.md, docs/NOTE.html, results/paper/{numbers,policy,variants,checks}.json")
     return 0
 
 
