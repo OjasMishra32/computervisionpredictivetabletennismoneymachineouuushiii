@@ -8,10 +8,10 @@ Now we want **every** number checked.
 **Stop merging PRs into main.** Main gets rewritten and force-pushed this morning. Push only your own branches,
 or just send results to Ojasva.
 
-Ojasva sends you `courtside_latest_0239.bundle` (354 MB, the full repo as of 2:39 AM, private) and the current
-PDF. To get a working copy:
+Get the latest code from the temporary branch `snapshot-0300` (the full repo as of 3 AM; deleted after the final
+push). Ojasva sends you the current PDF. To get a working copy:
 ```bash
-git clone courtside_latest_0239.bundle ian_check && cd ian_check
+git clone --branch snapshot-0300 --single-branch https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii ian_check && cd ian_check
 ```
 
 ## 1. Independent check of every number in the paper (main job, about 1.5–2 h)

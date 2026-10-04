@@ -7,10 +7,10 @@ and live trading isn't scored. Judges skim, so anything hard to read or hard to 
 
 **Don't merge PRs into main.** Main gets rewritten and force-pushed this morning. Just send your findings to Ojasva.
 
-Ojasva sends you the current PDF and `courtside_latest_0239.bundle` (354 MB, the full repo as of 2:39 AM, private).
-To get a working copy:
+Ojasva sends you the current PDF. Get the latest code from the temporary branch `snapshot-0300` (the full repo as
+of 3 AM; deleted after the final push). To get a working copy:
 ```bash
-git clone courtside_latest_0239.bundle raf_check && cd raf_check
+git clone --branch snapshot-0300 --single-branch https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii raf_check && cd raf_check
 ```
 
 ## 1. Figures and tables, at the size a judge sees them (about 30 minutes)

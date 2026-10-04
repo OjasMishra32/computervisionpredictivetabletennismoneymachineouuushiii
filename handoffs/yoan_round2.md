@@ -12,11 +12,11 @@ is capped at 4/10. Our README admits the full chain "was last run end to end on 
 clone". You are the clean clone. Your run lets us say "reproduced on a teammate's clean machine". That is
 real evidence, and it can catch a problem while there's still time to fix it.
 
-## 1. Full clean-clone reproduction from the private bundle (start NOW; most of it runs unattended)
-Ojasva sends you `courtside_latest_0239.bundle` (354 MB), the full repo as of 2:39 AM. It's private, so don't
-upload it anywhere public.
+## 1. Full clean-clone reproduction from the snapshot branch (start NOW; most of it runs unattended)
+Get the latest code from the temporary branch `snapshot-0300` on our repo: the full repo as of 3 AM, including
+tonight's work. The branch is deleted after the final push.
 ```bash
-git clone courtside_latest_0239.bundle cc_test && cd cc_test   # new folder, nothing reused
+git clone --branch snapshot-0300 --single-branch https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii cc_test && cd cc_test   # new folder, nothing reused
 python3 --version            # note it (README says tested on 3.12 Linux and 3.14 macOS)
 bash run.sh setup            # ~1 min
 bash run.sh replay           # ~1 min, no network
