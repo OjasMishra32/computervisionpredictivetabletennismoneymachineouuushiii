@@ -1,0 +1,145 @@
+{
+ "limits_stated": {
+  "order_usd": 1000.0,
+  "net_cap_shares": 100.0,
+  "daily_stop_usd": 1000.0,
+  "zone_hi": 0.95,
+  "backtest_match_gross_cap_usd": 3000.0,
+  "paper_claim": "one match can lose at most $95 plus fees (net_cap x zone_hi)"
+ },
+ "theoretical": {
+  "one_sided_net_cap_x_zone_usd": 95.0,
+  "with_backtest_match_gross_cap_usd": 1471.0526315789473,
+  "fees_at_bound_usd": 7.500000000000007,
+  "bound_incl_fees_usd": 1478.5526315789473,
+  "rate_max": 0.05,
+  "assumptions": "every trade buys a token at q <= 0.95 and holds to resolution; gross $ per match <= 3000 (engine BASE_MATCH_CAP); |net outcome-0 shares| <= 100 at all times (risk-reducing trades allowed). Worst case: buy both tokens at 0.95, net within the cap; payout = min(A, B) >= (G/0.95 - N)/2. Without the gross cap (live engine RiskConfig has none) the per-match limits give no bound; only the daily stop does."
+ },
+ "is": {
+  "v2_uncapped": {
+   "n_matches": 7639,
+   "n_losing": 3228,
+   "worst_match_pnl_usd": -205.7602912085585,
+   "p99_match_loss_usd": 86.62093020739393,
+   "p999_match_loss_usd": 125.53386912752909,
+   "p99_loss_among_losing_matches_usd": 101.83376722173088,
+   "n_matches_losing_more_than_95": 49,
+   "share_matches_losing_more_than_95": 0.006414452153423223,
+   "worst_day_usd": -550.764300067122,
+   "worst_match": {
+    "gross_usd": 982.5361665696332,
+    "n_trades": 14,
+    "final_net_shares": -100.0,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.0
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000006,
+   "max_match_gross_usd": 2095.9143164414113,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.7871449142557927,
+   "share_of_loss_usd_in_two_sided_matches": 0.8982928396899562,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 40425.71919167921,
+    "worst_day_usd": -550.764300067122,
+    "worst_match_pnl_usd": -205.7602912085585,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  },
+  "with_cap": {
+   "n_matches": 6999,
+   "n_losing": 3062,
+   "worst_match_pnl_usd": -193.66696486064578,
+   "p99_match_loss_usd": 82.877015461,
+   "p999_match_loss_usd": 119.1952706257152,
+   "p99_loss_among_losing_matches_usd": 95.69708776784047,
+   "n_matches_losing_more_than_95": 32,
+   "share_matches_losing_more_than_95": 0.004572081725960852,
+   "worst_day_usd": -709.9951339642271,
+   "worst_match": {
+    "gross_usd": 1081.5260663148667,
+    "n_trades": 27,
+    "final_net_shares": -100.00000000000001,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.00000000000001
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000004,
+   "max_match_gross_usd": 1758.0138282939483,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.7006715245035005,
+   "share_of_loss_usd_in_two_sided_matches": 0.816765960382208,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 25461.6494176521,
+    "worst_day_usd": -709.9951339642271,
+    "worst_match_pnl_usd": -193.66696486064578,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  }
+ },
+ "oos": {
+  "v2_uncapped": {
+   "n_matches": 2003,
+   "n_losing": 889,
+   "worst_match_pnl_usd": -154.36883288014866,
+   "p99_match_loss_usd": 94.35401969705917,
+   "p999_match_loss_usd": 143.42163507563754,
+   "p99_loss_among_losing_matches_usd": 109.9734745669856,
+   "n_matches_losing_more_than_95": 20,
+   "share_matches_losing_more_than_95": 0.00998502246630055,
+   "worst_day_usd": -469.4297898304612,
+   "worst_match": {
+    "gross_usd": 710.7348476973061,
+    "n_trades": 14,
+    "final_net_shares": 100.00000000000003,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.00000000000003
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000003,
+   "max_match_gross_usd": 1180.4130956986303,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.7114328507239142,
+   "share_of_loss_usd_in_two_sided_matches": 0.8517871225354443,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 3687.5359201936667,
+    "worst_day_usd": -469.4297898304612,
+    "worst_match_pnl_usd": -154.36883288014866,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  },
+  "with_cap": {
+   "n_matches": 1816,
+   "n_losing": 786,
+   "worst_match_pnl_usd": -171.07331251039176,
+   "p99_match_loss_usd": 86.2008025,
+   "p999_match_loss_usd": 127.24475238685876,
+   "p99_loss_among_losing_matches_usd": 102.65716776119115,
+   "n_matches_losing_more_than_95": 11,
+   "share_matches_losing_more_than_95": 0.006057268722466961,
+   "worst_day_usd": -283.50563732658975,
+   "worst_match": {
+    "gross_usd": 562.6453881054034,
+    "n_trades": 8,
+    "final_net_shares": -98.37931088384478,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.0
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000003,
+   "max_match_gross_usd": 992.5750296254016,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.6178414096916299,
+   "share_of_loss_usd_in_two_sided_matches": 0.7932589113887084,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 3614.9839342683754,
+    "worst_day_usd": -283.50563732658975,
+    "worst_match_pnl_usd": -171.07331251039176,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  }
+ },
+ "generated_utc": "2026-10-04T05:35:05+00:00",
+ "script": "scripts/v2_wallet_cap.py --oos",
+ "label": "burned OOS, NON-BLIND: the rule was designed because the OOS concentration was known; parameters chosen on IS only (research/v2/risk/GRID_wallet_cap.md)"
+}
