@@ -24,6 +24,7 @@ import argparse
 import datetime as dt
 import json
 import math
+import os
 import re
 import shutil
 import subprocess
@@ -36,6 +37,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
+from reproduction_contract import atomic_copy, sha256_file
+
 PAPER = ROOT / "docs/paper"
 OUT = ROOT / "results/paper"
 MINUS = "\u2212"
@@ -2195,6 +2198,12 @@ def main() -> int:
     ap.add_argument("--no-figures", action="store_true")
     ap.add_argument("--no-checks-fail", action="store_true", help="report failed checks but exit 0")
     a = ap.parse_args()
+    if a.no_checks_fail:
+        print("build_paper: --no-checks-fail cannot publish a verified paper; remove this option", file=sys.stderr)
+        return 2
+    if not Path(TECTONIC).is_file() or not os.access(TECTONIC, os.X_OK):
+        print("build_paper: an executable tectonic compiler is required to rebuild docs/NOTE.pdf", file=sys.stderr)
+        return 2
     N, extra = collect()
     write_numbers(N, extra)
     print(f"numbers: {len(N.d)} keys -> results/paper/numbers.json")
@@ -2203,23 +2212,22 @@ def main() -> int:
         paper_figures_v2.main()
     prepare_logo()
     texp = render_tex(N, extra)
-    if not Path(TECTONIC).exists():
-        # judges without tectonic: numbers, figures and note.tex are regenerated; the committed PDF stands
-        print(f"build_paper: tectonic not found; wrote {texp.relative_to(ROOT)} and results/paper/, kept the "
-              "committed docs/NOTE.pdf (install tectonic to rebuild it)")
-        write_companion(N, extra)
-        return 0
     pdf, log = compile_tex(texp)
     res = checks(pdf, log)
+    res["build"] = {"numbers_sha256": sha256_file(OUT / "numbers.json"),
+                    "pdf_sha256": sha256_file(pdf)}
     (OUT / "checks.json").write_text(json.dumps(res, indent=1, ensure_ascii=False))
-    shutil.copyfile(pdf, ROOT / "docs/NOTE.pdf")
-    write_companion(N, extra)
     print(f"pages: main {res['main_pages']}, total {res['total_pages']}; smallest main-text span "
           f"{res['smallest_span_pt']} pt; CV label x{res['cv_label_count_main']}; overfull {res['overfull_hbox_pt']}")
     for f in res["fail"]:
         print("CHECK FAILED:", f)
+    if not res["ok"]:
+        print("build_paper: failed checks; the submitted docs/NOTE.pdf was not replaced", file=sys.stderr)
+        return 1
+    atomic_copy(pdf, ROOT / "docs/NOTE.pdf")
+    write_companion(N, extra)
     print("wrote docs/NOTE.pdf, docs/NOTE.md, docs/NOTE.html, results/paper/{numbers,policy,variants,peeks,checks}.json")
-    return 0 if (res["ok"] or a.no_checks_fail) else 1
+    return 0
 
 
 if __name__ == "__main__":
