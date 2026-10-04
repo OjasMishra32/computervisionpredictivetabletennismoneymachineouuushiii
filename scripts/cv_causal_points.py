@@ -125,9 +125,10 @@ def context(periods: list[str], log: bool = True) -> dict:
     for per in periods:
         oos = per == "OOS"
         conds = set(u.cond[(u.oos == oos) & u.cond.isin(cov)])
-        if oos and log:
-            _log_read("cv_causal_points: OOS in-play prints of covered matches read for the causal every-point CV "
-                      "book (review fix D2; non-blind period; frozen code)")
+        if oos:
+            if log:     # spawned workers re-load the file the main process already logged
+                _log_read("cv_causal_points: OOS in-play prints of covered matches read for the causal every-point "
+                          "CV book (review fix D2; non-blind period; frozen code)")
             path = ROOT / "data/locked/oos_prints.parquet"
         else:
             path = ROOT / "data/is_prints.parquet"
