@@ -31,93 +31,93 @@ and reprices about a second after each point.
 The fastest traders won eleven months of eleven.
 
 9
-00:00:20,950 --> 00:00:21,620
+00:00:21,483 --> 00:00:22,153
 Think it's a gimmick?
 
 10
-00:00:21,850 --> 00:00:24,000
+00:00:22,383 --> 00:00:24,533
 Watch it call misses on real games it never saw.
 
 11
-00:00:24,230 --> 00:00:26,840
+00:00:24,763 --> 00:00:27,373
 A miss call means it knows the ball is out before it lands.
 
 12
-00:00:27,060 --> 00:00:28,910
+00:00:27,593 --> 00:00:29,443
 Not one was made on a ball labelled in.
 
 13
-00:00:33,500 --> 00:00:35,056
-Same tracker, real tennis.
+00:00:34,033 --> 00:00:35,899
+Real tennis, with our tennis tracker.
 
 14
-00:00:37,400 --> 00:00:40,390
+00:00:37,933 --> 00:00:40,923
 Add spin: landing error drops five to eight times.
 
 15
-00:00:40,620 --> 00:00:43,304
+00:00:41,153 --> 00:00:43,838
 Out, called 200 milliseconds before the bounce.
 
 16
-00:00:45,000 --> 00:00:47,710
+00:00:45,533 --> 00:00:47,473
 Here's the whole pipeline in milliseconds:
 
 17
-00:00:47,940 --> 00:00:48,610
+00:00:47,703 --> 00:00:49,143
 our part, about fifty.
 
 18
-00:00:48,840 --> 00:00:54,337
+00:00:49,373 --> 00:00:54,871
 Add a one-second feed and Polymarket's one-second delay: 2.1 seconds. Under three.
 
 19
-00:00:55,033 --> 00:00:56,033
+00:00:55,567 --> 00:00:56,567
 Here's what speed is worth:
 
 20
-00:00:56,263 --> 00:00:57,393
+00:00:56,797 --> 00:00:57,927
 every second costs money;
 
 21
-00:00:57,633 --> 00:00:59,603
+00:00:58,167 --> 00:01:00,137
 by three seconds, every version loses.
 
 22
-00:00:59,813 --> 00:01:01,183
+00:01:00,347 --> 00:01:01,716
 The edge halves within a second.
 
 23
-00:01:03,083 --> 00:01:05,663
-Here's months of backtest, on one real match:
+00:01:03,617 --> 00:01:05,277
+The test: months of backtest.
 
 24
-00:01:05,893 --> 00:01:07,503
-every fill on the real price path.
+00:01:05,497 --> 00:01:08,327
+One match: dots are paper trades on the real price.
 
 25
-00:01:07,723 --> 00:01:10,037
+00:01:08,557 --> 00:01:10,766
 59 percent of traded matches made money.
 
 26
-00:01:12,633 --> 00:01:15,193
+00:01:13,167 --> 00:01:15,727
 And the profit, at a simulated one-second feed,
 
 27
-00:01:15,423 --> 00:01:17,125
+00:01:15,957 --> 00:01:16,907
 post-hoc estimate:
 
 28
-00:01:17,125 --> 00:01:18,843
+00:01:17,087 --> 00:01:19,377
 94 dollars a day, Sharpe 12:
 
 29
-00:01:19,073 --> 00:01:22,023
+00:01:19,607 --> 00:01:22,557
 return per unit of risk, above two is very good.
 
 30
-00:01:22,253 --> 00:01:24,893
+00:01:22,787 --> 00:01:25,427
 On data it never saw: 57 a day.
 
 31
-00:01:25,700 --> 00:01:27,315
+00:01:26,233 --> 00:01:27,849
 Courtside. Paper trading only.

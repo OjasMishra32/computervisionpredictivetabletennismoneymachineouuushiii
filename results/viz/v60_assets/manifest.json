@@ -271,8 +271,8 @@
   "for MISS flights the labelled outcome T_ref is the ball passing the end line (or the net); the stamps read 'n ms early' and the timeline names the outcome instead of 'contact'.",
   "capacity: results/capacity/capacity.json growth[...][1.0].capital_where_sharpe_halves_usd (10 covered matches a day), both readings"
  ],
- "generated_utc": "2026-10-04T00:34:12+00:00",
- "git": "7d280bb",
+ "generated_utc": "2026-10-04T01:09:12+00:00",
+ "git": "0d2f4b6",
  "spec": "research/compliance/VIDEO_REQUIREMENTS.md (75-90 s table)",
  "labels": {
   "footage": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
@@ -4835,7 +4835,7 @@
    "shown": "0.997"
   },
   "peeks": {
-   "value": 75,
+   "value": 76,
    "file": "results/oos_peeks.log",
    "key": "count(non-empty lines) at render time",
    "pending": false,
@@ -4843,7 +4843,7 @@
    "used_in": [
     "test"
    ],
-   "shown": "75"
+   "shown": "76"
   },
   "prereg_files": {
    "value": [
@@ -5522,22 +5522,22 @@
   },
   "eq_months_pos": {
    "value": [
-    7,
-    7
+    6,
+    6
    ],
    "file": "results/viz/v60_assets/equity_1s.csv",
-   "key": "calendar months (IS and burned OOS parts of a month separate) with seed-mean P&L > 0, post-hoc reading",
+   "key": "calendar months (the IS and burned-OOS parts of August merged, as in the edge segment) with seed-mean P&L > 0, post-hoc reading",
    "pending": false,
    "note": null,
    "used_in": [
     "test"
    ],
-   "shown": "7/7"
+   "shown": "6/6"
   },
   "eq_months_pos_pre": {
    "value": [
-    6,
-    7
+    5,
+    6
    ],
    "file": "results/viz/v60_assets/equity_1s.csv",
    "key": "same, pre-registered reading",
@@ -5546,7 +5546,7 @@
    "used_in": [
     "test"
    ],
-   "shown": "6/7"
+   "shown": "5/6"
   },
   "blind_pass": {
    "value": 2,
@@ -5716,7 +5716,7 @@
   "results/e2e/summary.json": "a0f6092acbdb2973d559dad0d779ae0007ad30e9d27b38b6091f3ddc15ca4301",
   "results/engine/online_vs_offline.json": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
   "results/home_stream/sub_second_routes.json": "57d66a53806dcc2ea0cc7059b6cbfaf1546b223824a4b6485ede5527862b8ae5",
-  "results/oos_peeks.log": "2c131dd4c04b1f26a5a0a8b4e04eaa80f65dd44b5729703fb93adebbc1eba9c0",
+  "results/oos_peeks.log": "385116f3ca5ab5da11f596e3e93fff5845556019ad1e7ba7c8e84dad141b00f2",
   "results/rigor/rigor.json": "0d3e358b5c9556a603307712970da5cfb414c4161534fb66d70e59ec0258b324",
   "results/spin/tennis/key_numbers.json": "1337f86801e1de2db70f41898ebe8865fb8ea2f1359e48a8addd37841ebea15e",
   "results/tier0/latency_sweep.csv": "e0ccca7b02a097fa7d6870253f01a5d3815a6c2b4c64672033f1a70a72d74fb6",
@@ -5731,9 +5731,9 @@
  "final": {
   "file": "results/viz/courtside_60.mp4",
   "srt": "results/viz/courtside_60.srt",
-  "sha256": "6eef3d3ee6642dfaaa597b46c360ed56db05b1867156add3b2355426db80bed9",
-  "duration_s": 89.0,
-  "size_mb": 13.37,
+  "sha256": "f800008e08ad843e36d3905dc6ee86893ef271c4e2cf7d09a090b858bb98cbc0",
+  "duration_s": 89.533333,
+  "size_mb": 13.56,
   "streams": [
    {
     "codec_name": "h264",
@@ -5746,7 +5746,7 @@
     "r_frame_rate": "0/0"
    }
   ],
-  "rendered_utc": "2026-10-04T00:32:49+00:00",
+  "rendered_utc": "2026-10-04T01:07:55+00:00",
   "spec": "research/compliance/VIDEO_REQUIREMENTS.md: the 75-90 s table, DESIGN, stats rail, red-team addendum",
   "script_doc": "docs/video_script_60.md",
   "timeline": [
@@ -5769,77 +5769,77 @@
    {
     "id": "edge",
     "start_s": 11.2,
-    "dur_s": 9.5,
+    "dur_s": 10.033,
     "speech_at_s": 11.4,
     "speech_s": 8.835,
     "narration": "Polymarket prices each match from zero to a dollar, a player's chance to win, and reprices about a second after each point. The fastest traders won eleven months of eleven."
    },
    {
     "id": "tt",
-    "start_s": 20.7,
+    "start_s": 21.233,
     "dur_s": 12.5,
-    "speech_at_s": 20.95,
+    "speech_at_s": 21.483,
     "speech_s": 7.96,
     "narration": "Think it's a gimmick? Watch it call misses on real games it never saw. A miss call means it knows the ball is out before it lands. Not one was made on a ball labelled in."
    },
    {
     "id": "tennis_real",
-    "start_s": 33.2,
+    "start_s": 33.733,
     "dur_s": 4.0,
-    "speech_at_s": 33.5,
-    "speech_s": 1.556,
-    "narration": "Same tracker, real tennis."
+    "speech_at_s": 34.033,
+    "speech_s": 1.866,
+    "narration": "Real tennis, with our tennis tracker."
    },
    {
     "id": "tennis",
-    "start_s": 37.2,
+    "start_s": 37.733,
     "dur_s": 7.6,
-    "speech_at_s": 37.4,
+    "speech_at_s": 37.933,
     "speech_s": 5.904,
     "narration": "Add spin: landing error drops five to eight times. Out, called 200 milliseconds before the bounce."
    },
    {
     "id": "pipeline",
-    "start_s": 44.8,
+    "start_s": 45.333,
     "dur_s": 10.033,
-    "speech_at_s": 45.0,
+    "speech_at_s": 45.533,
     "speech_s": 9.337,
     "narration": "Here's the whole pipeline in milliseconds: our part, about fifty. Add a one-second feed and Polymarket's one-second delay: 2.1 seconds. Under three."
    },
    {
     "id": "speed",
-    "start_s": 54.833,
+    "start_s": 55.367,
     "dur_s": 8.0,
-    "speech_at_s": 55.033,
+    "speech_at_s": 55.567,
     "speech_s": 6.149,
     "narration": "Here's what speed is worth: every second costs money; by three seconds, every version loses. The edge halves within a second."
    },
    {
     "id": "test",
-    "start_s": 62.833,
+    "start_s": 63.367,
     "dur_s": 9.6,
-    "speech_at_s": 63.083,
-    "speech_s": 6.954,
-    "narration": "Here's months of backtest, on one real match: every fill on the real price path. 59 percent of traded matches made money."
+    "speech_at_s": 63.617,
+    "speech_s": 7.149,
+    "narration": "The test: months of backtest. One match: dots are paper trades on the real price. 59 percent of traded matches made money."
    },
    {
     "id": "profit",
-    "start_s": 72.433,
+    "start_s": 72.967,
     "dur_s": 12.967,
-    "speech_at_s": 72.633,
+    "speech_at_s": 73.167,
     "speech_s": 12.26,
     "narration": "And the profit, at a simulated one-second feed, post-hoc estimate: 94 dollars a day, Sharpe 12: return per unit of risk, above two is very good. On data it never saw: 57 a day."
    },
    {
     "id": "endcard",
-    "start_s": 85.4,
+    "start_s": 85.933,
     "dur_s": 3.6,
-    "speech_at_s": 85.7,
+    "speech_at_s": 86.233,
     "speech_s": 1.615,
     "narration": "Courtside. Paper trading only."
    }
   ],
-  "words": 220,
+  "words": 222,
   "voice": {
    "engine": "ElevenLabs text-to-speech via scripts/tts_elevenlabs.synth (cached in data/tts_cache)",
    "voice": "Liam",
@@ -5848,7 +5848,7 @@
    "max_pause_s": 0.26,
    "tts_calls": {
     "chars_sent": 0,
-    "chars_cached": 1249,
+    "chars_cached": 1261,
     "calls": 0
    }
   },
@@ -5859,7 +5859,7 @@
    "music": {
     "source": "ElevenLabs music",
     "file": "data/tts_cache/music_9cd1509172a46580.mp3",
-    "status": "ok"
+    "status": "cached"
    },
    "sfx": {
     "hit": {
@@ -5879,11 +5879,11 @@
     "hit"
    ],
    [
-    8.011,
+    7.85,
     "tick"
    ],
    [
-    8.937,
+    8.793,
     "tick"
    ],
    [
@@ -5899,183 +5899,187 @@
     "tick"
    ],
    [
-    16.55,
+    18.47,
     "tick"
    ],
    [
-    17.35,
+    19.27,
     "tick"
    ],
    [
-    21.35,
+    21.883,
     "tick"
    ],
    [
-    21.75,
+    22.283,
     "tick"
    ],
    [
-    22.0,
+    22.533,
     "hit"
    ],
    [
-    22.55,
+    23.083,
     "tick"
    ],
    [
-    25.3,
+    25.833,
     "hit"
    ],
    [
-    27.65,
+    28.183,
     "tick"
    ],
    [
-    28.2,
+    28.733,
     "hit"
    ],
    [
-    28.45,
+    28.983,
     "hit"
    ],
    [
-    28.7,
+    29.233,
     "hit"
    ],
    [
-    29.2,
+    29.733,
     "hit"
    ],
    [
-    30.4,
+    30.933,
     "hit"
    ],
    [
-    37.85,
+    38.383,
     "tick"
    ],
    [
-    38.65,
+    39.183,
     "tick"
    ],
    [
-    39.45,
+    39.983,
     "tick"
    ],
    [
-    40.25,
+    40.783,
     "tick"
    ],
    [
-    41.799,
+    41.673,
     "hit"
    ],
    [
-    45.15,
+    45.683,
     "tick"
    ],
    [
-    45.57,
+    46.103,
     "tick"
    ],
    [
-    45.99,
+    46.523,
     "tick"
    ],
    [
-    46.41,
+    46.943,
     "tick"
    ],
    [
-    46.83,
+    47.363,
     "tick"
    ],
    [
-    47.25,
+    47.783,
     "tick"
    ],
    [
-    47.67,
+    48.203,
     "tick"
    ],
    [
-    48.09,
+    48.623,
     "tick"
    ],
    [
-    48.51,
+    49.043,
     "tick"
    ],
    [
-    49.16,
+    49.693,
     "hit"
    ],
    [
-    49.81,
+    50.343,
     "tick"
    ],
    [
-    50.41,
+    50.943,
     "tick"
    ],
    [
-    55.683,
+    56.217,
     "tick"
    ],
    [
-    56.383,
+    56.917,
     "tick"
    ],
    [
-    57.183,
+    57.717,
     "tick"
    ],
    [
-    57.983,
+    58.517,
     "tick"
    ],
    [
-    63.483,
+    68.017,
     "tick"
    ],
    [
-    64.283,
+    68.617,
     "tick"
    ],
    [
-    69.583,
+    70.117,
     "tick"
    ],
    [
-    70.183,
+    70.717,
     "tick"
    ],
    [
-    73.483,
-    "tick"
-   ],
-   [
-    74.483,
-    "tick"
-   ],
-   [
-    75.483,
-    "tick"
-   ],
-   [
-    76.311,
+    77.187,
     "hit"
    ],
    [
-    77.483,
+    78.457,
     "tick"
    ],
    [
-    77.905,
+    79.207,
     "tick"
    ],
    [
-    82.687,
+    79.807,
+    "tick"
+   ],
+   [
+    80.407,
+    "tick"
+   ],
+   [
+    81.007,
+    "tick"
+   ],
+   [
+    81.607,
+    "tick"
+   ],
+   [
+    82.787,
     "hit"
    ]
   ],
@@ -6084,17 +6088,17 @@
    "srt": "results/viz/courtside_60.srt"
   },
   "renders": {
-   "pipeline": {},
-   "profit": {},
-   "tennis": {},
-   "test": {},
    "edge": {},
-   "speed": {},
+   "profit": {},
+   "pipeline": {},
+   "test": {},
    "strategy": {},
-   "endcard": {},
+   "speed": {},
+   "tennis": {},
    "coldopen": {
     "arc_frames_drawn": 17
    },
+   "endcard": {},
    "tennis_real": {},
    "tt": {
     "arc_frames_drawn": 62

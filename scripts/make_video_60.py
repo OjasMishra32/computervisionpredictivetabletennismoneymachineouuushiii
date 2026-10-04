@@ -2197,9 +2197,12 @@ def vignette(cv, strength=0.22):
     cv[:] = (cv.astype(np.float32) * _VIG[strength]).astype(np.uint8)
 
 
-def chrome(cv, num, title, label, theme="dark", k=1.0, label2=None):
-    """small chapter title top-left and the honesty label top-right."""
+def chrome(cv, num, title, label, theme="dark", k=1.0, label2=None, footage=False):
+    """small chapter title top-left and the honesty label top-right. On footage the label is a light grey
+    (#86868b does not read over bright sky or curtains)."""
     fg, sub = (KWH, KGREY) if theme == "dark" else (KINK, KGREY)
+    if footage:
+        sub = (214, 214, 219)
     if num:
         a = ktext(f"{num}", 19, 500, sub)
         blit(cv, a, GM, TOP, "ls", k)
@@ -2216,34 +2219,46 @@ def chrome(cv, num, title, label, theme="dark", k=1.0, label2=None):
 # ----------------------------------------------------------------------------------------------------
 # narration (Liam), one line per segment of the spec table; docs/video_script_60.md carries the same lines
 # ----------------------------------------------------------------------------------------------------
+# ctx: the neighbour lines an unchanged line's approved take was rendered with (ElevenLabs previous_text /
+# next_text, part of the cache key). The QA pass rewrote two lines; their neighbours keep their approved takes.
+_OLD_TENNIS_REAL = "Same tracker, real tennis."
+_OLD_TEST = ("Here's months of backtest, on one real match: every fill on the real price path. 59 percent of "
+             "traded matches made money.")
 SEGS = [
     dict(id="coldopen", num="", title="", min=5.0, lead=0.35, tail=0.55,
          say="That ball's going out. The model called it 325 milliseconds early."),
     dict(id="strategy", num="1", title="The idea", min=6.2, lead=0.2, tail=0.5,
          say="Our computer vision calls the point before the ball lands, so we trade the Polymarket match price "
              "before it reprices."),
-    dict(id="edge", num="2", title="The edge", min=8.0, lead=0.2, tail=0.45,
+    dict(id="edge", num="2", title="The edge", min=8.0, lead=0.2, tail=1.0,
          say="Polymarket prices each match from zero to a dollar, a player's chance to win, and reprices about a "
              "second after each point. The fastest traders won eleven months of eleven."),
     dict(id="tt", num="3", title="The models · table tennis", min=12.5, lead=0.25, tail=0.4,
          say="Think it's a gimmick? Watch it call misses on real games it never saw. A miss call means it knows the "
-             "ball is out before it lands. Not one was made on a ball labelled in."),
+             "ball is out before it lands. Not one was made on a ball labelled in.",
+         ctx=(None, _OLD_TENNIS_REAL)),
+    # QA (first-time viewer): "Same tracker" was wrong; the tennis trail comes from our tennis model, not the
+    # table-tennis engine
     dict(id="tennis_real", num="3", title="The models · tennis", min=4.0, lead=0.3, tail=0.6,
-         say="Same tracker, real tennis."),
+         say="Real tennis, with our tennis tracker."),
     dict(id="tennis", num="3", title="The models · tennis", min=7.6, lead=0.2, tail=0.8,
-         say="Add spin: landing error drops five to eight times. Out, called 200 milliseconds before the bounce."),
+         say="Add spin: landing error drops five to eight times. Out, called 200 milliseconds before the bounce.",
+         ctx=(_OLD_TENNIS_REAL, None)),
     dict(id="pipeline", num="4", title="The pipeline", min=8.0, lead=0.2, tail=0.5,
          say="Here's the whole pipeline in milliseconds: our part, about fifty. Add a one-second feed and "
              "Polymarket's one-second delay: 2.1 seconds. Under three."),
     dict(id="speed", num="5", title="Speed", min=8.0, lead=0.2, tail=0.5,
          say="Here's what speed is worth: every second costs money; by three seconds, every version loses. "
-             "The edge halves within a second."),
+             "The edge halves within a second.",
+         ctx=(None, _OLD_TEST)),
+    # QA (first-time viewer): "months of backtest, on one real match" read as one match being months long
     dict(id="test", num="6", title="The test", min=9.6, lead=0.25, tail=0.5,
-         say="Here's months of backtest, on one real match: every fill on the real price path. 59 percent of "
+         say="The test: months of backtest. One match: dots are paper trades on the real price. 59 percent of "
              "traded matches made money."),
     dict(id="profit", num="7", title="The result", min=9.5, lead=0.2, tail=0.5,
          say="And the profit, at a simulated one-second feed, post-hoc estimate: 94 dollars a day, Sharpe 12: "
-             "return per unit of risk, above two is very good. On data it never saw: 57 a day."),
+             "return per unit of risk, above two is very good. On data it never saw: 57 a day.",
+         ctx=(_OLD_TEST, None)),
     dict(id="endcard", num="", title="", min=3.6, lead=0.3, tail=1.6,
          say="Courtside. Paper trading only."),
 ]
@@ -2273,6 +2288,8 @@ def voice():
     for i, sg in enumerate(SEGS):
         prev = SEGS[i - 1]["say"] if i else None
         nxt = SEGS[i + 1]["say"] if i + 1 < len(SEGS) else None
+        cp, cn = sg.get("ctx", (None, None))
+        prev, nxt = cp or prev, cn or nxt
         mp3 = FW / "voice" / f"{i:02d}_{sg['id']}.mp3"
         mp3.parent.mkdir(parents=True, exist_ok=True)
         if v2.synth_line(sg["say"], prev, nxt, mp3) is None:
@@ -2281,6 +2298,103 @@ def voice():
         out[sg["id"]] = dict(audio=a, dur=len(a) / v2.SR, gaps=v2.gaps(a), file=str(mp3))
     st = dict(chars_sent=v2.TTSStats.chars_sent, chars_cached=v2.TTSStats.chars_cached, calls=v2.TTSStats.calls)
     return out, st
+
+
+_ONES = ("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen "
+         "seventeen eighteen nineteen").split()
+_TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+
+
+def _spell(n):
+    if n < 20:
+        return _ONES[n]
+    if n < 100:
+        return _TENS[n // 10] + ("" if n % 10 == 0 else " " + _ONES[n % 10])
+    if n < 1000:
+        return _ONES[n // 100] + " hundred" + ("" if n % 100 == 0 else " " + _spell(n % 100))
+    return " ".join(_ONES[int(d)] for d in str(n))
+
+
+def wts_spoken(s):
+    """spoken weight with numbers spelled out ("94" is said "ninety four", not two characters)."""
+    def sp(m):
+        a, _, b = m.group(0).partition(".")
+        return _spell(int(a)) + ("" if not b else " point " + " ".join(_ONES[int(d)] for d in b))
+    return v2.wts(re.sub(r"\d+(?:\.\d+)?", sp, s))
+
+
+def speech_anchors(sg, vo):
+    """where Liam actually pauses: every internal punctuation mark of the line aligned, in order, to the measured
+    silent gaps of the take (dynamic programming on |gap - weighted estimate|; extra gaps may be skipped, a mark may
+    stay unaligned). Character weights alone misplace spoken numbers ("2.1", "325", "94"); the gaps do not.
+    Returns [(char position after the mark, gap start s, gap end s)], relative to the start of the take."""
+    say, v = sg["say"], vo[sg["id"]]
+    dur, gp = v["dur"], v["gaps"]
+    marks = [m.end() for m in re.finditer(r"[,;:.?!](?=\s)", say)]
+    tot = wts_spoken(say) or 1
+    exp = [dur * wts_spoken(say[:m]) / tot for m in marks]
+    mids = [(g[0] + g[1]) / 2 for g in gp]
+    M, G = len(marks), len(gp)
+    if M and G >= M:
+        # every mark gets a pause; the extra pauses are breaths inside a clause. The words between two marks need
+        # at least 55 % of their average speaking time, so a breath ("Sharpe | 12") cannot stand in for a comma.
+        rate = dur / tot
+        pos = [0] + marks + [len(say)]
+        need = [0.55 * rate * wts_spoken(say[pos[k]:pos[k + 1]]) for k in range(M + 1)]
+
+        def short(k, t0, t1):
+            return 3.0 * max(0.0, need[k] - (t1 - t0))
+        F = [[1e9] * G for _ in range(M)]
+        B = [[-1] * G for _ in range(M)]
+        for j in range(G):
+            F[0][j] = abs(mids[j] - exp[0]) + short(0, 0.0, gp[j][0])
+        for k in range(1, M):
+            for j in range(k, G):
+                for jp in range(k - 1, j):
+                    c = F[k - 1][jp] + abs(mids[j] - exp[k]) + short(k, gp[jp][1], gp[j][0])
+                    if c < F[k][j]:
+                        F[k][j], B[k][j] = c, jp
+        last = min(range(M - 1, G), key=lambda j: F[M - 1][j] + short(M, gp[j][1], dur))
+        out, j = [], last
+        for k in range(M - 1, -1, -1):
+            out.append((marks[k], float(gp[j][0]), float(gp[j][1])))
+            j = B[k][j]
+        return sorted(out)
+    f = [[0.0] * (G + 1)] + [[1e9] * (G + 1) for _ in range(M)]
+    back = {}
+    for i in range(1, M + 1):
+        for j in range(G + 1):
+            best, arg = f[i - 1][j] + 1.5, ("u", j)                 # mark i not aligned
+            if j:
+                if f[i][j - 1] + 0.1 < best:                         # gap j is a pause inside a clause
+                    best, arg = f[i][j - 1] + 0.1, ("s", j - 1)
+                c = f[i - 1][j - 1] + abs(mids[j - 1] - exp[i - 1])  # mark i at gap j
+                if c < best:
+                    best, arg = c, ("a", j - 1)
+            f[i][j], back[(i, j)] = best, arg
+    out, i, j = [], M, G
+    while i > 0:
+        kind, jj = back[(i, j)]
+        if kind == "a":
+            out.append((marks[i - 1], float(gp[jj][0]), float(gp[jj][1])))
+            i -= 1
+        elif kind == "u":
+            i -= 1
+        j = jj
+    return sorted(out)
+
+
+def t_said(p, say, pos):
+    """time (s, from the start of the take) at which the text at character `pos` starts to be spoken: a gap end
+    when a measured pause precedes it, else interpolated by spoken weight between the aligned pauses."""
+    pts = [(0, 0.0, 0.0)] + list(p.get("anchors") or []) + [(len(say), p["speech_dur"], p["speech_dur"])]
+    for pa, g0, g1 in pts:
+        if pa <= pos and not say[pa:pos].strip():
+            return g1
+    a = max((q for q in pts if q[0] <= pos), key=lambda q: q[0])
+    b = min((q for q in pts if q[0] > pos), key=lambda q: q[0])
+    den = wts_spoken(say[a[0]:b[0]]) or 1
+    return a[2] + (b[1] - a[2]) * wts_spoken(say[a[0]:pos]) / den
 
 
 def plan_times(vo):
@@ -2300,7 +2414,8 @@ def plan_times(vo):
     durs = [round(d * FPS) / FPS for d in durs]
     t, plan = 0.0, []
     for sg, d in zip(SEGS, durs):
-        plan.append(dict(id=sg["id"], start=t, dur=d, speech_at=t + sg["lead"], speech_dur=vo[sg["id"]]["dur"]))
+        plan.append(dict(id=sg["id"], start=t, dur=d, speech_at=t + sg["lead"], speech_dur=vo[sg["id"]]["dur"],
+                         anchors=speech_anchors(sg, vo)))
         t += d
     return plan
 
@@ -2339,16 +2454,20 @@ def cap_chunks(s, maxc=60):
 
 
 def cues_for(sg, p, vo):
-    """caption cues for one line: chunk boundaries placed by spoken weight, snapped to the pauses in the audio."""
-    chunks = cap_chunks(sg["say"])
-    dur, gp = vo[sg["id"]]["dur"], vo[sg["id"]]["gaps"]
-    tot = sum(v2.wts(c) for c in chunks) or 1
-    bounds, acc = [(0.0, 0.0)], 0.0
+    """caption cues for one line: each chunk ends at the measured pause aligned to its closing punctuation
+    (speech_anchors); QA found weight-only placement up to 0.9 s late after spoken numbers."""
+    say = sg["say"]
+    chunks = cap_chunks(say)
+    dur = vo[sg["id"]]["dur"]
+    anc = {a[0]: (a[1], a[2]) for a in (p.get("anchors") or speech_anchors(sg, vo))}
+    bounds, cur = [(0.0, 0.0)], 0
     for c in chunks[:-1]:
-        acc += v2.wts(c)
-        tb = dur * acc / tot
-        near = [g for g in gp if abs((g[0] + g[1]) / 2 - tb) < 0.6]
-        bounds.append(min(near, key=lambda g: abs((g[0] + g[1]) / 2 - tb)) if near else (tb, tb))
+        cur = say.find(c, cur) + len(c)
+        if cur in anc:
+            bounds.append(anc[cur])
+        else:
+            tb = t_said(dict(p, anchors=list((k,) + v for k, v in anc.items()), speech_dur=dur), say, cur)
+            bounds.append((tb, tb))
     bounds.append((dur, dur))
     out = []
     for i, c in enumerate(chunks):
@@ -2573,18 +2692,19 @@ def values60(R):
     eq = list(_csv.DictReader(open(EQUITY))) if EQUITY.exists() and jload(EQUITY_CHECK).get("all_seed_totals_match_committed") else []
     mpos = {}
     for rd in ("tournament_lagcal", "tournament"):
-        prev, by = 0.0, {}
+        by = {}
         for per in ("IS", "burned_OOS"):
             rows = [r for r in eq if r["reading"] == rd and r["period"] == per]
             last = 0.0
             for r in rows:
                 v = float(r["cum_usd_mean"])
-                mo = r["date"][:7] + ("" if per == "IS" else "*")
+                mo = r["date"][:7]           # calendar month: a month split at the hold-out date counts once
                 by[mo] = by.get(mo, 0.0) + (v - last)
                 last = v
         mpos[rd] = (sum(1 for v in by.values() if v > 0), len(by))
     P("eq_months_pos", mpos["tournament_lagcal"], str(EQUITY),
-      "calendar months (IS and burned OOS parts of a month separate) with seed-mean P&L > 0, post-hoc reading",
+      "calendar months (the IS and burned-OOS parts of August merged, as in the edge segment) with seed-mean P&L > 0, "
+      "post-hoc reading",
       fmt=lambda t: f"{t[0]}/{t[1]}")
     P("eq_months_pos_pre", mpos["tournament"], str(EQUITY), "same, pre-registered reading", fmt=lambda t: f"{t[0]}/{t[1]}")
     bl = R.v("blind_rows")
@@ -2652,6 +2772,15 @@ class SegR:
     def label2(self, t):
         return None
 
+    def label_at(self, t):
+        """the honesty label at time t (a segment that changes subject mid-way changes its label with it)."""
+        return self.label
+
+    def t_say(self, phrase):
+        """segment time at which Liam starts saying `phrase` (measured pauses, see speech_anchors)."""
+        say = next(s_["say"] for s_ in SEGS if s_["id"] == self.p["id"])
+        return self.p["speech_at"] - self.p["start"] + t_said(self.p, say, say.index(phrase))
+
     def close(self):
         pass
 
@@ -2659,9 +2788,11 @@ class SegR:
 class Reader:
     """sequential RGB frame reader (ffmpeg), optional scale."""
 
-    def __init__(self, path, size=(W, H), fps_out=None):
+    def __init__(self, path, size=(W, H), fps_out=None, crop=None):
         self.path, self.size = str(path), size
         vf = f"scale={size[0]}:{size[1]}:flags=lanczos"
+        if crop:                                   # (w, h, x, y) in source pixels, applied before the scale
+            vf = "crop={}:{}:{}:{},".format(*crop) + vf
         self.proc = subprocess.Popen(["ffmpeg", "-v", "error", "-i", self.path, "-vf", vf, "-f", "rawvideo",
                                       "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
         self.i, self.buf = -1, None
@@ -2721,7 +2852,85 @@ class TTView:
         self.t_call_seen = None
         self.t_ref_seen = None
         self.tag_seen = {}
+        self.tag_pos = {}
+        self._stamp = None
         self.n_arc = 0
+
+    # ---- layout (QA): the stamp must not sit on the ball's path; call tags must never overlap ----
+    def stamp_sprites(self):
+        big = ktext("MISS" if self.x["call"] == "MISS" else "IN", 64 if not self.small else 40, 600, KOR, track=-1.0)
+        sub = ktext(f"called {f0(self.x['lead_ms'])} ms early", 24 if not self.small else 17, 500, KWH)
+        return big, sub
+
+    def stamp_xy(self):
+        """stamp position: the default (top, above the ball) unless the ball's observed track or the engine's
+        predicted path runs through it; then the nearest candidate position the path leaves clear."""
+        if self._stamp is None:
+            big, sub = self.stamp_sprites()
+            k, sw = self.k, self.size[0]
+            half = max(big.w, sub.w) / 2
+            m = 30 if self.small else 60
+            px, _ = self.P(self.trk.get(self.call) or (W / 2, H / 2))
+            lo_x, hi_x = m + half + (0 if self.small else 360), sw - m - half
+            sx0 = min(max(px, lo_x), hi_x)
+            sy0 = 236 if not self.small else 118
+            obs = [self.P(self.trk[f]) for f in range(self.call - 90, self.tref + 40) if f in self.trk]
+            ob, pr, _ = self.call_arc
+            obs += [self.P(q) for q in list(ob) + list(pr)]
+            obs = np.array(obs, float).reshape(-1, 2)
+            pad = 10 * k + 4
+            cands = []
+            for sy in (sy0, sy0 + 150 * k):
+                for fx in (None, 0.5, 0.36, 0.64, 0.24, 0.76):
+                    sx = sx0 if fx is None else min(max(fx * sw, lo_x), hi_x)
+                    bx0, bx1 = sx - half - pad, sx + half + pad
+                    by0, by1 = sy - big.h - pad, sy + 2 + sub.h + pad
+                    hits = int(np.sum((obs[:, 0] > bx0) & (obs[:, 0] < bx1) & (obs[:, 1] > by0) & (obs[:, 1] < by1)))
+                    cands.append((hits, sy != sy0, abs(sx - sx0), sx, sy))
+            best = min(cands)
+            self._stamp = (best[3], best[4])
+        return self._stamp
+
+    def stamp_box(self):
+        big, sub = self.stamp_sprites()
+        sx, sy = self.stamp_xy()
+        half = max(big.w, sub.w) / 2
+        return (sx - half, sy - big.h, sx + half, sy + 2 + sub.h)
+
+    def tag_place(self, tg, w1, w2, px, yy, tout):
+        """first placement of a call tag, kept for its lifetime: shift up (then down) until it overlaps neither
+        the call stamp, the P(miss) bar nor a tag still on screen."""
+        if tg["frame"] in self.tag_pos:
+            return self.tag_pos[tg["frame"]]
+        sw, sh = self.size
+        wmax = max(w1.w, w2.w)
+        hh = w1.h + 4 + w2.h
+        m = 8
+        px = min(max(px, m + wmax / 2), sw - m - wmax / 2)
+        boxes = [self.stamp_box(), (0, 0, (GM + 240) if not self.small else 190, (140 if not self.small else 40))]
+        for f_, (qx, qy, qw, qh1, qh2) in self.tag_pos.items():
+            t0 = self.tag_seen.get(f_)
+            if t0 is not None and tout - t0 < 1.25:
+                boxes.append((qx - qw / 2, qy - qh1, qx + qw / 2, qy + 4 + qh2))
+        g = 4
+        # the ball's own path while the tag is on screen (about 1.2 s; at most 150 source frames)
+        path = np.array([self.P(self.trk[f]) for f in range(tg["frame"] - 6, tg["frame"] + 150) if f in self.trk],
+                        float).reshape(-1, 2)
+
+        def clear(y):
+            b = (px - wmax / 2 - g, y - w1.h - g, px + wmax / 2 + g, y + 4 + w2.h + g)
+            if len(path) and np.any((path[:, 0] > b[0] - 8) & (path[:, 0] < b[2] + 8) & (path[:, 1] > b[1] - 8) &
+                                    (path[:, 1] < b[3] + 8)):
+                return False
+            return all(b[2] <= c[0] or b[0] >= c[2] or b[3] <= c[1] or b[1] >= c[3] for c in boxes)
+        best = yy
+        for step in (0, -1, -2, -3, 1, 2, 3, 4):
+            y = yy + step * (hh + 2 * g)
+            if w1.h + 4 <= y <= sh - w2.h - 8 and clear(y):
+                best = y
+                break
+        self.tag_pos[tg["frame"]] = (px, best, wmax, w1.h, w2.h)
+        return self.tag_pos[tg["frame"]]
 
     def P(self, pt):
         return pt[0] * self.k, pt[1] * self.k
@@ -2802,23 +3011,16 @@ class TTView:
             px, py = self.P(pt)
             w1 = ktext(tg["word"], 22 if not self.small else 16, 600, KWH)
             w2 = ktext(tg["sub"], 15 if not self.small else 12, 400, (205, 205, 210))
-            yy = max(60, py - 40 * k - 30)
+            yy = max(60 * k + 20, py - 40 * k - 30)
+            px, yy = self.tag_place(tg, w1, w2, px, yy, t0)[:2]
             blit(img, w1, px, yy, "mb", a)
             blit(img, w2, px, yy + 4, "ma", a)
         # the call stamp
         if self.t_call_seen is not None:
             q = (tout - self.t_call_seen) / 0.2
             a, scl = min(1.0, max(q, 0.0)), 0.96 + 0.04 * ease3(q)
-            pt = self.trk.get(self.call) or (W / 2, H / 2)
-            px, py = self.P(pt)
-            big = ktext("MISS" if self.x["call"] == "MISS" else "IN", 64 if not self.small else 40, 600, KOR,
-                        track=-1.0)
-            lead = f0(self.x["lead_ms"])
-            sub = ktext(f"called {lead} ms early", 24 if not self.small else 17, 500, KWH)
-            m = 30 if self.small else 60
-            half = max(big.w, sub.w) / 2
-            sx = min(max(px, m + half + (0 if self.small else 360)), self.size[0] - m - half)
-            sy = 236 if not self.small else 118
+            big, sub = self.stamp_sprites()
+            sx, sy = self.stamp_xy()
             blit(img, big, sx, sy, "mb", a, scl)
             blit(img, sub, sx, sy + 2, "ma", a, scl)
         if self.t_ref_seen is not None:
@@ -2827,8 +3029,13 @@ class TTView:
             if pt is not None:
                 px, py = self.P(pt)
                 w_ = ktext(self.outcome_word(), 18 if not self.small else 13, 500, (220, 220, 225))
-                blit(img, w_, min(max(px, 40 + w_.w / 2), self.size[0] - 40 - w_.w / 2),
-                     min(max(py + 30 * k + 12, 160 if not self.small else 60), self.size[1] - 40), "ma", q)
+                ox = min(max(px, 40 + w_.w / 2), self.size[0] - 40 - w_.w / 2)
+                oy = min(max(py + 30 * k + 12, 160 if not self.small else 60), self.size[1] - 40)
+                sb = self.stamp_box()           # never beside or under the call stamp
+                if not (ox + w_.w / 2 + 16 <= sb[0] or ox - w_.w / 2 - 16 >= sb[2] or oy + w_.h + 8 <= sb[1]
+                        or oy - 8 >= sb[3]):
+                    oy = sb[3] + 18 * k + 6
+                blit(img, w_, ox, oy, "ma", q)
         return img
 
     def close(self):
@@ -2861,7 +3068,7 @@ class SegColdOpen(SegR):
             if k < 1:
                 cv = (cv.astype(np.float32) * k).astype(np.uint8)
             chrome(cv, "", "", f"{LABEL_FOOT} · game {self.view.v}", "dark", 1.0,
-                   label2="¼ speed" if self.slow[i] else "real time")
+                   label2="¼ speed" if self.slow[i] else "real time", footage=True)
             return cv
         cv = canvas()
         k = appear(t, self.t_foot + 0.05, 0.7)
@@ -2878,18 +3085,14 @@ class SegStrategy(SegR):
 
     def prepare(self):
         D = self.D
-        sp = self.p["speech_at"] - self.p["start"]
-        tot = sum(len(s_) for s_, _ in self.LINES)
-        acc, self.t_line = 0, []
-        for s_, _ in self.LINES:
-            self.t_line.append(sp + self.p["speech_dur"] * acc / tot - 0.15)
-            acc += len(s_)
+        self.t_line = [self.t_say(s_) - 0.15 for s_, _ in self.LINES]   # each line as Liam reaches it
         self.t_tl = self.t_line[3]
         self.rail = Rail([dict(v=f"{D['band']} s", lab=f"after each point, the price catches up (inferred; book vs "
                                                         f"official point stamp measured on {D['stale_n']} live points)",
                                t=self.t_line[3] + 0.2, count=False),
-                          dict(v=f"${D['stale']}", lab="median stale depth still on the book 250 ms before the "
-                                                        "reprice (one recorded day)", t=self.t_line[4] + 0.4)],
+                          dict(v=f"${D['stale']}", lab="of orders still resting at the old price 250 ms before it "
+                                                        "moves (median stale depth, one recorded day)",
+                               t=self.t_line[4] + 0.4)],
                          head="The idea in numbers")
         x0, x1 = CX0, CX1
         self.X = lambda s_: x0 + (x1 - x0) * (s_ + 0.8) / 2.8   # noqa: E731  -0.8 .. 2.0 s around the bounce
@@ -2941,7 +3144,9 @@ class SegEdge(SegR):
 
     def prepare(self):
         D = self.D
-        self.t2 = 4.7
+        # the ladder (with the reprice band) stays up while Liam explains the reprice; the months chart comes in
+        # with "The fastest traders"
+        self.t2 = max(4.7, self.t_say("The fastest") - 0.4)
         self.rows = [("Venue camera", "fastest; not offered to traders", D["cam"]),
                      ("Licensed betting video", "vendor-stated", D["vid"]),
                      ("Official point feed", "umpire tablet; lag not measured", D["feed"]),
@@ -2951,7 +3156,7 @@ class SegEdge(SegR):
         self.bx0, self.bx1 = 600, CX1
         X = lambda v: logx(v, self.bx0, self.bx1)  # noqa: E731
         ly = Lyr()
-        y0, dy = 196, 92
+        y0, dy = 286, 88                      # below the title and its plain-language subtitle
         for i, (_, _, b) in enumerate(self.rows):
             y = y0 + i * dy + 26
             if b[1] - b[0] < 1e-6 or i == 5:
@@ -2959,7 +3164,7 @@ class SegEdge(SegR):
                     ly.circle((X(v), y), 6, KGREY)
             else:
                 ly.rect(X(b[0]), y - 4, max(X(b[1]), X(b[0]) + 8), y + 4, KGREY, 1.0, r=4)
-        ya = y0 + 6 * dy + 6
+        ya = y0 + 6 * dy + 2
         ly.line([(self.bx0, ya), (self.bx1, ya)], KHAIR_D, 2)
         self.ladder = ly
         band = Lyr()
@@ -2984,8 +3189,8 @@ class SegEdge(SegR):
         self.chart, self.bw, self.ms, self.oos = ch, bw, ms, oos
         self.rail = Rail([dict(v=D["oth"], lab="per share, everyone slower than the fast tier (in-sample month mean)",
                                t=1.2, col=KRED_D),
-                          dict(v=f"t = {D['fac_t']}", lab="factor-neutral alpha of the fast tier (four-factor, Newey-West)",
-                               t=2.2),
+                          dict(v=f"t = {D['fac_t']}", lab="t-stat of the fast tier's alpha after four risk factors "
+                                                          "(Newey-West): far beyond chance", t=2.2),
                           dict(v=f"R² {D['r2']}%", lab="of it explained by risk factors", t=3.0),
                           dict(v=f"{D['ft_pos']}/{D['ft_n']}", lab="months the fast tier made money (traded within 3 s "
                                                                   "of a point; 30 s markout, after fees)", t=self.t2 + 0.6,
@@ -3004,11 +3209,13 @@ class SegEdge(SegR):
         k1 = 1 - ease3((t - self.t2 + 0.5) / 0.5)
         if k1 > 0:
             blit(cv, ktext("Who learns the point first", 40, 600, KWH, track=-0.6), CX0, 150, "ls", k1 * appear(t, 0.1))
+            blit(cv, ktext("Polymarket's price runs from 0 to $1: a player's chance to win. The first to learn the point "
+                           "trades the old price.", 19, 400, KGREY), CX0, 188, "ls", k1 * appear(t, 0.2))
             for i, (nm, sub, _) in enumerate(self.rows):
                 y = self.y0 + i * self.dy
                 k = appear(t, 0.25 + 0.22 * i, 0.5) * k1
-                blit(cv, ktext(nm, 23, 500, KWH), CX0, y + 26, "ls", k)
-                blit(cv, ktext(sub, 16, 400, KGREY), CX0, y + 50, "ls", k)
+                blit(cv, ktext(nm, 22, 500, KWH), CX0, y + 26, "ls", k)
+                blit(cv, ktext(sub, 16, 400, KGREY), CX0, y + 49, "ls", k)
             kl = appear(t, 0.4, 0.6) * k1
             comp(cv, self.ladder, kl, xr=self.bx0 + (self.bx1 - self.bx0 + 12) * ease3((t - 0.4) / 1.6))
             kb = appear(t, 1.6, 0.6) * k1
@@ -3025,12 +3232,18 @@ class SegEdge(SegR):
             blit(cv, ktext("the fastest traders made money; copying them 3 s later lost every month", 21, 400, KGREY),
                  CX0, 240, "ls", k2)
             comp(cv, self.chart, k2, xr=self.cx0 + (self.cx1 - self.cx0 + 4) * ease3((t - self.t2 - 0.2) / 1.6))
+            seen = set()
             for i, m in enumerate(self.ms):
                 xc = self.cx0 + self.bw * (i + 0.5)
                 mo = dt.date(int(m["month"][:4]), int(m["month"][5:7]), 1).strftime("%b")
+                if m["month"] in seen:          # a month split at the hold-out date: its second bar is "late <month>"
+                    mo = "late " + mo
+                seen.add(m["month"])
                 blit(cv, ktext(mo, 15, 400, KGREY), xc, self.cy0 + 250, "ms", k2)
             if self.oos:
                 blit(cv, ktext("held out", 15, 500, KGREY), self.cx0 + self.bw * self.oos[0] + 8, self.cy0 - 210, "ls", k2)
+                blit(cv, ktext("August split at the hold-out date", 14, 400, KGREY), self.cx0 + self.bw * self.oos[0] + 8,
+                     self.cy0 - 190, "ls", k2)
             blit(cv, ktext("fast tier, ¢ per share", 16, 500, KWH), CX0, self.cy0 - 230, "ls", k2)
             blit(cv, ktext("copy 3 s later", 16, 500, KRED_D), CX0, self.cy0 + 222, "ls", k2)
         self.rail.draw(cv, t)
@@ -3055,9 +3268,10 @@ class SegTT(SegR):
                                      rate_slow=2)
         self.g0 = self.SHOTS[-1][2]
         gd = self.dur - self.g0
-        cw, ch = 656, 368
+        cw, ch = 632, 356
         gx0 = (W - 2 * cw - 12) // 2
-        self.cells = [(gx0, 92), (gx0 + cw + 12, 92), (gx0, 92 + ch + 12), (gx0 + cw + 12, 92 + ch + 12)]
+        gy0 = 100                   # below the two-line honesty label
+        self.cells = [(gx0, gy0), (gx0 + cw + 12, gy0), (gx0, gy0 + ch + 12), (gx0 + cw + 12, gy0 + ch + 12)]
         for cid, tc in self.GRID:
             v = TTView(cid, self.L, (cw, ch), small=True)
             x = v.x
@@ -3070,11 +3284,12 @@ class SegTT(SegR):
                                 t=1.0),
                            dict(v=D["miss"], lab=f"MISS calls in all; {D['mob']} on a ball labelled in", t=1.4),
                            dict(v=f"{D['lat']} ms", lab="frame to call, p50", t=1.8)], mode="band")
-        self.band2 = Rail([dict(v=f"{D['inr']} / {D['inm']}", lab="IN calls right on labelled flights", t=self.g0 + 0.3),
-                           dict(v=f"{D['rtp']} / {D['nmf']}", lab="labelled misses called before the ball got there",
-                                t=self.g0 + 0.7),
-                           dict(v=D["unm"], lab=f"of {D['calls']} calls were on balls outside the labelled set",
-                                t=self.g0 + 1.1),
+        self.band2 = Rail([dict(v=f"{D['inr']} / {D['inm']}", lab="IN calls right, on balls the dataset labelled",
+                                t=self.g0 + 0.3),
+                           dict(v=f"{D['rtp']} / {D['nmf']}", lab="labelled misses the live engine called before the "
+                                                                   "ball got there", t=self.g0 + 0.7),
+                           dict(v=D["unm"], lab=f"of {D['calls']} calls were on balls the dataset never labelled "
+                                                "(cannot be scored)", t=self.g0 + 1.1),
                            dict(v=f"{D['tp50']} / {D['n50']}", lab="MISS calls right at 50 ms (offline test, "
                                                                      "pre-registered)", t=self.g0 + 1.5)], mode="band",
                           band_y=872)
@@ -3121,6 +3336,9 @@ class SegTT(SegR):
         k = appear(tg, 0.0, 0.35)
         if k < 1:
             cv = (cv.astype(np.float32) * k).astype(np.uint8)
+        # what to look at (first-time viewer QA)
+        blit(cv, ktext("IN = the model says the ball will land on the table. Each stamp appears at the frame the "
+                       "model made the call.", 18, 400, (200, 200, 205)), W / 2, 848, "ms", appear(tg, 0.3, 0.5))
         self.band2.draw(cv, t)
         return cv
 
@@ -3153,7 +3371,7 @@ class SegTennisReal(SegR):
             blit(cv, ktext("real tennis clip pending", 30, 500, KGREY), W / 2, H / 2, "mm")
             return cv
         cv = self.reader.get(int(t * self.fps))
-        top_grad(cv)
+        top_grad(cv, 210, 0.8)          # the honesty label sits over bright sky
         bottom_grad(cv, 760, 0.6)
         return cv
 
@@ -3192,6 +3410,24 @@ class Cam:
         return self.f * r / max(z, 0.05)
 
 
+_FADE = {}
+
+
+def fade_layer(ly, x0, x1, y0, y1):
+    """soft edges for a full-frame layer: alpha 1 left of x0 / above y0, falling linearly to 0 at x1 / y1
+    (no hard clip where a 3D court leaves the content columns or runs under the captions)."""
+    key = (x0, x1, y0, y1)
+    if key not in _FADE:
+        cx = np.clip((x1 - np.arange(W, dtype=np.float32)) / (x1 - x0), 0, 1)
+        ry = np.clip((y1 - np.arange(H, dtype=np.float32)) / (y1 - y0), 0, 1)
+        _FADE[key] = ry[:, None] * cx[None, :]
+    m = _FADE[key]
+    ly.a = (ly.a.astype(np.float32) * m + 0.5).astype(np.uint8)
+    ly.rgb = (ly.rgb.astype(np.float32) * m[..., None] + 0.5).astype(np.uint8)
+    ly._bb = None
+    return ly
+
+
 class SegTennis(SegR):
     label = "simulated physics: Hawk-Eye-class camera model (340 fps, 3.6 mm noise) · not real footage"
 
@@ -3208,9 +3444,13 @@ class SegTennis(SegR):
         for f in self.fits:
             f["lead_eval"] = ev[f["k"]]["lead_ms"]
         self.fits.sort(key=lambda f: f["t"])
-        self.T0, self.T1 = 0.7, 6.0                                     # flight shown from T0 to T1 (slow motion)
+        # flight shown from T0 to T1 in slow motion; the slow-motion rate is set so that the evaluation's decision
+        # point with the call lands as Liam says "called 200 milliseconds" (QA: it came 1.5 s after him)
+        f_call = next(f["t"] for f in self.fits if f["lead_eval"] == sh["called_at_eval_lead_ms"])
+        self.T0 = 0.5
+        self.T1 = min(6.0, max(3.6, self.T0 + (self.t_say("called 200") - self.T0) * self.tland / f_call))
         self.slow = (self.T1 - self.T0) / self.tland
-        self.t_call = next(self.T0 + f["t"] * self.slow for f in self.fits if f["lead_eval"] == sh["called_at_eval_lead_ms"])
+        self.t_call = self.T0 + f_call * self.slow
         self.rail = Rail([dict(v=f"{D['xlo']}–{D['xhi']}×", lab="less landing error than the no-spin tracker, "
                                                                   "300–400 ms before the bounce", t=0.6, count=False),
                           dict(v=f"{D['prec']}%", lab="OUT calls right at P(out) ≥ 0.95, every lead (simulated)", t=1.4),
@@ -3303,7 +3543,7 @@ class SegTennis(SegR):
             pts = C_.seg((xp, NY, 0), (xp, NY, 1.07), 4)
             if len(pts) > 1:
                 ly.line(pts, KGREY, 2, 0.8)
-        comp(cv, ly, kc, xr=CX1 + 40)
+        comp(cv, fade_layer(ly, CX1 - 110, CX1 + 30, 890, 975), kc, xr=CX1 + 40)
         tf = (t - self.T0) / self.slow
         lay = Lyr()
         cur = None
@@ -3352,7 +3592,7 @@ class SegTennis(SegR):
                         mk.append(pp)
                 if len(mk) > 3:
                     lay.line(mk + [mk[0]], KWH, 2, kk)
-        comp(cv, lay, 1.0, xr=CX1 + 40)
+        comp(cv, fade_layer(lay, CX1 - 110, CX1 + 30, 890, 975), 1.0, xr=CX1 + 40)
         self.inset(cv, t, cur, tf >= self.tland)
         # readouts
         x0, y0 = CX0, 150
@@ -3423,6 +3663,8 @@ class SegPipeline(SegR):
         cv = canvas()
         D = self.D
         blit(cv, ktext("From the frame to a fill", 40, 600, KWH, track=-0.6), CX0, 150, "ls", appear(t, 0.05))
+        blit(cv, ktext("Orange is our code. White is the feed, the network and Polymarket's hold.", 19, 400, KGREY),
+             CX0, 188, "ls", appear(t, 0.15))
         y0, dy = 214, 66
         for i, (nm, sub, ms, ours) in enumerate(self.rows):
             k = appear(t, self.t_rows[i], 0.45)
@@ -3468,7 +3710,7 @@ class SegSpeed(SegR):
             pts = [(X(max(v, 0.05)), Y(u)) for v, u in D["curves"][rd][per] if v != 0]
             ly.line(pts, col, 3 if per == "IS" else 2, al)
             self.ends.append((rd, per, pts[0], col, al, D["curves"][rd][per][1][1]))
-        ly.dotted((X(1.0), y0 - 10), (X(1.0), y1 + 10), KOR, 2, 4, 7)
+        ly.dotted((X(1.0), y0 + 4), (X(1.0), y1 + 10), KOR, 2, 4, 7)
         for v in (D["be_lc_v"], D["be_t_v"]):
             ly.circle((X(v), Y(0)), 6, KINK)
         by = y1 + 70
@@ -3477,6 +3719,28 @@ class SegSpeed(SegR):
         for i, (_, b) in enumerate(self.bands):
             ly.rect(X(b[0]), by + i * 22 - 3, X(b[1]), by + i * 22 + 3, KGREY, 0.55, r=3)
         self.chart, self.x0, self.x1, self.y0, self.y1, self.by = ly, x0, x1, y0, y1, by
+        # direct labels at the line starts, placed where no other curve runs through them (QA: the pre-registered
+        # in-sample line crossed the "held out" label)
+        labs = {("tournament_lagcal", "IS"): "post-hoc, in sample", ("tournament_lagcal", "burned_OOS"): "post-hoc, held out",
+                ("tournament", "IS"): "pre-registered, in sample", ("tournament", "burned_OOS"): "pre-registered, held out"}
+        placed = []
+        self.lab_xy = {}
+        for rd, per, pt, col, al, v in self.ends:
+            sp = ktext(labs[(rd, per)], 14, 500, KINK)
+            best = None
+            for dy_ in (-12, 22, -28, 38, -44, 54):
+                bx0, by_ = int(pt[0] + 8), int(pt[1] + dy_)
+                box = (bx0 - 3, by_ - sp.base - 2, bx0 + sp.w + 3, by_ + sp.h - sp.base + 2)
+                ink = int(ly.a[max(box[1], 0):box[3], max(box[0], 0):box[2]].max(initial=0))
+                hit = any(not (box[2] <= q[0] or box[0] >= q[2] or box[3] <= q[1] or box[1] >= q[3]) for q in placed)
+                if ink < 40 and not hit:
+                    best = (bx0, by_, box)
+                    break
+            if best is None:
+                best = (int(pt[0] + 8), int(pt[1] - 12), None)
+            self.lab_xy[(rd, per)] = best[:2]
+            if best[2]:
+                placed.append(best[2])
         # decay bars
         ds = D["decay"]
         n = len(ds["IS"])
@@ -3495,9 +3759,10 @@ class SegSpeed(SegR):
                                vsize=40),
                           dict(v=D["sh3"], lab="Sharpe at 0 / 0.5 / 1 s (same reading)", t=1.5, vsize=40),
                           dict(v=f"{D['be_lc']} s", lab=f"break-even feed delay (post-hoc); pre-registered {D['be_t']} s",
-                               t=2.3, vsize=40),
+                               t=2.3, vsize=40, count=False),
+                          # a threshold must not count up: "1 s · every reading loses money" would be false on screen
                           dict(v=f"{D['all_lose']} s", lab="every reading loses money, in and out of sample", t=3.1, vsize=40,
-                               col=KRED_L)],
+                               col=KRED_L, count=False)],
                          theme="light", head="What speed is worth", gap=24)
         self.still_t = 4.2
 
@@ -3511,14 +3776,18 @@ class SegSpeed(SegR):
         if k1 > 0:
             blit(cv, ktext("Paper profit vs how late the feed is", 40, 600, KINK, track=-0.6), CX0, 150, "ls", k1)
             comp(cv, self.chart, k1, xr=self.x0 + (self.x1 - self.x0 + 20) * ease3((t - 0.3) / 2.0))
+            blit(cv, ktext("post-hoc: feed timing fitted after seeing the data · pre-registered: fixed before the test",
+                           19, 400, KGREY), CX0, 186, "ls", k1)
             labs = {("tournament_lagcal", "IS"): "post-hoc, in sample", ("tournament_lagcal", "burned_OOS"): "post-hoc, held out",
                     ("tournament", "IS"): "pre-registered, in sample", ("tournament", "burned_OOS"): "pre-registered, held out"}
             for rd, per, pt, col, al, v in self.ends:
                 c2 = tuple(int(255 - (255 - c_) * al) for c_ in col)
-                blit(cv, ktext(labs[(rd, per)], 14, 500, c2), pt[0] + 8, pt[1] - 12, "ls", k1)
-            blit(cv, ktext("1 s", 15, 600, KOR), self.X(1.0) + 6, self.y0 - 2, "ls", k1)
+                lx, ly_ = self.lab_xy[(rd, per)]
+                blit(cv, ktext(labs[(rd, per)], 14, 500, c2), lx, ly_, "ls", k1)
+            blit(cv, ktext("1 s", 15, 600, KOR), self.X(1.0) + 6, self.y0 + 14, "ls", k1)
             blit(cv, ktext(f"break-even {D['be_lc']} s", 14, 500, KINK), self.X(D["be_lc_v"]) + 8, self.Y(0) - 10, "ls", k1)
-            blit(cv, ktext(f"{D['be_t']} s", 14, 500, KINK), self.X(D["be_t_v"]) - 8, self.Y(0) + 22, "rs", k1)
+            blit(cv, ktext(f"{D['be_t']} s", 14, 500, KINK), min(self.X(D["be_t_v"]), self.X(1.0)) - 10, self.Y(0) + 22,
+                 "rs", k1)
             for v in (0.05, 0.1, 0.5, 1, 5, 10, 60):
                 blit(cv, ktext(f"{v:g}" + (" s" if v in (1, 60) else ""), 14, 400, KGREY), self.X(v), self.y1 + 34, "ms", k1)
             for v in (0, 100, 200):
@@ -3546,9 +3815,13 @@ class SegTest(SegR):
 
     def prepare(self):
         D = self.D
-        self.vw, self.vh = int(CX1 - CX0), int(round((CX1 - CX0) * 9 / 16))
-        self.reader = Reader(EXAMPLE_MATCH, (self.vw // 2 * 2, self.vh // 2 * 2))
+        # the plate without its outer margin and its footer (the footer repeats the honesty label shown top-right)
+        crop = (1728, 900, 96, 60)
+        self.vw = int(CX1 - CX0) // 2 * 2
+        self.vh = int(round(self.vw * crop[1] / crop[0])) // 2 * 2
+        self.reader = Reader(EXAMPLE_MATCH, (self.vw, self.vh), crop=crop)
         self.t2 = 5.9
+        self.t_end = 5.0           # the plate plays to its last frame (the match's final P&L) before the cut
         eq = D["eq"]
         self.has_eq = bool(eq)
         if eq:
@@ -3583,11 +3856,13 @@ class SegTest(SegR):
                  f"{D['peeks']} out-of-sample looks logged", f"{D['trials']} variants counted",
                  f"deflated Sharpe {D['dsr']} (v2, in sample)", f"PBO {D['pbo']}%"]
         self.pills = pills
-        self.rail = Rail([dict(v=D["pnl"], lab=f"this match: {D['fills']} fills, {D['misses']} calls missed; "
-                                                f"picked for its trade count", t=0.6),
+        t_59 = self.t_say("59 percent")
+        self.rail = Rail([dict(v=D["pnl"], lab=f"this match, final: {D['fills']} fills, {D['misses']} calls missed; "
+                                                f"picked for its trade count", t=self.t_end - 0.4),
                           dict(v=f"{D['share']}%", lab=f"of {D['traded']} traded backtest matches were profitable "
-                                                         f"({D['prof']}); median match {D['median']}", t=1.4),
-                          dict(v=D["mpos"], lab=f"months with a profit, post-hoc reading (pre-registered "
+                                                         f"({D['prof']}); median match {D['median']}",
+                               t=max(self.t_end + 0.2, t_59 - 0.2)),
+                          dict(v=D["mpos"], lab=f"calendar months with a profit, post-hoc reading (pre-registered "
                                                 f"{D['mpos_pre']})", t=self.t2 + 0.8, count=False),
                           dict(v=f"{D['is_days']} + {D['oos_days']}", lab="days in sample + held out", t=self.t2 + 1.4,
                                count=False)],
@@ -3597,15 +3872,20 @@ class SegTest(SegR):
     def events(self):
         return self.rail.events()
 
+    def label_at(self, t):
+        return self.label if t < self.t2 - 0.2 else f"{LABEL_RESULTS} · backtest, paper trading"
+
     def frame(self, t):
         cv = canvas()
         k1 = 1 - ease3((t - self.t2 + 0.4) / 0.4)
         if k1 > 0:
-            ts = t * 1.65 if t < 5.6 else min(12.0, 9.24 + (t - 5.6) * 6)
-            im = self.reader.get(int(round(min(ts, 11.95) * 30)))
-            y0 = 150
+            ts = min(11.95, t * 11.95 / self.t_end)
+            im = self.reader.get(int(round(ts * 30)))
+            y0 = 178
             reg = cv[y0:y0 + im.shape[0], CX0:CX0 + im.shape[1]]
             reg[:] = (im.astype(np.float32) * k1 * appear(t, 0.0, 0.3)).astype(np.uint8)
+            blit(cv, ktext("One match from the backtest: orange dots are our paper trades", 34, 600, KWH, track=-0.5),
+                 CX0, 150, "ls", k1 * appear(t, 0.1))
         k2 = appear(t, self.t2, 0.6)
         if k2 > 0 and self.has_eq:
             x0, x1, y0, y1, oos0, d0, d1, ymin, ymax = self.ex
@@ -3642,38 +3922,42 @@ class SegProfit(SegR):
 
     def prepare(self):
         D = self.D
-        sp = self.p["speech_at"] - self.p["start"]
-        sd = self.p["speech_dur"]
-        self.t_day = sp + 0.30 * sd
-        self.t_sh = sp + 0.43 * sd
-        self.t_oos = sp + 0.82 * sd
-        self.rail = Rail([dict(v=f"${D['t_is_day']} · ${D['t_oos_day']}", lab=f"a day, pre-registered reading (stamp lag "
-                                                                               f"{D['pre_lag']} s), in · out of sample; "
-                                                                               f"Sharpe {D['t_is_sh']} · {D['t_oos_sh']}",
-                               t=1.0, vsize=38),
+        self.t_day = self.t_say("94 dollars")         # the hero lands as Liam says it
+        self.t_sh = self.t_say("Sharpe 12")
+        self.t_oos = self.t_say("On data")
+        # QA: the hero number counts up from the first word and lands when Liam says it; the rail (with the
+        # pre-registered reading) fills in right after, so the frame never opens empty or on the rail
+        self.t_hero = 0.5
+        tr = self.t_sh + 0.7
+        self.rail = Rail([dict(v=f"${D['t_is_day']} · ${D['t_oos_day']}", lab=f"a day, pre-registered reading (timing "
+                                                                               f"fixed in advance, {D['pre_lag']} s), "
+                                                                               f"in · out of sample; Sharpe "
+                                                                               f"{D['t_is_sh']} · {D['t_oos_sh']}",
+                               t=tr, vsize=38),
                           dict(v=f"{D['lc_is_c']} · {D['lc_oos_c']}", lab=f"net per share, in sample {D['lc_is_ci']}, out of "
-                                                                         f"sample {D['lc_oos_ci']} (95% CI)", t=2.0, vsize=38),
+                                                                         f"sample {D['lc_oos_ci']} (95% CI)", t=tr + 0.6, vsize=38),
                           dict(v=f"{D['lc_is_pnl']} · {D['lc_oos_pnl']}", lab=f"total paper P&L over {D['lc_is_days']} · "
-                                                                             f"{D['lc_oos_days']} days", t=3.0, vsize=38),
+                                                                             f"{D['lc_oos_days']} days", t=tr + 1.2, vsize=38),
                           dict(v=f"${D['cap_lc_oos']}k–${D['cap_lc_is']}k", lab=f"capital where Sharpe halves (post-hoc); "
                                                                                  f"${D['cap_pr_oos']}k–${D['cap_pr_is']}k "
-                                                                                 "pre-registered", t=4.0, vsize=38),
+                                                                                 "pre-registered", t=tr + 1.8, vsize=38),
                           dict(v=f"{D['v2_sh_is']} · {D['v2_sh_oos']}", lab="Sharpe at the fast tier's own fills (v2), "
-                                                                           "in · out of sample", t=5.0, vsize=38)],
+                                                                           "in · out of sample", t=tr + 2.4, vsize=38)],
                          head="Both readings, 1 s feed", gap=22)
         self.still_t = self.dur - 0.4
 
     def events(self):
-        return [(self.t_day, "hit"), (self.t_sh, "tick"), (self.t_oos, "hit")] + self.rail.events()
+        return [(self.t_day + 0.1, "hit"), (self.t_sh, "tick"), (self.t_oos, "hit")] + self.rail.events()
 
     def frame(self, t):
         cv = canvas()
         D = self.D
-        k = appear(t, self.t_day - 0.2, 0.6)
+        k = appear(t, self.t_hero, 0.6)
         x0 = CX0
         blit(cv, ktext("In sample · post-hoc estimate", 22, 500, KGREY), x0, 220, "ls", appear(t, 0.2))
-        blit(cv, ktext(f"stamp lag {D['lc_lag']} s, inferred after the fact", 17, 400, KGREY), x0, 248, "ls", appear(t, 0.3))
-        v = count_str(f"${D['lc_is_day']}", (t - self.t_day) / 0.9)
+        blit(cv, ktext(f"one timing setting (stamp lag {D['lc_lag']} s) was fitted after seeing the data", 17, 400, KGREY),
+             x0, 248, "ls", appear(t, 0.3))
+        v = count_str(f"${D['lc_is_day']}", (t - self.t_hero) / (self.t_day + 0.1 - self.t_hero))
         big = ktext(v, 210, 600, KWH, track=-6, tnum=True)
         blit(cv, big, x0 - 6, 470, "ls", k, 0.96 + 0.04 * k)
         blit(cv, ktext("a day", 48, 500, KWH), x0 + big.w + 10, 470, "ls", k)
@@ -3684,7 +3968,7 @@ class SegProfit(SegR):
         ko = appear(t, self.t_oos - 0.1, 0.6)
         blit(cv, ktext(count_str(f"${D['lc_oos_day']} a day · Sharpe {D['lc_oos_sh']}", (t - self.t_oos) / 0.8), 60, 600,
                        KWH, track=-1.2, tnum=True), x0, 760, "ls", ko)
-        blit(cv, ktext("out of sample: data the model never saw", 22, 400, KGREY), x0, 798, "ls", ko)
+        blit(cv, ktext("out of sample: data the model never saw · same post-hoc reading", 22, 400, KGREY), x0, 798, "ls", ko)
         self.rail.draw(cv, t)
         return cv
 
@@ -3739,7 +4023,8 @@ def render_job(job):
         cv = S.frame(t)
         if S.chrome_on:
             kc = 1.0 if S.fade_in == 0 else appear(t, 0.0, 0.4)
-            chrome(cv, S.num, S.title, S.label, "dark" if S.theme == "dark" else "light", kc, label2=S.label2(t))
+            chrome(cv, S.num, S.title, S.label_at(t), "dark" if S.theme == "dark" else "light", kc, label2=S.label2(t),
+                   footage=S.bleed)
         cap.draw(cv, p["start"] + t, "dark" if S.theme == "dark" else "light", shadow=S.bleed)
         k = 1.0
         if S.fade_in > 0:
@@ -3881,7 +4166,7 @@ def stills(only=None):
         for t in ts:
             cv = S.frame(t)
             if S.chrome_on:
-                chrome(cv, S.num, S.title, S.label, S.theme, 1.0, label2=S.label2(t))
+                chrome(cv, S.num, S.title, S.label_at(t), S.theme, 1.0, label2=S.label2(t), footage=S.bleed)
             cap.draw(cv, p["start"] + t, S.theme, shadow=S.bleed)
             Image.fromarray(cv).save(out / f"{p['id']}_{t:05.2f}.png")
         print(p["id"], ts, S.events()[:6])
