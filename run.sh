@@ -47,8 +47,8 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
                       books, then live.
   cv                  ball-tracking call engine on the held-out OpenTTGames clip (needs setup --full;
                       fetches BlurBall weights via scripts/get_models.sh and the clip with ffmpeg). The point-end
-                      calls need models/vision/frozen_call_model.pkl, which is not in git (rebuilt on HiPerGator by
-                      sbatch hpg/engine_vision.sbatch); without it, cv detects and tracks with calls disabled
+                      calls use models/vision/frozen_call_model.pkl (12 MB, committed; rebuilt on HiPerGator by
+                      sbatch hpg/engine_vision.sbatch); if it is missing, cv detects and tracks with calls disabled
   dashboard [port]    status daemon + read-only dashboard at http://localhost:8765 (Ctrl-C stops both)
   money [args]        terminal replay of the v2 in-sample backtest with a running paper-money counter
                       (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
@@ -219,8 +219,9 @@ EOF
     need_venv
     "$PY" -c "import onnxruntime, cv2, av" 2>/dev/null || { echo "cv needs: bash run.sh setup --full"; exit 1; }
     if [ ! -f models/vision/frozen_call_model.pkl ]; then
-      echo "note: models/vision/frozen_call_model.pkl is not in git, so this run detects and tracks the ball with"
-      echo "      point-end calls disabled. Rebuild the model on HiPerGator with: sbatch hpg/engine_vision.sbatch"
+      echo "note: models/vision/frozen_call_model.pkl (committed) is missing from this checkout, so this run detects and"
+      echo "      tracks the ball with point-end calls disabled. git checkout -- models/vision/frozen_call_model.pkl"
+      echo "      restores it; sbatch hpg/engine_vision.sbatch rebuilds it on HiPerGator"
     fi
     PY="$PY" bash scripts/get_models.sh
     if [ ! -f data/vision/test_2_copyts.mp4 ]; then

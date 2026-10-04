@@ -219,8 +219,13 @@ def main() -> int:
     live = ROOT / "results/live/summary.json"
     if live.exists():
         s = json.loads(live.read_text())
-        R.append(check("input: live paper session", "PASS" if (ROOT / "results/live/FINAL").exists() else "PENDING",
-                       f"status {s.get('status')!r}, now {s.get('now')!r}"))
+        # STOPPED_TEAM_DECISION is committed (the paper reports the session as stopped, not used); FINAL is a local,
+        # untracked marker, so a clean clone must not depend on it (CLEAN_CLONE: clone said PENDING, authors PASS)
+        stopped = (ROOT / "results/live/STOPPED_TEAM_DECISION").exists()
+        done = stopped or (ROOT / "results/live/FINAL").exists()
+        R.append(check("input: live paper session", "PASS" if done else "PENDING",
+                       ("stopped by a team decision, not used (results/live/STOPPED_TEAM_DECISION); " if stopped else "")
+                       + f"status {s.get('status')!r}, now {s.get('now')!r}"))
     peeks = [x for x in read("results/oos_peeks.log") if x.strip()]
     R.append(check("peek log line count (quote this number)", "PASS", f"{len(peeks)} lines in results/oos_peeks.log"))
     try:
