@@ -907,6 +907,7 @@ def collect() -> tuple[Registry, dict]:
     collect_final(N, extra)
     collect_evidence(N)
     collect_revision(N)  # before the appendix rows below, which use its keys
+    collect_integration(N)  # the integration pass after the organizers' brief (new keys only)
     # ---------------------------------------------------------------- authors (research/compliance/TEAM.md)
     tm_ = ROOT / "research/compliance/TEAM.md"
     authors = "[Author names: team to fill]"
@@ -929,7 +930,7 @@ def collect() -> tuple[Registry, dict]:
         ("H4 score feeds", "do public score feeds lag the book?", f"median lag {V('h4.lead')}\\,s ($n = {V('h4.n')}$)", "confirmed"),
         ("H5 quote after jumps", "post maker quotes after a move", f"OOS {V('h5.oos.c')}¢ {V('h5.oos.ci')}", "not significant"),
         ("H6 fast tier", "wallets trading 0--3\\,s after a move, picked on past months",
-         f"{V('ft.c.is')}\\,/\\,{V('ft.c.oos')}¢ net 30\\,s markout (IS\\,/\\,OOS); {V('ft.months.is')} and {V('ft.months.oos')} months positive", "confirmed"),
+         f"{V('ft.c.is')}\\,/\\,{V('ft.c.oos.only')}¢ net 30\\,s markout (IS\\,/\\,OOS prints only; {V('ft.c.oos')}¢ with August's IS prints); {V('ft.months.is')} and {V('ft.months.oos')} months positive", "confirmed"),
         ("Kalshi lead-lag", "Kalshi vs Polymarket on the same points",
          f"Kalshi first in {V('ev.kalshi.first')} of {V('ev.kalshi.n')} repricings (median {V('ev.kalshi.lead')}\\,s)", "lag mostly mechanical"),
         ("Signal decay (TT5)", "with-jump markout at 1--2\\,s minus 10--30\\,s after a move",
@@ -963,11 +964,20 @@ def collect() -> tuple[Registry, dict]:
         ("v2-safe", "net cap 50, fixed after v2's OOS losses",
          f"Sharpe {V('v2s.is.sr')}\\,/\\,{V('v2s.oos.sr')}; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}", "fail (blind)"),
         ("Per-wallet cap", f"{V('wcap.W')} a wallet a day plus retirement, chosen on IS from {V('wcap.n')} variants, pre-registered",
-         f"OOS {V('wcap.oos.c')}¢ {V('wcap.oos.ci')}, Sharpe {V('wcap.oos.sr')}; top five {V('wcap.oos.top5')} (was {V('conc.top5.oos')})",
-         "pass (burned OOS)"),
+         f"OOS {V('wcap.oos.c')}¢ {V('wcap.oos.ci')}, Sharpe {V('wcap.oos.sr')}, {V('wcap.oos.pnl')} vs {V('wcap.base.oos.pnl')}; max DD {V('wcap.oos.maxdd')} vs {V('wcap.base.oos.maxdd')}; top five {V('wcap.oos.top5')} (was {V('conc.top5.oos')})",
+         "pass (burned OOS); a loss limit, backtest only"),
+        ("Copier fill stress", "v2 filled after the venue hold and the measured block lag, on the real tape",
+         f"next same-side print: IS {V('copier.is.c')}¢, OOS {V('copier.oos.c')}¢; optimistic: IS {V('copier.opt.is.c')}¢, OOS {V('copier.opt.oos.c')}¢ {V('copier.opt.oos.ci')}",
+         "a copier loses"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
         ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
          f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')} ({V('plat.pbo')} by block choice); $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
+        ("PSR, MinTRL, haircut", f"six tests incl. a Bonferroni haircut over {V('var.total')} variants",
+         f"v2 IS 6 of 6 (haircut Sharpe {V('rig2.v2is.hlz_sr')}); v2 OOS {V('rig2.v2oos.pass')} of 6 ($t = {V('rig2.v2oos.t')}$ vs {V('rig2.t_req')}); CV pre-registered 0, post hoc {V('rig2.cvcal.oos.pass')} OOS",
+         "no book passes all six OOS"),
+        ("Edge persistence", "monthly decay, fee vs entrants, venue-rule breaks",
+         f"net {V('pers.slope.net')}¢ a month down, before-fee {V('pers.slope.gross')}¢ {V('pers.slope.gross.ci')}; line hits zero in {V('pers.zero.months')} months ({V('pers.zero.ci')}), a May step fits as well",
+         "cannot tell"),
         ("Blind forward test", "v2 on new matches, CV rule v3 as secondary", "FWD", ""),
         ("Being fast ourselves (computer vision)",),
         ("H3 early call", "table-tennis MISS call 50\\,ms before contact, precision $\\geq$0.95",
@@ -975,7 +985,7 @@ def collect() -> tuple[Registry, dict]:
          "precision passes; recall low"),
         ("Spin model, table tennis", "spin-aware early call, held-out footage",
          f"{V('spin.tt.tp50')}/{V('spin.tt.calls50')} right at 50\\,ms vs the frozen model's {V('cv.tt.tp50')}/{V('cv.tt.called50')} (both offline)", "not adopted"),
-        ("Tennis tracker, real clip", "our tennis tracker on a Pexels rally (no labels)",
+        ("Tennis tracker, real clip", "public TrackNet detector with our linking and court-line fit on a Pexels rally (no labels)",
          f"ball in {V('tn.real.ball')} of {V('tn.real.frames')} frames; {V('tn.real.spot')} spot-checks on the ball; court lines {V('tn.real.court_px')}\\,px (median)",
          "tracks; no in/out calls"),
         ("Broadcast tennis", "single-camera landing and out calls, TrackNet games 8--10 (tuned on 1--7)",
@@ -992,7 +1002,15 @@ def collect() -> tuple[Registry, dict]:
          f"{V('e2e.ours')}\\,ms ours; {V('e2e.total')}\\,ms with a 1\\,s feed vs {V('e2e.req')}\\,ms", "pass (paper)"),
         ("Courtside camera", "CV trader with a camera at the venue ($V = 0$)", f"{V('ev.t0.v0.is')}\\,/\\,{V('ev.t0.v0.oos')} a day (pre-registered)", "simulated; no camera"),
         ("Latency sweep", f"$V$ from 0 to 60\\,s, six stamp-lag readings ({V('var.sweep')} cells)",
-         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:lat}"),
+         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:head}"),
+        ("CV trader, fees doubled", "each fill pays its fee twice (Table~\\ref{tab:head})",
+         f"every OOS cell loses (best {V('cv.fx2.oos.best')} a day); fee {V('cv.fee_bps.range')}\\,bps of notional", "fails OOS"),
+        ("Fresh holdout, 0.5\\,s feed", f"Table-2 trader on {V('fresh.covered')} newer matches, pre-registered at \\texttt{{{V('fresh.prereg.commit')}}}",
+         f"{V('fresh.s2.pre.v05.usd')} (pre-registered) and {V('fresh.s2.cal.v05.usd')} (post hoc) a day; CIs {V('fresh.s2.pre.v05.ci')}, {V('fresh.s2.cal.v05.ci')}",
+         "anecdotal (2 days)"),
+        ("Price impact", f"log-size cost from {V('liq.orders.n')} IS taker orders; live-book walk",
+         f"v2 1$\\times$ OOS {V('liq.v2.1x.oos.central')} a day (conservative {V('liq.v2.1x.oos.cons')}, CI {V('liq.v2.1x.oos.cons.ci')}); others took {V('liq.phi.took')} of stale depth",
+         "capacity holds; P\\&L thinner"),
         ("CV rule v3", f"rule tuned on {V('var.tier0v3')} IS variants", f"IS {V('t3.is.c')}¢; blind {V('t3.oos.c')}¢", "fail"),
         ("Replay, all points", f"{V('rp.matches')} matches' real books, every point called",
          f"{V('rp.v1l2.c')}¢ {V('rp.v1l2.ci')} at $V = 1$\\,s; {V('rp.cells_neg')} of {V('rp.cells')} settings below zero", "loses"),
@@ -1519,6 +1537,308 @@ def collect_revision(N: Registry) -> None:
           "D: 1 - " + s5 + "is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd")
 
 
+def collect_integration(N: Registry) -> None:
+    """Keys for the integration pass after the organizers' brief (new keys only; every earlier key is unchanged):
+    the CV trader's return, volatility, drawdown, turnover, fee bps and fees-doubled result for every printed cell
+    (results/tier0/cost_turnover.json), data problems, the fresh holdout ("a firm with a licensed 0.5 s feed",
+    results/fresh_holdout/results.json, COUNTERFACTUAL), sponsor latency and the SQL reproduction
+    (results/sponsors/evidence.json), the per-wallet cap and the true per-match loss bound (results/v2/risk/), the
+    price-impact model (results/liquidity/impact.json), edge persistence (results/economics/persistence.json), PSR /
+    MinTRL / haircut Sharpe and the copier stress (results/rigor/psr.json) and the CV teaser figure
+    (results/cv_teaser/teaser_numbers.json). Every value is read from a committed result file (D: = arithmetic on
+    such values); nothing here runs an evaluation. Wording fixes from the adversarial verifiers are applied where the
+    numbers are used (scratchpad evidence_results.json and fresh_results.json of the integration session)."""
+    # ---------------------------------------------------------------- the CV trader: every printed cell (Table 2)
+    CT = J("results/tier0/cost_turnover.json")
+    s0 = "results/tier0/cost_turnover.json::cells"
+    assert CT["check"]["seeds_checked"] == 240 and CT["check"]["max_abs_pnl_diff_usd"] < 1e-3, CT["check"]
+    SW = J("results/tier0/latency_sweep.json")["video_own120"]
+    fee_bps, fx2_oos = [], []
+    for rk in ("pre", "cal"):
+        for vk in ("v05", "v1", "v3"):
+            for per in ("is", "oos"):
+                c = CT["cells"][f"{rk}|{vk}|{per}"]
+                r, m_ = c["ratio_of_seed_means"], c["seed_mean"]
+                src = f"{s0}.{rk}|{vk}|{per}"
+                # consistency: the re-run's seed means are the published Table-2 cells
+                assert abs(m_["pnl_per_day_usd"] - N.raw(f"sc.{rk}.{per}.{vk}.usd")) < 0.01, (rk, vk, per)
+                assert abs(m_["sharpe_ann"] - N.raw(f"sc.{rk}.{per}.{vk}.sr")) < 0.01, (rk, vk, per)
+                assert abs(m_["per_share_c"] - N.raw(f"sc.{rk}.{per}.{vk}.c")) < 0.01, (rk, vk, per)
+                k = f"tab.cv.{rk}.{per}.{vk}"
+                N.add(k + ".ret", pct(r["ann_return_pct"], 0), r["ann_return_pct"], src + ".ratio_of_seed_means.ann_return_pct")
+                N.add(k + ".vol", pct(r["ann_vol_pct"], 1), r["ann_vol_pct"], src + ".ratio_of_seed_means.ann_vol_pct")
+                N.add(k + ".dd", pct(r["max_dd_pct"], 1), r["max_dd_pct"], src + ".ratio_of_seed_means.max_dd_pct")
+                N.add(k + ".to", intc(r["turnover_x_per_year"]), r["turnover_x_per_year"],
+                      src + ".ratio_of_seed_means.turnover_x_per_year")
+                N.add(k + ".fee", intc(m_["fee_bps_of_notional"]), m_["fee_bps_of_notional"], src + ".seed_mean.fee_bps_of_notional")
+                N.add(k + ".fx2c", sgn(m_["fx2_per_share_c"]), m_["fx2_per_share_c"], src + ".seed_mean.fx2_per_share_c")
+                N.add(k + ".fx2usd", usd(m_["fx2_pnl_per_day_usd"], signed=True), m_["fx2_pnl_per_day_usd"],
+                      src + ".seed_mean.fx2_pnl_per_day_usd")
+                ci_ = SW["tournament" if rk == "pre" else "tournament_lagcal"][{"v05": "0.5", "v1": "1", "v3": "3"}[vk]][
+                    "IS" if per == "is" else "burned_OOS"]["net_c_per_share_ci95"]
+                N.add(k + ".c0", "†" if ci_[0] <= 0 <= ci_[1] else "", ci_,
+                      f"results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)")
+                fee_bps.append(m_["fee_bps_of_notional"])
+                if per == "oos":
+                    fx2_oos.append(m_["fx2_pnl_per_day_usd"])
+    N.add("cv.fee_bps.range", f"{min(fee_bps):.0f}–{max(fee_bps):.0f}", [min(fee_bps), max(fee_bps)],
+          f"{s0}.*.seed_mean.fee_bps_of_notional (min-max over the 12 cells)")
+    assert max(fx2_oos) < 0  # the text says fees x2 turn every OOS cell negative
+    N.add("cv.fx2.oos.best", usd(max(fx2_oos), signed=True), max(fx2_oos), f"{s0}.*|oos.seed_mean.fx2_pnl_per_day_usd (max)")
+    CJ = J("results/v2/causal.json")
+    for per, P in (("is", "is_eval"), ("oos", "burned_oos")):
+        c0 = CJ[f"causal/{P}/slip0.0"]
+        v = c0["total_pnl_usd"] / c0["days"]
+        N.add(f"tab.v2.{per}.usd", usd(v, signed=True), v, f"D: results/v2/causal.json::causal/{P}/slip0.0 total_pnl_usd / days")
+    # ---------------------------------------------------------------- data problems (point-in-time universe)
+    ST = J("results/risk/risk_stats.json")["settlement"]["all"]["score_state_by_resolution"]
+    s1 = "results/risk/risk_stats.json::settlement.all.score_state_by_resolution"
+    N.add("data.walk", intc(ST["50/50"]["not_started"]), ST["50/50"]["not_started"], s1 + ".50/50.not_started")
+    ret_ = ST["winner"]["incomplete"] + ST["50/50"]["incomplete"]
+    N.add("data.retired", intc(ret_), ret_, s1 + ".{winner,50/50}.incomplete (sum)")
+    rs = J("results/risk/risk_stats.json")["settlement"]["all"]["res_50_50"]
+    N.add("data.res5050.n", intc(rs), rs, "results/risk/risk_stats.json::settlement.all.res_50_50")
+    # ---------------------------------------------------------------- fresh holdout: a firm with a licensed 0.5 s feed
+    FR = J("results/fresh_holdout/results.json")
+    s2 = "results/fresh_holdout/results.json::"
+    assert FR["prereg_commit"] == "dc95717" and FR["equivalence_check"]["agreement"]
+    N.add("fresh.prereg.commit", FR["prereg_commit"], FR["prereg_commit"], s2 + "prereg_commit")
+    N.add("fresh.prereg.time", pd.Timestamp(FR["prereg_committed_utc"]).strftime("%H:%M UTC"), FR["prereg_committed_utc"],
+          s2 + "prereg_committed_utc")
+    N.add("fresh.fetch.time", pd.Timestamp(FR["fetch"]["fetch_time_utc"]).strftime("%H:%M UTC"), FR["fetch"]["fetch_time_utc"],
+          s2 + "fetch.fetch_time_utc")
+    N.add("fresh.start", pd.Timestamp(FR["window"]["start_exclusive_utc"]).strftime("%b %-d, %H:%M UTC"),
+          FR["window"]["start_exclusive_utc"], s2 + "window.start_exclusive_utc")
+    cn = FR["counts"]
+    N.add("fresh.eligible", intc(cn["eligible_matches"]), cn["eligible_matches"], s2 + "counts.eligible_matches")
+    N.add("fresh.covered", intc(cn["covered_primary"]), cn["covered_primary"], s2 + "counts.covered_primary")
+    N.add("fresh.days", intc(len(FR["days"])), len(FR["days"]), s2 + "days")
+    N.add("fresh.excluded", intc(len(FR["fetch"]["dropped_live_calibration_matches"])), FR["fetch"]["dropped_live_calibration_matches"],
+          s2 + "fetch.dropped_live_calibration_matches")
+    tab = {(t["strategy"], t["reading"], t["V_s"]): t for t in FR["table"] if t["coverage"] == "cov10" and t["subset"] == "all_days"}
+    nm_ = []
+    for st in ("S1", "S2"):
+        for rk in ("pre", "cal"):
+            for vk, V in (("v05", 0.5), ("v1", 1.0), ("v3", 3.0)):
+                t = tab[(st, rk, V)]
+                k = f"fresh.{st.lower()}.{rk}.{vk}"
+                src = s2 + f"table[{st},{rk},{V},cov10,all_days]"
+                N.add(k + ".usd", usd(t["pnl_per_day_usd"], 1, signed=True), t["pnl_per_day_usd"], src + ".pnl_per_day_usd")
+                lo, hi = t["pnl_per_day_ci95_usd"]
+                N.add(k + ".ci", f"[{usd(lo, 0, signed=True)}, {usd(hi, 0, signed=True)}]", [lo, hi], src + ".pnl_per_day_ci95_usd")
+                assert t["anecdotal"] if "anecdotal" in t else True
+                nm_.append(t["n_matches"])
+    N.add("fresh.traded.range", f"{min(nm_):.0f}–{max(nm_):.0f}", [min(nm_), max(nm_)],
+          s2 + "table[*,cov10,all_days].n_matches (seed-mean matches with trades, min-max)")
+    n05 = [tab[("S2", rk, 0.5)]["n_matches"] for rk in ("pre", "cal")]
+    N.add("fresh.traded.s2v05", f"{min(n05):.0f}–{max(n05):.0f}", n05, s2 + "table[S2,*,0.5,cov10,all_days].n_matches")
+    hr = [tab[("S2", rk, 0.5)]["hit_rate_pct"] for rk in ("pre", "cal")]
+    N.add("fresh.hit.pre", pct(hr[0], 0), hr[0], s2 + "table[S2,pre,0.5,cov10,all_days].hit_rate_pct")
+    N.add("fresh.hit.cal", pct(hr[1], 0), hr[1], s2 + "table[S2,cal,0.5,cov10,all_days].hit_rate_pct")
+    LB = FR["licence_breakeven_at_V0.5 (IS / burned OOS)"]["values_usd_per_month"]
+    LF = FR["licence_breakeven_at_V0.5 (fresh, anecdotal)"]["values_usd_per_month"]
+    for per, key, src_ in (("is", "IS", LB), ("oos", "burned_OOS", LB), ("fresh", "fresh", LF)):
+        for rk in ("pre", "cal"):
+            v = src_[f"{key}|S2|{rk}|cov10|all_days"]["max_licence_usd_per_month"]
+            N.add(f"fresh.lic.{per}.{rk}", usd(v, signed=per == "fresh"), v,
+                  s2 + f"licence_breakeven_at_V0.5 ...values_usd_per_month.{key}|S2|{rk}|cov10|all_days.max_licence_usd_per_month")
+    sh = FR["showcase"]
+    N.add("fresh.show.title", sh["title"].split(": ", 1)[1].replace(" vs ", " v "), sh["title"], s2 + "showcase.title")
+    N.add("fresh.show.event", f"{sh['series'].upper()} {sh['league']}", [sh["series"], sh["league"]], s2 + "showcase.{series,league}")
+    N.add("fresh.show.inplay", f"${sh['inplay_usd'] / 1e3:.0f}k", sh["inplay_usd"], s2 + "showcase.inplay_usd")
+    N.add("fresh.show.winner", sh["winner"].split()[-1], sh["winner"], s2 + "showcase.winner")
+    for rk in ("pre", "cal"):
+        v = sh["pnl_20_seed_mean_usd"][f"S2|{rk}|V0.5"]["mean_usd"]
+        N.add(f"fresh.show.{rk}", usd(v, 1, signed=True), v, s2 + f"showcase.pnl_20_seed_mean_usd.S2|{rk}|V0.5.mean_usd")
+    FN = J("results/scenario/fig_firm_05s_numbers.json")["showcase"]
+    N.add("fresh.show.calls", intc(FN["simulated_calls_ledger_seed"]), FN["simulated_calls_ledger_seed"],
+          "results/scenario/fig_firm_05s_numbers.json::showcase.simulated_calls_ledger_seed")
+    # ---------------------------------------------------------------- sponsor evidence: measured network legs, SQL reproduction
+    SE = J("results/sponsors/evidence.json")
+    s3 = "results/sponsors/evidence.json::"
+    pk = SE["paper_keys"]
+    for k in ("vultr.matched", "vultr.lon_first", "vultr.adv.p50", "vultr.clock", "vultr.adv.lb", "vultr.lon.rtt",
+              "vultr.fl.rtt", "e2e.lon.total", "e2e.fl.total", "e2e.worst.total", "e2e.worst.margin", "e2e.lon.margin",
+              "snow.recomputed"):
+        N.add(k, pk[k]["value"], pk[k]["raw"], s3 + f"paper_keys.{k} <- {pk[k]['source']}")
+    hg = SE["budget"]["london_saving_vs_florida_ms"]["half_rtt_p50"]
+    N.add("vultr.halfgap", intc(hg), hg, s3 + "budget.london_saving_vs_florida_ms.half_rtt_p50 (clock-free check)")
+    sc_ = SE["budget"]["scenarios"]
+    sh_ = [(SE["budget"]["inputs"]["feed_simulated_ms"] + SE["budget"]["inputs"]["venue_delay_ms"]) / sc_[s]["p50"]["total_ms"]
+           for s in ("vultr_london_cold_half_rtt", "vultr_florida_cold_half_rtt")]
+    N.add("e2e.feedhold.range", f"{min(sh_) * 100:.0f}–{max(sh_) * 100:.0f}%", sh_,
+          "D: (feed 1,000 + hold 1,000 ms) / " + s3 + "budget.scenarios.vultr_{london,florida}_cold_half_rtt.p50.total_ms")
+    rc = SE["snowflake"]["recheck"]
+    assert rc["reproduced"] == rc["checked"] == 62 and not rc["failing"]
+    N.add("snow.repro", f"{rc['reproduced']} of {rc['checked']}", [rc["reproduced"], rc["checked"]], s3 + "snowflake.recheck.{reproduced,checked}")
+    N.add("snow.lookup", intc(rc["lookup_ok"]), rc["lookup_ok"], s3 + "snowflake.recheck.lookup_ok")
+    # ---------------------------------------------------------------- per-wallet cap (verifier B's fixes) and per-match loss
+    WC = J("results/v2/risk/wallet_cap.json")
+    s4 = "results/v2/risk/wallet_cap.json::"
+    wo, bo = WC["oos"]["with_cap"], WC["oos"]["v2_uncapped"]
+    N.add("wcap.oos.pnl", usd(wo["pnl_usd"]), wo["pnl_usd"], s4 + "oos.with_cap.pnl_usd")
+    N.add("wcap.base.oos.pnl", usd(bo["pnl_usd"]), bo["pnl_usd"], s4 + "oos.v2_uncapped.pnl_usd")
+    N.add("wcap.oos.maxdd", usd(wo["max_dd_usd"]), wo["max_dd_usd"], s4 + "oos.with_cap.max_dd_usd")
+    N.add("wcap.base.oos.maxdd", usd(bo["max_dd_usd"]), bo["max_dd_usd"], s4 + "oos.v2_uncapped.max_dd_usd")
+    N.add("wcap.oos.sr_ci", ci(wo["sharpe_ann_ci95_stationary_bootstrap"], 1), wo["sharpe_ann_ci95_stationary_bootstrap"],
+          s4 + "oos.with_cap.sharpe_ann_ci95_stationary_bootstrap")
+    N.add("wcap.base.oos.sr", num(bo["sharpe_ann_calendar"], 1), bo["sharpe_ann_calendar"], s4 + "oos.v2_uncapped.sharpe_ann_calendar")
+    N.add("wcap.base.oos.sr_ci", ci(bo["sharpe_ann_ci95_stationary_bootstrap"], 1), bo["sharpe_ann_ci95_stationary_bootstrap"],
+          s4 + "oos.v2_uncapped.sharpe_ann_ci95_stationary_bootstrap")
+    N.add("wcap.oos.ex5.c", sgn(wo["ex_top5"]["per_share_c"]), wo["ex_top5"]["per_share_c"], s4 + "oos.with_cap.ex_top5.per_share_c")
+    N.add("wcap.base.oos.ex5.c", sgn(bo["ex_top5"]["per_share_c"]), bo["ex_top5"]["per_share_c"], s4 + "oos.v2_uncapped.ex_top5.per_share_c")
+    N.add("wcap.oos.ci_wallet", ci(wo["per_share_ci95_c_wallet"]), wo["per_share_ci95_c_wallet"], s4 + "oos.with_cap.per_share_ci95_c_wallet")
+    for k, d_ in (("cap_only", "decomposition_cap_only"), ("retire_only", "decomposition_retire_only")):
+        v = WC["oos"][d_]["top5_wallet_share_of_pnl"]
+        N.add(f"wcap.oos.top5.{k}", pct(v * 100, 0), v, s4 + f"oos.{d_}.top5_wallet_share_of_pnl")
+    N.add("wcap.oos.wwd", usd(wo["worst_wallet_day_pnl_usd"]), wo["worst_wallet_day_pnl_usd"], s4 + "oos.with_cap.worst_wallet_day_pnl_usd")
+    N.add("wcap.base.oos.wwd", usd(bo["worst_wallet_day_pnl_usd"]), bo["worst_wallet_day_pnl_usd"], s4 + "oos.v2_uncapped.worst_wallet_day_pnl_usd")
+    wi = WC["is_joint_run"]
+    kept = wi["with_cap"]["pnl_usd"] / wi["v2_uncapped"]["pnl_usd"]
+    N.add("wcap.is.kept", pct(kept * 100, 0), kept, "D: " + s4 + "is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd")
+    N.add("wcap.is.sr", num(wi["with_cap"]["sharpe_ann_calendar"], 1), wi["with_cap"]["sharpe_ann_calendar"], s4 + "is_joint_run.with_cap.sharpe_ann_calendar")
+    N.add("wcap.is.maxdd", usd(wi["with_cap"]["max_dd_usd"]), wi["with_cap"]["max_dd_usd"], s4 + "is_joint_run.with_cap.max_dd_usd")
+    N.add("wcap.base.is.maxdd", usd(wi["v2_uncapped"]["max_dd_usd"]), wi["v2_uncapped"]["max_dd_usd"], s4 + "is_joint_run.v2_uncapped.max_dd_usd")
+    N.add("wcap.is.top5", pct(wi["with_cap"]["top5_wallet_share_of_pnl"] * 100, 0), wi["with_cap"]["top5_wallet_share_of_pnl"],
+          s4 + "is_joint_run.with_cap.top5_wallet_share_of_pnl")
+    N.add("wcap.base.is.top5", pct(wi["v2_uncapped"]["top5_wallet_share_of_pnl"] * 100, 0), wi["v2_uncapped"]["top5_wallet_share_of_pnl"],
+          s4 + "is_joint_run.v2_uncapped.top5_wallet_share_of_pnl")
+    PML = J("results/v2/risk/per_match_loss.json")
+    s5 = "results/v2/risk/per_match_loss.json::"
+    for per in ("is", "oos"):
+        u = PML[per]["v2_uncapped"]
+        N.add(f"risk.pm.twosided.{per}", pct(u["share_matches_buying_both_sides"] * 100, 0), u["share_matches_buying_both_sides"],
+              s5 + f"{per}.v2_uncapped.share_matches_buying_both_sides")
+        N.add(f"risk.pm.p99.{per}", usd(u["p99_match_loss_usd"]), u["p99_match_loss_usd"], s5 + f"{per}.v2_uncapped.p99_match_loss_usd")
+    b_ = PML["theoretical"]["bound_incl_fees_usd"]
+    N.add("risk.pm.bound", usd(b_), b_, s5 + "theoretical.bound_incl_fees_usd (backtest's $3,000 gross cap per match; none in the live engine)")
+    # ---------------------------------------------------------------- price impact (verifier C's fixes)
+    IM = J("results/liquidity/impact.json")
+    s6 = "results/liquidity/impact.json::"
+    no = IM["data"]["IS"]["n_orders"]
+    N.add("liq.orders.n", f"{no / 1e6:.1f} million", no, s6 + "data.IS.n_orders")
+    N.add("liq.orders.matches", intc(IM["data"]["IS"]["n_matches"]), IM["data"]["IS"]["n_matches"], s6 + "data.IS.n_matches")
+    nf = IM["temporary_IS"]["n_orders"]
+    N.add("liq.orders.fit", f"{nf / 1e6:.1f} million", nf, s6 + "temporary_IS.n_orders (orders with a usable print-based mid)")
+    bins = IM["temporary_IS"]["bins"]
+    for k, i in (("top.small", 30), ("top.large", 37), ("mid.small", 14), ("mid.large", 21)):
+        N.add(f"liq.temp.{k}", num(bins[i]["mean_c"], 2), bins[i]["mean_c"], s6 + f"temporary_IS.bins[{i}].mean_c")
+    l30 = IM["permanent_IS"]["30"]["lambda_c_per_1k"]
+    N.add("liq.lambda30", f"{min(l30):.2f}–{max(l30):.2f}", l30, s6 + "permanent_IS.30.lambda_c_per_1k (min-max over volume fifths)")
+    lo30 = IM["permanent_OOS"]["30"]["lambda_c_per_1k"][4]
+    N.add("liq.oos.lambda30.top", f"{lo30:.3f}", lo30, s6 + "permanent_OOS.30.lambda_c_per_1k[4] (highest-volume fifth)")
+    N.add("liq.is.lambda30.top", f"{l30[4]:.3f}", l30[4], s6 + "permanent_IS.30.lambda_c_per_1k[4]")
+    N.add("liq.M", f"{IM['model']['M']:.2f}", IM["model"]["M"], s6 + "model.M (post-jump book-walk multiplier)")
+    N.add("liq.l2.reprices", intc(IM["l2"]["n_reprices"]), IM["l2"]["n_reprices"], s6 + "l2.n_reprices")
+    N.add("liq.l2.matches", intc(IM["l2"]["n_matches"]), IM["l2"]["n_matches"], s6 + "l2.n_matches")
+    npo = IM["phi_official_points"]["D_ge_3c"]["n_events"]
+    N.add("liq.phi.official", intc(npo), npo, s6 + "phi_official_points.D_ge_3c.n_events")
+    took = [IM["l2"]["phi_live_reprices"][t]["took_share_pooled"] for t in ("tau_2s", "tau_1s", "tau_0.25s")] + \
+           [IM["phi_official_points"]["D_ge_3c"][t]["took_share_pooled"] for t in ("tau_2s", "tau_1s", "tau_0.25s")]
+    N.add("liq.phi.took", f"{min(took) * 100:.0f}–{max(took) * 100:.0f}%", took,
+          s6 + "l2.phi_live_reprices.tau_*.took_share_pooled and phi_official_points.D_ge_3c.tau_*.took_share_pooled (min-max)")
+    gth = [IM["l2"]["phi_live_reprices"][t]["share_events_phi_lo_below_0.5"] for t in ("tau_2s", "tau_1s", "tau_0.25s")] + \
+          [IM["phi_official_points"]["D_ge_3c"][t]["share_events_phi_lo_below_0.5"] for t in ("tau_2s", "tau_1s", "tau_0.25s")]
+    N.add("liq.phi.gt_half", f"{min(gth) * 100:.0f}–{max(gth) * 100:.0f}%", gth,
+          s6 + "...tau_*.share_events_phi_lo_below_0.5 (events where others took more than half; min-max)")
+    cap_ = IM["capacity"]
+    for k, var in (("none", "none"), ("central", "central"), ("cons", "conservative")):
+        c = cap_[f"v2|{var}|burned_OOS"]
+        N.add(f"liq.v2.half.oos.{k}", f"${c['capital_where_sharpe_halves_usd'] / 1e3:.1f}k", c["capital_where_sharpe_halves_usd"],
+              s6 + f"capacity.v2|{var}|burned_OOS.capital_where_sharpe_halves_usd")
+        N.add(f"liq.v2.1x.oos.{k}", usd(c["pnl_max"]["pnl_per_day_usd"]), c["pnl_max"]["pnl_per_day_usd"],
+              s6 + f"capacity.v2|{var}|burned_OOS.pnl_max.pnl_per_day_usd")
+    cc = cap_["v2|conservative|burned_OOS"]["pnl_max"]
+    N.add("liq.v2.1x.oos.cons.ci", f"[{usd(cc['pnl_per_day_boot_lo'])}, {usd(cc['pnl_per_day_boot_hi'])}]",
+          [cc["pnl_per_day_boot_lo"], cc["pnl_per_day_boot_hi"]], s6 + "capacity.v2|conservative|burned_OOS.pnl_max.pnl_per_day_boot_{lo,hi}")
+    mv = [abs(cap_[f"cv_lagcal|best|central|{P}"]["capital_where_sharpe_halves_usd"] / cap_[f"cv_lagcal|best|none|{P}"]["capital_where_sharpe_halves_usd"] - 1)
+          for P in ("IS", "burned_OOS")]
+    assert max(mv) < 0.01  # text: "moves under 1%"
+    N.add("liq.cv.half.move", "1%", mv, "D: |capacity.cv_lagcal|best|central|P / ...|none|P - 1| < 1% (P = IS, burned_OOS)")
+    dr = [1 - cap_[f"cv_lagcal|best|conservative|{P}"]["pnl_max"]["pnl_per_day_usd"] / cap_[f"cv_lagcal|best|none|{P}"]["pnl_max"]["pnl_per_day_usd"]
+          for P in ("IS", "burned_OOS")]
+    N.add("liq.cv.pmax.drop", f"{min(dr) * 100:.0f}–{max(dr) * 100:.0f}%", dr,
+          "D: 1 - capacity.cv_lagcal|best|conservative|P.pnl_max.pnl_per_day_usd / ...|none|P (P = IS, burned_OOS)")
+    # ---------------------------------------------------------------- edge persistence (verifier D's fixes)
+    PE = J("results/economics/persistence.json")
+    s7 = "results/economics/persistence.json::"
+
+    def pe(path):
+        d = PE
+        for k_ in path.split("."):
+            d = d[k_]
+        return d
+    for k, path, f in (("pers.slope.net", "fits.linear_wls_cal11.slope_c_per_month.coef", lambda x: num(abs(x), 2)),
+                       ("pers.slope.net.ci", "fits.linear_wls_cal11.slope_c_per_month.ci95", lambda x: f"{abs(x[1]):.2f}–{abs(x[0]):.2f}"),
+                       ("pers.slope.gross", "fits.gross_linear_wls_cal11.slope_c_per_month.coef", lambda x: sgn(x, 2)),
+                       ("pers.slope.gross.ci", "fits.gross_linear_wls_cal11.slope_c_per_month.ci95", ci),
+                       ("pers.slope.fee", "fits.fee_linear_wls_cal11.slope_c_per_month.coef", lambda x: num(x, 2)),
+                       ("pers.dnet", "composition.delta_net_c", lambda x: num(abs(x), 2)),
+                       ("pers.dfee", "composition.fee_part_c", lambda x: num(abs(x), 2)),
+                       ("pers.ddilution", "composition.entrant_dilution_c", lambda x: num(abs(x), 2)),
+                       ("pers.inc.trend.ci", "composition.incumbents_gross_trend_jan_aug.month_level_primary.ci95", ci),
+                       ("pers.zero.months", "projections.linear_wls_cal11.months_to_zero", lambda x: num(x, 1)),
+                       ("pers.zero.ci", "projections.linear_wls_cal11.ci95", lambda x: f"{x[0]:.1f}–{x[1]:.1f}"),
+                       ("pers.step.trend", "projections.step_model_may2026.trend_given_step_c_per_month", lambda x: sgn(x, 2)),
+                       ("pers.step.trend.ci", "projections.step_model_may2026.trend_given_step_ci95", ci),
+                       ("pers.befee", "projections.breakeven_fee_rate_pct.is_1s_5pct_prints", lambda x: pct(x, 1)),
+                       ("pers.pool.mayaug", "profit.is_may_aug_mean_pnl30_usd_per_month", lambda x: f"${x / 1e3:.0f}k"),
+                       ("pers.pool.elast", "profit.total_elasticity_wrt_wallets.elasticity.coef", lambda x: num(x, 2)),
+                       ("pers.pool.elast.ci", "profit.total_elasticity_wrt_wallets.elasticity.ci95", ci),
+                       ("pers.pool.pw.janmay", "profit.per_wallet_jan_may_mean_usd", usd),
+                       ("pers.pool.pw.aug", "profit.per_wallet_aug_is_usd", usd),
+                       ("pers.delay.may", "regime.natural_experiments.delay_3s_to_1s_may2026.net30.b_minus_a_c", lambda x: sgn(x, 2)),
+                       ("pers.delay.may.ci", "regime.natural_experiments.delay_3s_to_1s_may2026.net30.ci95", ci),
+                       ("pers.fee35.jul", "regime.natural_experiments.fee_3_to_5_jul2026.net30.b_minus_a_c", lambda x: num(abs(x), 2)),
+                       ("pers.fee35.jul.ci", "regime.natural_experiments.fee_3_to_5_jul2026.net30.ci95", lambda x: f"{abs(x[1]):.2f}–{abs(x[0]):.2f}"),
+                       ("ft.c.oos.only", "aug_overlap.oos_print_weighted_net30_c_oos_prints_only_derived", lambda x: sgn(x, 2))):
+        v = pe(path)
+        N.add(k, f(v), v, s7 + path)
+    # ---------------------------------------------------------------- PSR, MinTRL, haircut Sharpe, copier (verifier E's fixes)
+    PS = J("results/rigor/psr.json")
+    s8 = "results/rigor/psr.json::"
+    hd = PS["headline"]
+    so = PS["series"]["v2_oos"]
+    assert hd["N_tests"] == N.raw("var.total")
+    for k, v, f, src in (("rig2.v2is.hlz_sr", hd["v2_is_hlz_sr_haircut_ann"], lambda x: num(x, 1), "headline.v2_is_hlz_sr_haircut_ann"),
+                         ("rig2.v2oos.psr0", so["psr_sr0"], lambda x: f"{x:.3f}", "series.v2_oos.psr_sr0"),
+                         ("rig2.v2oos.psr2", so["psr_sr2"], lambda x: f"{x:.2f}", "series.v2_oos.psr_sr2"),
+                         ("rig2.v2oos.mintrl0", so["mintrl_days_sr0"], intc, "series.v2_oos.mintrl_days_sr0"),
+                         ("rig2.v2oos.mintrl2", so["mintrl_days_sr2"], intc, "series.v2_oos.mintrl_days_sr2"),
+                         ("rig2.v2oos.t", so["hlz"]["t_stat"], lambda x: num(x, 2), "series.v2_oos.hlz.t_stat"),
+                         ("rig2.t_req", so["hlz"]["t_required_bonferroni_5pct"], lambda x: num(x, 2), "series.v2_oos.hlz.t_required_bonferroni_5pct"),
+                         ("rig2.v2oos.days_req", so["hlz"]["days_required_at_this_sr"], intc, "series.v2_oos.hlz.days_required_at_this_sr"),
+                         ("rig2.v2oos.hlz_sr", so["hlz"]["sr_haircut_ann_bonferroni"], lambda x: num(x, 0), "series.v2_oos.hlz.sr_haircut_ann_bonferroni"),
+                         ("copier.is.c", hd["copier_central_is_c"], lambda x: sgn(x, 2), "headline.copier_central_is_c"),
+                         ("copier.oos.c", hd["copier_central_oos_c"], lambda x: sgn(x, 2), "headline.copier_central_oos_c"),
+                         ("copier.opt.is.c", hd["copier_same_prev_is_c"], lambda x: sgn(x, 2), "headline.copier_same_prev_is_c"),
+                         ("copier.opt.oos.c", hd["copier_same_prev_oos_c"], lambda x: sgn(x, 2), "headline.copier_same_prev_oos_c"),
+                         ("copier.opt.oos.ci", hd["copier_same_prev_oos_ci95_c"], ci, "headline.copier_same_prev_oos_ci95_c"),
+                         ("cv.pre.psr0.is", hd["cv_pre_is_psr_sr0_seed_median"], lambda x: num(x, 2), "headline.cv_pre_is_psr_sr0_seed_median"),
+                         ("cv.pre.psr0.oos", hd["cv_pre_oos_psr_sr0_seed_median"], lambda x: num(x, 2), "headline.cv_pre_oos_psr_sr0_seed_median")):
+        N.add(k, f(v), v, s8 + src)
+    ld = PS["copier"]["oos"]["central"]["share_priced_from_same_side_print"]
+    li = PS["copier"]["is"]["central"]["share_priced_from_same_side_print"]
+    N.add("copier.sameside", f"{ld * 100:.0f}–{li * 100:.0f}%", [ld, li], s8 + "copier.{oos,is}.central.share_priced_from_same_side_print")
+    bl = PS["copier"]["definition"]["block_lag_s"]["median"]
+    N.add("copier.lag", num(bl, 2), bl, s8 + "copier.definition.block_lag_s.median")
+    co = PS["cv"]["cv_cal_oos"]
+    n_pass = sum([co["psr_sr0_seed_median"] >= 0.95, co["psr_sr2_seed_median"] >= 0.95,
+                  co["mintrl_sr0_seeds_track_long_enough"] > co["n_seeds"] / 2, co["mintrl_sr2_seeds_track_long_enough"] > co["n_seeds"] / 2,
+                  co["hlz"]["sr_haircut_ann_bonferroni_seed_median"] > 0,
+                  not (co["bootstrap_pooled_over_seeds"]["sharpe_ann_ci95"][0] <= 0)])
+    N.add("rig2.cvcal.oos.pass", intc(n_pass), n_pass, "D: " + s8 + "cv.cv_cal_oos (PSR0, PSR2 seed medians >= 0.95; MinTRL met by most seeds; HLZ median > 0; bootstrap CI > 0)")
+    vp = next(r for r in PS["survives"] if r["series"] == "v2_oos")["n_pass_of_6"]
+    N.add("rig2.v2oos.pass", intc(vp), vp, s8 + "survives[v2_oos].n_pass_of_6")
+    assert not hd["oos_series_passing_all_6"]
+    # ---------------------------------------------------------------- CV teaser figure (verifier F's fixes)
+    TN = J("results/cv_teaser/teaser_numbers.json")["numbers"]
+    s9 = "results/cv_teaser/teaser_numbers.json::numbers."
+    for k in ("a.shot_detected", "a.shot_frames", "b.lead_ms", "b.err_cm", "b.d_hat_m", "b.d_true_cm", "b.tau_cm", "b.game",
+              "c.live_s", "c.late_vs_pre_ms", "c.early_vs_post_ms"):
+        N.add("cvt." + k, TN[k]["text"], TN[k]["raw"], s9 + k + " <- " + str(TN[k]["source"])[:160])
+
+
 # ================================================================================================ outputs
 def write_numbers(N: Registry, extra: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
@@ -1635,7 +1955,7 @@ def checks(pdf: Path, tex_log: str) -> dict:
         res["fail"].append(f"{len(margin_viol)} spans inside the 1 in margins")
     res["float_pages"] = float_pages
     # main text: the headline-metrics table and the latency-scenario table, and 3-4 figures (the rest is appendix)
-    for f in ("Figure 1", "Table 1", "Table 2"):
+    for f in ("Figure 1", "Figure 2", "Figure 3", "Table 1"):   # teaser, v2 edge, firm scenario; the metrics table
         if f not in float_pages:
             res["fail"].append(f"{f} not found on pages 1-{last}")
     n_tab = sum(1 for k in float_pages if k.startswith("Table"))
@@ -1769,7 +2089,7 @@ Simulated: only when our CV would see each point (an assumed feed latency) and t
 
 Wimbledon is listed under a separate Polymarket series and is outside our universe.
 
-## Table 1 of the PDF: our copy of the fast tier's trades (v2)
+## v2, our copy of the fast tier's trades (Table 1 of the PDF, top rows)
 
 Sharpe uses daily P&L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
 corrects for {v('rig.N3386')} trials.
@@ -1782,9 +2102,11 @@ corrects for {v('rig.N3386')} trials.
 | Annual return / volatility | {v('v2.is.ret')} / {v('v2.is.vol')} | {v('v2.oos.ret')} / {v('v2.oos.vol')} |
 | Max drawdown / worst month | {v('v2.is.dd')} / {v('v2.is.worstmonth')} | {v('v2.oos.dd')} / {v('v2.oos.worstmonth')} |
 | Turnover (× a year) / skew | {v('v2.is.turnover')} / {v('v2.is.skew')} | {v('v2.oos.turnover')} / {v('v2.oos.skew')} |
+| Fees paid, bps of notional | {v('v2.is.fee_bps')} | {v('v2.oos.fee_bps')} |
+| PSR / MinTRL / haircut tests passed (of 6) | 6 | {v('rig2.v2oos.pass')} |
 | Net ¢, fees ×2 / all costs ×2 | {v('v2.is.fx2.c')} / {v('v2.is.cx2.c')} | {v('v2.oos.fx2.c')} / {v('v2.oos.cx2.c')} |
 
-## Table 2 of the PDF: the CV strategy at three assumed feed delays
+## The CV strategy at three assumed feed delays (Table 1 of the PDF, lower rows)
 
 Simulated ({CV_LABEL}; {v('cv.seeds')} seeds a cell). Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed
 delay {v('cv.pre.be.is')} s IS, {v('cv.pre.be.oos')} s OOS):
@@ -1800,9 +2122,23 @@ Post hoc estimate {v('cv.cal.lag')} s (assumes humans at the court; break-even {
 |---|---|---|---|---|---|---|
 {row3('cal')}
 
-Read per point, the post hoc inference loses ({v('pp.cal.oos.usd')} a day at 1 s). A replay of {v('rp.matches')}
+Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table 1 of the PDF
+(`results/tier0/cost_turnover.json`); fees run {v('cv.fee_bps.range')} bps of notional, and with fees doubled every
+out-of-sample cell loses (best {v('cv.fx2.oos.best')} a day). Read per point, the post hoc inference loses
+({v('pp.cal.oos.usd')} a day at 1 s). A replay of {v('rp.matches')}
 matches recorded live against their real order books calls every point ex ante and loses in {v('rp.cells_neg')} of
 {v('rp.cells')} settings ({v('rp.v1l2.c')}¢ a share at 1 s).
+
+## If we were a quant firm with a licensed 0.5 s feed (counterfactual)
+
+Real Polymarket prices, fills, fees and the venue's 1 s hold; simulated camera calls at an assumed feed delay; no feed
+bought, no order placed. At 0.5 s the trader makes {v('sc.pre.is.v05.usd')} / {v('sc.cal.is.v05.usd')} a day in sample
+and {v('sc.pre.oos.v05.usd')} / {v('sc.cal.oos.v05.usd')} on the burned OOS (pre-registered / post hoc). A fresh holdout,
+pre-registered at `{v('fresh.prereg.commit')}` before its data were fetched ({v('fresh.covered')} newer matches,
+{v('fresh.days')} UTC days), returned {v('fresh.s2.pre.v05.usd')} / {v('fresh.s2.cal.v05.usd')} a day (CIs
+{v('fresh.s2.pre.v05.ci')}, {v('fresh.s2.cal.v05.ci')}): anecdotal, evidence neither for nor against an edge. The most a
+firm could pay a month for the feed is {v('fresh.lic.oos.pre')} / {v('fresh.lic.oos.cal')} on the burned OOS, against
+quotes of {v('fin.feed.low')}–{v('fin.feed.high')}. Fig. 3 of the PDF; `results/fresh_holdout/`, `results/scenario/`.
 
 ## Speed, capacity and what failed
 

@@ -43,8 +43,8 @@ FH = ROOT / "results/fresh_holdout"
 OUT = ROOT / "results/scenario"
 NAME = "fig_firm_05s"
 STRAT = "S2"
-LABEL_FIG = ("Real Polymarket prices, fills and fees; simulated camera calls at an assumed licensed-feed delay "
-             "(no feed purchased).")
+LABEL_FIG = ("Real Polymarket prices, fills, fees and venue delay; simulated camera calls at an assumed licensed-feed "
+             "delay (no feed purchased).")
 LABEL_LONG = ("COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue "
               "delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video "
               "watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.")
@@ -157,8 +157,9 @@ def plain_fmt(v, _pos=None) -> str:
 def panel_a(fig, D: dict, L: dict) -> dict:
     ax = fs.axes_in(fig, *L["a_main"])
     axf = fs.axes_in(fig, *L["a_fresh"])
-    H = {(rd, V): hist_cum(D, rd, V) for rd, V in (("pre", 0.5), ("cal", 0.5), ("cal", 1.0), ("cal", 3.0))}
-    Fr = {(rd, V): fresh_cum(D, rd, V) for rd, V in (("pre", 0.5), ("cal", 0.5), ("cal", 1.0), ("cal", 3.0))}
+    CELLS = (("pre", 0.5), ("cal", 0.5), ("cal", 1.0), ("cal", 3.0), ("pre", 1.0), ("pre", 3.0))
+    H = {(rd, V): hist_cum(D, rd, V) for rd, V in CELLS}
+    Fr = {(rd, V): fresh_cum(D, rd, V) for rd, V in CELLS}
     n_is = H[("pre", 0.5)]["n_is"]
     x = H[("pre", 0.5)]["x"]
     n_tot = len(x) - 1
@@ -188,6 +189,10 @@ def panel_a(fig, D: dict, L: dict) -> dict:
     dot = {1.0: (fs.ORANGE, fs.ORANGE), 3.0: (fs.ORANGE_LIGHT, fs.ORANGE_LIGHT_TEXT)}
     for V, (c, _) in dot.items():
         ax.plot(x, H[("cal", V)]["C"].mean(0), color=c, lw=0.9, ls=fs.DOT_LS, zorder=3)
+    # the pre-registered reading at 1 s and 3 s (thin dotted black; unlabelled at the line ends, named in the caption):
+    # every cell whose Sharpe the paper prints gets an equity curve
+    for V in (1.0, 3.0):
+        ax.plot(x, H[("pre", V)]["C"].mean(0), color=fs.INK, lw=0.8, ls=fs.DOT_LS, zorder=2.9)
     # month ticks on the day-index axis
     d_is, d_oos = H[("pre", 0.5)]["dates_is"], H[("pre", 0.5)]["dates_oos"]
     ticks, labs = [], []
@@ -237,6 +242,8 @@ def panel_a(fig, D: dict, L: dict) -> dict:
     off = {"cal": 0.07, "pre": -0.07}
     for V, (c, _) in dot.items():
         axf.plot(Fr[("cal", V)]["x"], Fr[("cal", V)]["C"].mean(0), color=c, lw=0.9, ls=fs.DOT_LS, zorder=3)
+    for V in (1.0, 3.0):
+        axf.plot(Fr[("pre", V)]["x"], Fr[("pre", V)]["C"].mean(0), color=fs.INK, lw=0.8, ls=fs.DOT_LS, zorder=2.9)
     for rd in ("cal", "pre"):
         fr = Fr[(rd, 0.5)]
         m = fr["C"].mean(0)
@@ -414,8 +421,8 @@ def caption(N: dict) -> str:
           f"order delay, with the camera calls simulated at an assumed licensed-feed delay (no feed purchased, no "
           f"order placed); (a) cumulative P&L of the paper{fs.RSQUO}s Table 2 CV trader on 10 matches a day at a "
           f"0.5{fs.THIN}s feed (mean of 20 seeds, whiskers 10{fs.NDASH}90{fs.THIN}% of seeds) under the pre-registered "
-          f"2.0{fs.THIN}s stamp lag (black) and the post hoc 3.14{fs.THIN}s lag (orange), dotted lines the post hoc "
-          f"reading at 1{fs.THIN}s and 3{fs.THIN}s, end labels the burned-OOS $/day and annualised Sharpe "
+          f"2.0{fs.THIN}s stamp lag (black) and the post hoc 3.14{fs.THIN}s lag (orange), dotted lines the same two "
+          f"readings at 1{fs.THIN}s and 3{fs.THIN}s (only the post hoc ones are labelled), end labels the burned-OOS $/day and annualised Sharpe "
           f"({fs.usd(b['cal']['pnl_per_day_usd'], 0, sign=True)} and {fs.f(b['cal']['sharpe_ann'], 1)} post hoc, "
           f"{fs.usd(b['pre']['pnl_per_day_usd'], 0, sign=True)} and {fs.f(b['pre']['sharpe_ann'], 1)} pre-registered).")
     w0 = pd.Timestamp(f["window"]["start_exclusive_utc"])
@@ -429,7 +436,7 @@ def caption(N: dict) -> str:
           f"{fs.usd(f['S1|cal|V0.5']['pnl_per_day_usd'], 1, sign=True)} and "
           f"{fs.usd(f['S1|pre|V0.5']['pnl_per_day_usd'], 1, sign=True)}/day).")
     pm = sc["pnl_20_seed_mean_usd"]
-    s3 = (f"(b) The pre-registered showcase match, chosen on in-play volume and not on P&L ({a_} v {b_}, "
+    s3 = (f"(b) The pre-registered showcase match, the covered match with the highest in-play volume, not chosen on P&L ({a_} v {b_}, "
           f"{sc['series'].upper()} {sc['league']}, "
           f"{day.day} {day.strftime('%b %Y')}, {fs.usd(sc['inplay_usd'], 0, k=True)} traded in play, {sc['winner'].split()[-1]} won): "
           f"Ruzic{fs.RSQUO}s 1{fs.THIN}s price, the {sc['simulated_calls_ledger_seed']} simulated calls of the ledger seed (ticks), "

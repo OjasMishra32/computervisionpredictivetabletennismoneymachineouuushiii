@@ -1,12 +1,12 @@
 {
- "n": 85,
+ "n": 111,
  "counts": {
   "live": 22,
-  "audit": 27,
+  "audit": 48,
   "descriptive": 6,
-  "non-blind": 18,
+  "non-blind": 22,
   "blind first run": 7,
-  "other": 5
+  "other": 6
  },
  "rules": [
   [
@@ -455,6 +455,136 @@
    "utc": "2026-10-04T05:47:33.836478+00:00",
    "class": "other",
    "line": "fresh holdout (scripts/fresh_holdout.py --run) DONE -> results/fresh_holdout/results.json (showcase wta-ruzic-jeanjea-2026-10-03; COUNTERFACTUAL)"
+  },
+  {
+   "utc": "2026-10-04T05:54:19.676913+00:00",
+   "class": "audit",
+   "line": "fresh holdout per-seed daily paths (scripts/fresh_holdout_seed_paths.py): RE-RUN of the frozen cells (same code, cached data, seeds IS 0-19 / burned OOS 1000-1019 / fresh 4000-4019; primary coverage) to keep each seed's daily P&L for the cumulative band of the firm-scenario figure; descriptive, no number changes, nothing chosen; COUNTERFACTUAL"
+  },
+  {
+   "utc": "2026-10-04T05:55:06.557042+00:00",
+   "class": "audit",
+   "line": "fresh holdout per-seed daily paths DONE -> results/fresh_holdout/seed_daily_paths.csv (reproduces daily.csv, max |diff| 5.7e-14; COUNTERFACTUAL)"
+  },
+  {
+   "utc": "2026-10-04T06:31:33.733014+00:00",
+   "class": "audit",
+   "line": "CV cost and turnover (scripts/cv_cost_turnover.py): re-run of the 12 published Table-2 cells (video, own120, V = 0.5/1/3 s, tournament and tournament_lagcal, 20 seeds) on IS and burned OOS jump tables to add dollars traded, taker fees and the fees-doubled P&L; reproduction asserted equal to results/tier0/latency_sweep_seeds.csv (burned OOS, non-blind; no rule or parameter chosen) [logged before the run]"
+  },
+  {
+   "utc": "2026-10-04T05:27:51+00:00",
+   "class": "audit",
+   "line": "rigor E (scripts/psr_mintrl.py, HEAD de44cb7+uncommitted new script): PSR/MinTRL/HLZ haircut/stationary bootstrap on EXISTING daily P&L; re-runs the published tier-0 latency-sweep cells (video, own120, V=1 s, tournament and tournament_lagcal, 20 seeds) on IS and burned OOS jump tables to recover their daily series (reproduction, asserted equal to latency_sweep_seeds.csv); and a labelled copier fill stress of the frozen v2 book that reads IS and burned-OOS print tapes (data/raw/trades) for the price path at +venue delay + measured block lag (burned OOS, non-blind, no rule or parameter chosen) [logged before the run; to be appended to results/oos_peeks.log by the integrator: this agent may not edit that file] [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:31:58.926077+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD bd13f92): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:33:56.143564+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD bd13f92): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:35:16.577038+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD 4a5a19d): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:37:12.032999+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD d089e4f): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:38:48.207735+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD d089e4f): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:40:12.833438+00:00",
+   "class": "audit",
+   "line": "rigor E run START (scripts/psr_mintrl.py, HEAD d089e4f): reads v2 IS + burned-OOS trades and print tapes (copier stress, non-blind, labelled) and re-runs published tier-0 sweep cells on IS + burned OOS; no rule or parameter chosen [appended by the integrator from results/rigor/psr.json::oos_reads; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:41:41.857736+00:00",
+   "class": "audit",
+   "line": "impact model (scripts/impact_model.py): burned OOS raw tapes (data/raw/trades, 2,617 OOS matches) read to build the taker-order table for the impact fit's stability check and the capacity re-run (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:43:31.734078+00:00",
+   "class": "non-blind",
+   "line": "impact model (scripts/impact_model.py): burned OOS taker-order table (results/liquidity/cache/orders_OOS.parquet, built from OOS raw tapes) read to refit the impact model as a stability check (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:47:31.017049+00:00",
+   "class": "non-blind",
+   "line": "impact model (scripts/impact_model.py): burned OOS taker-order table (results/liquidity/cache/orders_OOS.parquet, built from OOS raw tapes) read to refit the impact model as a stability check (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:48:14.889768+00:00",
+   "class": "audit",
+   "line": "impact model (scripts/impact_model.py): burned OOS jump tables (src/tier0.jump_table('oos'), via tier0_backtest.context) loaded for a 2-seed timing test of the CV re-run (non-blind, no parameter chosen; numbers discarded) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:48:26.999379+00:00",
+   "class": "non-blind",
+   "line": "impact model (scripts/impact_model.py): burned OOS v2 candidate trades (data/v2_lowloss/features_u1.parquet, OOS rows) re-simulated with the frozen rule and costed with the impact model (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:49:04.934411+00:00",
+   "class": "audit",
+   "line": "impact model (scripts/impact_model.py): burned OOS jump tables (src/tier0.jump_table('oos'), via tier0_backtest.context) read to re-run the CV capacity path with the impact model (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:49:43+00:00",
+   "class": "audit",
+   "line": "audit: adversarial verifier of rigor E (scripts/psr_mintrl.py, commit 80e621f) re-read v2 burned-OOS trades, OOS print tapes and results/rigor/psr_daily.csv in scratch code to recompute PSR/MinTRL/HLZ/bootstrap and copier prices (burned OOS, non-blind; no parameter chosen) [logged after the run; appended by the integrator]"
+  },
+  {
+   "utc": "2026-10-04T05:50:00+00:00",
+   "class": "audit",
+   "line": "audit: adversarial verifier of the v2 per-wallet cap (W1000_Ron) re-derived it with independent code in /private/tmp/wcap_verify; read burned OOS (data/v2_trades_is_oos.parquet, data/v2_lowloss/features_u1 + whist_u1, data/locked/oos_prints) between about 05:42 and 05:50 UTC incl. oos_prints for a strict-causal retirement sensitivity (non-blind; no parameter chosen, no verdict change) [logged after the read; appended by the integrator]"
+  },
+  {
+   "utc": "2026-10-04T05:55:34.194692+00:00",
+   "class": "non-blind",
+   "line": "impact model (scripts/impact_model.py): burned OOS v2 candidate trades (data/v2_lowloss/features_u1.parquet, OOS rows) re-simulated with the frozen rule and costed with the impact model (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T05:56:14.788579+00:00",
+   "class": "audit",
+   "line": "impact model (scripts/impact_model.py): burned OOS jump tables (src/tier0.jump_table('oos'), via tier0_backtest.context) read to re-run the CV capacity path with the impact model (non-blind, no parameter chosen) [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T06:02:40.800190+00:00",
+   "class": "audit",
+   "line": "impact model (scripts/impact_model.py): LOGGED AFTER THE READ: two development runs (about 05:35 UTC, before this log existed, and about 05:47 UTC) ran the frozen v2 engine on data/v2_lowloss/features_u1.parquet including its burned-OOS rows (a timing test, and a check that 2 published grid cells reproduce: 196.24 and 92.19 $/day); no parameter chosen [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T06:02:40.800190+00:00",
+   "class": "other",
+   "line": "impact model (scripts/impact_model.py): live L2 recordings data/live/market_20261003_0946 and _1003 read only up to receive time 2026-10-03 14:00 UTC (before the forward window opened; no forward-window data read), for the book-walk and stale-depth checks [appended by the integrator from results/liquidity/oos_peeks_pending.txt; the analysis could not edit this log]"
+  },
+  {
+   "utc": "2026-10-04T06:32:02.183745+00:00",
+   "class": "audit",
+   "line": "audit: adversarial verifier of the impact model (commit c7fc421) read fresh-window Data API tapes of 10 matches (rows before 2026-10-03 14:00 UTC only) to check that the live L2 trade feed is complete, and IS rows only of features_u1; no burned-OOS row, no parameter chosen [logged after the read by the integrator; read time not recorded]"
+  },
+  {
+   "utc": "2026-10-04T06:32:02.183745+00:00",
+   "class": "audit",
+   "line": "audit: adversarial verifier of the fresh holdout (commits dc95717, 1505c9b, c299cd0) re-downloaded 2 fresh-window tapes and re-ran all 24 fresh cells (S1 and S2, V 0.5/1/3 s, both readings, both coverage rules) with independent code; no parameter chosen, no number changed [logged after the run by the integrator; run time not recorded]"
+  },
+  {
+   "utc": "2026-10-04T06:32:56.207545+00:00",
+   "class": "audit",
+   "line": "CV cost and turnover (scripts/cv_cost_turnover.py): RE-RUN of the same 12 published Table-2 cells on IS and burned OOS after the first run stopped at its final check (the published JSON stores $/day and Sharpe to 2 decimals; tolerance widened to 0.005; every per-seed reproduction had passed); no rule or parameter chosen (burned OOS, non-blind) [logged before the re-run]"
+  },
+  {
+   "utc": "2026-10-04T06:34:01.865414+00:00",
+   "class": "audit",
+   "line": "CV cost and turnover (scripts/cv_cost_turnover.py): RE-RUN of the same 12 published Table-2 cells on IS and burned OOS to also store each seed's daily-P&L sd and per-seed rows (return and volatility as ratios of seed means, so a return has the sign of its $ a day); output only, no rule or parameter chosen (burned OOS, non-blind) [logged before the re-run]"
   }
  ]
 }

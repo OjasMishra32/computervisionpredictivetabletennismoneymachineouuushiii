@@ -309,10 +309,10 @@ def month_axis(ax, months: list[pd.Timestamp]) -> None:
 
 def F2() -> list[str]:
     name = "fig2_edge"
-    fig = plt.figure(figsize=(W, 2.38))
+    fig = plt.figure(figsize=(W, 2.14))   # 2.38 in before the integration pass (page budget); text sizes unchanged
     PW = 1.85  # both panels the same width over the same dates, so months and OOS shading line up across the row
-    axa = fs.axes_in(fig, 0.50, 0.40, PW, 1.56)
-    axb = fs.axes_in(fig, 3.80, 0.40, PW, 1.56)
+    axa = fs.axes_in(fig, 0.50, 0.40, PW, 1.32)
+    axb = fs.axes_in(fig, 3.80, 0.40, PW, 1.32)
     al = load("results/alpha/alpha.json", name)
     paths = pf.v2_daily_paths()
     note_src(name, "results/lowloss/daily.csv", "results/v2/causal.json", "results/v2/cost_stress.json",
@@ -365,14 +365,14 @@ def F2() -> list[str]:
         ax.set_xlim(*xlim)
         fs.oos_shade(ax, oos0)
         fs.zero_line(ax)
-        ax.set_ylim(-2.6, 2.8)
+        ax.set_ylim(-3.15, 2.8)   # room under the copy-3-s line for its two-line label at the 2.14 in height
         ax.set_yticks([-2, -1, 0, 1, 2])
         fs.unicode_ticks(ax, "y")
         ax.set_ylabel(f"net 30{T}s markout, {fs.CENT}/share")
         month_axis(ax, ticks)
         # each label at its own line end (Everyone else at -1.86, not lifted towards the gap)
         fs.direct_label(ax, items, dx_pt=5, leader=False, pad_pt=2.0)
-    ptitle(name, ax, "a", "Only the fast tier earns; copying late loses", x_in=0.06, y_in=2.20)
+    ptitle(name, ax, "a", "Only the fast tier earns; copying late loses", x_in=0.06, y_in=1.96)
 
     # ---------------------------------------------------------------- (b) v2 cumulative P&L, costs doubled
     ax = axb
@@ -413,7 +413,7 @@ def F2() -> list[str]:
         ax.set_ylabel("cumulative net P&L, $k")
         month_axis(ax, ticks)
         fs.direct_label(ax, items, dx_pt=5, bounds=(0.0, 1.1), leader=False)
-    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.24, y_in=2.20)
+    ptitle(name, ax, "b", "v2 earns; doubled costs erase the OOS gain", x_in=3.24, y_in=1.96)
     return fs.save_fig(fig, name, OUT)
 
 

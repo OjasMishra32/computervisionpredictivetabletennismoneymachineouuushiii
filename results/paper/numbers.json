@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T05:50:13+00:00",
+ "generated_utc": "2026-10-04T07:18:57+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -2496,8 +2496,8 @@
    "source": "results/tier0/latency_sweep.csv rows"
   },
   "peeks.n": {
-   "value": "85",
-   "raw": 85,
+   "value": "111",
+   "raw": 111,
    "source": "results/oos_peeks.log (lines at build time)"
   },
   "peeks.blind": {
@@ -2506,8 +2506,8 @@
    "source": "D: keyword class 'blind first run' over results/oos_peeks.log"
   },
   "peeks.nonblind": {
-   "value": "18",
-   "raw": 18,
+   "value": "22",
+   "raw": 22,
    "source": "D: keyword class 'non-blind' over results/oos_peeks.log"
   },
   "peeks.desc": {
@@ -2516,8 +2516,8 @@
    "source": "D: keyword class 'descriptive' over results/oos_peeks.log"
   },
   "peeks.audit": {
-   "value": "27",
-   "raw": 27,
+   "value": "48",
+   "raw": 48,
    "source": "D: keyword class 'audit' over results/oos_peeks.log"
   },
   "peeks.live": {
@@ -2526,8 +2526,8 @@
    "source": "D: keyword class 'live' over results/oos_peeks.log"
   },
   "peeks.other": {
-   "value": "5",
-   "raw": 5,
+   "value": "6",
+   "raw": 6,
    "source": "D: keyword class 'other' over results/oos_peeks.log"
   },
   "fwd.cell": {
@@ -4285,6 +4285,1544 @@
    "value": "37%",
    "raw": 0.3701621164258012,
    "source": "D: 1 - results/v2/risk/wallet_cap.json::is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd"
+  },
+  "tab.cv.pre.is.v05.ret": {
+   "value": "51%",
+   "raw": 50.56663843831088,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.is.v05.vol": {
+   "value": "11.9%",
+   "raw": 11.879853901282582,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.is.v05.dd": {
+   "value": "−4.5%",
+   "raw": -4.5176832886297635,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.is.v05.to": {
+   "value": "36",
+   "raw": 35.861974278338806,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.is.v05.fee": {
+   "value": "169",
+   "raw": 168.687701505299,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.is.v05.fx2c": {
+   "value": "−0.20",
+   "raw": -0.20425148851255162,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.is.v05.fx2usd": {
+   "value": "−$6",
+   "raw": -5.568837124338069,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.is.v05.c0": {
+   "value": "",
+   "raw": [
+    0.077,
+    1.138
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.pre.oos.v05.ret": {
+   "value": "32%",
+   "raw": 32.158066219001746,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.oos.v05.vol": {
+   "value": "12.3%",
+   "raw": 12.293634898110884,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.oos.v05.dd": {
+   "value": "−3.8%",
+   "raw": -3.8009038140265785,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.oos.v05.to": {
+   "value": "43",
+   "raw": 43.26208654978753,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.oos.v05.fee": {
+   "value": "212",
+   "raw": 211.5202263722121,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.oos.v05.fx2c": {
+   "value": "−1.04",
+   "raw": -1.0366487581523522,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.oos.v05.fx2usd": {
+   "value": "−$28",
+   "raw": -27.702717073658427,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v05|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.oos.v05.c0": {
+   "value": "†",
+   "raw": [
+    -1.221,
+    1.086
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.pre.is.v1.ret": {
+   "value": "30%",
+   "raw": 30.31498600964493,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.is.v1.vol": {
+   "value": "12.9%",
+   "raw": 12.91357360164706,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.is.v1.dd": {
+   "value": "−6.6%",
+   "raw": -6.586357479745149,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.is.v1.to": {
+   "value": "31",
+   "raw": 30.59507529215866,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.is.v1.fee": {
+   "value": "169",
+   "raw": 169.3941798404041,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.is.v1.fx2c": {
+   "value": "−0.41",
+   "raw": -0.4128861460451915,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.is.v1.fx2usd": {
+   "value": "−$10",
+   "raw": -10.373897905164629,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.is.v1.c0": {
+   "value": "†",
+   "raw": [
+    -0.324,
+    1.078
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.pre.oos.v1.ret": {
+   "value": "11%",
+   "raw": 11.493027979665941,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.oos.v1.vol": {
+   "value": "15.2%",
+   "raw": 15.166626371063854,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.oos.v1.dd": {
+   "value": "−5.3%",
+   "raw": -5.274679992175552,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.oos.v1.to": {
+   "value": "38",
+   "raw": 37.75089789153178,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.oos.v1.fee": {
+   "value": "214",
+   "raw": 214.41559885385104,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.oos.v1.fx2c": {
+   "value": "−1.40",
+   "raw": -1.4008513483853213,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.oos.v1.fx2usd": {
+   "value": "−$26",
+   "raw": -25.90958198022843,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v1|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.oos.v1.c0": {
+   "value": "†",
+   "raw": [
+    -2.083,
+    1.205
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.pre.is.v3.ret": {
+   "value": "−57%",
+   "raw": -57.11798900259327,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.is.v3.vol": {
+   "value": "24.3%",
+   "raw": 24.268609199151495,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.is.v3.dd": {
+   "value": "−24.8%",
+   "raw": -24.777907712638036,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.is.v3.to": {
+   "value": "25",
+   "raw": 25.19564856148743,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.is.v3.fee": {
+   "value": "173",
+   "raw": 172.69524775433985,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.is.v3.fx2c": {
+   "value": "−2.14",
+   "raw": -2.136671227366799,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.is.v3.fx2usd": {
+   "value": "−$22",
+   "raw": -22.08651574614729,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.is.v3.c0": {
+   "value": "†",
+   "raw": [
+    -3.147,
+    0.367
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.pre.oos.v3.ret": {
+   "value": "−98%",
+   "raw": -97.64748997568215,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.pre.oos.v3.vol": {
+   "value": "42.0%",
+   "raw": 42.009852356525165,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.pre.oos.v3.dd": {
+   "value": "−19.0%",
+   "raw": -19.028174860183924,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.pre.oos.v3.to": {
+   "value": "44",
+   "raw": 43.9821535616079,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.pre.oos.v3.fee": {
+   "value": "226",
+   "raw": 226.26855885324784,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.pre.oos.v3.fx2c": {
+   "value": "−2.71",
+   "raw": -2.706445670768943,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.pre.oos.v3.fx2usd": {
+   "value": "−$25",
+   "raw": -25.330027465908152,
+   "source": "results/tier0/cost_turnover.json::cells.pre|v3|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.pre.oos.v3.c0": {
+   "value": "†",
+   "raw": [
+    -4.846,
+    1.324
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.is.v05.ret": {
+   "value": "146%",
+   "raw": 145.56276603167277,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.is.v05.vol": {
+   "value": "9.4%",
+   "raw": 9.38461634177793,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.is.v05.dd": {
+   "value": "−1.3%",
+   "raw": -1.3255785001204252,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.is.v05.to": {
+   "value": "59",
+   "raw": 58.62581195259907,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.is.v05.fee": {
+   "value": "163",
+   "raw": 162.51010363843253,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.is.v05.fx2c": {
+   "value": "+0.41",
+   "raw": 0.4138280678555509,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.is.v05.fx2usd": {
+   "value": "+$46",
+   "raw": 45.994885475971344,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.is.v05.c0": {
+   "value": "",
+   "raw": [
+    1.002,
+    1.421
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.oos.v05.ret": {
+   "value": "123%",
+   "raw": 122.57827791478289,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.oos.v05.vol": {
+   "value": "9.9%",
+   "raw": 9.90791766405909,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.oos.v05.dd": {
+   "value": "−1.3%",
+   "raw": -1.3000418351835803,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.oos.v05.to": {
+   "value": "68",
+   "raw": 67.89322619142247,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.oos.v05.fee": {
+   "value": "209",
+   "raw": 209.0852926710952,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.oos.v05.fx2c": {
+   "value": "−0.21",
+   "raw": -0.2078702908035237,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.oos.v05.fx2usd": {
+   "value": "−$13",
+   "raw": -12.779565384714243,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v05|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.oos.v05.c0": {
+   "value": "",
+   "raw": [
+    0.387,
+    1.249
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.is.v1.ret": {
+   "value": "118%",
+   "raw": 117.81268469099058,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.is.v1.vol": {
+   "value": "9.8%",
+   "raw": 9.835714546475012,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.is.v1.dd": {
+   "value": "−1.6%",
+   "raw": -1.5857314761371688,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.is.v1.to": {
+   "value": "51",
+   "raw": 51.257442944944785,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.is.v1.fee": {
+   "value": "163",
+   "raw": 162.81161345583126,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.is.v1.fx2c": {
+   "value": "+0.32",
+   "raw": 0.3161248907870177,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.is.v1.fx2usd": {
+   "value": "+$28",
+   "raw": 27.590402442342487,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.is.v1.c0": {
+   "value": "",
+   "raw": [
+    0.849,
+    1.375
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.oos.v1.ret": {
+   "value": "91%",
+   "raw": 91.49682304976298,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.oos.v1.vol": {
+   "value": "10.1%",
+   "raw": 10.097529970335595,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.oos.v1.dd": {
+   "value": "−1.6%",
+   "raw": -1.607902811473947,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.oos.v1.to": {
+   "value": "59",
+   "raw": 59.24114474968097,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.oos.v1.fee": {
+   "value": "210",
+   "raw": 209.54766533178207,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.oos.v1.fx2c": {
+   "value": "−0.37",
+   "raw": -0.3700947782048579,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.oos.v1.fx2usd": {
+   "value": "−$20",
+   "raw": -20.069466406331365,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v1|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.oos.v1.c0": {
+   "value": "",
+   "raw": [
+    0.098,
+    1.189
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.is.v3.ret": {
+   "value": "−18%",
+   "raw": -17.620699090148374,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.is.v3.vol": {
+   "value": "16.8%",
+   "raw": 16.777351138905107,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.is.v3.dd": {
+   "value": "−14.4%",
+   "raw": -14.436255011702476,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.is.v3.to": {
+   "value": "23",
+   "raw": 22.687477913556148,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.is.v3.fee": {
+   "value": "170",
+   "raw": 169.7283376904241,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.is.v3.fx2c": {
+   "value": "−1.58",
+   "raw": -1.5758281414215722,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.is.v3.fx2usd": {
+   "value": "−$19",
+   "raw": -18.565054614961063,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|is.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.is.v3.c0": {
+   "value": "†",
+   "raw": [
+    -2.26,
+    0.597
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "tab.cv.cal.oos.v3.ret": {
+   "value": "−66%",
+   "raw": -66.21791577817228,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.ratio_of_seed_means.ann_return_pct"
+  },
+  "tab.cv.cal.oos.v3.vol": {
+   "value": "31.7%",
+   "raw": 31.667939143441533,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.ratio_of_seed_means.ann_vol_pct"
+  },
+  "tab.cv.cal.oos.v3.dd": {
+   "value": "−13.9%",
+   "raw": -13.874351410405872,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.ratio_of_seed_means.max_dd_pct"
+  },
+  "tab.cv.cal.oos.v3.to": {
+   "value": "37",
+   "raw": 36.69456129721828,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.ratio_of_seed_means.turnover_x_per_year"
+  },
+  "tab.cv.cal.oos.v3.fee": {
+   "value": "224",
+   "raw": 224.38006986867305,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.seed_mean.fee_bps_of_notional"
+  },
+  "tab.cv.cal.oos.v3.fx2c": {
+   "value": "−2.48",
+   "raw": -2.4826336396045274,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.seed_mean.fx2_per_share_c"
+  },
+  "tab.cv.cal.oos.v3.fx2usd": {
+   "value": "−$25",
+   "raw": -25.306765678381687,
+   "source": "results/tier0/cost_turnover.json::cells.cal|v3|oos.seed_mean.fx2_pnl_per_day_usd"
+  },
+  "tab.cv.cal.oos.v3.c0": {
+   "value": "†",
+   "raw": [
+    -4.448,
+    1.344
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.<reading>.<V>.<period>.net_c_per_share_ci95 (dagger if it spans 0)"
+  },
+  "cv.fee_bps.range": {
+   "value": "163–226",
+   "raw": [
+    162.51010363843253,
+    226.26855885324784
+   ],
+   "source": "results/tier0/cost_turnover.json::cells.*.seed_mean.fee_bps_of_notional (min-max over the 12 cells)"
+  },
+  "cv.fx2.oos.best": {
+   "value": "−$13",
+   "raw": -12.779565384714243,
+   "source": "results/tier0/cost_turnover.json::cells.*|oos.seed_mean.fx2_pnl_per_day_usd (max)"
+  },
+  "tab.v2.is.usd": {
+   "value": "+$196",
+   "raw": 196.24135529941364,
+   "source": "D: results/v2/causal.json::causal/is_eval/slip0.0 total_pnl_usd / days"
+  },
+  "tab.v2.oos.usd": {
+   "value": "+$92",
+   "raw": 92.18839800484167,
+   "source": "D: results/v2/causal.json::causal/burned_oos/slip0.0 total_pnl_usd / days"
+  },
+  "data.walk": {
+   "value": "302",
+   "raw": 302,
+   "source": "results/risk/risk_stats.json::settlement.all.score_state_by_resolution.50/50.not_started"
+  },
+  "data.retired": {
+   "value": "283",
+   "raw": 283,
+   "source": "results/risk/risk_stats.json::settlement.all.score_state_by_resolution.{winner,50/50}.incomplete (sum)"
+  },
+  "data.res5050.n": {
+   "value": "378",
+   "raw": 378,
+   "source": "results/risk/risk_stats.json::settlement.all.res_50_50"
+  },
+  "fresh.prereg.commit": {
+   "value": "dc95717",
+   "raw": "dc95717",
+   "source": "results/fresh_holdout/results.json::prereg_commit"
+  },
+  "fresh.prereg.time": {
+   "value": "05:34 UTC",
+   "raw": "2026-10-04T05:34:34Z",
+   "source": "results/fresh_holdout/results.json::prereg_committed_utc"
+  },
+  "fresh.fetch.time": {
+   "value": "05:44 UTC",
+   "raw": "2026-10-04T05:44:23+00:00",
+   "source": "results/fresh_holdout/results.json::fetch.fetch_time_utc"
+  },
+  "fresh.start": {
+   "value": "Oct 3, 07:10 UTC",
+   "raw": "2026-10-03T07:10:00+00:00",
+   "source": "results/fresh_holdout/results.json::window.start_exclusive_utc"
+  },
+  "fresh.eligible": {
+   "value": "22",
+   "raw": 22,
+   "source": "results/fresh_holdout/results.json::counts.eligible_matches"
+  },
+  "fresh.covered": {
+   "value": "16",
+   "raw": 16,
+   "source": "results/fresh_holdout/results.json::counts.covered_primary"
+  },
+  "fresh.days": {
+   "value": "2",
+   "raw": 2,
+   "source": "results/fresh_holdout/results.json::days"
+  },
+  "fresh.excluded": {
+   "value": "9",
+   "raw": [
+    "wta-andree-boisson-2026-10-03",
+    "wta-bencic-zakharo-2026-10-01",
+    "wta-bouzkov-birrell-2026-10-01",
+    "wta-jovic-dart-2026-10-02",
+    "wta-kartal-wa-2026-10-01",
+    "wta-rakhimo-fernand-2026-10-01",
+    "wta-rybakin-charaev-2026-10-01",
+    "wta-su-bucsa-2026-10-02",
+    "wta-zhen-kalinsk-2026-10-01"
+   ],
+   "source": "results/fresh_holdout/results.json::fetch.dropped_live_calibration_matches"
+  },
+  "fresh.s1.pre.v05.usd": {
+   "value": "−$23.5",
+   "raw": -23.5006,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.pre.v05.ci": {
+   "value": "[−$88, +$43]",
+   "raw": [
+    -88.0599,
+    42.8236
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,pre,0.5,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s1.pre.v1.usd": {
+   "value": "−$22.4",
+   "raw": -22.3689,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.pre.v1.ci": {
+   "value": "[−$88, +$45]",
+   "raw": [
+    -88.4773,
+    45.3842
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,pre,1.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s1.pre.v3.usd": {
+   "value": "−$25.6",
+   "raw": -25.6433,
+   "source": "results/fresh_holdout/results.json::table[S1,pre,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.pre.v3.ci": {
+   "value": "[−$83, +$33]",
+   "raw": [
+    -82.5818,
+    32.7321
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,pre,3.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s1.cal.v05.usd": {
+   "value": "+$18.3",
+   "raw": 18.2671,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.cal.v05.ci": {
+   "value": "[−$62, +$104]",
+   "raw": [
+    -62.3653,
+    103.8853
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,cal,0.5,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s1.cal.v1.usd": {
+   "value": "−$1.5",
+   "raw": -1.4945,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.cal.v1.ci": {
+   "value": "[−$72, +$72]",
+   "raw": [
+    -71.636,
+    71.7632
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,cal,1.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s1.cal.v3.usd": {
+   "value": "−$24.7",
+   "raw": -24.6661,
+   "source": "results/fresh_holdout/results.json::table[S1,cal,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s1.cal.v3.ci": {
+   "value": "[−$84, +$36]",
+   "raw": [
+    -83.6509,
+    36.1396
+   ],
+   "source": "results/fresh_holdout/results.json::table[S1,cal,3.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.pre.v05.usd": {
+   "value": "−$20.5",
+   "raw": -20.4958,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.pre.v05.ci": {
+   "value": "[−$96, +$57]",
+   "raw": [
+    -96.447,
+    56.7559
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,pre,0.5,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.pre.v1.usd": {
+   "value": "−$28.1",
+   "raw": -28.1406,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.pre.v1.ci": {
+   "value": "[−$103, +$49]",
+   "raw": [
+    -102.7116,
+    48.6065
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,pre,1.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.pre.v3.usd": {
+   "value": "−$31.4",
+   "raw": -31.3599,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.pre.v3.ci": {
+   "value": "[−$100, +$39]",
+   "raw": [
+    -99.8807,
+    38.9981
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,pre,3.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.cal.v05.usd": {
+   "value": "+$50.8",
+   "raw": 50.7568,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,0.5,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.cal.v05.ci": {
+   "value": "[−$38, +$141]",
+   "raw": [
+    -37.6873,
+    141.1414
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,cal,0.5,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.cal.v1.usd": {
+   "value": "+$20.2",
+   "raw": 20.1978,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,1.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.cal.v1.ci": {
+   "value": "[−$67, +$105]",
+   "raw": [
+    -66.5597,
+    105.4339
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,cal,1.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.s2.cal.v3.usd": {
+   "value": "−$28.3",
+   "raw": -28.2979,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,3.0,cov10,all_days].pnl_per_day_usd"
+  },
+  "fresh.s2.cal.v3.ci": {
+   "value": "[−$101, +$47]",
+   "raw": [
+    -100.5909,
+    46.9389
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,cal,3.0,cov10,all_days].pnl_per_day_ci95_usd"
+  },
+  "fresh.traded.range": {
+   "value": "5–10",
+   "raw": [
+    5.1,
+    10.2
+   ],
+   "source": "results/fresh_holdout/results.json::table[*,cov10,all_days].n_matches (seed-mean matches with trades, min-max)"
+  },
+  "fresh.traded.s2v05": {
+   "value": "7–10",
+   "raw": [
+    7.05,
+    10.2
+   ],
+   "source": "results/fresh_holdout/results.json::table[S2,*,0.5,cov10,all_days].n_matches"
+  },
+  "fresh.hit.pre": {
+   "value": "48%",
+   "raw": 48.4174,
+   "source": "results/fresh_holdout/results.json::table[S2,pre,0.5,cov10,all_days].hit_rate_pct"
+  },
+  "fresh.hit.cal": {
+   "value": "57%",
+   "raw": 56.9171,
+   "source": "results/fresh_holdout/results.json::table[S2,cal,0.5,cov10,all_days].hit_rate_pct"
+  },
+  "fresh.lic.is.pre": {
+   "value": "$787",
+   "raw": 787.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.IS|S2|pre|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.lic.is.cal": {
+   "value": "$3,976",
+   "raw": 3976.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.IS|S2|cal|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.lic.oos.pre": {
+   "value": "$384",
+   "raw": 384.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.burned_OOS|S2|pre|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.lic.oos.cal": {
+   "value": "$2,397",
+   "raw": 2397.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.burned_OOS|S2|cal|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.lic.fresh.pre": {
+   "value": "−$701",
+   "raw": -701.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.fresh|S2|pre|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.lic.fresh.cal": {
+   "value": "+$1,467",
+   "raw": 1467.0,
+   "source": "results/fresh_holdout/results.json::licence_breakeven_at_V0.5 ...values_usd_per_month.fresh|S2|cal|cov10|all_days.max_licence_usd_per_month"
+  },
+  "fresh.show.title": {
+   "value": "Antonia Ruzic v Leolia Jeanjean",
+   "raw": "Adana: Antonia Ruzic vs Leolia Jeanjean",
+   "source": "results/fresh_holdout/results.json::showcase.title"
+  },
+  "fresh.show.event": {
+   "value": "WTA Adana",
+   "raw": [
+    "wta",
+    "Adana"
+   ],
+   "source": "results/fresh_holdout/results.json::showcase.{series,league}"
+  },
+  "fresh.show.inplay": {
+   "value": "$190k",
+   "raw": 189640.23896596383,
+   "source": "results/fresh_holdout/results.json::showcase.inplay_usd"
+  },
+  "fresh.show.winner": {
+   "value": "Jeanjean",
+   "raw": "Leolia Jeanjean",
+   "source": "results/fresh_holdout/results.json::showcase.winner"
+  },
+  "fresh.show.pre": {
+   "value": "−$6.4",
+   "raw": -6.42,
+   "source": "results/fresh_holdout/results.json::showcase.pnl_20_seed_mean_usd.S2|pre|V0.5.mean_usd"
+  },
+  "fresh.show.cal": {
+   "value": "+$12.4",
+   "raw": 12.38,
+   "source": "results/fresh_holdout/results.json::showcase.pnl_20_seed_mean_usd.S2|cal|V0.5.mean_usd"
+  },
+  "fresh.show.calls": {
+   "value": "33",
+   "raw": 33,
+   "source": "results/scenario/fig_firm_05s_numbers.json::showcase.simulated_calls_ledger_seed"
+  },
+  "vultr.matched": {
+   "value": "287,577",
+   "raw": 287577,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.matched <- sponsors/vultr/out/summary.json::paired_arrivals.matched_events"
+  },
+  "vultr.lon_first": {
+   "value": "99.74%",
+   "raw": 99.74,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.lon_first <- sponsors/vultr/out/summary.json::paired_arrivals.london_first_percent"
+  },
+  "vultr.adv.p50": {
+   "value": "70",
+   "raw": 70.189,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.adv.p50 <- sponsors/vultr/out/summary.json::paired_arrivals.london_arrival_advantage_ms.p50"
+  },
+  "vultr.clock": {
+   "value": "30",
+   "raw": 30.265,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.clock <- sponsors/vultr/out/summary.json::paired_arrivals.combined_clock_uncertainty_ms"
+  },
+  "vultr.adv.lb": {
+   "value": "40",
+   "raw": 39.924,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.adv.lb <- sponsors/vultr/out/summary.json::paired_arrivals.conservative_median_lower_bound_ms"
+  },
+  "vultr.lon.rtt": {
+   "value": "70",
+   "raw": 69.663,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.lon.rtt <- sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms.p50"
+  },
+  "vultr.fl.rtt": {
+   "value": "184",
+   "raw": 184.38,
+   "source": "results/sponsors/evidence.json::paper_keys.vultr.fl.rtt <- sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms.p50"
+  },
+  "e2e.lon.total": {
+   "value": "2,089",
+   "raw": 2088.962,
+   "source": "results/sponsors/evidence.json::paper_keys.e2e.lon.total <- results/sponsors/evidence.json::budget.scenarios.vultr_london_cold_half_rtt.p50.total_ms"
+  },
+  "e2e.fl.total": {
+   "value": "2,146",
+   "raw": 2146.32,
+   "source": "results/sponsors/evidence.json::paper_keys.e2e.fl.total <- results/sponsors/evidence.json::budget.scenarios.vultr_florida_cold_half_rtt.p50.total_ms"
+  },
+  "e2e.worst.total": {
+   "value": "2,512",
+   "raw": 2512.391,
+   "source": "results/sponsors/evidence.json::paper_keys.e2e.worst.total <- results/sponsors/evidence.json::budget.scenarios.vultr_florida_cold_full_rtt.p99.total_ms"
+  },
+  "e2e.worst.margin": {
+   "value": "488",
+   "raw": 487.609,
+   "source": "results/sponsors/evidence.json::paper_keys.e2e.worst.margin <- results/sponsors/evidence.json::budget.worst_case.margin_to_3s_ms"
+  },
+  "e2e.lon.margin": {
+   "value": "911",
+   "raw": 911.038,
+   "source": "results/sponsors/evidence.json::paper_keys.e2e.lon.margin <- results/sponsors/evidence.json::budget.scenarios.vultr_london_cold_half_rtt.p50.margin_to_3s_ms"
+  },
+  "snow.recomputed": {
+   "value": "20",
+   "raw": 20,
+   "source": "results/sponsors/evidence.json::paper_keys.snow.recomputed <- results/sponsors/evidence.json::snowflake.recheck.recomputed_ok"
+  },
+  "vultr.halfgap": {
+   "value": "57",
+   "raw": 57.358,
+   "source": "results/sponsors/evidence.json::budget.london_saving_vs_florida_ms.half_rtt_p50 (clock-free check)"
+  },
+  "e2e.feedhold.range": {
+   "value": "93–96%",
+   "raw": [
+    0.9574132990451717,
+    0.9318275000931827
+   ],
+   "source": "D: (feed 1,000 + hold 1,000 ms) / results/sponsors/evidence.json::budget.scenarios.vultr_{london,florida}_cold_half_rtt.p50.total_ms"
+  },
+  "snow.repro": {
+   "value": "62 of 62",
+   "raw": [
+    62,
+    62
+   ],
+   "source": "results/sponsors/evidence.json::snowflake.recheck.{reproduced,checked}"
+  },
+  "snow.lookup": {
+   "value": "42",
+   "raw": 42,
+   "source": "results/sponsors/evidence.json::snowflake.recheck.lookup_ok"
+  },
+  "wcap.oos.pnl": {
+   "value": "$3,615",
+   "raw": 3614.9839342683754,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.pnl_usd"
+  },
+  "wcap.base.oos.pnl": {
+   "value": "$3,688",
+   "raw": 3687.5359201936667,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.pnl_usd"
+  },
+  "wcap.oos.maxdd": {
+   "value": "−$555",
+   "raw": -554.9819334109488,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.max_dd_usd"
+  },
+  "wcap.base.oos.maxdd": {
+   "value": "−$469",
+   "raw": -469.4297898304612,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.max_dd_usd"
+  },
+  "wcap.oos.sr_ci": {
+   "value": "[3.4, 12.3]",
+   "raw": [
+    3.3798217235429715,
+    12.268275629463608
+   ],
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.sharpe_ann_ci95_stationary_bootstrap"
+  },
+  "wcap.base.oos.sr": {
+   "value": "6.7",
+   "raw": 6.667551867200974,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.sharpe_ann_calendar"
+  },
+  "wcap.base.oos.sr_ci": {
+   "value": "[1.9, 12.2]",
+   "raw": [
+    1.932604554403703,
+    12.16694331582434
+   ],
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.sharpe_ann_ci95_stationary_bootstrap"
+  },
+  "wcap.oos.ex5.c": {
+   "value": "−0.35",
+   "raw": -0.3532937447966977,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.ex_top5.per_share_c"
+  },
+  "wcap.base.oos.ex5.c": {
+   "value": "−0.34",
+   "raw": -0.33863539332462733,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.ex_top5.per_share_c"
+  },
+  "wcap.oos.ci_wallet": {
+   "value": "[−0.47, 2.49]",
+   "raw": [
+    -0.47083712883993095,
+    2.486566042975316
+   ],
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.per_share_ci95_c_wallet"
+  },
+  "wcap.oos.top5.cap_only": {
+   "value": "141%",
+   "raw": 1.4089717506759287,
+   "source": "results/v2/risk/wallet_cap.json::oos.decomposition_cap_only.top5_wallet_share_of_pnl"
+  },
+  "wcap.oos.top5.retire_only": {
+   "value": "122%",
+   "raw": 1.2195036288476488,
+   "source": "results/v2/risk/wallet_cap.json::oos.decomposition_retire_only.top5_wallet_share_of_pnl"
+  },
+  "wcap.oos.wwd": {
+   "value": "−$312",
+   "raw": -311.9802916162533,
+   "source": "results/v2/risk/wallet_cap.json::oos.with_cap.worst_wallet_day_pnl_usd"
+  },
+  "wcap.base.oos.wwd": {
+   "value": "−$875",
+   "raw": -875.4405910789495,
+   "source": "results/v2/risk/wallet_cap.json::oos.v2_uncapped.worst_wallet_day_pnl_usd"
+  },
+  "wcap.is.kept": {
+   "value": "63%",
+   "raw": 0.6298378835741988,
+   "source": "D: results/v2/risk/wallet_cap.json::is_joint_run.with_cap.pnl_usd / is_joint_run.v2_uncapped.pnl_usd"
+  },
+  "wcap.is.sr": {
+   "value": "10.6",
+   "raw": 10.566195967906333,
+   "source": "results/v2/risk/wallet_cap.json::is_joint_run.with_cap.sharpe_ann_calendar"
+  },
+  "wcap.is.maxdd": {
+   "value": "−$1,212",
+   "raw": -1211.931893467654,
+   "source": "results/v2/risk/wallet_cap.json::is_joint_run.with_cap.max_dd_usd"
+  },
+  "wcap.base.is.maxdd": {
+   "value": "−$569",
+   "raw": -569.4550360798748,
+   "source": "results/v2/risk/wallet_cap.json::is_joint_run.v2_uncapped.max_dd_usd"
+  },
+  "wcap.is.top5": {
+   "value": "87%",
+   "raw": 0.872942830222502,
+   "source": "results/v2/risk/wallet_cap.json::is_joint_run.with_cap.top5_wallet_share_of_pnl"
+  },
+  "wcap.base.is.top5": {
+   "value": "81%",
+   "raw": 0.8136622885258313,
+   "source": "results/v2/risk/wallet_cap.json::is_joint_run.v2_uncapped.top5_wallet_share_of_pnl"
+  },
+  "risk.pm.twosided.is": {
+   "value": "79%",
+   "raw": 0.7871449142557927,
+   "source": "results/v2/risk/per_match_loss.json::is.v2_uncapped.share_matches_buying_both_sides"
+  },
+  "risk.pm.p99.is": {
+   "value": "$87",
+   "raw": 86.62093020739393,
+   "source": "results/v2/risk/per_match_loss.json::is.v2_uncapped.p99_match_loss_usd"
+  },
+  "risk.pm.twosided.oos": {
+   "value": "71%",
+   "raw": 0.7114328507239142,
+   "source": "results/v2/risk/per_match_loss.json::oos.v2_uncapped.share_matches_buying_both_sides"
+  },
+  "risk.pm.p99.oos": {
+   "value": "$94",
+   "raw": 94.35401969705917,
+   "source": "results/v2/risk/per_match_loss.json::oos.v2_uncapped.p99_match_loss_usd"
+  },
+  "risk.pm.bound": {
+   "value": "$1,479",
+   "raw": 1478.5526315789473,
+   "source": "results/v2/risk/per_match_loss.json::theoretical.bound_incl_fees_usd (backtest's $3,000 gross cap per match; none in the live engine)"
+  },
+  "liq.orders.n": {
+   "value": "8.4 million",
+   "raw": 8407348,
+   "source": "results/liquidity/impact.json::data.IS.n_orders"
+  },
+  "liq.orders.matches": {
+   "value": "10,108",
+   "raw": 10108,
+   "source": "results/liquidity/impact.json::data.IS.n_matches"
+  },
+  "liq.orders.fit": {
+   "value": "4.5 million",
+   "raw": 4453211,
+   "source": "results/liquidity/impact.json::temporary_IS.n_orders (orders with a usable print-based mid)"
+  },
+  "liq.temp.top.small": {
+   "value": "0.75",
+   "raw": 0.7453587020480553,
+   "source": "results/liquidity/impact.json::temporary_IS.bins[30].mean_c"
+  },
+  "liq.temp.top.large": {
+   "value": "1.17",
+   "raw": 1.1669737356813887,
+   "source": "results/liquidity/impact.json::temporary_IS.bins[37].mean_c"
+  },
+  "liq.temp.mid.small": {
+   "value": "0.95",
+   "raw": 0.9495581847479595,
+   "source": "results/liquidity/impact.json::temporary_IS.bins[14].mean_c"
+  },
+  "liq.temp.mid.large": {
+   "value": "1.58",
+   "raw": 1.5797752437734962,
+   "source": "results/liquidity/impact.json::temporary_IS.bins[21].mean_c"
+  },
+  "liq.lambda30": {
+   "value": "0.05–0.14",
+   "raw": [
+    0.144167757295104,
+    0.144783573522822,
+    0.10493138938784208,
+    0.0785127358854149,
+    0.052247531668236515
+   ],
+   "source": "results/liquidity/impact.json::permanent_IS.30.lambda_c_per_1k (min-max over volume fifths)"
+  },
+  "liq.oos.lambda30.top": {
+   "value": "0.013",
+   "raw": 0.013286123609373231,
+   "source": "results/liquidity/impact.json::permanent_OOS.30.lambda_c_per_1k[4] (highest-volume fifth)"
+  },
+  "liq.is.lambda30.top": {
+   "value": "0.052",
+   "raw": 0.052247531668236515,
+   "source": "results/liquidity/impact.json::permanent_IS.30.lambda_c_per_1k[4]"
+  },
+  "liq.M": {
+   "value": "1.71",
+   "raw": 1.7117076546945202,
+   "source": "results/liquidity/impact.json::model.M (post-jump book-walk multiplier)"
+  },
+  "liq.l2.reprices": {
+   "value": "907",
+   "raw": 907,
+   "source": "results/liquidity/impact.json::l2.n_reprices"
+  },
+  "liq.l2.matches": {
+   "value": "30",
+   "raw": 30,
+   "source": "results/liquidity/impact.json::l2.n_matches"
+  },
+  "liq.phi.official": {
+   "value": "265",
+   "raw": 265,
+   "source": "results/liquidity/impact.json::phi_official_points.D_ge_3c.n_events"
+  },
+  "liq.phi.took": {
+   "value": "4–11%",
+   "raw": [
+    0.07682197895383609,
+    0.06914003698369732,
+    0.11009210618539399,
+    0.03904200281837044,
+    0.05973197502490652,
+    0.06615402845422226
+   ],
+   "source": "results/liquidity/impact.json::l2.phi_live_reprices.tau_*.took_share_pooled and phi_official_points.D_ge_3c.tau_*.took_share_pooled (min-max)"
+  },
+  "liq.phi.gt_half": {
+   "value": "7–23%",
+   "raw": [
+    0.06914893617021277,
+    0.07209612817089453,
+    0.12994350282485875,
+    0.10344827586206896,
+    0.12307692307692308,
+    0.23137254901960785
+   ],
+   "source": "results/liquidity/impact.json::...tau_*.share_events_phi_lo_below_0.5 (events where others took more than half; min-max)"
+  },
+  "liq.v2.half.oos.none": {
+   "value": "$28.4k",
+   "raw": 28407.0,
+   "source": "results/liquidity/impact.json::capacity.v2|none|burned_OOS.capital_where_sharpe_halves_usd"
+  },
+  "liq.v2.1x.oos.none": {
+   "value": "$92",
+   "raw": 92.2,
+   "source": "results/liquidity/impact.json::capacity.v2|none|burned_OOS.pnl_max.pnl_per_day_usd"
+  },
+  "liq.v2.half.oos.central": {
+   "value": "$28.0k",
+   "raw": 27996.0,
+   "source": "results/liquidity/impact.json::capacity.v2|central|burned_OOS.capital_where_sharpe_halves_usd"
+  },
+  "liq.v2.1x.oos.central": {
+   "value": "$88",
+   "raw": 87.9,
+   "source": "results/liquidity/impact.json::capacity.v2|central|burned_OOS.pnl_max.pnl_per_day_usd"
+  },
+  "liq.v2.half.oos.cons": {
+   "value": "$26.8k",
+   "raw": 26795.0,
+   "source": "results/liquidity/impact.json::capacity.v2|conservative|burned_OOS.capital_where_sharpe_halves_usd"
+  },
+  "liq.v2.1x.oos.cons": {
+   "value": "$71",
+   "raw": 71.4,
+   "source": "results/liquidity/impact.json::capacity.v2|conservative|burned_OOS.pnl_max.pnl_per_day_usd"
+  },
+  "liq.v2.1x.oos.cons.ci": {
+   "value": "[−$7, $150]",
+   "raw": [
+    -7.0502,
+    149.8
+   ],
+   "source": "results/liquidity/impact.json::capacity.v2|conservative|burned_OOS.pnl_max.pnl_per_day_boot_{lo,hi}"
+  },
+  "liq.cv.half.move": {
+   "value": "1%",
+   "raw": [
+    0.0036158222925677386,
+    0.005491365387004565
+   ],
+   "source": "D: |capacity.cv_lagcal|best|central|P / ...|none|P - 1| < 1% (P = IS, burned_OOS)"
+  },
+  "liq.cv.pmax.drop": {
+   "value": "6–8%",
+   "raw": [
+    0.07876106194690258,
+    0.0638778971170153
+   ],
+   "source": "D: 1 - capacity.cv_lagcal|best|conservative|P.pnl_max.pnl_per_day_usd / ...|none|P (P = IS, burned_OOS)"
+  },
+  "pers.slope.net": {
+   "value": "0.16",
+   "raw": -0.1551,
+   "source": "results/economics/persistence.json::fits.linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.slope.net.ci": {
+   "value": "0.06–0.25",
+   "raw": [
+    -0.2463,
+    -0.0639
+   ],
+   "source": "results/economics/persistence.json::fits.linear_wls_cal11.slope_c_per_month.ci95"
+  },
+  "pers.slope.gross": {
+   "value": "−0.02",
+   "raw": -0.0235,
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.slope.gross.ci": {
+   "value": "[−0.12, 0.07]",
+   "raw": [
+    -0.1199,
+    0.0728
+   ],
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_cal11.slope_c_per_month.ci95"
+  },
+  "pers.slope.fee": {
+   "value": "0.13",
+   "raw": 0.1316,
+   "source": "results/economics/persistence.json::fits.fee_linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.dnet": {
+   "value": "0.85",
+   "raw": -0.8547,
+   "source": "results/economics/persistence.json::composition.delta_net_c"
+  },
+  "pers.dfee": {
+   "value": "0.54",
+   "raw": -0.5371,
+   "source": "results/economics/persistence.json::composition.fee_part_c"
+  },
+  "pers.ddilution": {
+   "value": "0.40",
+   "raw": -0.3961,
+   "source": "results/economics/persistence.json::composition.entrant_dilution_c"
+  },
+  "pers.inc.trend.ci": {
+   "value": "[−0.10, 0.23]",
+   "raw": [
+    -0.0967,
+    0.2266
+   ],
+   "source": "results/economics/persistence.json::composition.incumbents_gross_trend_jan_aug.month_level_primary.ci95"
+  },
+  "pers.zero.months": {
+   "value": "3.3",
+   "raw": 3.27,
+   "source": "results/economics/persistence.json::projections.linear_wls_cal11.months_to_zero"
+  },
+  "pers.zero.ci": {
+   "value": "0.6–12.8",
+   "raw": [
+    0.6,
+    12.77
+   ],
+   "source": "results/economics/persistence.json::projections.linear_wls_cal11.ci95"
+  },
+  "pers.step.trend": {
+   "value": "−0.05",
+   "raw": -0.0545,
+   "source": "results/economics/persistence.json::projections.step_model_may2026.trend_given_step_c_per_month"
+  },
+  "pers.step.trend.ci": {
+   "value": "[−0.20, 0.09]",
+   "raw": [
+    -0.1986,
+    0.0897
+   ],
+   "source": "results/economics/persistence.json::projections.step_model_may2026.trend_given_step_ci95"
+  },
+  "pers.befee": {
+   "value": "8.4%",
+   "raw": 8.42,
+   "source": "results/economics/persistence.json::projections.breakeven_fee_rate_pct.is_1s_5pct_prints"
+  },
+  "pers.pool.mayaug": {
+   "value": "$41k",
+   "raw": 41187.0,
+   "source": "results/economics/persistence.json::profit.is_may_aug_mean_pnl30_usd_per_month"
+  },
+  "pers.pool.elast": {
+   "value": "0.53",
+   "raw": 0.5288,
+   "source": "results/economics/persistence.json::profit.total_elasticity_wrt_wallets.elasticity.coef"
+  },
+  "pers.pool.elast.ci": {
+   "value": "[0.21, 0.85]",
+   "raw": [
+    0.2063,
+    0.8513
+   ],
+   "source": "results/economics/persistence.json::profit.total_elasticity_wrt_wallets.elasticity.ci95"
+  },
+  "pers.pool.pw.janmay": {
+   "value": "$1,632",
+   "raw": 1632.0,
+   "source": "results/economics/persistence.json::profit.per_wallet_jan_may_mean_usd"
+  },
+  "pers.pool.pw.aug": {
+   "value": "$387",
+   "raw": 387.0,
+   "source": "results/economics/persistence.json::profit.per_wallet_aug_is_usd"
+  },
+  "pers.delay.may": {
+   "value": "+0.14",
+   "raw": 0.1384,
+   "source": "results/economics/persistence.json::regime.natural_experiments.delay_3s_to_1s_may2026.net30.b_minus_a_c"
+  },
+  "pers.delay.may.ci": {
+   "value": "[−0.04, 0.32]",
+   "raw": [
+    -0.0413,
+    0.3162
+   ],
+   "source": "results/economics/persistence.json::regime.natural_experiments.delay_3s_to_1s_may2026.net30.ci95"
+  },
+  "pers.fee35.jul": {
+   "value": "0.29",
+   "raw": -0.2916,
+   "source": "results/economics/persistence.json::regime.natural_experiments.fee_3_to_5_jul2026.net30.b_minus_a_c"
+  },
+  "pers.fee35.jul.ci": {
+   "value": "0.11–0.47",
+   "raw": [
+    -0.4652,
+    -0.109
+   ],
+   "source": "results/economics/persistence.json::regime.natural_experiments.fee_3_to_5_jul2026.net30.ci95"
+  },
+  "ft.c.oos.only": {
+   "value": "+0.67",
+   "raw": 0.6734,
+   "source": "results/economics/persistence.json::aug_overlap.oos_print_weighted_net30_c_oos_prints_only_derived"
+  },
+  "rig2.v2is.hlz_sr": {
+   "value": "13.4",
+   "raw": 13.432922774148123,
+   "source": "results/rigor/psr.json::headline.v2_is_hlz_sr_haircut_ann"
+  },
+  "rig2.v2oos.psr0": {
+   "value": "0.987",
+   "raw": 0.9871278503183615,
+   "source": "results/rigor/psr.json::series.v2_oos.psr_sr0"
+  },
+  "rig2.v2oos.psr2": {
+   "value": "0.94",
+   "raw": 0.9407525120439371,
+   "source": "results/rigor/psr.json::series.v2_oos.psr_sr2"
+  },
+  "rig2.v2oos.mintrl0": {
+   "value": "22",
+   "raw": 22.217340717804174,
+   "source": "results/rigor/psr.json::series.v2_oos.mintrl_days_sr0"
+  },
+  "rig2.v2oos.mintrl2": {
+   "value": "44",
+   "raw": 44.29576830027042,
+   "source": "results/rigor/psr.json::series.v2_oos.mintrl_days_sr2"
+  },
+  "rig2.v2oos.t": {
+   "value": "2.21",
+   "raw": 2.207242075142896,
+   "source": "results/rigor/psr.json::series.v2_oos.hlz.t_stat"
+  },
+  "rig2.t_req": {
+   "value": "4.38",
+   "raw": 4.380308332333105,
+   "source": "results/rigor/psr.json::series.v2_oos.hlz.t_required_bonferroni_5pct"
+  },
+  "rig2.v2oos.days_req": {
+   "value": "158",
+   "raw": 157.53223060950316,
+   "source": "results/rigor/psr.json::series.v2_oos.hlz.days_required_at_this_sr"
+  },
+  "rig2.v2oos.hlz_sr": {
+   "value": "0",
+   "raw": 0.0,
+   "source": "results/rigor/psr.json::series.v2_oos.hlz.sr_haircut_ann_bonferroni"
+  },
+  "copier.is.c": {
+   "value": "−0.47",
+   "raw": -0.46901224510963485,
+   "source": "results/rigor/psr.json::headline.copier_central_is_c"
+  },
+  "copier.oos.c": {
+   "value": "−1.37",
+   "raw": -1.373609685592897,
+   "source": "results/rigor/psr.json::headline.copier_central_oos_c"
+  },
+  "copier.opt.is.c": {
+   "value": "+0.67",
+   "raw": 0.6714593479045835,
+   "source": "results/rigor/psr.json::headline.copier_same_prev_is_c"
+  },
+  "copier.opt.oos.c": {
+   "value": "+0.21",
+   "raw": 0.212873390037556,
+   "source": "results/rigor/psr.json::headline.copier_same_prev_oos_c"
+  },
+  "copier.opt.oos.ci": {
+   "value": "[−0.32, 0.73]",
+   "raw": [
+    -0.32191228298764946,
+    0.7323386145918723
+   ],
+   "source": "results/rigor/psr.json::headline.copier_same_prev_oos_ci95_c"
+  },
+  "cv.pre.psr0.is": {
+   "value": "0.86",
+   "raw": 0.8562633873405208,
+   "source": "results/rigor/psr.json::headline.cv_pre_is_psr_sr0_seed_median"
+  },
+  "cv.pre.psr0.oos": {
+   "value": "0.51",
+   "raw": 0.5090009950308609,
+   "source": "results/rigor/psr.json::headline.cv_pre_oos_psr_sr0_seed_median"
+  },
+  "copier.sameside": {
+   "value": "69–80%",
+   "raw": [
+    0.6914137533615059,
+    0.797294383960332
+   ],
+   "source": "results/rigor/psr.json::copier.{oos,is}.central.share_priced_from_same_side_print"
+  },
+  "copier.lag": {
+   "value": "1.98",
+   "raw": 1.9760000705718994,
+   "source": "results/rigor/psr.json::copier.definition.block_lag_s.median"
+  },
+  "rig2.cvcal.oos.pass": {
+   "value": "4",
+   "raw": 4,
+   "source": "D: results/rigor/psr.json::cv.cv_cal_oos (PSR0, PSR2 seed medians >= 0.95; MinTRL met by most seeds; HLZ median > 0; bootstrap CI > 0)"
+  },
+  "rig2.v2oos.pass": {
+   "value": "3",
+   "raw": 3,
+   "source": "results/rigor/psr.json::survives[v2_oos].n_pass_of_6"
+  },
+  "cvt.a.shot_detected": {
+   "value": "33",
+   "raw": 33,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.a.shot_detected <- tennis_detections.json frames[172..206].ball_xy non-null"
+  },
+  "cvt.a.shot_frames": {
+   "value": "35",
+   "raw": 35,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.a.shot_frames <- tennis_detections.json frames 172-206 (the drawn shot)"
+  },
+  "cvt.b.lead_ms": {
+   "value": "66",
+   "raw": 65.7658,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.lead_ms <- results/cv_teaser/bounce_example.json::call.lead_ms (= results/tennis_tracking/predictions_at_leads.csv lead_ms, fid 53, lead 33, source tracknet)"
+  },
+  "cvt.b.err_cm": {
+   "value": "69",
+   "raw": 69.05677808875824,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.err_cm <- results/tennis_tracking/predictions_at_leads.csv ground_err_cm (fid 53, lead 33, source tracknet)"
+  },
+  "cvt.b.d_hat_m": {
+   "value": "1.30",
+   "raw": 1.3037,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.d_hat_m <- results/tennis_tracking/predictions_at_leads.csv ground_d (fid 53, lead 33, source tracknet)"
+  },
+  "cvt.b.d_true_cm": {
+   "value": "63",
+   "raw": 62.92,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.d_true_cm <- results/tennis_tracking/flights.csv d_true (fid 53)"
+  },
+  "cvt.b.tau_cm": {
+   "value": "35",
+   "raw": 35.1,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.tau_cm <- results/tennis_tracking/summary.json::headline.tracknet.out_calls_margin_rule.ground.test_by_lead.33.tau_cm"
+  },
+  "cvt.b.game": {
+   "value": "10",
+   "raw": 10,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.b.game <- results/tennis_tracking/flights.csv game (fid 53)"
+  },
+  "cvt.c.live_s": {
+   "value": "1.96",
+   "raw": 1.9561359999999999,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.c.live_s <- D: feed + ours + net + hold - lead = e2e.total - cv.eng.lead (Eq. 1 left side; composite: table-tennis lead, tennis venue)"
+  },
+  "cvt.c.late_vs_pre_ms": {
+   "value": "1,116",
+   "raw": 1116.136,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.c.late_vs_pre_ms <- D: c.live_s - reprice_band[0] (pre-registered 2.0 s stamp lag)"
+  },
+  "cvt.c.early_vs_post_ms": {
+   "value": "24",
+   "raw": 23.864000000000107,
+   "source": "results/cv_teaser/teaser_numbers.json::numbers.c.early_vs_post_ms <- D: reprice_band[1] (post hoc 3.14 s stamp lag) - c.live_s"
   }
  }
 }

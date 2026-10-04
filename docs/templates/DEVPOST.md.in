@@ -25,7 +25,7 @@ trail by tens of seconds. That makes it a natural lab for pricing speed.
   ({{univ.volume}} traded, {{univ.first}} to {{univ.last}}), from Polymarket's public trade tapes. Every print is
   classified by side, and every fee is the match's own.
 - **Finds a persistent fast tier.** Wallets that trade within 3 s of a score move, chosen walk-forward on past months,
-  earn {{ft.c.is}}¢ / {{ft.c.oos}}¢ a share after fees (in sample / held out) and are positive in
+  earn {{ft.c.is}}¢ / {{ft.c.oos.only}}¢ a share after fees (in sample / held out, OOS prints only) and are positive in
   {{ft.months.is}} in-sample and {{ft.months.oos}} out-of-sample months. Other takers lose, and copying the same trades
   3 s later loses.
 - **Turns that edge into a frozen book, v2,** measured at the fast tier's own fills (the opportunity at their speed,
@@ -55,7 +55,7 @@ trail by tens of seconds. That makes it a natural lab for pricing speed.
   p50 per emitted call), {{cv.eng.dropped}} frames dropped. (The offline evaluation's {{cv.tt.tp50}} of
   {{cv.tt.called50}} used a look-ahead feature, so we lead with the live engine.) For tennis, a spin-aware tracker cuts
   landing error from {{cv.spin.base200}} to {{cv.spin.bls200}} cm at 200 ms before the bounce in simulated physics; our
-  tennis calls are simulated, and the video's real rally (licensed stock footage) shows only our tracker's ball trail.
+  tennis calls are simulated, and the video's real rally (licensed stock footage) shows only the tracked ball trail (public detector, our linking).
 - **Measures latency live.** The book reprices {{lat.book_vs_stamp}} s before the official point stamp; ESPN,
   Polymarket's own sports feed and the WTA API trail the book by {{lat.espn}}–{{lat.wta}} s.
 
@@ -114,7 +114,7 @@ latex (tectonic) · polymarket-clob-gamma-data-apis · kalshi-api · hipergator 
 - TrackNet ball-detector weights and TennisProject / TennisCourtDetector code (yastrebksv; no licence file), used
   unmodified for evaluation and not redistributed.
 - Public datasets: OpenTTGames (CC BY-NC-SA 4.0), the TrackNet tennis dataset, the Kenneth R. French Data Library factors.
-- In the video: a licensed stock tennis clip, {{meta:tennis_credit}}, shown with our tracker's ball trail (not a
+- In the video: a licensed stock tennis clip, {{meta:tennis_credit}}, shown with the tracked ball trail (public TrackNet detector, our linking) (not a
   match we traded); narration and music bed generated with {{meta:voice}} (AI voice).
 - Open-source Python libraries listed in `requirements.txt` and `requirements-extra.txt`.
 

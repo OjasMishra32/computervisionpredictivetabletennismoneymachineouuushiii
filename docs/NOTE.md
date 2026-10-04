@@ -42,7 +42,7 @@ Simulated: only when our CV would see each point (an assumed feed latency) and t
 
 Wimbledon is listed under a separate Polymarket series and is outside our universe.
 
-## Table 1 of the PDF: our copy of the fast tier's trades (v2)
+## v2, our copy of the fast tier's trades (Table 1 of the PDF, top rows)
 
 Sharpe uses daily P&L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
 corrects for 3,386 trials.
@@ -55,9 +55,11 @@ corrects for 3,386 trials.
 | Annual return / volatility | 253% / 17.5% | 148% / 22.2% |
 | Max drawdown / worst month | −2.0% / +$2,543 | −2.1% / −$434 |
 | Turnover (× a year) / skew | 93 / +0.53 | 129 / +0.33 |
+| Fees paid, bps of notional | 120 | 179 |
+| PSR / MinTRL / haircut tests passed (of 6) | 6 | 3 |
 | Net ¢, fees ×2 / all costs ×2 | +0.77 / +0.27 | −0.34 / −0.84 |
 
-## Table 2 of the PDF: the CV strategy at three assumed feed delays
+## The CV strategy at three assumed feed delays (Table 1 of the PDF, lower rows)
 
 Simulated (assumed feed latency (licensed feed not purchased); parameters measured; 20 seeds a cell). Pre-registered stamp lag 2.0 s (break-even feed
 delay 1.09 s IS, 1.01 s OOS):
@@ -77,9 +79,23 @@ Post hoc estimate 3.14 s (assumes humans at the court; break-even 2.23 s IS,
 | 1 s, base case | +$94 | 11.9 | +1.11 [0.85, 1.38] | +$57 | 8.8 | +0.66 [0.10, 1.19] |
 | 3 s, requirement | −$6 | −1.4 | −0.79 [−2.26, 0.60] | −$11 | −2.4 | −1.47 [−4.45, 1.34] |
 
-Read per point, the post hoc inference loses (−$17 a day at 1 s). A replay of 9
+Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table 1 of the PDF
+(`results/tier0/cost_turnover.json`); fees run 163–226 bps of notional, and with fees doubled every
+out-of-sample cell loses (best −$13 a day). Read per point, the post hoc inference loses
+(−$17 a day at 1 s). A replay of 9
 matches recorded live against their real order books calls every point ex ante and loses in 36 of
 36 settings (−0.94¢ a share at 1 s).
+
+## If we were a quant firm with a licensed 0.5 s feed (counterfactual)
+
+Real Polymarket prices, fills, fees and the venue's 1 s hold; simulated camera calls at an assumed feed delay; no feed
+bought, no order placed. At 0.5 s the trader makes +$28 / +$133 a day in sample
+and +$15 / +$81 on the burned OOS (pre-registered / post hoc). A fresh holdout,
+pre-registered at `dc95717` before its data were fetched (16 newer matches,
+2 UTC days), returned −$20.5 / +$50.8 a day (CIs
+[−$96, +$57], [−$38, +$141]): anecdotal, evidence neither for nor against an edge. The most a
+firm could pay a month for the feed is $384 / $2,397 on the burned OOS, against
+quotes of $1,250–$10,000. Fig. 3 of the PDF; `results/fresh_holdout/`, `results/scenario/`.
 
 ## Speed, capacity and what failed
 
@@ -117,7 +133,7 @@ matches recorded live against their real order books calls every point ex ante a
 - **What failed.** Doubled fees out of sample (−0.34¢); v2 on 11,307 never-examined markets
   (blind); v2-safe's blind test; the CV rule v3 (blind); the maker book (blind); table-tennis markets (untestable); v2
   after a central data licence (−$75 a day); the live-book replay. Blind forward test:
-  pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5). We tried 4,219 variants and logged 85 reads of held-out data (Appendix D of the
+  pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5). We tried 4,219 variants and logged 111 reads of held-out data (Appendix D of the
   PDF). Every test is in Appendix B; every formula with a worked example is in Appendix A.
 
 Reproduce: `bash reproduce.sh` (rebuilds the result files, every figure and this paper).

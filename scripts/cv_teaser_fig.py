@@ -1,5 +1,11 @@
-"""CV teaser figure for page 1-2 of the paper: (a) our tracker on a real licensed rally, (b) one real broadcast test
-bounce drawn top-down, (c) the call-to-order timeline.
+"""CV teaser figure for page 1-2 of the paper: (a) the public TrackNet ball detector with our own linking and court-line
+fitting on a real licensed rally, (b) one real broadcast test bounce drawn top-down, (c) the call-to-order timeline.
+
+Verifier fixes (2026-10-04): no "our tracker" wording (the ball and court detectors are public weights; ours are the
+linking and the court-line fit); the bounce label points at the labelled bounce (x), not the after-call track; the
+shaded band in (c) is labelled "median reprice" (the caption gives the 3 readings, inferred); the caption states the
+selection rule, the assumed 25 fps behind "66 ms", that the detector saw frames of all ten games, and that the order
+in (c) beats the median reprice only under the post hoc stamp lag, by about 24 ms.
 
     python scripts/cv_teaser_fig.py                 # draw  -> results/cv_teaser/fig_cv_teaser.{pdf,png}, caption.txt,
                                                     #          teaser_numbers.json
@@ -322,7 +328,7 @@ def panel_b(fig, ax) -> None:
     xl = 1.95
     ax.annotate(f"predicted\n{lead:.0f}{T}ms early", xy=(cx, cy), xytext=(xl, 14.05), ha="left", va="center",
                 color=O, arrowprops={**ln, "color": O}, **kw)
-    ax.annotate(f"bounce\n{d_true * 100:.0f}{T}cm out", xy=(bx, by), xytext=(xl, 12.75), ha="left", va="center",
+    ax.annotate(f"bounce (\u00d7)\n{d_true * 100:.0f}{T}cm out", xy=(bx, by), xytext=(xl, 12.75), ha="left", va="center",
                 color=K, arrowprops={**ln, "color": K}, **kw)
     ax.text(xl + 0.45, HALF_LEN - 0.12, "baseline", ha="left", va="top", color=M, fontsize=fs.FS_SMALL, zorder=9)
     ax.annotate(f"{tau * 100:.0f}{T}cm margin\n(95%, train)", xy=(SINGLES_HALF_W + tau * 0.5, 10.25),
@@ -397,8 +403,8 @@ def panel_c(fig, ax) -> dict:
     fs.direct_label(ax, items, dx_pt=5.0, pad_pt=1.0, leader_min_pt=3.0, linespacing=1.05)
     ax.annotate("ball lands", xy=(0.995, 0.0), xytext=(0, -1.5), textcoords="offset points", ha="right",
                 va="top", color=K, fontsize=fs.FS_SMALL, zorder=6)
-    ax.text(0.995, t_venue + hold * 0.5 + (t_live - t_venue - hold * 0.5) / 2, "book reprices", ha="right",
-            va="center", color=M, fontsize=fs.FS_SMALL, zorder=6)
+    ax.text(0.995, t_venue + hold * 0.5 + (t_live - t_venue - hold * 0.5) / 2, "median reprice",
+            ha="right", va="center", color=M, fontsize=fs.FS_SMALL, zorder=6)
     ax.spines["bottom"].set_visible(False)
     ax.set_xticks([])
     ax.set_yticks([0, 1, 2])
@@ -419,7 +425,7 @@ def draw() -> list[str]:
     panel_a(fig, ax_a)
     panel_b(fig, ax_b)
     c = panel_c(fig, ax_c)
-    fs.panel(ax_a, "a", "Real rally, our tracker", x_in=COL_A[0], y_in=ty)
+    fs.panel(ax_a, "a", "Real rally, public detector", x_in=COL_A[0], y_in=ty)
     fs.panel(ax_b, "b", f"Out call {NUM['b.lead_ms']['text']}{T}ms early", x_in=COL_B[0], y_in=ty)
     fs.panel(ax_c, "c", f"Early call, order at {NUM['c.live_s']['text']}{T}s", x_in=COL_C[0], y_in=ty)
     paths = fs.save_fig(fig, "fig_cv_teaser", OUT, meta={"Creator": "scripts/cv_teaser_fig.py"})
@@ -431,19 +437,32 @@ def draw() -> list[str]:
 
 def write_caption(c: dict) -> None:
     n = {k: v["text"] for k, v in NUM.items()}
+    pre_rp, post_rp = c["reprice"][0], c["reprice"][1]
+    late = (c["live"] - pre_rp) * 1e3
+    early = (post_rp - c["live"]) * 1e3
+    rec("c.late_vs_pre_ms", f"{late:,.0f}", late, "D: c.live_s - reprice_band[0] (pre-registered 2.0 s stamp lag)")
+    rec("c.early_vs_post_ms", f"{early:.0f}", early, "D: reprice_band[1] (post hoc 3.14 s stamp lag) - c.live_s")
+    n = {k: v["text"] for k, v in NUM.items()}
     cap = (
-        f"(a) Our tracker on a freely licensed real rally (Pexels, Gelato Prod; not broadcast footage; sponsor board "
-        f"painted out): the ball in {n['a.shot_detected']} of the shot's {n['a.shot_frames']} frames and the court "
-        f"lines fitted on every frame; no in/out call is made on this clip. "
-        f"(b) A held-out TrackNet broadcast bounce (test game {n['b.game']}), drawn in court metres: predicted "
-        f"{n['b.lead_ms']} ms early, the landing was {n['b.err_cm']} cm off but cleared the {n['b.tau_cm']} cm margin "
-        f"(95th percentile of train error), one of {n['b.slot_calls'].split(' of ')[1]} correct test calls at that "
-        f"lead; only bounce-time calls met our 95% rule on the train games. "
-        f"(c) Eq. (1) on a clock: the median call is {n['c.lead_ms']} ms early (held-out table tennis, "
-        f"{n['c.lead_n']} misses called), ours plus network {n['c.ours_ms']} + {n['c.net_ms']} ms, but a simulated "
-        f"{n['c.feed_s']} s feed and the {n['c.hold_s']} s venue hold make the order executable {n['c.live_s']} s "
-        f"after the point, inside the {n['c.reprice_band_s']} s range of median reprice estimates (inferred, not "
-        f"measured)."
+        f"Three separate pieces of our vision work, from different clips and two sports (not one end-to-end run). "
+        f"(a) A freely licensed real rally (Pexels, not broadcast footage; sponsor board painted out): the public "
+        f"TrackNet ball detector with our own offline linking and court-line fitting finds the ball in "
+        f"{n['a.shot_detected']} of the shot's {n['a.shot_frames']} frames ({n['a.clip_share']} of the clip) and "
+        f"registers the court on every frame; no in/out call is made on this clip. "
+        f"(b) A test bounce of the TrackNet broadcast set (game {n['b.game']}; games 8-10 were kept out of our tuning, "
+        f"but the public detector saw frames of all ten games), in court metres: our simplest predictor (the latest "
+        f"tracked point projected onto the court; hollow grey: the track after the call) put the landing "
+        f"{n['b.d_hat_m']} m out {n['b.lead_ms']} ms before the bounce at an assumed 25 fps, beyond the "
+        f"{n['b.tau_cm']} cm margin, so we called it out; the ball (x) landed {n['b.d_true_cm']} cm out, so the call "
+        f"was right although the prediction was {n['b.err_cm']} cm off. Picked by a fixed rule: the earliest of the "
+        f"{n['b.slot_calls'].split(' of ')[1]} test outs called at the 33 ms slot, all correct; only bounce-time calls "
+        f"passed our 95% precision rule on the training games. "
+        f"(c) Eq. (1) as a clock with numbers from two sports: a median {n['c.lead_ms']} ms call lead (held-out table "
+        f"tennis, {n['c.lead_n']} misses called), our {n['c.ours_ms']} ms pipeline, {n['c.net_ms']} ms of network, a "
+        f"simulated {n['c.feed_s']} s feed and the {n['c.hold_s']} s venue hold put the order at {n['c.live_s']} s "
+        f"after the point: {n['c.late_vs_pre_ms']} ms after the median reprice under our pre-registered 2.0 s stamp "
+        f"lag and only about {n['c.early_vs_post_ms']} ms before it under the post hoc 3.14 s reading (shaded: the "
+        f"median reprice under three stamp-lag readings, inferred, not measured)."
     )
     (OUT / "caption.txt").write_text(cap + "\n")
 

@@ -114,6 +114,16 @@
    "text": "2,119",
    "raw": 2118.595,
    "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.total_ms.p50 (no lead credited; paper key e2e.total)"
+  },
+  "c.late_vs_pre_ms": {
+   "text": "1,116",
+   "raw": 1116.136,
+   "source": "D: c.live_s - reprice_band[0] (pre-registered 2.0 s stamp lag)"
+  },
+  "c.early_vs_post_ms": {
+   "text": "24",
+   "raw": 23.864000000000107,
+   "source": "D: reprice_band[1] (post hoc 3.14 s stamp lag) - c.live_s"
   }
  }
 }
