@@ -1,59 +1,46 @@
-# Ian: help finish the paper (updated Sun Oct 4, ~2:50 AM; hard stop 8:30 AM EDT)
+# Ian: independent proof that our numbers are right (updated Sun Oct 4, ~3:30 AM; hard stop 8:30 AM EDT)
 
-What is judged: the 5-page quant note (PDF) plus a public repo that judges can run. Judges spot-check that the
-note's numbers match what the code produces. If they don't, or if judges find look-ahead or tuning on held-out
-data, the Performance score is capped at 4/10. Your Snowflake check already re-derives 62 of the paper's numbers.
-Now we want **every** number checked.
+What is judged: the 5-page quant note (PDF) plus a public repo. The rubric caps Performance at 4/10 if judges can't
+reproduce the note's numbers from our code. Your job is the strongest possible evidence against that: **re-derive
+the paper's headline numbers yourself, in SQL (DuckDB or Snowflake), from row-level files, without our Python.** If
+you match, the paper can say a teammate independently re-derived the headline numbers.
 
-**Stop merging PRs into main.** Main gets rewritten and force-pushed this morning. Push only your own branches,
-or just send results to Ojasva.
+**Don't merge PRs into main.** It gets rewritten and force-pushed this morning. Push only your own branch, or send
+results to Ojasva.
 
-Get the latest code from the temporary branch `snapshot-0300` (the full repo as of 3 AM; deleted after the final
-push). Ojasva sends you the current PDF. To get a working copy:
+## Get the latest code (updated at 3:30 AM: includes the integrated paper numbers)
 ```bash
 git clone --branch snapshot-0300 --single-branch https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii ian_check && cd ian_check
+# if you already cloned it:  git pull
 ```
+Every printed number is in `results/paper/numbers.json` (`numbers` → key → `text` + `source` file::key). Ojasva
+sends the current PDF.
 
-## 1. Independent check of every number in the paper (main job, about 1.5–2 h)
-`results/paper/numbers.json` lists every number printed in the paper (766). Each entry gives the printed `text` and
-a `source` (`file::key`; some sources are CSV/JSON paths with filters).
-- Write one script, `sponsors/snowflake/check_all.py`, extending your existing checker. It should resolve **every**
-  source, read the raw value from the result file, format it the way the paper prints it, and compare it with
-  `text`.
-- Load the results into DuckDB as you did for Snowflake. Recompute from rows where rows exist: e.g. daily P&L CSVs
-  → Sharpe and $/day, trade ledgers → per-share cents, `per_match_loss.json` → worst match.
-- Output `sponsors/snowflake/out/check_all.md` with a summary line:
-  `N checked: X match, Y lookup-only, Z mismatched, W unresolvable`.
-  Then list every mismatch (key, printed, recomputed, source) and every source you couldn't resolve.
-- Also pull the text out of the PDF's pages 1–5 (pymupdf) and flag any number printed there that isn't in
-  `numbers.json` at all. A hard-coded number is a red flag for judges.
-- **Send Ojasva the mismatch list as soon as you have a first pass**, ideally by 4:30 AM. Revision rounds are
-  running, and early fixes land in the paper.
-- Push on branch `sponsor/snowflake-final`, folder `sponsors/snowflake/` only.
-- If the paper's numbers change after the final push, Ojasva tells you. Re-run then, reading
-  `results/note_numbers.json` first and falling back to `results/paper/numbers.json`.
+## 1. Re-derive the headline numbers from rows (main job; send a first table by about 5:00 AM)
+These row-level files are in git, so you don't need the data download:
 
-## 2. Read the paper as a judge, for three criteria (about 30 minutes, any time before 4:30 AM)
-Read pages 1–5 of the PDF with the organizers' track page open
-(https://www.gqhacks.com/tracks/systematic-trading: rubric, "what judges want", risk & capacity chapter).
-Yoan covers Performance, Innovation and overall clarity. **You cover:**
-- **Economic Foundation.** Is it clear who is on the other side of our trades, why the edge exists, and why it
-  persists or what kills it? Was it written before results?
-- **Risk Management.** Limits, the most we can lose on one position, de-risking rules set in advance, factor
-  exposure, tail and regime risk. Is each one there, concrete and believable?
-- **Liquidity & Capital.** Size as a share of volume, capacity in dollars, price impact, costs doubled. Can a judge
-  find each one in under a minute?
+| Paper numbers | Row-level file in the repo | What to compute |
+|---|---|---|
+| v2 IS / OOS: $/day, Sharpe (annualised from daily), max drawdown, worst day | `results/rigor/psr_daily.csv` | daily P&L → mean, sd, Sharpe √365 (check which annualisation the paper uses), drawdown on capital |
+| CV trader at 0.5 / 1 / 3 s, both readings, IS / OOS ($/day, ¢/share, Sharpe, % wrong) | `results/tier0/latency_sweep_seeds.csv` | mean over the 20 seeds per cell |
+| Tier-0 v3 burned OOS and U2 blind (IS / OOS) | `results/tier0_v3/burned_oos/trades_frozen_v3_burned_oos.parquet`, `results/tier0_v3/u2/*.parquet`, `results/tier0_v3/*/daily*.csv` | per-share ¢, $/day, Sharpe |
+| Fresh holdout (licensed 0.5 s scenario) and the showcase match | `results/fresh_holdout/seed_daily_paths.csv`, `showcase_trades_all_seeds.csv`, `daily.csv` | $/day per reading, showcase mean P&L |
+| Capacity (CV) | `results/capacity/cv_seeds.parquet`, `market_daily.csv` | the size where Sharpe halves |
 
-Send short bullets: page, sentence, what's missing or weak, and the fix if you see one. Be blunt.
+Output `sponsors/snowflake/out/independent_rederivation.md` with a table:
+`paper key | printed | your SQL value | match (✓/✗) | SQL query file`.
 
-## 3. Quick-path run on a different machine from Yoan's (about 15 minutes)
-In your clone, run `bash run.sh setup && bash run.sh redteam && bash run.sh tests`. Note your OS and Python version,
-and send any error with its full output. Yoan runs the full 2-hour chain; you only check that the quick path works
-on a second OS or Python version.
+For every ✗, write what differs: the definition (annualisation, capital base, seed averaging) or a real mismatch.
+**Send Ojasva each ✗ as soon as you find it**, because the fix workflow running now can act on it. Commit the SQL
+under `sponsors/snowflake/sql/` and push branch `sponsor/snowflake-final`.
 
-## 4. Optional, only if 1–3 are done: Solana pre-registration anchoring
-Follow the previous brief: devnet only, `sponsors/solana/` only, branch `sponsor/solana`. Memos carry the file
-sha256 and the commit date, not the commit hash.
+## 2. Then: every other number (`check_all.py`)
+Extend your existing checker to resolve every `source` in `numbers.json` (766 keys), compare it with `text`, and
+list mismatches and anything unresolvable. Also flag any number printed on pages 1–5 of the PDF that isn't in
+`numbers.json`; a hard-coded number is a red flag.
 
-Rules: no keys in git; no "Co-Authored-By" or AI trailer lines; report problems rather than fixing the paper
-yourself (Ojasva's revision rounds apply the fixes).
+## 3. If time remains: quick path on your machine
+Run `bash run.sh setup && bash run.sh redteam && bash run.sh tests`, and send your OS, Python version and any full
+error.
+
+Rules: no keys in git; no "Co-Authored-By" or AI trailer lines; report rather than editing the paper.
