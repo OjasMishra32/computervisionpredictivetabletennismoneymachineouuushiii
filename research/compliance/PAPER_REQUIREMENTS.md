@@ -48,3 +48,8 @@
 The live paper session was stopped and the forward test was not run (HYPOTHESIS_V2.md A3). Remove every "pending" slot:
 state once, in the rigor/robustness table, "forward test and live paper session: not run (submitted before the forward
 window closed)". Do not present any live-session numbers.
+
+## Addendum (2026-10-04T02:59:14Z): forward test reinstated (supersedes the previous addendum for the forward test only)
+The blind forward test runs once at 11:30 UTC (HYPOTHESIS_V2.md A4). Keep ONE clean slot for it in the results/rigor
+table that fills automatically from results/v2/forward.json (and results/tier0_v3/forward*.json) at build time; until then
+it reads "blind forward test: runs 2026-10-04 11:30 UTC (pre-registered)". The live paper session stays out.

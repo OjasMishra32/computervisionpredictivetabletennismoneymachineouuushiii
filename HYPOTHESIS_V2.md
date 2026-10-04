@@ -102,3 +102,10 @@ The team decided to submit before the pre-registered forward test window closes,
 and the tier-0 v3 forward secondary (scripts/tier0_v3_forward.py) were NOT run and no forward-window data was read for
 them. The paper reports them as "not run (submitted before the forward window closed)". The live paper session was also
 stopped (research/v2/maker/DEVIATIONS_LIVE.md L15).
+
+## Amendment A4 (2026-10-04T02:59:14Z): forward test reinstated
+Amendment A3 is withdrawn: the team reinstated the forward test before any forward-window data was read for it
+(results/forward_peeks.log has no START line; results/v2/forward.json does not exist). The forward test
+(scripts/forward_test.py, rules as in A1/A2) and the tier-0 v3 forward secondary (scripts/tier0_v3_forward.py,
+research/v2/tier0_v3/PREREG.md) run ONCE at or after 2026-10-04 11:30 UTC, as originally pre-registered, and their results
+are reported whatever they are. The live paper session stays stopped (DEVIATIONS_LIVE.md L15).
