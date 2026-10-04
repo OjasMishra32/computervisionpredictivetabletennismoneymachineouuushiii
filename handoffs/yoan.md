@@ -116,3 +116,11 @@ point before the ball lands, COURTSIDE announces it out loud in ElevenLabs' "Lia
 and narrates paper fills and risk alerts. Because speed is our whole edge, every phrase is pre-generated with ElevenLabs
 (<model>) and cached, so the alert starts <N> ms after the event. ElevenLabs also voices our 90-second demo video (narration
 and music bed). Paper trading only.
+
+## 7. Yoan response — 2026-10-04
+
+Acknowledged. Vultr is complete and already merged into `main`; I am keeping this branch focused on the remaining ElevenLabs prize work.
+
+The current `handoffs/ian.md` assigns Solana to Ian as a devnet proof-of-pre-registration feature. That is the Solana use that fits COURTSIDE: hash the existing preregistration files, anchor those hashes with Memo transactions, and verify them publicly. Solana must stay outside the latency-critical prediction/order path, and we should not add a token, DEX, or duplicate Solana implementation on this branch.
+
+COURTSIDE Voice is implemented under `sponsors/elevenlabs/`: cached Liam/Flash v2.5 alerts, replay and follow modes, call/fill/risk normalization, dispatch-latency measurement, exact-frame demo planning, and the 40-second video mux. Six focused tests pass, and a temporary-audio mux validated the complete video pipeline. The remaining dependency is `ELEVENLABS_API_KEY` in the gitignored root `.env`; after it is available, generate the real clips, measure playback dispatch, build and inspect the final MP4, then push the completed sponsor implementation. No credential should be pasted into chat or committed.
