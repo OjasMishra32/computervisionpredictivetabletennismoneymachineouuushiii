@@ -27,7 +27,10 @@ DECK = ["docs/deck/build_deck.py"]
 PUBLIC = ["README.md", "docs/DEVPOST.md"]
 TEAM = ["docs/QA_PREP.md"]
 GROUPS = {"paper": PAPER, "video": VIDEO, "deck": DECK, "readme/devpost": PUBLIC}
-FORBIDDEN = [r"calibrated from the data", r"goes live", r"stricter readings"]
+FORBIDDEN = [r"calibrated from the data", r"goes live", r"stricter readings", r"\bburned\b",
+             r"\b\d[\d,]*\s+(logged\s+)?reads\s+of\s+held-out", r"no look-?ahead in the (tradable|executable)",
+             r"all-points (version|book)"]
+REGISTRY = "results/provenance/experiments.json"
 OFFLINE_ONLY = [r"11/11", r"11 of 11", r"408\s*ms"]
 
 
@@ -100,31 +103,38 @@ def main() -> int:
         h += [x for x in hits(files, pat) if "never say" not in x.lower() and "never speak" not in x.lower()
               and "fail list" not in x.lower() and "grep" not in x.lower()]
     dt = [x for x in deck_text() if any(re.search(p, x, re.I) for p in FORBIDDEN)]
-    R.append(check("1 forbidden phrases (calibrated from the data / goes live / stricter readings)",
+    R.append(check("1 forbidden phrases (calibrated from the data / goes live / stricter readings / burned / log lines as reads)",
                    "FAIL" if h or dt else "PASS", f"{len(h) + len(dt)} hit(s)", h + [f"courtside.pptx {x}" for x in dt]))
 
-    # 2. pre-registered number before the post hoc P&L (heuristic: first line mentioning each)
-    for grp, fl in GROUPS.items():
-        for p in fl:
-            L = read(p)
-            if not L:
-                continue
-            pre = next((i for i, x in enumerate(L) if re.search(r"pre-?registered", x, re.I)
-                        and re.search(r"break-?even|\$\s?4\b|4\.35|cv\.pre|t_oos_day|\+?4 a day", x, re.I)), None)
-            post = next((i for i, x in enumerate(L) if re.search(r"\$\s?57|56\.59|\$\s?94|94\.35|cv\.cal\.oos\.usd|lc_oos_day", x)), None)
-            if post is None:
-                continue
-            ok = pre is not None and pre <= post
-            R.append(check(f"2 pre-registered before post hoc ({grp}: {p})", "PASS" if ok else "WARN",
-                           f"first pre-registered line {None if pre is None else pre + 1}, first post hoc $ line {post + 1}"
-                           " (heuristic)"))
+    # 2. executable results lead every profit claim (a fact about the paper template: the kind of the first profit
+    #    number in the abstract and in Table 1; scripts/build_paper.py fails the build on the same check)
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        import build_paper as bp
+        tpl = (ROOT / "docs/paper/note.tex.j2").read_text()
+        for name, a_, b_ in (("abstract", r"\begin{csabstract}", r"\end{csabstract}"),
+                             ("Table 1", r"\label{tab:head}", r"\end{tabular*}")):
+            order = bp.profit_order(tpl, a_, b_)
+            ok = bool(order) and order[0][1] in bp.EXECUTABLE_KINDS
+            R.append(check(f"2 executable result first ({name})", "PASS" if ok else "FAIL",
+                           f"first profit numbers: {order[:3]}", ["docs/paper/note.tex.j2"]))
+    except Exception as e:  # noqa: BLE001
+        R.append(check("2 executable result first", "FAIL", f"could not read the template: {e}"))
 
-    # 3. 'not ex ante' / 'selected on outcomes'
-    for grp, fl in (("paper", PAPER[:2]), ("video", VIDEO), ("deck", DECK)):
-        h = hits(fl, r"not ex ante|selected on outcomes")
-        R.append(check(f"3 trade-set disclosure ({grp})", "PASS" if h else vfail(grp),
-                       f"{len(h)} line(s) say 'not ex ante' or 'selected on outcomes'"
-                       + ("" if h or grp != "video" else f" ({KNOWN_NOTE})"), h[:3]))
+    # 3. the paper's fact checks passed on the current numbers (registry counts and labels as printed, benchmark
+    #    labels, no 'burned'); a build that failed also writes checks.json, so 'ok' and the numbers hash decide
+    ck, nb = ROOT / "results/paper/checks.json", ROOT / "results/paper/numbers.json"
+    if ck.exists() and nb.exists():
+        c = json.loads(ck.read_text())
+        import hashlib
+        cur = hashlib.sha256(nb.read_bytes()).hexdigest()
+        same = c.get("build", {}).get("numbers_sha256") == cur
+        fails = [f for f in c.get("fail", [])]
+        R.append(check("3 paper fact checks on the current numbers", "PASS" if c.get("ok") and same else "FAIL",
+                       f"checks ok {c.get('ok')}; built from the current numbers.json: {same}; failures: {fails[:3]}",
+                       ["results/paper/checks.json"]))
+    else:
+        R.append(check("3 paper fact checks on the current numbers", "PENDING", "results/paper/checks.json absent"))
 
     # 4. offline CV numbers only with 'offline'
     bad = []
@@ -226,8 +236,18 @@ def main() -> int:
         R.append(check("input: live paper session", "PASS" if done else "PENDING",
                        ("stopped by a team decision, not used (results/live/STOPPED_TEAM_DECISION); " if stopped else "")
                        + f"status {s.get('status')!r}, now {s.get('now')!r}"))
-    peeks = [x for x in read("results/oos_peeks.log") if x.strip()]
-    R.append(check("peek log line count (quote this number)", "PASS", f"{len(peeks)} lines in results/oos_peeks.log"))
+    # counts of held-out evaluations come from the experiment registry, never from counting log lines
+    rp = ROOT / REGISTRY
+    if rp.exists():
+        S = json.loads(rp.read_text()).get("summary", {})
+        unm = S.get("log_lines_unmapped")
+        n = lambda x: x if isinstance(x, int) else len(x or [])  # noqa: E731
+        R.append(check("registry: held-out evaluations and decisions after a look",
+                       "PASS" if unm in (0, None) else "FAIL",
+                       f"{n(S.get('oos_informed_decisions'))} choices and {n(S.get('defect_fixes_after_oos'))} defect fixes "
+                       f"after an OOS look; {n(S.get('reproductions', 0))} reproductions; unmapped log lines: {unm}", [REGISTRY]))
+    else:
+        R.append(check("registry: held-out evaluations and decisions after a look", "PENDING", f"{REGISTRY} absent"))
     try:
         dirty = subprocess.run(["git", "status", "--porcelain", "--", "scripts/forward_test.py", "scripts/tier0_v3_forward.py",
                                 "src/v2.py", "src/tiers.py", "src/fasttier.py", "research/v2/sizing/engine.py"],

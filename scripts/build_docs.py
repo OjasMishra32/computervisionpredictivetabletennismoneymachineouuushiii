@@ -36,6 +36,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.paper_refs import cache_stale, forward_amendment, load as load_refs  # noqa: E402
+from scripts.reproduction_contract import sha256_file  # noqa: E402
 
 TEMPLATES = {
     "docs/templates/README.md.in": "README.md",
@@ -54,8 +55,11 @@ FWD_RUNS = "runs 2026-10-04 11:30 UTC (pre-registered)"         # while HYPOTHES
 FWD_NOT_RUN = "pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md {a})"   # A3 / A5
 MINUS = "\u2212"
 
-# honesty / slot checks on the rendered public docs
-FORBIDDEN = [r"calibrated from the data", r"goes live", r"stricter readings", r"\bconservative\b"]
+# honesty / slot checks on the rendered public docs. 'burned' is not a label we print (the registry's labels are, e.g.
+# "OOS, non-blind"); a count of log lines is never printed as reads of held-out data
+FORBIDDEN = [r"calibrated from the data", r"goes live", r"stricter readings", r"\bconservative\b", r"\bburned\b",
+             r"\b\d[\d,]*\s+(logged\s+)?reads\s+of\s+held-out", r"no look-?ahead in the (tradable|executable)",
+             r"all-points (version|book)"]
 STALE_SLOTS = [r"\bpending\b", r"\btonight\b", r"\btomorrow\b", r"\b(still|currently|now) running\b", r"\bruns until\b",
                r"\bsettl(ing|ement) pending\b", r"\bin progress\b"]
 OFFLINE_ONLY = [r"11/11", r"11 of 11", r"408\s*ms"]
@@ -218,8 +222,15 @@ def main() -> int:
     if fin.get("duration_s"):
         meta.update(video_s=f"{fin['duration_s']:.0f}", video_mb=f"{fin.get('size_mb', 0):.1f}")
     if "main_pages" in chk:
-        meta["pages_status"] = ("Met" if int(chk["main_pages"]) <= 5 else
-                                f"NOT MET in the current build ({chk['main_pages']} main pages; the paper is being finalised)")
+        # "Met" only for a build whose checks passed and whose PDF is the one on disk (a failed build also writes
+        # checks.json, and the submitted PDF is then the older one)
+        pdf = ROOT / "docs/NOTE.pdf"
+        built = chk.get("build", {}).get("pdf_sha256")
+        current = bool(chk.get("ok")) and built is not None and pdf.exists() and sha256_file(pdf) == built
+        meta["pages_status"] = ("Met" if current and int(chk["main_pages"]) <= 5 else
+                                f"NOT MET in the current build ({chk['main_pages']} main pages; checks "
+                                f"{'passed' if chk.get('ok') else 'failed'}; docs/NOTE.pdf "
+                                f"{'matches' if current else 'is not'} the checked build)")
         meta.update(main_pages=str(chk["main_pages"]), total_pages=str(chk.get("total_pages", "?")),
                     min_span=f"{chk.get('smallest_span_pt', 0):.1f}", margin_violations=str(len(chk.get("margin_violations", []))))
     L = aux["labels"]

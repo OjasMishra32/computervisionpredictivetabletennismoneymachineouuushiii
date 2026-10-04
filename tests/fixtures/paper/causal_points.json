@@ -1,0 +1,269 @@
+{
+ "schema": "courtside.cv.points/1",
+ "note": "TEST FIXTURE for tests/test_build_paper_facts.py (shape of results/tier0/causal_points.json, plan section 4.9); invented values, never a result",
+ "prereg_commit": "0000000",
+ "n_points": 100,
+ "n_matches": 10,
+ "gap_s": 1.0,
+ "seeds": 20,
+ "cells": {
+  "point_L2.0|V0.5|IS": {
+   "usd_day": 10.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": 0.1,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": 1.5,
+   "ret_ann": 12.0,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": 10.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": 0.1,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": 1.5,
+    "ret_ann": 12.0,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  },
+  "point_L2.0|V0.5|OOS": {
+   "usd_day": 6.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": 0.06,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": 0.8999999999999999,
+   "ret_ann": 7.199999999999999,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": 6.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": 0.06,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": 0.8999999999999999,
+    "ret_ann": 7.199999999999999,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  },
+  "point_L2.0|V1|IS": {
+   "usd_day": 5.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": 0.05,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": 0.75,
+   "ret_ann": 6.0,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": 5.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": 0.05,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": 0.75,
+    "ret_ann": 6.0,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  },
+  "point_L2.0|V1|OOS": {
+   "usd_day": 3.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": 0.03,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": 0.44999999999999996,
+   "ret_ann": 3.5999999999999996,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": 3.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": 0.03,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": 0.44999999999999996,
+    "ret_ann": 3.5999999999999996,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  },
+  "point_L2.0|V3|IS": {
+   "usd_day": -10.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": -0.1,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": -1.5,
+   "ret_ann": -12.0,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": -10.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": -0.1,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": -1.5,
+    "ret_ann": -12.0,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  },
+  "point_L2.0|V3|OOS": {
+   "usd_day": -6.0,
+   "usd_day_ci95": [
+    -5.0,
+    25.0
+   ],
+   "c_share": -0.06,
+   "c_share_ci95": [
+    -0.2,
+    0.4
+   ],
+   "sharpe": -0.8999999999999999,
+   "ret_ann": -7.199999999999999,
+   "vol_ann": 9.0,
+   "max_dd_usd": 250.0,
+   "turnover_x": 40.0,
+   "n_trades": 1000,
+   "wrong_share": 0.1,
+   "phantom_per_h": 0.0,
+   "fees_x2_c_share": -0.3,
+   "halted": {
+    "usd_day": -6.0,
+    "usd_day_ci95": [
+     -5.0,
+     25.0
+    ],
+    "c_share": -0.06,
+    "c_share_ci95": [
+     -0.2,
+     0.4
+    ],
+    "sharpe": -0.8999999999999999,
+    "ret_ann": -7.199999999999999,
+    "vol_ann": 9.0,
+    "max_dd_usd": 250.0,
+    "turnover_x": 40.0,
+    "n_trades": 1000,
+    "wrong_share": 0.1,
+    "phantom_per_h": 0.0,
+    "fees_x2_c_share": -0.3,
+    "share_trades_kept": 0.9
+   }
+  }
+ }
+}

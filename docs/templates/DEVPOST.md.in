@@ -28,15 +28,20 @@ trail by tens of seconds. That makes it a natural lab for pricing speed.
   earn {{ft.c.is}}¢ / {{ft.c.oos.only}}¢ a share after fees (in sample / held out, OOS prints only) and are positive in
   {{ft.months.is}} in-sample and {{ft.months.oos}} out-of-sample months. Other takers lose, and copying the same trades
   3 s later loses.
-- **Turns that edge into a frozen book, v2,** measured at the fast tier's own fills (the opportunity at their speed,
-  not our execution). In sample: Sharpe {{v2.is.sr}} {{v2.is.sr_ci}}, {{v2.is.c}}¢ a share, max drawdown {{v2.is.dd}},
-  deflated Sharpe {{v2.is.dsr}}. On the held-out window, which is burned for v2 (non-blind: v2 was designed after v1
+- **Tests what we could execute, net of costs: it loses.** A copier filled after the venue's hold and the
+  {{copier.lag}} s block lag makes {{copier.is.usd}} / {{copier.oos.usd}} a day ({{copier.is.c}}¢ / {{copier.oos.c}}¢ a
+  share, in sample / held out), and a replay on {{rp.matches}} live-recorded books calling every point makes
+  {{rp.v05l2.c}}¢ a share at a 0.5 s feed.
+- **Benchmark: a frozen book, v2,** measured at the fast tier's own fills (the opportunity at their speed, not our
+  execution; {{decay.sameblock.share}} of its profit is in trades stamped in the same block as the score move). In sample: Sharpe {{v2.is.sr}} {{v2.is.sr_ci}}, {{v2.is.c}}¢ a share, max drawdown {{v2.is.dd}},
+  deflated Sharpe {{v2.is.dsr}}. On the held-out window, non-blind for v2 (v2 was designed after v1
   finished at {{v1.oos.usd}} there): Sharpe {{v2.oos.sr}} {{v2.oos.sr_ci}}, {{v2.oos.c}}¢ {{v2.oos.ci}}, deflated Sharpe
   {{v2.oos.dsr}}, and **negative when fees double** ({{v2.oos.fx2.c}}¢). On {{u2.markets}} never-examined markets its
   blind out-of-sample test failed ({{u2.oos.c}}¢ {{u2.oos.ci}}).
 - **{{meta:fwd_label}}:** {{fwd}}.
-- **Prices the speed a computer-vision trader needs**, in simulation: the feed latency is assumed (we bought no
-  licensed feed and have no match video); the other parameters are measured. Pre-registered, its **break-even feed delay
+- **Benchmark: prices the speed a computer-vision trader needs**, in simulation on past points the price later
+  moved on (selected on the outcome, an upper bound): the feed latency is assumed (we bought no licensed feed and have
+  no match video); the other parameters are measured. Pre-registered, its **break-even feed delay
   is {{cv.pre.be.range}} s**. At the 1 s base case it makes {{sc.pre.oos.v1.usd}} a day held out
   ({{sc.pre.oos.v1.c}}¢ a share): the call must reach the venue {{cv.call_before_stamp}} s before the umpire's stamp.
   At 0.5 / 1 / 3 s it makes {{sc.pre.oos.v05.usd}} / {{sc.pre.oos.v1.usd}} / {{sc.pre.oos.v3.usd}} a day held out. A post
@@ -71,7 +76,10 @@ the code during the event with AI coding assistants.
 
 ## Challenges we ran into
 Being honest with ourselves. v1 finished at {{v1.oos.usd}} on the held-out window. A verifier caught hindsight in our first v2
-draft (an onset look-ahead); fixing it cut in-sample Sharpe from {{v2.onset.is.sr}} to {{v2.is.sr}}. Our first vision
+draft (an onset look-ahead); fixing it cut in-sample Sharpe from {{v2.onset.is.sr}} to {{v2.is.sr}}. A later review
+showed that {{decay.sameblock.share}} of v2's profit sits in the same block as the score move that selects the trade, and
+that the CV trades are chosen by later price moves, so we report both as benchmarks and lead with the executable
+copier, which loses. Our first vision
 numbers came from an offline evaluation with a look-ahead feature; the live causal engine calls fewer misses, and that
 is the number we report. The stamp lag, the one number that decides the CV P&L, cannot be measured without a licensed
 feed, so we show both readings and lead with the pre-registered one. Every blind or ex-ante test of a tradable book
@@ -83,8 +91,7 @@ counts two blind tests that are not tradable books: the table-tennis call precis
 - A frame-to-order pipeline measured stage by stage: {{e2e.ours}} ms of our own time against a 3 s budget.
 - A vision engine that calls misses before contact on footage it never saw, at {{cv.eng.fps}} fps.
 - Discipline: hypotheses committed before results, {{var.total}} variants counted in all ({{video:n_trials}} strategy
-  variants, the video's count; {{rig.N3386}} in the deflated Sharpe), {{peeks.n}} reads of held-out data logged and
-  classified, deflated Sharpe, PBO, block bootstrap, blind tests on {{u2.markets}} unseen markets, and every failure
+  variants, the video's count; {{rig.N3386}} in the deflated Sharpe), every choice made after an out-of-sample look listed from the experiment registry, deflated Sharpe, PBO, block bootstrap, blind tests on {{u2.markets}} unseen markets, and every failure
   reported.
 
 ## What we learned
@@ -120,7 +127,8 @@ latex (tectonic) · polymarket-clob-gamma-data-apis · kalshi-api · hipergator 
 
 ## Integrity
 `HYPOTHESIS.md` was committed before any result (`{{prereg.hyp.commit}}`, {{prereg.hyp.time}}). The out-of-sample
-window was opened once, blind, for v1; every later read is logged in `results/oos_peeks.log` and listed in the paper.
+window was opened once, blind, for v1; every later run that read it is logged in `results/oos_peeks.log`, and the
+choices made after a look are listed in the paper from `results/provenance/experiments.json`.
 v2 and its forward test were pre-registered before the forward window opened (`HYPOTHESIS_V2.md`); the forward test
 was then not run within the hackathon window (A5). The live paper session was stopped by a team decision and is not
 used. No real money; no order was ever sent.

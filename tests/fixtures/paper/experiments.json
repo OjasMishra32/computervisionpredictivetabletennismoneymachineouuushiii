@@ -1,0 +1,28 @@
+{
+ "schema": "courtside.provenance.experiments/1",
+ "note": "TEST FIXTURE for tests/test_build_paper_facts.py: shape of results/provenance/experiments.json (plan section 4.6). Not the project's registry; its sentences are placeholders.",
+ "events": [],
+ "results": [
+  {"id": "R_v2_is", "kind": "others_fills", "paper_keys": ["v2.is.*", "tab.v2.is.*"], "label_text": "IS; fixture label for v2 in sample"},
+  {"id": "R_v2_oos", "kind": "others_fills", "paper_keys": ["v2.oos.*", "tab.v2.oos.*"], "label_text": "OOS, non-blind (fixture: period read before this design)"},
+  {"id": "R_cv_table2_pre", "kind": "conditional", "paper_keys": ["sc.pre.*", "tab.cv.pre.*"], "label_text": "OOS, non-blind; conditional on later moves (fixture)"},
+  {"id": "R_cv_table2_post", "kind": "conditional", "paper_keys": ["sc.cal.*", "tab.cv.cal.*"], "label_text": "OOS, non-blind; post hoc lag; conditional on later moves (fixture)"}
+ ],
+ "summary": {
+  "n_events_by_kind": {"a": 10, "b": 11, "c": 16, "d": 9, "e": 6, "f": 5, "protocol": 3},
+  "oos_informed_decisions": [
+   {"id": "F01", "family": "v2", "kind": "d", "direction": "n/a", "printed_text": "Fixture sentence one: a v2 design choice was made after an OOS result existed."},
+   {"id": "F02", "family": "v2", "kind": "d", "direction": "n/a", "printed_text": "Fixture sentence two: a v2 variant grid was created after an OOS look."},
+   {"id": "F03", "family": "cv", "kind": "d", "direction": "up", "printed_text": "Fixture sentence three: a CV timing reading was chosen after OOS results existed (raised OOS P&L)."}
+  ],
+  "defect_fixes_after_oos": [
+   {"id": "F04", "family": "cv", "kind": "e", "direction": "down", "printed_text": "Fixture sentence four: a CV coverage defect was fixed after an OOS look (lowered P&L)."}
+  ],
+  "preregistered_evaluations": 10,
+  "blind_evaluations": 5,
+  "reproductions": 11,
+  "diagnostics": 16,
+  "log_lines_total": 111,
+  "log_lines_unmapped": 0
+ }
+}

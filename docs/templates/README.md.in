@@ -26,7 +26,7 @@
 >   match video: the CV strategy is simulated at an **assumed** feed latency (licensed feed not purchased); its
 >   parameters are measured. Free public score pages (ESPN, WTA) were recorded only to time their lag.
 > - A fresh clone has no market data (`data/` is gitignored): `bash run.sh data` comes before `reproduce` or `money`.
-> - The CV point-end calls need `models/vision/frozen_call_model.pkl` (12 MB), which is not in git. `bash run.sh cv`
+> - The CV point-end calls use `models/vision/frozen_call_model.pkl` (12 MB, committed). Without it, `bash run.sh cv`
 >   still detects and tracks the ball on the held-out clip, with calls off; `sbatch hpg/engine_vision.sbatch`
 >   (HiPerGator) rebuilds the model.
 > - Footage: the table-tennis clips are OpenTTGames (OSAI) footage, adapted (overlays added), CC BY-NC-SA 4.0. The
@@ -49,16 +49,19 @@ join the winners. The answer: speed is the edge, and the break-even feed delay i
 ## Results
 
 Same numbers and labels as the paper (location in brackets). IS = in sample; OOS = the held-out last
-{{univ.oos}} matches from {{univ.oosstart}}, opened once, blind, for v1 and **burned (non-blind)** for v2 and the CV
-simulation, which were designed after it. ¢ = net cents per share after each match's own fee.
+{{univ.oos}} matches from {{univ.oosstart}}, opened once, blind, for v1 and **non-blind** for v2 and the CV
+simulation, which were designed after it was read. ¢ = net cents per share after each match's own fee. Executable
+results (what we could run at our latency, net of costs) come first; v2 (the fast tier's own fills) and the CV trader
+(trades only on points the price later moved) are labelled benchmarks, not returns we could earn.
 
 | | Result |
 |---|---|
+| **Executable: a copier** (v2's trades filled after the venue's hold and the {{copier.lag}} s block lag, net of costs) | Loses: {{copier.is.usd}} / {{copier.oos.usd}} a day, {{copier.is.c}}¢ {{copier.is.ci}} / {{copier.oos.c}}¢ {{copier.oos.ci}} a share, Sharpe {{copier.is.sr}} / {{copier.oos.sr}} (IS / OOS). A replay of {{rp.matches}} live-recorded matches' real books, calling every point at the pre-registered 2 s stamp lag, loses {{rp.v05l2.c}}¢ {{rp.v05l2.ci}} at a 0.5 s feed and {{rp.v1l2.c}}¢ {{rp.v1l2.ci}} at 1 s ({{rp.cells_neg}} of {{rp.cells}} settings below zero). [Table {{ref:tab:head}}] |
 | **The edge** (fast tier: wallets trading ≤ 3 s after a score move, chosen walk-forward on past months) | {{ft.c.is}}¢ / {{ft.c.oos.only}}¢ a share after fees (IS / OOS prints only; {{ft.c.oos}}¢ if August's IS prints are included), positive in **{{ft.months.is}} IS and {{ft.months.oos}} OOS months** ({{video:ft_pos}} of {{video:ft_n}} calendar months, as in the video). Other takers lose ({{oth.c.is}}¢ / {{oth.c.oos}}¢); copying the same trades 3 s later loses ({{copy3.c.is}}¢ / {{copy3.c.oos}}¢). Chasing the move after a point (H1) loses {{h1.is.c}}¢ / {{h1.oos.c}}¢. [Fig. {{ref:fig:edge}}a] |
-| **v2** (frozen book at the fast tier's own fills; sizing `{{sel.sizing.pick}}`, 100-share net cap, hold to resolution) | IS: Sharpe **{{v2.is.sr}}** {{v2.is.sr_ci}}, {{v2.is.c}}¢ {{v2.is.ci}}, deflated Sharpe {{v2.is.dsr}}, max DD {{v2.is.dd}}, {{v2.is.mpos}} months. **Burned OOS:** Sharpe **{{v2.oos.sr}}** {{v2.oos.sr_ci}}, {{v2.oos.c}}¢ {{v2.oos.ci}}, deflated Sharpe {{v2.oos.dsr}} (at {{rig.N3386}} trials); turnover {{v2.is.turnover}} / {{v2.oos.turnover}}× capital a year; {{v2.oos.slip05}}¢ at ½ tick worse entry; **negative with costs doubled** (fees ×2 {{v2.oos.fx2.c}}¢, all costs ×2 {{v2.oos.cx2.c}}¢). PSR, MinTRL and a haircut over all {{var.total}} variants: 6 of 6 tests pass IS, {{rig2.v2oos.pass}} of 6 OOS (haircut Sharpe {{rig2.v2oos.hlz_sr}}). A copier filled after the venue hold and the {{copier.lag}} s block lag loses ({{copier.is.c}}¢ IS, {{copier.oos.c}}¢ OOS). The opportunity at their speed, not our execution. [Table {{ref:tab:head}}, Fig. {{ref:fig:edge}}b] |
-| **A firm with a licensed 0.5 s feed** (counterfactual: real prices, fills and fees, simulated calls, no feed bought) | Burned OOS {{sc.pre.oos.v05.usd}} / {{sc.cal.oos.v05.usd}} a day (pre-registered / post hoc). **Fresh holdout**, pre-registered at `{{fresh.prereg.commit}}` before its data were fetched ({{fresh.covered}} newer matches, {{fresh.days}} UTC days): {{fresh.s2.pre.v05.usd}} / {{fresh.s2.cal.v05.usd}} a day, CIs {{fresh.s2.pre.v05.ci}} and {{fresh.s2.cal.v05.ci}}: anecdotal. Break-even feed price a month: {{fresh.lic.oos.pre}} / {{fresh.lic.oos.cal}} on the burned OOS vs quotes of {{fin.feed.low}}–{{fin.feed.high}}. [Fig. {{ref:fig:firm}}] |
+| **Benchmark: v2** (frozen book at the fast tier's own fills, an event study; sizing `{{sel.sizing.pick}}`, 100-share net cap, hold to resolution; {{decay.sameblock.share}} of its profit is in trades stamped in the same block as the score move that selects them) | IS: Sharpe **{{v2.is.sr}}** {{v2.is.sr_ci}}, {{v2.is.c}}¢ {{v2.is.ci}}, deflated Sharpe {{v2.is.dsr}}, max DD {{v2.is.dd}}, {{v2.is.mpos}} months. **OOS (non-blind):** Sharpe **{{v2.oos.sr}}** {{v2.oos.sr_ci}}, {{v2.oos.c}}¢ {{v2.oos.ci}}, deflated Sharpe {{v2.oos.dsr}} (at {{rig.N3386}} trials); turnover {{v2.is.turnover}} / {{v2.oos.turnover}}× capital a year; {{v2.oos.slip05}}¢ at ½ tick worse entry; **negative with costs doubled** (fees ×2 {{v2.oos.fx2.c}}¢, all costs ×2 {{v2.oos.cx2.c}}¢). PSR, MinTRL and a haircut over all {{var.total}} variants: 6 of 6 tests pass IS, {{rig2.v2oos.pass}} of 6 OOS (haircut Sharpe {{rig2.v2oos.hlz_sr}}). The opportunity at their speed, not our execution. [Table {{ref:tab:head}}, Fig. {{ref:fig:edge}}b] |
+| **Benchmark: a firm with a licensed 0.5 s feed** (counterfactual: real prices, fills and fees, simulated calls on points that later moved, no feed bought) | OOS {{sc.pre.oos.v05.usd}} / {{sc.cal.oos.v05.usd}} a day (pre-registered / post hoc). **Fresh holdout**, pre-registered at `{{fresh.prereg.commit}}` before its data were fetched ({{fresh.covered}} newer matches, {{fresh.days}} UTC days): {{fresh.s2.pre.v05.usd}} / {{fresh.s2.cal.v05.usd}} a day, CIs {{fresh.s2.pre.v05.ci}} and {{fresh.s2.cal.v05.ci}}: anecdotal. Break-even feed price a month: {{fresh.lic.oos.pre}} / {{fresh.lic.oos.cal}} OOS vs quotes of {{fin.feed.low}}–{{fin.feed.high}}. [Fig. {{ref:fig:firm}}] |
 | v1 (copy the fast tier, $ sizing) | {{v1.is.c}}¢ IS; **{{v1.oos.usd}}** on the held-out window (opened once, blind). [Table {{ref:tab:A-all}}] |
-| v2-safe (net cap 50, fixed after v2's OOS losses) | Sharpe {{v2s.is.sr}} / {{v2s.oos.sr}} (IS / burned OOS); failed its blind unseen-market test ({{v2s.u2.c}}¢ {{v2s.u2.ci}}). [Table {{ref:tab:A-all}}] |
+| v2-safe (net cap 50, fixed after v2's OOS losses) | Sharpe {{v2s.is.sr}} / {{v2s.oos.sr}} (IS / OOS, non-blind); failed its blind unseen-market test ({{v2s.u2.c}}¢ {{v2s.u2.ci}}). [Table {{ref:tab:A-all}}] |
 | Blind and ex-ante tests | v2 on {{u2.markets}} never-examined markets: {{u2.is.c}}¢ in the IS period, {{u2.oos.c}}¢ {{u2.oos.ci}} in the OOS period (**{{u2.verdict}}**); maker v1 ({{mk.verdict}}, {{mk.oos.usd}}); the CV v3 rule ({{t3.verdict}}, {{t3.oos.c}}¢). Every blind or ex-ante test of a tradable book failed. (The video's "blind tests: {{video:blind_pass}} pass · {{video:blind_fail}} fail" also counts two blind tests that are not tradable books: the table-tennis H3 call precision and v2 on unseen markets in the IS period.) [Table {{ref:tab:A-all}}] |
 | **{{meta:fwd_label}}** | {{fwd}}. [Table {{ref:tab:A-all}}, Appendix {{app:Records}}] |
 | **Speed requirement** (pre-registered, stamp lag {{cv.pre.lag}} s) | Break-even feed delay **{{cv.pre.be.range}} s** ({{cv.pre.be.is}} s IS, {{cv.pre.be.oos}} s OOS; {{sc.pre.oos.v1.usd}}/day OOS at 1 s): the call must reach the venue **{{cv.call_before_stamp}} s before the umpire's stamp**. [Table {{ref:tab:head}}, Eq. {{ref:eq:budget}}] |
@@ -68,11 +71,11 @@ simulation, which were designed after it. ¢ = net cents per share after each ma
 | CV, tennis (simulated physics) | A spin-aware tracker cuts landing error from {{cv.spin.base200}} to {{cv.spin.bls200}} cm at 200 ms before the bounce, in simulation. Our tennis calls are simulated; the video's real rally (licensed stock footage) shows only the tracked ball trail (public detector, our linking). No tennis match video was used for trading. [Table {{ref:tab:A-all}}] |
 | **Capacity** | v2's OOS CI excludes zero only up to 1× size ({{cap.1x.oos.capital}} of capital); 5× loses. The CV book has no capacity at the pre-registered lag (Sharpe {{capcv.pre.sr0.is}} / {{capcv.pre.sr0.oos}} at its smallest size); post hoc its Sharpe halves at {{capcv.half.oos}} (OOS) and {{capcv.half.is}} (IS) of capital. It trades {{capcv.share_inplay}} of in-play volume but {{capcv.share_fast}} of the fast tier's 0–3 s volume. [§{{ref:sec:liq}}, Fig. {{ref:fig:capacity}}] |
 | Costs | Fees paid: {{v2.is.fee_bps}} / {{v2.oos.fee_bps}} bps of notional for v2 (IS / OOS), {{cv.fee_bps.range}} bps for the CV trader; with fees doubled every OOS CV cell loses (best {{cv.fx2.oos.best}} a day). Price impact (log in size, fitted on {{liq.orders.fit}} IS orders) cuts v2's 1× OOS from {{liq.v2.1x.oos.none}} to {{liq.v2.1x.oos.central}} a day. v2 OOS after central fixed costs: {{fin.v2.oos.net_central}}/day. At 1 s the CV book can pay at most {{cv.cal.oos.maxlic}} a month for data post hoc and {{cv.pre.oos.maxlic}} pre-registered, against quotes of {{fin.feed.low}}–{{fin.feed.high}}. COURTSIDE prices speed; it is not yet a business. [§{{ref:sec:liq}}, Fig. {{ref:fig:cap}}] |
-| Rigour | **{{var.total}} variants in all; {{video:n_trials}} strategy variants (the video's count); {{rig.N3386}} in the deflated Sharpe** (the first adds the sensitivities and grids; the second adds the v2-safe grid to the third). {{peeks.n}} logged reads of held-out data, each classified; PBO {{rig.pbo.lowloss}} and deflated Sharpe {{v2.oos.dsr}} OOS: luck not ruled out out of sample; factor-neutral α t = {{fac.alpha_t}} (max factor \|t\| {{fac.max_t}}). [Table {{ref:tab:A-all}}, Appendices {{app:Calculations}} and {{app:Records}}] |
+| Rigour | **{{var.total}} variants in all; {{video:n_trials}} strategy variants (the video's count); {{rig.N3386}} in the deflated Sharpe** (the first adds the sensitivities and grids; the second adds the v2-safe grid to the third). the choices made after an OOS look are listed from `results/provenance/experiments.json` (Appendix {{app:Records}}); PBO {{rig.pbo.lowloss}} and deflated Sharpe {{v2.oos.dsr}} OOS: luck not ruled out out of sample; factor-neutral α t = {{fac.alpha_t}} (max factor \|t\| {{fac.max_t}}). [Table {{ref:tab:A-all}}, Appendices {{app:Calculations}} and {{app:Records}}] |
 
-**The CV strategy at three assumed feed latencies** (simulated; {{meta:label_cv}}). Net $ a day, Sharpe and ¢ a share
-[95% CI]; {{cv.seeds}} seeds a cell. The trade set is the historical points the market later repriced by ≥ 4¢,
-selected on outcomes (not ex ante), so every cell is an upper bound. [Table {{ref:tab:head}}, Fig. {{ref:fig:speed}}]
+**Benchmark: the CV strategy at three assumed feed latencies** (simulated; {{meta:label_cv}}). Net $ a day, Sharpe
+and ¢ a share [95% CI]; {{cv.seeds}} seeds a cell. The trade set is the historical points the market later repriced by
+≥ 4¢, selected on the outcome, so every cell is an upper bound, not an executable return. [Table {{ref:tab:head}}, Fig. {{ref:fig:speed}}]
 
 | Feed latency (assumed) | **Pre-registered** (stamp lag {{cv.pre.lag}} s), IS | **Pre-registered**, OOS | Post hoc estimate ({{cv.cal.lag}} s), IS | Post hoc estimate, OOS |
 |---|---|---|---|---|
@@ -93,9 +96,10 @@ day, IS and OOS) with its label, and the pre-registered numbers on its stats rai
 Integrity trail: `HYPOTHESIS.md` (committed before any result, `{{prereg.hyp.commit}}`, {{prereg.hyp.time}}) →
 `DEVIATIONS.md` (every change, including failed hypotheses) → `HYPOTHESIS_V2.md` (v2 and its forward test, frozen
 before the forward window; Amendment A5: the forward test was not run within the hackathon window) →
-`results/oos_peeks.log` (every read of held-out data; the paper's Appendix {{app:Records}} counts all {{peeks.n}} by
-class and `results/paper/peeks.json` lists them). The live paper session was stopped by a team decision and is not
-used (`research/v2/maker/DEVIATIONS_LIVE.md` L15).
+`results/oos_peeks.log` (each run that read held-out data, including reproductions and verifier runs) →
+`results/provenance/experiments.json` (the experiment registry: every evaluation and every choice made after an OOS
+look, which the paper's Appendix {{app:Records}} lists). The live paper session was stopped by a team decision and is
+not used (`research/v2/maker/DEVIATIONS_LIVE.md` L15).
 
 ## Reproduce
 
@@ -112,16 +116,17 @@ bash run.sh docs         # README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from r
 | Step | Produces |
 |---|---|
 | `run_all.py --oos` | H1–H6, calibration, tiers, walk-forward fast tier, v1 → `results/summary.json` |
-| `scripts/v2_causal.py` | v2 on IS and the burned OOS, with ½- and 1-tick slippage → `results/v2/causal.json` |
+| `scripts/v2_causal.py` | v2 on IS and the OOS, with ½- and 1-tick slippage → `results/v2/causal.json` |
 | `scripts/v2_cost_stress.py` | v2 with fees doubled and all costs doubled → `results/v2/cost_stress.json` |
 | `scripts/note_metrics.py` | annualised return and volatility, turnover, skew, worst month, bps, holdout share, data gaps → `results/v2/note_metrics.json` |
 | `scripts/v2_figures.py`, `scripts/factor_regression.py`, `scripts/leverage_stats.py` | v2 figures, the factor regression, Markov leverage |
-| `scripts/paper_figures.py`, `scripts/build_paper.py` | every paper figure (`results/paper/v2/`), `results/paper/numbers.json` (each number with its source), the LaTeX paper `docs/NOTE.pdf` via tectonic (needs `jinja2`, in `requirements.txt`); fails on > 5 main pages, < 11 pt text or the honesty grep; keeps the committed PDF if tectonic is missing |
+| `scripts/paper_figures.py`, `scripts/build_paper.py` | every paper figure (`results/paper/v2/`), `results/paper/numbers.json` (each number with its source), the LaTeX paper `docs/NOTE.pdf` via tectonic (needs `jinja2`, in `requirements.txt`); fails, keeping the committed PDF, on a missing compiler, > 5 main pages, < 11 pt text, the honesty grep or a fact check (registry counts and labels as printed, executable results first) |
 | `scripts/build_docs.py` | this README, `docs/DEVPOST.md`, `docs/COMPLIANCE.md`, and the paper's label map `results/paper/labels.json` |
 
 Things to know before running it:
-- **Peek log.** On a fresh clone the first step builds the locked out-of-sample prints and appends one line to
-  `results/oos_peeks.log`. That line records your run. Re-running on the same checkout appends nothing.
+- **Peek log.** Scripts that read held-out data append a line to `results/oos_peeks.log` each time they run (on a
+  fresh clone, building the locked out-of-sample prints adds the first). Those lines record your run, not new
+  decisions; `git checkout results/oos_peeks.log` removes them.
 - **Frozen universe.** Polymarket's public event list keeps growing (a crawl late on 2026-10-03 also returns matches
   that started that day after ours: 13,109 instead of {{univ.matches}}). `bash run.sh data` and `bash run.sh reproduce`
   run `scripts/freeze_universe.py`, which pins the cached event list to the {{univ.matches}} condition ids in
