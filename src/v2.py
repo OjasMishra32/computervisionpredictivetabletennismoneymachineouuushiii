@@ -250,10 +250,13 @@ def copier_fill(ts, p, at_ask, ts_f, d, det_ts, delay, lag_s: float, net_s: floa
     ts_f, d = np.asarray(ts_f, float), np.asarray(d, float)
     n, m = len(ts), len(ts_f)
     tau = copier_arrival(ts_f, det_ts, delay, lag_s, net_s)
+    if n == 0:
+        return {"c0": np.full(m, np.nan), "tau": tau, "fill_ts": np.full(m, np.nan),
+                "same": np.zeros(m, bool), "beyond": np.ones(m, bool)}
     mid, spr = mid_path(ts, p, at_ask)
     j = np.searchsorted(ts, tau, "left")
     beyond = j >= n
-    j = np.minimum(j, n - 1)                                  # past the tape end: the last state of the book
+    j = np.minimum(j, n - 1)                                  # bounded lookup; beyond rows are rejected below
     hs = np.where(np.isfinite(spr[j]) & (spr[j] > 0), np.clip(spr[j], 0.01, 0.10), 0.01) / 2
     c0 = mid[j] + d * hs
     fill_ts = np.full(m, np.nan)
@@ -276,7 +279,13 @@ def copier_fill(ts, p, at_ask, ts_f, d, det_ts, delay, lag_s: float, net_s: floa
         c0[w[ok]] = p[kk[ok]]
         fill_ts[w[ok]] = ts[kk[ok]]
         same[w[ok]] = True
-    return {"c0": np.clip(c0, 0.001, 0.999), "tau": tau, "fill_ts": fill_ts, "same": same, "beyond": beyond}
+    # No recorded state supports an execution after the tape ends. Keeping the last price would create
+    # a synthetic fill (including for the optimistic bound). Retain the attempted order for coverage,
+    # but provide no price or fill time and exclude it from the executable book.
+    c0 = np.where(beyond, np.nan, np.clip(c0, 0.001, 0.999))
+    fill_ts[beyond] = np.nan
+    same[beyond] = False
+    return {"c0": c0, "tau": tau, "fill_ts": fill_ts, "same": same, "beyond": beyond}
 
 
 def copier_reprice(trades: pd.DataFrame, u: pd.DataFrame, lat: dict, tape_loader=None) -> pd.DataFrame:
@@ -304,7 +313,15 @@ def copier_reprice(trades: pd.DataFrame, u: pd.DataFrame, lat: dict, tape_loader
 
 
 def copier_book(tr: pd.DataFrame, rule: str) -> pd.DataFrame:
-    """The same trades and share counts, re-priced at the copier's entry: per share = dir (res - c) - fee(c)."""
+    """Supported fills, re-priced at the copier's entry: per share = dir (res - c) - fee(c).
+
+    Arrival beyond the tape and missing prices cannot contribute P&L, fees, capital or turnover.
+    The caller reports these rejected attempts separately instead of silently treating them as fills.
+    """
+    validity = f"beyond_{rule}"
+    if validity not in tr:
+        raise ValueError(f"missing copier execution coverage: {validity}")
+    tr = tr.loc[tr[validity].eq(False) & np.isfinite(tr[f"c0_{rule}"])].copy()
     c0 = tr[f"c0_{rule}"].to_numpy(float)
     q = np.where(tr.dir > 0, c0, 1 - c0)
     ps = tr.dir.to_numpy() * (tr.res.to_numpy() - c0) - tr.rate.to_numpy() * q * (1 - q)

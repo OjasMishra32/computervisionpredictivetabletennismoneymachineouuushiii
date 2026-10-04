@@ -197,7 +197,8 @@ def test_sell_side_copier_and_tape_end():
     # sell copier of the bid print at 102: tau = 105.043, first bid print at/after it is 110 (0.60)
     assert f["fill_ts"][0] == 110.0 and f["c0"][0] == pytest.approx(0.60)
     f = v2.copier_fill(ts, p, ask, [109.0], [1.0], [108.0], [1.0], LAG, NET, "next_same")
-    assert f["beyond"][0] and not f["same"][0]                            # past the tape: last book state
+    assert f["beyond"][0] and not f["same"][0]
+    assert np.isnan(f["c0"][0]) and np.isnan(f["fill_ts"][0])              # no evidence of an executable fill
 
 
 def test_optimistic_bound_uses_last_same_side_print_before_arrival():
@@ -211,7 +212,7 @@ def test_optimistic_bound_uses_last_same_side_print_before_arrival():
 
 def test_copier_book_pnl_identity():
     tr = pd.DataFrame({"dir": [1.0, -1.0], "res": [1.0, 1.0], "rate": [0.05, 0.05], "shares": [10.0, 20.0],
-                       "c0_central": [0.65, 0.40]})
+                       "c0_central": [0.65, 0.40], "beyond_central": [False, False]})
     b = v2.copier_book(tr, "central")
     q = np.array([0.65, 0.60])
     ps = np.array([1 - 0.65, -(1 - 0.40)]) - 0.05 * q * (1 - q)
@@ -219,6 +220,37 @@ def test_copier_book_pnl_identity():
     np.testing.assert_allclose(b.pnl_ps, ps)
     np.testing.assert_allclose(b.pnl, tr.shares * ps)
     np.testing.assert_allclose(b.usd_in, tr.shares * q)
+
+
+@pytest.mark.parametrize("price", ["next_same", "prev_same"])
+def test_order_after_tape_end_has_no_fill_even_for_the_optimistic_bound(price):
+    ts, p, ask = copier_tape()
+    f = v2.copier_fill(ts, p, ask, [109.0], [1.0], [108.0], [1.0], LAG, NET, price)
+    assert f["tau"][0] > ts[-1]
+    assert f["beyond"][0] and not f["same"][0]
+    assert np.isnan(f["c0"][0]) and np.isnan(f["fill_ts"][0])
+
+
+def test_empty_recorded_tape_cannot_supply_an_execution_price():
+    f = v2.copier_fill([], [], [], [100.0], [1.0], [99.0], [1.0], LAG, NET, "next_same")
+    assert f["beyond"].tolist() == [True]
+    assert np.isnan(f["c0"][0]) and np.isnan(f["fill_ts"][0])
+
+
+def test_copier_book_excludes_unsupported_attempts_from_every_economic_total():
+    tr = pd.DataFrame({"dir": [1.0, 1.0, 1.0], "res": [1.0, 1.0, 1.0], "rate": [0.05] * 3,
+                       "shares": [10.0, 100000.0, 100000.0], "c0_central": [0.65, 0.01, np.nan],
+                       "beyond_central": [False, True, False]})
+    b = v2.copier_book(tr, "central")
+    assert b.index.tolist() == [0]
+    assert b.shares.sum() == 10.0
+    assert b.usd_in.sum() == pytest.approx(6.5)
+    assert b.pnl.sum() == pytest.approx(10 * (0.35 - 0.05 * 0.65 * 0.35))
+
+
+def test_copier_book_requires_execution_coverage():
+    with pytest.raises(ValueError, match="execution coverage"):
+        v2.copier_book(pd.DataFrame({"c0_central": [0.01]}), "central")
 
 
 def test_copier_reprice_uses_strict_detection_and_in_play_tape():

@@ -155,14 +155,18 @@ def main() -> None:
     for r, spec in v2.COPIER_RULES.items():
         copier[r] = {"what": spec["what"]}
         for per, sel in periods.items():
-            b = v2.copier_book(sel(ev1), r)
+            attempts = sel(ev1)
+            b = v2.copier_book(attempts, r)
             m = v2.table1_metrics(b)
-            cost = (b.dir * (b[f"c0_{r}"] - b.p) * b.shares).sum() / b.shares.sum() * 100
+            cost = (float((b.dir * (b[f"c0_{r}"] - b.p) * b.shares).sum() / b.shares.sum() * 100)
+                    if len(b) and b.shares.sum() > 0 else None)
             copier[r][per] = {**pick(m),
-                              "entry_cost_vs_fast_fill_c_share_weighted": float(cost),
-                              "share_same_side_print": float(b[f"same_{r}"].mean()),
-                              "share_beyond_tape_end": float(b[f"beyond_{r}"].mean()),
-                              "median_tau_minus_fast_print_s": float((b[f"tau_{r}"] - b.ts).median())}
+                              "entry_cost_vs_fast_fill_c_share_weighted": cost,
+                              "n_attempted_trades": int(len(attempts)),
+                              "n_unsupported_fills": int(len(attempts) - len(b)),
+                              "share_same_side_print": float(b[f"same_{r}"].mean()) if len(b) else None,
+                              "share_beyond_tape_end": float(attempts[f"beyond_{r}"].mean()) if len(attempts) else None,
+                              "median_tau_minus_fast_print_s": float((b[f"tau_{r}"] - b.ts).median()) if len(b) else None}
             print(f"copier {r} {per}: {copier[r][per]}", flush=True)
     if a.trades:
         ev1.to_parquet(a.trades)
