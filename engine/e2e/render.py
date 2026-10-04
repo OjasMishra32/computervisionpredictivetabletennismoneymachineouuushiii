@@ -6,10 +6,11 @@
 
 fig_waterfall.png (light, paper): top, the budget from the point to an executable order with the 1 s simulated feed
 (p50 over the run's complete MISS-call traces), laptop CV measured and L4 CV as the production reference, dotted
-lines at the 1 s feed and the 3 s requirement, the book's typical reprice band shaded; bottom, our own pipeline
-(capture -> order ready) stage by stage, p50 bars with p90 whiskers and ms labels.
+lines at the 1 s feed and the 3 s requirement, the range of the median reprice under the three stamp-lag readings
+shaded (not measured); bottom, our own pipeline (capture -> order ready) stage by stage, p50 bars with p90 whiskers
+and ms labels. The footer carries LABEL verbatim and the run's conditions (summary budget conditions.sentence).
 
-e2e_timeline.mp4 (dark, 1280x720, ~26 s): the clip around the featured MISS call with the engine's ball track
+e2e_timeline.mp4 (dark, 1280x720, ~27 s): the clip around the featured MISS call with the engine's ball track
 and the call; then that call's order timeline (every stage stamp from the trace) racing the live book ticker of
 the token it buys (the trace's 20 Hz top-of-book rows); then the run's numbers.
 """
@@ -82,19 +83,23 @@ def figure(summ, path: Path):
     net = B["network_one_way_ms"]["p50"]
     ven = B["venue_delay_ms"]["p50"]
     l4 = (B.get("with_l4_vision") or {}).get("ours_ms")
-    fig = plt.figure(figsize=(7.2, 4.9), dpi=300, facecolor=C["surface"])
-    gs = fig.add_gridspec(2, 1, height_ratios=[1.0, 1.55], hspace=0.66, left=0.255, right=0.955, top=0.86, bottom=0.115)
+    cond = (B.get("conditions") or {}).get("sentence")
+    fig = plt.figure(figsize=(7.2, 5.15), dpi=300, facecolor=C["surface"])
+    gs = fig.add_gridspec(2, 1, height_ratios=[1.0, 1.55], hspace=0.66, left=0.255, right=0.955, top=0.865, bottom=0.15)
     ax = fig.add_subplot(gs[0])
     ax.set_facecolor(C["surface"])
     bars = [("Laptop CV (measured)", ours)]
     if l4 is not None:
-        bars.append(("L4 GPU CV (reference)", l4))
+        bars.append(("L4 GPU CV (composite)", l4))
     ys = np.arange(len(bars))[::-1] * 1.0
     h = 0.42
     lo, hi = summ["reprice_reference"]["band_s"]
+    imp = summ["reprice_reference"].get("implied_after_point_s") or {}
     ax.axvspan(lo, hi, color=C["band"], zorder=0, lw=0)
-    ax.text((lo + hi) / 2, ys.min() - 0.5, f"book reprices\n{lo:.1f}-{hi:.1f} s (typical)", ha="center", va="top",
-            fontsize=6.6, color=C["ink2"], linespacing=1.0)
+    mids = " / ".join(f"{v:.2f}" for v in sorted(imp.values())) if imp else f"{lo:.2f}-{hi:.2f}"
+    ax.text(max((lo + hi) / 2, 1.0) + 0.06, ys.min() - 0.5, f"median reprice {mids} s\n(by unmeasured stamp lag)",
+            ha="left" if (lo + hi) / 2 < 1.0 else "center", va="top", fontsize=6.4, color=C["ink2"], linespacing=1.0,
+            zorder=5, bbox=dict(boxstyle="round,pad=0.12", fc=C["band"], ec="none"))
     for (name, o), y in zip(bars, ys):
         segs = [(0.0, feed / 1e3, C["feed"], "//"), (feed / 1e3, o / 1e3, C["blue"], None),
                 ((feed + o) / 1e3, net / 1e3, C["orange"], None), ((feed + o + net) / 1e3, ven / 1e3, C["aqua"], None)]
@@ -125,7 +130,7 @@ def figure(summ, path: Path):
     ax.tick_params(length=0)
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
-    ax.set_title(f"A. Physical point to executable order, 1 s simulated feed (p50, n = {n} calls)", loc="left",
+    ax.set_title(f"A. Physical point to executable order, 1 s simulated feed (p50, n = {n} timing probes)", loc="left",
                  fontsize=9, color=C["ink"], pad=19, fontweight="bold")
     ax.legend(handles=[Patch(fc=C["feed"], hatch="//", ec=C["hatch"], lw=0, label="feed (simulated)"),
                        Patch(fc=C["blue"], label="our pipeline: capture to order ready"),
@@ -168,14 +173,18 @@ def figure(summ, path: Path):
     bx.tick_params(length=0)
     for s in ("top", "right", "left"):
         bx.spines[s].set_visible(False)
-    bx.set_xlabel("ms after the frame was captured (paced sender)", fontsize=7.5)
+    fps = (B.get("conditions") or {}).get("stream_fps")
+    bx.set_xlabel("ms after the call frame was captured (paced sender" + (f", {fps:g} frames/s)" if fps else ")"),
+                  fontsize=7.5)
     bx.set_title("B. Our pipeline, stage by stage (bar p50, whisker p90)", loc="left", fontsize=9,
                  color=C["ink"], pad=6, fontweight="bold")
     bx.legend(handles=[Patch(fc=gcol[g], label=GROUP_NAME[g]) for g in ("video", "cv", "trade")], loc="upper right",
               frameon=False, fontsize=6.6, handlelength=1.1)
-    fig.text(0.012, 0.012, "Paper; order not sent. CV call on our own streamed footage mapped to a live tennis market "
-             "for timing (different sport). Feed 1 s simulated (licensed feed not purchased).", fontsize=5.8,
-             color=C["muted"])
+    import textwrap
+    foot = LABEL[0].upper() + LABEL[1:] + "."
+    if cond:
+        foot += "\n" + "\n".join(textwrap.wrap("Conditions: " + cond + ".", 150))
+    fig.text(0.012, 0.012, foot, fontsize=5.6, color=C["muted"], va="bottom", linespacing=1.35)
     fig.savefig(path, facecolor=C["surface"])
     plt.close(fig)
     print(f"wrote {path}")
@@ -245,8 +254,8 @@ def video(meta, calls, summ, path: Path, fps=30):
     names = mk["names"]
     o, fl, nw = r["order"], r["fill"], r["network"]
     dec = r["decision"]
-    foot = "paper; order not sent; CV call on our own streamed footage mapped to a live tennis market for timing " \
-           "(different sport); feed baseline 1 s is simulated (licensed feed not purchased)"
+    foot = LABEL
+    fps_in = float((summ["budget_with_1s_simulated_feed"].get("conditions") or {}).get("stream_fps") or 10.0)
 
     def chrome(title, sub=None):
         fig.clf()
@@ -264,7 +273,8 @@ def video(meta, calls, summ, path: Path, fps=30):
     for i in range(n1):
         f = order[min(len(order) - 1, int(i / n1 * len(order)))]
         chrome("1. Our own clip, streamed over WebRTC into the CV engine",
-               f"OpenTTGames test_2 (held out), 120 fps source shown slowed; frame {f}")
+               f"OpenTTGames test_2 (held out), 120 fps source sent at {fps_in:g} frames/s, every frame "
+               f"({120 / fps_in:.0f}x slow motion; the laptop cannot run 120 fps in real time); frame {f}")
         ax = fig.add_axes([0.125, 0.105, 0.75, 0.75])
         ax.imshow(frames[f])
         ax.set_axis_off()
@@ -311,9 +321,11 @@ def video(meta, calls, summ, path: Path, fps=30):
              (rel["order_ready"], rel["network_arrival"], C["orange"], "network"),
              (rel["network_arrival"], t_end, C["aqua"], "venue delay")]
     for tc in sched:
+        rk_ = r.get("risk") or {}
         chrome("2. The order, stage by stage, against the live book",
-               f"{mk['slug']}  ·  buy {side_name} @ <= {lim_px:.2f}  ·  {o['kind'].replace('_', ' ')} "
-               f"(rule: {dec['action']}{', ' + dec['reason'] if dec['reason'] else ''})")
+               f"{mk['slug']} (pre-match)  ·  buy {side_name} @ <= {lim_px:.2f}  ·  {o['kind'].replace('_', ' ')} "
+               f"(rule: {dec['action']}{', ' + dec['reason'] if dec['reason'] else ''}; risk: "
+               f"{'ok' if rk_.get('ok') else 'declined, ' + str(rk_.get('reason'))})")
         # left: the stage clock
         y = 0.8
         fig.text(0.03, y + 0.035, "ms after capture", fontsize=10, color=C["muted"])
@@ -391,29 +403,36 @@ def video(meta, calls, summ, path: Path, fps=30):
     B = summ["budget_with_1s_simulated_feed"]
     sp = summ["spans_ms"]
     cnt = summ["counts"]
-    mk_list = ", ".join(cnt["markets"])
+    cd = B.get("conditions") or {}
+    imp = summ["reprice_reference"].get("implied_after_point_s") or {}
+    aft = B.get("executable_after_median_reprice_ms") or {}
+    n_ = cnt["complete_order_traces"]
     lines = [
-        (f"{cnt['complete_order_traces']} MISS calls, {len(cnt['markets'])} live market"
-         f"{'s' if len(cnt['markets']) != 1 else ''}, every stage logged", C["ink2"], 13),
+        (f"{n_} MISS calls on {len(cnt['markets'])} live pre-match tennis book"
+         f"{'s' if len(cnt['markets']) != 1 else ''} ({', '.join(cnt['markets'])}), every stage logged", C["ink2"], 12),
+        (f"CV fed at {cd.get('stream_fps', 10):g} frames/s, every frame ({cd.get('slow_motion', '12x')} slow motion; the "
+         f"laptop cannot run 120 fps in real time)", C["yellow"], 12.5),
+        (f"all {n_} orders were timing probes: the rule and the risk check declined every call (pre-match books)",
+         C["yellow"], 12.5),
         (f"our pipeline, capture to order ready:  p50 {sp['capture_to_order_ready']['p50']:.1f} ms  "
-         f"(p99 {sp['capture_to_order_ready']['p99']:.1f})", C["ink"], 17),
+         f"(max {sp['capture_to_order_ready']['max']:.1f}, n = {n_})", C["ink"], 17),
         (f"network one-way (RTT/2):  p50 {B['network_one_way_ms']['p50']:.0f} ms     venue delay  "
          f"{B['venue_delay_ms']['p50']:,.0f} ms", C["ink"], 17),
-        (f"capture to executable:  p50 {sp['capture_to_executable']['p50']:,.0f} ms", C["ink"], 17),
-        (f"with the 1 s simulated feed:  {B['total_ms']['p50']:,.0f} ms p50 (p99 {B['total_ms']['p99']:,.0f})  vs  "
+        (f"with the 1 s simulated feed:  {B['total_ms']['p50']:,.0f} ms p50 (max {B['total_ms']['max']:,.0f})  vs  "
          f"< 3,000 ms required", C["ink"], 19),
-        (f"the book typically reprices {summ['reprice_reference']['band_s'][0]:.1f}-"
-         f"{summ['reprice_reference']['band_s'][1]:.1f} s after the point: the 1 s venue delay, not our pipeline, "
-         f"is what is late", C["ink2"], 12.5),
-        (f"markets: {mk_list}", C["muted"], 10),
+        ((f"executable {min(aft.values()) / 1e3:.2f}-{max(aft.values()) / 1e3:.2f} s after the median reprice "
+          f"({' / '.join(f'{v:.2f}' for v in sorted(imp.values()))} s after the point, by unmeasured stamp lag)")
+         if aft else "", C["ink2"], 12.5),
+        (f"the 1 s feed and the venue's 1 s order delay, not our {sp['capture_to_order_ready']['p50']:.0f} ms, "
+         f"are what make it late", C["ink2"], 12.5),
     ]
-    for i in range(4 * fps):
+    for i in range(5 * fps):
         chrome("3. The run", None)
-        y = 0.80
+        y = 0.86
         for txt, col, fs in lines:
             fig.text(0.05, y, txt, fontsize=fs, color=col, va="top",
                      fontweight="bold" if fs >= 17 else "normal")
-            y -= 0.105
+            y -= 0.026 + fs * 0.0042
         wr.add(fig)
     wr.close()
     plt.close(fig)

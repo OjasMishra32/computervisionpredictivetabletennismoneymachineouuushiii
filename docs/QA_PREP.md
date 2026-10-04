@@ -117,12 +117,17 @@ every reading loses from V = 3 s, and the real bar is a call that reaches the ve
 umpire's stamp.
 *Say it plainly if asked:* nobody has run camera-to-order in one process on the GPU yet (`engine/README.md` "Known
 gaps"). The 40.7 ms WebRTC figure comes from a laptop at 10 fps, because the laptop engine manages only 9–18 fps.
-→ **[`results/e2e/summary.json` exists; at 23:15 UTC it had 24 order traces — re-read it before the talk]** "We
-measured it end to end in one process: our footage streamed over WebRTC into the vision engine, a call, a paper order
-built against a live tennis book. Video in to order ready took 54 ms p50 on a laptop. Add a simulated 1 s feed, 65 ms of
-network and the venue's 1 s hold: 2,119 ms, about 0.9 s inside the 3 s bar. The order is unsigned and never sent, and
-the calls are table tennis mapped onto a tennis market for timing only." Keys:
-`budget_with_1s_simulated_feed.{ours_capture_to_order_ready_ms,network_one_way_ms,total_ms,margin_to_requirement_ms}.p50`.
+→ **[`results/e2e/summary.json`: 24 order traces, verified]** "We measured it end to end in one process: our footage
+streamed over WebRTC into the vision engine, a call, a paper order built against a live tennis book. Video in to order
+ready took 54 ms p50 on a laptop, with the vision engine fed 10 frames a second, every frame: twelve times slower than
+real time, because the laptop cannot run 120 fps live. Add a simulated 1 s feed, 65 ms of network and the venue's 1 s
+hold: 2,119 ms, about 0.9 s inside the 3 s bar. All 24 orders were timing probes: the rule and the risk check declined
+every call on the pre-match books. The order is unsigned and never sent (signing is not timed), and the calls are
+table tennis mapped onto a tennis market for timing only." If pressed: the order is executable 0.14–1.28 s after the
+median reprice, depending on the unmeasured stamp lag; and timing margin is not trading margin, since at the
+pre-registered lag the strategy breaks even at a feed delay of about 1.0–1.1 s. Keys:
+`budget_with_1s_simulated_feed.{ours_capture_to_order_ready_ms,network_one_way_ms,total_ms,margin_to_requirement_ms}.p50`,
+`budget_with_1s_simulated_feed.{conditions,executable_after_median_reprice_ms,tier0_breakeven_feed_delay_s}`.
 Evidence: `results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup`;
 `results/webrtc/summary_20261003T212750Z.json::runs[slowmo10_engine].capture_to_decision_ms`;
 `results/decay/decay.json::latency_inputs`; `research/v2/feed_latency/LATENCY_SWEEP.md` §2 and §5.
@@ -133,9 +138,16 @@ makes $92/day at 1×, $34k makes $83/day at 2× with a CI that spans zero, and 5
 1 s uses $14–29k at a 100-share net cap and 10 matches a day. The binding limit is the stale depth on each
 point: a median $222 sits at the old price just before the reprice and $0 half a second later. Raising the net
 cap to 1,000 shares loses out of sample (−$51/day at V = 0).
-→ **[`results/capacity/capacity.json` exists (capacity workflow, still being audited)]** say the pre-registered line
-first: "At the pre-registered 2.0 s lag there is no capacity to speak of: Sharpe 0.9 held out even at the smallest
-size." Then the post hoc capacity from its `paragraph`, labelled post hoc. Re-read the file before the talk.
+→ **[`results/capacity/capacity.json`: audited and re-run with the verifier's fixes]** say the pre-registered line
+first: "At the pre-registered 2.0 s lag there is no capacity to speak of: Sharpe 0.8 held out even at the smallest
+size, and a 1 s feed already sits at its breakeven feed delay." Then, labelled post hoc (the 3.14 s stamp-lag estimate,
+a one-day inference): "With 10 covered matches a day the CV book runs up to $28–40k of capital held out and $55–73k in sample
+before its Sharpe halves (Sharpe 4 or more there). The range is how we share the stale depth with the faster traders:
+best levels versus pro rata. Every fill is capped at the shares that were resting in the measured book. Covering
+every match lifts that to $65–97k held out. Our size there is 0.1–0.2% of in-play tennis volume, but about 2–5% of
+the with-move trading in the first 3 s after each jump. A $167/day data licence is covered from about $65k in sample;
+held out only at the noisy largest size." Full numbers: `research/capacity/CAPACITY.md`. Re-read the file before the
+talk.
 Evidence: `results/alpha/alpha.json::H_capacity.rows`; `docs/RISK.md` R3; `latency_sweep.csv` (capital_usd at
 V = 1); `research/v2/latency/results.json::summary.stale_depth`; `research/v2/tier0/RESULTS.md` §3.
 
@@ -352,7 +364,7 @@ Evidence: `results/oos_peeks.log`; `DEVIATIONS.md`; `docs/paper/PLAN.md` §12.13
 | Item | File that unlocks it | Line when present | Line when absent |
 |---|---|---|---|
 | End-to-end timing | `results/e2e/summary.json` (present; other workflow) | Q1 bracket above, re-read before the talk | "Components measured; one-process end-to-end run in progress." |
-| Capacity | `results/capacity/capacity.json` | "CV at 1 s: capacity ⟨$⟩ before the OOS CI spans zero; v2 ⟨$⟩." | Q2 as written |
+| Capacity | `results/capacity/capacity.json` (present, verified) | Q2 bracket above: "CV at 1 s (post hoc lag): $28–40k held out before the Sharpe halves; pre-registered: none; v2 $23–34k." | Q2 as written |
 | Ex-ante replay | INTEGRATION_TODO C1 output (replay workflow; an exploratory selective variant was logged 23:01 UTC) | Q4 extra line, labelled post hoc unless run under a PROTOCOL amendment | Q4 as written |
 | Causal-CV cell | `results/redteam/causal_cv.json` (present) | Q10 line above | — |
 | v2-safe forward | `results/v2/forward_safe.json` (`scripts/forward_test_safe.py`, run once after the pinned runs) | "v2-safe, reported not tested: ⟨c⟩¢ [lo, hi] full window; blind sub-window from 18:00 UTC ⟨c⟩¢" | "runs after the pinned forward test" |

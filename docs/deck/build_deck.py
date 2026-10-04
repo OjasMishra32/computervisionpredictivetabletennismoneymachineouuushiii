@@ -1946,6 +1946,8 @@ def s08_engine(prs, n):
     e_tot = opt(F_E2E, *bg, "total_ms", "p50")
     e_req = opt(F_E2E, *bg, "requirement_ms", default=3000.0)
     e_n = opt(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n")
+    e_fps = opt(F_E2E, *bg, "conditions", "stream_fps")          # e2e verifier: the conditions travel with the numbers
+    e_slow = opt(F_E2E, *bg, "conditions", "slow_motion")
     g50_ = V(F_OVO, "headline", OVO_RUN, "stream", "after_startup", "call_ready_ms", "p50", f=lambda x: f"{x:.1f} ms")
     ys_ = 6.2
     if None not in (e_feed, e_ours, e_net, e_ven, e_tot):
@@ -1954,7 +1956,7 @@ def s08_engine(prs, n):
             _record(f"{v_:,.0f} ms", key_str(F_E2E, *bg) + " > " + k_)
         n_tr = _record(f"{e_n}", key_str(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n"))
         label(s, M, 5.88, CW, f"CAN WE TRADE INSIDE 3 s? FRAME → EXECUTABLE PAPER ORDER, MEASURED END TO END "
-                              f"({n_tr} ORDER TRACES; ORDER NOT SENT)")
+                              f"({n_tr} TIMING PROBES; ORDER NOT SENT)")
         scale = CW / max(e_req, e_tot)
         segs = [(e_feed, "simulated 1 s licensed feed", "B8C4D0", INK), (e_ours, "", BLUE, WHITE),
                 (e_net, "", "3F6E9C", WHITE), (e_ven, "venue holds every order 1 s", RED, WHITE)]
@@ -1969,10 +1971,15 @@ def s08_engine(prs, n):
         box(s, x_, ys_, M + e_req * scale - x_, 0.42, fill=WHITE, line=LINE, radius=0.0, name="Latency margin")
         text(s, x_ + 0.08, ys_, M + e_req * scale - x_ - 0.16, 0.42,
              P(R(f"margin to 3 s: {e_req - e_tot:,.0f} ms", 11, BLUE, bold=True)), anchor="m", name="Latency margin label")
-        text(s, M, ys_ + 0.44, CW, 0.38, P(
+        cond_ = (f"CV fed at {e_fps:g} frames/s, every frame ({e_slow} slow motion; the laptop cannot run 120 fps "
+                 f"in real time); all {n_tr} orders were timing probes: the rule and the risk check declined every "
+                 "call on pre-match books. " if e_fps else "")
+        if e_fps:
+            _record(cond_.strip(), key_str(F_E2E, *bg, "conditions"))
+        text(s, M, ys_ + 0.44, CW, 0.42, P(
             R(f"Ours, video in → paper order ready: {e_ours:,.0f} ms (laptop) · network to the venue {e_net:,.0f} ms · "
-              f"total {e_tot:,.0f} ms. On a GPU the vision call is ready in {g50_}. The real bar is tighter: the call "
-              "must beat the umpire's stamp by ~0.9 s (slide 7).", 10.5, MUTED)), name="Latency caption")
+              f"total {e_tot:,.0f} ms. {cond_}GPU vision call-ready {g50_}. Timing margin is not trading margin: the "
+              "call must beat the umpire's stamp by ~0.9 s (slide 7).", 9.5, MUTED)), name="Latency caption")
     else:
         label(s, M, 5.88, CW, "CAN WE TRADE INSIDE 3 s? FRAME → EXECUTABLE PAPER ORDER")
         _record(PENDING, F_E2E + "  [end-to-end timing proof]")
@@ -1987,7 +1994,7 @@ This is not just a backtest. The market-data and paper-trading legs run on live 
 
 On the right, the full chain runs on a real recorded WTA book: vision call, paper order, the one-second venue delay, the fill, then the reprice. It is an illustrative pairing of table-tennis calls with a tennis book, so it shows timing, not edge.
 
-The strip at the bottom answers the organizers' first question, whether we can trade inside three seconds. It is measured end to end in one process: our own footage streamed over WebRTC into the vision engine, a call, a paper order built against a live tennis book, the measured network time to the venue, and the venue's one-second hold, plus a simulated one-second feed. Our own part is tens of milliseconds; the feed and the venue hold dominate. Three seconds is not the real bar, though: the call has to beat the umpire's stamp by about nine-tenths of a second.
+The strip at the bottom answers the organizers' first question, whether we can trade inside three seconds. It is measured end to end in one process: our own footage streamed over WebRTC into the vision engine, a call, a paper order built against a live tennis book, the measured network time to the venue, and the venue's one-second hold, plus a simulated one-second feed. Our own part is tens of milliseconds; the feed and the venue hold dominate. Two conditions go with it: the laptop vision engine was fed ten frames a second, every frame, twelve times slower than real time, because it cannot run 120 frames a second live; and every order was a timing probe, because the rule and the risk check declined every call on the pre-match books. Three seconds is not the real bar, though: the call has to beat the umpire's stamp by about nine-tenths of a second.
 
 [Engine: streaming vision → fair value → strategy → risk → paper executor. The executor refuses to start if a live-trading flag or wallet key is present. The e2e run maps table-tennis calls onto a live tennis market for timing only (different sport); the order payload is unsigned and never sent ({F_E2E}).]
 
@@ -2560,6 +2567,7 @@ def appendix(prs, n0):
     e_net = V(F_E2E, *bg, "network_one_way_ms", "p50", f=lambda x: f"{x:,.0f} ms")
     e_tot = V(F_E2E, *bg, "total_ms", "p50", f=lambda x: f"{x:,.0f} ms")
     e_n = V(F_E2E, "our_pipeline_frame_to_order_ready_ms", "n", f=intc)
+    e_cnd = V(F_E2E, *bg, "conditions", "sentence")
     H = ("headline", OVO_RUN, "stream")
     g50 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p50", f=lambda x: f"{x:.1f} ms")
     g99 = V(F_OVO, *H, "after_startup", "call_ready_ms", "p99", f=lambda x: f"{x:.1f} ms")
@@ -2569,39 +2577,55 @@ def appendix(prs, n0):
             "You need sub-3-second data. Prove the pipeline can actually trade that fast, frame to order.",
             [[B("Measured end to end, in one process: "), f"our footage over WebRTC into the vision engine, a call, a "
               f"paper order on a live tennis book. Video in → order ready: {e_ours} on a laptop ({e_n} traces). With "
-              f"a simulated 1 s feed, the network ({e_net}) and the venue's 1 s hold: {e_tot}, under 3,000 ms."],
+              f"a simulated 1 s feed, the network ({e_net}) and the venue's 1 s hold: {e_tot}, under 3,000 ms. "
+              f"Conditions: {e_cnd}."],
              [B("On a GPU the vision call is ready in "), f"{g50} (p99 {g99}) at 120 fps, {gdr} frames dropped."],
              [B("3 s is not the real bar: "), f"the call must beat the umpire's stamp by about {cbs}; from a 3 s "
               "feed delay every reading loses."],
              "Paper only: the order payload is unsigned and never sent; table-tennis calls are mapped onto a tennis "
              "market for timing only (different sport)."],
-            [(e_tot, "frame → executable order, p50, incl. simulated 1 s feed and 1 s venue hold"),
+            [(e_tot, "frame → executable order, p50, incl. simulated 1 s feed and 1 s venue hold (timing probes; "
+                     "CV fed at 10 frames/s)"),
              (e_ours, "our part: video in → paper order ready"), (g50, "GPU vision call-ready, p50")],
             [F_E2E, F_OVO, F_RT], ref="organizer question 1 · docs/QA_PREP.md Q1")
 
     n += 1
     slide_ctx(f"{n} Q14")
     v2cap = V(F_ALPHA, "headline", "oos_capital_capacity_usd", f=lambda p_: f"{usd_k(p_[0])}–{usd_k(p_[1])}")
-    cvcap = D(lambda: f"{usd_k(raw(F_RT, 'keys', 'cv.pre.oos.cap', 'value'))}–{usd_k(raw(F_RT, 'keys', 'cv.cal.oos.cap', 'value'))}",
-              key_str(F_RT, "keys", "cv.pre.oos.cap / cv.cal.oos.cap"))
+
+    def _half(name, key):       # capital where the Sharpe halves (capacity study, results/capacity/capacity.json)
+        return raw(F_CAP, "answers", name, key, "capital_where_sharpe_halves_usd")
+
+    def _krng(name_a, name_b, key):
+        lo_, hi_ = sorted([_half(name_a, key), _half(name_b, key)])
+        return f"{usd_k(lo_)}–{usd_k(hi_)}"
+    k10o, k10i = "lagcal|phi0.5|cov10|g1|burned_OOS", "lagcal|phi0.5|cov10|g1|IS"
+    kalo = "lagcal|phi0.5|covall|g1|burned_OOS"
+    cvcap = D(lambda: _krng("cv_prorata", "cv", k10o),
+              key_str(F_CAP, "answers", "cv_prorata / cv", k10o, "capital_where_sharpe_halves_usd"))
+    cvcap_is = D(lambda: _krng("cv_prorata", "cv", k10i),
+                 key_str(F_CAP, "answers", "cv_prorata / cv", k10i, "capital_where_sharpe_halves_usd"))
+    cvcap_all = D(lambda: _krng("cv_prorata", "cv", kalo),
+                  key_str(F_CAP, "answers", "cv_prorata / cv", kalo, "capital_where_sharpe_halves_usd"))
+    pre_sh = V(F_CAP, "answers", "cv", "prereg|phi0.5|cov10|g1|burned_OOS", "sharpe_ref_smallest_size",
+               f=lambda x: f"{x:.1f}")
     mx_cal = RTv("cv.cal.oos.maxlic", f=usd0)
     mx_pre = RTv("cv.pre.oos.maxlic", f=usd0)
     lic_lo = V(F_FIN, "cost_assumptions", "feed_licence", "low", f=usd0)
     lic_hi = V(F_FIN, "cost_assumptions", "feed_licence", "high", f=usd0)
     netc = RTv("cv.cal.oos.net_central", f=usd2)
-    nc1000 = RTv("cv.netcap1000.oos.usd", f=usd2)
     slide_q(prs, n, 14, "How much capital, and what's left after data?",
             "How much capital can this run, and after paying for the data, what do you make?",
             [[B("Capital: small. "), f"v2's held-out edge holds up to about {v2cap} of capital (1–2× its frozen "
               "size); five times the size loses."],
-             [B("The CV book at 1 s "), f"uses {cvcap} at a 100-share net cap; the limit is the stale depth on each "
-              f"point, and a 1,000-share cap loses held out ({nc1000}/day even at V = 0). The full grid is in "
-              "results/capacity/capacity.json."],
+             [B("The CV book at 1 s "), f"(post hoc 3.14 s lag, 10 matches a day) runs up to {cvcap} held out ({cvcap_is} "
+              f"in sample) before its Sharpe halves; the range is how we share stale depth with the fast tier. Every "
+              f"match: {cvcap_all}. Pre-registered lag: Sharpe {pre_sh} held out, no capacity."],
              [B("Data: "), f"the 1 s book can pay at most {mx_cal}/month (post hoc) or {mx_pre} (pre-registered); "
               f"quotes run {lic_lo}–{lic_hi}/month (ASSUMPTION). Net of the central stack it is {netc}/day post hoc."],
              "At today's 5% fee COURTSIDE prices speed. It is not yet a business, and the paper says so."],
-            [(v2cap, "capital where v2's held-out edge still holds"), (mx_cal, "most the 1 s book can pay for data a "
-              "month (post hoc)"), (mx_pre, "same, pre-registered")],
+            [(v2cap, "capital where v2's held-out edge still holds"), (cvcap, "capital where the CV book's held-out "
+              "Sharpe halves (1 s feed, post hoc lag)"), (mx_cal, "most the 1 s book can pay for data a month (post hoc)")],
             [F_ALPHA, F_RT, F_FIN, F_CAP], ref="organizer question 2 · docs/QA_PREP.md Q2, Q12")
     return n
 

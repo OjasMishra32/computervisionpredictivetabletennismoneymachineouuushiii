@@ -155,15 +155,23 @@ Paper; order not sent. The CV call is on our own streamed footage, mapped to a l
 6. The market's `secondsDelay` is added.
 7. A `PaperExecutor` fill is priced against the live book at the executable instant.
 
-The run used 12 passes, 132 calls and 24 MISS order traces, on 2 upcoming ATP books (none was in play). Results:
+The run used 12 passes, 132 calls and 24 MISS order traces, on 2 upcoming ATP books (none was in play). The CV
+engine was fed at 10 frames/s, every frame (12x slow motion; the laptop cannot run 120 fps in real time), and all
+24 orders were timing probes: the rule and the risk check declined every call on the pre-match books. Results:
 
-- **Capture to order ready:** 54 ms p50, 72 ms p99.
+- **Capture to order ready:** 54 ms p50, 73 ms max (n = 24).
 - **Network one-way:** 65 ms.
 - **Capture to executable:** 1,119 ms p50.
-- **With the simulated 1 s feed:** the order is executable 2,119 ms after the point (p99 2,218). All 24 calls are
-  under 3 s, but 0.6-1.1 s after the book's typical reprice.
-- **Rule and fills:** the rule skipped every call (pre-match edge -1.3c). All 24 payloads are labelled timing
-  probes, and all filled at the ask on quiet books.
+- **With the simulated 1 s feed:** the order is executable 2,119 ms after the point (max 2,241). All 24 calls are
+  under 3 s, but 0.14-1.28 s after the median reprice, depending on the unmeasured stamp lag (median reprice
+  +840 / +1,350 / +1,980 ms after the point at a 2.0 s stamp lag / the calibrated stamp reading / the post hoc 3.14 s
+  lag).
+- **Timing margin is not trading margin:** a feed of up to 1.88 s would still meet 3 s, but the tier-0 breakeven
+  feed delay is 1.0-1.1 s at the pre-registered 2.0 s stamp lag (2.1-2.2 s at the post hoc 3.14 s estimate; stored
+  cells, assumed data).
+- **Rule and fills:** the rule skipped every call (pre-match edge -1.3c) and the risk check declined every one.
+  All 24 payloads are labelled timing probes, and all filled 100 shares at the ask on quiet books, so they are not
+  capacity evidence (see `research/capacity/CAPACITY.md`). Signing and POST are not timed (we never sign).
 
 Details: `research/e2e/RESULTS.md`; trace and figures in `results/e2e/`.
 

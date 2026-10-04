@@ -294,14 +294,18 @@ def live_edge_curve(refresh: bool = False) -> pd.DataFrame:
 
 
 def curve_per_share(curve: pd.DataFrame, side: str, idx: np.ndarray, n: np.ndarray, scale: np.ndarray,
-                    tau: np.ndarray, after: str) -> np.ndarray:
+                    tau: np.ndarray, after: str, extrap: str = "all") -> np.ndarray:
     """Average per-share value (price units, vs the post-reprice mid) of the first n shares we take on
     sampled live point idx, its book scaled by `scale` (volume), tau s before the reprice.
     side 'E': gross edge of a correct call; side 'W': loss of a wrong call. Cumulative value is linear
     between the EDGE_N grid points. tau is interpolated across the 2 / 1 / 0.25 s snapshots like _depth.
     After the reprice (tau < 0): after='zero' -> 0; 'decay' -> linear from the 0.25 s value to 0 at +0.5 s;
     'spread' -> linear from the 0.25 s value to half the 1c spread at +0.5 s, then half the spread (a late
-    wrong call buys the loser at its repriced quote)."""
+    wrong call buys the loser at its repriced quote).
+    Beyond the last grid point (m >= 12,800 live-book shares) while the side still holds more than m shares:
+    extrap='all' (as committed for tier-0) uses the whole side's value G_all, i.e. G_all / m per share, which
+    overstates it when the side holds many more shares than m (capacity verifier, 2026-10-03); extrap='linear'
+    interpolates the cumulative value between (12,800, G_12800) and (S, G_all)."""
     grid = np.array((0,) + EDGE_N, float)
     m = np.maximum(n / np.maximum(scale, 1e-9), 1e-6)          # shares in the live (unscaled) book
     k = np.clip(np.searchsorted(grid, m, "right") - 1, 0, len(grid) - 2)
@@ -314,7 +318,14 @@ def curve_per_share(curve: pd.DataFrame, side: str, idx: np.ndarray, n: np.ndarr
         Gall = curve[f"{side}_{lab}_all"].to_numpy()[idx]
         lo, hi = grid[k], grid[k + 1]
         Gm = G[ar, k] + (G[ar, k + 1] - G[ar, k]) * (m - lo) / (hi - lo)
-        Gm = np.where((m > S) | (m >= grid[-1]), Gall, Gm)
+        if extrap == "linear":
+            top = G[:, -1]
+            Gx = top + (Gall - top) * (m - grid[-1]) / np.maximum(S - grid[-1], 1e-9)
+            Gm = np.where(m >= S, Gall, np.where(m >= grid[-1], Gx, Gm))
+        elif extrap == "all":
+            Gm = np.where((m > S) | (m >= grid[-1]), Gall, Gm)
+        else:
+            raise ValueError(extrap)
         v[lab] = np.where(S > 0, Gm / np.minimum(m, np.maximum(S, 1e-9)), 0.0)
     out = np.zeros(len(tau))
     a = tau >= 2.0
@@ -335,9 +346,27 @@ def curve_per_share(curve: pd.DataFrame, side: str, idx: np.ndarray, n: np.ndarr
     return np.maximum(out, 0.0) if side == "E" else out
 
 
-def edge_per_share(curve, idx, n, scale, tau, decay_to_zero: bool) -> np.ndarray:
+def edge_per_share(curve, idx, n, scale, tau, decay_to_zero: bool, extrap: str = "all") -> np.ndarray:
     """Correct-call gross edge per share (see curve_per_share)."""
-    return curve_per_share(curve, "E", idx, n, scale, tau, "decay" if decay_to_zero else "zero")
+    return curve_per_share(curve, "E", idx, n, scale, tau, "decay" if decay_to_zero else "zero", extrap)
+
+
+def shares_resting(curve: pd.DataFrame, side: str, idx: np.ndarray, tau: np.ndarray) -> np.ndarray:
+    """SHARES resting on one side of the measured live book (unscaled) at tau s before the reprice: side 'E' = the
+    stale levels a correct call takes (S_<snap>), 'W' = the opposite side a wrong call takes (SW_<snap>);
+    interpolated across the 2 / 1 / 0.25 s snapshots like _depth, flat beyond 2 s and between 0.25 and 0. After the
+    reprice the stale side shrinks with its $ depth (_depth), the opposite side stays at its 0.25 s size."""
+    col = "S" if side == "E" else "SW"
+    s2, s1, s0 = (curve[f"{col}_{lab}"].to_numpy()[idx].astype(float) for lab in ("2", "1", "025"))
+    out = np.where(tau >= 2.0, s2, np.where(tau >= 1.0, s1 + (s2 - s1) * (tau - 1.0),
+                   np.where(tau >= 0.25, s0 + (s1 - s0) * (tau - 0.25) / 0.75, s0)))
+    if side == "E":
+        neg = tau < 0
+        if neg.any():
+            u0 = curve["usd_025"].to_numpy()[idx].astype(float)
+            frac = np.where(u0 > 0, _depth(curve, idx, tau) / np.maximum(u0, 1e-9), 0.0)
+            out = np.where(neg, s0 * np.clip(frac, 0.0, 1.0), out)
+    return np.maximum(out, 0.0)
 
 
 # ---------------------------------------------------------------------------- point-ending mix
@@ -687,12 +716,23 @@ class Scenario:
     wrong_price: str = "ref"      # ref: a wrong call pays the loser's stale price + slip, i.e. loses the whole
     #                               realised historical jump (pre-registered) | live: loses the measured
     #                               per-share cost of the first n shares on the opposite side of the book
+    # ---- capacity-study corrections (capacity verifier, 2026-10-03); defaults = the committed tier-0 model
+    depth_cap: bool = False       # True: a correct fill never takes more than phi x the SHARES resting on the stale
+    #                               side at tau (x the volume scale), a wrong fill never more than the shares on its
+    #                               side. The stale depth is stored in $ at the live day's prices, so $ / q at a
+    #                               cheaper historical fill price q otherwise creates shares that were never resting.
+    extrap: str = "all"           # curve_per_share beyond 12,800 live-book shares: all (committed) | linear (fixed)
+    alloc: str = "best"           # how our phi share of the stale depth is priced. best (committed): our n shares
+    #                               are the first n of the book, the fast tier takes the worse levels | prorata: we
+    #                               take phi of every level, so our n shares price as the first n / phi of the book
 
     def key(self) -> str:
         k = (f"{self.cv}|lag{self.stamp_lag:g}|phi{self.phi:g}|cov{self.coverage}|pev{self.p_event:g}|"
              f"net{self.net_cap:g}")
         if self.price != "ref" or self.order != "decay" or self.r_mode != "point" or self.wrong_price != "ref":
             k += f"|{self.price}|{self.order}|{self.r_mode}|w{self.wrong_price}"
+        if self.depth_cap or self.extrap != "all" or self.alloc != "best":
+            k += f"|dcap{int(self.depth_cap)}|x{self.extrap}|{self.alloc}"
         return k
 
 
@@ -810,6 +850,11 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
     lo = -DECAY_S if (sc.order == "decay" and sc.queue_s == 0) else sc.queue_s
     fill_ok = tau >= lo
     dep_c = _depth(pool, pidx, tau) * scale * sc.phi
+    if sc.alloc not in ("best", "prorata"):
+        raise ValueError(sc.alloc)
+    kal = (1.0 / sc.phi) if sc.alloc == "prorata" else 1.0      # live-book shares walked per share of ours
+    # share cap (depth_cap): phi x the shares resting on the stale side at tau, scaled like the $ depth
+    cap_c = (sc.phi * shares_resting(pool, "E", pidx, tau) * scale) if sc.depth_cap else np.full(n, np.inf)
     if sc.price == "ref":
         q_c = q_c0 + size * mfrac + sc.slip
         e_c = np.full(n, np.nan)
@@ -819,31 +864,33 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
         post_tok = np.where(np.isfinite(post_tok), post_tok, q_c0 + size)   # fallback: stale + jump
         escl = (size / pool.D.to_numpy()[pidx]) if sc.edge_scale else np.ones(n)
         dz = sc.order == "decay"
-        e_c = edge_per_share(pool, pidx, np.full(n, 100.0), scale, tau, dz) * escl
+        e_c = edge_per_share(pool, pidx, np.full(n, 100.0) * kal, scale, tau, dz, sc.extrap) * escl
         for _ in range(2):          # shares depend on price, price on shares: two fixed-point passes
             q_c = np.clip(post_tok - e_c, 0.01, 0.99)
-            n_sh = np.minimum(sc.trade_cap, dep_c) / q_c
-            e_c = edge_per_share(pool, pidx, n_sh, scale, tau, dz) * escl
+            n_sh = np.minimum(np.minimum(sc.trade_cap, dep_c) / q_c, cap_c)
+            e_c = edge_per_share(pool, pidx, n_sh * kal, scale, tau, dz, sc.extrap) * escl
         q_c = np.clip(post_tok - e_c, 0.01, 0.99)
     else:
         raise ValueError(sc.price)
-    sh_c = np.where(fill_ok, np.minimum(sc.trade_cap / q_c, dep_c / q_c), 0.0)
+    sh_c = np.where(fill_ok, np.minimum(np.minimum(sc.trade_cap / q_c, dep_c / q_c), cap_c), 0.0)
     # wrong call: we buy the loser's token; nobody competes for it and the book moves our way to fill
     dep_w = _depth(pool, pidx, np.maximum(tau, 0.0)) * scale
+    cap_w = (shares_resting(pool, "W", pidx, np.maximum(tau, 0.0)) * scale) if sc.depth_cap else np.full(n, np.inf)
     if sc.wrong_price == "ref":
         q_w = np.clip((1 - q_c0) - size * mfrac, 0.01, 0.99) + sc.slip
     elif sc.wrong_price == "live":
         post = X["post30"].to_numpy(float) if "post30" in X else np.full(n, np.nan)
         post_l = np.where(dirn > 0, 1 - post, post)                        # loser token, post-jump
         post_l = np.where(np.isfinite(post_l), post_l, (1 - q_c0) - size)
-        w = curve_per_share(pool, "W", pidx, np.full(n, 100.0), scale, tau, "spread")
+        w = curve_per_share(pool, "W", pidx, np.full(n, 100.0), scale, tau, "spread", sc.extrap)
         for _ in range(2):
             q_w = np.clip(post_l + w, 0.01, 0.99)
-            w = curve_per_share(pool, "W", pidx, np.minimum(sc.trade_cap, dep_w) / q_w, scale, tau, "spread")
+            w = curve_per_share(pool, "W", pidx, np.minimum(np.minimum(sc.trade_cap, dep_w) / q_w, cap_w), scale, tau,
+                                "spread", sc.extrap)
         q_w = np.clip(post_l + w, 0.01, 0.99)
     else:
         raise ValueError(sc.wrong_price)
-    sh_w = np.minimum(sc.trade_cap / q_w, dep_w / q_w)
+    sh_w = np.minimum(np.minimum(sc.trade_cap / q_w, dep_w / q_w), cap_w)
     q = np.where(correct, q_c, q_w)
     sh = np.where(correct, sh_c, sh_w)
     tok0 = np.where(correct, dirn > 0, dirn < 0)           # did we buy outcome 0's token?
@@ -855,7 +902,8 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
                       "fee_ps": rate * q * (1 - q), "correct": correct, "tau": tau, "early": early,
                       "is_out": is_out, "region": X.region.to_numpy(), "delay": X.delay.to_numpy(),
                       "dep_c": dep_c, "size": size, "rate": rate, "edge_c": e_c, "i": np.arange(n),
-                      "at_cap": np.where(correct, dep_c >= sc.trade_cap, dep_w >= sc.trade_cap)})
+                      "at_cap": np.where(correct, dep_c >= sc.trade_cap, dep_w >= sc.trade_cap),
+                      "cap_sh": np.where(correct, cap_c, cap_w)})
     T = T.sort_values(["cond", "ts"], kind="stable").reset_index(drop=True)
     T["shares"] = _net_cap(T, sc.net_cap)
     # re-price live fills for the shares actually sent after the net cap (fewer shares -> the better
@@ -863,7 +911,8 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
     if sc.price == "live":
         m = (T.correct & (T.shares > 1e-9)).to_numpy()
         i = T.i.to_numpy()[m]
-        e2 = edge_per_share(pool, pidx[i], T.shares.to_numpy()[m], scale[i], tau[i], sc.order == "decay") * escl[i]
+        e2 = edge_per_share(pool, pidx[i], T.shares.to_numpy()[m] * kal, scale[i], tau[i], sc.order == "decay",
+                            sc.extrap) * escl[i]
         qn = np.clip(post_tok[i] - e2, 0.01, 0.99)
         T.loc[m, "q"] = qn
         T.loc[m, "edge_c"] = e2
@@ -871,11 +920,15 @@ def simulate(J: pd.DataFrame, M: pd.DataFrame, sc: Scenario, dr: dict, pools: di
     if sc.wrong_price == "live":
         m = (~T.correct & (T.shares > 1e-9)).to_numpy()
         i = T.i.to_numpy()[m]
-        w2 = curve_per_share(pool, "W", pidx[i], T.shares.to_numpy()[m], scale[i], tau[i], "spread")
+        w2 = curve_per_share(pool, "W", pidx[i], T.shares.to_numpy()[m], scale[i], tau[i], "spread", sc.extrap)
         qn = np.clip(post_l[i] + w2, 0.01, 0.99)
         T.loc[m, "q"] = qn
         T.loc[m, "edge_c"] = -w2
         T.loc[m, "fee_ps"] = T.rate.to_numpy()[m] * qn * (1 - qn)
+    if sc.price == "live" and sc.wrong_price == "live":
+        # per-share edge implied by the fill price actually charged (q is clipped to [0.01, 0.99]; edge_c is not)
+        i = T.i.to_numpy()
+        T["edge_q"] = np.where(T.correct.to_numpy(), post_tok[i] - T.q.to_numpy(), post_l[i] - T.q.to_numpy())
     T["pnl_ps"] = T.payout - T.q - T.fee_ps
     T["pnl"] = T.shares * T.pnl_ps
     T["usd_in"] = T.shares * T.q

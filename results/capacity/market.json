@@ -110,6 +110,8 @@
   "IS|3": {
    "covered_matches_per_day": 2.9902912621359223,
    "max_simultaneous": 3.0,
+   "max_simultaneous_uncapped": 3.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 2.0,
    "p90_daily_max_simultaneous": 2.0,
    "match_hours_median": 1.7677594609724152,
@@ -118,36 +120,44 @@
   },
   "IS|10": {
    "covered_matches_per_day": 9.825242718446601,
-   "max_simultaneous": 10.0,
+   "max_simultaneous": 8.0,
+   "max_simultaneous_uncapped": 10.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 4.0,
-   "p90_daily_max_simultaneous": 6.0,
+   "p90_daily_max_simultaneous": 5.799999999999997,
    "match_hours_median": 1.8016858212484252,
    "match_hours_p90": 4.438999999999999,
    "covered_match_hours_per_day": 21.68201271746022
   },
   "IS|20": {
    "covered_matches_per_day": 19.145631067961165,
-   "max_simultaneous": 20.0,
+   "max_simultaneous": 15.0,
+   "max_simultaneous_uncapped": 20.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 6.0,
-   "p90_daily_max_simultaneous": 11.700000000000003,
+   "p90_daily_max_simultaneous": 10.0,
    "match_hours_median": 1.86325226250622,
    "match_hours_p90": 4.504082596944438,
    "covered_match_hours_per_day": 43.22405426215007
   },
   "IS|30": {
    "covered_matches_per_day": 27.524271844660195,
-   "max_simultaneous": 29.0,
+   "max_simultaneous": 24.0,
+   "max_simultaneous_uncapped": 29.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 9.0,
-   "p90_daily_max_simultaneous": 14.700000000000003,
+   "p90_daily_max_simultaneous": 13.700000000000003,
    "match_hours_median": 1.879287020828989,
    "match_hours_p90": 4.458333333333333,
    "covered_match_hours_per_day": 62.640354410098084
   },
   "IS|all": {
    "covered_matches_per_day": 50.90291262135922,
-   "max_simultaneous": 86.0,
-   "median_daily_max_simultaneous": 15.0,
-   "p90_daily_max_simultaneous": 32.0,
+   "max_simultaneous": 80.0,
+   "max_simultaneous_uncapped": 86.0,
+   "duration_cap_h": 6.0,
+   "median_daily_max_simultaneous": 13.0,
+   "p90_daily_max_simultaneous": 25.0,
    "match_hours_median": 1.9482488105694453,
    "match_hours_p90": 4.587205280608602,
    "covered_match_hours_per_day": 121.41152267832008
@@ -155,6 +165,8 @@
   "burned_OOS|3": {
    "covered_matches_per_day": 3.0,
    "max_simultaneous": 3.0,
+   "max_simultaneous_uncapped": 3.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 2.0,
    "p90_daily_max_simultaneous": 2.0,
    "match_hours_median": 2.098600245714188,
@@ -164,8 +176,10 @@
   "burned_OOS|10": {
    "covered_matches_per_day": 9.925,
    "max_simultaneous": 8.0,
+   "max_simultaneous_uncapped": 8.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 3.0,
-   "p90_daily_max_simultaneous": 6.0,
+   "p90_daily_max_simultaneous": 5.0,
    "match_hours_median": 1.8873021933105256,
    "match_hours_p90": 3.520423753831122,
    "covered_match_hours_per_day": 20.733938601012035
@@ -173,16 +187,20 @@
   "burned_OOS|20": {
    "covered_matches_per_day": 19.575,
    "max_simultaneous": 11.0,
+   "max_simultaneous_uncapped": 11.0,
+   "duration_cap_h": 6.0,
    "median_daily_max_simultaneous": 5.0,
-   "p90_daily_max_simultaneous": 8.0,
+   "p90_daily_max_simultaneous": 7.0,
    "match_hours_median": 1.8421990019745298,
    "match_hours_p90": 3.346251279936897,
    "covered_match_hours_per_day": 40.33425725939374
   },
   "burned_OOS|30": {
    "covered_matches_per_day": 28.95,
-   "max_simultaneous": 13.0,
-   "median_daily_max_simultaneous": 8.0,
+   "max_simultaneous": 12.0,
+   "max_simultaneous_uncapped": 13.0,
+   "duration_cap_h": 6.0,
+   "median_daily_max_simultaneous": 7.0,
    "p90_daily_max_simultaneous": 11.0,
    "match_hours_median": 1.8748721526397598,
    "match_hours_p90": 3.3367795647316507,
@@ -190,9 +208,11 @@
   },
   "burned_OOS|all": {
    "covered_matches_per_day": 65.825,
-   "max_simultaneous": 41.0,
-   "median_daily_max_simultaneous": 15.0,
-   "p90_daily_max_simultaneous": 27.1,
+   "max_simultaneous": 39.0,
+   "max_simultaneous_uncapped": 41.0,
+   "duration_cap_h": 6.0,
+   "median_daily_max_simultaneous": 14.5,
+   "p90_daily_max_simultaneous": 25.1,
    "match_hours_median": 1.9434592949681813,
    "match_hours_p90": 3.5651111111111127,
    "covered_match_hours_per_day": 145.07361704438097
@@ -209,11 +229,13 @@
   ]
  },
  "run": {
-  "host": "c0705a-s2.ufhpc",
-  "workers": 32,
+  "host": "Ojasvas-MacBook-Air-3.local",
+  "workers": 2,
   "seeds": 20,
-  "runtime_s": 1040.3,
-  "utc": "2026-10-03T22:43:43+00:00",
-  "slurm_job": "44620396"
+  "utc": "2026-10-04T00:37:30+00:00",
+  "slurm_job": null,
+  "note": "fix pass after the capacity verifier: laptop, nice -n 10, 2 workers (HiPerGator socket closed); the first grid (f9d8f94) ran as SLURM job 44620396",
+  "cv_grid_finished_utc": "2026-10-04T02:23:48+00:00",
+  "cv_rows": 44880
  }
 }

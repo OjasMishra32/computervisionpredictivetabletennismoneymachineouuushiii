@@ -101,7 +101,15 @@ ZERO_ADDR = "0x" + "0" * 40
 TOURS = ("atp", "wta", "challenger")
 FEED_BASELINE_S = 1.0          # simulated licensed feed (not purchased)
 REQUIREMENT_S = 3.0            # the organisers' "< 3 s"
-REPRICE_BAND_S = (1.0, 1.5)    # market reprice after the point (see summary.reprice_reference)
+REPRICE_CALIBRATED_S = 1.35    # the calibrated stamp reading's median reprice after the bounce (inference)
+# The median reprice after the point is NOT measured: it is the measured book-vs-official-stamp median plus an
+# unmeasured stamp lag (2.0 s assumed / 3.14 s inferred), or the calibrated stamp reading. reprice_reference() gives
+# all three; the band drawn and quoted is their range (e2e verifier, 2026-10-03; the first write-up used 1.0-1.5 s).
+STAMP_LAGS_S = {"stamp_lag_2.0_assumed": 2.0, "stamp_lag_3.14_inferred": 3.14}
+RUN_CODE_NOTE = ("run 20261003T224404Z used engine/webrtc as of commit 3b098ad (whep_reader.py was edited at 22:54 UTC "
+                 "mid-run, after Python had imported it; sender.py at 23:08 UTC, after the run); the later committed "
+                 "changes are logging-only (wm fields), so the stamp semantics are unchanged. The trace's meta row has "
+                 "no git hash; runs from now on record git rev + dirty flag in meta.git")
 L4_ONLINE = REPO / "results" / "engine" / "online_vs_offline.json"
 L4_BENCH = REPO / "results" / "engine" / "vision_bench_gpu.json"
 SWEEP = REPO / "results" / "tier0" / "latency_sweep.json"
@@ -868,7 +876,7 @@ class E2E:
                              for r in self.markets],
                     risk=dict(config=self.risk.cfg.__dict__, snapshot=self.risk.snapshot()),
                     feed=self.feed.summary(), rtt_errors=self.prober.errors[-10:],
-                    paper_only=True, orders_sent=0, orders_signed=0)
+                    git=git_state(), paper_only=True, orders_sent=0, orders_signed=0)
         path = OUT / "trace.jsonl"
         with open(path, "w") as fh:
             fh.write(json.dumps(clean(meta)) + "\n")
@@ -877,13 +885,24 @@ class E2E:
             for p in self.passes:
                 fh.write(json.dumps(clean(p)) + "\n")
             for s in self.prober.series:
-                fh.write(json.dumps(clean(dict(type="rtt", **s))) + "\n")
+                fh.write(json.dumps(clean(dict(type="rtt", label=LABEL, **s))) + "\n")
             fh.write(json.dumps(dict(type="end", label=LABEL, n_calls=len(self.recs), n_passes=len(self.passes))) + "\n")
         print(f"wrote {path}", flush=True)
         summarize(path, OUT / "summary.json")
 
 
 # ============================================================================================ summary
+def git_state() -> dict:
+    """Code version of the run: HEAD and whether the work tree had uncommitted changes (provenance)."""
+    try:
+        rev = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True, timeout=10).stdout.strip()
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", "engine", "src"], cwd=REPO, capture_output=True,
+                               text=True, timeout=20).stdout.strip()
+        return {"rev": rev, "dirty_engine_or_src": bool(dirty)}
+    except Exception as e:      # noqa: BLE001
+        return {"error": repr(e)}
+
+
 def clean(x):
     if isinstance(x, dict):
         return {str(k): clean(v) for k, v in x.items()}
@@ -962,19 +981,23 @@ def l4_reference() -> dict:
 
 
 def reprice_reference() -> dict:
-    out = dict(band_s=list(REPRICE_BAND_S),
-               basis="the book reprices a median 1.16 s BEFORE the official point stamp (482 live WTA points, "
-                     "measured: research/v2/latency); the stamp's own lag after the physical point end is NOT "
-                     "measured (2.0 s assumed in tier-0, 3.14 s inferred), and the calibrated stamp reading puts "
-                     "the reprice 1.35 s after the bounce (inference). 1.0-1.5 s is the band used here.")
+    out = dict(basis="median reprice after the physical point = the measured book-vs-official-stamp median (the book "
+                     "moves a median 1.16 s BEFORE the official stamp; 482 live WTA points, research/v2/latency) plus "
+                     "the stamp's own lag after the point, which is NOT measured (2.0 s assumed in tier-0, 3.14 s "
+                     "inferred), or the calibrated stamp reading (1.35 s, inference). band_s = the range of these "
+                     "three medians; it is a range of median estimates, not a measured band, and single points spread "
+                     "widely around it (book_vs_official_stamp_s p10 / p90).")
     try:
         s = json.load(open(V2_LAT))["m1"]["book_vs_official_T_s"]
         out["book_vs_official_stamp_s"] = s
-        out["implied_after_point_s"] = {"stamp_lag_2.0_assumed": round(2.0 + s["median"], 2),
-                                        "stamp_lag_3.14_inferred": round(3.14 + s["median"], 2),
-                                        "calibrated_stamp_reading": 1.35}
+        imp = {k: round(v + s["median"], 2) for k, v in STAMP_LAGS_S.items()}
+        imp["calibrated_stamp_reading"] = REPRICE_CALIBRATED_S
     except Exception as e:      # noqa: BLE001
         out["book_vs_official_stamp_s"] = f"unavailable: {e!r}"
+        imp = {"stamp_lag_2.0_assumed": 0.84, "stamp_lag_3.14_inferred": 1.98,
+               "calibrated_stamp_reading": REPRICE_CALIBRATED_S}
+    out["implied_after_point_s"] = imp
+    out["band_s"] = [min(imp.values()), max(imp.values())]
     try:
         sw = json.load(open(SWEEP))
         out["tier0_at_1s_video_delay"] = {
@@ -983,6 +1006,18 @@ def reprice_reference() -> dict:
             "video_own120.tournament.V=1.0": sw["video_own120"]["tournament"]["1"],
             "note": "stored tier-0 counterfactual cells (results/tier0/latency_sweep.json), quoted, not re-run: "
                     "assumed data, licensed feed/video not purchased; burned OOS is not blind"}
+        be = sw["breakeven_video_delay"]
+        out["tier0_breakeven_feed_delay_s"] = {
+            "pre-registered stamp lag 2.0 s (tournament)": {p: be["tournament"][p]["breakeven_V_s_seed_mean_curve"]
+                                                            for p in ("IS", "burned_OOS")},
+            "post hoc stamp lag 3.14 s (tournament_lagcal)": {
+                p: be["tournament_lagcal"][p]["breakeven_V_s_seed_mean_curve"] for p in ("IS", "burned_OOS")},
+            "ci95": {"tournament": {p: be["tournament"][p]["breakeven_V_s_seed_bootstrap_ci95"] for p in ("IS", "burned_OOS")},
+                     "tournament_lagcal": {p: be["tournament_lagcal"][p]["breakeven_V_s_seed_bootstrap_ci95"]
+                                           for p in ("IS", "burned_OOS")}},
+            "note": "feed delay V at which the tier-0 CV strategy's seed-mean $/day crosses zero (stored cells of "
+                    "results/tier0/latency_sweep.json breakeven_video_delay; quoted, not re-run; assumed data; burned "
+                    "OOS not blind)"}
     except Exception as e:      # noqa: BLE001
         out["tier0_at_1s_video_delay"] = f"unavailable: {e!r}"
     return out
@@ -1018,6 +1053,13 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
         ours_l4 = (p50([ms(T, "capture", "handoff") for T in Ts]) + l4_call +
                    p50([ms(T, "call_emitted", "order_ready") for T in Ts]))
     rep = reprice_reference()
+    band = rep["band_s"]
+    imp = rep["implied_after_point_s"]
+    n_probe = sum(r["order"]["kind"] == "timing_probe" for r in full)
+    n_send = sum(r["order"]["kind"] == "rule_send" for r in full)
+    n_risk_ok = sum(bool((r.get("risk") or {}).get("ok")) for r in full)
+    in_play = sorted({bool(r["market"].get("in_play")) for r in full})
+    fps = (meta.get("stream") or {}).get("fps")
     budget = dict(
         feed_simulated_ms=feed_ms,
         ours_capture_to_order_ready_ms=pct(ours), network_one_way_ms=pct(net), venue_delay_ms=pct(ven),
@@ -1027,9 +1069,30 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
         requirement_ms=REQUIREMENT_S * 1e3,
         margin_to_requirement_ms=pct([REQUIREMENT_S * 1e3 - x for x in tot]),
         calls_under_requirement=f"{sum(x < REQUIREMENT_S * 1e3 for x in tot)}/{len(tot)}",
-        reprice_band_ms=[REPRICE_BAND_S[0] * 1e3, REPRICE_BAND_S[1] * 1e3],
-        executable_after_reprice_ms=(dict(vs_band_start=round(p50(tot) - REPRICE_BAND_S[0] * 1e3, 1),
-                                          vs_band_end=round(p50(tot) - REPRICE_BAND_S[1] * 1e3, 1)) if Ts else None),
+        reprice_band_ms=[band[0] * 1e3, band[1] * 1e3],
+        reprice_band_basis=("range of the MEDIAN reprice after the point under the three stamp-lag readings "
+                            "(reprice_reference.implied_after_point_s); not measured"),
+        executable_after_median_reprice_ms=({k: round(p50(tot) - v * 1e3, 1) for k, v in imp.items()} if Ts else None),
+        feed_delay_max_for_requirement_ms=(dict(p50=round(REQUIREMENT_S * 1e3 - p50([ms(T, "capture", "executable")
+                                                                                        for T in Ts]), 1),
+                                                worst_call=round(REQUIREMENT_S * 1e3 - max(ms(T, "capture", "executable")
+                                                                                           for T in Ts), 1))
+                                           if Ts else None),
+        tier0_breakeven_feed_delay_s=rep.get("tier0_breakeven_feed_delay_s"),
+        conditions=dict(
+            stream_fps=fps, source_fps=120, slow_motion=(f"{120 / fps:.0f}x" if fps else None),
+            every_frame_sent=True,
+            laptop_real_time_120fps="not run end to end: the laptop CV engine cannot keep up with 120 fps (the "
+                                    "WebRTC study, wf_708ba587, made zero calls at real-time 120 fps)",
+            orders=f"timing_probe {n_probe}/{len(full)}", rule_send=n_send, risk_ok=n_risk_ok,
+            rule_reasons=sorted({(r["decision"]["reason"] or "SEND") for r in full}),
+            risk_reasons=sorted({(r.get("risk") or {}).get("reason") or "ok" for r in full}),
+            in_play=(in_play[0] if len(in_play) == 1 else in_play), books="pre-match (no eligible singles match in play)",
+            l4_row="composite (measured laptop video leg at 10 fps + L4 emitted-call latency at 120 fps on the whole "
+                   "test set + measured call -> order ready), not an end-to-end run",
+            sentence=(f"CV fed at {fps:g} frames/s, every frame ({120 / fps:.0f}x slow motion; the laptop cannot run "
+                      f"120 fps in real time); all {n_probe} orders were timing probes: the rule and the risk check "
+                      f"declined every call on pre-match books" if fps else None)),
         order_arrival_after_point_ms=pct([feed_ms + ms(T, "capture", "network_arrival") for T in Ts]),
         with_l4_vision=(dict(ours_ms=round(ours_l4, 1),
                              total_ms=round(feed_ms + ours_l4 + p50(net) + p50(ven), 1),
@@ -1039,13 +1102,25 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
         without_feed_delay_ms=pct([ms(T, "capture", "executable") for T in Ts]))
     if Ts:
         tp = p50(tot)
+        aft = budget["executable_after_median_reprice_ms"]
+        fmx = budget["feed_delay_max_for_requirement_ms"]
+        be = rep.get("tier0_breakeven_feed_delay_s") or {}
+        be_pr = be.get("pre-registered stamp lag 2.0 s (tournament)", {})
+        be_cal = be.get("post hoc stamp lag 3.14 s (tournament_lagcal)", {})
         budget["what_the_budget_means"] = (
             f"With the simulated 1 s feed the order is ready {feed_ms + p50(ours):.0f} ms after the point and "
             f"executable {tp:.0f} ms after it (p50): {REQUIREMENT_S * 1e3 - tp:.0f} ms inside the < 3 s requirement, "
-            f"but {tp - REPRICE_BAND_S[1] * 1e3:.0f}-{tp - REPRICE_BAND_S[0] * 1e3:.0f} ms after the book's typical "
-            f"reprice ({REPRICE_BAND_S[0]:.1f}-{REPRICE_BAND_S[1]:.1f} s after the point). Our own pipeline is "
-            f"{p50(ours):.0f} ms of it; the feed (1 s) and the venue's order delay ({p50(ven):.0f} ms) are "
-            f"{(feed_ms + p50(ven)) / tp * 100:.0f}% of the total.")
+            f"but {min(aft.values()):.0f}-{max(aft.values()):.0f} ms after the MEDIAN reprice, depending on the "
+            f"unmeasured stamp lag (median reprice {imp['stamp_lag_2.0_assumed']:.2f} / "
+            f"{imp['calibrated_stamp_reading']:.2f} / {imp['stamp_lag_3.14_inferred']:.2f} s after the point). Our own "
+            f"pipeline is {p50(ours):.0f} ms of it; the feed (1 s) and the venue's order delay ({p50(ven):.0f} ms) are "
+            f"{(feed_ms + p50(ven)) / tp * 100:.0f}% of the total. Timing allows a feed of up to "
+            f"{fmx['p50'] / 1e3:.2f} s (p50; {fmx['worst_call'] / 1e3:.2f} s on the worst call) under 3 s, but the "
+            f"tier-0 breakeven feed delay is {be_pr.get('burned_OOS', float('nan')):.2f}-"
+            f"{be_pr.get('IS', float('nan')):.2f} s at the pre-registered 2.0 s stamp lag and "
+            f"{be_cal.get('burned_OOS', float('nan')):.2f}-{be_cal.get('IS', float('nan')):.2f} s at the post hoc "
+            f"3.14 s stamp-lag estimate (stored cells; assumed data; burned OOS not blind): the timing margin to 3 s is not trading "
+            f"margin. Conditions: {budget['conditions']['sentence']}.")
     fills = {}
     for kind in ("rule_send", "timing_probe"):
         rs = [r for r in full if r["order"]["kind"] == kind]
@@ -1067,6 +1142,25 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
                            via={v: sum(r["fill"]["via"] == v for r in rs) for v in {r["fill"]["via"] for r in rs}},
                            rule_reasons={x: sum((r["decision"]["reason"] or "SEND") == x for r in rs)
                                          for x in {(r["decision"]["reason"] or "SEND") for r in rs}})
+    upd = []
+    for r in full:
+        tk = r.get("ticker") or {}
+        cols = tk.get("cols") or []
+        if not cols or not r.get("paper_order") or not r.get("fill"):
+            continue
+        i_ts, i_k = cols.index("ts_server_ms"), cols.index("kind")
+        a_, b_ = r["paper_order"].get("t_decision_ms"), r["fill"].get("t_exec_ms")
+        msgs = [x for x in tk["rows"] if x[i_k] != "sample" and x[i_ts] is not None and a_ < x[i_ts] <= b_]
+        if msgs:
+            upd.append(dict(rid=r["rid"], messages=len(msgs), kinds=sorted({x[i_k] for x in msgs}),
+                            trades=[[x[cols.index("trade_px")], x[cols.index("trade_size")]] for x in msgs
+                                    if x[i_k] == "trade"]))
+    for kind in fills:
+        fills[kind]["book_updated_during_venue_delay"] = dict(
+            n=len(upd), of=len(full), orders=upd,
+            note="venue messages on the order's token stamped between the decision and the executable instant; the "
+                 "fill priced against the updated book. No message stamped <= the executable instant arrived after "
+                 "the fill was computed; every fill came via the quiet-book timer.")
     by_mkt = {}
     for r in full:
         by_mkt.setdefault(r["market"]["slug"], 0)
@@ -1097,6 +1191,24 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
                                         for n in ("qwait_ms", "norm_ms", "infer_ms", "blobs_ms", "track_ms", "feat_ms",
                                                   "clf_ms", "proc_ms")},
         pass_engine_fps=[p.get("engine", {}).get("fps_sustained") for p in passes],
+        engine_throughput=dict(
+            input_limited_fps=fps,
+            frames_over_wall_fps=[p.get("engine", {}).get("fps_sustained") for p in passes],
+            processing_ms_per_frame_p50=[((p.get("engine", {}).get("proc_ms") or {}).get("p50")) for p in passes],
+            note="frames_over_wall_fps = frames / wall time including the lead-in and idle tail (input-limited at "
+                 "the paced stream rate), NOT the engine's throughput; the engine's own processing time per frame is "
+                 "processing_ms_per_frame_p50"),
+        call_frames=dict(
+            definition="'capture' = capture of the frame at which the call fires; the detector's 2-frame look-ahead "
+                       "(16.7 ms at 120 fps) is not in capture -> call; the call precedes the line that resolves the "
+                       "point by lead_ms (predicted)",
+            miss_call_frames={str(k): v for k, v in sorted(
+                {f: sum(1 for r in calls if r["call"] == "MISS" and r["frame"] == f)
+                 for f in {r["frame"] for r in calls if r["call"] == "MISS"}}.items())},
+            miss_lead_ms_predicted=pct([r.get("lead_ms_predicted") for r in calls if r["call"] == "MISS"]),
+            note="each pass's x264 encode differs, so the first MISS call fired at frame 2760, 2761 or 2766 (flight "
+                 "start 2743 / 2744) and the second at 2819"),
+        provenance=dict(git=meta.get("git"), note=RUN_CODE_NOTE if not meta.get("git") else None),
         pass_frames_lost=[p.get("frames", {}).get("lost_clip") for p in passes],
         pass_load_avg=[p.get("load_avg_start") for p in passes],
         pass_errors=[p.get("error") for p in passes if p.get("error")],
@@ -1111,6 +1223,14 @@ def summarize(trace_path: Path, out_path: Path) -> dict:
             "it cannot keep up with 120 fps; at a real 120 fps the CV stage is the L4 reference.",
             "Network leg = RTT/2 of a keep-alive GET /time measured at order-ready (Gainesville laptop -> Cloudflare "
             "-> venue); an order POST would also carry the venue's matching-engine time, not measured.",
+            "order_ready leaves out time a real order needs: EIP-712 signing, the L2 auth headers and POST "
+            "serialisation are not timed (we never sign), and the payload is not one the venue would accept (zero "
+            "maker / signer, feeRateBps 0 on markets whose fee schedule is 0.05 taker-only, signature null).",
+            "Every order was a timing probe: the strategy rule said SKIP (edge_below_cost) and the risk check "
+            "declined (edge_below_fee 22, kill:latency 2) on all 24 calls, on pre-match books.",
+            "Not capacity evidence: the 100-share probes were bound by the 100-share net cap and filled on deep, "
+            "quiet pre-match books; they say nothing about in-play size (results/capacity).",
+            "p99 over n = 24 is effectively the maximum; maxima are reported next to it.",
             "The fill is priced against the venue's book as of its last update stamped <= the executable instant, "
             "which assumes our wall clock and the venue's agree (NTP); our process computes it a feed delay later.",
             "Markets were upcoming / in play as recorded in `markets`; pre-match books are quieter than in-play ones.",

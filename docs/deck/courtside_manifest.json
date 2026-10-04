@@ -796,7 +796,7 @@
   },
   {
    "slide": "6 Rigor",
-   "text": "73",
+   "text": "77",
    "source": "results/oos_peeks.log  [non-empty lines at build time]"
   },
   {
@@ -1146,12 +1146,12 @@
   },
   {
    "slide": "8 Live engine",
-   "text": "WARMING UP",
+   "text": "FINISHED",
    "source": "results/live/summary.json :: status, run, started_process, now, counters  [+ STOPPED_<run> marker and file age; 1970 'now' or empty counters = warming up]"
   },
   {
    "slide": "8 Live engine",
-   "text": "warm-up: waiting for trades (3 seen)",
+   "text": "final",
    "source": "results/live/summary.json :: status"
   },
   {
@@ -1166,7 +1166,7 @@
   },
   {
    "slide": "8 Live engine",
-   "text": "2026-10-03 23:26 UTC",
+   "text": "2026-10-04 02:18 UTC",
    "source": "results/live/summary.json :: now  [file modification time when now is 1970]"
   },
   {
@@ -1188,6 +1188,16 @@
    "slide": "8 Live engine",
    "text": "$10,000",
    "source": "results/live/summary.json :: capital_per_book"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "133,717",
+   "source": "results/live/summary.json :: counters  [sum msg_*]"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "4",
+   "source": "results/live/summary.json :: matches_in_play"
   },
   {
    "slide": "8 Live engine",
@@ -1223,6 +1233,11 @@
    "slide": "8 Live engine",
    "text": "24",
    "source": "results/e2e/summary.json :: our_pipeline_frame_to_order_ready_ms > n"
+  },
+  {
+   "slide": "8 Live engine",
+   "text": "CV fed at 10 frames/s, every frame (12x slow motion; the laptop cannot run 120 fps in real time); all 24 orders were timing probes: the rule and the risk check declined every call on pre-match books.",
+   "source": "results/e2e/summary.json :: budget_with_1s_simulated_feed > conditions"
   },
   {
    "slide": "9 Risk + liquidity + financials",
@@ -1411,7 +1426,7 @@
   },
   {
    "slide": "10 Close",
-   "text": "warming up (started 2026-10-03 20:48 UTC)",
+   "text": "finished (started 2026-10-03 20:48 UTC)",
    "source": "results/live/summary.json :: status, run, started_process, now, counters  [+ STOPPED_<run> marker and file age; 1970 'now' or empty counters = warming up]"
   },
   {
@@ -1471,7 +1486,7 @@
   },
   {
    "slide": "12 Q2",
-   "text": "73",
+   "text": "77",
    "source": "results/oos_peeks.log  [non-empty lines]"
   },
   {
@@ -1946,6 +1961,11 @@
   },
   {
    "slide": "23 Q13",
+   "text": "CV fed at 10 frames/s, every frame (12x slow motion; the laptop cannot run 120 fps in real time); all 24 orders were timing probes: the rule and the risk check declined every call on pre-match books",
+   "source": "results/e2e/summary.json :: budget_with_1s_simulated_feed > conditions > sentence"
+  },
+  {
+   "slide": "23 Q13",
    "text": "4.6 ms",
    "source": "results/engine/online_vs_offline.json :: headline > fp16_cl_fuse_compile_b1_realtime > stream > after_startup > call_ready_ms > p50"
   },
@@ -1971,8 +1991,23 @@
   },
   {
    "slide": "24 Q14",
-   "text": "$13.8k–$22.6k",
-   "source": "results/redteam/derived.json :: keys > cv.pre.oos.cap / cv.cal.oos.cap"
+   "text": "$28.5k–$40.2k",
+   "source": "results/capacity/capacity.json :: answers > cv_prorata / cv > lagcal|phi0.5|cov10|g1|burned_OOS > capital_where_sharpe_halves_usd"
+  },
+  {
+   "slide": "24 Q14",
+   "text": "$55.3k–$73.3k",
+   "source": "results/capacity/capacity.json :: answers > cv_prorata / cv > lagcal|phi0.5|cov10|g1|IS > capital_where_sharpe_halves_usd"
+  },
+  {
+   "slide": "24 Q14",
+   "text": "$65.0k–$96.9k",
+   "source": "results/capacity/capacity.json :: answers > cv_prorata / cv > lagcal|phi0.5|covall|g1|burned_OOS > capital_where_sharpe_halves_usd"
+  },
+  {
+   "slide": "24 Q14",
+   "text": "0.8",
+   "source": "results/capacity/capacity.json :: answers > cv > prereg|phi0.5|cov10|g1|burned_OOS > sharpe_ref_smallest_size"
   },
   {
    "slide": "24 Q14",
@@ -1998,11 +2033,6 @@
    "slide": "24 Q14",
    "text": "−$110",
    "source": "results/redteam/derived.json :: keys > cv.cal.oos.net_central > value"
-  },
-  {
-   "slide": "24 Q14",
-   "text": "−$51",
-   "source": "results/redteam/derived.json :: keys > cv.netcap1000.oos.usd > value"
   }
  ],
  "pending": [
