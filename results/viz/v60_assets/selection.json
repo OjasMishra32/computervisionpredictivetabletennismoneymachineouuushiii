@@ -1,0 +1,237 @@
+{
+ "written_utc": "2026-10-03T22:48:58+00:00",
+ "written_before_rendering": true,
+ "rule": {
+  "population": "the 172 CallEvents the streaming engine emitted on the held-out games test_1..test_7 in the L4 real-time run (results/engine/online_events_L4.jsonl; run fp16_cl_fuse_compile_b1_realtime of results/engine/online_vs_offline.json)",
+  "eligible": "the call is matched to a labelled test flight (online_vs_offline.json runs.<run>.flights_called_or_miss: same video, the flight's engine_miss_frame / engine_bounce_frame equals the call frame), the call agrees with the label (MISS call on a MISS-labelled flight, BOUNCE call on a BOUNCE-labelled flight), it was made at or before the labelled contact frame T_ref (lead >= 0), and the flight carries no post-hoc label-audit flag (test_flights_audited.csv audit empty)",
+  "chosen": "every eligible MISS call; then, for each held-out game without an eligible MISS call, the eligible BOUNCE call whose lead is closest to the median lead of all eligible BOUNCE calls (ties: earliest frame). Lead = (T_ref - call frame) / 120 fps.",
+  "why": "shows the model's own calls exactly where it made them, on as many different held-out games as possible, MISS calls preferred; BOUNCE examples are representative (median lead), not the best ones",
+  "not_shown_but_counted": "all 172 calls are in the on-screen totals (counters), including the 7 MISS calls on balls outside the labelled flights, the MISS call after contact, the BOUNCE calls on MISS-labelled flights and the 37 labelled MISS flights the engine did not call"
+ },
+ "inputs": {
+  "results/engine/online_events_L4.jsonl": "997e272ae70037f1c56709fc7ce4e0165b0521aeb6e3156d00473f0a0633d89a",
+  "results/engine/online_vs_offline.json": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
+  "results/tracking/test_flights_audited.csv": "1920d4bba3e349910272b3954a73c82b583be9ab897172e1dffcb00ae84ee6ee"
+ },
+ "eligible_counts": {
+  "MISS": 3,
+  "BOUNCE": 51,
+  "BOUNCE_median_lead_ms": 25.0
+ },
+ "considered": {
+  "matched_calls": 93,
+  "excluded": [
+   {
+    "video": "test_2",
+    "call": "MISS",
+    "frame": 2766,
+    "label": "MISS",
+    "lead_ms": 66.7,
+    "audit": "rally_continues"
+   },
+   {
+    "video": "test_5",
+    "call": "MISS",
+    "frame": 5544,
+    "label": "MISS",
+    "lead_ms": -58.3,
+    "audit": null
+   }
+  ]
+ },
+ "chosen": [
+  {
+   "video": "test_2",
+   "call": "MISS",
+   "frame": 2819,
+   "label": "MISS",
+   "f_net": 2819,
+   "t0": 2782,
+   "t_ref": 2858,
+   "audit": null,
+   "lead_ms": 325.0,
+   "eligible": true,
+   "direction": 1,
+   "p_miss_at_call": 0.9888802961904445,
+   "predicted_lead_ms": 7.036956760325076,
+   "emitted_latency_ms": 6.824493408203125,
+   "engine_flight_t0": 2782,
+   "rule": "online P>=0.9799 x3",
+   "id": "test_2_f2819_miss",
+   "clip_src_frames": [
+    2579,
+    2999
+   ]
+  },
+  {
+   "video": "test_4",
+   "call": "MISS",
+   "frame": 5751,
+   "label": "MISS",
+   "f_net": 5750,
+   "t0": 5729,
+   "t_ref": 5762,
+   "audit": null,
+   "lead_ms": 91.7,
+   "eligible": true,
+   "direction": -1,
+   "p_miss_at_call": 0.990163692614304,
+   "predicted_lead_ms": 8.583871489433898,
+   "emitted_latency_ms": 7.039785385131836,
+   "engine_flight_t0": 5729,
+   "rule": "online P>=0.9799 x3",
+   "id": "test_4_f5751_miss",
+   "clip_src_frames": [
+    5511,
+    5931
+   ]
+  },
+  {
+   "video": "test_4",
+   "call": "MISS",
+   "frame": 9837,
+   "label": "MISS",
+   "f_net": 9839,
+   "t0": 9815,
+   "t_ref": 9865,
+   "audit": null,
+   "lead_ms": 233.3,
+   "eligible": true,
+   "direction": 1,
+   "p_miss_at_call": 0.9853279395979976,
+   "predicted_lead_ms": 30.04186289985401,
+   "emitted_latency_ms": 7.2727203369140625,
+   "engine_flight_t0": 9815,
+   "rule": "online P>=0.9799 x3",
+   "id": "test_4_f9837_miss",
+   "clip_src_frames": [
+    9597,
+    10017
+   ]
+  },
+  {
+   "video": "test_1",
+   "call": "BOUNCE",
+   "frame": 313,
+   "label": "BOUNCE",
+   "f_net": 305,
+   "t0": 288,
+   "t_ref": 316,
+   "audit": null,
+   "lead_ms": 25.0,
+   "eligible": true,
+   "direction": 1,
+   "p_miss_at_call": 0.3039013699754745,
+   "predicted_lead_ms": 39.216101501015864,
+   "emitted_latency_ms": 356.07123374938965,
+   "engine_flight_t0": 288,
+   "rule": "tau_mid<=50ms, gate open, P<0.8854",
+   "id": "test_1_f313_bounce",
+   "clip_src_frames": [
+    73,
+    493
+   ]
+  },
+  {
+   "video": "test_3",
+   "call": "BOUNCE",
+   "frame": 3442,
+   "label": "BOUNCE",
+   "f_net": 3437,
+   "t0": 3410,
+   "t_ref": 3445,
+   "audit": null,
+   "lead_ms": 25.0,
+   "eligible": true,
+   "direction": -1,
+   "p_miss_at_call": 0.1857283040561661,
+   "predicted_lead_ms": 41.32795072885794,
+   "emitted_latency_ms": 6.684064865112305,
+   "engine_flight_t0": 3410,
+   "rule": "tau_mid<=50ms, gate open, P<0.8854",
+   "id": "test_3_f3442_bounce",
+   "clip_src_frames": [
+    3202,
+    3622
+   ]
+  },
+  {
+   "video": "test_5",
+   "call": "BOUNCE",
+   "frame": 4099,
+   "label": "BOUNCE",
+   "f_net": 4075,
+   "t0": 4051,
+   "t_ref": 4102,
+   "audit": null,
+   "lead_ms": 25.0,
+   "eligible": true,
+   "direction": -1,
+   "p_miss_at_call": 0.018179469763033463,
+   "predicted_lead_ms": 38.49879946553986,
+   "emitted_latency_ms": 6.520271301269531,
+   "engine_flight_t0": 4051,
+   "rule": "tau_mid<=50ms, gate open, P<0.8854",
+   "id": "test_5_f4099_bounce",
+   "clip_src_frames": [
+    3859,
+    4279
+   ]
+  },
+  {
+   "video": "test_6",
+   "call": "BOUNCE",
+   "frame": 9190,
+   "label": "BOUNCE",
+   "f_net": 9171,
+   "t0": 9145,
+   "t_ref": 9193,
+   "audit": null,
+   "lead_ms": 25.0,
+   "eligible": true,
+   "direction": -1,
+   "p_miss_at_call": 0.00729595582763829,
+   "predicted_lead_ms": 43.53421891921637,
+   "emitted_latency_ms": 6.783723831176758,
+   "engine_flight_t0": 9145,
+   "rule": "tau_mid<=50ms, gate open, P<0.8854",
+   "id": "test_6_f9190_bounce",
+   "clip_src_frames": [
+    8950,
+    9370
+   ]
+  },
+  {
+   "video": "test_7",
+   "call": "BOUNCE",
+   "frame": 7145,
+   "label": "BOUNCE",
+   "f_net": 7135,
+   "t0": 7108,
+   "t_ref": 7149,
+   "audit": null,
+   "lead_ms": 33.3,
+   "eligible": true,
+   "direction": -1,
+   "p_miss_at_call": 0.12625937239570198,
+   "predicted_lead_ms": 47.17280756903943,
+   "emitted_latency_ms": 6.472110748291016,
+   "engine_flight_t0": 7108,
+   "rule": "tau_mid<=50ms, gate open, P<0.8854",
+   "id": "test_7_f7145_bounce",
+   "clip_src_frames": [
+    6905,
+    7325
+   ]
+  }
+ ],
+ "games": [
+  "test_1",
+  "test_2",
+  "test_3",
+  "test_4",
+  "test_5",
+  "test_6",
+  "test_7"
+ ]
+}

@@ -1,0 +1,651 @@
+{
+ "what": "daily paper P&L of the committed latency-sweep cells at V = 1 s (scripts/tier0_latency_sweep.py cell() + src/tier0.simulate, unchanged), seed mean / p10 / p90 of the cumulative P&L",
+ "label": "simulated 1 s licensed-feed baseline",
+ "all_seed_totals_match_committed": true,
+ "n": 80,
+ "max_abs_diff_usd": 4.992944013793021e-07,
+ "reference": "results/tier0/latency_sweep_seeds.csv",
+ "reference_sha256": "b83061eab1cd18a87f5e6e8766e87ff73ffe7fa69e75d1012ef4fc8033184d47",
+ "checks": [
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 0,
+   "committed_pnl_usd": 10362.446976,
+   "rerun_pnl_usd": 10362.446975742134,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 1,
+   "committed_pnl_usd": 12075.382495,
+   "rerun_pnl_usd": 12075.382495106493,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 2,
+   "committed_pnl_usd": 8951.20142,
+   "rerun_pnl_usd": 8951.201419883653,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 3,
+   "committed_pnl_usd": 10471.965173,
+   "rerun_pnl_usd": 10471.965172881568,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 4,
+   "committed_pnl_usd": 8046.683459,
+   "rerun_pnl_usd": 8046.683459267781,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 5,
+   "committed_pnl_usd": 4317.775369,
+   "rerun_pnl_usd": 4317.775369297329,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 6,
+   "committed_pnl_usd": 6351.124245,
+   "rerun_pnl_usd": 6351.124245102731,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 7,
+   "committed_pnl_usd": 10993.864764,
+   "rerun_pnl_usd": 10993.86476444368,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 8,
+   "committed_pnl_usd": 6884.840737,
+   "rerun_pnl_usd": 6884.840736729256,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 9,
+   "committed_pnl_usd": 9332.497794,
+   "rerun_pnl_usd": 9332.497793644385,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 10,
+   "committed_pnl_usd": 10064.310728,
+   "rerun_pnl_usd": 10064.31072811345,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 11,
+   "committed_pnl_usd": 11158.945496,
+   "rerun_pnl_usd": 11158.945495539378,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 12,
+   "committed_pnl_usd": 7197.401576,
+   "rerun_pnl_usd": 7197.401576387868,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 13,
+   "committed_pnl_usd": 8358.534225,
+   "rerun_pnl_usd": 8358.534224977968,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 14,
+   "committed_pnl_usd": 11813.21899,
+   "rerun_pnl_usd": 11813.218990407631,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 15,
+   "committed_pnl_usd": 12895.754676,
+   "rerun_pnl_usd": 12895.754675896089,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 16,
+   "committed_pnl_usd": 12413.832512,
+   "rerun_pnl_usd": 12413.832511984388,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 17,
+   "committed_pnl_usd": 12854.412841,
+   "rerun_pnl_usd": 12854.412840588106,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 18,
+   "committed_pnl_usd": 9360.791808,
+   "rerun_pnl_usd": 9360.791808499294,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "IS",
+   "seed": 19,
+   "committed_pnl_usd": 10448.972815,
+   "rerun_pnl_usd": 10448.972814553383,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 0,
+   "committed_pnl_usd": 1546.051597,
+   "rerun_pnl_usd": 1546.0515971087661,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 1,
+   "committed_pnl_usd": 1240.698065,
+   "rerun_pnl_usd": 1240.6980652349678,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 2,
+   "committed_pnl_usd": 3275.528204,
+   "rerun_pnl_usd": 3275.5282042817516,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 3,
+   "committed_pnl_usd": 5315.483413,
+   "rerun_pnl_usd": 5315.483413359565,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 4,
+   "committed_pnl_usd": 4642.89921,
+   "rerun_pnl_usd": 4642.8992095634485,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 5,
+   "committed_pnl_usd": -83.881371,
+   "rerun_pnl_usd": -83.88137100150618,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 6,
+   "committed_pnl_usd": 1307.128923,
+   "rerun_pnl_usd": 1307.128922755034,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 7,
+   "committed_pnl_usd": 1923.987298,
+   "rerun_pnl_usd": 1923.9872975044982,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 8,
+   "committed_pnl_usd": 147.106574,
+   "rerun_pnl_usd": 147.10657386483004,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 9,
+   "committed_pnl_usd": 2880.749297,
+   "rerun_pnl_usd": 2880.74929677156,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 10,
+   "committed_pnl_usd": 3120.318811,
+   "rerun_pnl_usd": 3120.318810564058,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 11,
+   "committed_pnl_usd": 2318.58179,
+   "rerun_pnl_usd": 2318.5817904285486,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 12,
+   "committed_pnl_usd": 291.455748,
+   "rerun_pnl_usd": 291.45574767716124,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 13,
+   "committed_pnl_usd": 1433.211822,
+   "rerun_pnl_usd": 1433.2118221934452,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 14,
+   "committed_pnl_usd": 728.064117,
+   "rerun_pnl_usd": 728.064117082271,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 15,
+   "committed_pnl_usd": 5031.591505,
+   "rerun_pnl_usd": 5031.591505440766,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 16,
+   "committed_pnl_usd": 569.006794,
+   "rerun_pnl_usd": 569.0067939182743,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 17,
+   "committed_pnl_usd": 3747.728752,
+   "rerun_pnl_usd": 3747.7287518078756,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 18,
+   "committed_pnl_usd": 1469.05509,
+   "rerun_pnl_usd": 1469.055089937479,
+   "match": true
+  },
+  {
+   "reading": "tournament_lagcal",
+   "period": "burned_OOS",
+   "seed": 19,
+   "committed_pnl_usd": 4369.562237,
+   "rerun_pnl_usd": 4369.5622368764,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 0,
+   "committed_pnl_usd": 496.224112,
+   "rerun_pnl_usd": 496.22411216961666,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 1,
+   "committed_pnl_usd": 3104.692264,
+   "rerun_pnl_usd": 3104.692263905713,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 2,
+   "committed_pnl_usd": 2261.65469,
+   "rerun_pnl_usd": 2261.654689518417,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 3,
+   "committed_pnl_usd": 427.394834,
+   "rerun_pnl_usd": 427.3948341493938,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 4,
+   "committed_pnl_usd": -1101.320409,
+   "rerun_pnl_usd": -1101.3204093350255,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 5,
+   "committed_pnl_usd": -50.679962,
+   "rerun_pnl_usd": -50.67996203416883,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 6,
+   "committed_pnl_usd": 650.238815,
+   "rerun_pnl_usd": 650.2388145614526,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 7,
+   "committed_pnl_usd": 4431.332491,
+   "rerun_pnl_usd": 4431.3324910255205,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 8,
+   "committed_pnl_usd": 186.70959,
+   "rerun_pnl_usd": 186.70958991115475,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 9,
+   "committed_pnl_usd": 2082.595705,
+   "rerun_pnl_usd": 2082.5957051609826,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 10,
+   "committed_pnl_usd": 2190.769212,
+   "rerun_pnl_usd": 2190.7692122445383,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 11,
+   "committed_pnl_usd": 918.490896,
+   "rerun_pnl_usd": 918.4908957357544,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 12,
+   "committed_pnl_usd": 732.081045,
+   "rerun_pnl_usd": 732.0810450180786,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 13,
+   "committed_pnl_usd": 796.173406,
+   "rerun_pnl_usd": 796.1734060381459,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 14,
+   "committed_pnl_usd": 4456.482785,
+   "rerun_pnl_usd": 4456.482784572853,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 15,
+   "committed_pnl_usd": 1807.265055,
+   "rerun_pnl_usd": 1807.2650547809023,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 16,
+   "committed_pnl_usd": 3356.72467,
+   "rerun_pnl_usd": 3356.7246696805796,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 17,
+   "committed_pnl_usd": 1859.795715,
+   "rerun_pnl_usd": 1859.7957152604356,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 18,
+   "committed_pnl_usd": -683.012044,
+   "rerun_pnl_usd": -683.0120436497224,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "IS",
+   "seed": 19,
+   "committed_pnl_usd": 2523.913108,
+   "rerun_pnl_usd": 2523.9131080576967,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 0,
+   "committed_pnl_usd": -405.766348,
+   "rerun_pnl_usd": -405.7663479733843,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 1,
+   "committed_pnl_usd": -586.875978,
+   "rerun_pnl_usd": -586.875977586743,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 2,
+   "committed_pnl_usd": -1594.623705,
+   "rerun_pnl_usd": -1594.6237051848198,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 3,
+   "committed_pnl_usd": 2285.373871,
+   "rerun_pnl_usd": 2285.373870919559,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 4,
+   "committed_pnl_usd": 2693.566723,
+   "rerun_pnl_usd": 2693.566723358421,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 5,
+   "committed_pnl_usd": -913.35352,
+   "rerun_pnl_usd": -913.3535196704547,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 6,
+   "committed_pnl_usd": 820.432209,
+   "rerun_pnl_usd": 820.4322093807915,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 7,
+   "committed_pnl_usd": 106.47281,
+   "rerun_pnl_usd": 106.47281041585325,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 8,
+   "committed_pnl_usd": -894.031926,
+   "rerun_pnl_usd": -894.0319256406467,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 9,
+   "committed_pnl_usd": 100.953939,
+   "rerun_pnl_usd": 100.953938918083,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 10,
+   "committed_pnl_usd": 1133.254491,
+   "rerun_pnl_usd": 1133.2544908886396,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 11,
+   "committed_pnl_usd": -219.742905,
+   "rerun_pnl_usd": -219.74290451559978,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 12,
+   "committed_pnl_usd": -1267.237208,
+   "rerun_pnl_usd": -1267.2372079767638,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 13,
+   "committed_pnl_usd": -388.845851,
+   "rerun_pnl_usd": -388.8458509566379,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 14,
+   "committed_pnl_usd": 215.87124,
+   "rerun_pnl_usd": 215.87123967757145,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 15,
+   "committed_pnl_usd": 1806.310023,
+   "rerun_pnl_usd": 1806.3100233213872,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 16,
+   "committed_pnl_usd": -1304.120052,
+   "rerun_pnl_usd": -1304.1200516536783,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 17,
+   "committed_pnl_usd": 325.160846,
+   "rerun_pnl_usd": 325.16084562478625,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 18,
+   "committed_pnl_usd": -69.057112,
+   "rerun_pnl_usd": -69.05711173346327,
+   "match": true
+  },
+  {
+   "reading": "tournament",
+   "period": "burned_OOS",
+   "seed": 19,
+   "committed_pnl_usd": 1632.548623,
+   "rerun_pnl_usd": 1632.5486233845606,
+   "match": true
+  }
+ ]
+}

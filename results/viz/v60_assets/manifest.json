@@ -1,0 +1,6139 @@
+{
+ "selection": "results/viz/v60_assets/selection.json",
+ "clips": {
+  "test_2_f2819_miss": {
+   "file": "results/viz/v60_assets/clips/test_2_f2819_miss.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_2_f2819_miss_cell.mp4",
+   "duration_s": 5.266666666666667,
+   "call_out_t": 2.4,
+   "contact_out_t": 3.7,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "passes the end line (label)",
+   "other_calls_in_window": [
+    {
+     "frame": 2618,
+     "call": "BOUNCE",
+     "sub": "ball not in the labelled set",
+     "kind": "unlabelled",
+     "label": null,
+     "t_ref": null,
+     "out_frame": 10
+    },
+    {
+     "frame": 2668,
+     "call": "BOUNCE",
+     "sub": "right, 25 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 2671,
+     "out_frame": 23
+    },
+    {
+     "frame": 2722,
+     "call": "BOUNCE",
+     "sub": "right, 17 ms after the bounce",
+     "kind": "late",
+     "label": "BOUNCE",
+     "t_ref": 2720,
+     "out_frame": 36
+    },
+    {
+     "frame": 2766,
+     "call": "MISS",
+     "sub": "label audit: rally continues (call likely wrong)",
+     "kind": "disputed",
+     "label": "MISS",
+     "t_ref": 2774,
+     "out_frame": 47
+    }
+   ]
+  },
+  "test_4_f5751_miss": {
+   "file": "results/viz/v60_assets/clips/test_4_f5751_miss.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_4_f5751_miss_cell.mp4",
+   "duration_s": 4.566666666666666,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.7666666666666666,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "passes the end line (label)",
+   "other_calls_in_window": []
+  },
+  "test_4_f9837_miss": {
+   "file": "results/viz/v60_assets/clips/test_4_f9837_miss.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_4_f9837_miss_cell.mp4",
+   "duration_s": 5.0,
+   "call_out_t": 2.4,
+   "contact_out_t": 3.3333333333333335,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "passes the end line (label)",
+   "other_calls_in_window": []
+  },
+  "test_1_f313_bounce": {
+   "file": "results/viz/v60_assets/clips/test_1_f313_bounce.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_1_f313_bounce_cell.mp4",
+   "duration_s": 4.366666666666666,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.5,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "bounce (label)",
+   "other_calls_in_window": [
+    {
+     "frame": 227,
+     "call": "BOUNCE",
+     "sub": "right, 17 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 229,
+     "out_frame": 39
+    },
+    {
+     "frame": 403,
+     "call": "BOUNCE",
+     "sub": "right, 42 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 408,
+     "out_frame": 108
+    }
+   ]
+  },
+  "test_3_f3442_bounce": {
+   "file": "results/viz/v60_assets/clips/test_3_f3442_bounce.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_3_f3442_bounce_cell.mp4",
+   "duration_s": 4.366666666666666,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.5,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "bounce (label)",
+   "other_calls_in_window": [
+    {
+     "frame": 3328,
+     "call": "BOUNCE",
+     "sub": "right, on the bounce frame",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 3328,
+     "out_frame": 32
+    },
+    {
+     "frame": 3380,
+     "call": "BOUNCE",
+     "sub": "right, 8 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 3381,
+     "out_frame": 45
+    },
+    {
+     "frame": 3479,
+     "call": "BOUNCE",
+     "sub": "WRONG: label says MISS",
+     "kind": "wrong",
+     "label": "MISS",
+     "t_ref": 3489,
+     "out_frame": 95
+    }
+   ]
+  },
+  "test_5_f4099_bounce": {
+   "file": "results/viz/v60_assets/clips/test_5_f4099_bounce.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_5_f4099_bounce_cell.mp4",
+   "duration_s": 4.366666666666666,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.5,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "bounce (label)",
+   "other_calls_in_window": []
+  },
+  "test_6_f9190_bounce": {
+   "file": "results/viz/v60_assets/clips/test_6_f9190_bounce.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_6_f9190_bounce_cell.mp4",
+   "duration_s": 4.366666666666666,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.5,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "bounce (label)",
+   "other_calls_in_window": [
+    {
+     "frame": 9033,
+     "call": "BOUNCE",
+     "sub": "right, 42 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 9038,
+     "out_frame": 21
+    },
+    {
+     "frame": 9128,
+     "call": "BOUNCE",
+     "sub": "ball not in the labelled set",
+     "kind": "unlabelled",
+     "label": null,
+     "t_ref": null,
+     "out_frame": 45
+    },
+    {
+     "frame": 9250,
+     "call": "BOUNCE",
+     "sub": "ball not in the labelled set",
+     "kind": "unlabelled",
+     "label": null,
+     "t_ref": null,
+     "out_frame": 101
+    },
+    {
+     "frame": 9321,
+     "call": "BOUNCE",
+     "sub": "right, on the bounce frame",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 9321,
+     "out_frame": 119
+    }
+   ]
+  },
+  "test_7_f7145_bounce": {
+   "file": "results/viz/v60_assets/clips/test_7_f7145_bounce.mp4",
+   "file_cell": "results/viz/v60_assets/clips/test_7_f7145_bounce_cell.mp4",
+   "duration_s": 4.4,
+   "call_out_t": 2.4,
+   "contact_out_t": 2.533333333333333,
+   "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "outcome_tick": "bounce (label)",
+   "other_calls_in_window": [
+    {
+     "frame": 6955,
+     "call": "BOUNCE",
+     "sub": "right, on the bounce frame",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 6955,
+     "out_frame": 13
+    },
+    {
+     "frame": 7010,
+     "call": "BOUNCE",
+     "sub": "ball not in the labelled set",
+     "kind": "unlabelled",
+     "label": null,
+     "t_ref": null,
+     "out_frame": 27
+    },
+    {
+     "frame": 7057,
+     "call": "BOUNCE",
+     "sub": "right, 75 ms early",
+     "kind": "right",
+     "label": "BOUNCE",
+     "t_ref": 7066,
+     "out_frame": 38
+    },
+    {
+     "frame": 7309,
+     "call": "BOUNCE",
+     "sub": "ball not in the labelled set",
+     "kind": "unlabelled",
+     "label": null,
+     "t_ref": null,
+     "out_frame": 128
+    }
+   ]
+  }
+ },
+ "clips_total_mb": 28.0,
+ "engine_log": {
+  "pickle": "data/v60/online_vs_offline_raw_compile.pkl",
+  "hpg_source": "/blue/ai-workshop/ojasvamishra/courtside/results/engine/online_vs_offline_raw_compile.pkl",
+  "sha256": "ba89ef7c91a20d3a63aaef58260864d2c635021c0b575315a8d158d84cba18a5",
+  "events_identical_to": "results/engine/online_events_L4.jsonl",
+  "fit_reproduction_all_decision_frames_in_clip_windows": {
+   "frames": 1363,
+   "reproduced": 1363,
+   "max_abs_dp": 0.0
+  }
+ },
+ "equity": {
+  "csv": "results/viz/v60_assets/equity_1s.csv",
+  "check": "results/viz/v60_assets/equity_1s_check.json"
+ },
+ "e2e": {
+  "file": "results/e2e/summary.json",
+  "state": "present",
+  "run_id": "20261003T224404Z",
+  "mtime_utc": "2026-10-03T23:14:06+00:00"
+ },
+ "replay": {
+  "file": "results/replay/replay.json",
+  "mtime_utc": "2026-10-03T22:36:31+00:00"
+ },
+ "flags": [
+  "cold open: the spec's 'Called 408 ms before contact' is the offline evaluation's first-call lead for test_2 flight 2819 (results/tracking/demo/manifest.json); the streaming engine called the same flight 325 ms before its labelled outcome (the ball passing the end line). The assets show 325 ms.",
+  "for MISS flights the labelled outcome T_ref is the ball passing the end line (or the net); the stamps read 'n ms early' and the timeline names the outcome instead of 'contact'.",
+  "capacity: results/capacity/capacity.json growth[...][1.0].capital_where_sharpe_halves_usd (10 covered matches a day), both readings"
+ ],
+ "generated_utc": "2026-10-04T00:34:12+00:00",
+ "git": "7d280bb",
+ "spec": "research/compliance/VIDEO_REQUIREMENTS.md (75-90 s table)",
+ "labels": {
+  "footage": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+  "replay": "backtest replay of a real match recorded 2026-10-03; assumed 1 s licensed feed; no video of this match",
+  "results": "simulated 1 s licensed-feed baseline",
+  "tennis": "simulated physics",
+  "end_card": "Paper trading only \u00b7 Voice: AI (ElevenLabs)"
+ },
+ "assets": {
+  "seg_coldopen": {
+   "file": "results/viz/v60_assets/seg_coldopen.mp4",
+   "still": "results/viz/v60_assets/seg_coldopen.png",
+   "duration_s": 5.6,
+   "labels": [],
+   "clip": {
+    "id": "coldopen_test_2_f2819_miss",
+    "event": {
+     "video": "test_2",
+     "call": "MISS",
+     "frame": 2819,
+     "label": "MISS",
+     "f_net": 2819,
+     "t0": 2782,
+     "t_ref": 2858,
+     "audit": null,
+     "lead_ms": 325.0,
+     "eligible": true,
+     "direction": 1,
+     "p_miss_at_call": 0.9888802961904445,
+     "predicted_lead_ms": 7.036956760325076,
+     "emitted_latency_ms": 6.824493408203125,
+     "engine_flight_t0": 2782,
+     "rule": "online P>=0.9799 x3",
+     "id": "test_2_f2819_miss",
+     "clip_src_frames": [
+      2776,
+      2999
+     ],
+     "miss_type": "out"
+    },
+    "label": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+    "note": "window starts at frame 2776, after the engine's previous call (frame 2766), so no call in the window is left unstamped; 1/4 speed until 14 frames after the outcome",
+    "out_frames": 129,
+    "call_out_frame": 43,
+    "contact_out_frame": 82,
+    "slow_from_out_frame": 0,
+    "slow_to_out_frame": 96,
+    "arc_frames_drawn": 22,
+    "arc_frames_skipped_not_reproduced": 0,
+    "other_calls_in_window": [],
+    "fps": 30,
+    "src_frames": [
+     2776,
+     2777,
+     2778,
+     2779,
+     2780,
+     2781,
+     2782,
+     2783,
+     2784,
+     2785,
+     2786,
+     2787,
+     2788,
+     2789,
+     2790,
+     2791,
+     2792,
+     2793,
+     2794,
+     2795,
+     2796,
+     2797,
+     2798,
+     2799,
+     2800,
+     2801,
+     2802,
+     2803,
+     2804,
+     2805,
+     2806,
+     2807,
+     2808,
+     2809,
+     2810,
+     2811,
+     2812,
+     2813,
+     2814,
+     2815,
+     2816,
+     2817,
+     2818,
+     2819,
+     2820,
+     2821,
+     2822,
+     2823,
+     2824,
+     2825,
+     2826,
+     2827,
+     2828,
+     2829,
+     2830,
+     2831,
+     2832,
+     2833,
+     2834,
+     2835,
+     2836,
+     2837,
+     2838,
+     2839,
+     2840,
+     2841,
+     2842,
+     2843,
+     2844,
+     2845,
+     2846,
+     2847,
+     2848,
+     2849,
+     2850,
+     2851,
+     2852,
+     2853,
+     2854,
+     2855,
+     2856,
+     2857,
+     2858,
+     2859,
+     2860,
+     2861,
+     2862,
+     2863,
+     2864,
+     2865,
+     2866,
+     2867,
+     2868,
+     2869,
+     2870,
+     2871,
+     2872,
+     2873,
+     2877,
+     2881,
+     2885,
+     2889,
+     2893,
+     2897,
+     2901,
+     2905,
+     2909,
+     2913,
+     2917,
+     2921,
+     2925,
+     2929,
+     2933,
+     2937,
+     2941,
+     2945,
+     2949,
+     2953,
+     2957,
+     2961,
+     2965,
+     2969,
+     2973,
+     2977,
+     2981,
+     2985,
+     2989,
+     2993,
+     2997
+    ],
+    "slow": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "call_out_t": 1.4333333333333333,
+    "contact_out_t": 2.7333333333333334,
+    "duration_s": 4.3,
+    "call_fit": {
+     "reproduced": true,
+     "p_logged": 0.9888802961904445,
+     "tau_mid_ms": 307.6003266020769,
+     "tau_end_ms": 232.33415259904464,
+     "tau_net_ms": 7.0369567603251175,
+     "u_now": 0.48438294641411656,
+     "w_now": 0.3190122515607315,
+     "landing": {
+      "px": [
+       1583.3660416398884,
+       603.8905348754475
+      ],
+      "u": 1.1670375295236965,
+      "long": true,
+      "tau_s": 0.3076003266020769
+     }
+    }
+   }
+  },
+  "seg_strategy": {
+   "file": "results/viz/v60_assets/seg_strategy.mp4",
+   "still": "results/viz/v60_assets/seg_strategy.png",
+   "duration_s": 7.0,
+   "labels": []
+  },
+  "seg_edge": {
+   "file": "results/viz/v60_assets/seg_edge.mp4",
+   "still": "results/viz/v60_assets/seg_edge.png",
+   "duration_s": 8.0,
+   "labels": [
+    "Polymarket tennis, public tapes; wallets' own fills (not our trades)"
+   ]
+  },
+  "seg_proof": {
+   "file": "results/viz/v60_assets/seg_proof.mp4",
+   "still": "results/viz/v60_assets/seg_proof.png",
+   "duration_s": 19.0,
+   "labels": [],
+   "plan": [
+    {
+     "id": "test_4_f9837_miss",
+     "cell": 0,
+     "grid_start": 0.0,
+     "play_from": 0.15,
+     "clip_in_s": 0.4,
+     "stamp_at": 2.15,
+     "call": "MISS",
+     "lead_ms": 233.3
+    },
+    {
+     "id": "test_1_f313_bounce",
+     "cell": 1,
+     "grid_start": 0.0,
+     "play_from": 1.3499999999999999,
+     "clip_in_s": 0.4,
+     "stamp_at": 3.35,
+     "call": "BOUNCE",
+     "lead_ms": 25.0
+    },
+    {
+     "id": "test_3_f3442_bounce",
+     "cell": 2,
+     "grid_start": 0.0,
+     "play_from": 2.55,
+     "clip_in_s": 0.4,
+     "stamp_at": 4.55,
+     "call": "BOUNCE",
+     "lead_ms": 25.0
+    },
+    {
+     "id": "test_4_f5751_miss",
+     "cell": 3,
+     "grid_start": 0.0,
+     "play_from": 3.7499999999999996,
+     "clip_in_s": 0.4,
+     "stamp_at": 5.75,
+     "call": "MISS",
+     "lead_ms": 91.7
+    },
+    {
+     "id": "test_5_f4099_bounce",
+     "cell": 0,
+     "grid_start": 9.6,
+     "play_from": 9.75,
+     "clip_in_s": 0.4,
+     "stamp_at": 11.75,
+     "call": "BOUNCE",
+     "lead_ms": 25.0
+    },
+    {
+     "id": "test_6_f9190_bounce",
+     "cell": 1,
+     "grid_start": 9.6,
+     "play_from": 10.95,
+     "clip_in_s": 0.4,
+     "stamp_at": 12.95,
+     "call": "BOUNCE",
+     "lead_ms": 25.0
+    },
+    {
+     "id": "test_7_f7145_bounce",
+     "cell": 2,
+     "grid_start": 9.6,
+     "play_from": 12.15,
+     "clip_in_s": 0.4,
+     "stamp_at": 14.15,
+     "call": "BOUNCE",
+     "lead_ms": 33.3
+    },
+    {
+     "id": "test_2_f2819_miss",
+     "cell": 3,
+     "grid_start": 9.6,
+     "play_from": 13.35,
+     "clip_in_s": 0.4,
+     "stamp_at": 15.35,
+     "call": "MISS",
+     "lead_ms": 325.0
+    }
+   ]
+  },
+  "seg_spin": {
+   "file": "results/viz/v60_assets/seg_spin.mp4",
+   "still": "results/viz/v60_assets/seg_spin.png",
+   "duration_s": 3.0,
+   "labels": [
+    "simulated physics"
+   ]
+  },
+  "seg_pipeline": {
+   "file": "results/viz/v60_assets/seg_pipeline.mp4",
+   "still": "results/viz/v60_assets/seg_pipeline.png",
+   "duration_s": 10.0,
+   "labels": [
+    "paper: order built, never signed or sent; 1 s feed simulated"
+   ]
+  },
+  "seg_latency": {
+   "file": "results/viz/v60_assets/seg_latency.mp4",
+   "still": "results/viz/v60_assets/seg_latency.png",
+   "duration_s": 7.0,
+   "labels": [
+    "simulated 1 s licensed-feed baseline",
+    "assumed data: licensed feed / video not purchased"
+   ]
+  },
+  "seg_decay": {
+   "file": "results/viz/v60_assets/seg_decay.mp4",
+   "still": "results/viz/v60_assets/seg_decay.png",
+   "duration_s": 5.0,
+   "labels": [
+    "Polymarket tennis prints; fast tier = walk-forward wallets (not our trades)"
+   ]
+  },
+  "seg_replay": {
+   "file": "results/viz/v60_assets/seg_replay.mp4",
+   "still": "results/viz/v60_assets/seg_replay.png",
+   "duration_s": 12.0,
+   "labels": [
+    "backtest replay of a real match recorded 2026-10-03; assumed 1 s licensed feed; no video of this match"
+   ]
+  },
+  "seg_profit": {
+   "file": "results/viz/v60_assets/seg_profit.mp4",
+   "still": "results/viz/v60_assets/seg_profit.png",
+   "duration_s": 10.0,
+   "labels": [
+    "simulated 1 s licensed-feed baseline",
+    "paper trading only; licensed feed not purchased"
+   ]
+  },
+  "seg_endcard": {
+   "file": "results/viz/v60_assets/seg_endcard.mp4",
+   "still": "results/viz/v60_assets/seg_endcard.png",
+   "duration_s": 4.0,
+   "labels": []
+  }
+ },
+ "values": {
+  "stale_pre_usd": {
+   "value": 222.2,
+   "file": "research/v2/latency/results.json",
+   "key": "summary.stale_depth.pre.median_usd (250 ms before the reprice)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "strategy"
+   ],
+   "shown": "222"
+  },
+  "stale_n": {
+   "value": 482,
+   "file": "research/v2/latency/results.json",
+   "key": "summary.stale_depth.pre.n",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "strategy"
+   ],
+   "shown": "482"
+  },
+  "band_cam": {
+   "value": [
+    0.0,
+    0.05
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "sources[key=venue_camera].band_s",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "0\u20130.05"
+  },
+  "band_vid": {
+   "value": [
+    0.5,
+    8.0
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "sources[key=betting_video].band_s",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge",
+    "speed"
+   ],
+   "shown": "0.50\u20138"
+  },
+  "band_feed": {
+   "value": [
+    1.0,
+    3.0
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "sources[key=official_feed].band_s",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge",
+    "speed"
+   ],
+   "shown": "1\u20133"
+  },
+  "band_tv": {
+   "value": [
+    0.9,
+    20.0
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "sources[key=tv].band_s",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge",
+    "speed"
+   ],
+   "shown": "0.90\u201320"
+  },
+  "band_stream": {
+   "value": [
+    10.0,
+    60.0
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "sources[key=stream].band_s",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": "10\u201360"
+  },
+  "ft_n": {
+   "value": 11,
+   "file": "results/alpha/alpha.json",
+   "key": "distinct months in A_source.IS.months \u222a A_source.OOS.months",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "11"
+  },
+  "ft_pos": {
+   "value": 11,
+   "file": "results/alpha/alpha.json",
+   "key": "months where every row has fast_net30_c > 0",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "11"
+  },
+  "fol_neg": {
+   "value": 11,
+   "file": "results/alpha/alpha.json",
+   "key": "months where every row has copy_3s_later_net_to_resolution_c < 0",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "11"
+  },
+  "d0_is": {
+   "value": 1.1773,
+   "file": "results/alpha/alpha.json",
+   "key": "E_decay.within_a_point.IS.rows[0].fast.net30_c (bin 0 s)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": "1.18"
+  },
+  "d1_is": {
+   "value": 0.5854,
+   "file": "results/alpha/alpha.json",
+   "key": "E_decay.within_a_point.IS.rows[1].fast.net30_c (bin 1 s)",
+   "pending": false,
+   "note": "guard: d1_is / d0_is <= 0.55 and d2_oos <= 0.05",
+   "used_in": [
+    "speed"
+   ],
+   "shown": "0.59"
+  },
+  "decay_series": {
+   "value": {
+    "IS": [
+     [
+      "0 s",
+      1.1773
+     ],
+     [
+      "1 s",
+      0.5854
+     ],
+     [
+      "2 s",
+      0.6092
+     ],
+     [
+      "3-4 s",
+      0.4654
+     ],
+     [
+      "5-9 s",
+      0.6178
+     ],
+     [
+      "10-29 s",
+      0.8575
+     ]
+    ],
+    "OOS": [
+     [
+      "0 s",
+      0.7549
+     ],
+     [
+      "1 s",
+      0.4133
+     ],
+     [
+      "2 s",
+      -0.0165
+     ],
+     [
+      "3-4 s",
+      -0.6627
+     ],
+     [
+      "5-9 s",
+      -0.0502
+     ],
+     [
+      "10-29 s",
+      0.4166
+     ]
+    ]
+   },
+   "file": "results/alpha/alpha.json",
+   "key": "E_decay.within_a_point.{IS,OOS}.rows[].fast.net30_c",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": null
+  },
+  "fac_t": {
+   "value": 8.5,
+   "file": "results/alpha/alpha.json",
+   "key": "headline.factor_alpha_t_committed_file_incl_oos_weekdays",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "8.5"
+  },
+  "fac_r2": {
+   "value": 3.3099999999999996,
+   "file": "results/alpha/alpha.json",
+   "key": "C_factor_neutral.committed.r2 \u00d7 100",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "3.3"
+  },
+  "tp50": {
+   "value": 11,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot[\"50ms\"].tp",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "11"
+  },
+  "n50": {
+   "value": 11,
+   "file": "results/tracking/summary.json",
+   "key": "early_call.precision_recall_test_snapshot[\"50ms\"].tp + .fp",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "11"
+  },
+  "spin_x_lo": {
+   "value": 5.082317073170732,
+   "file": "results/spin/tennis/key_numbers.json",
+   "key": "min over m\u2208{bls,ukf}, L\u2208{300,400} of baseline.sd_cm[L] / m.sd_cm[L]",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "5"
+  },
+  "spin_x_hi": {
+   "value": 7.8962962962962955,
+   "file": "results/spin/tennis/key_numbers.json",
+   "key": "max over the same set",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "8"
+  },
+  "spin_rpm": {
+   "value": 6.8,
+   "file": "results/spin/tennis/key_numbers.json",
+   "key": "bls.rpm_err_med_abs[\"200\"]",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "7"
+  },
+  "webrtc_ms": {
+   "value": 46.04,
+   "file": "results/webrtc/latency.json",
+   "key": "headline.measured_frame_send_to_emit_ms.p50 (loopback, engine fed 10 frames/s)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "46"
+  },
+  "all_lose_s": {
+   "value": 3.0,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120: smallest grid V with usd_per_day < 0 for every reading \u00d7 {IS, burned_OOS} at V and every larger V",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": "3"
+  },
+  "lc_is_sh": {
+   "value": 11.95,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].IS.sharpe_ann",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "12"
+  },
+  "lc_oos_sh": {
+   "value": 8.85,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].burned_OOS.sharpe_ann",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "8.8"
+  },
+  "lc_is_day": {
+   "value": 94.35,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].IS.usd_per_day",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "94"
+  },
+  "lc_oos_day": {
+   "value": 56.59,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].burned_OOS.usd_per_day",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "57"
+  },
+  "t_is_sh": {
+   "value": 2.15,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament[\"1\"].IS.sharpe_ann",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "2.2"
+  },
+  "t_oos_sh": {
+   "value": 0.34,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament[\"1\"].burned_OOS.sharpe_ann",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "0.3"
+  },
+  "t_is_day": {
+   "value": 14.78,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament[\"1\"].IS.usd_per_day",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "15"
+  },
+  "t_oos_day": {
+   "value": 4.35,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament[\"1\"].burned_OOS.usd_per_day",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "4"
+  },
+  "lc_lag": {
+   "value": 3.142,
+   "file": "results/tier0/results.json",
+   "key": "timing[\"calibrated_stamp_lag_s (inference)\"]",
+   "pending": false,
+   "note": "inference, post hoc",
+   "used_in": [
+    "profit"
+   ],
+   "shown": "3.14"
+  },
+  "pre_lag": {
+   "value": 2.0,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "model.readings.tournament ('stamp lag <x> s')",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "2.0"
+  },
+  "be_t_is": {
+   "value": 1.089,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "breakeven_video_delay.tournament.IS.breakeven_V_s_seed_mean_curve",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": "1.1"
+  },
+  "be_lc_is": {
+   "value": 2.23,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "breakeven_video_delay.tournament_lagcal.IS.breakeven_V_s_seed_mean_curve",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": "2.2"
+  },
+  "lc_is_pnl": {
+   "value": 9717.6979,
+   "file": "results/tier0/latency_sweep.csv",
+   "key": "row source=video, cv=own120, reading=tournament_lagcal, x_s=1.0, period=IS: pnl_usd",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "$9,718"
+  },
+  "lc_is_days": {
+   "value": 103.0,
+   "file": "results/tier0/latency_sweep.csv",
+   "key": "row source=video, cv=own120, reading=tournament_lagcal, x_s=1.0, period=IS: days",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test",
+    "profit"
+   ],
+   "shown": "103"
+  },
+  "lc_oos_pnl": {
+   "value": 2263.71639,
+   "file": "results/tier0/latency_sweep.csv",
+   "key": "row source=video, cv=own120, reading=tournament_lagcal, x_s=1.0, period=burned_OOS: pnl_usd",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "$2,264"
+  },
+  "lc_oos_days": {
+   "value": 40.0,
+   "file": "results/tier0/latency_sweep.csv",
+   "key": "row source=video, cv=own120, reading=tournament_lagcal, x_s=1.0, period=burned_OOS: days",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test",
+    "profit"
+   ],
+   "shown": "40"
+  },
+  "sweep_curves": {
+   "value": {
+    "tournament": {
+     "0": {
+      "IS": {
+       "net_c_per_share": 1.098,
+       "net_c_per_share_ci95": [
+        0.824,
+        1.377
+       ],
+       "usd_per_day": 88.79,
+       "usd_per_day_sd": 21.32,
+       "usd_per_day_seed_ci95": [
+        50.18,
+        118.18
+       ],
+       "sharpe_ann": 11.42,
+       "fill_rate": 0.2509,
+       "share_calls_before_reprice": 0.4387,
+       "n_trades": 6446.8,
+       "wrong_call_share_of_trades": 0.1259,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.576,
+       "net_c_per_share_ci95": [
+        -0.076,
+        1.21
+       ],
+       "usd_per_day": 46.43,
+       "usd_per_day_sd": 38.97,
+       "usd_per_day_seed_ci95": [
+        -2.81,
+        114.96
+       ],
+       "sharpe_ann": 7.32,
+       "fill_rate": 0.2032,
+       "share_calls_before_reprice": 0.3541,
+       "n_trades": 1969.0,
+       "wrong_call_share_of_trades": 0.1911,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": 0.918,
+       "net_c_per_share_ci95": [
+        0.563,
+        1.262
+       ],
+       "usd_per_day": 58.95,
+       "usd_per_day_sd": 21.26,
+       "usd_per_day_seed_ci95": [
+        23.28,
+        88.32
+       ],
+       "sharpe_ann": 7.82,
+       "fill_rate": 0.1837,
+       "share_calls_before_reprice": 0.322,
+       "n_trades": 4944.6,
+       "wrong_call_share_of_trades": 0.1696,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.376,
+       "net_c_per_share_ci95": [
+        -0.396,
+        1.113
+       ],
+       "usd_per_day": 35.69,
+       "usd_per_day_sd": 38.39,
+       "usd_per_day_seed_ci95": [
+        -17.54,
+        109.48
+       ],
+       "sharpe_ann": 5.47,
+       "fill_rate": 0.1803,
+       "share_calls_before_reprice": 0.3137,
+       "n_trades": 1782.8,
+       "wrong_call_share_of_trades": 0.224,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": 0.693,
+       "net_c_per_share_ci95": [
+        0.231,
+        1.143
+       ],
+       "usd_per_day": 37.23,
+       "usd_per_day_sd": 22.42,
+       "usd_per_day_seed_ci95": [
+        -2.83,
+        70.85
+       ],
+       "sharpe_ann": 5.08,
+       "fill_rate": 0.1335,
+       "share_calls_before_reprice": 0.2363,
+       "n_trades": 3845.1,
+       "wrong_call_share_of_trades": 0.2351,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.158,
+       "net_c_per_share_ci95": [
+        -0.804,
+        1.086
+       ],
+       "usd_per_day": 24.42,
+       "usd_per_day_sd": 39.76,
+       "usd_per_day_seed_ci95": [
+        -29.7,
+        99.28
+       ],
+       "sharpe_ann": 3.68,
+       "fill_rate": 0.1468,
+       "share_calls_before_reprice": 0.2556,
+       "n_trades": 1513.0,
+       "wrong_call_share_of_trades": 0.2808,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": 0.613,
+       "net_c_per_share_ci95": [
+        0.077,
+        1.138
+       ],
+       "usd_per_day": 28.43,
+       "usd_per_day_sd": 18.98,
+       "usd_per_day_seed_ci95": [
+        -0.98,
+        59.48
+       ],
+       "sharpe_ann": 4.0,
+       "fill_rate": 0.1092,
+       "share_calls_before_reprice": 0.1927,
+       "n_trades": 3306.6,
+       "wrong_call_share_of_trades": 0.2766,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.018,
+       "net_c_per_share_ci95": [
+        -1.221,
+        1.086
+       ],
+       "usd_per_day": 15.16,
+       "usd_per_day_sd": 35.96,
+       "usd_per_day_seed_ci95": [
+        -29.72,
+        81.23
+       ],
+       "sharpe_ann": 2.14,
+       "fill_rate": 0.1166,
+       "share_calls_before_reprice": 0.2034,
+       "n_trades": 1269.0,
+       "wrong_call_share_of_trades": 0.3453,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": 0.528,
+       "net_c_per_share_ci95": [
+        -0.098,
+        1.121
+       ],
+       "usd_per_day": 21.57,
+       "usd_per_day_sd": 16.77,
+       "usd_per_day_seed_ci95": [
+        -3.64,
+        54.74
+       ],
+       "sharpe_ann": 3.05,
+       "fill_rate": 0.0942,
+       "share_calls_before_reprice": 0.1643,
+       "n_trades": 2977.5,
+       "wrong_call_share_of_trades": 0.3129,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.151,
+       "net_c_per_share_ci95": [
+        -1.567,
+        1.134
+       ],
+       "usd_per_day": 8.64,
+       "usd_per_day_sd": 30.71,
+       "usd_per_day_seed_ci95": [
+        -30.39,
+        70.88
+       ],
+       "sharpe_ann": 1.1,
+       "fill_rate": 0.1002,
+       "share_calls_before_reprice": 0.1714,
+       "n_trades": 1137.9,
+       "wrong_call_share_of_trades": 0.3876,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": 0.401,
+       "net_c_per_share_ci95": [
+        -0.324,
+        1.078
+       ],
+       "usd_per_day": 14.78,
+       "usd_per_day_sd": 14.72,
+       "usd_per_day_seed_ci95": [
+        -8.76,
+        43.15
+       ],
+       "sharpe_ann": 2.15,
+       "fill_rate": 0.0789,
+       "share_calls_before_reprice": 0.1377,
+       "n_trades": 2638.8,
+       "wrong_call_share_of_trades": 0.3484,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.383,
+       "net_c_per_share_ci95": [
+        -2.083,
+        1.205
+       ],
+       "usd_per_day": 4.35,
+       "usd_per_day_sd": 29.65,
+       "usd_per_day_seed_ci95": [
+        -36.42,
+        62.49
+       ],
+       "sharpe_ann": 0.34,
+       "fill_rate": 0.0799,
+       "share_calls_before_reprice": 0.1368,
+       "n_trades": 971.4,
+       "wrong_call_share_of_trades": 0.4723,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": -0.749,
+       "net_c_per_share_ci95": [
+        -2.163,
+        0.602
+       ],
+       "usd_per_day": -5.32,
+       "usd_per_day_sd": 17.08,
+       "usd_per_day_seed_ci95": [
+        -26.22,
+        36.26
+       ],
+       "sharpe_ann": -1.28,
+       "fill_rate": 0.0245,
+       "share_calls_before_reprice": 0.044,
+       "n_trades": 1433.8,
+       "wrong_call_share_of_trades": 0.6982,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.477,
+       "net_c_per_share_ci95": [
+        -4.423,
+        1.305
+       ],
+       "usd_per_day": -11.29,
+       "usd_per_day_sd": 21.53,
+       "usd_per_day_seed_ci95": [
+        -41.14,
+        40.32
+       ],
+       "sharpe_ann": -2.33,
+       "fill_rate": 0.0164,
+       "share_calls_before_reprice": 0.0295,
+       "n_trades": 455.3,
+       "wrong_call_share_of_trades": 0.8412,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": -0.818,
+       "net_c_per_share_ci95": [
+        -2.295,
+        0.582
+       ],
+       "usd_per_day": -6.27,
+       "usd_per_day_sd": 16.08,
+       "usd_per_day_seed_ci95": [
+        -23.96,
+        33.04
+       ],
+       "sharpe_ann": -1.43,
+       "fill_rate": 0.0238,
+       "share_calls_before_reprice": 0.0419,
+       "n_trades": 1417.4,
+       "wrong_call_share_of_trades": 0.7136,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.446,
+       "net_c_per_share_ci95": [
+        -4.451,
+        1.392
+       ],
+       "usd_per_day": -11.2,
+       "usd_per_day_sd": 20.92,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        37.08
+       ],
+       "sharpe_ann": -2.32,
+       "fill_rate": 0.0157,
+       "share_calls_before_reprice": 0.0283,
+       "n_trades": 450.2,
+       "wrong_call_share_of_trades": 0.8522,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -1.349,
+       "net_c_per_share_ci95": [
+        -3.147,
+        0.367
+       ],
+       "usd_per_day": -12.68,
+       "usd_per_day_sd": 13.09,
+       "usd_per_day_seed_ci95": [
+        -24.23,
+        18.78
+       ],
+       "sharpe_ann": -2.59,
+       "fill_rate": 0.0089,
+       "share_calls_before_reprice": 0.0161,
+       "n_trades": 1088.1,
+       "wrong_call_share_of_trades": 0.8728,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.69,
+       "net_c_per_share_ci95": [
+        -4.846,
+        1.324
+       ],
+       "usd_per_day": -12.67,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.58,
+       "fill_rate": 0.0113,
+       "share_calls_before_reprice": 0.0206,
+       "n_trades": 413.8,
+       "wrong_call_share_of_trades": 0.9207,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.418,
+       "net_c_per_share_ci95": [
+        -3.247,
+        0.341
+       ],
+       "usd_per_day": -13.15,
+       "usd_per_day_sd": 13.06,
+       "usd_per_day_seed_ci95": [
+        -25.57,
+        18.23
+       ],
+       "sharpe_ann": -2.69,
+       "fill_rate": 0.0068,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1040.8,
+       "wrong_call_share_of_trades": 0.8987,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.699,
+       "net_c_per_share_ci95": [
+        -4.895,
+        1.348
+       ],
+       "usd_per_day": -12.62,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.56,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.6,
+       "wrong_call_share_of_trades": 0.9292,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.585,
+       "net_c_per_share_ci95": [
+        -3.473,
+        0.254
+       ],
+       "usd_per_day": -14.3,
+       "usd_per_day_sd": 13.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        17.76
+       ],
+       "sharpe_ann": -2.9,
+       "fill_rate": 0.0053,
+       "share_calls_before_reprice": 0.0096,
+       "n_trades": 1006.0,
+       "wrong_call_share_of_trades": 0.9267,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.72,
+       "net_c_per_share_ci95": [
+        -4.926,
+        1.337
+       ],
+       "usd_per_day": -12.75,
+       "usd_per_day_sd": 19.98,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.59,
+       "fill_rate": 0.0107,
+       "share_calls_before_reprice": 0.0195,
+       "n_trades": 408.9,
+       "wrong_call_share_of_trades": 0.9339,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    },
+    "stamp": {
+     "0": {
+      "IS": {
+       "net_c_per_share": -3.249,
+       "net_c_per_share_ci95": [
+        -5.276,
+        -1.262
+       ],
+       "usd_per_day": -30.18,
+       "usd_per_day_sd": 7.29,
+       "usd_per_day_seed_ci95": [
+        -39.21,
+        -15.06
+       ],
+       "sharpe_ann": -5.86,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.8,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -2.97,
+       "net_c_per_share_ci95": [
+        -6.417,
+        0.34
+       ],
+       "usd_per_day": -25.93,
+       "usd_per_day_sd": 12.41,
+       "usd_per_day_seed_ci95": [
+        -50.49,
+        -7.61
+       ],
+       "sharpe_ann": -4.95,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.2,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": -2.766,
+       "net_c_per_share_ci95": [
+        -4.792,
+        -0.777
+       ],
+       "usd_per_day": -25.72,
+       "usd_per_day_sd": 7.24,
+       "usd_per_day_seed_ci95": [
+        -34.7,
+        -10.54
+       ],
+       "sharpe_ann": -5.0,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.6,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -2.493,
+       "net_c_per_share_ci95": [
+        -5.94,
+        0.812
+       ],
+       "usd_per_day": -21.8,
+       "usd_per_day_sd": 12.37,
+       "usd_per_day_seed_ci95": [
+        -46.12,
+        -3.38
+       ],
+       "sharpe_ann": -4.16,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    },
+    "stamp_calibrated": {
+     "0": {
+      "IS": {
+       "net_c_per_share": 1.191,
+       "net_c_per_share_ci95": [
+        1.044,
+        1.336
+       ],
+       "usd_per_day": 198.82,
+       "usd_per_day_sd": 10.03,
+       "usd_per_day_seed_ci95": [
+        179.83,
+        216.09
+       ],
+       "sharpe_ann": 25.05,
+       "fill_rate": 0.5834,
+       "share_calls_before_reprice": 1.0,
+       "n_trades": 13833.6,
+       "wrong_call_share_of_trades": 0.0504,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.832,
+       "net_c_per_share_ci95": [
+        0.599,
+        1.071
+       ],
+       "usd_per_day": 132.53,
+       "usd_per_day_sd": 14.88,
+       "usd_per_day_seed_ci95": [
+        107.58,
+        159.39
+       ],
+       "sharpe_ann": 21.16,
+       "fill_rate": 0.5897,
+       "share_calls_before_reprice": 1.0,
+       "n_trades": 5122.4,
+       "wrong_call_share_of_trades": 0.0495,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": 1.207,
+       "net_c_per_share_ci95": [
+        1.053,
+        1.359
+       ],
+       "usd_per_day": 193.35,
+       "usd_per_day_sd": 10.52,
+       "usd_per_day_seed_ci95": [
+        175.04,
+        213.59
+       ],
+       "sharpe_ann": 24.66,
+       "fill_rate": 0.5894,
+       "share_calls_before_reprice": 1.0,
+       "n_trades": 13975.9,
+       "wrong_call_share_of_trades": 0.0504,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.841,
+       "net_c_per_share_ci95": [
+        0.601,
+        1.088
+       ],
+       "usd_per_day": 129.32,
+       "usd_per_day_sd": 16.7,
+       "usd_per_day_seed_ci95": [
+        101.88,
+        160.2
+       ],
+       "sharpe_ann": 20.76,
+       "fill_rate": 0.5901,
+       "share_calls_before_reprice": 1.0,
+       "n_trades": 5125.4,
+       "wrong_call_share_of_trades": 0.0495,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": 1.224,
+       "net_c_per_share_ci95": [
+        1.065,
+        1.38
+       ],
+       "usd_per_day": 188.41,
+       "usd_per_day_sd": 11.05,
+       "usd_per_day_seed_ci95": [
+        170.13,
+        209.55
+       ],
+       "sharpe_ann": 24.18,
+       "fill_rate": 0.5788,
+       "share_calls_before_reprice": 0.9904,
+       "n_trades": 13732.6,
+       "wrong_call_share_of_trades": 0.0509,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.691,
+       "net_c_per_share_ci95": [
+        0.37,
+        1.015
+       ],
+       "usd_per_day": 78.39,
+       "usd_per_day_sd": 19.24,
+       "usd_per_day_seed_ci95": [
+        44.49,
+        113.96
+       ],
+       "sharpe_ann": 11.85,
+       "fill_rate": 0.4321,
+       "share_calls_before_reprice": 0.7298,
+       "n_trades": 3827.4,
+       "wrong_call_share_of_trades": 0.0678,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": -4.879,
+       "net_c_per_share_ci95": [
+        -6.905,
+        -2.886
+       ],
+       "usd_per_day": -45.17,
+       "usd_per_day_sd": 7.46,
+       "usd_per_day_seed_ci95": [
+        -54.39,
+        -30.24
+       ],
+       "sharpe_ann": -8.71,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 890.8,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -4.578,
+       "net_c_per_share_ci95": [
+        -8.041,
+        -1.257
+       ],
+       "usd_per_day": -39.81,
+       "usd_per_day_sd": 12.6,
+       "usd_per_day_seed_ci95": [
+        -65.2,
+        -21.69
+       ],
+       "sharpe_ann": -7.61,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.4,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": -2.468,
+       "net_c_per_share_ci95": [
+        -4.492,
+        -0.478
+       ],
+       "usd_per_day": -22.96,
+       "usd_per_day_sd": 7.21,
+       "usd_per_day_seed_ci95": [
+        -31.92,
+        -7.75
+       ],
+       "sharpe_ann": -4.46,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.6,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -2.259,
+       "net_c_per_share_ci95": [
+        -5.706,
+        1.047
+       ],
+       "usd_per_day": -19.77,
+       "usd_per_day_sd": 12.35,
+       "usd_per_day_seed_ci95": [
+        -43.99,
+        -1.22
+       ],
+       "sharpe_ann": -3.77,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    },
+    "tournament_lag1": {
+     "0": {
+      "IS": {
+       "net_c_per_share": 0.401,
+       "net_c_per_share_ci95": [
+        -0.324,
+        1.078
+       ],
+       "usd_per_day": 14.78,
+       "usd_per_day_sd": 14.72,
+       "usd_per_day_seed_ci95": [
+        -8.76,
+        43.15
+       ],
+       "sharpe_ann": 2.15,
+       "fill_rate": 0.0789,
+       "share_calls_before_reprice": 0.1377,
+       "n_trades": 2638.8,
+       "wrong_call_share_of_trades": 0.3484,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.383,
+       "net_c_per_share_ci95": [
+        -2.083,
+        1.205
+       ],
+       "usd_per_day": 4.35,
+       "usd_per_day_sd": 29.65,
+       "usd_per_day_seed_ci95": [
+        -36.42,
+        62.49
+       ],
+       "sharpe_ann": 0.34,
+       "fill_rate": 0.0799,
+       "share_calls_before_reprice": 0.1368,
+       "n_trades": 971.4,
+       "wrong_call_share_of_trades": 0.4723,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": -0.117,
+       "net_c_per_share_ci95": [
+        -1.142,
+        0.867
+       ],
+       "usd_per_day": 2.52,
+       "usd_per_day_sd": 17.95,
+       "usd_per_day_seed_ci95": [
+        -18.9,
+        42.7
+       ],
+       "sharpe_ann": 0.1,
+       "fill_rate": 0.0481,
+       "share_calls_before_reprice": 0.0841,
+       "n_trades": 1948.3,
+       "wrong_call_share_of_trades": 0.4938,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.051,
+       "net_c_per_share_ci95": [
+        -3.323,
+        1.073
+       ],
+       "usd_per_day": -10.76,
+       "usd_per_day_sd": 22.17,
+       "usd_per_day_seed_ci95": [
+        -42.1,
+        40.62
+       ],
+       "sharpe_ann": -2.19,
+       "fill_rate": 0.0321,
+       "share_calls_before_reprice": 0.0544,
+       "n_trades": 580.4,
+       "wrong_call_share_of_trades": 0.6359,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": -0.633,
+       "net_c_per_share_ci95": [
+        -1.941,
+        0.62
+       ],
+       "usd_per_day": -4.5,
+       "usd_per_day_sd": 17.07,
+       "usd_per_day_seed_ci95": [
+        -26.99,
+        35.63
+       ],
+       "sharpe_ann": -1.1,
+       "fill_rate": 0.0296,
+       "share_calls_before_reprice": 0.0529,
+       "n_trades": 1545.0,
+       "wrong_call_share_of_trades": 0.641,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.611,
+       "net_c_per_share_ci95": [
+        -4.476,
+        1.083
+       ],
+       "usd_per_day": -13.49,
+       "usd_per_day_sd": 21.83,
+       "usd_per_day_seed_ci95": [
+        -42.37,
+        38.55
+       ],
+       "sharpe_ann": -2.73,
+       "fill_rate": 0.0181,
+       "share_calls_before_reprice": 0.0324,
+       "n_trades": 469.2,
+       "wrong_call_share_of_trades": 0.8124,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": -0.749,
+       "net_c_per_share_ci95": [
+        -2.163,
+        0.602
+       ],
+       "usd_per_day": -5.32,
+       "usd_per_day_sd": 17.08,
+       "usd_per_day_seed_ci95": [
+        -26.22,
+        36.26
+       ],
+       "sharpe_ann": -1.28,
+       "fill_rate": 0.0245,
+       "share_calls_before_reprice": 0.044,
+       "n_trades": 1433.8,
+       "wrong_call_share_of_trades": 0.6982,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.477,
+       "net_c_per_share_ci95": [
+        -4.423,
+        1.305
+       ],
+       "usd_per_day": -11.29,
+       "usd_per_day_sd": 21.53,
+       "usd_per_day_seed_ci95": [
+        -41.14,
+        40.32
+       ],
+       "sharpe_ann": -2.33,
+       "fill_rate": 0.0164,
+       "share_calls_before_reprice": 0.0295,
+       "n_trades": 455.3,
+       "wrong_call_share_of_trades": 0.8412,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": -0.777,
+       "net_c_per_share_ci95": [
+        -2.24,
+        0.601
+       ],
+       "usd_per_day": -5.68,
+       "usd_per_day_sd": 16.4,
+       "usd_per_day_seed_ci95": [
+        -24.18,
+        34.73
+       ],
+       "sharpe_ann": -1.35,
+       "fill_rate": 0.0238,
+       "share_calls_before_reprice": 0.0424,
+       "n_trades": 1418.8,
+       "wrong_call_share_of_trades": 0.7107,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.462,
+       "net_c_per_share_ci95": [
+        -4.433,
+        1.337
+       ],
+       "usd_per_day": -11.31,
+       "usd_per_day_sd": 21.04,
+       "usd_per_day_seed_ci95": [
+        -41.02,
+        37.76
+       ],
+       "sharpe_ann": -2.34,
+       "fill_rate": 0.0161,
+       "share_calls_before_reprice": 0.0288,
+       "n_trades": 453.0,
+       "wrong_call_share_of_trades": 0.8447,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": -0.818,
+       "net_c_per_share_ci95": [
+        -2.295,
+        0.582
+       ],
+       "usd_per_day": -6.27,
+       "usd_per_day_sd": 16.08,
+       "usd_per_day_seed_ci95": [
+        -23.96,
+        33.04
+       ],
+       "sharpe_ann": -1.43,
+       "fill_rate": 0.0238,
+       "share_calls_before_reprice": 0.0419,
+       "n_trades": 1417.4,
+       "wrong_call_share_of_trades": 0.7136,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.446,
+       "net_c_per_share_ci95": [
+        -4.451,
+        1.392
+       ],
+       "usd_per_day": -11.2,
+       "usd_per_day_sd": 20.92,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        37.08
+       ],
+       "sharpe_ann": -2.32,
+       "fill_rate": 0.0157,
+       "share_calls_before_reprice": 0.0283,
+       "n_trades": 450.2,
+       "wrong_call_share_of_trades": 0.8522,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": -1.364,
+       "net_c_per_share_ci95": [
+        -3.149,
+        0.332
+       ],
+       "usd_per_day": -12.87,
+       "usd_per_day_sd": 13.38,
+       "usd_per_day_seed_ci95": [
+        -24.2,
+        19.49
+       ],
+       "sharpe_ann": -2.64,
+       "fill_rate": 0.0092,
+       "share_calls_before_reprice": 0.0166,
+       "n_trades": 1092.8,
+       "wrong_call_share_of_trades": 0.8676,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.689,
+       "net_c_per_share_ci95": [
+        -4.836,
+        1.337
+       ],
+       "usd_per_day": -12.66,
+       "usd_per_day_sd": 19.97,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        33.94
+       ],
+       "sharpe_ann": -2.57,
+       "fill_rate": 0.0113,
+       "share_calls_before_reprice": 0.0206,
+       "n_trades": 413.8,
+       "wrong_call_share_of_trades": 0.9208,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": -1.349,
+       "net_c_per_share_ci95": [
+        -3.147,
+        0.367
+       ],
+       "usd_per_day": -12.68,
+       "usd_per_day_sd": 13.09,
+       "usd_per_day_seed_ci95": [
+        -24.23,
+        18.78
+       ],
+       "sharpe_ann": -2.59,
+       "fill_rate": 0.0089,
+       "share_calls_before_reprice": 0.0161,
+       "n_trades": 1088.1,
+       "wrong_call_share_of_trades": 0.8728,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.69,
+       "net_c_per_share_ci95": [
+        -4.846,
+        1.324
+       ],
+       "usd_per_day": -12.67,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.58,
+       "fill_rate": 0.0113,
+       "share_calls_before_reprice": 0.0206,
+       "n_trades": 413.8,
+       "wrong_call_share_of_trades": 0.9207,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -1.418,
+       "net_c_per_share_ci95": [
+        -3.247,
+        0.341
+       ],
+       "usd_per_day": -13.15,
+       "usd_per_day_sd": 13.06,
+       "usd_per_day_seed_ci95": [
+        -25.57,
+        18.23
+       ],
+       "sharpe_ann": -2.69,
+       "fill_rate": 0.0068,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1040.8,
+       "wrong_call_share_of_trades": 0.8987,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.699,
+       "net_c_per_share_ci95": [
+        -4.895,
+        1.348
+       ],
+       "usd_per_day": -12.62,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.56,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.6,
+       "wrong_call_share_of_trades": 0.9292,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.418,
+       "net_c_per_share_ci95": [
+        -3.247,
+        0.341
+       ],
+       "usd_per_day": -13.15,
+       "usd_per_day_sd": 13.06,
+       "usd_per_day_seed_ci95": [
+        -25.57,
+        18.23
+       ],
+       "sharpe_ann": -2.69,
+       "fill_rate": 0.0068,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1040.8,
+       "wrong_call_share_of_trades": 0.8987,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.699,
+       "net_c_per_share_ci95": [
+        -4.895,
+        1.348
+       ],
+       "usd_per_day": -12.62,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.56,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.6,
+       "wrong_call_share_of_trades": 0.9292,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.585,
+       "net_c_per_share_ci95": [
+        -3.473,
+        0.254
+       ],
+       "usd_per_day": -14.3,
+       "usd_per_day_sd": 13.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        17.76
+       ],
+       "sharpe_ann": -2.9,
+       "fill_rate": 0.0053,
+       "share_calls_before_reprice": 0.0096,
+       "n_trades": 1006.0,
+       "wrong_call_share_of_trades": 0.9267,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.72,
+       "net_c_per_share_ci95": [
+        -4.926,
+        1.337
+       ],
+       "usd_per_day": -12.75,
+       "usd_per_day_sd": 19.98,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.59,
+       "fill_rate": 0.0107,
+       "share_calls_before_reprice": 0.0195,
+       "n_trades": 408.9,
+       "wrong_call_share_of_trades": 0.9339,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    },
+    "tournament_lag3": {
+     "0": {
+      "IS": {
+       "net_c_per_share": 1.325,
+       "net_c_per_share_ci95": [
+        1.159,
+        1.496
+       ],
+       "usd_per_day": 189.07,
+       "usd_per_day_sd": 18.65,
+       "usd_per_day_seed_ci95": [
+        157.69,
+        217.05
+       ],
+       "sharpe_ann": 21.83,
+       "fill_rate": 0.444,
+       "share_calls_before_reprice": 0.7887,
+       "n_trades": 10714.8,
+       "wrong_call_share_of_trades": 0.0675,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.938,
+       "net_c_per_share_ci95": [
+        0.618,
+        1.265
+       ],
+       "usd_per_day": 116.58,
+       "usd_per_day_sd": 42.28,
+       "usd_per_day_seed_ci95": [
+        47.91,
+        178.5
+       ],
+       "sharpe_ann": 17.51,
+       "fill_rate": 0.387,
+       "share_calls_before_reprice": 0.6819,
+       "n_trades": 3460.2,
+       "wrong_call_share_of_trades": 0.0851,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": 1.284,
+       "net_c_per_share_ci95": [
+        1.097,
+        1.47
+       ],
+       "usd_per_day": 162.52,
+       "usd_per_day_sd": 17.75,
+       "usd_per_day_seed_ci95": [
+        126.58,
+        185.93
+       ],
+       "sharpe_ann": 18.1,
+       "fill_rate": 0.384,
+       "share_calls_before_reprice": 0.6828,
+       "n_trades": 9375.4,
+       "wrong_call_share_of_trades": 0.0785,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.882,
+       "net_c_per_share_ci95": [
+        0.52,
+        1.245
+       ],
+       "usd_per_day": 100.62,
+       "usd_per_day_sd": 45.79,
+       "usd_per_day_seed_ci95": [
+        37.16,
+        176.12
+       ],
+       "sharpe_ann": 14.51,
+       "fill_rate": 0.34,
+       "share_calls_before_reprice": 0.6013,
+       "n_trades": 3075.1,
+       "wrong_call_share_of_trades": 0.0971,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": 1.217,
+       "net_c_per_share_ci95": [
+        1.013,
+        1.42
+       ],
+       "usd_per_day": 137.13,
+       "usd_per_day_sd": 23.85,
+       "usd_per_day_seed_ci95": [
+        83.08,
+        170.45
+       ],
+       "sharpe_ann": 15.7,
+       "fill_rate": 0.3359,
+       "share_calls_before_reprice": 0.5984,
+       "n_trades": 8319.6,
+       "wrong_call_share_of_trades": 0.0926,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.824,
+       "net_c_per_share_ci95": [
+        0.408,
+        1.238
+       ],
+       "usd_per_day": 86.37,
+       "usd_per_day_sd": 48.4,
+       "usd_per_day_seed_ci95": [
+        13.89,
+        161.34
+       ],
+       "sharpe_ann": 12.72,
+       "fill_rate": 0.2934,
+       "share_calls_before_reprice": 0.5203,
+       "n_trades": 2699.6,
+       "wrong_call_share_of_trades": 0.1223,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": 1.181,
+       "net_c_per_share_ci95": [
+        0.962,
+        1.407
+       ],
+       "usd_per_day": 120.72,
+       "usd_per_day_sd": 24.04,
+       "usd_per_day_seed_ci95": [
+        75.26,
+        146.56
+       ],
+       "sharpe_ann": 14.43,
+       "fill_rate": 0.3062,
+       "share_calls_before_reprice": 0.543,
+       "n_trades": 7664.0,
+       "wrong_call_share_of_trades": 0.1023,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.803,
+       "net_c_per_share_ci95": [
+        0.358,
+        1.257
+       ],
+       "usd_per_day": 75.77,
+       "usd_per_day_sd": 41.91,
+       "usd_per_day_seed_ci95": [
+        14.14,
+        144.6
+       ],
+       "sharpe_ann": 11.39,
+       "fill_rate": 0.2685,
+       "share_calls_before_reprice": 0.4741,
+       "n_trades": 2497.6,
+       "wrong_call_share_of_trades": 0.1324,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": 1.113,
+       "net_c_per_share_ci95": [
+        0.861,
+        1.367
+       ],
+       "usd_per_day": 99.8,
+       "usd_per_day_sd": 22.52,
+       "usd_per_day_seed_ci95": [
+        54.8,
+        128.1
+       ],
+       "sharpe_ann": 12.27,
+       "fill_rate": 0.2724,
+       "share_calls_before_reprice": 0.4774,
+       "n_trades": 6920.9,
+       "wrong_call_share_of_trades": 0.1159,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.698,
+       "net_c_per_share_ci95": [
+        0.17,
+        1.211
+       ],
+       "usd_per_day": 61.22,
+       "usd_per_day_sd": 41.7,
+       "usd_per_day_seed_ci95": [
+        2.61,
+        131.34
+       ],
+       "sharpe_ann": 9.38,
+       "fill_rate": 0.2413,
+       "share_calls_before_reprice": 0.4225,
+       "n_trades": 2278.7,
+       "wrong_call_share_of_trades": 0.1527,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": 1.098,
+       "net_c_per_share_ci95": [
+        0.824,
+        1.377
+       ],
+       "usd_per_day": 88.79,
+       "usd_per_day_sd": 21.32,
+       "usd_per_day_seed_ci95": [
+        50.18,
+        118.18
+       ],
+       "sharpe_ann": 11.42,
+       "fill_rate": 0.2509,
+       "share_calls_before_reprice": 0.4387,
+       "n_trades": 6446.8,
+       "wrong_call_share_of_trades": 0.1259,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.576,
+       "net_c_per_share_ci95": [
+        -0.076,
+        1.21
+       ],
+       "usd_per_day": 46.43,
+       "usd_per_day_sd": 38.97,
+       "usd_per_day_seed_ci95": [
+        -2.81,
+        114.96
+       ],
+       "sharpe_ann": 7.32,
+       "fill_rate": 0.2032,
+       "share_calls_before_reprice": 0.3541,
+       "n_trades": 1969.0,
+       "wrong_call_share_of_trades": 0.1911,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": 0.613,
+       "net_c_per_share_ci95": [
+        0.077,
+        1.138
+       ],
+       "usd_per_day": 28.43,
+       "usd_per_day_sd": 18.98,
+       "usd_per_day_seed_ci95": [
+        -0.98,
+        59.48
+       ],
+       "sharpe_ann": 4.0,
+       "fill_rate": 0.1092,
+       "share_calls_before_reprice": 0.1927,
+       "n_trades": 3306.6,
+       "wrong_call_share_of_trades": 0.2766,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.018,
+       "net_c_per_share_ci95": [
+        -1.221,
+        1.086
+       ],
+       "usd_per_day": 15.16,
+       "usd_per_day_sd": 35.96,
+       "usd_per_day_seed_ci95": [
+        -29.72,
+        81.23
+       ],
+       "sharpe_ann": 2.14,
+       "fill_rate": 0.1166,
+       "share_calls_before_reprice": 0.2034,
+       "n_trades": 1269.0,
+       "wrong_call_share_of_trades": 0.3453,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": 0.401,
+       "net_c_per_share_ci95": [
+        -0.324,
+        1.078
+       ],
+       "usd_per_day": 14.78,
+       "usd_per_day_sd": 14.72,
+       "usd_per_day_seed_ci95": [
+        -8.76,
+        43.15
+       ],
+       "sharpe_ann": 2.15,
+       "fill_rate": 0.0789,
+       "share_calls_before_reprice": 0.1377,
+       "n_trades": 2638.8,
+       "wrong_call_share_of_trades": 0.3484,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.383,
+       "net_c_per_share_ci95": [
+        -2.083,
+        1.205
+       ],
+       "usd_per_day": 4.35,
+       "usd_per_day_sd": 29.65,
+       "usd_per_day_seed_ci95": [
+        -36.42,
+        62.49
+       ],
+       "sharpe_ann": 0.34,
+       "fill_rate": 0.0799,
+       "share_calls_before_reprice": 0.1368,
+       "n_trades": 971.4,
+       "wrong_call_share_of_trades": 0.4723,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -0.818,
+       "net_c_per_share_ci95": [
+        -2.295,
+        0.582
+       ],
+       "usd_per_day": -6.27,
+       "usd_per_day_sd": 16.08,
+       "usd_per_day_seed_ci95": [
+        -23.96,
+        33.04
+       ],
+       "sharpe_ann": -1.43,
+       "fill_rate": 0.0238,
+       "share_calls_before_reprice": 0.0419,
+       "n_trades": 1417.4,
+       "wrong_call_share_of_trades": 0.7136,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.446,
+       "net_c_per_share_ci95": [
+        -4.451,
+        1.392
+       ],
+       "usd_per_day": -11.2,
+       "usd_per_day_sd": 20.92,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        37.08
+       ],
+       "sharpe_ann": -2.32,
+       "fill_rate": 0.0157,
+       "share_calls_before_reprice": 0.0283,
+       "n_trades": 450.2,
+       "wrong_call_share_of_trades": 0.8522,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.418,
+       "net_c_per_share_ci95": [
+        -3.247,
+        0.341
+       ],
+       "usd_per_day": -13.15,
+       "usd_per_day_sd": 13.06,
+       "usd_per_day_seed_ci95": [
+        -25.57,
+        18.23
+       ],
+       "sharpe_ann": -2.69,
+       "fill_rate": 0.0068,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1040.8,
+       "wrong_call_share_of_trades": 0.8987,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.699,
+       "net_c_per_share_ci95": [
+        -4.895,
+        1.348
+       ],
+       "usd_per_day": -12.62,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.56,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.6,
+       "wrong_call_share_of_trades": 0.9292,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.443,
+       "net_c_per_share_ci95": [
+        -3.279,
+        0.329
+       ],
+       "usd_per_day": -13.36,
+       "usd_per_day_sd": 12.99,
+       "usd_per_day_seed_ci95": [
+        -25.5,
+        18.08
+       ],
+       "sharpe_ann": -2.73,
+       "fill_rate": 0.0069,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1043.6,
+       "wrong_call_share_of_trades": 0.8968,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.712,
+       "net_c_per_share_ci95": [
+        -4.918,
+        1.34
+       ],
+       "usd_per_day": -12.74,
+       "usd_per_day_sd": 19.98,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.59,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.9,
+       "wrong_call_share_of_trades": 0.9284,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.709,
+       "net_c_per_share_ci95": [
+        -3.65,
+        0.181
+       ],
+       "usd_per_day": -15.55,
+       "usd_per_day_sd": 11.09,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        11.23
+       ],
+       "sharpe_ann": -3.07,
+       "fill_rate": 0.0046,
+       "share_calls_before_reprice": 0.0079,
+       "n_trades": 993.1,
+       "wrong_call_share_of_trades": 0.9413,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.89,
+       "net_c_per_share_ci95": [
+        -5.275,
+        1.338
+       ],
+       "usd_per_day": -16.45,
+       "usd_per_day_sd": 13.09,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        6.21
+       ],
+       "sharpe_ann": -3.13,
+       "fill_rate": 0.0013,
+       "share_calls_before_reprice": 0.0022,
+       "n_trades": 332.6,
+       "wrong_call_share_of_trades": 0.9777,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    },
+    "tournament_lagcal": {
+     "0": {
+      "IS": {
+       "net_c_per_share": 1.338,
+       "net_c_per_share_ci95": [
+        1.177,
+        1.5
+       ],
+       "usd_per_day": 198.66,
+       "usd_per_day_sd": 19.51,
+       "usd_per_day_seed_ci95": [
+        165.1,
+        226.7
+       ],
+       "sharpe_ann": 22.87,
+       "fill_rate": 0.4601,
+       "share_calls_before_reprice": 0.8185,
+       "n_trades": 11072.1,
+       "wrong_call_share_of_trades": 0.0648,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.968,
+       "net_c_per_share_ci95": [
+        0.677,
+        1.27
+       ],
+       "usd_per_day": 129.39,
+       "usd_per_day_sd": 41.19,
+       "usd_per_day_seed_ci95": [
+        61.24,
+        191.07
+       ],
+       "sharpe_ann": 19.65,
+       "fill_rate": 0.423,
+       "share_calls_before_reprice": 0.745,
+       "n_trades": 3752.6,
+       "wrong_call_share_of_trades": 0.0747,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.05": {
+      "IS": {
+       "net_c_per_share": 1.335,
+       "net_c_per_share_ci95": [
+        1.173,
+        1.5
+       ],
+       "usd_per_day": 195.02,
+       "usd_per_day_sd": 19.83,
+       "usd_per_day_seed_ci95": [
+        161.58,
+        225.05
+       ],
+       "sharpe_ann": 22.57,
+       "fill_rate": 0.4532,
+       "share_calls_before_reprice": 0.806,
+       "n_trades": 10917.5,
+       "wrong_call_share_of_trades": 0.066,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.95,
+       "net_c_per_share_ci95": [
+        0.655,
+        1.256
+       ],
+       "usd_per_day": 125.46,
+       "usd_per_day_sd": 41.05,
+       "usd_per_day_seed_ci95": [
+        54.28,
+        189.64
+       ],
+       "sharpe_ann": 19.04,
+       "fill_rate": 0.4176,
+       "share_calls_before_reprice": 0.7352,
+       "n_trades": 3709.2,
+       "wrong_call_share_of_trades": 0.0761,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.25": {
+      "IS": {
+       "net_c_per_share": 1.241,
+       "net_c_per_share_ci95": [
+        1.049,
+        1.438
+       ],
+       "usd_per_day": 148.51,
+       "usd_per_day_sd": 23.94,
+       "usd_per_day_seed_ci95": [
+        93.11,
+        178.08
+       ],
+       "sharpe_ann": 16.82,
+       "fill_rate": 0.3577,
+       "share_calls_before_reprice": 0.6369,
+       "n_trades": 8796.4,
+       "wrong_call_share_of_trades": 0.0855,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.835,
+       "net_c_per_share_ci95": [
+        0.433,
+        1.231
+       ],
+       "usd_per_day": 91.13,
+       "usd_per_day_sd": 49.51,
+       "usd_per_day_seed_ci95": [
+        19.28,
+        165.81
+       ],
+       "sharpe_ann": 13.18,
+       "fill_rate": 0.3097,
+       "share_calls_before_reprice": 0.5487,
+       "n_trades": 2827.3,
+       "wrong_call_share_of_trades": 0.1101,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.5": {
+      "IS": {
+       "net_c_per_share": 1.211,
+       "net_c_per_share_ci95": [
+        1.002,
+        1.421
+       ],
+       "usd_per_day": 133.26,
+       "usd_per_day_sd": 23.85,
+       "usd_per_day_seed_ci95": [
+        79.92,
+        167.56
+       ],
+       "sharpe_ann": 15.5,
+       "fill_rate": 0.3303,
+       "share_calls_before_reprice": 0.5872,
+       "n_trades": 8198.4,
+       "wrong_call_share_of_trades": 0.0944,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.817,
+       "net_c_per_share_ci95": [
+        0.387,
+        1.249
+       ],
+       "usd_per_day": 81.35,
+       "usd_per_day_sd": 46.03,
+       "usd_per_day_seed_ci95": [
+        15.46,
+        156.96
+       ],
+       "sharpe_ann": 12.16,
+       "fill_rate": 0.2804,
+       "share_calls_before_reprice": 0.4959,
+       "n_trades": 2593.2,
+       "wrong_call_share_of_trades": 0.1262,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "0.75": {
+      "IS": {
+       "net_c_per_share": 1.156,
+       "net_c_per_share_ci95": [
+        0.929,
+        1.388
+       ],
+       "usd_per_day": 112.61,
+       "usd_per_day_sd": 22.68,
+       "usd_per_day_seed_ci95": [
+        68.78,
+        140.56
+       ],
+       "sharpe_ann": 13.61,
+       "fill_rate": 0.2924,
+       "share_calls_before_reprice": 0.5172,
+       "n_trades": 7360.0,
+       "wrong_call_share_of_trades": 0.1075,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.765,
+       "net_c_per_share_ci95": [
+        0.29,
+        1.237
+       ],
+       "usd_per_day": 69.53,
+       "usd_per_day_sd": 40.43,
+       "usd_per_day_seed_ci95": [
+        13.31,
+        131.49
+       ],
+       "sharpe_ann": 10.38,
+       "fill_rate": 0.2577,
+       "share_calls_before_reprice": 0.4536,
+       "n_trades": 2410.6,
+       "wrong_call_share_of_trades": 0.1385,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1": {
+      "IS": {
+       "net_c_per_share": 1.113,
+       "net_c_per_share_ci95": [
+        0.849,
+        1.375
+       ],
+       "usd_per_day": 94.35,
+       "usd_per_day_sd": 22.02,
+       "usd_per_day_seed_ci95": [
+        51.3,
+        125.01
+       ],
+       "sharpe_ann": 11.95,
+       "fill_rate": 0.2619,
+       "share_calls_before_reprice": 0.4589,
+       "n_trades": 6689.4,
+       "wrong_call_share_of_trades": 0.1208,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.655,
+       "net_c_per_share_ci95": [
+        0.098,
+        1.189
+       ],
+       "usd_per_day": 56.59,
+       "usd_per_day_sd": 41.25,
+       "usd_per_day_seed_ci95": [
+        0.65,
+        129.52
+       ],
+       "sharpe_ann": 8.85,
+       "fill_rate": 0.233,
+       "share_calls_before_reprice": 0.4073,
+       "n_trades": 2211.9,
+       "wrong_call_share_of_trades": 0.1597,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "1.5": {
+      "IS": {
+       "net_c_per_share": 0.653,
+       "net_c_per_share_ci95": [
+        0.158,
+        1.134
+       ],
+       "usd_per_day": 32.4,
+       "usd_per_day_sd": 18.6,
+       "usd_per_day_seed_ci95": [
+        -0.44,
+        59.46
+       ],
+       "sharpe_ann": 4.48,
+       "fill_rate": 0.1221,
+       "share_calls_before_reprice": 0.216,
+       "n_trades": 3592.9,
+       "wrong_call_share_of_trades": 0.2521,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": 0.082,
+       "net_c_per_share_ci95": [
+        -1.002,
+        1.093
+       ],
+       "usd_per_day": 19.33,
+       "usd_per_day_sd": 36.88,
+       "usd_per_day_seed_ci95": [
+        -31.48,
+        86.31
+       ],
+       "sharpe_ann": 2.8,
+       "fill_rate": 0.1285,
+       "share_calls_before_reprice": 0.2238,
+       "n_trades": 1364.2,
+       "wrong_call_share_of_trades": 0.311,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "2": {
+      "IS": {
+       "net_c_per_share": 0.399,
+       "net_c_per_share_ci95": [
+        -0.315,
+        1.053
+       ],
+       "usd_per_day": 15.22,
+       "usd_per_day_sd": 15.58,
+       "usd_per_day_seed_ci95": [
+        -9.18,
+        46.37
+       ],
+       "sharpe_ann": 2.22,
+       "fill_rate": 0.0823,
+       "share_calls_before_reprice": 0.1436,
+       "n_trades": 2713.3,
+       "wrong_call_share_of_trades": 0.3378,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -0.171,
+       "net_c_per_share_ci95": [
+        -1.622,
+        1.175
+       ],
+       "usd_per_day": 7.46,
+       "usd_per_day_sd": 28.79,
+       "usd_per_day_seed_ci95": [
+        -30.35,
+        65.25
+       ],
+       "sharpe_ann": 0.92,
+       "fill_rate": 0.0962,
+       "share_calls_before_reprice": 0.1653,
+       "n_trades": 1105.0,
+       "wrong_call_share_of_trades": 0.3991,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "3": {
+      "IS": {
+       "net_c_per_share": -0.789,
+       "net_c_per_share_ci95": [
+        -2.26,
+        0.597
+       ],
+       "usd_per_day": -5.92,
+       "usd_per_day_sd": 16.27,
+       "usd_per_day_seed_ci95": [
+        -23.98,
+        34.24
+       ],
+       "sharpe_ann": -1.38,
+       "fill_rate": 0.024,
+       "share_calls_before_reprice": 0.0424,
+       "n_trades": 1423.0,
+       "wrong_call_share_of_trades": 0.7098,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.466,
+       "net_c_per_share_ci95": [
+        -4.448,
+        1.344
+       ],
+       "usd_per_day": -11.38,
+       "usd_per_day_sd": 20.8,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        37.0
+       ],
+       "sharpe_ann": -2.35,
+       "fill_rate": 0.016,
+       "share_calls_before_reprice": 0.0288,
+       "n_trades": 452.9,
+       "wrong_call_share_of_trades": 0.8454,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "5": {
+      "IS": {
+       "net_c_per_share": -1.419,
+       "net_c_per_share_ci95": [
+        -3.249,
+        0.34
+       ],
+       "usd_per_day": -13.17,
+       "usd_per_day_sd": 13.04,
+       "usd_per_day_seed_ci95": [
+        -25.63,
+        18.15
+       ],
+       "sharpe_ann": -2.69,
+       "fill_rate": 0.0068,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1040.8,
+       "wrong_call_share_of_trades": 0.8987,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.699,
+       "net_c_per_share_ci95": [
+        -4.896,
+        1.348
+       ],
+       "usd_per_day": -12.62,
+       "usd_per_day_sd": 20.0,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.57,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.6,
+       "wrong_call_share_of_trades": 0.9292,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "10": {
+      "IS": {
+       "net_c_per_share": -1.438,
+       "net_c_per_share_ci95": [
+        -3.272,
+        0.33
+       ],
+       "usd_per_day": -13.36,
+       "usd_per_day_sd": 12.96,
+       "usd_per_day_seed_ci95": [
+        -25.56,
+        17.98
+       ],
+       "sharpe_ann": -2.73,
+       "fill_rate": 0.0069,
+       "share_calls_before_reprice": 0.0126,
+       "n_trades": 1042.2,
+       "wrong_call_share_of_trades": 0.8977,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.704,
+       "net_c_per_share_ci95": [
+        -4.904,
+        1.346
+       ],
+       "usd_per_day": -12.66,
+       "usd_per_day_sd": 19.99,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        34.04
+       ],
+       "sharpe_ann": -2.57,
+       "fill_rate": 0.0109,
+       "share_calls_before_reprice": 0.0199,
+       "n_trades": 410.7,
+       "wrong_call_share_of_trades": 0.9289,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "20": {
+      "IS": {
+       "net_c_per_share": -1.71,
+       "net_c_per_share_ci95": [
+        -3.651,
+        0.181
+       ],
+       "usd_per_day": -15.54,
+       "usd_per_day_sd": 11.17,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        11.45
+       ],
+       "sharpe_ann": -3.07,
+       "fill_rate": 0.0046,
+       "share_calls_before_reprice": 0.0079,
+       "n_trades": 993.0,
+       "wrong_call_share_of_trades": 0.9414,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.898,
+       "net_c_per_share_ci95": [
+        -5.28,
+        1.331
+       ],
+       "usd_per_day": -16.51,
+       "usd_per_day_sd": 13.09,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        6.21
+       ],
+       "sharpe_ann": -3.14,
+       "fill_rate": 0.0013,
+       "share_calls_before_reprice": 0.0022,
+       "n_trades": 332.6,
+       "wrong_call_share_of_trades": 0.9777,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "40": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     },
+     "60": {
+      "IS": {
+       "net_c_per_share": -1.852,
+       "net_c_per_share_ci95": [
+        -3.88,
+        0.131
+       ],
+       "usd_per_day": -17.25,
+       "usd_per_day_sd": 7.14,
+       "usd_per_day_seed_ci95": [
+        -26.09,
+        -2.05
+       ],
+       "sharpe_ann": -3.35,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 889.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      },
+      "burned_OOS": {
+       "net_c_per_share": -1.921,
+       "net_c_per_share_ci95": [
+        -5.375,
+        1.381
+       ],
+       "usd_per_day": -16.84,
+       "usd_per_day_sd": 12.32,
+       "usd_per_day_seed_ci95": [
+        -41.01,
+        1.79
+       ],
+       "sharpe_ann": -3.21,
+       "fill_rate": 0.0,
+       "share_calls_before_reprice": 0.0,
+       "n_trades": 322.0,
+       "wrong_call_share_of_trades": 1.0,
+       "n_seeds_with_trades": 20,
+       "note": null
+      }
+     }
+    }
+   },
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.<reading>[V].{IS,burned_OOS}.usd_per_day (every reading, every V)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": null
+  },
+  "n_trials": {
+   "value": 3410,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.N.all_plus_v2safe_grid",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "3,410"
+  },
+  "dsr_is": {
+   "value": 0.9968730617381567,
+   "file": "results/rigor/rigor.json",
+   "key": "psr_dsr.rows[series=v2_is]: min over dsr[\"N3410/*\"]",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "0.997"
+  },
+  "peeks": {
+   "value": 75,
+   "file": "results/oos_peeks.log",
+   "key": "count(non-empty lines) at render time",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "75"
+  },
+  "prereg_files": {
+   "value": [
+    "HYPOTHESIS.md",
+    "HYPOTHESIS_TT.md",
+    "HYPOTHESIS_V2.md",
+    "research/replay/PROTOCOL.md",
+    "research/v2/expand/PREREG.md",
+    "research/v2/lowloss/PREREG.md",
+    "research/v2/maker/PREREG.md",
+    "research/v2/tier0/PREREG.md",
+    "research/v2/tier0_v3/PREREG.md"
+   ],
+   "file": "HYPOTHESIS*.md, research/**/PREREG.md, research/replay/PROTOCOL.md",
+   "key": "glob at render time",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "speed"
+   ],
+   "shown": null
+  },
+  "blind_rows": {
+   "value": [
+    [
+     "Table-tennis early call, held-out test (H3)",
+     "PASS",
+     "results/tracking/summary.json",
+     "verdict"
+    ],
+    [
+     "Unseen markets, in sample",
+     "PASS",
+     "results/expand/results.json",
+     "primary.u2_is.label"
+    ],
+    [
+     "Unseen markets, out of sample",
+     "FAIL",
+     "results/expand/results.json",
+     "primary.u2_oos.label"
+    ],
+    [
+     "Maker variant, blind window",
+     "FAIL",
+     "results/maker/oos.json",
+     "primary.verdict"
+    ],
+    [
+     "Original copy rule (v1), blind window, paper P&L",
+     "-$36k",
+     "results/summary.json",
+     "oos.h6_shadow.total_pnl_usd (no verdict field; the paper P&L is shown)"
+    ],
+    [
+     "Tier-0 v3 counterfactual, unseen markets",
+     "FAIL",
+     "results/tier0_v3/blind.json",
+     "verdicts['U2 (primary, test b)'].overall"
+    ],
+    [
+     "Table tennis: is there a fast tier?",
+     "FAIL",
+     "results/tt/results.json",
+     "TT2.verdict"
+    ],
+    [
+     "v2 forward test (blind)",
+     null,
+     "results/v2/forward.json",
+     "verdict (absent: pending)"
+    ]
+   ],
+   "file": "several",
+   "key": "see each row's file + key",
+   "pending": false,
+   "note": "PASS / FAIL / PENDING chips",
+   "used_in": [
+    "speed"
+   ],
+   "shown": null
+  },
+  "repo_url": {
+   "value": "github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii",
+   "file": "git remote get-url origin",
+   "key": "at render time",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "endcard"
+   ],
+   "shown": null
+  },
+  "cold_lead_ms": {
+   "value": 325.0,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.flights_called_or_miss[test_2, f_net 2819]: (t_ref - engine_miss_frame) / 120 fps \u00d7 1000",
+   "pending": false,
+   "note": "the streaming engine's own call; the spec's 408 ms is the offline evaluation's lead for this flight",
+   "used_in": [
+    "coldopen"
+   ],
+   "shown": "325"
+  },
+  "pf_games": {
+   "value": 7,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "len(runs.fp16_cl_fuse_compile_b1_realtime.population.videos)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "7"
+  },
+  "pf_frames": {
+   "value": 102120,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.timing.frames",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "102,120"
+  },
+  "pf_dropped": {
+   "value": 0,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.timing.frames_dropped",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "0"
+  },
+  "pf_calls": {
+   "value": 172,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.emitted.MISS + .BOUNCE",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "global",
+    "tt"
+   ],
+   "shown": "172"
+  },
+  "pf_miss": {
+   "value": 12,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.emitted.MISS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "12"
+  },
+  "pf_lat": {
+   "value": 6.92,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.emitted_call_latency_ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "6.9"
+  },
+  "pf_miss_on_bounce": {
+   "value": 0,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.miss_calls_on_BOUNCE_flights",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "0"
+  },
+  "pf_in_right": {
+   "value": 68,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.bounce_calls_on_BOUNCE_flights",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "68"
+  },
+  "pf_in_matched": {
+   "value": 88,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.bounce_calls_on_BOUNCE_flights + .bounce_calls_on_MISS_flights",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "88"
+  },
+  "pf_recall_tp": {
+   "value": 4,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.A_engine_calls.online['0ms'].tp",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "4"
+  },
+  "pf_n_miss_flights": {
+   "value": 41,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.population.MISS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "41"
+  },
+  "pf_unmatched": {
+   "value": 79,
+   "file": "results/engine/online_vs_offline.json",
+   "key": "runs.fp16_cl_fuse_compile_b1_realtime.calls.unmatched.MISS + .BOUNCE",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tt"
+   ],
+   "shown": "79"
+  },
+  "reprice_band_s": {
+   "value": [
+    0.84,
+    1.98
+   ],
+   "file": "results/e2e/summary.json",
+   "key": "reprice_reference.band_s",
+   "pending": false,
+   "note": "inference: book vs official stamp measured (n = 482); stamp lag after the point not measured",
+   "used_in": [
+    "strategy"
+   ],
+   "shown": "0.8\u20132.0"
+  },
+  "setka_s": {
+   "value": 12.23,
+   "file": "results/home_stream/sub_second_routes.json",
+   "key": "routes[id=setka_flussonic_public].latency.measured_s.lo (WebRTC/WHEP median, preliminary)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "12.2"
+  },
+  "espn_lag_s": {
+   "value": 28.19,
+   "file": "research/v2/latency/results.json",
+   "key": "-summary.m1['espn:game'].lead_vs_book_s.median",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "28"
+  },
+  "wta_lag_s": {
+   "value": 44.07,
+   "file": "research/v2/latency/results.json",
+   "key": "-summary.m1['wta:point'].lead_vs_book_s.median",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "44"
+  },
+  "alpha_months": {
+   "value": [
+    {
+     "month": "2025-12",
+     "period": "IS",
+     "fast": 1.969,
+     "copy": -0.3653
+    },
+    {
+     "month": "2026-01",
+     "period": "IS",
+     "fast": 2.4098,
+     "copy": -2.0996
+    },
+    {
+     "month": "2026-02",
+     "period": "IS",
+     "fast": 1.2087,
+     "copy": -0.0625
+    },
+    {
+     "month": "2026-03",
+     "period": "IS",
+     "fast": 2.0198,
+     "copy": -2.5269
+    },
+    {
+     "month": "2026-04",
+     "period": "IS",
+     "fast": 1.4256,
+     "copy": -1.0246
+    },
+    {
+     "month": "2026-05",
+     "period": "IS",
+     "fast": 0.8029,
+     "copy": -1.0321
+    },
+    {
+     "month": "2026-06",
+     "period": "IS",
+     "fast": 0.7315,
+     "copy": -0.7007
+    },
+    {
+     "month": "2026-07",
+     "period": "IS",
+     "fast": 0.601,
+     "copy": -0.9656
+    },
+    {
+     "month": "2026-08",
+     "period": "IS",
+     "fast": 0.8716,
+     "copy": -1.6438
+    },
+    {
+     "month": "2026-08",
+     "period": "OOS",
+     "fast": 0.8275,
+     "copy": -1.5279
+    },
+    {
+     "month": "2026-09",
+     "period": "OOS",
+     "fast": 0.6973,
+     "copy": -1.5695
+    },
+    {
+     "month": "2026-10",
+     "period": "OOS",
+     "fast": 0.4447,
+     "copy": -2.4217
+    }
+   ],
+   "file": "results/alpha/alpha.json",
+   "key": "A_source.{IS,OOS}.months[]: month, fast_net30_c, copy_3s_later_net_to_resolution_c",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": null
+  },
+  "oth_is_c": {
+   "value": -0.8932,
+   "file": "results/alpha/alpha.json",
+   "key": "headline.others_net30_c_month_mean.IS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "edge"
+   ],
+   "shown": "\u22120.89\u00a2"
+  },
+  "tn_prec_min": {
+   "value": 100.0,
+   "file": "results/spin/tennis/key_numbers.json",
+   "key": "min over leads of bls.pout95_precision \u00d7 100",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "100"
+  },
+  "tn_rec200": {
+   "value": 98.3,
+   "file": "results/spin/tennis/key_numbers.json",
+   "key": "bls.pout95_recall[\"200\"] \u00d7 100",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "98.3"
+  },
+  "tn_d_cm": {
+   "value": 4.778968792395233,
+   "file": "results/viz/v60_assets/tennis_sim/shot.json",
+   "key": "d_true_cm (true landing, cm beyond the line)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "4.8"
+  },
+  "tn_call_lead": {
+   "value": 200,
+   "file": "results/viz/v60_assets/tennis_sim/shot.json",
+   "key": "called_at_eval_lead_ms (first evaluation lead with bls P(out) >= 0.95; eval_grid_p_out)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "tennis"
+   ],
+   "shown": "200"
+  },
+  "pp_feed": {
+   "value": 1000.0,
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.feed_simulated_ms",
+   "pending": false,
+   "note": "simulated: licensed feed not purchased",
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "1,000"
+  },
+  "pp_video": {
+   "value": 9.368,
+   "file": "results/e2e/summary.json",
+   "key": "spans_ms.capture_to_decoded.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "9.4"
+  },
+  "pp_cv_laptop": {
+   "value": 43.261,
+   "file": "results/e2e/summary.json",
+   "key": "spans_ms.decoded_to_call.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "43.3"
+  },
+  "pp_cv_l4": {
+   "value": 6.92,
+   "file": "results/e2e/summary.json",
+   "key": "production_gpu_reference.online_vs_offline.emitted_call_latency_ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "6.9"
+  },
+  "pp_fair": {
+   "value": 0.092,
+   "file": "results/e2e/summary.json",
+   "key": "stage_ms[stage='strategy rule (fair value, edge)'].ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "0.09"
+  },
+  "pp_risk": {
+   "value": 0.034,
+   "file": "results/e2e/summary.json",
+   "key": "stage_ms[stage='risk check'].ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "0.03"
+  },
+  "pp_order": {
+   "value": 0.015,
+   "file": "results/e2e/summary.json",
+   "key": "stage_ms[stage='unsigned order built'].ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "0.02"
+  },
+  "pp_net": {
+   "value": 64.506,
+   "file": "results/e2e/summary.json",
+   "key": "stage_ms[stage='network one-way (RTT/2)'].ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "64.5"
+  },
+  "pp_venue": {
+   "value": 1000.0,
+   "file": "results/e2e/summary.json",
+   "key": "stage_ms[stage='venue order delay (secondsDelay)'].ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "1,000"
+  },
+  "pp_ours": {
+   "value": 54.13,
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.ours_capture_to_order_ready_ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "54"
+  },
+  "pp_total": {
+   "value": 2118.595,
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.total_ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "2,119"
+  },
+  "pp_req": {
+   "value": 3000.0,
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.requirement_ms",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "3,000"
+  },
+  "pp_margin": {
+   "value": 881.406,
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.margin_to_requirement_ms.p50",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "881"
+  },
+  "pp_under": {
+   "value": "24/24",
+   "file": "results/e2e/summary.json",
+   "key": "budget_with_1s_simulated_feed.calls_under_requirement",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "24 / 24"
+  },
+  "pp_filled": {
+   "value": 24,
+   "file": "results/e2e/summary.json",
+   "key": "fills.timing_probe.status.filled",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "24"
+  },
+  "pp_traces": {
+   "value": 24,
+   "file": "results/e2e/summary.json",
+   "key": "counts.complete_order_traces",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "pipeline"
+   ],
+   "shown": "24"
+  },
+  "ex_pnl": {
+   "value": 82.22,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "summary.pnl_usd",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "+$82.22"
+  },
+  "ex_fills": {
+   "value": 62,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "summary.fills",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "62"
+  },
+  "ex_misses": {
+   "value": 45,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "summary.misses",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "45"
+  },
+  "ex_share": {
+   "value": 58.86,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "profitable_share.pooled.share_profitable \u00d7 100",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "58.9"
+  },
+  "ex_traded": {
+   "value": 931,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "profitable_share.{IS,burned_OOS}.traded_matches (sum)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "931"
+  },
+  "ex_prof": {
+   "value": 548,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "profitable_share.{IS,burned_OOS}.profitable_matches (sum)",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "548"
+  },
+  "ex_median": {
+   "value": 11.27,
+   "file": "results/viz/v60_assets/backtest_match/match.json",
+   "key": "profitable_share.pooled.median_match_pnl_usd",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "+$11.27"
+  },
+  "eq_months_pos": {
+   "value": [
+    7,
+    7
+   ],
+   "file": "results/viz/v60_assets/equity_1s.csv",
+   "key": "calendar months (IS and burned OOS parts of a month separate) with seed-mean P&L > 0, post-hoc reading",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "7/7"
+  },
+  "eq_months_pos_pre": {
+   "value": [
+    6,
+    7
+   ],
+   "file": "results/viz/v60_assets/equity_1s.csv",
+   "key": "same, pre-registered reading",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "6/7"
+  },
+  "blind_pass": {
+   "value": 2,
+   "file": "several",
+   "key": "blind_rows verdict == PASS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "2"
+  },
+  "blind_fail": {
+   "value": 4,
+   "file": "several",
+   "key": "blind_rows verdict == FAIL",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "4"
+  },
+  "n_prereg": {
+   "value": 9,
+   "file": "HYPOTHESIS*.md, research/**/PREREG.md, research/replay/PROTOCOL.md",
+   "key": "count of prereg_files",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "9"
+  },
+  "pbo": {
+   "value": 15.423465423465425,
+   "file": "results/rigor/rigor.json",
+   "key": "pbo_cscv.lowloss_24_sharpe.pbo \u00d7 100",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "test"
+   ],
+   "shown": "15"
+  },
+  "cap_lc_is": {
+   "value": 73.892,
+   "file": "results/capacity/capacity.json",
+   "key": "growth['lagcal|cov10|IS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
+   "pending": false,
+   "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
+   "used_in": [
+    "profit"
+   ],
+   "shown": "74"
+  },
+  "cap_lc_oos": {
+   "value": 41.105,
+   "file": "results/capacity/capacity.json",
+   "key": "growth['lagcal|cov10|burned_OOS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
+   "pending": false,
+   "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
+   "used_in": [
+    "profit"
+   ],
+   "shown": "41"
+  },
+  "cap_pr_is": {
+   "value": 29.319,
+   "file": "results/capacity/capacity.json",
+   "key": "growth['prereg|cov10|IS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
+   "pending": false,
+   "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
+   "used_in": [
+    "profit"
+   ],
+   "shown": "29"
+  },
+  "cap_pr_oos": {
+   "value": 12.246,
+   "file": "results/capacity/capacity.json",
+   "key": "growth['prereg|cov10|burned_OOS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
+   "pending": false,
+   "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
+   "used_in": [
+    "profit"
+   ],
+   "shown": "12"
+  },
+  "lc_is_c": {
+   "value": 1.113,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].IS.net_c_per_share",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "+1.11\u00a2"
+  },
+  "lc_is_ci": {
+   "value": [
+    0.849,
+    1.375
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].IS.net_c_per_share_ci95",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "[0.85, 1.38]"
+  },
+  "lc_oos_c": {
+   "value": 0.655,
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].burned_OOS.net_c_per_share",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "+0.66\u00a2"
+  },
+  "lc_oos_ci": {
+   "value": [
+    0.098,
+    1.189
+   ],
+   "file": "results/tier0/latency_sweep.json",
+   "key": "video_own120.tournament_lagcal[\"1\"].burned_OOS.net_c_per_share_ci95",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "[0.10, 1.19]"
+  },
+  "v2_sh_is": {
+   "value": 14.48,
+   "file": "results/alpha/alpha.json",
+   "key": "headline.v2_sharpe.IS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "14.5"
+  },
+  "v2_sh_oos": {
+   "value": 6.67,
+   "file": "results/alpha/alpha.json",
+   "key": "headline.v2_sharpe.OOS",
+   "pending": false,
+   "note": null,
+   "used_in": [
+    "profit"
+   ],
+   "shown": "6.7"
+  }
+ },
+ "input_files": {
+  "research/v2/latency/results.json": "042768ff8992a18af663932cabd64d847dc1e2bf41254ef555bec6295885d5dd",
+  "results/alpha/alpha.json": "8077619a88fc87ec5940fc929c6e83d3038d1461c274a89f5831056d2031bc23",
+  "results/capacity/capacity.json": "f4dd6914db0268177b7f3394031035747a35063dc6922c1aebacf5022fd1af2a",
+  "results/e2e/summary.json": "a0f6092acbdb2973d559dad0d779ae0007ad30e9d27b38b6091f3ddc15ca4301",
+  "results/engine/online_vs_offline.json": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
+  "results/home_stream/sub_second_routes.json": "57d66a53806dcc2ea0cc7059b6cbfaf1546b223824a4b6485ede5527862b8ae5",
+  "results/oos_peeks.log": "2c131dd4c04b1f26a5a0a8b4e04eaa80f65dd44b5729703fb93adebbc1eba9c0",
+  "results/rigor/rigor.json": "0d3e358b5c9556a603307712970da5cfb414c4161534fb66d70e59ec0258b324",
+  "results/spin/tennis/key_numbers.json": "1337f86801e1de2db70f41898ebe8865fb8ea2f1359e48a8addd37841ebea15e",
+  "results/tier0/latency_sweep.csv": "e0ccca7b02a097fa7d6870253f01a5d3815a6c2b4c64672033f1a70a72d74fb6",
+  "results/tier0/latency_sweep.json": "641d54f7e1871445b1a8a9f6ee5095b4e967930aeff470baa1de03e228ac98e9",
+  "results/tier0/results.json": "972b46462c2f2331621dd97b4deafffdd77f24bb19d8650809555c55a82ee0c6",
+  "results/tracking/summary.json": "5b88c99cd5148e942197c480379bd279656079c374917af5df621bbe79973465",
+  "results/viz/v60_assets/backtest_match/match.json": "1daf1248541f36557c2bc2a21ad3cd8504d700687b8767dace41a4671154d9bf",
+  "results/viz/v60_assets/equity_1s.csv": "f743ec99ec48a732d85163d4822b4052138e76d277c791f0bd0b51c2ab735e1c",
+  "results/viz/v60_assets/tennis_sim/shot.json": "f0ec6d130e0f8ebb85be8a7cd84e22d8c31ad08585153a3a946cc564d254127d",
+  "results/webrtc/latency.json": "ffff489b8d198e33feca94ba1d98c79c1bf10ed800aceb3a52f5a60cfd208bd3"
+ },
+ "final": {
+  "file": "results/viz/courtside_60.mp4",
+  "srt": "results/viz/courtside_60.srt",
+  "sha256": "6eef3d3ee6642dfaaa597b46c360ed56db05b1867156add3b2355426db80bed9",
+  "duration_s": 89.0,
+  "size_mb": 13.37,
+  "streams": [
+   {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "30/1"
+   },
+   {
+    "codec_name": "aac",
+    "r_frame_rate": "0/0"
+   }
+  ],
+  "rendered_utc": "2026-10-04T00:32:49+00:00",
+  "spec": "research/compliance/VIDEO_REQUIREMENTS.md: the 75-90 s table, DESIGN, stats rail, red-team addendum",
+  "script_doc": "docs/video_script_60.md",
+  "timeline": [
+   {
+    "id": "coldopen",
+    "start_s": 0.0,
+    "dur_s": 5.0,
+    "speech_at_s": 0.35,
+    "speech_s": 3.864,
+    "narration": "That ball's going out. The model called it 325 milliseconds early."
+   },
+   {
+    "id": "strategy",
+    "start_s": 5.0,
+    "dur_s": 6.2,
+    "speech_at_s": 5.2,
+    "speech_s": 5.421,
+    "narration": "Our computer vision calls the point before the ball lands, so we trade the Polymarket match price before it reprices."
+   },
+   {
+    "id": "edge",
+    "start_s": 11.2,
+    "dur_s": 9.5,
+    "speech_at_s": 11.4,
+    "speech_s": 8.835,
+    "narration": "Polymarket prices each match from zero to a dollar, a player's chance to win, and reprices about a second after each point. The fastest traders won eleven months of eleven."
+   },
+   {
+    "id": "tt",
+    "start_s": 20.7,
+    "dur_s": 12.5,
+    "speech_at_s": 20.95,
+    "speech_s": 7.96,
+    "narration": "Think it's a gimmick? Watch it call misses on real games it never saw. A miss call means it knows the ball is out before it lands. Not one was made on a ball labelled in."
+   },
+   {
+    "id": "tennis_real",
+    "start_s": 33.2,
+    "dur_s": 4.0,
+    "speech_at_s": 33.5,
+    "speech_s": 1.556,
+    "narration": "Same tracker, real tennis."
+   },
+   {
+    "id": "tennis",
+    "start_s": 37.2,
+    "dur_s": 7.6,
+    "speech_at_s": 37.4,
+    "speech_s": 5.904,
+    "narration": "Add spin: landing error drops five to eight times. Out, called 200 milliseconds before the bounce."
+   },
+   {
+    "id": "pipeline",
+    "start_s": 44.8,
+    "dur_s": 10.033,
+    "speech_at_s": 45.0,
+    "speech_s": 9.337,
+    "narration": "Here's the whole pipeline in milliseconds: our part, about fifty. Add a one-second feed and Polymarket's one-second delay: 2.1 seconds. Under three."
+   },
+   {
+    "id": "speed",
+    "start_s": 54.833,
+    "dur_s": 8.0,
+    "speech_at_s": 55.033,
+    "speech_s": 6.149,
+    "narration": "Here's what speed is worth: every second costs money; by three seconds, every version loses. The edge halves within a second."
+   },
+   {
+    "id": "test",
+    "start_s": 62.833,
+    "dur_s": 9.6,
+    "speech_at_s": 63.083,
+    "speech_s": 6.954,
+    "narration": "Here's months of backtest, on one real match: every fill on the real price path. 59 percent of traded matches made money."
+   },
+   {
+    "id": "profit",
+    "start_s": 72.433,
+    "dur_s": 12.967,
+    "speech_at_s": 72.633,
+    "speech_s": 12.26,
+    "narration": "And the profit, at a simulated one-second feed, post-hoc estimate: 94 dollars a day, Sharpe 12: return per unit of risk, above two is very good. On data it never saw: 57 a day."
+   },
+   {
+    "id": "endcard",
+    "start_s": 85.4,
+    "dur_s": 3.6,
+    "speech_at_s": 85.7,
+    "speech_s": 1.615,
+    "narration": "Courtside. Paper trading only."
+   }
+  ],
+  "words": 220,
+  "voice": {
+   "engine": "ElevenLabs text-to-speech via scripts/tts_elevenlabs.synth (cached in data/tts_cache)",
+   "voice": "Liam",
+   "model": "eleven_multilingual_v2",
+   "tempo": 1.08,
+   "max_pause_s": 0.26,
+   "tts_calls": {
+    "chars_sent": 0,
+    "chars_cached": 1249,
+    "calls": 0
+   }
+  },
+  "audio": {
+   "narration_lufs_target": -16.0,
+   "music_under_speech_db": -18.0,
+   "music_swell_in_gaps_db": 7.0,
+   "music": {
+    "source": "ElevenLabs music",
+    "file": "data/tts_cache/music_9cd1509172a46580.mp3",
+    "status": "ok"
+   },
+   "sfx": {
+    "hit": {
+     "source": "ElevenLabs sound generation",
+     "status": "cached"
+    },
+    "tick": {
+     "source": "ElevenLabs sound generation",
+     "status": "cached"
+    }
+   },
+   "final_loudnorm": "I=-16 LUFS, TP=-1.5 dBTP (two-pass, linear)"
+  },
+  "sound_events": [
+   [
+    1.4,
+    "hit"
+   ],
+   [
+    8.011,
+    "tick"
+   ],
+   [
+    8.937,
+    "tick"
+   ],
+   [
+    12.45,
+    "tick"
+   ],
+   [
+    13.45,
+    "tick"
+   ],
+   [
+    14.25,
+    "tick"
+   ],
+   [
+    16.55,
+    "tick"
+   ],
+   [
+    17.35,
+    "tick"
+   ],
+   [
+    21.35,
+    "tick"
+   ],
+   [
+    21.75,
+    "tick"
+   ],
+   [
+    22.0,
+    "hit"
+   ],
+   [
+    22.55,
+    "tick"
+   ],
+   [
+    25.3,
+    "hit"
+   ],
+   [
+    27.65,
+    "tick"
+   ],
+   [
+    28.2,
+    "hit"
+   ],
+   [
+    28.45,
+    "hit"
+   ],
+   [
+    28.7,
+    "hit"
+   ],
+   [
+    29.2,
+    "hit"
+   ],
+   [
+    30.4,
+    "hit"
+   ],
+   [
+    37.85,
+    "tick"
+   ],
+   [
+    38.65,
+    "tick"
+   ],
+   [
+    39.45,
+    "tick"
+   ],
+   [
+    40.25,
+    "tick"
+   ],
+   [
+    41.799,
+    "hit"
+   ],
+   [
+    45.15,
+    "tick"
+   ],
+   [
+    45.57,
+    "tick"
+   ],
+   [
+    45.99,
+    "tick"
+   ],
+   [
+    46.41,
+    "tick"
+   ],
+   [
+    46.83,
+    "tick"
+   ],
+   [
+    47.25,
+    "tick"
+   ],
+   [
+    47.67,
+    "tick"
+   ],
+   [
+    48.09,
+    "tick"
+   ],
+   [
+    48.51,
+    "tick"
+   ],
+   [
+    49.16,
+    "hit"
+   ],
+   [
+    49.81,
+    "tick"
+   ],
+   [
+    50.41,
+    "tick"
+   ],
+   [
+    55.683,
+    "tick"
+   ],
+   [
+    56.383,
+    "tick"
+   ],
+   [
+    57.183,
+    "tick"
+   ],
+   [
+    57.983,
+    "tick"
+   ],
+   [
+    63.483,
+    "tick"
+   ],
+   [
+    64.283,
+    "tick"
+   ],
+   [
+    69.583,
+    "tick"
+   ],
+   [
+    70.183,
+    "tick"
+   ],
+   [
+    73.483,
+    "tick"
+   ],
+   [
+    74.483,
+    "tick"
+   ],
+   [
+    75.483,
+    "tick"
+   ],
+   [
+    76.311,
+    "hit"
+   ],
+   [
+    77.483,
+    "tick"
+   ],
+   [
+    77.905,
+    "tick"
+   ],
+   [
+    82.687,
+    "hit"
+   ]
+  ],
+  "captions": {
+   "n": 31,
+   "srt": "results/viz/courtside_60.srt"
+  },
+  "renders": {
+   "pipeline": {},
+   "profit": {},
+   "tennis": {},
+   "test": {},
+   "edge": {},
+   "speed": {},
+   "strategy": {},
+   "endcard": {},
+   "coldopen": {
+    "arc_frames_drawn": 17
+   },
+   "tennis_real": {},
+   "tt": {
+    "arc_frames_drawn": 62
+   }
+  },
+  "tennis_sim": {
+   "file": "results/viz/v60_assets/tennis_sim/shot.json",
+   "rule": {
+    "population": "the nominal simulated world of results/spin/tennis (hawkeye.simulate population, seed 7, 4,948 near-line groundstrokes at 340 fps, 3.6 mm noise); method bls = the spin-aware batch physics fit (results/spin/tennis/raw/nominal_s7.parquet)",
+    "eligible": "lands OUT by more than 2 cm and at most 10 cm, and the bls P(out) first reaches 0.95 at the 200 ms lead of the evaluation grid (P(out) >= 0.95 at 200 ms and < 0.95 at 250 ms)",
+    "chosen": "the eligible shot whose true landing is closest to 5 cm out (ties: lowest shot index)",
+    "why": "a near-line OUT call at the 200 ms lead named in the spec; selected for illustration. The population numbers on screen come from results/spin/tennis/key_numbers.json"
+   }
+  },
+  "real_tennis": {
+   "file": "results/viz/v60_assets/tennis_real/tennis_tracked.mp4",
+   "present": true,
+   "sha256": "c3fac6cf84bb13ab1bfd9ce0f6e005fadbf16af37bfa191ca5026cc7f5eaa424",
+   "license": "results/viz/v60_assets/tennis_real/LICENSE.md"
+  },
+  "example_match": {
+   "file": "results/viz/v60_assets/backtest_match/example_match.mp4",
+   "sha256": "0598f1244d1f2e0a77d93f7bcd71cc447b3c4d58e3857dda6a2548537b00a136",
+   "match_json": "results/viz/v60_assets/backtest_match/match.json"
+  },
+  "not_used": [
+   "results/replay (team decision: the 1:04 segment uses the backtest showcase match)",
+   "the earlier v2-style plates seg_*.mp4 (superseded by the keynote-design renderers in this script)"
+  ],
+  "labels": {
+   "footage": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
+   "results": "simulated 1 s licensed-feed baseline",
+   "tennis": "simulated physics",
+   "end_card": "Paper trading only \u00b7 simulated 1 s licensed-feed baseline \u00b7 Voice: AI (ElevenLabs) \u00b7 footage: OpenTTGames CC BY-NC-SA 4.0"
+  },
+  "decisions": [
+   "cold open shows 325 ms: the streaming engine's own MISS call on test_2 flight 2819, measured to the labelled outcome (the ball passing the end line). The spec's 'Called 408 ms before contact' is the offline evaluation's lead for the same flight and is not shown.",
+   "tennis call: the evaluation grid's decision points (400 ... 0 ms); the first with P(out) >= 0.95 is 200 ms, so the stamp sits there. A per-frame re-run would already exceed 0.95 from about 252 ms; the display uses the evaluation's own decision points only.",
+   "hero numbers use the post-hoc reading with its label on screen; the pre-registered reading stays on the stats rail of the same frame."
+  ]
+ }
+}
