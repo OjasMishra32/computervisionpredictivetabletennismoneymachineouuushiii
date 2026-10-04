@@ -1,0 +1,6 @@
+$ .venv/bin/python scripts/money_counter.py --speed 50
+...
+SCORECARD (same $28,300 account, each period scored on its own)
+  IN SAMPLE        start $28,300 → $68,726  (+$40,425.72, +142.8%)  ·  199 days · 55,662 fills · win 53.6% · profitable days 82% · Sharpe 14.9 · max DD −$1,067.11
+  OUT OF SAMPLE    start $28,300 → $31,988  (+$3,687.54, +13.0%)  ·  40 days · 10,412 fills · win 55.6% · profitable days 60% · Sharpe 6.8 · max DD −$875.62
+Paper book at the fast tier's own fill prices (see docs/NOTE.pdf, Table 2 for slippage).
