@@ -1,0 +1,668 @@
+{
+ "generated_utc": "2026-10-04T05:30:42+00:00",
+ "script": "scripts/sponsor_evidence.py",
+ "label": "read-only check of committed sponsor results; public-feed / public REST latency only; no order signed or sent; paper trading only",
+ "env": {
+  "python": "3.14.0",
+  "git_head": "f35131a81c17cf1b279641fbd272a2bf928515b3"
+ },
+ "inputs_sha256": {
+  "sponsors/vultr/out/summary.json": "6657b058c36c91090879ea56198dfdb6a49a36c3d1c9714a86e83ab009fffe98",
+  "sponsors/vultr/out/run_manifest.json": "e34e7592c0b73921ba02512abdae97c3066912731d6957b7f8b59400d2022159",
+  "sponsors/vultr/README.md": "c6b7135047415f4ec04bb500f36ece2059355f21b2a06673fdb811a01c90b839",
+  "results/e2e/summary.json": "b4f572d42b457135b91d66a549f9208c57cedb0f6da1f40dcc0433c8c9f4ef64",
+  "results/decay/decay.json": "10cc6dfa3fae43c4e7007341b6dfb4253a02d6b53cfef3a42b3275885d4e4078"
+ },
+ "vultr": {
+  "readme_claims": [
+   {
+    "claim": "30-minute run, London",
+    "readme_text": "30-minute run",
+    "in_readme": true,
+    "value": 30.014,
+    "source": "sponsors/vultr/out/summary.json::sites.london.{started_at,ended_at}",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "30-minute run, Florida",
+    "readme_text": "30-minute run",
+    "in_readme": true,
+    "value": 30.025,
+    "source": "sponsors/vultr/out/summary.json::sites.florida.{started_at,ended_at}",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "370 tokens, London",
+    "readme_text": "370 tennis outcome tokens",
+    "in_readme": true,
+    "value": 370.0,
+    "source": "sponsors/vultr/out/summary.json::sites.london.token_count",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "370 tokens, Florida",
+    "readme_text": "370 tennis outcome tokens",
+    "in_readme": true,
+    "value": 370.0,
+    "source": "sponsors/vultr/out/summary.json::sites.florida.token_count",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "probe-start skew 38.3 ms",
+    "readme_text": "38.3 ms probe-start",
+    "in_readme": true,
+    "value": 38.263,
+    "source": "sponsors/vultr/out/summary.json::observed_probe_start_skew_ms",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "zero capture errors",
+    "readme_text": "zero capture errors",
+    "in_readme": true,
+    "value": 0.0,
+    "source": "sponsors/vultr/out/summary.json::sites.{london,florida}.errors",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "287,577 matched updates",
+    "readme_text": "287,577",
+    "in_readme": true,
+    "value": 287577.0,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.matched_events",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "London first 99.74%",
+    "readme_text": "99.74%",
+    "in_readme": true,
+    "value": 99.74,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_first_percent",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "median advantage 70.2 ms",
+    "readme_text": "70.2 ms",
+    "in_readme": true,
+    "value": 70.189,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_arrival_advantage_ms.p50",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "p90 advantage 162.2 ms",
+    "readme_text": "162.2 ms",
+    "in_readme": true,
+    "value": 162.154,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_arrival_advantage_ms.p90",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "clock bound 30.3 ms",
+    "readme_text": "30.3 ms",
+    "in_readme": true,
+    "value": 30.265,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.combined_clock_uncertainty_ms",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "conservative median 39.9 ms",
+    "readme_text": "39.9 ms",
+    "in_readme": true,
+    "value": 39.924,
+    "source": "sponsors/vultr/out/summary.json::paired_arrivals.conservative_median_lower_bound_ms",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "REST RTT London 69.7 ms",
+    "readme_text": "69.7 ms",
+    "in_readme": true,
+    "value": 69.663,
+    "source": "sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms.p50",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "REST RTT Florida 184.4 ms",
+    "readme_text": "184.4 ms",
+    "in_readme": true,
+    "value": 184.38,
+    "source": "sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms.p50",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "REST improvement 114.7 ms",
+    "readme_text": "114.7 ms",
+    "in_readme": true,
+    "value": 114.717,
+    "source": "sponsors/vultr/out/summary.json::london_improvement_ms.rest_rtt_ms.p50",
+    "rounds_to_claim": true
+   },
+   {
+    "claim": "p99 has multi-second Florida tail stalls",
+    "in_readme": true,
+    "value": 4905.064,
+    "source": "sponsors/vultr/out/summary.json::sites.florida.feed_latency_ms.p99",
+    "rounds_to_claim": true
+   }
+  ],
+  "readme_claims_ok": 16,
+  "readme_claims_n": 16,
+  "dashboard_shows": {
+   "70.2 ms": true,
+   "99.74%": true,
+   "287,577": true,
+   "30.3 ms": true,
+   "39.9 ms": true
+  },
+  "summary_arithmetic": {
+   "start_skew_ms": {
+    "recomputed": 38.263,
+    "stored": 38.263,
+    "ok": true
+   },
+   "conservative_median_ms": {
+    "recomputed": 39.924,
+    "stored": 39.924,
+    "ok": true
+   },
+   "combined_bound_ms": {
+    "recomputed": 30.265,
+    "stored": 30.265,
+    "ok": true
+   },
+   "improvement.feed_latency_ms.p50": {
+    "recomputed": 71.1,
+    "stored": 71.1,
+    "ok": true
+   },
+   "improvement.feed_latency_ms.p90": {
+    "recomputed": 177.041,
+    "stored": 177.041,
+    "ok": true
+   },
+   "improvement.feed_latency_ms.p99": {
+    "recomputed": 4808.72,
+    "stored": 4808.72,
+    "ok": true
+   },
+   "improvement.rest_rtt_ms.p50": {
+    "recomputed": 114.717,
+    "stored": 114.717,
+    "ok": true
+   },
+   "improvement.rest_rtt_ms.p90": {
+    "recomputed": 173.418,
+    "stored": 173.418,
+    "ok": true
+   },
+   "improvement.rest_rtt_ms.p99": {
+    "recomputed": 332.948,
+    "stored": 332.948,
+    "ok": true
+   }
+  },
+  "summary_arithmetic_ok": true,
+  "deterministic_sample_consistent": true,
+  "deterministic_sample_note": "all 10 sample pairs are 'book' snapshots whose exchange stamp is hours before the run (london_delay_ms ~4.29 h): they are re-sent on subscribe, so their 908.525 ms 'advantage' is the gap between the two sites' subscriptions, not network latency. summarize.py filters such rows out of the per-site feed percentiles (-1 s < delay < 60 s) but not out of the paired statistics; with ~370 tokens per (re)subscription against 287,577 pairs they can only touch the far tail, not the median.",
+  "clock": {
+   "florida_sntp_local_minus_ntp_ms": {
+    "start": -36.355,
+    "end": 3.263
+   },
+   "florida_offset_moved_ms": 39.618,
+   "florida_sntp_uncertainty_ms": {
+    "start": 30.265,
+    "end": 30.134999999999998
+   },
+   "london_chrony": {
+    "clock_start": {
+     "root_delay_ms": 3.408,
+     "root_dispersion_ms": 16776.503,
+     "max_error_ms": 16778.206
+    },
+    "clock_end": {
+     "root_delay_ms": 2.288,
+     "root_dispersion_ms": 0.39,
+     "max_error_ms": 1.534
+    }
+   },
+   "combined_bound_used_by_summary_ms": 30.265,
+   "median_lower_bound_incl_london_end_bound_ms": 38.39,
+   "note": "The 30.3 ms 'combined' bound is Florida's sntp uncertainty alone; London's chrony gives no uncertainty_ms field, so it counts as 0. Taking London's end-of-run chrony bound (root delay/2 + root dispersion) as well leaves the stricter median lower bound above. London's start-of-run reading was taken while chrony was still settling (reference time 18 s before the start, skew 1,000,000 ppm, root dispersion 16,777 ms), so it bounds nothing. Florida's offset moved more over the run than its own sntp uncertainty and is interpolated linearly. The REST round trips are timed with perf_counter (one clock), so they need no clock correction."
+  },
+  "rest_rtt_method": "probe.py rest_loop: requests.get(clob.polymarket.com/time) every 2 s with no Session, so every sample opens a new TCP + TLS connection (a cold request); timed with time.perf_counter_ns. results/e2e's network leg is a keep-alive GET /time.",
+  "run_manifest": {
+   "instance_deleted": true,
+   "region": "lhr",
+   "plan": "vc2-1c-1gb",
+   "deleted_at": "2026-10-04T04:47:31.285342+00:00",
+   "deploy_md_says_deleted_04_47_31": true,
+   "keys_in_manifest_not_written_by_committed_runner": [
+    "observed_probe_start_skew_ms"
+   ],
+   "keys_committed_runner_writes_but_manifest_lacks": [
+    "estimated_start_skew_ms",
+    "frozen_token_count",
+    "ssh_launch_round_trip_ms"
+   ]
+  },
+  "raw_probe_files_present": [],
+  "raw_probe_note": "probe_london.jsonl / probe_florida.jsonl are gitignored (sponsors/vultr/.gitignore) and are not in this checkout, so matched-event counts and percentiles are checked against summary.json only, not recomputed from rows.",
+  "smoke_probes_secondary": {
+   "ams": {
+    "n": 30,
+    "clob_rest_ttfb_ms": {
+     "p50": 64.7,
+     "p90": 70.9
+    },
+    "ws_ping_pong_ms": {
+     "p50": 12.8,
+     "p90": 29.6
+    },
+    "source": "sponsors/vultr/out/probe_ams.json::https.clob_rest.ttfb, ws.market.ping_pong"
+   },
+   "ewr": {
+    "n": 30,
+    "clob_rest_ttfb_ms": {
+     "p50": 135.3,
+     "p90": 271.1
+    },
+    "ws_ping_pong_ms": {
+     "p50": 77.6,
+     "p90": 94.5
+    },
+    "source": "sponsors/vultr/out/probe_ewr.json::https.clob_rest.ttfb, ws.market.ping_pong"
+   },
+   "lax": {
+    "n": 30,
+    "clob_rest_ttfb_ms": {
+     "p50": 194.2,
+     "p90": 202.8
+    },
+    "ws_ping_pong_ms": {
+     "p50": 148.1,
+     "p90": 164.8
+    },
+    "source": "sponsors/vultr/out/probe_lax.json::https.clob_rest.ttfb, ws.market.ping_pong"
+   }
+  },
+  "smoke_note": "Earlier 30-sample smoke runs from Vultr Amsterdam / Newark / Los Angeles. The script that wrote this format is not in the repo; listed for context only and not used in the budget.",
+  "tests": {
+   "command": "python -m pytest -p no:cacheprovider -q sponsors/vultr/test_vultr.py",
+   "returncode": 0,
+   "summary": "4 passed in 0.21s"
+  }
+ },
+ "snowflake": {
+  "numbers_json": {
+   "path": "results/paper/numbers.json",
+   "generated_utc": "2026-10-04T05:30:05+00:00",
+   "n_keys": 753,
+   "sha256": "7ab99667c0c69fd83b0b7e5caa866a7664a9a27a0a9f1e24f9a9b7dd1daf7ff5",
+   "git_head": "f35131a81c17cf1b279641fbd272a2bf928515b3",
+   "n_keys_at_head": 702,
+   "added_since_head": 51,
+   "removed_since_head": 0,
+   "changed_since_head": []
+  },
+  "committed_runs": {
+   "duckdb": {
+    "reproduced": 62,
+    "checked": 62,
+    "source": "sponsors/snowflake/out/checks_offline.json::reproduced,checked"
+   },
+   "snowflake": {
+    "reproduced": 62,
+    "checked": 62,
+    "source": "sponsors/snowflake/out/checks.json::reproduced,checked"
+   }
+  },
+  "recheck": {
+   "status": "ran",
+   "engine": "DuckDB 1.5.6 (Ian's offline route, check.run_duckdb)",
+   "rule": "check.compare(): SQL value within the paper source value's precision (2 dp max), or rounds to the printed number",
+   "reproduced": 62,
+   "checked": 62,
+   "recomputed_ok": 20,
+   "recomputed_n": 20,
+   "lookup_ok": 42,
+   "lookup_n": 42,
+   "matched_on_printed_only": [
+    "capcv.half.is",
+    "capcv.halfall.is"
+   ],
+   "failing": [],
+   "keys_moved_since_committed_run": [],
+   "numbers_json_unchanged_during_check": true,
+   "share_of_paper_keys_checked": 0.0823
+  }
+ },
+ "budget": {
+  "method": "total = 1,000 ms simulated feed + our pipeline (capture -> order ready) + network leg + 1,000 ms venue taker hold; at p50 each leg's p50, at p90 / p99 each leg's p90 / p99 added (stacking tails this way is conservative). Margin = 3,000 - total. Only the network leg changes between rows.",
+  "inputs": {
+   "feed_simulated_ms": 1000.0,
+   "venue_delay_ms": 1000.0,
+   "ours_ms": {
+    "p50": 54.13,
+    "p90": 66.755,
+    "p99": 71.701
+   },
+   "requirement_ms": 3000.0,
+   "sources": [
+    "results/e2e/summary.json::budget_with_1s_simulated_feed.{feed_simulated_ms,venue_delay_ms.p50,ours_capture_to_order_ready_ms,requirement_ms}"
+   ]
+  },
+  "paper_as_printed": {
+   "total_p50_ms": 2118.595,
+   "margin_p50_ms": 881.406,
+   "network_p50_ms": 64.506,
+   "rtt_at_orders_p50_ms": 129.01,
+   "note": "the paper's total is the median of 24 per-call totals; the sum of the leg medians here differs from it by 0.041 ms",
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.{total_ms,margin_to_requirement_ms}.p50"
+  },
+  "scenarios": {
+   "paper_florida_keepalive_half_rtt": {
+    "what": "paper's leg: RTT/2 of keep-alive GET /time, Florida laptop, e2e run",
+    "network_source": "results/e2e/summary.json::budget_with_1s_simulated_feed.network_one_way_ms",
+    "p50": {
+     "network_ms": 64.506,
+     "ours_ms": 54.13,
+     "total_ms": 2118.636,
+     "margin_to_3s_ms": 881.364,
+     "max_feed_delay_for_3s_ms": 1881.364
+    },
+    "p90": {
+     "network_ms": 68.872,
+     "ours_ms": 66.755,
+     "total_ms": 2135.627,
+     "margin_to_3s_ms": 864.373,
+     "max_feed_delay_for_3s_ms": 1864.373
+    },
+    "p99": {
+     "network_ms": 158.245,
+     "ours_ms": 71.701,
+     "total_ms": 2229.946,
+     "margin_to_3s_ms": 770.054,
+     "max_feed_delay_for_3s_ms": 1770.054
+    }
+   },
+   "vultr_london_cold_half_rtt": {
+    "what": "Vultr London server, cold public GET /time, half the round trip",
+    "network_source": "sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms / 2",
+    "p50": {
+     "network_ms": 34.831,
+     "ours_ms": 54.13,
+     "total_ms": 2088.962,
+     "margin_to_3s_ms": 911.038,
+     "max_feed_delay_for_3s_ms": 1911.039
+    },
+    "p90": {
+     "network_ms": 39.133,
+     "ours_ms": 66.755,
+     "total_ms": 2105.887,
+     "margin_to_3s_ms": 894.113,
+     "max_feed_delay_for_3s_ms": 1894.112
+    },
+    "p99": {
+     "network_ms": 53.871,
+     "ours_ms": 71.701,
+     "total_ms": 2125.572,
+     "margin_to_3s_ms": 874.428,
+     "max_feed_delay_for_3s_ms": 1874.428
+    }
+   },
+   "vultr_london_cold_full_rtt": {
+    "what": "Vultr London server, cold public GET /time, full round trip",
+    "network_source": "sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms",
+    "p50": {
+     "network_ms": 69.663,
+     "ours_ms": 54.13,
+     "total_ms": 2123.793,
+     "margin_to_3s_ms": 876.207,
+     "max_feed_delay_for_3s_ms": 1876.207
+    },
+    "p90": {
+     "network_ms": 78.265,
+     "ours_ms": 66.755,
+     "total_ms": 2145.02,
+     "margin_to_3s_ms": 854.98,
+     "max_feed_delay_for_3s_ms": 1854.98
+    },
+    "p99": {
+     "network_ms": 107.742,
+     "ours_ms": 71.701,
+     "total_ms": 2179.443,
+     "margin_to_3s_ms": 820.557,
+     "max_feed_delay_for_3s_ms": 1820.557
+    }
+   },
+   "vultr_florida_cold_half_rtt": {
+    "what": "Florida laptop, cold public GET /time, half the round trip",
+    "network_source": "sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms / 2",
+    "p50": {
+     "network_ms": 92.19,
+     "ours_ms": 54.13,
+     "total_ms": 2146.32,
+     "margin_to_3s_ms": 853.68,
+     "max_feed_delay_for_3s_ms": 1853.68
+    },
+    "p90": {
+     "network_ms": 125.841,
+     "ours_ms": 66.755,
+     "total_ms": 2192.597,
+     "margin_to_3s_ms": 807.403,
+     "max_feed_delay_for_3s_ms": 1807.403
+    },
+    "p99": {
+     "network_ms": 220.345,
+     "ours_ms": 71.701,
+     "total_ms": 2292.046,
+     "margin_to_3s_ms": 707.954,
+     "max_feed_delay_for_3s_ms": 1707.954
+    }
+   },
+   "vultr_florida_cold_full_rtt": {
+    "what": "Florida laptop, cold public GET /time, full round trip",
+    "network_source": "sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms",
+    "p50": {
+     "network_ms": 184.38,
+     "ours_ms": 54.13,
+     "total_ms": 2238.51,
+     "margin_to_3s_ms": 761.49,
+     "max_feed_delay_for_3s_ms": 1761.49
+    },
+    "p90": {
+     "network_ms": 251.683,
+     "ours_ms": 66.755,
+     "total_ms": 2318.438,
+     "margin_to_3s_ms": 681.562,
+     "max_feed_delay_for_3s_ms": 1681.562
+    },
+    "p99": {
+     "network_ms": 440.69,
+     "ours_ms": 71.701,
+     "total_ms": 2512.391,
+     "margin_to_3s_ms": 487.609,
+     "max_feed_delay_for_3s_ms": 1487.609
+    }
+   }
+  },
+  "worst_case": {
+   "scenario": "vultr_florida_cold_full_rtt",
+   "percentile": "p99",
+   "margin_to_3s_ms": 487.609
+  },
+  "london_saving_vs_florida_ms": {
+   "half_rtt_p50": 57.358,
+   "full_rtt_p50": 114.717,
+   "half_rtt_p90": 86.709,
+   "full_rtt_p90": 173.418
+  },
+  "feed_plus_hold_share_of_p50_total_london_half_rtt": 0.9574,
+  "economic_limit_not_timing": {
+   "tier0_breakeven_feed_delay_s": {
+    "pre-registered stamp lag 2.0 s (tournament)": {
+     "IS": 1.089,
+     "burned_OOS": 1.014
+    },
+    "post hoc stamp lag 3.14 s (tournament_lagcal)": {
+     "IS": 2.23,
+     "burned_OOS": 2.14
+    },
+    "ci95": {
+     "tournament": {
+      "IS": [
+       1.032,
+       2.039
+      ],
+      "burned_OOS": [
+       0.435,
+       1.049
+      ]
+     },
+     "tournament_lagcal": {
+      "IS": [
+       2.182,
+       3.386
+      ],
+      "burned_OOS": [
+       1.591,
+       2.193
+      ]
+     }
+    },
+    "note": "feed delay V at which the tier-0 CV strategy's seed-mean $/day crosses zero (stored cells of results/tier0/latency_sweep.json breakeven_video_delay; quoted, not re-run; assumed data; burned OOS not blind)"
+   },
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.tier0_breakeven_feed_delay_s",
+   "note": "every scenario allows a feed delay of at least 1,488 ms under 3 s, above the pre-registered break-even feed delay (1.01-1.09 s): the 3 s bar is not the binding limit; the strategy's break-even is."
+  },
+  "paper_inputs_to_compare": {
+   "lat.net_ldn_inferred_ms": 2.0,
+   "lat.net_fl_ms": 67.0,
+   "source": "results/decay/decay.json::latency_inputs.{net_london_s,net_florida_s}",
+   "measured_london_feed_one_way_ms": {
+    "p50": 4.234,
+    "p90": 7.354,
+    "p99": 96.344
+   },
+   "measured_florida_feed_one_way_ms": {
+    "p50": 75.334,
+    "p90": 184.395,
+    "p99": 4905.064
+   },
+   "measured_source": "sponsors/vultr/out/summary.json::sites.{london,florida}.feed_latency_ms",
+   "note": "scripts/signal_decay.py sets London to a 2 ms inferred gateway constant. The probe measures London's public websocket one-way (exchange stamp -> receive, clock-corrected) at 4.2 ms p50 / 7.4 ms p90; a cold public REST round trip from London is 69.7 ms p50."
+  },
+  "not_measured": "authenticated order latency: EIP-712 signing, L2 auth headers, the POST itself and the venue's matching time; no order was signed or sent from any site. The REST numbers are a public GET /time; the feed numbers are the public market websocket. The 1 s feed is simulated (no licensed feed bought)."
+ },
+ "paper_keys": {
+  "vultr.minutes": {
+   "value": "30",
+   "raw": 30.014,
+   "source": "sponsors/vultr/out/summary.json::sites.london.{started_at,ended_at}"
+  },
+  "vultr.tokens": {
+   "value": "370",
+   "raw": 370,
+   "source": "sponsors/vultr/out/summary.json::sites.london.token_count"
+  },
+  "vultr.matched": {
+   "value": "287,577",
+   "raw": 287577,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.matched_events"
+  },
+  "vultr.lon_first": {
+   "value": "99.74%",
+   "raw": 99.74,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_first_percent"
+  },
+  "vultr.adv.p50": {
+   "value": "70",
+   "raw": 70.189,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_arrival_advantage_ms.p50"
+  },
+  "vultr.adv.p90": {
+   "value": "162",
+   "raw": 162.154,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.london_arrival_advantage_ms.p90"
+  },
+  "vultr.clock": {
+   "value": "30",
+   "raw": 30.265,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.combined_clock_uncertainty_ms"
+  },
+  "vultr.adv.lb": {
+   "value": "40",
+   "raw": 39.924,
+   "source": "sponsors/vultr/out/summary.json::paired_arrivals.conservative_median_lower_bound_ms"
+  },
+  "vultr.lon.feed": {
+   "value": "4.2",
+   "raw": 4.234,
+   "source": "sponsors/vultr/out/summary.json::sites.london.feed_latency_ms.p50"
+  },
+  "vultr.fl.feed.p99": {
+   "value": "4,905",
+   "raw": 4905.064,
+   "source": "sponsors/vultr/out/summary.json::sites.florida.feed_latency_ms.p99"
+  },
+  "vultr.lon.rtt": {
+   "value": "70",
+   "raw": 69.663,
+   "source": "sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms.p50"
+  },
+  "vultr.fl.rtt": {
+   "value": "184",
+   "raw": 184.38,
+   "source": "sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms.p50"
+  },
+  "vultr.lon.rtt.p90": {
+   "value": "78",
+   "raw": 78.265,
+   "source": "sponsors/vultr/out/summary.json::sites.london.rest_rtt_ms.p90"
+  },
+  "vultr.fl.rtt.p90": {
+   "value": "252",
+   "raw": 251.683,
+   "source": "sponsors/vultr/out/summary.json::sites.florida.rest_rtt_ms.p90"
+  },
+  "e2e.lon.total": {
+   "value": "2,089",
+   "raw": 2088.962,
+   "source": "results/sponsors/evidence.json::budget.scenarios.vultr_london_cold_half_rtt.p50.total_ms"
+  },
+  "e2e.lon.margin": {
+   "value": "911",
+   "raw": 911.038,
+   "source": "results/sponsors/evidence.json::budget.scenarios.vultr_london_cold_half_rtt.p50.margin_to_3s_ms"
+  },
+  "e2e.fl.total": {
+   "value": "2,146",
+   "raw": 2146.32,
+   "source": "results/sponsors/evidence.json::budget.scenarios.vultr_florida_cold_half_rtt.p50.total_ms"
+  },
+  "e2e.fl.margin": {
+   "value": "854",
+   "raw": 853.68,
+   "source": "results/sponsors/evidence.json::budget.scenarios.vultr_florida_cold_half_rtt.p50.margin_to_3s_ms"
+  },
+  "e2e.worst.total": {
+   "value": "2,512",
+   "raw": 2512.391,
+   "source": "results/sponsors/evidence.json::budget.scenarios.vultr_florida_cold_full_rtt.p99.total_ms"
+  },
+  "e2e.worst.margin": {
+   "value": "488",
+   "raw": 487.609,
+   "source": "results/sponsors/evidence.json::budget.worst_case.margin_to_3s_ms"
+  },
+  "snow.repro": {
+   "value": "62/62",
+   "raw": 62,
+   "source": "results/sponsors/evidence.json::snowflake.recheck.reproduced"
+  },
+  "snow.recomputed": {
+   "value": "20",
+   "raw": 20,
+   "source": "results/sponsors/evidence.json::snowflake.recheck.recomputed_ok"
+  }
+ }
+}
