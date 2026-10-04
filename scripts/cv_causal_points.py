@@ -103,7 +103,7 @@ def _log_read(desc: str) -> None:
         fh.write(f"{pd.Timestamp.now(tz='UTC').isoformat()} {desc}\n")
 
 
-def context(periods: list[str]) -> dict:
+def context(periods: list[str], log: bool = True) -> dict:
     """Universe, coverage and covered in-play prints per period. Only IS files unless 'OOS' is in periods."""
     from src.tape import universe
     u = universe()
@@ -125,7 +125,7 @@ def context(periods: list[str]) -> dict:
     for per in periods:
         oos = per == "OOS"
         conds = set(u.cond[(u.oos == oos) & u.cond.isin(cov)])
-        if oos:
+        if oos and log:
             _log_read("cv_causal_points: OOS in-play prints of covered matches read for the causal every-point CV "
                       "book (review fix D2; non-blind period; frozen code)")
             path = ROOT / "data/locked/oos_prints.parquet"
@@ -224,6 +224,13 @@ def summarise(rows: list[dict]) -> dict:
 _C: dict = {}
 
 
+def _init(periods: list[str]) -> None:
+    # spawned worker: load its own copy (pyarrow-backed pandas is not fork-safe)
+    import warnings
+    warnings.filterwarnings("ignore")
+    _C.update(context(periods, log=False))
+
+
 def _job(args: tuple[str, int]) -> list[dict]:
     per, s = args
     return run_seed(_C, per, s, cells())
@@ -235,19 +242,21 @@ def main() -> None:
     ap.add_argument("--smoke", action="store_true", help="2 seeds, IS, print only")
     ap.add_argument("--seeds", type=int, default=SEEDS)
     ap.add_argument("--out", type=Path, default=OUT)
-    ap.add_argument("--workers", type=int, default=1, help="seeds in parallel (fork); results do not depend on it")
+    ap.add_argument("--workers", type=int, default=1, help="seeds in parallel (spawned processes, ~1.5 GB each); "
+                    "results do not depend on it")
     a = ap.parse_args()
     periods = ["IS", "OOS"] if a.oos else ["IS"]
     seeds = 2 if a.smoke else a.seeds
     t0 = time.time()
-    c = context(periods)
+    c = context(periods)            # logs the one OOS read (workers re-load the same files without re-logging)
     _C.update(c)
     jobs = [(per, s) for per in periods for s in range(seeds)]
     rows = []
     if a.workers > 1:
         import multiprocessing as mp
         from concurrent.futures import ProcessPoolExecutor
-        with ProcessPoolExecutor(a.workers, mp_context=mp.get_context("fork")) as ex:
+        with ProcessPoolExecutor(a.workers, mp_context=mp.get_context("spawn"), initializer=_init,
+                                 initargs=(periods,)) as ex:
             for j, r in zip(jobs, ex.map(_job, jobs)):
                 rows += r
                 print(f"{j[0]} seed {j[1]} done ({time.time() - t0:.0f} s)", flush=True)
