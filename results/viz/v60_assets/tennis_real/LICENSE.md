@@ -36,7 +36,7 @@
 - This is not TV broadcast footage or footage produced by a tour. It is a contributor's own handheld phone recording, published on Pexels under the Pexels licence.
 - The camera is handheld and elevated, behind the near baseline, with the whole court in frame. That is close to the broadcast view that TrackNet and TennisCourtDetector were trained on. Global drift in the trimmed window is about 30 px horizontal and 14 px vertical at 960 px width (estimated with phase correlation), and frame-to-frame jitter is under 2 px. Run court keypoints on every frame and do not assume one fixed homography.
 - A few loose balls lie still on the court. TrackNet's three-frame motion input should ignore them. Check the trail for detections that stick to them.
-- Out calls are not claimed on this footage: single-camera 3D error is 0.7-1.2 m (see results/tracking). The clip only shows the tracker's ball trail.
+- Out calls are not claimed on this footage: single-camera 3D error is 0.7-1.2 m (see results/tennis_tracking). The clip only shows the tracker's ball trail.
 
 ### Why this window (t = 1.4-11.4 s)
 
@@ -46,6 +46,23 @@ A rough motion-and-colour scan located the ball flights (yellow blobs that move 
 - near-side hits at about 2.6, 5.75, 8.3 and 10.9 s.
 
 That is 8 shots. No spectator walks into the frame (checked at 1 fps), which does happen around 70-72 s in the source. Camera drift in this window is lower than in the other continuous stretches (2-47 s and 58-76 s).
+
+## Tracker outputs made from the trimmed rally
+
+All derived from `rally_pexels_10378830_t1.4-11.4s.mp4` by our tennis tracker. See
+`src/tennis_tracking/README.md`, section "Real footage", and `scripts/tennis_real_tracked.py`.
+
+| File | What it is |
+|---|---|
+| `tennis_detect_raw.npz` | Raw detector output from HiPerGator job 44630137 (NVIDIA L4): TrackNet's one-blob picks, every heatmap blob, and the TennisCourtDetector keypoints. 1280x720 px. |
+| `tennis_detections.json` | Per frame: our tracked ball position, the court homography, and the raw keypoints, in 1920x1080 clip pixels. Also run stats and QA. |
+| `tennis_spotcheck.jpg` | Crops around 48 random tracked positions, used for the by-eye check (all 48 on the ball in play). |
+| `tennis_tracked.mp4` | The rally with our ball trail (#FF6B1A), the fitted court lines drawn faintly, "Ball detected in 89% of frames", "Ball tracking: our tennis model", and the attribution. 1920x1080, 30 fps, 10 s, real speed, the clip's own audio. No in/out call. |
+| `tennis_tracked.png` | 300 dpi still (3840x2160): frame 206 with every tracked position of the shot in frames 187-206. |
+| `tennis_tracked_onscreen.json` | Every on-screen string and number, with its source. |
+
+The edited clip and the still show the footage modified (trail, lines, type). The attribution line
+above appears on every frame.
 
 ## Other candidates checked (not downloaded in full)
 

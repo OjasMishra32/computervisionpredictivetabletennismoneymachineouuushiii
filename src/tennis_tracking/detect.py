@@ -31,9 +31,23 @@ def load_frames(clip_dir):
     return files, [cv2.imread(f) for f in files]
 
 
+def heatmap_candidates(det, fmap, scale=2):
+    """Every blob of the binary heatmap BallDetector.postprocess searches (same uint8 wrap and
+    threshold), as (k,3) centroid x, y in the 2x (1280x720) frame and area in heatmap pixels.
+    postprocess runs Hough circles on this map and keeps one circle per frame (the first within
+    80 px of the previous pick), so with several balls in view it can lock onto a still one."""
+    fm = (fmap.astype(np.int64) * 255).reshape((det.height, det.width)).astype(np.uint8)
+    _, hm = cv2.threshold(fm, 127, 255, cv2.THRESH_BINARY)
+    n, _, stats, cent = cv2.connectedComponentsWithStats(hm, connectivity=8)
+    if n <= 1:
+        return np.zeros((0, 3))
+    return np.c_[cent[1:] * scale, stats[1:, cv2.CC_STAT_AREA]].astype(np.float64)
+
+
 @torch.no_grad()
-def run_ball(det, frames, device, bs=16):
-    """Same input construction and post-processing as BallDetector.infer_model, batched."""
+def run_ball(det, frames, device, bs=16, candidates=None):
+    """Same input construction and post-processing as BallDetector.infer_model, batched.
+    If `candidates` is a dict, candidates[k] gets every heatmap blob of frame k (heatmap_candidates)."""
     W, H = det.width, det.height
     small = [cv2.resize(f, (W, H)) for f in frames]
     n = len(frames)
@@ -49,6 +63,8 @@ def run_ball(det, frames, device, bs=16):
     maps = np.concatenate(maps) if maps else np.zeros((0, H, W))
     prev = [None, None]
     for j, k in enumerate(idx):
+        if candidates is not None:
+            candidates[k] = heatmap_candidates(det, maps[j])
         x, y = det.postprocess(maps[j].astype(np.int64), prev)  # int64 as in the repo (its *255 -> uint8 wrap is part of the tuned post-processing)
         prev = [x, y]
         if x is not None:

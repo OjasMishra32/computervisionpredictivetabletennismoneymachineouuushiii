@@ -1,0 +1,33 @@
+{
+ "outputs": {
+  "video": "results/viz/v60_assets/tennis_real/tennis_tracked.mp4",
+  "still": "results/viz/v60_assets/tennis_real/tennis_tracked.png",
+  "video_spec": "1920x1080, 30 fps, 10 s (300 frames), real speed (no slow motion), H.264 yuv420p bt709 CRF 16, the clip's own AAC audio",
+  "still_spec": "3840x2160 px, 300 dpi, clip frame 206 (t = 6.87 s), trail = every tracked position of frames 187-206 (one shot)"
+ },
+ "on_screen": {
+  "counter": "Ball detected in 89% of frames",
+  "counter_value": 89,
+  "counter_source": "tennis_detections.json stats.ball_detected_share = 267/300 frames",
+  "counter_animation": "counts up 0 -> 89 over 0.3-1.1 s, then fixed",
+  "model_line": "Ball tracking: our tennis model",
+  "attribution": "Tennis footage: \"Tennis Players Playing Match\" by Gelato Prod, Pexels (Pexels License)",
+  "type": "Inter 500 22 px white (counter, counts up 0 -> final during the fade-in); Inter 400 15 px grey #aeaeb2 (model line, two-line attribution); right-aligned at x = 1766 (8% margin), baselines y = 530, 556, 580, 600, over the dark windscreen right of the court; soft dark halo under the type; fades in 0.15-0.75 s",
+  "no_call": "no in/out call, no landing point, no speed or spin readout"
+ },
+ "what_is_drawn": {
+  "trail": "our tracked ball positions (tennis_detections.json ball_xy) of the last 10 frames (0.33 s), #FF6B1A fading with age and whitening towards the newest point; consecutive detections are joined only if at most 3 frames apart; frames without a detection draw no ring and add no point",
+  "ring": "thin #FF6B1A ring (r = 9 px) around the ball in frames where it was tracked",
+  "court_lines": "the nine painted court lines projected with that frame's court_H; each draws in along its length from 0.1 s (white 70%, 3 px), then settles by 1.6 s to white 30%, 1.5 px for the rest of the clip",
+  "vignette": "subtle radial vignette, corners down to -20% brightness"
+ },
+ "source": {
+  "detections": "results/viz/v60_assets/tennis_real/tennis_detections.json",
+  "detections_sha256": "a6e9d52de97e214a27c12da31560bd4a13ba0b28b755810a7deea8a1c87931e4",
+  "clip_sha256": "a09ac58029bc7b441c8fdedb47fce112020964d1981a354036ea418ee1a5e053"
+ },
+ "run": {
+  "utc": "2026-10-04T00:25:42+00:00",
+  "script": "scripts/tennis_real_tracked.py render"
+ }
+}

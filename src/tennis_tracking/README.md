@@ -185,3 +185,38 @@ learned predictor. `run_eval.py` runs the stages. `plots.py` draws the figures.
   TrackNet) and the landing predictions from 300 ms to 0 ms.
 * `flights.csv` (per-flight ground truth), `predictions_at_leads.csv` (per flight × lead × predictor
   × source) and `tuning_train_only.csv`.
+
+## Real footage: the tracker on a freely licensed rally (video asset)
+
+The same detectors ran on a 10 s real rally: "Tennis Players Playing Match" by Gelato Prod, Pexels
+(Pexels License; source, licence and trim in `results/viz/v60_assets/tennis_real/LICENSE.md`). The view
+is a handheld phone, held high behind the near baseline and off to one side. It is not broadcast footage.
+No in/out call is made on it, because single-camera 3D error is 0.7–1.2 m (above).
+
+```bash
+# HiPerGator (L4, ~30 s): every frame resized to 1280x720, TrackNet ball + court keypoints, plus every heatmap blob
+VIDEO=$ROOT/data/real_footage/rally_pexels_10378830_t1.4-11.4s.mp4 sbatch hpg/tennis_detect_video.sbatch
+# copy work/detect_video/<clip>.npz to results/viz/v60_assets/tennis_real/tennis_detect_raw.npz, then locally:
+python scripts/tennis_real_tracked.py process   # -> tennis_detections.json (ball + court homography per frame)
+python scripts/tennis_real_tracked.py qa        # -> tennis_spotcheck.jpg (48 random tracked positions)
+python scripts/tennis_real_tracked.py render    # -> tennis_tracked.mp4 (10 s, 1080p30), tennis_tracked.png (300 dpi)
+```
+
+Two problems on this clip that the broadcast data does not have, and how they were handled:
+
+* **Still balls on the court.** Spare balls lying on the court make heatmap blobs as strong as the
+  ball in play. `BallDetector.postprocess` keeps one blob per frame and stays within 80 px of its
+  previous pick, so it locks onto a still ball for up to a second (88 of its 280 picks are more
+  than 5 px from the tracked ball, nearly all of them on still balls). `detect_video.py` saves every blob, and `link.py` drops blobs that stay put
+  for 8 of the 16 neighbouring frames, then links the rest into flight tracklets (offline; centroids
+  as detected, no smoothing or interpolation). Result: the ball is tracked in 267 of 300 frames (89%).
+  The longest gap is 6 frames. A by-eye check of 48 random tracked positions found all 48 on the ball
+  in play. No labels exist for this clip, so there is no pixel-accuracy number.
+* **Mislabelled court keypoints.** On this oblique view only 547 of the 2,709 detector keypoints
+  are within 12 px of the court point their label names, so a labelled homography fit is
+  meaningless. `court_lines.py` keeps the keypoint positions without their labels, matches them to
+  the court model (4-point hypotheses restricted to proper views), keeps the hypothesis whose nine
+  projected lines best overlay the painted line pixels, and refines the homography on those pixels.
+  It does this on every frame, starting from the previous frame, because the camera is handheld:
+  it drifts 55 px and moves up to 11 px between frames. The mean distance from the fitted lines to
+  the painted lines is 0.36 px (median) and at most 0.72 px.
