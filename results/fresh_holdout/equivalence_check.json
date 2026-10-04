@@ -1,0 +1,256 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.",
+ "prereg": "research/v2/tier0_v3/fresh/PREREG_FRESH.md",
+ "prereg_commit": "dc95717",
+ "commit": "38df71e",
+ "day": [
+  "2026-10-02 00:00:00+00:00",
+  "2026-10-03 00:00:00+00:00"
+ ],
+ "run_utc": "2026-10-04T05:43:40.265551+00:00",
+ "gamma_listing_utc": "2026-10-04T05:43:47.441478014+00:00",
+ "matches": {
+  "stored_U1": 53,
+  "fresh_listing": 53,
+  "both": 53,
+  "only_stored": [],
+  "only_fresh": []
+ },
+ "match_facts": {
+  "start": {
+   "identical": 53,
+   "different": 0
+  },
+  "end": {
+   "identical": 53,
+   "different": 0
+  },
+  "volume": {
+   "identical": 53,
+   "different": 0
+  },
+  "fee_rate": {
+   "identical": 53,
+   "different": 0
+  },
+  "delay": {
+   "identical": 53,
+   "different": 0
+  },
+  "res0": {
+   "identical": 53,
+   "different": 0
+  },
+  "series": {
+   "identical": 53,
+   "different": 0
+  },
+  "league": {
+   "identical": 53,
+   "different": 0
+  },
+  "title": {
+   "identical": 53,
+   "different": 0
+  },
+  "slug": {
+   "identical": 53,
+   "different": 0
+  }
+ },
+ "tapes": {
+  "tapes_present": 53,
+  "tapes_missing": [],
+  "tapes_at_data_api_offset_cap (>= 10,000 fills)": []
+ },
+ "inplay_prints": {
+  "rows_fresh": 32172,
+  "rows_stored": 32172,
+  "matches_fresh": 51,
+  "matches_stored": 51,
+  "matches_identical": 51,
+  "matches_different": []
+ },
+ "jumps": {
+  "jumps_fresh": 1099,
+  "jumps_stored": 1099,
+  "jumps_fresh_delay1": 1099,
+  "columns": {
+   "onset_ts": true,
+   "detect_ts": true,
+   "dir": true,
+   "size": true,
+   "ref": true,
+   "ref_short": true,
+   "post30": true,
+   "volume": true,
+   "fee_rate": true,
+   "delay": true,
+   "res0": true,
+   "start": true,
+   "men": true,
+   "region": true
+  },
+  "all_columns_identical": true
+ },
+ "prestart_usd": {
+  "identical": 53,
+  "different": 0,
+  "max_abs_diff_usd": 0.0
+ },
+ "coverage_set": {
+  "fresh": [
+   "0x0deddbc2442cb022ca4e6094f177f483886b2c65a61c42c773834a763d79b25d",
+   "0x104da8504024d06a2c9a73d1b3587a685304d659dc91cae6126e4c1a42ea30f0",
+   "0x49ce3b63ffa11a504fabd95fd18740bf292d377f546e4f70967e090209dd4baa",
+   "0x5c6b053b29d7b88810ef830daea181cabafc3edb833f33b13aa1d2cc6365e7de",
+   "0x8a336e52ae9c139ac34d6817b8dab56e871e6da3e43c0ab322be0f0a2907d02c",
+   "0x90dd7c20e7becd75842b415eb52981153a5c50643399255ec22453a83365964b",
+   "0xc0f5d297c2b66ee357aa1062f6007e402f1a99d0a7200cfdd1317862a33a466e",
+   "0xd4d5c70779cb2e5907aeeae0fecdba7017ad807b87e1d3d5ae5e12cd1f07c6cd",
+   "0xf727b198e1039d28ed4f0b10964c25ce7820945116985f83b25a2800e9c4b2cb",
+   "0xfd84f2c317ca0b2d49c312d46024607b0cd41d8be87482b63a2f258cdc5c4e5c"
+  ],
+  "stored": [
+   "0x0deddbc2442cb022ca4e6094f177f483886b2c65a61c42c773834a763d79b25d",
+   "0x104da8504024d06a2c9a73d1b3587a685304d659dc91cae6126e4c1a42ea30f0",
+   "0x49ce3b63ffa11a504fabd95fd18740bf292d377f546e4f70967e090209dd4baa",
+   "0x5c6b053b29d7b88810ef830daea181cabafc3edb833f33b13aa1d2cc6365e7de",
+   "0x8a336e52ae9c139ac34d6817b8dab56e871e6da3e43c0ab322be0f0a2907d02c",
+   "0x90dd7c20e7becd75842b415eb52981153a5c50643399255ec22453a83365964b",
+   "0xc0f5d297c2b66ee357aa1062f6007e402f1a99d0a7200cfdd1317862a33a466e",
+   "0xd4d5c70779cb2e5907aeeae0fecdba7017ad807b87e1d3d5ae5e12cd1f07c6cd",
+   "0xf727b198e1039d28ed4f0b10964c25ce7820945116985f83b25a2800e9c4b2cb",
+   "0xfd84f2c317ca0b2d49c312d46024607b0cd41d8be87482b63a2f258cdc5c4e5c"
+  ],
+  "identical": true
+ },
+ "day_pnl_seed1000": {
+  "rows_mapped_to_stored_oos_rows": 1099,
+  "rows_fresh": 1099,
+  "S1_V0_seed1000_vs_stored_burned_oos_trades": {
+   "trades_fresh": 11,
+   "trades_stored": 11,
+   "pnl_usd_fresh": -29.281426826801187,
+   "pnl_usd_stored": -29.281426826801187,
+   "row_for_row_identical": true
+  },
+  "S1_pre_V0.5_seed1000": {
+   "trades_stored_tables": 11,
+   "trades_fresh_tables": 11,
+   "pnl_usd_stored_tables": -20.433942352966973,
+   "pnl_usd_fresh_tables": -20.433942352966973,
+   "row_for_row_identical": true
+  },
+  "S1_cal_V0.5_seed1000": {
+   "trades_stored_tables": 85,
+   "trades_fresh_tables": 85,
+   "pnl_usd_stored_tables": 87.6940970449946,
+   "pnl_usd_fresh_tables": 87.6940970449946,
+   "row_for_row_identical": true
+  },
+  "S2_pre_V0.5_seed1000": {
+   "trades_stored_tables": 10,
+   "trades_fresh_tables": 10,
+   "pnl_usd_stored_tables": -22.502732863990403,
+   "pnl_usd_fresh_tables": -22.502732863990403,
+   "row_for_row_identical": true
+  },
+  "S2_cal_V0.5_seed1000": {
+   "trades_stored_tables": 80,
+   "trades_fresh_tables": 80,
+   "pnl_usd_stored_tables": 59.5028048473323,
+   "pnl_usd_fresh_tables": 59.5028048473323,
+   "row_for_row_identical": true
+  }
+ },
+ "agreement": true,
+ "seconds": 13.5,
+ "G1_code_reproduction": {
+  "S2_vs_latency_sweep_seeds_csv": {
+   "IS|pre|V0.5": {
+    "pnl_per_day_usd": 4.6849871537801846e-07,
+    "per_share_c": 4.5679848936774903e-07
+   },
+   "IS|pre|V1": {
+    "pnl_per_day_usd": 4.804037168071318e-07,
+    "per_share_c": 4.964552934860755e-07
+   },
+   "IS|pre|V3": {
+    "pnl_per_day_usd": 4.7089484667139914e-07,
+    "per_share_c": 4.738918204516551e-07
+   },
+   "IS|cal|V0.5": {
+    "pnl_per_day_usd": 4.6673798692609125e-07,
+    "per_share_c": 4.6989409785425096e-07
+   },
+   "IS|cal|V1": {
+    "pnl_per_day_usd": 4.911880182589812e-07,
+    "per_share_c": 4.981231125356089e-07
+   },
+   "IS|cal|V3": {
+    "pnl_per_day_usd": 4.604869530133726e-07,
+    "per_share_c": 4.6679501974900006e-07
+   },
+   "burned_OOS|pre|V0.5": {
+    "pnl_per_day_usd": 4.4929764086987234e-07,
+    "per_share_c": 4.821362807883034e-07
+   },
+   "burned_OOS|pre|V1": {
+    "pnl_per_day_usd": 4.729520792778885e-07,
+    "per_share_c": 4.873030752250429e-07
+   },
+   "burned_OOS|pre|V3": {
+    "pnl_per_day_usd": 4.953201724333667e-07,
+    "per_share_c": 4.2765697871871566e-07
+   },
+   "burned_OOS|cal|V0.5": {
+    "pnl_per_day_usd": 4.755045708293437e-07,
+    "per_share_c": 4.951570261590987e-07
+   },
+   "burned_OOS|cal|V1": {
+    "pnl_per_day_usd": 4.45163870210763e-07,
+    "per_share_c": 4.778759262746846e-07
+   },
+   "burned_OOS|cal|V3": {
+    "pnl_per_day_usd": 4.339375117012878e-07,
+    "per_share_c": 4.5435290507711557e-07
+   }
+  },
+  "max_abs_diff": {
+   "pnl_per_day_usd": 4.953201724333667e-07,
+   "per_share_c": 4.981231125356089e-07,
+   "per_share_ci95_c_lo": 4.9299999999974364e-05
+  },
+  "passed_S2": true,
+  "S1_V0_vs_published_frozen_v3": {
+   "IS": {
+    "got": {
+     "per_share_c": 1.3440562343892628,
+     "pnl_per_day_usd": 49.19866059284114
+    },
+    "published": {
+     "per_share_c": 1.3441,
+     "pnl_per_day_usd": 49.1987
+    },
+    "file": "results/tier0_v3/is/results.json",
+    "reproduced": true
+   },
+   "burned_OOS": {
+    "got": {
+     "per_share_c": 0.6793207198109282,
+     "pnl_per_day_usd": 24.941160019864082
+    },
+    "published": {
+     "per_share_c": 0.6793,
+     "pnl_per_day_usd": 24.9412
+    },
+    "file": "results/tier0_v3/burned_oos/results.json",
+    "reproduced": true
+   }
+  },
+  "passed_S1": true,
+  "passed": true,
+  "note": "src/tier0.py differs from the v3 PREREG pin (commit 6ecc04d added capacity-study options whose defaults are the committed model); this gate checks the current code reproduces the stored runs."
+ }
+}
