@@ -1,0 +1,173 @@
+{
+ "label": "COUNTERFACTUAL WITH ASSUMED DATA: real Polymarket prices, fills, match results, taker fees and venue delays; SIMULATED camera/CV calls at an assumed licensed-feed delay V (no feed purchased, no video watched, no orders placed). Trades are the historical >= 4c jump set, selected on outcomes, not ex ante.",
+ "strategy": "S2: paper Table-2 CV trader (tier-0 revised primary, T.CORRECTED; takes stale depth to the realised new mid)",
+ "coverage": "cov10 (10 matches a day)",
+ "readings": {
+  "pre": "pre-registered stamp lag 2.0 s",
+  "cal": "post hoc stamp lag 3.142 s"
+ },
+ "sources": [
+  "results/fresh_holdout/results.json",
+  "results/fresh_holdout/seed_daily_paths.csv",
+  "results/fresh_holdout/showcase_price_1s.csv",
+  "results/fresh_holdout/showcase_ledger.csv",
+  "results/fresh_holdout/showcase_trades_all_seeds.csv"
+ ],
+ "cum_pnl_end_usd_20_seed_mean": {
+  "pre|V0.5": {
+   "IS_end": 2928.1967751,
+   "burned_OOS_end": 3534.7722787499997,
+   "fresh_end": -40.991674800000006
+  },
+  "cal|V0.5": {
+   "IS_end": 13725.653582850002,
+   "burned_OOS_end": 16979.59180745,
+   "fresh_end": 101.5136088
+  },
+  "cal|V1": {
+   "IS_end": 9717.6979051,
+   "burned_OOS_end": 11981.414298399997,
+   "fresh_end": 40.395615349999986
+  },
+  "cal|V3": {
+   "IS_end": -609.47989385,
+   "burned_OOS_end": -1064.83877375,
+   "fresh_end": -56.595760150000004
+  }
+ },
+ "burned_oos": {
+  "pre": {
+   "pnl_per_day_usd": 15.1644,
+   "sharpe_ann": 2.1411,
+   "pnl_per_day_ci95_usd_lo": -16.5515,
+   "pnl_per_day_ci95_usd_hi": 46.5692,
+   "n_matches": 228.65
+  },
+  "cal": {
+   "pnl_per_day_usd": 81.3485,
+   "sharpe_ann": 12.1576,
+   "pnl_per_day_ci95_usd_lo": 46.9393,
+   "pnl_per_day_ci95_usd_hi": 116.3949,
+   "n_matches": 273.5
+  }
+ },
+ "fresh": {
+  "pre|V0.5": {
+   "pnl_per_day_usd": -20.4958,
+   "pnl_per_day_ci95_usd": [
+    -96.447,
+    56.7559
+   ],
+   "n_matches_traded_seed_mean": 7.05,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "pre|V1": {
+   "pnl_per_day_usd": -28.1406,
+   "pnl_per_day_ci95_usd": [
+    -102.7116,
+    48.6065
+   ],
+   "n_matches_traded_seed_mean": 6.45,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "pre|V3": {
+   "pnl_per_day_usd": -31.3599,
+   "pnl_per_day_ci95_usd": [
+    -99.8807,
+    38.9981
+   ],
+   "n_matches_traded_seed_mean": 5.6,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "S1|pre|V0.5": {
+   "pnl_per_day_usd": -23.5006
+  },
+  "cal|V0.5": {
+   "pnl_per_day_usd": 50.7568,
+   "pnl_per_day_ci95_usd": [
+    -37.6873,
+    141.1414
+   ],
+   "n_matches_traded_seed_mean": 10.2,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "cal|V1": {
+   "pnl_per_day_usd": 20.1978,
+   "pnl_per_day_ci95_usd": [
+    -66.5597,
+    105.4339
+   ],
+   "n_matches_traded_seed_mean": 8.9,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "cal|V3": {
+   "pnl_per_day_usd": -28.2979,
+   "pnl_per_day_ci95_usd": [
+    -100.5909,
+    46.9389
+   ],
+   "n_matches_traded_seed_mean": 5.8,
+   "sharpe": "not meaningful (2 days < 10)",
+   "anecdotal": true
+  },
+  "S1|cal|V0.5": {
+   "pnl_per_day_usd": 18.2671
+  },
+  "covered_matches": 16,
+  "days": [
+   "2026-10-03",
+   "2026-10-04"
+  ],
+  "window": {
+   "start_exclusive_utc": "2026-10-03T07:10:00+00:00",
+   "end_fetch_time_utc": "2026-10-04T05:44:23+00:00"
+  }
+ },
+ "showcase": {
+  "title": "Adana: Antonia Ruzic vs Leolia Jeanjean",
+  "league": "Adana",
+  "series": "wta",
+  "start_utc": "2026-10-03 15:15:00+00:00",
+  "winner": "Leolia Jeanjean",
+  "inplay_usd": 189640.23896596383,
+  "rule": "eligible covered (primary) 1 s-delay window match with the highest in-play traded $ (PREREG_FRESH.md section 5; not chosen on P&L)",
+  "simulated_calls_ledger_seed": 33,
+  "ledger_seed": 4000,
+  "ledger_seed_filled": {
+   "S1|pre|V0.5": 0,
+   "S1|cal|V0.5": 0,
+   "S2|pre|V0.5": 0,
+   "S2|cal|V0.5": 0
+  },
+  "fills_all_20_seeds": {
+   "pre": 40,
+   "cal": 128
+  },
+  "seeds_with_fills": {
+   "pre": 15,
+   "cal": 15
+  },
+  "pnl_20_seed_mean_usd": {
+   "pre": {
+    "mean_usd": -6.42,
+    "seed_p10_usd": -82.21,
+    "seed_p90_usd": 53.27,
+    "mean_trades": 2.0,
+    "seeds_positive": 6
+   },
+   "cal": {
+    "mean_usd": 12.38,
+    "seed_p10_usd": -50.97,
+    "seed_p90_usd": 91.87,
+    "mean_trades": 6.4,
+    "seeds_positive": 7
+   }
+  },
+  "pnl_path": "20-seed mean, marked to the 1 s VWAP price (forward-filled), resolution payout at the end"
+ }
+}
