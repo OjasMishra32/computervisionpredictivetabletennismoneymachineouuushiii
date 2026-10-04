@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-10-04T05:41:34Z",
+ "generated_utc": "2026-10-04T05:42:50Z",
  "script": "scripts/edge_persistence.py",
- "git_head": "80e621f",
+ "git_head": "f2c1572",
  "labels": {
   "edge": "net 30 s markout per print, c/share, after each match's taker fee (published H6 measure)",
   "gross": "same, before the fee",
@@ -2922,6 +2922,8 @@
   },
   "is_may_aug_mean_pnl30_usd_per_month": 41187.0,
   "is_may_aug_cv_pnl30": 0.201,
+  "per_wallet_jan_may_mean_usd": 1632.0,
+  "per_wallet_aug_is_usd": 387.0,
   "kappa_jun_aug_is": 2.196,
   "kappa_range_jan_aug_is": [
    0.99,
@@ -3208,7 +3210,7 @@
   "what_the_decline_is": "The net edge fell 0.16c a month (WLS, 11 calendar months, CI -0.25 to -0.06). Over the same months the fee rose +0.13c a month while the gross edge moved -0.02c a month (CI -0.12 to +0.07; IS-only exact -0.04, CI -0.19 to +0.11). From Dec-Apr to Jun-Aug the net edge fell 0.85c: 0.54c is the fee, 0.40c is weaker wallets joining, and the early wallets' own gross edge moved +0.08c.",
   "venue_rules": "Within May 2026, the same wallets earned +0.14c (CI -0.04 to +0.32) more on 1 s-hold matches than on 3 s ones, so the shorter hold did not hurt them. Within Jul 2026, 5%-fee matches paid -0.29c (CI -0.47 to -0.11) net with the same gross (difference +0.11c, CI -0.06 to +0.28): the fee is passed straight through. The best single break in the net series is May 2026; a step there (AICc -24.3) fits at least as well as a straight line (-21.1) and leaves a trend of -0.05c a month (CI -0.20 to +0.09).",
   "why_it_can_persist": "Someone always sees the point before the book reprices (court, broadcast and data-feed delays are physical) and the 1 s hold only narrows that window. Wallets already fast by Apr 2026 kept their gross edge (+0.07c a month, CI -0.10 to +0.23) while the field grew from 4 to 131 wallets; the first four slipped 0.06c a month (CI -0.17 to +0.06, not significant).",
-  "what_kills_it": "(1) A higher fee: the fast tier's gross edge covers a taker fee of up to 8.4% (today 5%). (2) A longer taker hold or makers on a faster official feed, which would remove the stale quotes. (3) More entrants: the monthly pool grew with wallets at elasticity 0.53 (CI 0.21 to 0.85), so each wallet's share fell at -0.47 (CI -0.79 to -0.15) per 1% more wallets, from about $1.7k a month in Jan-May 2026 to about $0.4k in Aug.",
+  "what_kills_it": "(1) A higher fee: the fast tier's gross edge covers a taker fee of up to 8.4% (today 5%). (2) A longer taker hold or makers on a faster official feed, which would remove the stale quotes. (3) More entrants: the monthly pool grew with wallets at elasticity 0.53 (CI 0.21 to 0.85), so each wallet's share fell at -0.47 (CI -0.79 to -0.15) per 1% more wallets, from $1,632 a month (Jan-May 2026 mean) to $387 in Aug (IS part).",
   "for_an_entrant": "The number that matters is the pool and one wallet's share of it, not the average edge per share. The pool has been flat since May 2026 while wallets kept arriving.",
   "projection": "A straight line says zero in 3.3 months after Sep 2026 (Fieller CI 0.6 to 12.8); a constant % decline says 12% less a month (half-life 5.2 months, CI 3.4 to 11.1); the step model says flat at 0.73c. The data cannot tell these apart, and only the line reaches zero."
  },
@@ -3325,6 +3327,22 @@
    "value": "0.53",
    "source": "results/economics/persistence.json::profit.total_elasticity_wrt_wallets.elasticity.coef"
   },
+  "pers.pool.elast.ci": {
+   "value": "[0.21, 0.85]",
+   "source": "results/economics/persistence.json::profit.total_elasticity_wrt_wallets.elasticity.ci95"
+  },
+  "pers.pool.perwallet.janmay": {
+   "value": "$1,632",
+   "source": "results/economics/persistence.json::profit.per_wallet_jan_may_mean_usd"
+  },
+  "pers.pool.perwallet.aug": {
+   "value": "$387",
+   "source": "results/economics/persistence.json::profit.per_wallet_aug_is_usd"
+  },
+  "pers.pool.perwallet.elast.ci": {
+   "value": "[\u22120.79, \u22120.15]",
+   "source": "results/economics/persistence.json::profit.per_wallet_elasticity_wrt_wallets.elasticity.ci95"
+  },
   "pers.pool.perwallet.elast": {
    "value": "\u22120.47",
    "source": "results/economics/persistence.json::profit.per_wallet_elasticity_wrt_wallets.elasticity.coef"
@@ -3350,5 +3368,5 @@
    "source": "results/economics/persistence.json::aug_overlap.oos_print_weighted_net30_c_oos_prints_only_derived"
   }
  },
- "runtime_s": 17.1
+ "runtime_s": 16.2
 }

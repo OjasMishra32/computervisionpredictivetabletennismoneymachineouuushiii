@@ -567,6 +567,9 @@ def main() -> None:
     post = ism_df[ism_df.month.isin(["2026-05", "2026-06", "2026-07", "2026-08"])]
     profit["is_may_aug_mean_pnl30_usd_per_month"] = r(post.pnl30_usd.mean(), 0)
     profit["is_may_aug_cv_pnl30"] = r(post.pnl30_usd.std() / post.pnl30_usd.mean(), 3)
+    jm = ism_df[ism_df.month.isin(["2026-01", "2026-02", "2026-03", "2026-04", "2026-05"])]
+    profit["per_wallet_jan_may_mean_usd"] = r(jm.pnl30_per_wallet.mean(), 0)
+    profit["per_wallet_aug_is_usd"] = r(ism_df.set_index("month").pnl30_per_wallet["2026-08"], 0)
     k_recent = float(ism_df[ism_df.month.isin(B_MONTHS)].pnl30_usd.sum() / ism_df[ism_df.month.isin(B_MONTHS)].proxy_usd.sum())
     profit["kappa_jun_aug_is"] = r(k_recent, 3)
     profit["kappa_range_jan_aug_is"] = r([ism_df[ism_df.month >= "2026-01"].kappa.min(),
@@ -699,7 +702,8 @@ def main() -> None:
                           f"stale quotes. (3) More entrants: the monthly pool grew with wallets at elasticity "
                           f"{toe['coef']:.2f} (CI {toe['ci95'][0]:.2f} to {toe['ci95'][1]:.2f}), so each wallet's share "
                           f"fell at {pwe['coef']:.2f} (CI {pwe['ci95'][0]:.2f} to {pwe['ci95'][1]:.2f}) per 1% more "
-                          f"wallets, from about $1.7k a month in Jan-May 2026 to about $0.4k in Aug."),
+                          f"wallets, from ${profit['per_wallet_jan_may_mean_usd']:,.0f} a month (Jan-May 2026 mean) to "
+                          f"${profit['per_wallet_aug_is_usd']:,.0f} in Aug (IS part)."),
         "for_an_entrant": "The number that matters is the pool and one wallet's share of it, not the average edge per "
                           "share. The pool has been flat since May 2026 while wallets kept arriving.",
         "projection": (f"A straight line says zero in {pz['months_to_zero']:.1f} months after Sep 2026 (Fieller CI "
@@ -749,6 +753,11 @@ def main() -> None:
         "pers.pool.mayaug": (f"${profit['is_may_aug_mean_pnl30_usd_per_month'] / 1e3:.0f}k",
                              "::profit.is_may_aug_mean_pnl30_usd_per_month"),
         "pers.pool.elast": (K(toe["coef"]), "::profit.total_elasticity_wrt_wallets.elasticity.coef"),
+        "pers.pool.elast.ci": (CI(toe["ci95"]), "::profit.total_elasticity_wrt_wallets.elasticity.ci95"),
+        "pers.pool.perwallet.janmay": (f"${profit['per_wallet_jan_may_mean_usd']:,.0f}",
+                                       "::profit.per_wallet_jan_may_mean_usd"),
+        "pers.pool.perwallet.aug": (f"${profit['per_wallet_aug_is_usd']:,.0f}", "::profit.per_wallet_aug_is_usd"),
+        "pers.pool.perwallet.elast.ci": (CI(pwe["ci95"]), "::profit.per_wallet_elasticity_wrt_wallets.elasticity.ci95"),
         "pers.pool.perwallet.elast": (K(pwe["coef"]), "::profit.per_wallet_elasticity_wrt_wallets.elasticity.coef"),
         "pers.delay.may": (K(nat_d["net30"]["b_minus_a_c"], sign=True),
                            "::regime.natural_experiments.delay_3s_to_1s_may2026.net30.b_minus_a_c"),
