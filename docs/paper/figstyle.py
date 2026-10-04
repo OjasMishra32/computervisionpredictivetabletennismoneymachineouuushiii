@@ -8,7 +8,9 @@ House style, after the research notes of AQR, Man AHL and J.P. Morgan:
   pre-registered reading; mid grey #8C8C8C = others / everyone else; light grey shading = OOS periods and source
   bands; red only for losses if a panel needs it. No hatching.
 * Lines 1.4-1.8 pt, small markers, thin CI bands or whiskers, light horizontal gridlines (#E6E6E6) only, no top or
-  right spines, zero line in light grey.
+  right spines, zero line in light grey. Reference verticals (0.5 / 1 / 3 s) are grey dotted 0.6 pt with muted
+  labels, so they never read as a data series. Seed / CI ranges that would overlap are drawn as thin whiskers at a
+  few x values, never as overlapping translucent fills (two fills mix into brown).
 * IS solid, OOS dashed, everywhere.
 * Direct labels at line ends (``direct_label``), de-overlapped in display space; a legend only when that fails.
 * Each panel: bold letter top-left plus a short sentence-case takeaway title (``panel``). Captions stay in LaTeX.
@@ -68,6 +70,7 @@ THIN = " "
 NDASH = "–"
 TIMES = "×"
 CENT = "¢"
+RSQUO = "’"
 
 IS_LS = "-"
 OOS_LS = (0, (4.0, 2.2))
@@ -218,14 +221,18 @@ def oos_shade(ax, start, end=None, label: str | None = "OOS", y: float = 1.0, co
                     zorder=6, annotation_clip=False)
 
 
-def vref(ax, x: float, color: str = INK, ls=DOT_LS, lw: float = LW_REF, zorder: float = 2.5) -> None:
-    """Dotted vertical reference line."""
+LW_VREF = 0.6     # reference verticals (0.5 / 1 / 3 s, requirements): grey, thinner than any data line
+REF = GREY        # their colour: never INK, which is reserved for v2 / the pre-registered reading
+
+
+def vref(ax, x: float, color: str = REF, ls=DOT_LS, lw: float = LW_VREF, zorder: float = 2.5) -> None:
+    """Dotted vertical reference line (grey, 0.6 pt)."""
     ax.axvline(x, color=color, ls=ls, lw=lw, zorder=zorder)
 
 
-def vref_labelled(ax, refs, color: str = INK, lw: float = LW_REF, tier_pt: float = 11.0, pad_pt: float = 1.5,
-                  fontsize: float = FS_SMALL) -> None:
-    """Dotted verticals with their labels above the frame, every label LEFT-aligned at its own line.
+def vref_labelled(ax, refs, color: str = REF, lw: float = LW_VREF, tier_pt: float = 11.0, pad_pt: float = 1.5,
+                  fontsize: float = FS_SMALL, label_color: str = MUTED) -> None:
+    """Dotted grey verticals with muted labels above the frame, every label LEFT-aligned at its own line.
 
     ``refs``: iterable of (x, label, tier). Tier 1 sits just above the frame, tier 2 one line higher; each line is
     continued (dotted, outside the frame) up to its own label's baseline, so a label that runs across another
@@ -239,7 +246,7 @@ def vref_labelled(ax, refs, color: str = INK, lw: float = LW_REF, tier_pt: float
         top = 1.0 + (dy_pt + 0.35 * fontsize) / 72.0 / h_in
         ax.plot([x, x], [1.0, top], transform=tr, color=color, ls=DOT_LS, lw=lw, clip_on=False, zorder=2.5)
         ax.annotate(lab, xy=(x, 1.0), xycoords=tr, xytext=(2.0, dy_pt), textcoords="offset points", ha="left",
-                    va="bottom", fontsize=fontsize, color=color, annotation_clip=False)
+                    va="bottom", fontsize=fontsize, color=label_color, annotation_clip=False)
 
 
 def _fmt_tick(v, _pos=None) -> str:
