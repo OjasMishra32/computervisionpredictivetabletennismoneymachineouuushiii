@@ -136,7 +136,7 @@ def main() -> int:
         assert abs(cell["seed_mean"]["pnl_per_day_usd"] - pub["usd_per_day"]) < 0.0051, (key, pub["usd_per_day"])
         assert abs(cell["seed_mean"]["sharpe_ann"] - pub["sharpe_ann"]) < 0.0051, (key, pub["sharpe_ann"])
     out = {"generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-           "script": "scripts/cv_cost_turnover.py", "label": LABEL,
+           "script": "scripts/cv_cost_turnover.py", "label": LABEL, "trade_set": T.TRADE_SET_LABEL["jumps"],
            "conventions": {"capital": "3 x peak dollars locked (src/tier0.py CAPITAL_MULT, LOCK_S 4 h)",
                            "statistics": "per seed, then the mean over 20 seeds (the paper's CV convention); ratio_of_seed_means divides seed-mean dollars by seed-mean capital (the paper's table uses these, so a cell's return has the sign of its mean $ a day)",
                            "fees_x2": "P&L minus the taker fees once more; the fill price already walks the measured stale book, so there is no separate spread charge",

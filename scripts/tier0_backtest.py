@@ -479,7 +479,8 @@ def main():
     with open(ROOT / "results/oos_peeks.log", "a") as fh:
         fh.write(f"{pd.Timestamp.now(tz='UTC').isoformat()} tier0 counterfactual (verifier corrections) evaluated "
                  f"on burned OOS (non-blind, labelled)\n")
-    res = {"label": T.ASSUMED, "prereg": "research/v2/tier0/PREREG.md", "deviations": "research/v2/tier0/DEVIATIONS.md",
+    res = {"label": T.ASSUMED, "trade_set": T.TRADE_SET_LABEL["jumps"],
+           "prereg": "research/v2/tier0/PREREG.md", "deviations": "research/v2/tier0/DEVIATIONS.md",
            "never_claim": "No live ATP/WTA data was bought or used. Write: we simulate a trader that has a "
                           "licensed feed and a courtside camera; we did not buy them.",
            "headline_scenario": {k: (v if not isinstance(v, float) or np.isfinite(v) else str(v))

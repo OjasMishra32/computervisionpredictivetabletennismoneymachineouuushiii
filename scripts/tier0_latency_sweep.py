@@ -650,7 +650,7 @@ def write_outputs(S: pd.DataFrame, meta: dict) -> dict:
         return out
 
     res = {
-        "label": LABEL, "never_claim": NEVER,
+        "label": LABEL, "trade_set": T.TRADE_SET_LABEL["jumps"], "never_claim": NEVER,
         "what": "Revised primary tier-0 counterfactual (src/tier0.py CORRECTED) with the courtside camera replaced "
                 "by realistic information sources: video + our CV delayed by V, or the official point feed with no "
                 "CV. Nothing fitted or chosen; burned OOS is not blind.",
