@@ -28,10 +28,14 @@ trail by tens of seconds. That makes it a natural lab for pricing speed.
   earn {{ft.c.is}}¢ / {{ft.c.oos.only}}¢ a share after fees (in sample / held out, OOS prints only) and are positive in
   {{ft.months.is}} in-sample and {{ft.months.oos}} out-of-sample months. Other takers lose, and copying the same trades
   3 s later loses.
-- **Tests what we could execute, net of costs: it loses.** A copier filled after the venue's hold and the
-  {{copier.lag}} s block lag makes {{copier.is.usd}} / {{copier.oos.usd}} a day ({{copier.is.c}}¢ / {{copier.oos.c}}¢ a
-  share, in sample / held out), and a replay on {{rp.matches}} live-recorded books calling every point makes
-  {{rp.v05l2.c}}¢ a share at a 0.5 s feed.
+- **Tests what we could execute, net of costs: it loses.** A copier acting only after the detection second, the
+  venue's hold and the {{copier.lag}} s block lag makes {{copier.is.usd}} / {{copier.oos.usd}} a day ({{copier.is.c}}¢ /
+  {{copier.oos.c}}¢ a share, in sample / held out); a causal camera policy trading every point from the classifier's
+  measured call statistics, at an assumed licensed 0.5 s feed, makes {{cvx.is.v05.usd}} / {{cvx.oos.v05.usd}} a day
+  (simulated, upper-bound fills; positive only at the post hoc stamp lag: {{cvx.ph.is.v05.usd}} / {{cvx.ph.oos.v05.usd}});
+  and a replay on {{rp.matches}} live-recorded books calling every point makes {{rp.v05l2.c}}¢ a share at a 0.5 s feed.
+  Our one test with rules fixed in advance holds the last 20% of matches, {{univ.oos_time}} of the calendar, so no
+  untouched test meets the organizers' by-time out-of-sample rule.
 - **Benchmark: a frozen book, v2,** measured at the fast tier's own fills (the opportunity at their speed, not our
   execution; {{decay.sameblock.share}} of its profit is in trades stamped in the same block as the score move). In sample: Sharpe {{v2.is.sr}} {{v2.is.sr_ci}}, {{v2.is.c}}¢ a share, max drawdown {{v2.is.dd}},
   deflated Sharpe {{v2.is.dsr}}. On the held-out window, non-blind for v2 (v2 was designed after v1

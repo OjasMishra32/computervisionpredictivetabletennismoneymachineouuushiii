@@ -1,15 +1,15 @@
 {
  "schema": "courtside.paper.committed_artifacts/1",
- "generated_utc": "2026-10-04T08:58:40+00:00",
- "git_head": "906e849708bbc2f1e09402369cbd307be4337238",
- "numbers_sha256": "02f97f56b3b8f2356264c40850d67bc1a5120f4350cfc7389b4e99b206d6745f",
+ "generated_utc": "2026-10-04T11:16:26+00:00",
+ "git_head": "3c455a547a3aa17de4bc10f76dde44e6edff708a",
+ "numbers_sha256": "b94f7abcf66444906720e120c9c9919aca547efb0874802b43d8aba01f3543b1",
  "summary": {
-  "paper_keys": 1040,
-  "keys_citing_a_recomputed_file": 411,
-  "keys_citing_only_committed_artifacts": 569,
-  "recomputed_files": 21,
-  "committed_artifacts": 53,
-  "documents_and_code": 11,
+  "paper_keys": 1258,
+  "keys_citing_a_recomputed_file": 613,
+  "keys_citing_only_committed_artifacts": 587,
+  "recomputed_files": 23,
+  "committed_artifacts": 55,
+  "documents_and_code": 10,
   "cited_as_absent": 1
  },
  "note": "A committed artifact is the authors' output, checked here only by sha256. scripts/repro/artifacts.py check fails a reproduction if one changed without its producer running, or if a paper source is neither recomputed nor listed.",
@@ -67,7 +67,7 @@
   {
    "path": "results/rigor/psr.json",
    "step": "s06_psr",
-   "n_paper_keys": 20
+   "n_paper_keys": 13
   },
   {
    "path": "results/scenario/fig_firm_05s_numbers.json",
@@ -83,6 +83,11 @@
    "path": "results/summary.json",
    "step": "s01_run_all",
    "n_paper_keys": 24
+  },
+  {
+   "path": "results/tier0/causal_points.json",
+   "step": "s03_cv_causal",
+   "n_paper_keys": 149
   },
   {
    "path": "results/tier0/cost_turnover.json",
@@ -102,7 +107,7 @@
   {
    "path": "results/v2/note_metrics.json",
    "step": "s03_note_metrics",
-   "n_paper_keys": 35
+   "n_paper_keys": 41
   },
   {
    "path": "results/v2/risk/per_match_loss.json",
@@ -118,6 +123,11 @@
    "path": "results/v2/risk/wallet_cap_is.json",
    "step": "s05_wallet_cap_is",
    "n_paper_keys": 1
+  },
+  {
+   "path": "results/v2/strict_causal.json",
+   "step": "s03_v2_strict",
+   "n_paper_keys": 54
   }
  ],
  "committed": [
@@ -480,6 +490,26 @@
    ]
   },
   {
+   "path": "results/external_validation/results.json",
+   "sha256": "43b8cc75ef8d567ee870d53db6180b441b9b166c336bda55d3cbdc09e320547e",
+   "bytes": 30885,
+   "producer": "research/v2/external/x1_test.py",
+   "family": "X1 out-of-universe check of the frozen corrected copier (registry E65)",
+   "why_not_recomputed": "pre-registered and evaluated once by design; needs a fetch of the X1 tapes (outside the declared universe)",
+   "recompute_step": null,
+   "n_paper_keys": 8,
+   "paper_keys": [
+    "x1.c",
+    "x1.ci",
+    "x1.days",
+    "x1.markets",
+    "x1.matches",
+    "x1.n",
+    "x1.underpowered",
+    "x1.verdict"
+   ]
+  },
+  {
    "path": "results/financials/financials.json",
    "sha256": "b40975c0c8205f09effa835d44e6b8873da5832019448e04c1712e2ab290fc84",
    "bytes": 162994,
@@ -643,22 +673,39 @@
   },
   {
    "path": "results/oos_peeks.log",
-   "sha256": "be7b876614e04ac3f6b6f4cbb05d2a39b56edaf91a94a9709a559f9fac070d3f",
-   "bytes": 32259,
+   "sha256": "8befe31214a089db028652512ece31bbc5130d34a6a34078547033986fd2d86a",
+   "bytes": 33878,
    "producer": "append-only log of held-out reads",
    "family": "provenance record",
    "why_not_recomputed": "a record, not a computation; reproduction runs never append to it (results/repro/reads.log instead)",
    "recompute_step": null,
-   "n_paper_keys": 8,
+   "n_paper_keys": 1,
    "paper_keys": [
-    "peeks.audit",
-    "peeks.blind",
-    "peeks.desc",
-    "peeks.live",
-    "peeks.n",
-    "peeks.nonblind",
-    "peeks.other",
     "t0.oos_first"
+   ]
+  },
+  {
+   "path": "results/provenance/experiments.json",
+   "sha256": "1306a0d2ba35bde3435efab99791605c8e72a05b752ebed1fca5f4c166afde74",
+   "bytes": 122644,
+   "producer": "scripts/provenance.py (read log, git history, verified decision trace)",
+   "family": "experiment registry: chronology of held-out reads and decisions",
+   "why_not_recomputed": "a dated record of the work, validated by scripts/provenance.py check --committed; not a computation on market data",
+   "recompute_step": null,
+   "n_paper_keys": 14,
+   "paper_keys": [
+    "reg.e02.prereg",
+    "reg.e02.utc",
+    "reg.n_decisions",
+    "reg.n_decisions.cv",
+    "reg.n_decisions.v2",
+    "reg.n_diag",
+    "reg.n_events",
+    "reg.n_fixes",
+    "reg.n_mech",
+    "reg.n_newpol_oos",
+    "reg.n_prereg",
+    "reg.n_pres"
    ]
   },
   {
@@ -701,13 +748,16 @@
    "family": "replay on recorded live order books",
    "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
    "recompute_step": null,
-   "n_paper_keys": 8,
+   "n_paper_keys": 11,
    "paper_keys": [
     "rp.beat",
     "rp.matches",
     "rp.of",
     "rp.official",
     "rp.replayable",
+    "rp.v05l2.c",
+    "rp.v05l2.ci",
+    "rp.v05l2.usd_mark",
     "rp.v1l2.c",
     "rp.v1l2.ci",
     "rp.v1l2.usd_mark"
@@ -1047,11 +1097,6 @@
  ],
  "documents_and_code": [
   {
-   "path": "DEVIATIONS.md",
-   "n_paper_keys": 1,
-   "pinned_by": "git"
-  },
-  {
    "path": "HYPOTHESIS.md",
    "n_paper_keys": 2,
    "pinned_by": "git"
@@ -1072,8 +1117,8 @@
    "pinned_by": "git"
   },
   {
-   "path": "research/v2/tier0/DEVIATIONS.md",
-   "n_paper_keys": 2,
+   "path": "research/v2/sizing/engine.py",
+   "n_paper_keys": 1,
    "pinned_by": "git"
   },
   {

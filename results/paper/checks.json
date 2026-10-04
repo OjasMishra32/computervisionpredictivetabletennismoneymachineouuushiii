@@ -1,7 +1,7 @@
 {
  "fail": [],
  "main_pages": 5,
- "total_pages": 16,
+ "total_pages": 18,
  "min_font_size_main": null,
  "smallest_span_pt": 11.0,
  "spans_below_11pt": [],
@@ -9,30 +9,85 @@
  "margin_violations": [],
  "float_pages": {
   "Figure 1": 2,
-  "Figure 2": 3,
   "Table 1": 4,
-  "Figure 3": 5
+  "Figure 2": 4,
+  "Figure 3": 5,
+  "Table 2": 5
  },
- "main_tables": 1,
+ "main_tables": 2,
  "main_figures": 3,
  "honesty_hits": [],
- "post_hoc_count_main": 12,
  "offline_label_misses": [],
- "cv_label_count_main": 3,
+ "facts": {
+  "registry_present": true,
+  "registry_summary_sha": "4261f06efbab15307f640e19b7474a7b72c3ada85a1bc3395a2b777f300f35cc",
+  "profit_order_abstract": [
+   [
+    "copier.is.c",
+    "executable"
+   ],
+   [
+    "copier.oos.c",
+    "executable"
+   ],
+   [
+    "copier.is.usd",
+    "executable"
+   ],
+   [
+    "copier.oos.usd",
+    "executable"
+   ],
+   [
+    "cvx.is.v05.usd",
+    "sim_upper_bound"
+   ],
+   [
+    "cvx.oos.v05.usd",
+    "sim_upper_bound"
+   ]
+  ],
+  "profit_order_Table 1": [
+   [
+    "exrow",
+    "executable"
+   ],
+   [
+    "exrow",
+    "executable"
+   ],
+   [
+    "cvxrow",
+    "sim_upper_bound"
+   ],
+   [
+    "cvxrow",
+    "sim_upper_bound"
+   ],
+   [
+    "cvxrow",
+    "sim_upper_bound"
+   ],
+   [
+    "tab.v2.is.usd",
+    "event_study"
+   ]
+  ]
+ },
  "overfull_hbox_pt": [],
  "undefined_refs": [],
  "fonts": [
   "AKHCZK+FiraMath-Regular-Identity-H",
   "BKGTSN+SourceSans3-Regular",
   "BZIVMZ+Oswald-Regular",
+  "CLTXNV+SourceSans3-Regular",
   "DFWDXJ+SourceSans3-Regular",
+  "DKYRSF+SourceSans3-It",
   "DLRVKZ+SourceSans3-Regular",
   "DYXJZU+SourceSans3-It",
   "DZVCOX+SourceSans3-Semibold",
   "EKOQIT+SourceSans3-Regular",
-  "ELXXLP+SourceSans3-Regular",
   "FFSMYN+SourceSans3-Semibold",
-  "FNEHSI+SourceSans3-It",
   "FQYQTM+SourceSans3-Semibold",
   "FUASKG+SourceSans3-Regular",
   "FYRMST+SourceSans3-Regular",
@@ -47,5 +102,11 @@
   "YEUUOC+SourceSans3-It",
   "ZJFJAZ+SourceSans3-Regular"
  ],
- "ok": true
+ "ok": true,
+ "build": {
+  "numbers_sha256": "b94f7abcf66444906720e120c9c9919aca547efb0874802b43d8aba01f3543b1",
+  "pdf_sha256": "163ac6069f1003222226f2535be42c8a881ca085a85c88c9fa979762109ee30e",
+  "registry_sha256": "1306a0d2ba35bde3435efab99791605c8e72a05b752ebed1fca5f4c166afde74",
+  "registry_summary_sha256": "4261f06efbab15307f640e19b7474a7b72c3ada85a1bc3395a2b777f300f35cc"
+ }
 }

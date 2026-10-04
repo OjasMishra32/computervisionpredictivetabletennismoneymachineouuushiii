@@ -56,6 +56,12 @@ FAMILIES: list[tuple[str, str, str, str]] = [
     ("results/lowloss/*", "scripts/lowloss_test.py", "v2-safe (lowloss) frozen evaluation incl. its U2 blind test",
      "pre-registered single run; U2 needs data/expand; not affected by the repair"),
     ("results/maker/*", "scripts/maker_oos.py", "maker v1 blind test", "evaluated once by design (blind)"),
+    ("results/external_validation/*", "research/v2/external/x1_test.py", "X1 out-of-universe check of the frozen corrected "
+     "copier (registry E65)", "pre-registered and evaluated once by design; needs a fetch of the X1 tapes (outside the "
+     "declared universe)"),
+    ("results/provenance/experiments.json", "scripts/provenance.py (read log, git history, verified decision trace)",
+     "experiment registry: chronology of held-out reads and decisions", "a dated record of the work, validated by "
+     "scripts/provenance.py check --committed; not a computation on market data"),
     ("results/tt/*", "scripts/tier0_backtest.py", "table-tennis tier-0 study",
      "separate market (table tennis) crawl, not in the declared universe"),
     ("results/replay/*", "scripts/match_replay.py, match_replay_report.py, match_replay_check.py, "

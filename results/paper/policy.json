@@ -36,7 +36,7 @@
  },
  "lock_s": {
   "value": 14400,
-  "source": "src/v2.py:92"
+  "source": "src/v2.py:163"
  },
  "trailing_edge_half_c": {
   "value": 0.3,
@@ -46,8 +46,8 @@
   "value": 5,
   "source": "docs/RISK.md:82"
  },
- "rule_changes_after_a_look": {
-  "value": 2,
-  "source": "DEVIATIONS.md:165"
+ "match_gross_cap_usd": {
+  "value": 3000,
+  "source": "research/v2/sizing/engine.py:42"
  }
 }

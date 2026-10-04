@@ -1,268 +1,379 @@
 {
  "schema": "courtside.cv.points/1",
- "note": "TEST FIXTURE for tests/test_build_paper_facts.py (shape of results/tier0/causal_points.json, plan section 4.9); invented values, never a result",
- "prereg_commit": "0000000",
- "n_points": 100,
- "n_matches": 10,
- "gap_s": 1.0,
- "seeds": 20,
+ "note": "test fixture (synthetic values)",
+ "primary_cell": "engine|tournament_L2.0|V0.5",
+ "seeds": 2,
+ "readings": {
+  "tournament_L2.0": {},
+  "point_L2.0": {},
+  "tournament_L3.14": {}
+ },
+ "call_model": {
+  "false_calls_per_h": 8.5
+ },
+ "halts": {
+  "false_call_halt": "not simulated",
+  "daily_stop": "simulated"
+ },
  "cells": {
-  "point_L2.0|V0.5|IS": {
-   "usd_day": 10.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": 0.1,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": 1.5,
-   "ret_ann": 12.0,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": 10.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": 0.1,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": 1.5,
-    "ret_ann": 12.0,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V0.5|IS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 0.5,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -10.0,
+    "per_share_c": -0.1,
+    "return_on_capital_ann_pct": -10.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -1.0,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   },
-  "point_L2.0|V0.5|OOS": {
-   "usd_day": 6.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": 0.06,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": 0.8999999999999999,
-   "ret_ann": 7.199999999999999,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": 6.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": 0.06,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": 0.8999999999999999,
-    "ret_ann": 7.199999999999999,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V0.5|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 0.5,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -12.0,
+    "per_share_c": -0.12,
+    "return_on_capital_ann_pct": -12.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -1.2,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   },
-  "point_L2.0|V1|IS": {
-   "usd_day": 5.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": 0.05,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": 0.75,
-   "ret_ann": 6.0,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": 5.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": 0.05,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": 0.75,
-    "ret_ann": 6.0,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V1|IS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 1.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -20.0,
+    "per_share_c": -0.2,
+    "return_on_capital_ann_pct": -20.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.0,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   },
-  "point_L2.0|V1|OOS": {
-   "usd_day": 3.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": 0.03,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": 0.44999999999999996,
-   "ret_ann": 3.5999999999999996,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": 3.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": 0.03,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": 0.44999999999999996,
-    "ret_ann": 3.5999999999999996,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V1|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 1.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -22.0,
+    "per_share_c": -0.22,
+    "return_on_capital_ann_pct": -22.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.2,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   },
-  "point_L2.0|V3|IS": {
-   "usd_day": -10.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": -0.1,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": -1.5,
-   "ret_ann": -12.0,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": -10.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": -0.1,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": -1.5,
-    "ret_ann": -12.0,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V3|IS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 3.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -30.0,
+    "per_share_c": -0.3,
+    "return_on_capital_ann_pct": -30.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -3.0,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   },
-  "point_L2.0|V3|OOS": {
-   "usd_day": -6.0,
-   "usd_day_ci95": [
-    -5.0,
-    25.0
-   ],
-   "c_share": -0.06,
-   "c_share_ci95": [
-    -0.2,
-    0.4
-   ],
-   "sharpe": -0.8999999999999999,
-   "ret_ann": -7.199999999999999,
-   "vol_ann": 9.0,
-   "max_dd_usd": 250.0,
-   "turnover_x": 40.0,
-   "n_trades": 1000,
-   "wrong_share": 0.1,
-   "phantom_per_h": 0.0,
-   "fees_x2_c_share": -0.3,
-   "halted": {
-    "usd_day": -6.0,
-    "usd_day_ci95": [
-     -5.0,
-     25.0
-    ],
-    "c_share": -0.06,
-    "c_share_ci95": [
-     -0.2,
-     0.4
-    ],
-    "sharpe": -0.8999999999999999,
-    "ret_ann": -7.199999999999999,
-    "vol_ann": 9.0,
-    "max_dd_usd": 250.0,
-    "turnover_x": 40.0,
-    "n_trades": 1000,
-    "wrong_share": 0.1,
-    "phantom_per_h": 0.0,
-    "fees_x2_c_share": -0.3,
-    "share_trades_kept": 0.9
+  "engine|tournament_L2.0|V3|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L2.0",
+   "V_s": 3.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -32.0,
+    "per_share_c": -0.32,
+    "return_on_capital_ann_pct": -32.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -3.2,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V0.5|IS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 0.5,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -15.0,
+    "per_share_c": -0.15,
+    "return_on_capital_ann_pct": -15.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -1.5,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V0.5|OOS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 0.5,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -17.0,
+    "per_share_c": -0.17,
+    "return_on_capital_ann_pct": -17.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -1.7,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V1|IS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 1.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -25.0,
+    "per_share_c": -0.25,
+    "return_on_capital_ann_pct": -25.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.5,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V1|OOS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 1.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -27.0,
+    "per_share_c": -0.27,
+    "return_on_capital_ann_pct": -27.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.7,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V3|IS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 3.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -35.0,
+    "per_share_c": -0.35,
+    "return_on_capital_ann_pct": -35.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -3.5,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|point_L2.0|V3|OOS": {
+   "sens": "engine",
+   "reading": "point_L2.0",
+   "V_s": 3.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -37.0,
+    "per_share_c": -0.37,
+    "return_on_capital_ann_pct": -37.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -3.7,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V0.5|IS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 0.5,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": 12.0,
+    "per_share_c": 0.12,
+    "return_on_capital_ann_pct": 12.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": 1.2,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V0.5|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 0.5,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": 6.0,
+    "per_share_c": 0.06,
+    "return_on_capital_ann_pct": 6.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": 0.6,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V1|IS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 1.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": 4.0,
+    "per_share_c": 0.04,
+    "return_on_capital_ann_pct": 4.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": 0.4,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V1|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 1.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -3.0,
+    "per_share_c": -0.03,
+    "return_on_capital_ann_pct": -3.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -0.3,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V3|IS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 3.0,
+   "period": "IS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -20.0,
+    "per_share_c": -0.2,
+    "return_on_capital_ann_pct": -20.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.0,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
+   }
+  },
+  "engine|tournament_L3.14|V3|OOS": {
+   "sens": "engine",
+   "reading": "tournament_L3.14",
+   "V_s": 3.0,
+   "period": "OOS",
+   "n_seeds": 2,
+   "mean": {
+    "pnl_per_day_usd": -25.0,
+    "per_share_c": -0.25,
+    "return_on_capital_ann_pct": -25.0,
+    "vol_ann_pct_capital": 5.0,
+    "sharpe_ann": -2.5,
+    "turnover_x_per_year": 70.0,
+    "per_share_c_fees_x2": -1.0,
+    "pnl_per_day_usd_fees_x2": -50.0,
+    "max_dd_usd": -1500.0,
+    "daily_stop_days_fired": 0.0,
+    "wrong_call_share_of_trades": 0.4
    }
   }
  }

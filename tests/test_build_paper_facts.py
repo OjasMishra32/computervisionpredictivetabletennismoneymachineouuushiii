@@ -187,18 +187,29 @@ def test_an_operated_claim_without_code_evidence_stops_the_build(bp, monkeypatch
 
 # ------------------------------------------------------------------ the executable rows guard their sentences
 def test_executable_rows_stop_the_build_if_the_loss_turns_into_a_profit(bp, monkeypatch):
-    psr = json.loads((ROOT / "results/rigor/psr.json").read_text())
-    rp = json.loads((ROOT / "results/replay/replay.json").read_text())
+    st = json.loads((ROOT / bp.STRICT).read_text())   # the corrected producer (results/v2/strict_causal.json)
+    st["copier"]["central"]["IS"]["c_share"] = 0.5      # a copier that earned would contradict 'loses'
+    st["copier"]["central"]["IS"]["usd_day"] = 5.0
     real_j = bp.J
 
     def fake(rel):
-        return {"results/rigor/psr.json": psr, "results/replay/replay.json": rp}.get(rel) or real_j(rel)
+        return st if rel == bp.STRICT else real_j(rel)
     monkeypatch.setattr(bp, "J", fake)
-    N = _risk_registry(bp)
-    N.add("copier.is.c", "+0.50", 0.5, "test")            # a copier that earned would contradict 'loses'
-    N.add("copier.oos.c", "−1.37", -1.37, "test")
     with pytest.raises(KeyError, match="copier loses"):
-        bp.collect_executable(N, {})
+        bp.collect_executable(_risk_registry(bp), {})
+
+
+def test_copier_rows_come_from_the_corrected_producer(bp):
+    N = _risk_registry(bp)
+    extra: dict = {}
+    bp.collect_executable(N, extra)
+    st = json.loads((ROOT / bp.STRICT).read_text())
+    for per, P in (("is", "IS"), ("oos", "OOS")):
+        assert N.raw(f"copier.{per}.c") == st["copier"]["central"][P]["c_share"]
+        assert N.raw(f"copier.{per}.usd") == st["copier"]["central"][P]["usd_day"]
+        assert N.d[f"copier.{per}.c"]["source"].startswith(bp.STRICT)
+    assert extra["copier_oos_ci_spans0"] == (st["copier"]["central"]["OOS"]["c_share_ci95"][0] < 0
+                                             < st["copier"]["central"]["OOS"]["c_share_ci95"][1])
 
 
 # ------------------------------------------------------------------ the real template renders every new slot
@@ -210,11 +221,13 @@ def test_template_renders_registry_causal_block_and_risk_table(bp, monkeypatch, 
     shutil.copy(ROOT / "docs/paper/note.tex.j2", paper / "note.tex.j2")
     monkeypatch.setattr(bp, "PAPER", paper)
     N, extra = bp.collect()
-    assert extra["causal"]["reading"] == "point_L2.0" and extra["causal"]["halted"]
+    # the printed reading is the producer's own frozen primary cell; the false-call halt is not simulated there
+    assert extra["causal"]["reading"] == "tournament_L2.0" and not extra["causal"]["halted"]
+    assert extra["causal"]["stop_fired"] == 0
     tex = bp.render_tex(N, extra).read_text()
-    assert r"\textbf{Causal selection}" in tex and "stated halts on" in tex
+    assert r"\textbf{Causal selection}" in tex and "stated halts on" not in tex
     assert tex.index(r"\textbf{Executable}") < tex.index(r"\textbf{Causal selection}") < tex.index(r"\textbf{Benchmark: the fast tier")
-    assert r"\label{tab:risk}" in tex and "operated (causal CV)" in tex and "proposed" in tex
+    assert r"\label{tab:risk}" in tex and "causal CV: never fired" in tex and "not run (wrong calls kept)" in tex
     assert "burned" not in tex.lower()
     nums = {"numbers": {k: {"value": v["value"], "raw": v["raw"]} for k, v in N.d.items()},
             "registry": {"summary_sha256": extra["registry"]["summary_sha256"]}}

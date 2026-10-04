@@ -949,7 +949,7 @@ def collect() -> tuple[Registry, dict]:
         ("Factor regression", "Fama--French three factors and momentum",
          f"$\\alpha$ $t = {V('fac.alpha_t')}$; largest factor $|t| = {V('fac.max_t')}$", "no factor exposure"),
         ("Copying the fast tier (v2 and relatives)",),
-        ("v1", "copy the fast tier, dollar sizing; OOS opened once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
+        ("v1", "the fast tier's own fills, dollar sizing (event study, not attainable); OOS opened once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
         ("Sizing", f"{V('sel.sizing.n')} sizing policies, walk-forward",
          f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS; all {V('plat.sizing.pos')} with IS CI above zero (Sharpe {V('plat.sizing.sr')})",
          "adopted (v2); plateau"),
@@ -960,7 +960,7 @@ def collect() -> tuple[Registry, dict]:
         ("Side markets", f"side markets vs the match market ({V('ev.cm.n')} variants)",
          f"leaning maker {V('ev.cm.c')}¢ {V('ev.cm.ci')} (IS); taking stale side quotes: no edge", "IS only; tiny"),
         ("v2", "frozen copy book at the fast tier's own prices",
-         f"Sharpe {V('v2.is.sr')}\\,/\\,{V('v2.oos.sr')}; OOS {V('v2.oos.c')}¢ {V('v2.oos.ci')}", "headline (Table~\\ref{tab:head})"),
+         f"Sharpe {V('v2.is.sr')}\\,/\\,{V('v2.oos.sr')}; OOS {V('v2.oos.c')}¢ {V('v2.oos.ci')}", "benchmark (Table~\\ref{tab:head})"),
         ("v2, worse entry", "enter ½ or 1 tick worse",
          f"IS {V('v2.is.slip05')}\\,/\\,{V('v2.is.slip10')}¢; OOS {V('v2.oos.slip05')}\\,/\\,{V('v2.oos.slip10')}¢", "about zero OOS"),
         ("v2, costs doubled", "fees $\\times$2\\,/\\,all costs $\\times$2",
@@ -974,9 +974,13 @@ def collect() -> tuple[Registry, dict]:
         ("Per-wallet cap", f"{V('wcap.W')} a wallet a day plus retirement, chosen on IS from {V('wcap.n')} variants, pre-registered",
          f"OOS {V('wcap.oos.c')}¢ {V('wcap.oos.ci')}, Sharpe {V('wcap.oos.sr')}, {V('wcap.oos.pnl')} vs {V('wcap.base.oos.pnl')}; max DD {V('wcap.oos.maxdd')} vs {V('wcap.base.oos.maxdd')}; top five {V('wcap.oos.top5')} (was {V('conc.top5.oos')})",
          "pass (OOS, non-blind); a loss limit, backtest only"),
-        ("Copier fill stress", "v2 filled after the venue hold and the measured block lag, on the real tape",
-         f"next same-side print: IS {V('copier.is.c')}¢, OOS {V('copier.oos.c')}¢; optimistic: IS {V('copier.opt.is.c')}¢, OOS {V('copier.opt.oos.c')}¢ {V('copier.opt.oos.ci')}",
+        ("v2, strict timing", "v2 on prints after the detection second, at the fast tier's own fills (observational)",
+         f"IS {V('v2st.is.c')}¢ {V('v2st.is.ci')}; OOS {V('v2st.oos.c')}¢ {V('v2st.oos.ci')}", "CIs span zero"),
+        ("Copier", "those trades filled after the venue hold and the measured block lag, on the real tape",
+         f"next same-side print: IS {V('copier.is.c')}¢ {V('copier.is.ci')}, OOS {V('copier.oos.c')}¢ {V('copier.oos.ci')}; p90 lag: IS {V('copier.harsh.is.c')}¢, OOS {V('copier.harsh.oos.c')}¢; last print before arrival (upper bound): IS {V('copier.opt.is.c')}¢, OOS {V('copier.opt.oos.c')}¢ {V('copier.opt.oos.ci')}",
          "a copier loses"),
+        ("Copier, X1 (blind)", f"frozen copier on {V('x1.markets')} never-fetched markets outside our universe (mostly doubles), pre-registered",
+         f"{V('x1.c')}¢ {V('x1.ci')}; {V('x1.n')} trades, {V('x1.matches')} matches, {V('x1.days')} days", "fail; underpowered"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
         ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
          f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')} ({V('plat.pbo')} by block choice); $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
@@ -1013,18 +1017,21 @@ def collect() -> tuple[Registry, dict]:
          f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:head}"),
         ("CV trader, fees doubled", "each fill pays its fee twice (Table~\\ref{tab:head})",
          f"every OOS cell loses (best {V('cv.fx2.oos.best')} a day); fee {V('cv.fee_bps.range')}\\,bps of notional", "fails OOS"),
-        ("Fresh holdout, 0.5\\,s feed", f"Table-2 trader on {V('fresh.covered')} newer matches, pre-registered at \\texttt{{{V('fresh.prereg.commit')}}}",
-         f"{V('fresh.s2.pre.v05.usd')} (pre-registered) and {V('fresh.s2.cal.v05.usd')} (post hoc) a day; CIs {V('fresh.s2.pre.v05.ci')}, {V('fresh.s2.cal.v05.ci')}",
+        ("Fresh holdout, 0.5\\,s feed", f"CV benchmark (points that later moved) on {V('fresh.covered')} newer matches, pre-registered at \\texttt{{{V('fresh.prereg.commit')}}}",
+         f"{V('fresh.s2.pre.v05.usd')} (pre-registered) and {V('fresh.s2.cal.v05.usd')} (post hoc) a day; CIs {V('fresh.s2.pre.v05.ci')}, {V('fresh.s2.cal.v05.ci')}; at 1\\,s {V('fresh.s2.pre.v1.usd')}\\,/\\,{V('fresh.s2.cal.v1.usd')}, at 3\\,s {V('fresh.s2.pre.v3.usd')}\\,/\\,{V('fresh.s2.cal.v3.usd')}",
          "anecdotal (2 days)"),
         ("Price impact", f"log-size cost from {V('liq.orders.n')} IS taker orders; live-book walk",
          f"v2 1$\\times$ OOS {V('liq.v2.1x.oos.central')} a day (conservative {V('liq.v2.1x.oos.cons')}, CI {V('liq.v2.1x.oos.cons.ci')}); others took {V('liq.phi.took')} of stale depth",
          "capacity holds; P\\&L thinner"),
-        ("CV rule v3", f"rule tuned on {V('var.tier0v3')} IS variants", f"IS {V('t3.is.c')}¢; blind {V('t3.oos.c')}¢", "fail"),
+        ("CV rule v3", f"rule tuned on {V('var.tier0v3')} IS variants", f"IS {V('t3.is.c')}¢; OOS (non-blind) {V('t3.oos.c')}¢", "fail"),
+        ("Causal camera policy", "every point, calls from the classifier's measured statistics; simulated fills (upper bound)",
+         f"0.5\\,s: {V('cvx.is.v05.usd')}\\,/\\,{V('cvx.oos.v05.usd')} a day (IS\\,/\\,OOS); per-point timing {V('cvx.pt.is.v05.usd')}\\,/\\,{V('cvx.pt.oos.v05.usd')}; post hoc lag {V('cvx.ph.is.v05.usd')}\\,/\\,{V('cvx.ph.oos.v05.usd')}",
+         "loses at the pre-registered lag"),
         ("Replay, all points", f"{V('rp.matches')} matches' real books, every point called",
          f"{V('rp.v1l2.c')}¢ {V('rp.v1l2.ci')} at $V = 1$\\,s; {V('rp.cells_neg')} of {V('rp.cells')} settings below zero", "loses"),
         ("Replay, big points", "only points with a large Markov swing (exploratory)",
          f"{V('rp.sel.t4.c')}¢ {V('rp.sel.t4.ci')}; {V('rp.sel.neg2')} cells below zero", "loses"),
-        ("Capacity", "size grid for the CV book and v2", f"post hoc Sharpe halves at {V('capcv.half.oos')}--{V('capcv.half.is')}; pre-registered: none", "small"),
+        ("Capacity", "size grid for the CV benchmark and v2", f"post hoc Sharpe halves at {V('capcv.half.oos')}--{V('capcv.half.is')}; pre-registered: none", "small"),
         ("Table-tennis markets", "TT1--TT5 on Polymarket table tennis", f"no fast wallet qualifies; spread {V('tt.spread')}¢", "untestable"),
     ]
     extra["everything"] = ev
@@ -1816,19 +1823,11 @@ def collect_integration(N: Registry) -> None:
                          ("rig2.t_req", so["hlz"]["t_required_bonferroni_5pct"], lambda x: num(x, 2), "series.v2_oos.hlz.t_required_bonferroni_5pct"),
                          ("rig2.v2oos.days_req", so["hlz"]["days_required_at_this_sr"], intc, "series.v2_oos.hlz.days_required_at_this_sr"),
                          ("rig2.v2oos.hlz_sr", so["hlz"]["sr_haircut_ann_bonferroni"], lambda x: num(x, 0), "series.v2_oos.hlz.sr_haircut_ann_bonferroni"),
-                         ("copier.is.c", hd["copier_central_is_c"], lambda x: sgn(x, 2), "headline.copier_central_is_c"),
-                         ("copier.oos.c", hd["copier_central_oos_c"], lambda x: sgn(x, 2), "headline.copier_central_oos_c"),
-                         ("copier.opt.is.c", hd["copier_same_prev_is_c"], lambda x: sgn(x, 2), "headline.copier_same_prev_is_c"),
-                         ("copier.opt.oos.c", hd["copier_same_prev_oos_c"], lambda x: sgn(x, 2), "headline.copier_same_prev_oos_c"),
-                         ("copier.opt.oos.ci", hd["copier_same_prev_oos_ci95_c"], ci, "headline.copier_same_prev_oos_ci95_c"),
                          ("cv.pre.psr0.is", hd["cv_pre_is_psr_sr0_seed_median"], lambda x: num(x, 2), "headline.cv_pre_is_psr_sr0_seed_median"),
                          ("cv.pre.psr0.oos", hd["cv_pre_oos_psr_sr0_seed_median"], lambda x: num(x, 2), "headline.cv_pre_oos_psr_sr0_seed_median")):
         N.add(k, f(v), v, s8 + src)
-    ld = PS["copier"]["oos"]["central"]["share_priced_from_same_side_print"]
-    li = PS["copier"]["is"]["central"]["share_priced_from_same_side_print"]
-    N.add("copier.sameside", f"{ld * 100:.0f}–{li * 100:.0f}%", [ld, li], s8 + "copier.{oos,is}.central.share_priced_from_same_side_print")
-    bl = PS["copier"]["definition"]["block_lag_s"]["median"]
-    N.add("copier.lag", num(bl, 2), bl, s8 + "copier.definition.block_lag_s.median")
+    # the copier rows come from the corrected producer (results/v2/strict_causal.json, collect_executable); the
+    # pre-fix copier in psr.json (detection-second prints included) is no longer printed
     co = PS["cv"]["cv_cal_oos"]
     n_pass = sum([co["psr_sr0_seed_median"] >= 0.95, co["psr_sr2_seed_median"] >= 0.95,
                   co["mintrl_sr0_seeds_track_long_enough"] > co["n_seeds"] / 2, co["mintrl_sr2_seeds_track_long_enough"] > co["n_seeds"] / 2,
@@ -1850,7 +1849,9 @@ def collect_integration(N: Registry) -> None:
 REGISTRY = "results/provenance/experiments.json"
 REGISTRY_SCHEMA = "courtside.provenance.experiments/1"
 CAUSAL_POINTS = "results/tier0/causal_points.json"
-CAUSAL_READINGS = ("point_L2.0", "tournament_L2.0")   # fully pre-registered timing first (registry E22)
+CAUSAL_READINGS = ("tournament_L2.0", "point_L2.0", "tournament_L3.14")   # file's frozen primary; fully pre-registered timing (E22); post hoc lag (E41)
+STRICT = "results/v2/strict_causal.json"
+X1 = "results/external_validation/results.json"
 # Table 1 blocks and the registry results whose label_text Appendix D prints for them (fact check: each is printed)
 TABLE1_RESULTS = {"Executable copier": ("R_copier", "R_v2_copier"), "Live-book replay": ("R_replay",),
                   "Causal CV selection": ("R_cv_causal_points", "R_cv_points"),
@@ -1858,7 +1859,8 @@ TABLE1_RESULTS = {"Executable copier": ("R_copier", "R_v2_copier"), "Live-book r
                   "CV on later moves, pre-registered lag": ("R_cv_table2_pre",),
                   "CV on later moves, post hoc lag": ("R_cv_table2_post",)}
 # what a profit number is (plan section 4.6 kinds); the registry's results[].paper_keys/kind override these
-KIND_PREFIX = (("copier.", "executable"), ("rp.", "executable"), ("cvx.", "sim_upper_bound"),
+KIND_PREFIX = (("copier.", "executable"), ("rp.", "executable"), ("x1.", "executable"), ("cvx.", "sim_upper_bound"),
+               ("v2st.", "others_fills"),
                ("tab.v2.", "others_fills"), ("v2.", "others_fills"), ("v2s.", "others_fills"), ("wcap.", "others_fills"),
                ("sc.", "conditional"), ("tab.cv.", "conditional"), ("cv.pre.", "conditional"),
                ("cv.cal.", "conditional"), ("fresh.", "conditional"), ("pp.", "conditional"))
@@ -1921,6 +1923,19 @@ def collect_registry(N: Registry, extra: dict) -> None:
                  ("repro", "reproductions"), ("diag", "diagnostics")):
         if f in S:
             N.add(f"reg.n_{k}", intc(_count(S[f])), _count(S[f]), src + f)
+    # decision classes (scripts/provenance.py): designs whose look was at held-out data, presentation choices,
+    # undetermined adoptions and mechanical corrections; the paper's one paragraph on how the tests ran prints these
+    newpol = [e for e in S.get("new_policies_after_performance", []) if isinstance(e, dict) and e.get("held_out")]
+    N.add("reg.n_newpol_oos", intc(len(newpol)), len(newpol), src + "new_policies_after_performance[held_out] (len)")
+    for k, f in (("pres", "presentation_choices_after_oos"), ("undet", "undetermined_decisions"),
+                 ("mech", "mechanical_corrections")):
+        n = len(S.get(f, []))
+        N.add(f"reg.n_{k}", intc(n), n, src + f + " (len)")
+    e02 = next((e for e in R.get("events", []) if e.get("id") == "E02"), None)
+    if e02 is None:
+        raise KeyError(f"COURTSIDE: {REGISTRY} has no E02 (the single pre-registered OOS evaluation)")
+    N.add("reg.e02.utc", pd.Timestamp(e02["utc"]).strftime("%b %-d at %H:%M"), e02["utc"], REGISTRY + "::events[E02].utc")
+    N.add("reg.e02.prereg", e02["prereg_commit"], e02["prereg_commit"], REGISTRY + "::events[E02].prereg_commit")
     results = {r["id"]: r for r in R.get("results", []) if isinstance(r, dict) and "id" in r}
     labels = []
     for block, ids in TABLE1_RESULTS.items():
@@ -1944,26 +1959,47 @@ def key_kind(key: str, kind_globs=()) -> str | None:
 
 
 def collect_executable(N: Registry, extra: dict) -> None:
-    """Rows a trader at our latency could have run, net of costs (Table 1, first block): the copier filled after the
-    venue hold and the block lag (results/rigor/psr.json) and the replay on books recorded live
-    (results/replay/replay.json, pre-registered 2 s stamp lag). Optional block: causal CV selection on every eligible
-    point (results/tier0/causal_points.json, when present). Values are read, not computed; the text calls the
-    executable rows losses, so a sign change stops the build until the sentence is rewritten."""
-    PS = J("results/rigor/psr.json")
-    s0 = "results/rigor/psr.json::"
-    for per, P in (("is", "is"), ("oos", "oos")):
-        se = PS["series"][f"copier_central_{P}"]
-        N.add(f"copier.{per}.usd", usd(se["mean_daily_usd"], signed=True), se["mean_daily_usd"],
-              s0 + f"series.copier_central_{P}.mean_daily_usd")
-        N.add(f"copier.{per}.sr", num(se["sharpe_ann"], 1), se["sharpe_ann"], s0 + f"series.copier_central_{P}.sharpe_ann")
-        cc = PS["headline"][f"copier_central_{P}_ci95_c"]
-        N.add(f"copier.{per}.ci", ci(cc), cc, s0 + f"headline.copier_central_{P}_ci95_c")
-        h = PS["copier"][P]["harsh"]["per_share_c"]
-        N.add(f"copier.harsh.{per}.c", sgn(h), h, s0 + f"copier.{P}.harsh.per_share_c")
+    """Rows a trader at our latency could have run, net of costs (Table 1, first block): the copier of v2's trades,
+    re-timed by the corrected producer (results/v2/strict_causal.json: only prints after the detection second; the
+    copier acts after the fast print, the network leg, the venue hold and the block lag; fills past the recorded tape
+    are rejected), and the replay on books recorded live (results/replay/replay.json, pre-registered 2 s stamp lag).
+    Then the causal CV block (results/tier0/causal_points.json). Values are read, not computed. The text calls the
+    executable rows losses, so a sign change stops the build until the sentences are rewritten from the new sign."""
+    ST = J(STRICT)
+    s0 = STRICT + "::"
+    for per, P in (("is", "IS"), ("oos", "OOS")):
+        c = ST["copier"]["central"][P]
+        sc = s0 + f"copier.central.{P}."
+        for k, f, fmt in (("c", "c_share", sgn), ("ci", "c_share_ci95", ci), ("usd", "usd_day", lambda x: usd(x, signed=True)),
+                          ("sr", "sharpe", lambda x: num(x, 1)), ("ret", "ret_ann", lambda x: pct(x * 100, 0)),
+                          ("vol", "vol_ann", lambda x: pct(x * 100, 1)), ("dd", "max_dd_pct", lambda x: pct(x, 0)),
+                          ("to", "turnover_x", intc), ("fx2c", "fees_x2_c_share", sgn),
+                          ("total", "total_pnl_usd", lambda x: usd(x, signed=True)),
+                          ("total_ci", "total_pnl_ci_usd", lambda x: f"[{usd(x[0], signed=True)}, {usd(x[1], signed=True)}]"),
+                          ("n", "n_trades", intc), ("rej", "n_unsupported_fills", intc), ("days", "days", intc)):
+            N.add(f"copier.{per}.{k}", fmt(c[f]), c[f], sc + f)
+        for rule, tag in (("harsh", "harsh"), ("optimistic", "opt")):
+            r = ST["copier"][rule][P]
+            sr_ = s0 + f"copier.{rule}.{P}."
+            N.add(f"copier.{tag}.{per}.c", sgn(r["c_share"]), r["c_share"], sr_ + "c_share")
+            N.add(f"copier.{tag}.{per}.ci", ci(r["c_share_ci95"]), r["c_share_ci95"], sr_ + "c_share_ci95")
+            N.add(f"copier.{tag}.{per}.usd", usd(r["usd_day"], signed=True), r["usd_day"], sr_ + "usd_day")
+        o = ST[P]   # the same strict trades at the fast tier's own fills (observational, not executable)
+        so_ = s0 + f"{P}."
+        for k, f, fmt in (("c", "c_share", sgn), ("ci", "c_share_ci95", ci), ("usd", "usd_day", lambda x: usd(x, signed=True)),
+                          ("sr", "sharpe", lambda x: num(x, 1)), ("n", "n_trades", intc)):
+            N.add(f"v2st.{per}.{k}", fmt(o[f]), o[f], so_ + f)
+        sh = ST["same_second_share_of_old"][P]["pnl"]
+        N.add(f"v2.secshare.{per}", pct(sh * 100, 1), sh, s0 + f"same_second_share_of_old.{P}.pnl")
+    bl = ST["timing"]["block_lag_s"]["median"]
+    N.add("copier.lag", num(bl, 2), bl, s0 + "timing.block_lag_s.median")
+    ld, li = ST["copier"]["central"]["OOS"]["share_same_side_print"], ST["copier"]["central"]["IS"]["share_same_side_print"]
+    N.add("copier.sameside", f"{ld * 100:.0f}–{li * 100:.0f}%", [ld, li], s0 + "copier.central.{OOS,IS}.share_same_side_print")
     for per in ("is", "oos"):
         if not (N.raw(f"copier.{per}.c") < 0 and N.raw(f"copier.{per}.usd") < 0):
             raise KeyError(f"COURTSIDE: the text says the copier loses, but copier.{per} = {N.text(f'copier.{per}.c')}; "
-                           "rewrite the executable sentences")
+                           "rewrite the executable sentences from the corrected sign")
+    extra["copier_oos_ci_spans0"] = bool(N.raw("copier.oos.ci")[0] < 0 < N.raw("copier.oos.ci")[1])
     RP = J("results/replay/replay.json")
     for vk, V in (("v05", "0.5"), ("v1", "1")):
         a = RP["cells"][f"V{V}|lag2|lead_model|florida"]["all"]
@@ -1975,37 +2011,114 @@ def collect_executable(N: Registry, extra: dict) -> None:
             N.add(f"rp.{vk}l2.usd_mark", usd(a["pnl_mark_usd"], signed=True), a["pnl_mark_usd"], s1 + ".pnl_mark_usd")
         if a["per_share_mark_c"] >= 0:
             raise KeyError(f"COURTSIDE: the text says the replay loses at V = {V} s; rewrite the sentence")
+    collect_x1(N)
+    collect_split(N)
     extra["causal"] = collect_causal(N)
     extra["risk_controls"] = risk_controls(N, extra["causal"])
 
 
+def collect_x1(N: Registry) -> None:
+    """The X1 check (registry E65): the frozen corrected copier, run once on never-fetched markets outside the
+    declared universe (mostly doubles). Blind for X1, not the organizer's OOS test of the declared universe."""
+    p = ROOT / X1
+    if not p.exists():
+        if strict_mode():
+            raise KeyError(f"COURTSIDE: missing {X1} (strict mode)")
+        return
+    X = json.loads(p.read_text())
+    pr, s0 = X["primary"], X1 + "::"
+    N.add("x1.c", sgn(pr["c_share"]), pr["c_share"], s0 + "primary.c_share")
+    N.add("x1.ci", ci(pr["c_share_ci95"]), pr["c_share_ci95"], s0 + "primary.c_share_ci95")
+    N.add("x1.n", intc(pr["n_trades"]), pr["n_trades"], s0 + "primary.n_trades")
+    N.add("x1.matches", intc(pr["n_matches"]), pr["n_matches"], s0 + "primary.n_matches")
+    N.add("x1.days", intc(pr["trade_days"]), pr["trade_days"], s0 + "primary.trade_days")
+    N.add("x1.markets", intc(X["universe"]["n_window"]), X["universe"]["n_window"], s0 + "universe.n_window")
+    N.add("x1.verdict", str(pr["verdict"]), pr["verdict"], s0 + "primary.verdict")
+    N.add("x1.underpowered", "underpowered" if X["underpowered"] else "", X["underpowered"], s0 + "underpowered")
+
+
+def collect_split(N: Registry) -> None:
+    """The stored OOS split against the organizer's latest-20%-by-time window, from the pinned universe's start
+    times (results/v2/note_metrics.json::holdout, written by scripts/note_metrics.py)."""
+    h = J("results/v2/note_metrics.json")["holdout"]
+    s0 = "results/v2/note_metrics.json::holdout."
+    N.add("split.oos_days", num(h["oos_days"], 1), h["oos_days"], s0 + "oos_days")
+    N.add("split.span_days", intc(h["span_days"]), h["span_days"], s0 + "span_days")
+    cal = (pd.Timestamp(h["last_start"]) - pd.Timestamp(h["time_based_20pct_start"])).total_seconds() / 86400
+    N.add("split.cal_days", num(cal, 1), cal, "D: " + s0 + "last_start - time_based_20pct_start (days)")
+    need = h["span_days"] / 4   # x >= 0.2 (span + x): days of new matches a window of new data alone would need
+    N.add("split.need_days", intc(need), need, "D: " + s0 + "span_days / 4 (x >= 0.2 (span + x))")
+    N.add("split.oos_share", pct(h["oos_matches"] / h["matches"] * 100, 0), h["oos_matches"] / h["matches"],
+          "D: " + s0 + "oos_matches / matches")
+    N.add("split.cut", pd.Timestamp(h["oos_start"]).strftime("%b %-d"), h["oos_start"], s0 + "oos_start")
+
+
+CAUSAL_FIELDS = (("pnl_per_day_usd", "usd", lambda x: usd(x, signed=True)), ("per_share_c", "c", sgn),
+                 ("return_on_capital_ann_pct", "ret", lambda x: pct(x, 0)), ("vol_ann_pct_capital", "vol", lambda x: pct(x, 1)),
+                 ("sharpe_ann", "sr", lambda x: num(x, 1)), ("turnover_x_per_year", "to", intc),
+                 ("per_share_c_fees_x2", "fx2c", sgn),
+                 ("max_dd_usd", "dd", lambda x: (MINUS if round(x, -2) < 0 else "") + f"${abs(x) / 1000:.1f}k"))
+CAUSAL_TAGS = {"point_L2.0": "pt", "tournament_L3.14": "ph"}   # the primary reading prints as cvx.<per>.<V>.*
+
+
 def collect_causal(N: Registry) -> dict | None:
-    """Optional Table 1 block: CV trades chosen from information available before the order, on every eligible point
-    (schema courtside.cv.points/1). Absent file: no block (the paper says so in its limitations)."""
+    """Table 1's causal CV block (schema courtside.cv.points/1, scripts/cv_causal_points.py): every point of every
+    covered match plus the classifier's false calls, selected, signed and sized from information available before
+    the order; simulated fills priced off the post-point price and the measured live book (an upper bound). The
+    printed reading is the file's own primary cell, frozen in scripts/cv_causal_points.py before its first run
+    (per-tournament timing, pre-registered 2.0 s stamp lag); the fully pre-registered per-point timing and the post
+    hoc 3.14 s lag print beside it. The false-call halt is not simulated (the file says so); the daily stop is."""
     p = ROOT / CAUSAL_POINTS
     if not p.exists():
+        if strict_mode():
+            raise KeyError(f"COURTSIDE: missing {CAUSAL_POINTS} (strict mode)")
         return None
     CP = json.loads(p.read_text())
+    if CP.get("schema") != "courtside.cv.points/1":
+        raise KeyError(f"COURTSIDE: {CAUSAL_POINTS} schema {CP.get('schema')!r}")
     cells = CP["cells"]
-    reading = next((r for r in CAUSAL_READINGS if f"{r}|V0.5|IS" in cells), None)
-    if reading is None:
-        raise KeyError(f"COURTSIDE: {CAUSAL_POINTS} has none of the readings {CAUSAL_READINGS}")
-    for vk, V in (("v05", "0.5"), ("v1", "1"), ("v3", "3")):
-        for per, P in (("is", "IS"), ("oos", "OOS")):
-            c = cells[f"{reading}|V{V}|{P}"]
-            halted = isinstance(c.get("halted"), dict)
-            d = c["halted"] if halted else c
-            s0 = f"{CAUSAL_POINTS}::cells.{reading}|V{V}|{P}" + (".halted" if halted else "")
-            k = f"cvx.{per}.{vk}"
-            for f, key, fmt in (("usd_day", "usd", lambda x: usd(x, signed=True)), ("c_share", "c", sgn),
-                                ("ret_ann", "ret", lambda x: pct(x, 0)), ("vol_ann", "vol", lambda x: pct(x, 1)),
-                                ("sharpe", "sr", lambda x: num(x, 1)), ("turnover_x", "to", intc),
-                                ("fees_x2_c_share", "fx2c", sgn)):
-                N.add(f"{k}.{key}", fmt(d[f]), d[f], f"{s0}.{f}")
-            dd = d["max_dd_usd"]
-            N.add(f"{k}.dd", usd(dd), dd, f"{s0}.max_dd_usd")
-    return {"reading": reading, "lag": reading.split("_L")[-1], "halted": isinstance(cells[f"{reading}|V1|IS"].get("halted"), dict),
-            "n_points": CP.get("n_points"), "source": CAUSAL_POINTS}
+    sens, primary = CP["primary_cell"].split("|")[:2]
+    if primary not in CAUSAL_READINGS:
+        raise KeyError(f"COURTSIDE: {CAUSAL_POINTS} primary reading {primary!r} is not one of {CAUSAL_READINGS}")
+    fired, fx2_all, fx2_best = [], [], -1e18
+    for reading in CAUSAL_READINGS:
+        tag = "" if reading == primary else CAUSAL_TAGS[reading] + "."
+        for vk, V in (("v05", "0.5"), ("v1", "1"), ("v3", "3")):
+            for per, P in (("is", "IS"), ("oos", "OOS")):
+                key = f"{sens}|{reading}|V{V}|{P}"
+                if key not in cells:
+                    raise KeyError(f"COURTSIDE: {CAUSAL_POINTS} has no cell {key}")
+                d = cells[key]["mean"]
+                s0 = f"{CAUSAL_POINTS}::cells.{key}.mean"
+                k = f"cvx.{tag}{per}.{vk}"
+                for f, kk, fmt in CAUSAL_FIELDS:
+                    N.add(f"{k}.{kk}", fmt(d[f]), d[f], f"{s0}.{f}")
+                fired.append(d["daily_stop_days_fired"])
+                fx2_all.append(d["pnl_per_day_usd_fees_x2"])
+                if per == "oos":
+                    fx2_best = max(fx2_best, d["pnl_per_day_usd_fees_x2"])
+    # the text: the primary reading loses at every V and falls with V; only the post hoc lag is positive at 0.5 s
+    r_ = N.raw
+    words = (all(r_(f"cvx.{p_}.{v_}.usd") < 0 for p_ in ("is", "oos") for v_ in ("v05", "v1", "v3"))
+             and all(r_(f"cvx.{p_}.v05.usd") > r_(f"cvx.{p_}.v1.usd") > r_(f"cvx.{p_}.v3.usd") for p_ in ("is", "oos"))
+             and all(r_(f"cvx.pt.{p_}.v05.usd") < 0 for p_ in ("is", "oos"))
+             and all(r_(f"cvx.ph.{p_}.v05.usd") > 0 for p_ in ("is", "oos"))
+             and r_("cvx.ph.oos.v1.usd") < 0 and r_("cvx.ph.oos.v3.usd") < 0)
+    if not words or max(fx2_all) >= 0:
+        raise KeyError("COURTSIDE: the causal CV sentences (loses at every V at the pre-registered lag; only the post "
+                       "hoc lag is positive at 0.5 s; doubled fees make every cell lose) no longer match causal_points.json; rewrite them")
+    nf = max(fired)
+    N.add("cvx.stop.fired", intc(nf), nf, f"D: {CAUSAL_POINTS}::cells.{sens}|*|*|*.mean.daily_stop_days_fired (max over the printed cells)")
+    N.add("cvx.fx2.oos.best", usd(fx2_best, signed=True), fx2_best,
+          f"D: {CAUSAL_POINTS}::cells.{sens}|*|*|OOS.mean.pnl_per_day_usd_fees_x2 (max over the printed cells)")
+    N.add("cvx.seeds", intc(CP["seeds"]), CP["seeds"], f"{CAUSAL_POINTS}::seeds")
+    c0 = cells[f"{sens}|{primary}|V0.5|IS"]["mean"]
+    N.add("cvx.wrong.share", pct(c0["wrong_call_share_of_trades"] * 100, 0), c0["wrong_call_share_of_trades"],
+          f"{CAUSAL_POINTS}::cells.{sens}|{primary}|V0.5|IS.mean.wrong_call_share_of_trades")
+    cm = CP["call_model"]
+    N.add("cvx.fcph", num(cm["false_calls_per_h"], 1), cm["false_calls_per_h"], f"{CAUSAL_POINTS}::call_model.false_calls_per_h")
+    return {"reading": primary, "lag": primary.split("_L")[-1], "halted": False, "stop_fired": nf,
+            "timing": primary.split("_L")[0], "source": CAUSAL_POINTS}
 
 
 def _has(rel: str, pattern: str) -> bool:
@@ -2034,6 +2147,9 @@ def risk_controls(N: Registry, causal: dict | None) -> list[dict]:
                         ("engine/risk/limits.py", r"def kill\(")],
         "policy": [("docs/RISK.md", r"policy only")],
     }
+    stop_n = causal.get("stop_fired") if causal else None
+    if stop_n is not None:   # the causal CV book applies the stated daily stop (src/tier0.daily_stop)
+        ev["cv_stop"] = [("src/tier0.py", r"^def daily_stop\("), ("scripts/cv_causal_points.py", r"daily_stop")]
     for name, pats in ev.items():
         miss = [f"{f}: /{pt}/" for f, pt in pats if not _has(f, pt)]
         if miss:
@@ -2045,7 +2161,9 @@ def risk_controls(N: Registry, causal: dict | None) -> list[dict]:
          "backtest": "operated (v2, CV)", "deploy": "engine code"},
         {"control": f"{t('risk.matchcap')} gross a match", "backtest": "operated (v2)", "deploy": "proposed"},
         {"control": "CV early calls only at leads with precision \\(\\geq\\)0.95", "backtest": "operated (CV)", "deploy": "proposed"},
-        {"control": f"{t('risk.daily_stop')} daily loss stop", "backtest": ("operated (causal CV)" if halted else replay_is),
+        {"control": f"{t('risk.daily_stop')} daily loss stop",
+         "backtest": ("operated (causal CV)" if halted else replay_is) if stop_n is None else
+                     ("causal CV: never fired" if stop_n == 0 else f"causal CV: fired on {intc(stop_n)} days"),
          "deploy": "engine code"},
         {"control": f"Trailing edge \\(<\\) {t('pol.trail_half')}¢: half; \\(\\leq 0\\) or {t('pol.dd_stop')} drawdown: stop",
          "backtest": replay_is, "deploy": "proposed"},
@@ -2374,10 +2492,12 @@ def write_companion(N: Registry, extra: dict | None = None) -> None:
 **The paper is [`docs/NOTE.pdf`](NOTE.pdf).** This page is a short companion built from the same numbers
 (`results/paper/numbers.json`, which names the source file of every value). If the two ever differ, the PDF wins.
 
-**How to read the labels.** Executable results (what we could run at our latency, net of costs) come first. Two
-benchmarks follow and are not returns we could earn: v2, our copy of the fast tier's trades at their own prices, and
-the computer-vision (CV) trader, simulated ({CV_LABEL}), whose trades are past points where the price later moved at
-least 4¢ (selected on the outcome). We show the pre-registered stamp-lag reading first and the post hoc estimate
+**How to read the labels.** Executable results (what we could run at our latency, net of costs) come first: the
+copier, timed after the second the score move was detected, and the causal camera policy, which trades every point
+from the classifier's measured call statistics (simulated fills, an upper bound). Two benchmarks follow and are not
+returns we could earn: v2, our copy of the fast tier's trades at their own prices, and the computer-vision (CV)
+trader, simulated ({CV_LABEL}), whose trades are past points where the price later moved at least 4¢ (selected on the
+outcome). We show the pre-registered stamp-lag reading first and the post hoc estimate
 ({v('cv.cal.lag')} s, 95% CI {v('cv.cal.lag_ci')} s) second. v2 and the CV simulation were designed after we had read
 the hold-out, so their OOS results are non-blind. No real money was used and no order was ever sent.
 
@@ -2389,14 +2509,18 @@ reached the table end, none wrong but few ({v('cv.eng.tp')} of {v('cv.eng.nmiss'
 {v('cv.eng.fps')} fps; a frame becomes a ready order in {v('e2e.ours')} ms. On real broadcast tennis (one TV camera,
 held-out games) its out calls were right {v('bt.call.0')} at the bounce and {v('bt.call.33')} when 33 ms ahead. In real
 Polymarket data on {v('univ.matches')} ATP and WTA matches ({v('cov.gs.all')} at Grand Slams), wallets trading within
-3 s of a point earn after fees in all {v('ft.months.cal')} months, but a copier we could run, filled after the venue's
-hold and the block lag, loses ({v('copier.is.c')}¢ a share in sample, {v('copier.oos.c')}¢ out of sample, after costs),
-as does a replay of live-recorded books calling every point ({v('rp.v05l2.c')}¢ at a 0.5 s feed). Two labelled
-benchmarks price the speed we lack: the fast tier's own fills (v2) have a Sharpe ratio of {v('v2.is.sr')} in sample and
-{v('v2.oos.sr')} out of sample, which doubled fees erase; a simulated CV trader on points that later moved, with an
-assumed licensed 0.5 s feed, makes {v('sc.pre.oos.v05.usd')} a day out of sample pre-registered and
-{v('sc.cal.oos.v05.usd')} post hoc ({v('sc.pre.oos.v1.usd')} and {v('sc.cal.oos.v1.usd')} at 1 s). Every blind test of
-a book we could trade failed.
+3 s of a point earn after fees in all {v('ft.months.cal')} months, as our pre-registered hypothesis predicted out of
+sample. What we could trade loses after costs. A copier of their trades that acts only after the second the move was
+detected, the venue's hold and the block lag makes {v('copier.is.c')}¢ a share in sample ({v('copier.is.usd')} a day)
+and {v('copier.oos.c')}¢ {v('copier.oos.ci')} out of sample ({v('copier.oos.usd')} a day). A camera policy that trades
+every point from our classifier's measured call statistics, at an assumed licensed 0.5 s feed, makes
+{v('cvx.is.v05.usd')} and {v('cvx.oos.v05.usd')} a day (simulated fills, an upper bound), and less at 1 s and 3 s; only
+a post hoc stamp lag turns 0.5 s positive ({v('cvx.ph.is.v05.usd')}, {v('cvx.ph.oos.v05.usd')}). Two labelled
+benchmarks price the speed we lack: the fast tier's own fills (v2; Sharpe {v('v2.is.sr')} in sample,
+{v('v2.oos.sr')} out of sample; doubled fees erase the out-of-sample gain) and a CV trader on points the market later repriced
+({v('sc.pre.oos.v05.usd')} a day out of sample pre-registered, {v('sc.cal.oos.v05.usd')} post hoc, at 0.5 s). Our one
+test with rules fixed in advance holds the last 20% of matches, {v('univ.oos_time')} of the calendar; no untouched test
+meets the organizers' by-time rule.
 
 ## The real data behind every result
 
@@ -2412,12 +2536,22 @@ Simulated: only when our CV would see each point (an assumed feed latency) and t
 
 Wimbledon is listed under a separate Polymarket series and is outside our universe.
 
-## Executable: a copier and a live-book replay (Table 1 of the PDF, first rows)
+## Executable: a copier, the causal camera policy and a live-book replay (Table 1 of the PDF, first rows)
 
-| | IS | OOS |
+| | IS | OOS (non-blind) |
 |---|---|---|
-| Copier filled after the hold and the {v('copier.lag')} s block lag: $ a day | {v('copier.is.usd')} | {v('copier.oos.usd')} |
+| Copier after the detection second, the hold and the {v('copier.lag')} s block lag: $ a day | {v('copier.is.usd')} | {v('copier.oos.usd')} |
 | Copier: net ¢ a share [95% CI] / Sharpe | {v('copier.is.c')} {v('copier.is.ci')} / {v('copier.is.sr')} | {v('copier.oos.c')} {v('copier.oos.ci')} / {v('copier.oos.sr')} |
+| Copier: total net P&L | {v('copier.is.total')} {v('copier.is.total_ci')} | {v('copier.oos.total')} {v('copier.oos.total_ci')} |
+| Camera policy, every point, pre-registered 2.0 s lag, 0.5 / 1 / 3 s feed: $ a day | {v('cvx.is.v05.usd')} / {v('cvx.is.v1.usd')} / {v('cvx.is.v3.usd')} | {v('cvx.oos.v05.usd')} / {v('cvx.oos.v1.usd')} / {v('cvx.oos.v3.usd')} |
+| Same, fully pre-registered per-point timing | {v('cvx.pt.is.v05.usd')} / {v('cvx.pt.is.v1.usd')} / {v('cvx.pt.is.v3.usd')} | {v('cvx.pt.oos.v05.usd')} / {v('cvx.pt.oos.v1.usd')} / {v('cvx.pt.oos.v3.usd')} |
+| Same, post hoc {v('cv.cal.lag')} s lag | {v('cvx.ph.is.v05.usd')} / {v('cvx.ph.is.v1.usd')} / {v('cvx.ph.is.v3.usd')} | {v('cvx.ph.oos.v05.usd')} / {v('cvx.ph.oos.v1.usd')} / {v('cvx.ph.oos.v3.usd')} |
+
+The camera policy assumes the frozen classifier's measured table-tennis call statistics, because no footage of the
+Polymarket matches exists (it has made no real calls on them); its fills are priced off the post-point price and the
+measured live book ({v('cvx.seeds')}-seed means). With fees doubled every camera-policy cell loses; the stated
+{v('risk.daily_stop')} daily stop is simulated and never fired; the false-call halt is not simulated (a proposed
+control).
 
 A replay of {v('rp.matches')} matches recorded live (one day), calling every point at the pre-registered 2 s stamp lag,
 makes {v('rp.v05l2.c')}¢ a share {v('rp.v05l2.ci')} at a 0.5 s feed and {v('rp.v1l2.c')}¢ {v('rp.v1l2.ci')} at 1 s.
@@ -2425,8 +2559,9 @@ makes {v('rp.v05l2.c')}¢ a share {v('rp.v05l2.ci')} at a 0.5 s feed and {v('rp.
 ## Benchmark: v2, the fast tier's own fills (not attainable by a copier)
 
 Sharpe uses daily P&L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
-corrects for {v('rig.N3386')} trials. {v('decay.sameblock.share')} of v2's profit is in trades stamped in the same block
-as the score move that selects them.
+corrects for {v('rig.N3386')} trials. {v('v2.secshare.is')} of v2's in-sample profit ({v('v2.secshare.oos')} OOS) is in
+prints stamped in the second the score move was detected; on later prints only, the same book at the fast tier's fills
+makes {v('v2st.is.c')}¢ {v('v2st.is.ci')} IS and {v('v2st.oos.c')}¢ {v('v2st.oos.ci')} OOS.
 
 | | IS | OOS (non-blind) |
 |---|---|---|
@@ -2467,8 +2602,10 @@ matches recorded live against their real order books calls every point ex ante a
 ## If we were a quant firm with a licensed 0.5 s feed (counterfactual)
 
 Real Polymarket prices, fills, fees and the venue's 1 s hold; simulated camera calls at an assumed feed delay; no feed
-bought, no order placed. At 0.5 s the trader makes {v('sc.pre.is.v05.usd')} / {v('sc.cal.is.v05.usd')} a day in sample
-and {v('sc.pre.oos.v05.usd')} / {v('sc.cal.oos.v05.usd')} OOS (pre-registered / post hoc), on points selected by their later move. A fresh holdout,
+bought, no order placed. Choosing trades causally it would make {v('cvx.is.v05.usd')} / {v('cvx.oos.v05.usd')} a day
+(IS / OOS) at the pre-registered lag and {v('cvx.ph.is.v05.usd')} / {v('cvx.ph.oos.v05.usd')} at the post hoc lag. The
+upper envelope, on points selected by their later move: {v('sc.pre.is.v05.usd')} / {v('sc.cal.is.v05.usd')} a day in
+sample and {v('sc.pre.oos.v05.usd')} / {v('sc.cal.oos.v05.usd')} OOS (pre-registered / post hoc). On the same selection, a fresh holdout,
 pre-registered at `{v('fresh.prereg.commit')}` before its data were fetched ({v('fresh.covered')} newer matches,
 {v('fresh.days')} UTC days), returned {v('fresh.s2.pre.v05.usd')} / {v('fresh.s2.cal.v05.usd')} a day (CIs
 {v('fresh.s2.pre.v05.ci')}, {v('fresh.s2.cal.v05.ci')}): anecdotal, evidence neither for nor against an edge. The most a
@@ -2503,21 +2640,31 @@ quotes of {v('fin.feed.low')}–{v('fin.feed.high')}. Fig. 3 of the PDF; `result
   ({v('gate.between.removed')} of {v('gate.between.total')} between rallies) but keeps only {v('gate.correct.kept')} of
   {v('gate.correct.total')} correct calls ({v('gate.correct.kept_lo')} at {v('gate.lo_range')} s); about
   {v('gate.hr')} phantom calls an hour remain, so it is not yet safe to trade.
-- **Capacity.** v2's OOS edge holds up to 1× size ({v('cap.1x.oos.capital')} of capital); 5× loses. The CV book has no
+- **Capacity.** v2's OOS edge holds up to 1× size ({v('cap.1x.oos.capital')} of capital); 5× loses. The CV benchmark has no
   capacity at the pre-registered lag; post hoc its Sharpe halves at {v('capcv.half.oos')} (OOS) to {v('capcv.half.is')}
   (IS) of capital. At 1 s it could pay at most {v('cv.cal.oos.maxlic')} a month for data post hoc and
   {v('cv.pre.oos.maxlic')} pre-registered, against reported feed prices of {v('fin.feed.low')}–{v('fin.feed.high')}.
   COURTSIDE prices speed; it is not yet a business.
 - **What failed.** Doubled fees out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets
-  (blind); v2-safe's blind test; the CV rule v3 (blind); the maker book (blind); table-tennis markets (untestable); v2
+  (blind); v2-safe's blind test; the corrected copier on {v('x1.markets')} never-fetched markets outside our universe
+  ({v('x1.c')}¢ {v('x1.ci')}, {v('x1.n')} trades: fail, underpowered); the CV rule v3 (post-freeze); the maker book
+  (blind); table-tennis markets (untestable); v2
   after a central data licence ({v('fin.v2.oos.net_central')} a day); the live-book replay. Blind forward test:
   {extra_fwd}. We tried {v('var.total')} variants; the choices made after an OOS look are listed in Appendix D of the
   PDF from `results/provenance/experiments.json`. Every test is in Appendix B; every formula with a worked example is
   in Appendix A.
 - **Risk controls.** Table 2 of the PDF separates the controls that operated in the backtests (order, net and price
-  caps; the {v('risk.matchcap')} gross cap a match for v2) from those proposed for deployment (the false-call halt, the
-  trailing-edge and drawdown stops) or present only in the paper-trading engine (the {v('risk.daily_stop')} daily stop,
-  stale-feed and stale-vision stops).
+  caps; the {v('risk.matchcap')} gross cap a match for v2; the {v('risk.daily_stop')} daily stop in the causal camera
+  policy, which never fired) from those proposed for deployment (the false-call halt, the trailing-edge and drawdown
+  stops) or present only in the paper-trading engine (stale-feed and stale-vision stops).
+- **The out-of-sample rule.** Our one evaluation with rules fixed in advance (frozen in `{v('reg.e02.prereg')}`, run
+  once on {v('reg.e02.utc')} UTC) used the pre-registered last 20% of matches: {v('univ.oos')} matches over
+  {v('split.oos_days')} days, {v('univ.oos_time')} of the {v('split.span_days')}-day history. It confirmed H6 as an
+  observational fact (the fast tier stayed positive out of sample at its own fills). The organizers' rule takes the
+  latest 20% by time, the {v('split.cal_days')} days from {v('univ.timesplit')}; we had read all of it before the
+  corrected policies were frozen, and a window of new matches alone would need {v('split.need_days')} days. Our
+  verdict: no untouched test that meets the by-time rule exists for any policy here; every later OOS result is
+  non-blind and exploratory.
 
 Reproduce: `bash reproduce.sh` (rebuilds the result files, every figure and this paper).
 """

@@ -1917,6 +1917,31 @@
    ],
    "decision_class": "3",
    "oos_informed": false
+  },
+  {
+   "id": "E66",
+   "utc": "2026-10-04T11:08:15Z",
+   "utc_end": "2026-10-04T11:09:18Z",
+   "time_source": "mtime (research/v2/expand/RUN_LOG and results/expand/results.json written 11:09:18Z; start from the RUN_LOG line)",
+   "commit": "3c455a5",
+   "kind": "b",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "logged": false,
+   "summary": "Accidental re-execution of the frozen U2 blind test of v2 (E15): running pytest from the repository root during the paper stage collected scripts/expand_test.py, whose module body runs research/v2/expand/expand_test.py. Unchanged code path at HEAD 3c455a5; results/expand/results.json was identical to the E15 file except run time, git head and start time, and the verdict stayed FAIL. The output and the RUN_LOG line were restored to the committed E15 files. The script does not write results/oos_peeks.log, so no log line maps here. No parameter, threshold or rule was chosen.",
+   "evidence": [
+    "research/v2/expand/RUN_LOG (line 2026-10-04T11:08:15Z, restored)",
+    "scripts/expand_test.py",
+    "results/expand/results.json (E15 file restored; only run_started_utc, git_head and runtime_s differed)"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2_u2"
+   ],
+   "oos_informed": false,
+   "decision_class": "3",
+   "commit_role": "code"
   }
  ],
  "results": [
@@ -2084,7 +2109,8 @@
    "events": [
     "E06",
     "E10",
-    "E15"
+    "E15",
+    "E66"
    ],
    "paper_keys": [
     "u2.*"
@@ -2498,7 +2524,8 @@
   "E03 post-OOS diagnostics (69a675f)",
   "E08 v2 verifiers 13:35-13:48Z: seven causal variants computed on the already-read OOS",
   "E09 reproduction run (052e896)",
-  "Scripts that read OOS trade tables or OOS results to draw figures or statistics without writing the peeks log: scripts/rigor_pack.py, scripts/factor_regression.py, scripts/v2_figures.py, scripts/paper_figures.py, scripts/paper_figures_v2.py, scripts/export_viz.py, scripts/money_counter.py"
+  "Scripts that read OOS trade tables or OOS results to draw figures or statistics without writing the peeks log: scripts/rigor_pack.py, scripts/factor_regression.py, scripts/v2_figures.py, scripts/paper_figures.py, scripts/paper_figures_v2.py, scripts/export_viz.py, scripts/money_counter.py",
+  "E66 accidental re-run of the U2 blind test by pytest collection at the repository root (2026-10-04 11:08Z); identical result, outputs restored"
  ],
  "test_eligibility": {
   "method": "Metadata and provenance only (universe catalogue counts and dates, read logs, commits). No candidate test profit was read to reach this conclusion.",
@@ -3253,10 +3280,10 @@
   }
  ],
  "summary": {
-  "n_events": 67,
+  "n_events": 68,
   "n_events_by_kind": {
    "a": 10,
-   "b": 11,
+   "b": 12,
    "c": 19,
    "d": 10,
    "e": 8,
@@ -3266,7 +3293,7 @@
   "n_events_by_class": {
    "1": 3,
    "2": 3,
-   "3": 55,
+   "3": 56,
    "4": 1,
    "undetermined": 1,
    "mixed": 1
@@ -3806,7 +3833,8 @@
    "E57",
    "E58",
    "E62",
-   "E63"
+   "E63",
+   "E66"
   ],
   "diagnostics": [
    "E03",
@@ -3837,7 +3865,8 @@
   "unlogged_reads": [
    "E03",
    "E08",
-   "E09"
+   "E09",
+   "E66"
   ],
   "log_lines_total": 117,
   "log_lines_unmapped": 0,
