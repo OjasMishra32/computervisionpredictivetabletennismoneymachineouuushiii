@@ -2143,15 +2143,15 @@
  ],
  "test_eligibility": {
   "method": "Metadata and provenance only (universe catalogue counts and dates, read logs, commits). No candidate test profit was read to reach this conclusion.",
-  "rule": "Organizer rule: the latest 20% of history or the latest two years, whichever is shorter, evaluated once at the end (HYPOTHESIS.md:64-67).",
-  "declared_universe": "U1: ATP/WTA/Challenger singles moneylines with volume >= $5k; 13,084 matches, first start 2025-10-08 02:00 UTC, last start 2026-10-03 07:10 UTC (results/data_coverage.json). History is under two years, so the test is the latest 20% of matches.",
-  "qualifying_window": "U1 matches starting at or after 2026-08-25 14:15 UTC: 2,617 matches (results/summary.json universe.oos).",
-  "qualifying_window_status": "Evaluated once, cleanly, by the frozen v1 rules on 2026-10-03 at 10:42 UTC (E02). Every later U1 strategy was designed after that read, so its figures on this window are non-blind.",
+  "rule": "Organizer rule: the latest 20% of history by calendar time or the latest two years, whichever is shorter, evaluated once at the end.",
+  "declared_universe": "U1: ATP/WTA/Challenger singles moneylines with volume >= $5k; 13,084 matches, first start 2025-10-08 02:00 UTC, last start 2026-10-03 07:10 UTC. The 360.215-day history is under two years; its calendar-time 20% window is 72.043 days.",
+  "qualifying_window": "U1 matches starting at or after 2026-07-23 06:08 UTC, through 2026-10-03 07:10 UTC: 4,386 matches over 72.043 days.",
+  "qualifying_window_status": "The July 23 to August 25 portion was included in training for later policies; the August 25 to October 3 portion was subsequently evaluated and used in later design. No untouched qualifying window inside U1 has been identified. This is a conclusion about U1, not every independent external history.",
   "candidates": [
    {
     "data": "Fresh window: U1-rule matches starting after 2026-10-03 07:10 UTC",
     "qualifies": false,
-    "why": "22 eligible matches over about 2 days, already read once (E54); the rule needs the latest 20% of history (about 2,600 matches)."
+    "why": "22 eligible matches, already evaluated (E54); the window is too short for the 72.043-day calendar-time requirement for the existing U1 history."
    },
    {
     "data": "U2: ITF and $1k-5k ATP/WTA markets outside U1",
@@ -2169,7 +2169,7 @@
     "why": "Different sport and universe; evaluated once (E31)."
    }
   ],
-  "conclusion": "No genuinely untouched history inside the declared universe meets the rule. The originally frozen single evaluation (E02) and the pre-registered blind tests remain the evidence; later figures on the U1 OOS window are non-blind, and any re-run of a frozen evaluation under corrected code is a reproduction, not a new test.",
+  "conclusion": "No genuinely untouched calendar-time test inside the declared U1 history has been identified. Preserve the actual first pre-registered E02 evaluation and each other test with its verified label. A reproduction or mechanical defect correction is not by itself evidence of return-driven tuning or a new blind test. Independent external-validation feasibility remains a separate provenance check.",
   "events": [
    "E02",
    "E15",
@@ -2178,7 +2178,10 @@
    "E31",
    "E39",
    "E54"
-  ]
+  ],
+  "rule_source": "https://www.gqhacks.com/tracks/systematic-trading",
+  "actual_split": "The stored 80th-percentile match-count split starts 2026-08-25 14:15 UTC: 2,617 matches over 38.705 days, 10.745% of calendar history.",
+  "actual_split_status": "E02 is the first pre-registered evaluation of frozen v1 rules on the stored match-count split, at 2026-10-03 10:42 UTC. That first-look record does not establish compliance with the calendar-time window. Later strategy-design decisions and mechanical corrections are classified separately in the registry."
  },
  "log_lines": [
   {

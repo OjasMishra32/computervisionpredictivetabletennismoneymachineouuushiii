@@ -48,6 +48,11 @@ pytest tests/test_provenance.py
 | `touches` | result ids this event produced or shaped |
 | `oos_informed` | derived: kind `d` or `e` after a look at OOS or held-out data (not forward recordings) |
 
+`oos_informed` is the registry's chronological flag for a design choice or defect correction after
+a held-out look. It does not by itself establish that performance drove a change. The separate
+kind, evidence and `oos_selected` fields determine what happened. A reproduction, download or
+metadata inspection alone is not a finding of tuning.
+
 Kinds:
 
 | code | printed kind |
@@ -95,9 +100,11 @@ evaluations, reproductions, diagnostics, unlogged reads, the log-line totals (wi
 A metadata-only answer to whether an untouched test that meets the organizer rule (latest 20% of
 history or latest two years, whichever is shorter, evaluated once) exists inside the declared
 universe. It was written from catalogue counts, dates, the read logs and commits, without reading
-any candidate test profit. Current answer: no. The qualifying window (U1 matches from 2026-08-25
-14:15 UTC) was evaluated once, cleanly, by v1 (E02), and every newer candidate is either outside
-the universe or far shorter than the rule requires.
+any candidate test profit. No qualifying untouched window inside U1 has been identified. The stored
+match-count split starts August 25 and lasts 38.705 days (10.745% of calendar history). The organizer
+uses calendar time: July 23 06:08 UTC to October 3 07:10 UTC, 72.043 days and 4,386 matches. E02
+records the first pre-registered evaluation on the stored split; it does not establish compliance
+with the longer calendar-time window. External-validation feasibility is assessed separately.
 
 ## Adding events (recompute and later work)
 
