@@ -1,0 +1,6 @@
+# COURTSIDE Warehouse only. Install into its own venv: the connector's pandas extra pins pandas < 3 and an older
+# pyarrow, which must not replace the main environment's pins (requirements.txt at the repo root).
+snowflake-connector-python[pandas]==4.8.0
+tabulate==0.10.0
+# offline check of the SQL without a Snowflake account (check.py --offline)
+duckdb==1.5.6
