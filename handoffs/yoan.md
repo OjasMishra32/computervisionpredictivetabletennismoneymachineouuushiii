@@ -1,10 +1,10 @@
-# Handoff: Yoan — ElevenLabs sponsor prizes ("COURTSIDE Voice")
+# Handoff: Yoan — ElevenLabs sponsor prizes ("COURTSIDE Voice") + Vultr stretch ("COURTSIDE London")
 
 **Owner:** Yoan Exposito · **Load: light** · **Deadline:** branch pushed by **9:00 AM EDT Sun Oct 4** (Devpost closes 11:00 AM EDT)
 **Prizes targeted (opt in on Devpost when submitting):**
 1. **MLH: Best Use of ElevenLabs** (wireless earbuds) — "Deploy natural, human-sounding audio with ElevenLabs ... give your project a voice."
 2. **ElevenLabs: Best Project Built with ElevenLabs** (earbuds + 3 months ElevenLabs Scale per member).
-3. *Stretch, only after 1-2 work:* **MLH: Best Use of Solana** (Ledger Nano S Plus) — see §1c.
+3. *Stretch, only after 1a-1b work:* **MLH: Best Use of Vultr** (portable screens) — see §1c.
 
 Give this whole file to your AI coding agent as its brief. It is self-contained.
 
@@ -59,26 +59,24 @@ Make ElevenLabs a working part of the trading system, not just a voiceover. **Sc
 `results/viz/v60_assets/clips/` if present) and mux in the announcer's audio at the exact call frames (ffmpeg), plus a short
 title card "COURTSIDE Voice · powered by ElevenLabs". Show the measured event->audio latency on screen.
 
-### 1c. STRETCH — Solana devnet "proof of pre-registration" (about 1 hour; only after 1a and 1b are done)
-Our integrity story is that we wrote our hypotheses and rules down **before** seeing results (git timestamps). Make that
-tamper-evident on a public chain:
-- `sponsors/solana/anchor_prereg.py`: compute SHA-256 of each pre-registration file (`HYPOTHESIS.md`, `HYPOTHESIS_V2.md`,
-  `HYPOTHESIS_TT.md`, `research/v2/*/PREREG.md`, `research/v2/maker/PREREG.md`, `research/v2/tier0_v3/PREREG.md`) together with
-  the git commit hash and commit time that introduced each file (`git log --diff-filter=A --format="%H %cI" -- <file>`), and
-  write one **Memo-program transaction per file on Solana devnet** (memo text: `COURTSIDE prereg <file> sha256=<...> commit=<...>`).
-  Use `solana-py`/`solders` or the Solana CLI; fund the devnet keypair with `solana airdrop` (devnet SOL has no value).
-- `sponsors/solana/verify.py`: re-hashes the files and checks each memo on devnet (via `getTransaction`), printing a table with
-  explorer links (`https://explorer.solana.com/tx/<sig>?cluster=devnet`).
-- Output `sponsors/solana/anchors.json` (file, sha256, commit, commit time, tx signature, slot, block time).
-- Honest framing: the chain timestamp proves the file content existed **at anchoring time** (tonight); the git commit
-  times are the evidence for "before results". Say exactly that in the README.
-- Rules: devnet only (never mainnet, never real funds); the devnet keypair file goes in `sponsors/solana/.keys/` and is
-  gitignored (`sponsors/solana/.gitignore`); folder ownership: only `sponsors/solana/` in addition to `sponsors/elevenlabs/`.
-- Devpost line: "**Solana:** every pre-registration file in our repo is hashed and anchored on Solana devnet
-  (<N> memo transactions, links in sponsors/solana/anchors.json), so anyone can check our rules weren't edited after the fact."
+### 1c. STRETCH — Vultr "COURTSIDE London" latency probe (about 1-1.5 hours; only after 1a and 1b are done; needs Vultr credits, MLH usually provides a code)
+Our edge is speed, and Polymarket's matching engine is in London (eu-west-2). Measure what a London server buys us.
+- Spin up the smallest Vultr instance in **London** (and optionally one in **Miami/Atlanta** as the US comparison).
+- `sponsors/vultr/probe.py` (runs on the instance; Python + websockets): subscribe read-only to the public Polymarket CLOB
+  websocket for the in-play tennis markets (reuse the market-discovery logic from `src/live_recorder.py`), and for 30–60 min
+  log, per message, `server_ts` (exchange timestamp in the message) vs local receive time (NTP-synced; record `chronyc tracking`
+  offset), plus round-trip time of read-only `GET https://clob.polymarket.com/time` every 2 s.
+- Also run the same probe on your laptop (Florida) at the same time. Output `sponsors/vultr/out/probe_<site>.jsonl` and a
+  summary: one-way feed latency p50/p90/p99 per site, REST RTT per site, and the improvement London vs Florida in ms —
+  and write `sponsors/vultr/out/summary.json` (Ian may load it into Snowflake).
+- `sponsors/vultr/deploy.md`: exact steps (instance type, region, setup commands); destroy the instance afterwards and say so.
+- Rules: folder ownership `sponsors/vultr/` (in addition to `sponsors/elevenlabs/`); read-only market data, no keys on the box other than what the probe needs (none for public feeds); the Vultr API
+  token (if you script it) stays in `.env`.
+
+- Devpost line: "**Vultr — COURTSIDE London.** Our edge is speed, and Polymarket matches orders in London. We ran our read-only feed probe on a Vultr London server next to a Florida laptop: London saw the book updates <X> ms sooner at the median (p99 <Y> ms), exactly the kind of gap our paper prices. Paper trading only."
 
 ## 2. Rules (hard)
-- **Folder ownership: you may only create/edit files under `sponsors/elevenlabs/` (and `sponsors/solana/` for the stretch)** (code, README, requirements, outputs ≤ 40 MB;
+- **Folder ownership: you may only create/edit files under `sponsors/elevenlabs/` (and `sponsors/vultr/` for the stretch)** (code, README, requirements, outputs ≤ 40 MB;
   put larger media in `sponsors/elevenlabs/out/` and gitignore it via `sponsors/elevenlabs/.gitignore`). Do NOT edit anything else
   (no edits to engine/, scripts/, docs/, results/, README.md, requirements.txt). That guarantees zero merge conflicts.
 - **API key:** get your own free ElevenLabs access via the ElevenLabs Discord bot (see gqhacks Hacker Guide) or use the team
@@ -101,7 +99,7 @@ echo 'ELEVENLABS_API_KEY=<your key>' >> .env   # never commit
 ## 4. Hand back (no merge conflicts)
 - Push your branch: `git push origin sponsor/elevenlabs` and open a PR titled "ElevenLabs: COURTSIDE Voice".
 - Do NOT merge or rebase main into your branch (main's history gets rewritten tonight for a clean-up). Ojasva copies your
-  folder onto main with `git checkout sponsor/elevenlabs -- sponsors/elevenlabs`.
+  folder onto main with `git checkout sponsor/elevenlabs -- sponsors/elevenlabs sponsors/vultr`.
 - In the PR description paste: what you built, how to run it (3 commands), measured event->audio latency, ElevenLabs models
   used, characters used, and the Devpost text below filled in.
 
