@@ -828,7 +828,7 @@ def s06_speed(prs):
                  [P(R(f"{N('pp.pre.is.usd')} · {N('pp.pre.oos.usd')}", 13, INK), align="r")],
                  [P(R(f"{N('pp.cal.is.usd')} · {N('pp.cal.oos.usd')}", 13, INK), align="r")]])
     table(s, xt, 1.62, [1.95, 1.95, 1.93], [0.55, 0.56, 0.56, 0.56, 0.4, 0.4], rows, f"Latency scenarios (paper Table {PR('tab:lat')})")
-    text(s, xt, 4.7, CW - 6.1, 0.4, P(R("$/day held out (OOS) is a burned, non-blind window; 20 seeds a cell.", 10, GREY_L)),
+    text(s, xt, 4.7, CW - 6.1, 0.4, P(R("$/day held out (OOS) is a non-blind window; 20 seeds a cell.", 10, GREY_L)),
          name="Table note")
     # the three takeaways
     y = 5.2
@@ -863,7 +863,7 @@ def s07_backtest(prs, mc):
     set_title(s, f"v2 backtest: Sharpe {N('v2.is.sr')} in sample, {N('v2.oos.sr')} held out", True)
     # left: the numbers
     cols = [("In sample", "is", f"{N('v2.is.start')} – {N('v2.is.end')}"),
-            ("Held out (burned, non-blind)", "oos", f"{N('v2.oos.start')} – {N('v2.oos.end')}")]
+            ("Held out (non-blind)", "oos", f"{N('v2.oos.start')} – {N('v2.oos.end')}")]
     for j, (lab, k, span) in enumerate(cols):
         x = M + j * 3.05
         text(s, x, 1.68, 2.9, 0.3, P(R(lab, 11, GREY_D, bold=True)), name=f"{k}: label")
@@ -1245,7 +1245,7 @@ def run_checks(prs, n_main, mc, fwd_text):
             5: [r"simulated", r"never signed or sent", r"3 s"],
             6: [r"assumed feed latency", r"licensed feed not purchased", r"Pre-registered", r"Post hoc",
                 r"not ex ante", r"per point"],
-            7: [r"fast tier's own fills", r"burned, non-blind", r"deflated", r"SCORECARD"],
+            7: [r"fast tier's own fills", r"non-blind", r"deflated", r"SCORECARD"],
             8: [r"blind", r"variants"],
             9: [r"capacity|Capacity", r"daily stop", r"not yet a business"],
             10: [r"bash run\.sh", r"licensed feed not purchased", r"Paper trading only"]}

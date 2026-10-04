@@ -166,7 +166,7 @@
    "data_state": "test_used",
    "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
    "summary": "H3-D10 post hoc label audit after the single test read: 20 of 41 test MISS flights relabelled; the frozen model (no refit, same threshold) scores 8/8; the pre-specified 11/11 stays the result of record",
-   "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11.",
+   "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model's offline evaluation then scores 8/8 instead of 11/11.",
    "evidence": [
     "DEVIATIONS.md:139-152",
     "results/tracking/label_audit.json"
@@ -2871,7 +2871,7 @@
     "kind_label": "defect fix after an OOS look",
     "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
     "oos_selected": false,
-    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11."
+    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model's offline evaluation then scores 8/8 instead of 11/11."
    },
    {
     "id": "E06",
@@ -3019,7 +3019,7 @@
     "id": "E05",
     "family": "tracking",
     "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
-    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11."
+    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model's offline evaluation then scores 8/8 instead of 11/11."
    },
    {
     "id": "E10",

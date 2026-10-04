@@ -216,7 +216,7 @@ def panel_a(fig, D: dict, L: dict) -> dict:
     ax.yaxis.set_major_formatter(FuncFormatter(k_fmt))
     ax.set_ylabel("Cumulative P&L ($)")
     # region labels above the frame
-    for xv, lab in ((0, "In-sample"), (n_is, "Burned OOS")):
+    for xv, lab in ((0, "In-sample"), (n_is, "OOS (non-blind)")):
         ax.annotate(lab, xy=(xv, 1.0), xycoords=("data", "axes fraction"), xytext=(2.0, 2.0),
                     textcoords="offset points", ha="left", va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED,
                     annotation_clip=False)
@@ -426,7 +426,7 @@ def caption(N: dict) -> str:
           f"trading only the historical jumps of at least 4{fs.CENT}) on 10 matches a day at a "
           f"0.5{fs.THIN}s feed (mean of 20 seeds, whiskers 10{fs.NDASH}90{fs.THIN}% of seeds) under the pre-registered "
           f"2.0{fs.THIN}s stamp lag (black) and the post hoc 3.14{fs.THIN}s lag (orange), dotted lines the same two "
-          f"readings at 1{fs.THIN}s and 3{fs.THIN}s (only the post hoc ones are labelled), end labels the burned-OOS $/day and annualised Sharpe "
+          f"readings at 1{fs.THIN}s and 3{fs.THIN}s (only the post hoc ones are labelled), end labels the OOS (non-blind) $/day and annualised Sharpe "
           f"({fs.usd(b['cal']['pnl_per_day_usd'], 0, sign=True)} and {fs.f(b['cal']['sharpe_ann'], 1)} post hoc, "
           f"{fs.usd(b['pre']['pnl_per_day_usd'], 0, sign=True)} and {fs.f(b['pre']['sharpe_ann'], 1)} pre-registered).")
     w0 = pd.Timestamp(f["window"]["start_exclusive_utc"])
