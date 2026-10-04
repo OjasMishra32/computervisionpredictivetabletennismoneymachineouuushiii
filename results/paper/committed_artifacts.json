@@ -1,0 +1,1115 @@
+{
+ "schema": "courtside.paper.committed_artifacts/1",
+ "generated_utc": "2026-10-04T08:58:40+00:00",
+ "git_head": "906e849708bbc2f1e09402369cbd307be4337238",
+ "numbers_sha256": "02f97f56b3b8f2356264c40850d67bc1a5120f4350cfc7389b4e99b206d6745f",
+ "summary": {
+  "paper_keys": 1040,
+  "keys_citing_a_recomputed_file": 411,
+  "keys_citing_only_committed_artifacts": 569,
+  "recomputed_files": 21,
+  "committed_artifacts": 53,
+  "documents_and_code": 11,
+  "cited_as_absent": 1
+ },
+ "note": "A committed artifact is the authors' output, checked here only by sha256. scripts/repro/artifacts.py check fails a reproduction if one changed without its producer running, or if a paper source is neither recomputed nor listed.",
+ "recomputed": [
+  {
+   "path": "results/cv_teaser/teaser_numbers.json",
+   "step": "s07_cv_teaser",
+   "n_paper_keys": 11
+  },
+  {
+   "path": "results/data_coverage.json",
+   "step": "s04_coverage",
+   "n_paper_keys": 23
+  },
+  {
+   "path": "results/economics/persistence.json",
+   "step": "s05_persistence",
+   "n_paper_keys": 24
+  },
+  {
+   "path": "results/engine/rally_gate_eval.json",
+   "step": "s04_rally_gate",
+   "n_paper_keys": 13
+  },
+  {
+   "path": "results/fresh_holdout/results.json",
+   "step": "s08_fresh_holdout",
+   "n_paper_keys": 48
+  },
+  {
+   "path": "results/leverage_stats.json",
+   "step": "s04_leverage",
+   "n_paper_keys": 2
+  },
+  {
+   "path": "results/paper/policy.json",
+   "step": "s10_paper",
+   "n_paper_keys": 8
+  },
+  {
+   "path": "results/paper/variants.json",
+   "step": "s10_paper",
+   "n_paper_keys": 1
+  },
+  {
+   "path": "results/redteam/derived.json",
+   "step": "s09_derived",
+   "n_paper_keys": 18
+  },
+  {
+   "path": "results/redteam/stamp_lag.json",
+   "step": "s09_stamp_lag",
+   "n_paper_keys": 5
+  },
+  {
+   "path": "results/rigor/psr.json",
+   "step": "s06_psr",
+   "n_paper_keys": 20
+  },
+  {
+   "path": "results/scenario/fig_firm_05s_numbers.json",
+   "step": "s08_firm_fig",
+   "n_paper_keys": 1
+  },
+  {
+   "path": "results/sponsors/evidence.json",
+   "step": "s07_sponsors",
+   "n_paper_keys": 17
+  },
+  {
+   "path": "results/summary.json",
+   "step": "s01_run_all",
+   "n_paper_keys": 24
+  },
+  {
+   "path": "results/tier0/cost_turnover.json",
+   "step": "s06_cv_cost",
+   "n_paper_keys": 86
+  },
+  {
+   "path": "results/v2/causal.json",
+   "step": "s03_v2_causal",
+   "n_paper_keys": 23
+  },
+  {
+   "path": "results/v2/cost_stress.json",
+   "step": "s03_v2_cost",
+   "n_paper_keys": 16
+  },
+  {
+   "path": "results/v2/note_metrics.json",
+   "step": "s03_note_metrics",
+   "n_paper_keys": 35
+  },
+  {
+   "path": "results/v2/risk/per_match_loss.json",
+   "step": "s05_wallet_cap_oos",
+   "n_paper_keys": 7
+  },
+  {
+   "path": "results/v2/risk/wallet_cap.json",
+   "step": "s05_wallet_cap_oos",
+   "n_paper_keys": 30
+  },
+  {
+   "path": "results/v2/risk/wallet_cap_is.json",
+   "step": "s05_wallet_cap_is",
+   "n_paper_keys": 1
+  }
+ ],
+ "committed": [
+  {
+   "path": "research/rigor/out/verify.json",
+   "sha256": "7525a7be0b7e4aa43e03ddcd0b316554934775bc03b87b5735d69956d4964d9a",
+   "bytes": 28107,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "plat.pbo"
+   ]
+  },
+  {
+   "path": "research/v2/blocklag/results.json",
+   "sha256": "8a2563b3ef459d5e9db14c53b644a402ea7a2a39598b96f16961e6e7fecffb1c",
+   "bytes": 111,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "ev.blocklag"
+   ]
+  },
+  {
+   "path": "research/v2/crossmarket/analysis.json",
+   "sha256": "c5f60f053baec407cd6e6b3d105d3f418709a599a2fce4d950c46b57d0aa8929",
+   "bytes": 83339,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "ev.cm.c",
+    "ev.cm.ci",
+    "ev.cm.n"
+   ]
+  },
+  {
+   "path": "research/v2/exit/results.json",
+   "sha256": "f5f3aaf6167fd9704c3be7a88658a2c149997fa6667523f4ef68a927fbc5e92b",
+   "bytes": 26700,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "ev.exit.c",
+    "ev.exit.ci",
+    "ev.exit.n"
+   ]
+  },
+  {
+   "path": "research/v2/kalshi/out/leadlag_summary.json",
+   "sha256": "afc2f600ea4c82141df7a744d11655c9e41d98cc02ec9e2ed710c15ae5d40eb5",
+   "bytes": 6873,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "ev.kalshi.first",
+    "ev.kalshi.lead",
+    "ev.kalshi.n"
+   ]
+  },
+  {
+   "path": "research/v2/latency/results.json",
+   "sha256": "042768ff8992a18af663932cabd64d847dc1e2bf41254ef555bec6295885d5dd",
+   "bytes": 25032,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 13,
+   "paper_keys": [
+    "calc.R.p90",
+    "lat.book_vs_stamp",
+    "lat.book_vs_stamp_signed",
+    "lat.espn",
+    "lat.n_points",
+    "lat.pmsports",
+    "lat.wta",
+    "liq.spread",
+    "liq.stale.n",
+    "liq.stale_1s",
+    "liq.stale_2s",
+    "liq.stale_post"
+   ]
+  },
+  {
+   "path": "research/v2/livefill/results.json",
+   "sha256": "12cba0222f17bb771e8d9a8ebddf8a12e6f8598625614fb3d117d4d8e68e66ec",
+   "bytes": 718,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "ev.livefill.fill30",
+    "ev.livefill.post"
+   ]
+  },
+  {
+   "path": "research/v2/selection/results.json",
+   "sha256": "d118ac0acbdde1272d0b0e2b67a33fd07880f9e61edb356f4823874b5dae48a3",
+   "bytes": 68434,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 4,
+   "paper_keys": [
+    "ev.sel.base",
+    "ev.sel.c",
+    "ev.sel.ci",
+    "ev.sel.n"
+   ]
+  },
+  {
+   "path": "research/v2/sizing/out/policies.csv",
+   "sha256": "7dfe349125d414052329f87f7fa74c3d1d6e9c41314d7be0d400b2a09e830ae5",
+   "bytes": 102996,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "plat.sizing.cilo",
+    "plat.sizing.pos"
+   ]
+  },
+  {
+   "path": "research/v2/sizing/results.json",
+   "sha256": "f55ab73a7ecb9c69223f4a2817fc3ce6c8b70be969463116df93044dd63b56a9",
+   "bytes": 73785,
+   "producer": "research/<study>/*.py",
+   "family": "research-phase studies cited as context",
+   "why_not_recomputed": "research-phase measurements and diagnostics with partly gitignored or live inputs; cited, not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "sel.sizing.n",
+    "sel.sizing.pick"
+   ]
+  },
+  {
+   "path": "results/alpha/alpha.json",
+   "sha256": "8077619a88fc87ec5940fc929c6e83d3038d1461c274a89f5831056d2031bc23",
+   "bytes": 85660,
+   "producer": "scripts/alpha_pack.py",
+   "family": "alpha summary pack",
+   "why_not_recomputed": "summary of committed results; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 29,
+   "paper_keys": [
+    "calc.ff.HML",
+    "calc.ff.HML.t",
+    "calc.ff.MktRF",
+    "calc.ff.MktRF.t",
+    "calc.ff.Mom",
+    "calc.ff.Mom.t",
+    "calc.ff.SMB",
+    "calc.ff.SMB.t",
+    "calc.ff.alpha",
+    "conc.ex5.oos.c",
+    "conc.ex5.oos.ci",
+    "conc.top5.is"
+   ]
+  },
+  {
+   "path": "results/capacity/capacity.json",
+   "sha256": "b45a81b262f31f215b945ab1a50fa33b297aba667913c6508496805167749029",
+   "bytes": 1347022,
+   "producer": "scripts/capacity_study.py",
+   "family": "capacity grid on the jump-set and T3e books",
+   "why_not_recomputed": "multi-hour grid over the jump-set and T3e books; not run by reproduce.sh",
+   "recompute_step": null,
+   "n_paper_keys": 31,
+   "paper_keys": [
+    "cap.fastq",
+    "cap.inplay",
+    "capcv.central.is",
+    "capcv.central.oos",
+    "capcv.cf.is",
+    "capcv.cf.is.cost",
+    "capcv.cf.oos",
+    "capcv.cf.oos.cost",
+    "capcv.half.is",
+    "capcv.half.is.day",
+    "capcv.half.oos",
+    "capcv.half.oos.day"
+   ]
+  },
+  {
+   "path": "results/cv_teaser/bounce_example.json",
+   "sha256": "24a78c7bf67cb9bd3dc925877d4428bde6f48e6752622b6a059e99e0ae4aa54f",
+   "bytes": 4669,
+   "producer": "scripts/cv_teaser_fig.py extract --work <run_eval.py work dir>",
+   "family": "vision teaser: one held-out bounce from the tracking work table",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction (the run_eval work table)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "cvt.b.lead_ms"
+   ]
+  },
+  {
+   "path": "results/decay/audit_sameblock.json",
+   "sha256": "ad594ea25316fe6644d9d5c43f4ac7503f5beeffd17e998686a47d8d659cf722",
+   "bytes": 16940,
+   "producer": "scripts/signal_decay.py, research/decay/audit_sameblock.py",
+   "family": "signal decay",
+   "why_not_recomputed": "reads data/expand and the prints of every block; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "decay.sameblock.share"
+   ]
+  },
+  {
+   "path": "results/decay/decay.json",
+   "sha256": "10cc6dfa3fae43c4e7007341b6dfb4253a02d6b53cfef3a42b3275885d4e4078",
+   "bytes": 689898,
+   "producer": "scripts/signal_decay.py, research/decay/audit_sameblock.py",
+   "family": "signal decay",
+   "why_not_recomputed": "reads data/expand and the prints of every block; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 17,
+   "paper_keys": [
+    "cv.inf",
+    "data.blocklag",
+    "data.blocklag.n",
+    "decay.detections",
+    "decay.fast.0.is",
+    "decay.fast.0.oos",
+    "decay.fast.12.is",
+    "decay.fast.12.oos",
+    "decay.fast.23.is",
+    "decay.fast.23.oos",
+    "decay.others.0.is",
+    "decay.others.0.oos"
+   ]
+  },
+  {
+   "path": "results/e2e/summary.json",
+   "sha256": "b4f572d42b457135b91d66a549f9208c57cedb0f6da1f40dcc0433c8c9f4ef64",
+   "bytes": 25630,
+   "producer": "scripts/cv_showcase.py (end-to-end latency run)",
+   "family": "end-to-end latency measurement",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 8,
+   "paper_keys": [
+    "e2e.margin",
+    "e2e.n",
+    "e2e.net",
+    "e2e.ours",
+    "e2e.p99",
+    "e2e.req",
+    "e2e.sent",
+    "e2e.total"
+   ]
+  },
+  {
+   "path": "results/engine/demo_run_L4.json",
+   "sha256": "b2c3661d5102bddcf968b26a53515ff1b11487030a22da027e34a9556c55aed2",
+   "bytes": 407663,
+   "producer": "engine/vision/demo_live.py",
+   "family": "engine demo run",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 7,
+   "paper_keys": [
+    "risk.daily_stop",
+    "risk.feed_stale",
+    "risk.maxloss",
+    "risk.netcap",
+    "risk.order_usd",
+    "risk.vision_stale",
+    "risk.zone"
+   ]
+  },
+  {
+   "path": "results/engine/live_market_run.json",
+   "sha256": "077d4fc825cb2222e219e4d83577db8adebfb2fae01164cb7304c259cc62c159",
+   "bytes": 72495,
+   "producer": "engine/run.py --mode live-market",
+   "family": "engine on live books",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "lat.feed_p50"
+   ]
+  },
+  {
+   "path": "results/engine/online_vs_offline.json",
+   "sha256": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
+   "bytes": 239620,
+   "producer": "engine/vision/eval_online.py",
+   "family": "online vs offline vision calls",
+   "why_not_recomputed": "vision evaluation on the held-out clip with the frozen model (GPU/HPC); not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 6,
+   "paper_keys": [
+    "cv.eng.fps",
+    "cv.eng.lead",
+    "cv.eng.nmiss",
+    "cv.eng.tp",
+    "cv.eng.wil_lo",
+    "cv.phantom.hr"
+   ]
+  },
+  {
+   "path": "results/engine/vision_bench.json",
+   "sha256": "cbde8d95c92e7dbf5bc4e882af6d8a9204b99854af52f62048d72498ffe59f40",
+   "bytes": 61639,
+   "producer": "engine/vision/run_demo.py, bench_summary.py",
+   "family": "vision latency bench",
+   "why_not_recomputed": "hardware latency measurement (bash run.sh cv measures it again on the judge's machine)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "cv.laptop.fps"
+   ]
+  },
+  {
+   "path": "results/expand/results.json",
+   "sha256": "9809054d398b74f2d66a0deccc9b5e0d8dfc72e3913850a932ddb4969339cf1b",
+   "bytes": 27593,
+   "producer": "scripts/tier0_v3_blind.py",
+   "family": "U2 out-of-universe blind test",
+   "why_not_recomputed": "evaluated once by design; needs data/expand (11k-market crawl outside the universe)",
+   "recompute_step": null,
+   "n_paper_keys": 13,
+   "paper_keys": [
+    "u2.fmo.is",
+    "u2.fmo.is.ci",
+    "u2.fmo.oos",
+    "u2.fmo.oos.ci",
+    "u2.is.c",
+    "u2.is.ci",
+    "u2.itf",
+    "u2.m30.oos.c",
+    "u2.m30.oos.ci",
+    "u2.markets",
+    "u2.oos.c",
+    "u2.oos.ci"
+   ]
+  },
+  {
+   "path": "results/financials/financials.json",
+   "sha256": "b40975c0c8205f09effa835d44e6b8873da5832019448e04c1712e2ab290fc84",
+   "bytes": 162994,
+   "producer": "scripts/financials.py",
+   "family": "financial scenario tables",
+   "why_not_recomputed": "built from committed results; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 61,
+   "paper_keys": [
+    "cap.0.5x.is.c",
+    "cap.0.5x.is.capital",
+    "cap.0.5x.is.ci",
+    "cap.0.5x.is.usd",
+    "cap.0.5x.oos.c",
+    "cap.0.5x.oos.capital",
+    "cap.0.5x.oos.ci",
+    "cap.0.5x.oos.usd",
+    "cap.1x.is.c",
+    "cap.1x.is.capital",
+    "cap.1x.is.ci",
+    "cap.1x.is.usd"
+   ]
+  },
+  {
+   "path": "results/financials/pm_compute.json",
+   "sha256": "f9154cd6e455ff5a15b3bf2eb5f4b4b31e46826f0b6e058e22bf9a9f2617d629",
+   "bytes": 31909,
+   "producer": "scripts/pm_compute.py",
+   "family": "compute cost estimate",
+   "why_not_recomputed": "static cost inputs",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "risk.kill.days",
+    "risk.trail_min",
+    "v2.oos.ci_wallet"
+   ]
+  },
+  {
+   "path": "results/home_stream/sub_second_routes.json",
+   "sha256": "57d66a53806dcc2ea0cc7059b6cbfaf1546b223824a4b6485ede5527862b8ae5",
+   "bytes": 50320,
+   "producer": "research/home_stream (not distributed)",
+   "family": "home-stream latency routes",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "lat.webrtc_public"
+   ]
+  },
+  {
+   "path": "results/liquidity/impact.json",
+   "sha256": "bd6b4453779975c0e051806f8ef3daa542c0ecc07d8a8eeb485d7a4e7e1e558f",
+   "bytes": 110437,
+   "producer": "$PY scripts/impact_model.py",
+   "family": "recomputed only when an optional input is present",
+   "why_not_recomputed": "reproduce.sh step s05_impact runs only when data/live/market_20261003_1003.jsonl.gz exists (not distributed); otherwise this committed file is used",
+   "recompute_step": "s05_impact",
+   "n_paper_keys": 23,
+   "paper_keys": [
+    "liq.M",
+    "liq.is.lambda30.top",
+    "liq.l2.matches",
+    "liq.l2.reprices",
+    "liq.lambda30",
+    "liq.oos.lambda30.top",
+    "liq.orders.fit",
+    "liq.orders.matches",
+    "liq.orders.n",
+    "liq.phi.gt_half",
+    "liq.phi.official",
+    "liq.phi.took"
+   ]
+  },
+  {
+   "path": "results/live/STOPPED_TEAM_DECISION",
+   "sha256": "8cade7fa11760eccd15d039de893889001e189753f904547aa2c3d68419c98b9",
+   "bytes": 99,
+   "producer": "scripts/live_paper.py",
+   "family": "stopped live paper session (not used for results)",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "live.cell",
+    "live.status"
+   ]
+  },
+  {
+   "path": "results/live/summary.json",
+   "sha256": "17b6a4083220afe678f660c823828f5fc319711ab6fff0e543d16243dc6018b0",
+   "bytes": 3957,
+   "producer": "scripts/live_paper.py",
+   "family": "stopped live paper session (not used for results)",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "live.cell"
+   ]
+  },
+  {
+   "path": "results/lowloss/daily.csv",
+   "sha256": "c6dff084092f8f208e146ceadd8d1aaa28250b1422529c00dfb8a5140f95df3a",
+   "bytes": 88402,
+   "producer": "scripts/lowloss_test.py",
+   "family": "v2-safe (lowloss) frozen evaluation incl. its U2 blind test",
+   "why_not_recomputed": "pre-registered single run; U2 needs data/expand; not affected by the repair",
+   "recompute_step": null,
+   "n_paper_keys": 5,
+   "paper_keys": [
+    "calc.so.dd",
+    "v2.is.end",
+    "v2.is.start",
+    "v2.oos.end",
+    "v2.oos.start"
+   ]
+  },
+  {
+   "path": "results/lowloss/results.json",
+   "sha256": "e7dd313afc391e3af48c791ecdc5d653777d0e22cf0c6f5cc41f5a88617fa486",
+   "bytes": 74010,
+   "producer": "scripts/lowloss_test.py",
+   "family": "v2-safe (lowloss) frozen evaluation incl. its U2 blind test",
+   "why_not_recomputed": "pre-registered single run; U2 needs data/expand; not affected by the repair",
+   "recompute_step": null,
+   "n_paper_keys": 19,
+   "paper_keys": [
+    "calc.mdd",
+    "calc.peak",
+    "calc.so",
+    "v2s.is.c",
+    "v2s.is.cap",
+    "v2s.is.ci",
+    "v2s.is.dd",
+    "v2s.is.turnover",
+    "v2s.is.worstmonth",
+    "v2s.oos.c",
+    "v2s.oos.cap",
+    "v2s.oos.ci"
+   ]
+  },
+  {
+   "path": "results/maker/oos.json",
+   "sha256": "cf5d0d4b620bd5da04d27cbe93bf874b99dd1514da2a786c6acbbc4136931767",
+   "bytes": 18874,
+   "producer": "scripts/maker_oos.py",
+   "family": "maker v1 blind test",
+   "why_not_recomputed": "evaluated once by design (blind)",
+   "recompute_step": null,
+   "n_paper_keys": 6,
+   "paper_keys": [
+    "mk.is.c",
+    "mk.oos.c",
+    "mk.oos.ci",
+    "mk.oos.usd",
+    "mk.verdict",
+    "var.maker"
+   ]
+  },
+  {
+   "path": "results/oos_peeks.log",
+   "sha256": "be7b876614e04ac3f6b6f4cbb05d2a39b56edaf91a94a9709a559f9fac070d3f",
+   "bytes": 32259,
+   "producer": "append-only log of held-out reads",
+   "family": "provenance record",
+   "why_not_recomputed": "a record, not a computation; reproduction runs never append to it (results/repro/reads.log instead)",
+   "recompute_step": null,
+   "n_paper_keys": 8,
+   "paper_keys": [
+    "peeks.audit",
+    "peeks.blind",
+    "peeks.desc",
+    "peeks.live",
+    "peeks.n",
+    "peeks.nonblind",
+    "peeks.other",
+    "t0.oos_first"
+   ]
+  },
+  {
+   "path": "results/redteam/causal_cv.json",
+   "sha256": "d489465ee3385e8b021dc45503ce494007d3a19e4563b4087b0549bb38f171c6",
+   "bytes": 7244,
+   "producer": "scripts/redteam_causal_cv.py",
+   "family": "red-team causal-CV diagnostic",
+   "why_not_recomputed": "diagnostic re-simulation that re-reads held-out cells; not part of the paper pipeline",
+   "recompute_step": null,
+   "n_paper_keys": 7,
+   "paper_keys": [
+    "cv.eng.cal.is.usd",
+    "cv.eng.cal.oos.sr",
+    "cv.eng.cal.oos.usd",
+    "cv.eng.pre.is.usd",
+    "cv.eng.pre.oos.usd",
+    "pess.cal.is.usd",
+    "pess.cal.oos.usd"
+   ]
+  },
+  {
+   "path": "results/replay/audit.json",
+   "sha256": "c8881e17fde291e647266a1c64f5eaa01d5b417d3516efbab365805a47a38115",
+   "bytes": 40822,
+   "producer": "scripts/match_replay.py, match_replay_report.py, match_replay_check.py, match_replay_selective.py",
+   "family": "replay on recorded live order books",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "rp.recv_ms"
+   ]
+  },
+  {
+   "path": "results/replay/replay.json",
+   "sha256": "7bf343354896b481fdea418db4302fb42703f27432bb7ce62ef9d71aa8304f45",
+   "bytes": 484228,
+   "producer": "scripts/match_replay.py, match_replay_report.py, match_replay_check.py, match_replay_selective.py",
+   "family": "replay on recorded live order books",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 8,
+   "paper_keys": [
+    "rp.beat",
+    "rp.matches",
+    "rp.of",
+    "rp.official",
+    "rp.replayable",
+    "rp.v1l2.c",
+    "rp.v1l2.ci",
+    "rp.v1l2.usd_mark"
+   ]
+  },
+  {
+   "path": "results/replay/selective/selective.json",
+   "sha256": "bf3e8ed6cd38a0222587d06fb244b6b18614ebef48efd6ea8fbe84a4e6acfdfb",
+   "bytes": 283736,
+   "producer": "scripts/match_replay.py, match_replay_report.py, match_replay_check.py, match_replay_selective.py",
+   "family": "replay on recorded live order books",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "rp.sel.t4.c",
+    "rp.sel.t4.ci",
+    "rp.sel.t4.fills"
+   ]
+  },
+  {
+   "path": "results/rigor/rigor.json",
+   "sha256": "0d3e358b5c9556a603307712970da5cfb414c4161534fb66d70e59ec0258b324",
+   "bytes": 26734,
+   "producer": "scripts/rigor_pack.py",
+   "family": "DSR / PBO / block bootstrap pack",
+   "why_not_recomputed": "statistics over committed result series; the script also rewrites research/rigor/RESULTS.md; not run by reproduce.sh",
+   "recompute_step": null,
+   "n_paper_keys": 50,
+   "paper_keys": [
+    "calc.boot.se",
+    "calc.dsr",
+    "calc.is.T",
+    "calc.is.cap",
+    "calc.is.kurt",
+    "calc.is.mean",
+    "calc.is.sd",
+    "calc.is.skew",
+    "calc.is.sr",
+    "calc.is.srd",
+    "calc.oos.T",
+    "calc.oos.cap"
+   ]
+  },
+  {
+   "path": "results/risk/risk_stats.json",
+   "sha256": "a94ce49f3a646d771250655ee9b61ac12c1aeb58d95d6a5feac8f23e05a61407",
+   "bytes": 53513,
+   "producer": "scripts/risk_stats.py",
+   "family": "risk statistics across books",
+   "why_not_recomputed": "needs gitignored spin raw data and data/expand",
+   "recompute_step": null,
+   "n_paper_keys": 11,
+   "paper_keys": [
+    "data.res5050",
+    "data.res5050.n",
+    "data.retired",
+    "data.walk",
+    "liq.trade_med",
+    "risk.cap_realised",
+    "risk.corr_sameday",
+    "v2.reg.1s3",
+    "v2.reg.1s5",
+    "v2.reg.3s0",
+    "v2.reg.3s3"
+   ]
+  },
+  {
+   "path": "results/spin/tennis/key_numbers.json",
+   "sha256": "1337f86801e1de2db70f41898ebe8865fb8ea2f1359e48a8addd37841ebea15e",
+   "bytes": 17980,
+   "producer": "scripts/spin_tennis_report.py, research/spin/tt_report.py (hpg/spin_tt.sbatch)",
+   "family": "spin estimation",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 5,
+   "paper_keys": [
+    "cv.spin.base200",
+    "cv.spin.bls200",
+    "spin.out.prec200",
+    "spin.out.rec200",
+    "spin.rpm200"
+   ]
+  },
+  {
+   "path": "results/spin/tt/test/report_numbers.json",
+   "sha256": "3165d3fed62935a4ec19de6b7da6004bd8765967e01058ebef79bdc1fec52807",
+   "bytes": 10727,
+   "producer": "scripts/spin_tennis_report.py, research/spin/tt_report.py (hpg/spin_tt.sbatch)",
+   "family": "spin estimation",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "spin.tt.calls50",
+    "spin.tt.tp50"
+   ]
+  },
+  {
+   "path": "results/tennis_tracking/flights.csv",
+   "sha256": "2b131b16019829c589fdd961ef36bf7e6d3be568a1ea89f5fe30572d5955bcfb",
+   "bytes": 49894,
+   "producer": "src/tennis_tracking/run_eval.py (hpg/tennis_eval.sbatch)",
+   "family": "tennis ball tracking",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 2,
+   "paper_keys": [
+    "cvt.b.d_true_cm",
+    "cvt.b.game"
+   ]
+  },
+  {
+   "path": "results/tennis_tracking/predictions_at_leads.csv",
+   "sha256": "05cbff3d26b144508882d046bb6f424a06dd07f58265fcc1737d0db7fd931917",
+   "bytes": 744992,
+   "producer": "src/tennis_tracking/run_eval.py (hpg/tennis_eval.sbatch)",
+   "family": "tennis ball tracking",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "cvt.b.d_hat_m",
+    "cvt.b.err_cm",
+    "cvt.b.lead_ms"
+   ]
+  },
+  {
+   "path": "results/tennis_tracking/summary.json",
+   "sha256": "2cbb177e627c363095d7f85402c1926b2f78f1e7c3c4a1cd768f6b72b113c05d",
+   "bytes": 119889,
+   "producer": "src/tennis_tracking/run_eval.py (hpg/tennis_eval.sbatch)",
+   "family": "tennis ball tracking",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 14,
+   "paper_keys": [
+    "bt.bounces.all",
+    "bt.bounces.test",
+    "bt.call.0",
+    "bt.call.100",
+    "bt.call.33",
+    "bt.call.67",
+    "bt.det.prec",
+    "bt.det.rec",
+    "bt.err.lead",
+    "bt.err0",
+    "bt.lab67",
+    "bt.maxlead"
+   ]
+  },
+  {
+   "path": "results/tier0/grid.csv",
+   "sha256": "8d9dd3c680c19f0a362ade715309e97f83916acd60ff3dc786a0d4c190bbf08e",
+   "bytes": 784740,
+   "producer": "scripts/tier0_backtest.py",
+   "family": "original CV grid (jump set, benchmark)",
+   "why_not_recomputed": "superseded research grid kept as the conditional benchmark; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "var.tier0"
+   ]
+  },
+  {
+   "path": "results/tier0/inputs/point_mix.json",
+   "sha256": "b646fa9ffe419a0491307d1bbaf2677f94e91496551cb15caacc503b55e2bc02",
+   "bytes": 786,
+   "producer": "research/v2/tier0/rebuild.py",
+   "family": "CV simulator inputs (point mix, live points)",
+   "why_not_recomputed": "frozen simulator inputs measured once from the live day's recorded points (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "pm.net",
+    "pm.out",
+    "pm.win"
+   ]
+  },
+  {
+   "path": "results/tier0/latency_sweep.csv",
+   "sha256": "e0ccca7b02a097fa7d6870253f01a5d3815a6c2b4c64672033f1a70a72d74fb6",
+   "bytes": 338907,
+   "producer": "scripts/tier0_latency_sweep.py (hpg/tier0_latency_sweep.sbatch)",
+   "family": "CV latency sweep, conditional on realized >= 4c jumps (benchmark)",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 33,
+   "paper_keys": [
+    "cv.cal.is.cap",
+    "cv.cal.is.days",
+    "cv.cal.is.dd",
+    "cv.cal.is.ret",
+    "cv.cal.is.tpd",
+    "cv.cal.is.vol",
+    "cv.cal.is.worstday",
+    "cv.cal.is.wrong_usd",
+    "cv.cal.oos.cap",
+    "cv.cal.oos.days",
+    "cv.cal.oos.dd",
+    "cv.cal.oos.ret"
+   ]
+  },
+  {
+   "path": "results/tier0/latency_sweep.json",
+   "sha256": "641d54f7e1871445b1a8a9f6ee5095b4e967930aeff470baa1de03e228ac98e9",
+   "bytes": 188787,
+   "producer": "scripts/tier0_latency_sweep.py (hpg/tier0_latency_sweep.sbatch)",
+   "family": "CV latency sweep, conditional on realized >= 4c jumps (benchmark)",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 137,
+   "paper_keys": [
+    "cv.cal.be.is",
+    "cv.cal.be.oos",
+    "cv.cal.be_ci.is",
+    "cv.cal.be_ci.oos",
+    "cv.cal.is.c",
+    "cv.cal.is.c_ci",
+    "cv.cal.is.sr",
+    "cv.cal.is.usd",
+    "cv.cal.is.usd_ci",
+    "cv.cal.is.wrong",
+    "cv.cal.lag",
+    "cv.cal.oos.c"
+   ]
+  },
+  {
+   "path": "results/tier0/results.json",
+   "sha256": "972b46462c2f2331621dd97b4deafffdd77f24bb19d8650809555c55a82ee0c6",
+   "bytes": 363333,
+   "producer": "scripts/tier0_backtest.py",
+   "family": "original CV grid (jump set, benchmark)",
+   "why_not_recomputed": "superseded research grid kept as the conditional benchmark; not rerun",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "cv.pool.all",
+    "cv.pool.d3",
+    "cv.pool482.oos"
+   ]
+  },
+  {
+   "path": "results/tier0_v3/blind.json",
+   "sha256": "dd8daf349af9d540ff848ab86952bcf03c64b2c09464b226e5a7a9868b71e04a",
+   "bytes": 53401,
+   "producer": "scripts/tier0_v3_optimise.py, scripts/tier0_v3_blind.py",
+   "family": "tier-0 v3 grid and its blind U2 test",
+   "why_not_recomputed": "the blind test is evaluated once by design; U2 needs data/expand (an 11k-market crawl outside the universe)",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "t3.is.c",
+    "t3.oos.c",
+    "t3.verdict"
+   ]
+  },
+  {
+   "path": "results/tier0_v3/is/grid.csv",
+   "sha256": "a1e0f578d872d2671a11bb3d18b4670a6b847a5700975e101b656bb913075c3b",
+   "bytes": 544039,
+   "producer": "scripts/tier0_v3_optimise.py, scripts/tier0_v3_blind.py",
+   "family": "tier-0 v3 grid and its blind U2 test",
+   "why_not_recomputed": "the blind test is evaluated once by design; U2 needs data/expand (an 11k-market crawl outside the universe)",
+   "recompute_step": null,
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "var.tier0v3"
+   ]
+  },
+  {
+   "path": "results/tracking/summary.json",
+   "sha256": "5b88c99cd5148e942197c480379bd279656079c374917af5df621bbe79973465",
+   "bytes": 42871,
+   "producer": "src/tracking/summarize.py (hpg/track_*.sbatch)",
+   "family": "table-tennis ball tracking",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 6,
+   "paper_keys": [
+    "cv.tt.det_recall",
+    "cv.tt.n_bounce",
+    "cv.tt.n_miss",
+    "cv.tt.rec50",
+    "cv.tt.tp50",
+    "cv.tt.wil50"
+   ]
+  },
+  {
+   "path": "results/tt/results.json",
+   "sha256": "ec6fb5d685bd436040ab9eaccfa56ad6decf5e169f956671d80e102a93d7692d",
+   "bytes": 56456,
+   "producer": "scripts/tier0_backtest.py",
+   "family": "table-tennis tier-0 study",
+   "why_not_recomputed": "separate market (table tennis) crawl, not in the declared universe",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "tt.matches",
+    "tt.qualified",
+    "tt.spread"
+   ]
+  },
+  {
+   "path": "results/viz/v60_assets/tennis_real/tennis_detections.json",
+   "sha256": "a6e9d52de97e214a27c12da31560bd4a13ba0b28b755810a7deea8a1c87931e4",
+   "bytes": 269207,
+   "producer": "scripts/tennis_real_tracked.py",
+   "family": "real tennis footage detections",
+   "why_not_recomputed": "HiPerGator batch job (hours of CPU/GPU); not part of the laptop reproduction",
+   "recompute_step": null,
+   "n_paper_keys": 6,
+   "paper_keys": [
+    "tn.real.ball",
+    "tn.real.ball_n",
+    "tn.real.court_frames",
+    "tn.real.court_px",
+    "tn.real.frames",
+    "tn.real.spot"
+   ]
+  },
+  {
+   "path": "results/webrtc/latency.json",
+   "sha256": "ffff489b8d198e33feca94ba1d98c79c1bf10ed800aceb3a52f5a60cfd208bd3",
+   "bytes": 64988,
+   "producer": "scripts/webrtc_latency.py, webrtc_verify.py",
+   "family": "WebRTC latency measurement",
+   "why_not_recomputed": "measured on our hardware or recorded live order books (data/live, not distributed)",
+   "recompute_step": null,
+   "n_paper_keys": 3,
+   "paper_keys": [
+    "cv.webrtc",
+    "cv.webrtc.n",
+    "webrtc.leg"
+   ]
+  }
+ ],
+ "documents_and_code": [
+  {
+   "path": "DEVIATIONS.md",
+   "n_paper_keys": 1,
+   "pinned_by": "git"
+  },
+  {
+   "path": "HYPOTHESIS.md",
+   "n_paper_keys": 2,
+   "pinned_by": "git"
+  },
+  {
+   "path": "HYPOTHESIS_V2.md",
+   "n_paper_keys": 3,
+   "pinned_by": "git"
+  },
+  {
+   "path": "docs/RISK.md",
+   "n_paper_keys": 2,
+   "pinned_by": "git"
+  },
+  {
+   "path": "research/v2/expand/PREREG.md",
+   "n_paper_keys": 1,
+   "pinned_by": "git"
+  },
+  {
+   "path": "research/v2/tier0/DEVIATIONS.md",
+   "n_paper_keys": 2,
+   "pinned_by": "git"
+  },
+  {
+   "path": "research/v2/tier0/PREREG.md",
+   "n_paper_keys": 3,
+   "pinned_by": "git"
+  },
+  {
+   "path": "src/fasttier.py",
+   "n_paper_keys": 3,
+   "pinned_by": "git"
+  },
+  {
+   "path": "src/markov.py",
+   "n_paper_keys": 9,
+   "pinned_by": "git"
+  },
+  {
+   "path": "src/tape.py",
+   "n_paper_keys": 1,
+   "pinned_by": "git"
+  },
+  {
+   "path": "src/tiers.py",
+   "n_paper_keys": 1,
+   "pinned_by": "git"
+  }
+ ],
+ "cited_as_absent": [
+  {
+   "path": "results/v2/forward.json",
+   "n_paper_keys": 1,
+   "paper_keys": [
+    "fwd.cell"
+   ],
+   "note": "the paper cites this file's absence (e.g. a test that was not run)"
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "checked_utc": "2026-10-04T05:46:56.220132+00:00",
+ "T_f": "2026-10-04T05:44:23+00:00",
+ "started_in_window_not_closed": 6,
+ "by_series": {
+  "atp": 4,
+  "wta": 2
+ },
+ "slugs": [
+  "atp-alcaraz-shapova-2026-10-04",
+  "atp-bellucc-harri-2026-10-03",
+  "atp-hurkacz-khachan-2026-10-03",
+  "atp-yamasak-borisio-2026-10-04",
+  "wta-alexand-shnaide-2026-10-03",
+  "wta-kuderme-andreev-2026-10-03"
+ ]
+}
