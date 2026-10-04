@@ -1,0 +1,813 @@
+{
+ "generated_utc": "2026-10-04T05:34:34+00:00",
+ "script": "scripts/v2_wallet_cap.py --is",
+ "git_head": "dc95717a4b33c2c8fcfa3346728ab19cc15f781f",
+ "grid_md": {
+  "path": "research/v2/risk/GRID_wallet_cap.md",
+  "sha256": "865604492d553708580b91a71cba433c63bc81c167b2179f9253ca7e1c22aa1c",
+  "commit": "f35131a81c17cf1b279641fbd272a2bf928515b3 2026-10-04T01:28:28-04:00"
+ },
+ "data": {
+  "features": "data/v2_lowloss/features_is.parquet",
+  "features_sha16": "0ddc78cf047978c1",
+  "whist": "data/v2_lowloss/whist_is.parquet",
+  "oos_read": false
+ },
+ "baseline_check": {
+  "n_trades": 55662,
+  "pnl_usd": 40425.71919167921,
+  "ref": "results/v2/causal.json::causal/is_eval/slip0.0",
+  "identical": true
+ },
+ "grid": {
+  "W_usd_per_wallet_day": [
+   null,
+   4000.0,
+   2000.0,
+   1000.0,
+   500.0,
+   250.0
+  ],
+  "R": [
+   false,
+   true
+  ],
+  "retire_rule": {
+   "window_days": 30,
+   "lag_s": 30,
+   "min_n": 50,
+   "retire_if": "mean(gross30 - rate*q*(1-q)) <= 0"
+  }
+ },
+ "selection_rule": "smallest finite W (R off) with IS $ P&L >= 50% of baseline and match-clustered per-share CI lower > 0; R on only if it raises both per-share and calendar Sharpe at that W",
+ "selection": {
+  "W": 1000.0,
+  "R": true,
+  "feasible_W": [
+   4000.0,
+   2000.0,
+   1000.0
+  ],
+  "variant": "W1000_Ron"
+ },
+ "stability_expanding_history": {
+  "2026-02..2026-04": {
+   "W": 2000.0,
+   "R": true,
+   "feasible_W": [
+    4000.0,
+    2000.0
+   ],
+   "variant": "W2000_Ron"
+  },
+  "2026-02..2026-05": {
+   "W": 2000.0,
+   "R": true,
+   "feasible_W": [
+    4000.0,
+    2000.0
+   ],
+   "variant": "W2000_Ron"
+  },
+  "2026-02..2026-06": {
+   "W": 1000.0,
+   "R": true,
+   "feasible_W": [
+    4000.0,
+    2000.0,
+    1000.0
+   ],
+   "variant": "W1000_Ron"
+  },
+  "2026-02..2026-07": {
+   "W": 1000.0,
+   "R": true,
+   "feasible_W": [
+    4000.0,
+    2000.0,
+    1000.0
+   ],
+   "variant": "W1000_Ron"
+  }
+ },
+ "variants": [
+  {
+   "n_trades": 55662,
+   "n_matches": 7639,
+   "n_wallets": 80,
+   "pnl_usd": 40425.71919167921,
+   "usd_traded": 1479564.11540577,
+   "per_share_c": 1.3814511010237975,
+   "per_share_ci95_c_match": [
+    1.167847083750991,
+    1.5935130267793969
+   ],
+   "per_share_ci95_c_wallet": [
+    0.580008356551635,
+    2.285988271075363
+   ],
+   "sharpe_ann_calendar": 14.483153541485253,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    11.928853719016487,
+    17.370159740112545
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 14.483153541485253,
+   "max_dd_usd": -569.4550360798748,
+   "max_dd_usd_engine": -569.4550360798748,
+   "worst_day_usd": -550.764300067122,
+   "capital_usd_3x_peak_locked": 28302.367701375268,
+   "return_on_capital_pct": 142.83511407321177,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.4166300540155167,
+   "top5_wallet_share_of_pnl": 0.8136622885258313,
+   "top5_wallets_pnl_usd": 32892.88319280432,
+   "ex_top5": {
+    "n_trades": 25202,
+    "pnl_usd": 7532.835998874891,
+    "per_share_c": 0.6113108993217828,
+    "per_share_ci95_c_match": [
+     0.004588084044048658,
+     1.2700508306685778
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.19501827347881157,
+   "worst_wallet_day_pnl_usd": -925.4962904591746,
+   "max_wallet_day_gross_usd": 7590.742112952971,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "Winf_Roff",
+   "W": null,
+   "R": false,
+   "gross_usd_vs_baseline": 1.0,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 55017,
+   "n_matches": 7628,
+   "n_wallets": 80,
+   "pnl_usd": 40054.33422732946,
+   "usd_traded": 1458657.6848663678,
+   "per_share_c": 1.3883362695470576,
+   "per_share_ci95_c_match": [
+    1.1729473456171102,
+    1.6100501939275917
+   ],
+   "per_share_ci95_c_wallet": [
+    0.613079319207271,
+    2.264658324704057
+   ],
+   "sharpe_ann_calendar": 14.588270168041719,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    11.998067986142296,
+    17.479411421336515
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 14.588270168041719,
+   "max_dd_usd": -569.4550360798748,
+   "max_dd_usd_engine": -569.4550360798748,
+   "worst_day_usd": -550.764300067122,
+   "capital_usd_3x_peak_locked": 28302.36770137524,
+   "return_on_capital_pct": 141.52290949630756,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.4022479588658522,
+   "top5_wallet_share_of_pnl": 0.814545981163861,
+   "top5_wallets_pnl_usd": 32626.096973065298,
+   "ex_top5": {
+    "n_trades": 25260,
+    "pnl_usd": 7428.237254264162,
+    "per_share_c": 0.6026288172852421,
+    "per_share_ci95_c_match": [
+     -0.018072085557288828,
+     1.189390317414823
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.1981728758251468,
+   "worst_wallet_day_pnl_usd": -879.4917767366087,
+   "max_wallet_day_gross_usd": 4000.0000000000027,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W4000_Roff",
+   "W": 4000.0,
+   "R": false,
+   "gross_usd_vs_baseline": 0.9858698718617755,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 49767,
+   "n_matches": 7466,
+   "n_wallets": 80,
+   "pnl_usd": 34788.54987112859,
+   "usd_traded": 1291999.6500378414,
+   "per_share_c": 1.3612812984568485,
+   "per_share_ci95_c_match": [
+    1.129527698910218,
+    1.6109122440161283
+   ],
+   "per_share_ci95_c_wallet": [
+    0.5226779591455208,
+    2.2923722745109734
+   ],
+   "sharpe_ann_calendar": 13.626471582498521,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    10.844002773753683,
+    16.82869317544489
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 13.626471582498521,
+   "max_dd_usd": -757.4577958023438,
+   "max_dd_usd_engine": -757.4577958023438,
+   "worst_day_usd": -529.5333112026957,
+   "capital_usd_3x_peak_locked": 26807.53647589033,
+   "return_on_capital_pct": 129.77152862373637,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.39392184012851,
+   "top5_wallet_share_of_pnl": 0.8316015792185211,
+   "top5_wallets_pnl_usd": 28930.213011552813,
+   "ex_top5": {
+    "n_trades": 31994,
+    "pnl_usd": 5858.336859575783,
+    "per_share_c": 0.39714619628770437,
+    "per_share_ci95_c_match": [
+     -0.06418559888182902,
+     0.8644665793634377
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.19271206042807057,
+   "worst_wallet_day_pnl_usd": -787.2465853523926,
+   "max_wallet_day_gross_usd": 2000.0000000000011,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W2000_Roff",
+   "W": 2000.0,
+   "R": false,
+   "gross_usd_vs_baseline": 0.8732299172337732,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 41136,
+   "n_matches": 7078,
+   "n_wallets": 80,
+   "pnl_usd": 24707.372197384106,
+   "usd_traded": 1002879.3468618556,
+   "per_share_c": 1.2472007863730763,
+   "per_share_ci95_c_match": [
+    0.934952375641336,
+    1.5413574098784335
+   ],
+   "per_share_ci95_c_wallet": [
+    0.32625910449150125,
+    2.285802660748414
+   ],
+   "sharpe_ann_calendar": 10.324007435242537,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    7.230884154527709,
+    13.742711744612397
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 10.324007435242537,
+   "max_dd_usd": -1211.931893467654,
+   "max_dd_usd_engine": -1211.931893467654,
+   "worst_day_usd": -709.0031992256338,
+   "capital_usd_3x_peak_locked": 20497.65705627677,
+   "return_on_capital_pct": 120.53754304479516,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.3434277011475909,
+   "top5_wallet_share_of_pnl": 0.8709819390952447,
+   "top5_wallets_pnl_usd": 21519.674946425544,
+   "ex_top5": {
+    "n_trades": 29566,
+    "pnl_usd": 3187.697250958564,
+    "per_share_c": 0.25258705119748814,
+    "per_share_ci95_c_match": [
+     -0.266817084892351,
+     0.804724301332281
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.16265556758199062,
+   "worst_wallet_day_pnl_usd": -688.7472294470382,
+   "max_wallet_day_gross_usd": 1000.0000000000005,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W1000_Roff",
+   "W": 1000.0,
+   "R": false,
+   "gross_usd_vs_baseline": 0.6778208098043904,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 30979,
+   "n_matches": 6404,
+   "n_wallets": 80,
+   "pnl_usd": 17209.627369887992,
+   "usd_traded": 689703.6603003358,
+   "per_share_c": 1.2606371050510208,
+   "per_share_ci95_c_match": [
+    0.867102520144002,
+    1.6446658492386346
+   ],
+   "per_share_ci95_c_wallet": [
+    0.4102435576307522,
+    2.161004707836335
+   ],
+   "sharpe_ann_calendar": 8.089714624466312,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    4.95220074577896,
+    11.317003663929778
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 8.089714624466312,
+   "max_dd_usd": -1159.0064185750798,
+   "max_dd_usd_engine": -1159.0064185750798,
+   "worst_day_usd": -528.7765007800317,
+   "capital_usd_3x_peak_locked": 14249.09926096107,
+   "return_on_capital_pct": 120.77694915802869,
+   "months_positive": 6,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.24084271147055197,
+   "top5_wallet_share_of_pnl": 0.8009502014435177,
+   "top5_wallets_pnl_usd": 13784.054508679663,
+   "ex_top5": {
+    "n_trades": 23016,
+    "pnl_usd": 3425.57286120833,
+    "per_share_c": 0.3831779419878315,
+    "per_share_ci95_c_match": [
+     -0.21056495899881386,
+     1.0581576536195683
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.12747477389257586,
+   "worst_wallet_day_pnl_usd": -393.0102288152414,
+   "max_wallet_day_gross_usd": 500.00000000000017,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W500_Roff",
+   "W": 500.0,
+   "R": false,
+   "gross_usd_vs_baseline": 0.4661532765757737,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 22238,
+   "n_matches": 5484,
+   "n_wallets": 80,
+   "pnl_usd": 13845.44092213009,
+   "usd_traded": 442296.4246936911,
+   "per_share_c": 1.5765726261056108,
+   "per_share_ci95_c_match": [
+    1.0681801780023032,
+    2.0580797648817284
+   ],
+   "per_share_ci95_c_wallet": [
+    0.5000428411229493,
+    2.661843833715614
+   ],
+   "sharpe_ann_calendar": 7.515572212157601,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    4.640030785367082,
+    10.432045294144555
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 7.515572212157601,
+   "max_dd_usd": -894.8948985903744,
+   "max_dd_usd_engine": -894.8948985903744,
+   "worst_day_usd": -486.9135027554249,
+   "capital_usd_3x_peak_locked": 9351.979400695498,
+   "return_on_capital_pct": 148.04824015224432,
+   "months_positive": 6,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.25117573824850364,
+   "top5_wallet_share_of_pnl": 0.8051112523544325,
+   "top5_wallets_pnl_usd": 11147.120280215466,
+   "ex_top5": {
+    "n_trades": 17240,
+    "pnl_usd": 2698.3206419146254,
+    "per_share_c": 0.4451367953328235,
+    "per_share_ci95_c_match": [
+     -0.24652779465468652,
+     1.1633996344794864
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.10405827909848486,
+   "worst_wallet_day_pnl_usd": -253.21642616356155,
+   "max_wallet_day_gross_usd": 250.00000000000009,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W250_Roff",
+   "W": 250.0,
+   "R": false,
+   "gross_usd_vs_baseline": 0.2989369775113743,
+   "retired_opportunity_usd_share": 0.0
+  },
+  {
+   "n_trades": 53264,
+   "n_matches": 7597,
+   "n_wallets": 80,
+   "pnl_usd": 40702.002684129024,
+   "usd_traded": 1432445.3512782974,
+   "per_share_c": 1.4387227091288386,
+   "per_share_ci95_c_match": [
+    1.2158739327424584,
+    1.6564860531036951
+   ],
+   "per_share_ci95_c_wallet": [
+    0.5960369928751021,
+    2.381678261155925
+   ],
+   "sharpe_ann_calendar": 14.5180554386378,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    11.982076070062185,
+    17.310433617190455
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 14.5180554386378,
+   "max_dd_usd": -540.2880540961487,
+   "max_dd_usd_engine": -540.2880540961487,
+   "worst_day_usd": -517.7322464110296,
+   "capital_usd_3x_peak_locked": 27999.64481087494,
+   "return_on_capital_pct": 145.36613931731216,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.41618690134979497,
+   "top5_wallet_share_of_pnl": 0.8263960346138338,
+   "top5_wallets_pnl_usd": 33635.97361900585,
+   "ex_top5": {
+    "n_trades": 34159,
+    "pnl_usd": 7066.029065123176,
+    "per_share_c": 0.4182511466586939,
+    "per_share_ci95_c_match": [
+     -0.05192038519319037,
+     0.9111584820678499
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.20099103539844448,
+   "worst_wallet_day_pnl_usd": -1039.577059830661,
+   "max_wallet_day_gross_usd": 7745.2575386015205,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "Winf_Ron",
+   "W": null,
+   "R": true,
+   "gross_usd_vs_baseline": 0.9681536179224309,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  },
+  {
+   "n_trades": 52609,
+   "n_matches": 7585,
+   "n_wallets": 80,
+   "pnl_usd": 40468.2242011354,
+   "usd_traded": 1411360.4945222829,
+   "per_share_c": 1.451760481706224,
+   "per_share_ci95_c_match": [
+    1.2070346701224552,
+    1.67863846834021
+   ],
+   "per_share_ci95_c_wallet": [
+    0.6180389764693243,
+    2.3694721861594177
+   ],
+   "sharpe_ann_calendar": 14.658515185850177,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    12.083949523077083,
+    17.48690594385111
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 14.658515185850177,
+   "max_dd_usd": -540.2880540961487,
+   "max_dd_usd_engine": -540.2880540961487,
+   "worst_day_usd": -517.7322464110296,
+   "capital_usd_3x_peak_locked": 27999.64481087493,
+   "return_on_capital_pct": 144.5312055723569,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.4029630396576761,
+   "top5_wallet_share_of_pnl": 0.8271112104600127,
+   "top5_wallets_pnl_usd": 33471.721904168284,
+   "ex_top5": {
+    "n_trades": 22814,
+    "pnl_usd": 6996.502296967115,
+    "per_share_c": 0.6181415783689824,
+    "per_share_ci95_c_match": [
+     -0.018274222887806585,
+     1.2909853245544483
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.20436279788905995,
+   "worst_wallet_day_pnl_usd": -993.572546108095,
+   "max_wallet_day_gross_usd": 4000.0000000000027,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W4000_Ron",
+   "W": 4000.0,
+   "R": true,
+   "gross_usd_vs_baseline": 0.953902896012869,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  },
+  {
+   "n_trades": 47365,
+   "n_matches": 7414,
+   "n_wallets": 80,
+   "pnl_usd": 35023.41163965326,
+   "usd_traded": 1245026.7321489032,
+   "per_share_c": 1.4243179756128295,
+   "per_share_ci95_c_match": [
+    1.165469786129342,
+    1.6574136680586402
+   ],
+   "per_share_ci95_c_wallet": [
+    0.5209295478499453,
+    2.4620244311589743
+   ],
+   "sharpe_ann_calendar": 13.574844457180498,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    10.875176293156573,
+    16.674846839148
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 13.574844457180498,
+   "max_dd_usd": -589.7891968630865,
+   "max_dd_usd_engine": -589.7891968630865,
+   "worst_day_usd": -522.9385669367658,
+   "capital_usd_3x_peak_locked": 26526.85981997836,
+   "return_on_capital_pct": 132.029994795222,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.4024417861649879,
+   "top5_wallet_share_of_pnl": 0.8516294062441128,
+   "top5_wallets_pnl_usd": 29826.967259321056,
+   "ex_top5": {
+    "n_trades": 29554,
+    "pnl_usd": 5196.4443803322065,
+    "per_share_c": 0.37800972308022684,
+    "per_share_ci95_c_match": [
+     -0.12480452124406673,
+     0.9453964362948063
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.20010167172725543,
+   "worst_wallet_day_pnl_usd": -820.3656285956496,
+   "max_wallet_day_gross_usd": 2000.0000000000007,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W2000_Ron",
+   "W": 2000.0,
+   "R": true,
+   "gross_usd_vs_baseline": 0.8414821089435891,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  },
+  {
+   "n_trades": 38703,
+   "n_matches": 6999,
+   "n_wallets": 80,
+   "pnl_usd": 25461.6494176521,
+   "usd_traded": 957198.5337071589,
+   "per_share_c": 1.349328645299529,
+   "per_share_ci95_c_match": [
+    1.0462304256166466,
+    1.6521818054436082
+   ],
+   "per_share_ci95_c_wallet": [
+    0.28624596425361276,
+    2.497742939907285
+   ],
+   "sharpe_ann_calendar": 10.566195967906333,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    7.535748060506504,
+    13.898515727602547
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 10.566195967906333,
+   "max_dd_usd": -1211.931893467654,
+   "max_dd_usd_engine": -1211.931893467654,
+   "worst_day_usd": -709.9951339642271,
+   "capital_usd_3x_peak_locked": 20318.458013276017,
+   "return_on_capital_pct": 125.31290219472137,
+   "months_positive": 7,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.332673901294476,
+   "top5_wallet_share_of_pnl": 0.872942830222502,
+   "top5_wallets_pnl_usd": 22226.564304778345,
+   "ex_top5": {
+    "n_trades": 27065,
+    "pnl_usd": 3235.0851128737577,
+    "per_share_c": 0.2777756950327045,
+    "per_share_ci95_c_match": [
+     -0.2913339374393128,
+     0.8130931410180927
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.1706020632860802,
+   "worst_wallet_day_pnl_usd": -688.6313280250833,
+   "max_wallet_day_gross_usd": 1000.0000000000005,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W1000_Ron",
+   "W": 1000.0,
+   "R": true,
+   "gross_usd_vs_baseline": 0.646946302455198,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  },
+  {
+   "n_trades": 28615,
+   "n_matches": 6268,
+   "n_wallets": 80,
+   "pnl_usd": 16362.44284198242,
+   "usd_traded": 653189.0026882943,
+   "per_share_c": 1.2706016298347633,
+   "per_share_ci95_c_match": [
+    0.8655433709525719,
+    1.6774383299143676
+   ],
+   "per_share_ci95_c_wallet": [
+    0.30772585090240434,
+    2.2759447091200093
+   ],
+   "sharpe_ann_calendar": 7.638916744958867,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    4.496785853633936,
+    10.873883331185768
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 7.638916744958867,
+   "max_dd_usd": -1168.7364185750794,
+   "max_dd_usd_engine": -1168.7364185750794,
+   "worst_day_usd": -522.3561039075138,
+   "capital_usd_3x_peak_locked": 14000.926917108653,
+   "return_on_capital_pct": 116.86685416512015,
+   "months_positive": 6,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.23923931555587985,
+   "top5_wallet_share_of_pnl": 0.8343160534856077,
+   "top5_wallets_pnl_usd": 13651.448737306602,
+   "ex_top5": {
+    "n_trades": 20647,
+    "pnl_usd": 2710.9941046758177,
+    "per_share_c": 0.33253667485699867,
+    "per_share_ci95_c_match": [
+     -0.3126177276534702,
+     1.0326258009926417
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.13473707246811722,
+   "worst_wallet_day_pnl_usd": -392.73745761133404,
+   "max_wallet_day_gross_usd": 500.00000000000017,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W500_Ron",
+   "W": 500.0,
+   "R": true,
+   "gross_usd_vs_baseline": 0.4414739421475881,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  },
+  {
+   "n_trades": 20150,
+   "n_matches": 5282,
+   "n_wallets": 80,
+   "pnl_usd": 13161.87798961112,
+   "usd_traded": 416007.71679013467,
+   "per_share_c": 1.605121380005857,
+   "per_share_ci95_c_match": [
+    1.0959710238084504,
+    2.1537483624615326
+   ],
+   "per_share_ci95_c_wallet": [
+    0.43289276709956015,
+    2.792542354948278
+   ],
+   "sharpe_ann_calendar": 7.433131320981178,
+   "sharpe_ann_ci95_stationary_bootstrap": [
+    4.441899665505026,
+    10.51624523009499
+   ],
+   "p_sharpe_le_0": 0.0,
+   "sharpe_ann_engine": 7.433131320981178,
+   "max_dd_usd": -904.6248985903749,
+   "max_dd_usd_engine": -904.6248985903749,
+   "worst_day_usd": -486.9135027554249,
+   "capital_usd_3x_peak_locked": 8970.347321045605,
+   "return_on_capital_pct": 146.72651479984097,
+   "months_positive": 6,
+   "months_total": 7,
+   "top1_wallet_share_of_pnl": 0.26446329342521413,
+   "top5_wallet_share_of_pnl": 0.8124287829469671,
+   "top5_wallets_pnl_usd": 10693.088516396236,
+   "ex_top5": {
+    "n_trades": 15133,
+    "pnl_usd": 2468.7894732148843,
+    "per_share_c": 0.4510585207987782,
+    "per_share_ci95_c_match": [
+     -0.3540733071562375,
+     1.2351905688908253
+    ]
+   },
+   "largest_wallet_share_of_gross_usd": 0.11063401698448865,
+   "worst_wallet_day_pnl_usd": -253.21642616356155,
+   "max_wallet_day_gross_usd": 250.00000000000009,
+   "calendar": [
+    "2026-02-01",
+    "2026-08-25"
+   ],
+   "variant": "W250_Ron",
+   "W": 250.0,
+   "R": true,
+   "gross_usd_vs_baseline": 0.2811691041020177,
+   "retired_opportunity_usd_share": 0.037542521216976266
+  }
+ ],
+ "per_match_loss_is": {
+  "baseline_v2": {
+   "n_matches": 7639,
+   "n_losing": 3228,
+   "worst_match_pnl_usd": -205.7602912085585,
+   "p99_match_loss_usd": 86.62093020739393,
+   "p999_match_loss_usd": 125.53386912752909,
+   "p99_loss_among_losing_matches_usd": 101.83376722173088,
+   "n_matches_losing_more_than_95": 49,
+   "share_matches_losing_more_than_95": 0.006414452153423223,
+   "worst_day_usd": -550.764300067122,
+   "worst_match": {
+    "gross_usd": 982.5361665696332,
+    "n_trades": 14,
+    "final_net_shares": -100.0,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.0
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000006,
+   "max_match_gross_usd": 2095.9143164414113,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.7871449142557927,
+   "share_of_loss_usd_in_two_sided_matches": 0.8982928396899562,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 40425.71919167921,
+    "worst_day_usd": -550.764300067122,
+    "worst_match_pnl_usd": -205.7602912085585,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  },
+  "selected": {
+   "n_matches": 6999,
+   "n_losing": 3062,
+   "worst_match_pnl_usd": -193.66696486064578,
+   "p99_match_loss_usd": 82.877015461,
+   "p999_match_loss_usd": 119.1952706257152,
+   "p99_loss_among_losing_matches_usd": 95.69708776784047,
+   "n_matches_losing_more_than_95": 32,
+   "share_matches_losing_more_than_95": 0.004572081725960852,
+   "worst_day_usd": -709.9951339642271,
+   "worst_match": {
+    "gross_usd": 1081.5260663148667,
+    "n_trades": 27,
+    "final_net_shares": -100.00000000000001,
+    "bought_both_sides": true,
+    "max_abs_running_net_shares": 100.00000000000001
+   },
+   "max_abs_running_net_shares_any_match": 100.00000000000004,
+   "max_match_gross_usd": 1758.0138282939483,
+   "max_order_usd": 190.0,
+   "share_matches_buying_both_sides": 0.7006715245035005,
+   "share_of_loss_usd_in_two_sided_matches": 0.816765960382208,
+   "with_1000_daily_stop": {
+    "days_changed_by_stop": 0,
+    "pnl_usd": 25461.6494176521,
+    "worst_day_usd": -709.9951339642271,
+    "worst_match_pnl_usd": -193.66696486064578,
+    "note": "engine.apply_caps daily stop with a fixed $1,000 threshold: day mark = 30 s markout at entry + 30 s, remainder at the 4 h lock end (backtest proxy for the live marked P&L)"
+   }
+  }
+ },
+ "theoretical_per_match_bound": {
+  "one_sided_net_cap_x_zone_usd": 95.0,
+  "with_backtest_match_gross_cap_usd": 1471.0526315789473,
+  "fees_at_bound_usd": 7.500000000000007,
+  "bound_incl_fees_usd": 1478.5526315789473,
+  "rate_max": 0.05,
+  "assumptions": "every trade buys a token at q <= 0.95 and holds to resolution; gross $ per match <= 3000 (engine BASE_MATCH_CAP); |net outcome-0 shares| <= 100 at all times (risk-reducing trades allowed). Worst case: buy both tokens at 0.95, net within the cap; payout = min(A, B) >= (G/0.95 - N)/2. Without the gross cap (live engine RiskConfig has none) the per-match limits give no bound; only the daily stop does."
+ }
+}
