@@ -8,7 +8,7 @@ and appends nothing to results/oos_peeks.log. Inputs:
   results/v2/causal.json       v2 causal book (scripts/v2_causal.py): P&L, capital, $ traded, days
   results/v2/cost_stress.json  fees / costs doubled (scripts/v2_cost_stress.py)
   results/rigor/rigor.json     daily sd, skew, kurtosis (scripts/rigor_pack.py)
-  results/oos_peeks.log        every logged look at held-out data
+  results/oos_peeks.log        every logged look at held-out data (the lines the experiment registry maps)
   data/raw (optional)          universe metadata (start, volume, fee schedule) and trade-file row counts
                                from parquet footers, for the holdout and missing-data figures
 
@@ -63,9 +63,15 @@ for name, sk, rk in (("is", "is_eval", "v2_is"), ("burned_oos", "burned_oos", "v
     }
 out["fee_formula_bps_today"] = {f"q={q}": 10_000 * 0.05 * (1 - q) for q in (0.5, 0.9)}
 
+# Only the lines the experiment registry maps (summary.log_lines_total): a replay or reproduction run in this
+# checkout appends lines that record that run, so counting the file's length would change on every reproduction.
 lines = [ln for ln in (ROOT / "results/oos_peeks.log").read_text().splitlines() if ln.strip()]
+_reg = ROOT / "results/provenance/experiments.json"
+if _reg.exists():
+    lines = lines[:json.loads(_reg.read_text())["summary"]["log_lines_total"]]
 out["oos_peeks_log"] = {"lines": len(lines), "non_blind_lines": sum("non-blind" in ln for ln in lines),
-                        "tier0_lines": sum("tier0" in ln for ln in lines)}
+                        "tier0_lines": sum("tier0" in ln for ln in lines),
+                        "source": "results/oos_peeks.log, the lines mapped by results/provenance/experiments.json"}
 
 try:  # holdout and missing-data figures need the cached universe (scripts/fetch_polymarket.py)
     import pandas as pd
