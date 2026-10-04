@@ -129,7 +129,7 @@ system `python3` there is 3.9). Every run records its Python, `pip freeze` and t
 |---|---|
 | s00 inputs | `scripts/freeze_universe.py --check`, `scripts/repro/manifest.py verify` (universe, split, OOS start, every tape, archived inputs, frozen model), restore of the archived fresh-holdout window and factor files (`results/repro/inputs/`) |
 | s01–s02 | `run_all.py --oos` (prints, H1–H6, calibration, tiers, fast tier → `results/summary.json`); `scripts/reproduce_inputs.py` (IS jump table and lowloss feature tables, rebuilt when their code or inputs changed) |
-| s03 | v2: `scripts/v2_causal.py` (IS and OOS, with ½- and 1-tick slippage), `scripts/v2_cost_stress.py`, `scripts/note_metrics.py` |
+| s03 | v2: `scripts/v2_causal.py` (IS and OOS, with ½- and 1-tick slippage), `scripts/v2_cost_stress.py`, `scripts/note_metrics.py`; the corrected producers `scripts/v2_strict.py --oos` (strict timing labels, executable copier → `results/v2/strict_causal.json`) and `scripts/cv_causal_points.py --oos` (causal every-point CV book → `results/tier0/causal_points.json`) |
 | s04 | figures and descriptive tables: `v2_figures.py`, `factor_regression.py`, `leverage_stats.py`, `paper_figures.py`, `rally_gate_eval.py`, `data_coverage.py` |
 | s05 | risk and capacity: `v2_wallet_cap.py --is` / `--oos --repro`, `impact_model.py` (only when the live recordings in `data/live` exist; otherwise a recorded skip and the committed `results/liquidity/impact.json`), `edge_persistence.py` |
 | s06 | `psr_mintrl.py` (PSR, MinTRL, copier fill stress), `cv_cost_turnover.py` |
