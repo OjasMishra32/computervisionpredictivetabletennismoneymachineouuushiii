@@ -339,7 +339,7 @@ def F2() -> list[str]:
         fs.placeholder(ax, "results/alpha/alpha.json")
     else:
         # INK here is the fast tier because v2 is measured at the fast tier's own fills (b's INK line)
-        series = [("fast_net30_c", K, f"Fast tier\n(v2{fs.RSQUO}s fills)"), ("others_net30_c", G, "Everyone else")]
+        series = [("fast_net30_c", K, "Fast tier\n(v2 copies it)"), ("others_net30_c", G, "Everyone else")]
         fs.hgrid(ax)
         x_is = [month_mid(m["month"], is0, oos0) for m in A["IS"]["months"]]
         x_oos = [month_mid(m["month"], oos0, oos1) for m in A["OOS"]["months"]]
@@ -1108,7 +1108,7 @@ def A4() -> list[str]:
                 textcoords="offset points", ha="left", va="bottom", fontsize=fs.FS_SMALL, color=fs.MUTED,
                 annotation_clip=False)
     pos = [r for r in rows if r[3] is not None and r[3] > 0]
-    title = ("Only v2 at fast-tier fills clears zero" if pos and all(r[0] == "v2" for r in pos)
+    title = ("Only the copy book (v2) clears zero" if pos and all(r[0] == "v2" for r in pos)
              else "Every test on one axis")
     ptitle(name, ax, "", title, x_in=0.06, y_in=H - 0.16)
     return fs.save_fig(fig, name, OUT)
@@ -1346,7 +1346,7 @@ FIGS = {"F1": F1, "F2": F2, "F3": F3, "F4": F4, "F5": F5, "A1": A1, "A2": A2, "A
 
 # ============================================================================================== FIGURES.md
 INFO = {  # figure key -> (role, figure name in the brief, replaces in results/paper/, notes for the integration pass)
-    "F1": ("appendix", "Who sees the point first (paper Fig. A1)", "fig1_latency_cv",
+    "F1": ("appendix", "Who sees the point first (paper Fig. A3)", "fig1_latency_cv",
            "a: dot-and-range on a log time axis (0.03-120 s) from the end of the point. Our row = frame to order-ready "
            "from the end-to-end run (results/e2e; own footage over WebRTC on a laptop, order not sent): p50 dot, p99 "
            "whisker (INTEGRATION_TODO P-10; falls back to results/webrtc frame-to-call when e2e is absent). Vendor "
@@ -1357,45 +1357,45 @@ INFO = {  # figure key -> (role, figure name in the brief, replaces in results/p
            "labels right/called) against the offline evaluation, which used a look-ahead feature (grey; "
            "results/tracking/test_precision_vs_lead_snapshot.csv), as share of the 41 held-out misses called by each "
            "lead (INTEGRATION_TODO P-5: the causal engine is the deployable number)."),
-    "F2": ("main", "The edge exists (paper Fig. 1)", "fig2_speed_edge",
+    "F2": ("main", "The edge exists (paper Fig. 2)", "fig2_speed_edge",
            "a: monthly net 30 s markout of the fast tier and of everyone else; filled = IS, hollow = OOS; August split "
            "at the OOS cut. Copy-3-s-later is held to resolution, drawn as its IS and OOS means. b: cumulative v2 P&L "
            "at the fast tier's fills, base, fees x2 and all costs x2; OOS drawn at weekly closes; end labels are the "
            "exact OOS totals."),
-    "F3": ("main", "What speed is worth (paper Fig. 2)", "fig3_signal_decay (panels a, b)",
+    "F3": ("main", "What speed is worth (paper Fig. 3)", "fig3_signal_decay (panels a, b)",
            "Net $/day against feed delay V, a = IS (solid), b = burned OOS (dashed), at the pre-registered (black) and "
            "post hoc (orange) stamp lag and the post hoc inference read per point (light orange; INTEGRATION_TODO "
            "P-9). Dots = the 0.5 / 1 / 3 s scenarios of Table 1B (filled IS, hollow OOS). Grey dotted verticals: "
            "0.5 s best case, 1 s base, 3 s requirement; grey bar: the vendor-stated licensed-video source band "
            "(0.5-8 s). Labels sit in free space next to their own line, with a white halo where a reference line "
            "passes behind. Titles carry the break-even range (seed-mean curves)."),
-    "F4": ("main", "Frame to trade (paper Fig. 3)", "(new)",
+    "F4": ("main", "Frame to trade (paper Fig. 1)", "(new)",
            "One panel: stage means from results/e2e/summary.json (means add up to the mean total 2,124 ms; the p50 "
            "total is 2,119 ms): simulated 1 s feed (dashed outline), our pipeline (video, CV, order), network RTT/2, "
            "venue hold; orange line = executable time; grey dotted = 3 s requirement; shaded = book-reprice window "
            "(same as F1a). The capacity panels moved to A8."),
-    "F5": ("appendix", "CV still (paper Fig. A2)", "(new)",
+    "F5": ("unused", "CV still (not in the paper)", "(new)",
            "Real held-out footage (OpenTTGames test_2, flight 2819, CC BY-NC-SA 4.0), the frame at the offline rule's "
            "call; the title gives both leads: offline 408 ms (look-ahead feature) and the live engine's 325 ms "
            "(online_vs_offline.json flights_called_or_miss). Labels: ball at the call, tracked path, predicted arc "
            "(display only)."),
-    "A1": ("appendix", "Capacity and costs (paper Fig. A3)", "figA1_capacity",
+    "A1": ("appendix", "Capacity and costs (paper Fig. A5)", "figA1_capacity",
            "a: v2 at scaled caps; filled = IS, hollow = OOS. b: gross (grey tick), net of fees (grey dot), after central "
            "fixed costs (coloured dot, value above it) with the low-high fixed-cost range as the bar; marker key once in "
            "a band above the rows; CV rows pre-registered first."),
-    "A2": ("appendix", "Sweep at every stamp lag (paper Fig. A5)", "figA2_sweep_lags",
+    "A2": ("unused", "Sweep at every stamp lag (not in the paper)", "figA2_sweep_lags",
            "Seed means for the four stamp-lag readings; a colour key in the empty upper right of a (the lines merge "
            "past 3 s, so labels on the lines collided); reference verticals as in F3."),
-    "A3": ("appendix", "Regime and month (paper Fig. A7)", "figA3_regime_month",
+    "A3": ("appendix", "Regime and month (paper Fig. A1)", "figA3_regime_month",
            "b: August split at the OOS cut; OOS bars hollow."),
-    "A4": ("appendix", "Robustness forest plot (paper Fig. A8)", "figA4_forest",
+    "A4": ("unused", "Robustness forest plot (not in the paper)", "figA4_forest",
            "Axis clipped at +-4 c (arrowheads mark a CI that runs past it; the exact CI is in the right column); colour "
            "= family; hollow = OOS test; a CI above zero in semibold."),
-    "A5": ("appendix", "Concentration (paper Fig. A9)", "figA5_concentration",
+    "A5": ("unused", "Concentration (not in the paper)", "figA5_concentration",
            "Above 100% means the rest lost money; IS filled, OOS hollow, with a two-swatch key."),
-    "A6": ("appendix", "Tennis spin simulation (paper Fig. A10)", "figA6_spin_sim",
+    "A6": ("unused", "Tennis spin simulation (not in the paper)", "figA6_spin_sim",
            "Simulation only; a: log scale; b: precision in grey, labelled above its line."),
-    "A7": ("appendix", "Decay and all-points replay (paper Fig. A6)", "fig3_signal_decay (panels c, d)",
+    "A7": ("appendix", "Decay and all-points replay (paper Fig. A2)", "fig3_signal_decay (panels c, d)",
            "a: market-side markout by seconds since the score move; the empty 0.25-1 s bins are marked 'no data'. b: "
            "replay of 9 live-recorded matches trading every point (model leads, Florida network); x = sweep OOS cell; "
            "the tag counts all 36 settings."),
@@ -1440,7 +1440,7 @@ def write_figures_md(written: dict) -> Path:
              "axes: 'lead before the ball reaches the table end' (table tennis) or 'lead before the bounce' (tennis "
              "simulation). Numbers rounded half up, true minus signs, thin spaces before units.", "",
              "Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F1 A4`).", ""]
-    for role, head in (("main", "## Main text"), ("appendix", "## Appendix")):
+    for role, head in (("main", "## Main text"), ("appendix", "## Appendix"), ("unused", "## Drawn but not in the paper")):
         lines += [head, ""]
         for k, f in FIGS.items():
             info = INFO.get(k)

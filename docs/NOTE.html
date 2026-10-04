@@ -17,89 +17,77 @@ code { font-family: inherit; }
 a { color: #1F3A5F; text-decoration: none; }
 </style></head><body><h1>COURTSIDE: Pricing the Value of Speed in In-Play Tennis Prediction Markets</h1>
 <p>Ojasva Mishra, Yoan Exposito, Rafael Penhas, Ian Hoang · University of Florida · Gator Quant Hacks 2026 · Systematic Trading Track · October 4, 2026</p>
-<p><strong>The paper is <a href="NOTE.pdf"><code>docs/NOTE.pdf</code></a></strong> (LaTeX, built by <code>python scripts/build_paper.py</code>; every number below and in
-the PDF is read from <code>results/paper/numbers.json</code>, which records the source file and key of each). This file is a short
-readable companion; where the two differ, the PDF wins.</p>
-<p><strong>Labels.</strong> CV-strategy results are simulated: assumed feed latency (licensed feed not purchased); parameters measured. Their trade set is the historical points the market later
-repriced by at least 4¢ (selected on outcomes, not ex ante). The pre-registered stamp-lag reading comes first; the post
-hoc estimate (3.14 s, 95% CI 2.23–3.22 s) second. v2 is measured at the fast tier's own fills:
-the opportunity at their speed, not our execution. "OOS" for v2 and the CV simulation is a burned (non-blind) hold-out.
-Real money: none; no order was ever sent.</p>
+<p><strong>The paper is <a href="NOTE.pdf"><code>docs/NOTE.pdf</code></a>.</strong> This page is a short companion built from the same numbers
+(<code>results/paper/numbers.json</code>, which names the source file of every value). If the two ever differ, the PDF wins.</p>
+<p><strong>How to read the labels.</strong> The computer-vision (CV) results are simulated: assumed feed latency (licensed feed not purchased); parameters measured. Their trades are past points
+where the price later moved at least 4¢, so they are selected on outcomes, not ex ante. We show the pre-registered
+stamp-lag reading first and the post hoc estimate (3.14 s, 95% CI 2.23–3.22 s) second. v2 is our
+copy of the fast tier's trades at their own prices: it measures what their speed is worth, not what we could earn.
+"OOS" for v2 and the CV simulation is a burned hold-out (we had looked at it), not a blind one. No real money was used
+and no order was ever sent.</p>
 <h2>Abstract</h2>
-<p>We study who profits from speed in Polymarket's in-play tennis moneylines (13,084 matches, public tapes). A
-walk-forward fast tier of wallets trading within 3 s of a score move earns after fees in every in-sample and held-out
-month; other takers lose, and copying the same trades 3 s later loses. At the fast tier's own fills a frozen book (v2)
-has a Sharpe ratio of 14.5 in sample and 6.7 on a burned hold-out, but turns negative when fees
-double. We then price the speed a computer-vision (CV) trader needs (simulated; assumed feed latency (licensed feed not purchased); parameters measured). Pre-registered, it breaks
-even at a 1.0–1.1 s feed delay and earns +$15, +$4 and
-−$13 a day held out at 0.5, 1 and 3 s; a post hoc stamp-lag inference gives +$57 at
-1 s. A replay on real books loses. Real money: none.</p>
-<h2>Headline metrics (Table 1 of the PDF)</h2>
-<p><strong>A. v2 at the fast tier's own fills</strong> (Sharpe: daily P&amp;L on zero-filled calendar days × √365; 95% CI from a stationary
-bootstrap; deflated Sharpe at 3,386 trials, 3,410 for v2-safe)</p>
+<p>Polymarket prices on tennis matches are win probabilities, and each point moves them by an amount we can compute. In
+public data on 13,084 matches, the wallets that trade within 3 s of a point (the fast tier) earn after fees
+in every month, in and out of sample, while everyone else loses. Copying them at their own prices has a Sharpe ratio of
+14.5 in sample and 6.7 out of sample but loses once fees double. A computer-vision trader,
+simulated with an assumed video delay (we did not buy a feed), pre-registered, makes +$4 a day out of sample at 1 s (+$57 post hoc);
+a replay on real order books loses.</p>
+<h2>Table 1 of the PDF: our copy of the fast tier's trades (v2)</h2>
+<p>Sharpe uses daily P&amp;L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
+corrects for 3,386 trials.</p>
 <table>
 <thead>
 <tr>
 <th></th>
-<th>v2 IS</th>
-<th>v2 OOS</th>
-<th>v2-safe IS</th>
-<th>v2-safe OOS</th>
+<th>IS</th>
+<th>OOS (burned)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>Net ¢ a share [95% CI]</td>
+<td>+1.38 [1.17, 1.59]</td>
+<td>+0.60 [0.09, 1.13]</td>
+</tr>
+<tr>
 <td>Sharpe [95% CI]</td>
 <td>14.5 [11.9, 17.4]</td>
 <td>6.7 [1.9, 12.3]</td>
-<td>15.7 [13.1, 18.6]</td>
-<td>9.3 [4.5, 15.6]</td>
 </tr>
 <tr>
 <td>Deflated Sharpe</td>
 <td>0.997</td>
 <td>0.075</td>
-<td>1.000</td>
-<td>0.290</td>
 </tr>
 <tr>
-<td>Net ¢ per share</td>
-<td>+1.38 [1.17, 1.59]</td>
-<td>+0.60 [0.09, 1.13]</td>
-<td>+1.33 [1.16, 1.52]</td>
-<td>+0.69 [0.24, 1.15]</td>
-</tr>
-<tr>
-<td>Return / volatility, a year</td>
+<td>Annual return / volatility</td>
 <td>253% / 17.5%</td>
 <td>148% / 22.2%</td>
-<td>239% / 15.2%</td>
-<td>170% / 18.4%</td>
 </tr>
 <tr>
 <td>Max drawdown / worst month</td>
 <td>−2.0% / +$2,543</td>
 <td>−2.1% / −$434</td>
-<td>−1.6% / +$1,499</td>
-<td>−1.9% / −$187</td>
 </tr>
 <tr>
 <td>Turnover (× a year) / skew</td>
 <td>93 / +0.53</td>
 <td>129 / +0.33</td>
-<td>90 / +0.61</td>
-<td>129 / +0.17</td>
+</tr>
+<tr>
+<td>Net ¢, fees ×2 / all costs ×2</td>
+<td>+0.77 / +0.27</td>
+<td>−0.34 / −0.84</td>
 </tr>
 </tbody>
 </table>
-<p>v2-safe (net cap 50) was fixed after v2's OOS losses were seen, and failed its blind unseen-market test
-(+1.21¢ [−0.02, 2.43]).</p>
-<p><strong>B. The CV strategy at three assumed feed latencies</strong> (simulated; assumed feed latency (licensed feed not purchased); parameters measured; 20 seeds a cell)</p>
-<p>Pre-registered stamp lag 2.0 s (break-even feed delay 1.09 s IS, 1.01 s OOS):</p>
+<h2>Table 2 of the PDF: the CV strategy at three assumed feed delays</h2>
+<p>Simulated (assumed feed latency (licensed feed not purchased); parameters measured; 20 seeds a cell). Pre-registered stamp lag 2.0 s (break-even feed
+delay 1.09 s IS, 1.01 s OOS):</p>
 <table>
 <thead>
 <tr>
-<th>Feed latency V</th>
+<th>Feed delay V</th>
 <th>IS $/day</th>
 <th>IS Sharpe</th>
 <th>IS ¢/share [95% CI]</th>
@@ -138,12 +126,12 @@ bootstrap; deflated Sharpe at 3,386 trials, 3,410 for v2-safe)</p>
 </tr>
 </tbody>
 </table>
-<p>Post hoc stamp-lag estimate 3.14 s (assumes courtside humans; break-even 2.23 s IS,
+<p>Post hoc estimate 3.14 s (assumes humans at the court; break-even 2.23 s IS,
 2.14 s OOS):</p>
 <table>
 <thead>
 <tr>
-<th>Feed latency V</th>
+<th>Feed delay V</th>
 <th>IS $/day</th>
 <th>IS Sharpe</th>
 <th>IS ¢/share [95% CI]</th>
@@ -182,36 +170,26 @@ bootstrap; deflated Sharpe at 3,386 trials, 3,410 for v2-safe)</p>
 </tr>
 </tbody>
 </table>
-<p>At 1 s the same post hoc inference read point by point loses (−$17 / −$17 a day); with
-no early CV calls the pre-registered cell is +$8 / −$13; with the live causal engine's
-own call table it is +$17 / +$4 (pre-registered) and +$98 /
-+$57 (post hoc). A replay calling every point on 9 matches' real books loses in
-36 of 36 settings (−0.94¢ at 1 s).</p>
-<h2>Components, pipeline and capacity</h2>
+<p>Read per point, the post hoc inference loses (−$17 a day at 1 s). A replay of 9
+matches recorded live against their real order books calls every point ex ante and loses in 36 of
+36 settings (−0.94¢ a share at 1 s).</p>
+<h2>Speed, capacity and what failed</h2>
 <ul>
-<li><strong>CV, table tennis (real held-out footage):</strong> the live causal engine calls 4 of 41
-  misses before contact (median lead 162 ms), none wrongly;
-  an offline evaluation with a look-ahead feature called 11 of 11 at 50 ms.
-  <strong>Tennis:</strong> simulated physics only; a spin-aware
-  tracker cuts landing error from 5.76 to 0.57 cm at 200 ms. <strong>GPU engine:</strong> L4,
-  119.9 fps, call-ready in 4.6 ms p50, 0 of 102,120 frames dropped.</li>
-<li><strong>Pipeline (paper; order built, not sent):</strong> frame to unsigned order 54 ms p50 on our own footage over
-  WebRTC (video leg 4–8 ms); with a simulated 1 s feed, 65 ms network and the 1 s venue hold the
-  order is executable at 2,119 ms, under the organiser's 3,000 ms bar.</li>
-<li><strong>Capacity:</strong> v2's OOS edge holds up to 1× size ($22,754); 5× loses. The CV book has no capacity at the
-  pre-registered lag (Sharpe 2.7 / 0.8 at its smallest size); post hoc its Sharpe
-  halves at $40,000 (OOS) to $73,000 (IS) of capital; it trades 0.22% of
-  in-play volume but 9% of the fast tier's 0–3 s volume. At 1 s it can pay at most
-  $1,644 a month for data post hoc and $55 pre-registered, against quotes of
-  $1,250–$10,000. COURTSIDE prices speed; it is not yet a business.</li>
+<li><strong>Pipeline (paper; order built, not sent).</strong> On our own footage a video frame becomes a built order in
+  54 ms. With a simulated 1 s feed, 65 ms of network and the 1 s venue hold, the order can
+  execute 2,119 ms after the point ends, inside the organizers' 3,000 ms bar.</li>
+<li><strong>CV on real held-out table-tennis footage.</strong> The live causal engine called 4 of 41
+  balls that went out early (median lead 162 ms), none wrongly, at 119.9 fps on one L4 GPU.
+  Tennis is simulated physics only.</li>
+<li><strong>Capacity.</strong> v2's OOS edge holds up to 1× size ($22,754 of capital); 5× loses. The CV book has no
+  capacity at the pre-registered lag; post hoc its Sharpe halves at $40,000 (OOS) to $73,000
+  (IS) of capital. At 1 s it could pay at most $1,644 a month for data post hoc and
+  $55 pre-registered, against reported feed prices of $1,250–$10,000.
+  COURTSIDE prices speed; it is not yet a business.</li>
+<li><strong>What failed.</strong> Doubled fees out of sample (−0.34¢); v2 on 11,307 never-examined markets
+  (blind); v2-safe's blind test; the CV rule v3 (blind); the maker book (blind); table-tennis markets (untestable); v2
+  after a central data licence (−$75 a day); the live-book replay. Blind forward test:
+  pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5). We tried 4,219 variants and logged 77 reads of held-out data (Appendix D of the
+  PDF). Every test is in Appendix B; every formula with a worked example is in Appendix A.</li>
 </ul>
-<h2>What failed</h2>
-<p>Fees ×2 out of sample (−0.34¢); v2 on 11,307 never-examined markets (blind, FAIL);
-v2-safe's blind test (FAIL); the CV simulation's frozen v3 rule (blind, FAIL); maker v1 (blind,
-FAILURE, −$379); table tennis markets (untestable, median spread 94¢); v2 out of sample
-after a central feed licence (−$75/day); the live-book replay and its ex-ante filter. Blind
-forward test (v2; tier-0 v3 secondary): runs 2026-10-04 11:30 UTC (pre-registered) (<code>HYPOTHESIS_V2.md</code> A4). The live paper session was stopped and is
-not used. Variants tried: 4,219. Logged reads of
-held-out data: 77 (Table A9 of the PDF). Everything we tested, with its best result, is Table A1 of the PDF;
-every formula with a worked example is the appendix "Calculations".</p>
-<p>Reproduce: <code>bash reproduce.sh</code> (regenerates the result files, every figure and this paper).</p></body></html>
+<p>Reproduce: <code>bash reproduce.sh</code> (rebuilds the result files, every figure and this paper).</p></body></html>

@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T03:06:58+00:00",
+ "generated_utc": "2026-10-04T04:02:28+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -2531,14 +2531,14 @@
    "source": "D: keyword class 'other' over results/oos_peeks.log"
   },
   "fwd.cell": {
-   "value": "runs 2026-10-04 11:30 UTC (pre-registered)",
-   "raw": "2026-10-04T02:59:14Z",
-   "source": "HYPOTHESIS_V2.md::Amendment A4 (results/v2/forward.json absent at build time)"
+   "value": "pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)",
+   "raw": "2026-10-04T03:32:34Z",
+   "source": "HYPOTHESIS_V2.md::Amendment A5 (results/v2/forward.json absent at build time)"
   },
   "fwd.status": {
-   "value": "runs once",
+   "value": "not run",
    "raw": null,
-   "source": "HYPOTHESIS_V2.md::Amendment A4"
+   "source": "HYPOTHESIS_V2.md::Amendment A5"
   },
   "live.cell": {
    "value": "stopped by a team decision after 0 fills; not used",

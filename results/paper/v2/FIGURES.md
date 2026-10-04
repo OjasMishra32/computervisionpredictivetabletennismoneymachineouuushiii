@@ -8,7 +8,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 
 ## Main text
 
-### F2: fig2_edge (The edge exists (paper Fig. 1))
+### F2: fig2_edge (The edge exists (paper Fig. 2))
 
 - Files: `results/paper/v2/fig2_edge.pdf`, `results/paper/v2/fig2_edge.png`
 - Replaces: `fig2_speed_edge`
@@ -17,7 +17,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Data: `results/alpha/alpha.json`, `results/lowloss/daily.csv`, `results/v2/causal.json`, `results/v2/cost_stress.json`, `data/v2_trades_is_oos.parquet`
 - Notes: a: monthly net 30 s markout of the fast tier and of everyone else; filled = IS, hollow = OOS; August split at the OOS cut. Copy-3-s-later is held to resolution, drawn as its IS and OOS means. b: cumulative v2 P&L at the fast tier's fills, base, fees x2 and all costs x2; OOS drawn at weekly closes; end labels are the exact OOS totals.
 
-### F3: fig3_speed_value (What speed is worth (paper Fig. 2))
+### F3: fig3_speed_value (What speed is worth (paper Fig. 3))
 
 - Files: `results/paper/v2/fig3_speed_value.pdf`, `results/paper/v2/fig3_speed_value.png`
 - Replaces: `fig3_signal_decay (panels a, b)`
@@ -26,7 +26,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Data: `results/tier0/latency_sweep.json`, `results/tier0/latency_sweep.csv`
 - Notes: Net $/day against feed delay V, a = IS (solid), b = burned OOS (dashed), at the pre-registered (black) and post hoc (orange) stamp lag and the post hoc inference read per point (light orange; INTEGRATION_TODO P-9). Dots = the 0.5 / 1 / 3 s scenarios of Table 1B (filled IS, hollow OOS). Grey dotted verticals: 0.5 s best case, 1 s base, 3 s requirement; grey bar: the vendor-stated licensed-video source band (0.5-8 s). Labels sit in free space next to their own line, with a white halo where a reference line passes behind. Titles carry the break-even range (seed-mean curves).
 
-### F4: fig4_frame_to_trade (Frame to trade (paper Fig. 3))
+### F4: fig4_frame_to_trade (Frame to trade (paper Fig. 1))
 
 - Files: `results/paper/v2/fig4_frame_to_trade.pdf`, `results/paper/v2/fig4_frame_to_trade.png`
 - Replaces: (new)
@@ -36,7 +36,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 
 ## Appendix
 
-### F1: fig1_race (Who sees the point first (paper Fig. A1))
+### F1: fig1_race (Who sees the point first (paper Fig. A3))
 
 - Files: `results/paper/v2/fig1_race.pdf`, `results/paper/v2/fig1_race.png`
 - Replaces: `fig1_latency_cv`
@@ -45,15 +45,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Data: `results/webrtc/latency.json`, `results/tier0/latency_sweep.json`, `research/v2/latency/results.json`, `results/home_stream/sub_second_routes.json`, `results/e2e/summary.json`, `results/tracking/summary.json`, `results/tracking/test_precision_vs_lead_snapshot.csv`, `results/engine/online_vs_offline.json`
 - Notes: a: dot-and-range on a log time axis (0.03-120 s) from the end of the point. Our row = frame to order-ready from the end-to-end run (results/e2e; own footage over WebRTC on a laptop, order not sent): p50 dot, p99 whisker (INTEGRATION_TODO P-10; falls back to results/webrtc frame-to-call when e2e is absent). Vendor and published rows are 3 pt ranges; the score-feed label sits left of its bar. The stamp row is the two stamp lags the paper uses (2.0 s pre-registered to 3.14 s post hoc), dashed because the stamp lag is unmeasured, over the cited 1-3 s band. The shaded column is the book's reprice (0.84-1.98 s). b: the live causal engine's early MISS calls (orange; results/engine/online_vs_offline.json A_engine_calls.online; labels right/called) against the offline evaluation, which used a look-ahead feature (grey; results/tracking/test_precision_vs_lead_snapshot.csv), as share of the 41 held-out misses called by each lead (INTEGRATION_TODO P-5: the causal engine is the deployable number).
 
-### F5: fig5_cv_still (CV still (paper Fig. A2))
-
-- Files: `results/paper/v2/fig5_cv_still.pdf`, `results/paper/v2/fig5_cv_still.png`
-- Replaces: (new)
-- Panel title: Held-out miss called 408 ms early offline, 325 ms live
-- Data: `results/viz/stills/captions.json`, `results/viz/stills/still_01_tt_call_408ms.png`, `results/engine/online_vs_offline.json`
-- Notes: Real held-out footage (OpenTTGames test_2, flight 2819, CC BY-NC-SA 4.0), the frame at the offline rule's call; the title gives both leads: offline 408 ms (look-ahead feature) and the live engine's 325 ms (online_vs_offline.json flights_called_or_miss). Labels: ball at the call, tracked path, predicted arc (display only).
-
-### A1: figA1_capacity_costs (Capacity and costs (paper Fig. A3))
+### A1: figA1_capacity_costs (Capacity and costs (paper Fig. A5))
 
 - Files: `results/paper/v2/figA1_capacity_costs.pdf`, `results/paper/v2/figA1_capacity_costs.png`
 - Replaces: `figA1_capacity`
@@ -62,16 +54,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Data: `results/financials/financials.json`, `results/tier0/latency_sweep.json`
 - Notes: a: v2 at scaled caps; filled = IS, hollow = OOS. b: gross (grey tick), net of fees (grey dot), after central fixed costs (coloured dot, value above it) with the low-high fixed-cost range as the bar; marker key once in a band above the rows; CV rows pre-registered first.
 
-### A2: figA2_sweep_lags (Sweep at every stamp lag (paper Fig. A5))
-
-- Files: `results/paper/v2/figA2_sweep_lags.pdf`, `results/paper/v2/figA2_sweep_lags.png`
-- Replaces: `figA2_sweep_lags`
-- Panel title: a IS: break-even moves with the lag
-- Panel title: b OOS: the same shift
-- Data: `results/tier0/latency_sweep.csv`, `results/tier0/latency_sweep_seeds.csv`
-- Notes: Seed means for the four stamp-lag readings; a colour key in the empty upper right of a (the lines merge past 3 s, so labels on the lines collided); reference verticals as in F3.
-
-### A3: figA3_regime_month (Regime and month (paper Fig. A7))
+### A3: figA3_regime_month (Regime and month (paper Fig. A1))
 
 - Files: `results/paper/v2/figA3_regime_month.pdf`, `results/paper/v2/figA3_regime_month.png`
 - Replaces: `figA3_regime_month`
@@ -80,32 +63,7 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Data: `results/risk/risk_stats.json`
 - Notes: b: August split at the OOS cut; OOS bars hollow.
 
-### A4: figA4_forest (Robustness forest plot (paper Fig. A8))
-
-- Files: `results/paper/v2/figA4_forest.pdf`, `results/paper/v2/figA4_forest.png`
-- Replaces: `figA4_forest`
-- Panel title: Only v2 at fast-tier fills clears zero
-- Data: `results/summary.json`, `results/expand/results.json`, `results/tier0_v3/blind.json`, `results/maker/oos.json`, `results/replay/replay.json`, `results/v2/cost_stress.json`, `results/v2/causal.json`
-- Notes: Axis clipped at +-4 c (arrowheads mark a CI that runs past it; the exact CI is in the right column); colour = family; hollow = OOS test; a CI above zero in semibold.
-
-### A5: figA5_concentration (Concentration (paper Fig. A9))
-
-- Files: `results/paper/v2/figA5_concentration.pdf`, `results/paper/v2/figA5_concentration.png`
-- Replaces: `figA5_concentration`
-- Panel title: Five wallets carry 81% of in-sample P&L
-- Data: `results/alpha/alpha.json`
-- Notes: Above 100% means the rest lost money; IS filled, OOS hollow, with a two-swatch key.
-
-### A6: figA6_spin_sim (Tennis spin simulation (paper Fig. A10))
-
-- Files: `results/paper/v2/figA6_spin_sim.pdf`, `results/paper/v2/figA6_spin_sim.png`
-- Replaces: `figA6_spin_sim`
-- Panel title: a Spin-aware fit cuts error 10× at 200 ms
-- Panel title: b OUT calls: precision 1, recall ≥ 0.88
-- Data: `results/spin/tennis/key_numbers.json`
-- Notes: Simulation only; a: log scale; b: precision in grey, labelled above its line.
-
-### A7: figA7_decay_replay (Decay and all-points replay (paper Fig. A6))
+### A7: figA7_decay_replay (Decay and all-points replay (paper Fig. A2))
 
 - Files: `results/paper/v2/figA7_decay_replay.pdf`, `results/paper/v2/figA7_decay_replay.png`
 - Replaces: `fig3_signal_decay (panels c, d)`
@@ -122,6 +80,50 @@ Rebuild: `nice -n 10 .venv/bin/python scripts/paper_figures_v2.py` (or `--only F
 - Panel title: b The cheapest data stack needs $14k–$16k
 - Data: `results/capacity/capacity.json`, `results/capacity/cv_cells.csv`
 - Notes: Along the capacity study's size path (net cap 50-5,000 shares at $250 orders, 10 matches a day, half the stale depth): a Sharpe, b $/day against capital, IS solid, OOS dashed; circles = where the post hoc Sharpe halves; dotted = the cheapest data stack ($/day). Axes follow the grid's range.
+
+## Drawn but not in the paper
+
+### F5: fig5_cv_still (CV still (not in the paper))
+
+- Files: `results/paper/v2/fig5_cv_still.pdf`, `results/paper/v2/fig5_cv_still.png`
+- Replaces: (new)
+- Panel title: Held-out miss called 408 ms early offline, 325 ms live
+- Data: `results/viz/stills/captions.json`, `results/viz/stills/still_01_tt_call_408ms.png`, `results/engine/online_vs_offline.json`
+- Notes: Real held-out footage (OpenTTGames test_2, flight 2819, CC BY-NC-SA 4.0), the frame at the offline rule's call; the title gives both leads: offline 408 ms (look-ahead feature) and the live engine's 325 ms (online_vs_offline.json flights_called_or_miss). Labels: ball at the call, tracked path, predicted arc (display only).
+
+### A2: figA2_sweep_lags (Sweep at every stamp lag (not in the paper))
+
+- Files: `results/paper/v2/figA2_sweep_lags.pdf`, `results/paper/v2/figA2_sweep_lags.png`
+- Replaces: `figA2_sweep_lags`
+- Panel title: a IS: break-even moves with the lag
+- Panel title: b OOS: the same shift
+- Data: `results/tier0/latency_sweep.csv`, `results/tier0/latency_sweep_seeds.csv`
+- Notes: Seed means for the four stamp-lag readings; a colour key in the empty upper right of a (the lines merge past 3 s, so labels on the lines collided); reference verticals as in F3.
+
+### A4: figA4_forest (Robustness forest plot (not in the paper))
+
+- Files: `results/paper/v2/figA4_forest.pdf`, `results/paper/v2/figA4_forest.png`
+- Replaces: `figA4_forest`
+- Panel title: Only the copy book (v2) clears zero
+- Data: `results/summary.json`, `results/expand/results.json`, `results/tier0_v3/blind.json`, `results/maker/oos.json`, `results/replay/replay.json`, `results/v2/cost_stress.json`, `results/v2/causal.json`
+- Notes: Axis clipped at +-4 c (arrowheads mark a CI that runs past it; the exact CI is in the right column); colour = family; hollow = OOS test; a CI above zero in semibold.
+
+### A5: figA5_concentration (Concentration (not in the paper))
+
+- Files: `results/paper/v2/figA5_concentration.pdf`, `results/paper/v2/figA5_concentration.png`
+- Replaces: `figA5_concentration`
+- Panel title: Five wallets carry 81% of in-sample P&L
+- Data: `results/alpha/alpha.json`
+- Notes: Above 100% means the rest lost money; IS filled, OOS hollow, with a two-swatch key.
+
+### A6: figA6_spin_sim (Tennis spin simulation (not in the paper))
+
+- Files: `results/paper/v2/figA6_spin_sim.pdf`, `results/paper/v2/figA6_spin_sim.png`
+- Replaces: `figA6_spin_sim`
+- Panel title: a Spin-aware fit cuts error 10× at 200 ms
+- Panel title: b OUT calls: precision 1, recall ≥ 0.88
+- Data: `results/spin/tennis/key_numbers.json`
+- Notes: Simulation only; a: log scale; b: precision in grey, labelled above its line.
 
 ## What was wrong with the previous figures (results/paper/*.png)
 

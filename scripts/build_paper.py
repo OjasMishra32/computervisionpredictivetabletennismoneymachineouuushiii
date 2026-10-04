@@ -10,9 +10,9 @@ Pipeline (docs/paper/PLAN.md section 1):
      included), 1 in margins, honesty grep, LaTeX log clean, fonts embedded and ours -> results/paper/checks.json
   6. page renders at 110 dpi -> results/paper/pages/, copy to docs/NOTE.pdf, write docs/NOTE.md and docs/NOTE.html
 
-Pending slots: the forward test (results/v2/forward.json) and the live paper session (results/live/FINAL +
-summary.json) are filled only from files that already exist; otherwise the paper prints "pending".
-scripts/forward_test.py is never imported or run here. Nothing here runs a new evaluation: it reads committed
+The one pending slot is the blind forward test (HYPOTHESIS_V2.md A4): it fills from results/v2/forward.json when that
+file exists and otherwise says when the pre-registered run happens. The live paper session was stopped and appears only
+as one line in the appendix records. scripts/forward_test.py is never imported or run here. Nothing here runs a new evaluation: it reads committed
 result files, and Fig. 2(b) re-draws the committed v2 trade file (IS and burned OOS) with the cost-stress lambdas,
 asserting the committed totals to the cent.
 
@@ -830,6 +830,8 @@ def collect() -> tuple[Registry, dict]:
     a3 = re.search(r"^## Amendment A3 \(([^)]+)\): forward test not run", hv2, re.M)
     a4 = re.search(r"^## Amendment A4 \(([^)]+)\): forward test reinstated", hv2, re.M)
     v3_p = ROOT / "results/tier0_v3/forward/results.json"
+    am_fwd = re.findall(r"^## Amendment (A\d+) \(([^)]+)\): forward test ([^\n(]+)", hv2, re.M)
+    last_fwd = am_fwd[-1] if am_fwd else None
     # ONE slot for the blind forward test (research/compliance/PAPER_REQUIREMENTS.md, addendum 2026-10-04T02:59Z): it
     # fills from results/v2/forward.json (and the tier-0 v3 forward secondary) at build time; until then it says when
     # the pre-registered run happens. The live paper session stays out of the results.
@@ -855,6 +857,12 @@ def collect() -> tuple[Registry, dict]:
         status = " / ".join(str(F.get(k)) for k in ("verdict_A_fast_tier", "verdict_B_v2_book") if F.get(k)) or "reported"
         N.add("fwd.cell", cell, F, "results/v2/forward.json" + (" ; results/tier0_v3/forward/results.json" if v3_p.exists() else ""))
         N.add("fwd.status", status, status, "results/v2/forward.json::verdict_*")
+    elif last_fwd and last_fwd[2].strip().startswith("not run") and last_fwd[0] not in ("A3",):
+        # the LAST amendment on the forward test decides (A5, 2026-10-04T03:32Z, final: not run within the hackathon
+        # window; research/compliance/PAPER_REQUIREMENTS.md addendum of the same time)
+        N.add("fwd.cell", f"pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md {last_fwd[0]})",
+              last_fwd[1], f"HYPOTHESIS_V2.md::Amendment {last_fwd[0]} (results/v2/forward.json absent at build time)")
+        N.add("fwd.status", "not run", None, f"HYPOTHESIS_V2.md::Amendment {last_fwd[0]}")
     elif a4:
         N.add("fwd.cell", "runs 2026-10-04 11:30 UTC (pre-registered)", a4.group(1),
               "HYPOTHESIS_V2.md::Amendment A4 (results/v2/forward.json absent at build time)")
@@ -907,68 +915,83 @@ def collect() -> tuple[Registry, dict]:
                 authors = mm_.group(1).strip()
                 break
     extra["authors"] = authors
-    # ---------------------------------------------------------------- 'Everything we tested' rows (appendix)
+    # ---------------------------------------------------------------- 'Everything we tested' rows (appendix B)
+    # one row per test: (test, what it was, best result, verdict); a 1-tuple starts a group. The robustness rows
+    # (worse entry, doubled costs, fixed costs, rigor pack) live here too, so the appendix has one table of tests.
     V = N
     ev = [
-        ("H1 follow the jump", r"taker in the direction of a $\geq$4¢ move, 30\,s hold",
+        ("Who is fast, and what they earn (public tapes)",),
+        ("H1 follow the jump", r"take the direction of a $\geq$4¢ move, hold 30\,s",
          f"OOS {V('h1.oos.c')}¢ {V('h1.oos.ci')}; {V('h1.neg')} IS variants below zero", "rejected"),
-        ("H2 favourites", "buy favourites priced 0.85--0.97 in play",
-         f"OOS {V('h2.oos.c')}¢ {V('h2.oos.ci')}", "no edge"),
-        ("H3 early CV call", "table-tennis MISS call 50\\,ms before contact, precision $\\geq$0.95",
-         f"live causal engine {V('cv.eng.tp')} of {V('cv.eng.nmiss')} misses, none wrong; offline evaluation (look-ahead feature) {V('cv.tt.tp50')}/{V('cv.tt.called50')}",
-         "pass on precision; recall low"),
-        ("H4 score feeds", "public score feeds lag the book", f"median lead {V('h4.lead')}\\,s ($n = {V('h4.n')}$)", "confirmed"),
-        ("H5 quote after jumps", "maker quotes after a move", f"OOS {V('h5.oos.c')}¢ {V('h5.oos.ci')}", "n.s."),
-        ("H6 fast tier", "walk-forward wallets trading 0--3\\,s after a move",
-         f"{V('ft.c.is')}\\,/\\,{V('ft.c.oos')}¢ net 30\\,s; {V('ft.months.is')} and {V('ft.months.oos')} months", "confirmed"),
-        ("v1", "copy the fast tier, \\$ sizing", f"OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed (blind)"),
-        ("Exit lens", f"maker exit instead of holding ({V('ev.exit.n')} variants)",
-         f"IS, 1\\,s/5\\% regime {V('ev.exit.c')}¢ {V('ev.exit.ci')}; live fills adverse ({V('ev.livefill.fill30')} filled in 30\\,s, mid then {V('ev.livefill.post')}¢)",
-         "not adopted"),
-        ("Sizing lens", f"{V('sel.sizing.n')} sizing policies, walk-forward", f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS",
-         "adopted (v2)"),
-        ("Selection lens", f"which fast-tier trades to take ({V('ev.sel.n')} variants)",
-         f"nested walk-forward {V('ev.sel.c')}¢ {V('ev.sel.ci')} vs {V('ev.sel.base')}¢ (IS)", "IS only"),
-        ("Cross-market", f"side markets vs the moneyline ({V('ev.cm.n')} variants)",
-         f"leaning maker {V('ev.cm.c')}¢ {V('ev.cm.ci')} (IS); taking stale side quotes: no edge", "IS only; tiny capacity"),
+        ("H2 favourites", "buy in-play favourites priced 85--97¢", f"OOS {V('h2.oos.c')}¢ {V('h2.oos.ci')}", "no edge"),
+        ("H4 score feeds", "do public score feeds lag the book?", f"median lag {V('h4.lead')}\\,s ($n = {V('h4.n')}$)", "confirmed"),
+        ("H5 quote after jumps", "post maker quotes after a move", f"OOS {V('h5.oos.c')}¢ {V('h5.oos.ci')}", "not significant"),
+        ("H6 fast tier", "wallets trading 0--3\\,s after a move, picked on past months",
+         f"{V('ft.c.is')}\\,/\\,{V('ft.c.oos')}¢ net 30\\,s markout (IS\\,/\\,OOS); {V('ft.months.is')} and {V('ft.months.oos')} months positive", "confirmed"),
         ("Kalshi lead-lag", "Kalshi vs Polymarket on the same points",
-         f"Kalshi first in {V('ev.kalshi.first')} of {V('ev.kalshi.n')} repricings (median {V('ev.kalshi.lead')}\\,s)",
-         "lag mostly mechanical"),
-        ("Latency and block lag", "when the book, stamp and tape move",
-         f"book {V('lat.book_vs_stamp')}\\,s before the stamp ($n = {V('lat.n_points')}$); tape stamps {V('ev.blocklag')}\\,s late",
-         "measured"),
-        ("v2", "frozen fast-tier book at its fills", f"Sharpe {V('v2.is.sr')}\\,/\\,{V('v2.oos.sr')}; OOS {V('v2.oos.c')}¢ {V('v2.oos.ci')}",
-         "headline; fees $\\times$2 fail"),
-        ("v2 unseen markets", f"{V('u2.markets')} never-examined markets (blind)", f"OOS {V('u2.oos.c')}¢ {V('u2.oos.ci')}", "fail"),
-        ("v2-safe", "net cap 50, fixed after v2's OOS losses", f"Sharpe {V('v2s.oos.sr')} burned OOS; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}",
-         "fail (blind)"),
+         f"Kalshi first in {V('ev.kalshi.first')} of {V('ev.kalshi.n')} repricings (median {V('ev.kalshi.lead')}\\,s)", "lag mostly mechanical"),
+        ("Clocks", "when the book, the stamp and the tape move",
+         f"book {V('lat.book_vs_stamp')}\\,s before the stamp ($n = {V('lat.n_points')}$); tape {V('ev.blocklag')}\\,s late", "measured"),
+        ("Factor regression", "Fama--French three factors and momentum",
+         f"$\\alpha$ $t = {V('fac.alpha_t')}$; largest factor $|t| = {V('fac.max_t')}$", "no factor exposure"),
+        ("Copying the fast tier (v2 and relatives)",),
+        ("v1", "copy the fast tier, dollar sizing; OOS opened once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
+        ("Sizing", f"{V('sel.sizing.n')} sizing policies, walk-forward", f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS", "adopted (v2)"),
+        ("Exits", f"maker exit instead of holding ({V('ev.exit.n')} variants)",
+         f"IS {V('ev.exit.c')}¢ {V('ev.exit.ci')} (1\\,s\\,/\\,5\\% regime); live fills adverse ({V('ev.livefill.fill30')} filled in 30\\,s)", "not adopted"),
+        ("Trade selection", f"which fast-tier trades to take ({V('ev.sel.n')} variants)",
+         f"nested walk-forward {V('ev.sel.c')}¢ {V('ev.sel.ci')} vs {V('ev.sel.base')}¢ (IS)", "IS only"),
+        ("Side markets", f"side markets vs the match market ({V('ev.cm.n')} variants)",
+         f"leaning maker {V('ev.cm.c')}¢ {V('ev.cm.ci')} (IS); taking stale side quotes: no edge", "IS only; tiny"),
+        ("v2", "frozen copy book at the fast tier's own prices",
+         f"Sharpe {V('v2.is.sr')}\\,/\\,{V('v2.oos.sr')}; OOS {V('v2.oos.c')}¢ {V('v2.oos.ci')}", "headline (Table~\\ref{tab:head})"),
+        ("v2, worse entry", "enter ½ or 1 tick worse",
+         f"IS {V('v2.is.slip05')}\\,/\\,{V('v2.is.slip10')}¢; OOS {V('v2.oos.slip05')}\\,/\\,{V('v2.oos.slip10')}¢", "about zero OOS"),
+        ("v2, costs doubled", "fees $\\times$2\\,/\\,all costs $\\times$2",
+         f"IS {V('v2.is.fx2.c')}\\,/\\,{V('v2.is.cx2.c')}¢; OOS {V('v2.oos.fx2.c')}\\,/\\,{V('v2.oos.cx2.c')}¢", "fails OOS"),
+        ("v2, fixed costs", "after central data and running costs",
+         f"IS {V('fin.v2.is.net_central')} a day; OOS {V('fin.v2.oos.net_central')} a day", "fails OOS"),
+        ("v2, unseen markets", f"{V('u2.markets')} markets we never examined (blind)",
+         f"IS {V('u2.is.c')}¢; OOS {V('u2.oos.c')}¢ {V('u2.oos.ci')}", "fail"),
+        ("v2-safe", "net cap 50, fixed after v2's OOS losses",
+         f"Sharpe {V('v2s.is.sr')}\\,/\\,{V('v2s.oos.sr')}; blind {V('v2s.u2.c')}¢ {V('v2s.u2.ci')}", "fail (blind)"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
-        ("Tier-0 camera", "CV trader with an in-venue camera ($V = 0$)",
-         f"{V('ev.t0.v0.is')}\\,/\\,{V('ev.t0.v0.oos')} a day (pre-registered)", "simulated, no camera held"),
-        ("Latency sweep", f"$V$ 0--60\\,s, six stamp-lag readings ({V('var.sweep')} cells)",
-         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:head}"),
-        ("Tier-0 v3", f"rule optimised on {V('var.tier0v3')} IS variants", f"blind {V('t3.oos.c')}¢", "fail"),
+        ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
+         f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')}; $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
+        ("Blind forward test", "v2 on new matches, CV rule v3 as secondary", "FWD", ""),
+        ("Being fast ourselves (computer vision)",),
+        ("H3 early call", "table-tennis MISS call 50\\,ms before contact, precision $\\geq$0.95",
+         f"live causal engine: {V('cv.eng.tp')} of {V('cv.eng.nmiss')} misses, none wrong; offline evaluation (look-ahead feature): {V('cv.tt.tp50')}/{V('cv.tt.called50')}",
+         "precision passes; recall low"),
+        ("Spin model, table tennis", "spin-aware early call, held-out footage",
+         f"{V('spin.tt.tp50')}/{V('spin.tt.calls50')} right at 50\\,ms vs the frozen model's {V('cv.tt.tp50')}/{V('cv.tt.called50')} (both offline)", "not adopted"),
+        ("Tennis tracker", "spin-aware landing model (simulated physics)",
+         f"{V('cv.spin.bls200')} vs {V('cv.spin.base200')}\\,cm at 200\\,ms; OUT precision {V('spin.out.prec200')}, recall {V('spin.out.rec200')}", "simulation only"),
+        ("GPU engine", "streamed causal engine on one L4", f"{V('cv.eng.fps')}\\,fps; {V('cv.eng.p50')}\\,ms p50; {V('cv.eng.dropped')} frames dropped", "measured"),
+        ("WebRTC pipeline", "our clip over WebRTC into the engine", f"{V('cv.webrtc')} frame to call; video leg {V('webrtc.leg')}\\,ms", "measured"),
+        ("End to end", "video frame to unsigned order on a live book",
+         f"{V('e2e.ours')}\\,ms ours; {V('e2e.total')}\\,ms with a 1\\,s feed vs {V('e2e.req')}\\,ms", "pass (paper)"),
+        ("Courtside camera", "CV trader with a camera at the venue ($V = 0$)", f"{V('ev.t0.v0.is')}\\,/\\,{V('ev.t0.v0.oos')} a day (pre-registered)", "simulated; no camera"),
+        ("Latency sweep", f"$V$ from 0 to 60\\,s, six stamp-lag readings ({V('var.sweep')} cells)",
+         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:lat}"),
+        ("CV rule v3", f"rule tuned on {V('var.tier0v3')} IS variants", f"IS {V('t3.is.c')}¢; blind {V('t3.oos.c')}¢", "fail"),
         ("Replay, all points", f"{V('rp.matches')} matches' real books, every point called",
          f"{V('rp.v1l2.c')}¢ {V('rp.v1l2.ci')} at $V = 1$\\,s; {V('rp.cells_neg')} of {V('rp.cells')} settings below zero", "loses"),
-        ("Replay, ex-ante swing", "only points with a large Markov swing (exploratory)",
+        ("Replay, big points", "only points with a large Markov swing (exploratory)",
          f"{V('rp.sel.t4.c')}¢ {V('rp.sel.t4.ci')}; {V('rp.sel.neg2')} cells below zero", "loses"),
-        ("Table tennis markets", "TT1--TT5 on Polymarket table tennis", f"no fast wallet qualifies; spread {V('tt.spread')}¢", "untestable"),
-        ("Spin model, table tennis", "spin-aware early call, held-out footage", f"{V('spin.tt.tp50')}/{V('spin.tt.calls50')} right at 50\\,ms vs the frozen model's {V('cv.tt.tp50')}/{V('cv.tt.called50')} (both offline)",
-         "not adopted"),
-        ("Tennis tracker", "spin-aware landing model (simulated physics)",
-         f"{V('cv.spin.bls200')} vs {V('cv.spin.base200')}\\,cm at 200\\,ms; OUT precision {V('spin.out.prec200')}, recall {V('spin.out.rec200')}",
-         "simulation only"),
-        ("GPU engine", "streamed causal engine on an L4", f"{V('cv.eng.fps')}\\,fps; {V('cv.eng.p50')}\\,ms p50; {V('cv.eng.dropped')} frames dropped", "measured"),
-        ("WebRTC pipeline", "our clip over WebRTC into the engine", f"{V('cv.webrtc')} frame to call; video leg {V('webrtc.leg')}\\,ms", "measured, own clip"),
-        ("End to end", "frame to unsigned order on a live book", f"{V('e2e.ours')}\\,ms ours; {V('e2e.total')}\\,ms with a 1\\,s feed vs {V('e2e.req')}\\,ms",
-         "pass (paper)"),
-        ("Capacity", "size grid, CV and v2", f"post hoc Sharpe halves at {V('capcv.half.oos')}--{V('capcv.half.is')}; pre-registered: none",
-         "small"),
-        ("Factor regression", "FF three factors and momentum", f"$\\alpha$ $t = {V('fac.alpha_t')}$; max $|t| = {V('fac.max_t')}$", "factor-neutral"),
-        ("Rigor pack", "DSR, PBO, block bootstrap", f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')}; $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$",
-         "luck not excluded OOS"),
+        ("Capacity", "size grid for the CV book and v2", f"post hoc Sharpe halves at {V('capcv.half.oos')}--{V('capcv.half.is')}; pre-registered: none", "small"),
+        ("Table-tennis markets", "TT1--TT5 on Polymarket table tennis", f"no fast wallet qualifies; spread {V('tt.spread')}¢", "untestable"),
     ]
     extra["everything"] = ev
+    # the blind forward test slot: filled from results/v2/forward.json when it exists; otherwise it follows the last
+    # HYPOTHESIS_V2.md amendment on the forward test (A4 reinstated it; A5, final, says it was not run)
+    mw = re.search(r"run\s+ONCE\s+at\s+or\s+after\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+UTC", hv2)
+    if not fwd_p.exists() and N.text("fwd.status") == "runs once" and mw:
+        extra["fwd_text"] = f"runs once on {mw.group(1)} at {mw.group(2)} UTC (pre-registered)"
+    else:
+        extra["fwd_text"] = N.text("fwd.cell")
+    extra["fwd_verdict"] = {"not run": "not run", "runs once": "pending"}.get(N.text("fwd.status"), N.text("fwd.status"))
+    extra["peeks_late"] = sum(1 for p in extra["peeks"]["lines"] if "logged after" in p["line"].lower())
     return N, extra
 
 
@@ -1339,9 +1362,15 @@ def checks(pdf: Path, tex_log: str) -> dict:
     if margin_viol:
         res["fail"].append(f"{len(margin_viol)} spans inside the 1 in margins")
     res["float_pages"] = float_pages
-    for f in ("Figure 1", "Figure 2", "Figure 3", "Table 1", "Table 2", "Table 3"):
+    # main text: the headline-metrics table and the latency-scenario table, and 3-4 figures (the rest is appendix)
+    for f in ("Figure 1", "Figure 2", "Figure 3", "Table 1", "Table 2"):
         if f not in float_pages:
             res["fail"].append(f"{f} not found on pages 1-{last}")
+    n_tab = sum(1 for k in float_pages if k.startswith("Table"))
+    n_fig = sum(1 for k in float_pages if k.startswith("Figure"))
+    res["main_tables"], res["main_figures"] = n_tab, n_fig
+    if n_tab > 2 or n_fig > 4:
+        res["fail"].append(f"main text has {n_tab} tables and {n_fig} figures (max 2 and 4)")
     full_main = " ".join(main_text)
     flat = re.sub(r"\s+", " ", full_main).lower()
     hits = [f for f in FORBIDDEN if f in flat]
@@ -1423,99 +1452,85 @@ def write_companion(N: Registry, extra: dict | None = None) -> None:
                        f"{v(f'sc.{rk}.is.{vk}.cci')} | {v(f'sc.{rk}.oos.{vk}.usd')} | {v(f'sc.{rk}.oos.{vk}.sr')} | "
                        f"{v(f'sc.{rk}.oos.{vk}.c')} {v(f'sc.{rk}.oos.{vk}.cci')} |")
         return "\n".join(out)
+    extra_fwd = (extra or {}).get("fwd_text", v("fwd.cell"))
     md = f"""# COURTSIDE: Pricing the Value of Speed in In-Play Tennis Prediction Markets
 
 {authors} · University of Florida · Gator Quant Hacks 2026 · Systematic Trading Track · October 4, 2026
 
-**The paper is [`docs/NOTE.pdf`](NOTE.pdf)** (LaTeX, built by `python scripts/build_paper.py`; every number below and in
-the PDF is read from `results/paper/numbers.json`, which records the source file and key of each). This file is a short
-readable companion; where the two differ, the PDF wins.
+**The paper is [`docs/NOTE.pdf`](NOTE.pdf).** This page is a short companion built from the same numbers
+(`results/paper/numbers.json`, which names the source file of every value). If the two ever differ, the PDF wins.
 
-**Labels.** CV-strategy results are simulated: {CV_LABEL}. Their trade set is the historical points the market later
-repriced by at least 4¢ (selected on outcomes, not ex ante). The pre-registered stamp-lag reading comes first; the post
-hoc estimate ({v('cv.cal.lag')} s, 95% CI {v('cv.cal.lag_ci')} s) second. v2 is measured at the fast tier's own fills:
-the opportunity at their speed, not our execution. "OOS" for v2 and the CV simulation is a burned (non-blind) hold-out.
-Real money: none; no order was ever sent.
+**How to read the labels.** The computer-vision (CV) results are simulated: {CV_LABEL}. Their trades are past points
+where the price later moved at least 4¢, so they are selected on outcomes, not ex ante. We show the pre-registered
+stamp-lag reading first and the post hoc estimate ({v('cv.cal.lag')} s, 95% CI {v('cv.cal.lag_ci')} s) second. v2 is our
+copy of the fast tier's trades at their own prices: it measures what their speed is worth, not what we could earn.
+"OOS" for v2 and the CV simulation is a burned hold-out (we had looked at it), not a blind one. No real money was used
+and no order was ever sent.
 
 ## Abstract
 
-We study who profits from speed in Polymarket's in-play tennis moneylines ({v('univ.matches')} matches, public tapes). A
-walk-forward fast tier of wallets trading within 3 s of a score move earns after fees in every in-sample and held-out
-month; other takers lose, and copying the same trades 3 s later loses. At the fast tier's own fills a frozen book (v2)
-has a Sharpe ratio of {v('v2.is.sr')} in sample and {v('v2.oos.sr')} on a burned hold-out, but turns negative when fees
-double. We then price the speed a computer-vision (CV) trader needs (simulated; {CV_LABEL}). Pre-registered, it breaks
-even at a {v('cv.pre.be.range')} s feed delay and earns {v('sc.pre.oos.v05.usd')}, {v('sc.pre.oos.v1.usd')} and
-{v('sc.pre.oos.v3.usd')} a day held out at 0.5, 1 and 3 s; a post hoc stamp-lag inference gives {v('sc.cal.oos.v1.usd')} at
-1 s. A replay on real books loses. Real money: none.
+Polymarket prices on tennis matches are win probabilities, and each point moves them by an amount we can compute. In
+public data on {v('univ.matches')} matches, the wallets that trade within 3 s of a point (the fast tier) earn after fees
+in every month, in and out of sample, while everyone else loses. Copying them at their own prices has a Sharpe ratio of
+{v('v2.is.sr')} in sample and {v('v2.oos.sr')} out of sample but loses once fees double. A computer-vision trader,
+simulated with an assumed video delay (we did not buy a feed), pre-registered, makes {v('sc.pre.oos.v1.usd')} a day out of sample at 1 s ({v('sc.cal.oos.v1.usd')} post hoc);
+a replay on real order books loses.
 
-## Headline metrics (Table 1 of the PDF)
+## Table 1 of the PDF: our copy of the fast tier's trades (v2)
 
-**A. v2 at the fast tier's own fills** (Sharpe: daily P&L on zero-filled calendar days × √365; 95% CI from a stationary
-bootstrap; deflated Sharpe at {v('rig.N3386')} trials, {v('rig.N')} for v2-safe)
+Sharpe uses daily P&L on every calendar day × √365; 95% CIs from a stationary block bootstrap; the deflated Sharpe
+corrects for {v('rig.N3386')} trials.
 
-| | v2 IS | v2 OOS | v2-safe IS | v2-safe OOS |
-|---|---|---|---|---|
-| Sharpe [95% CI] | {v('v2.is.sr')} {v('v2.is.sr_ci')} | {v('v2.oos.sr')} {v('v2.oos.sr_ci')} | {v('v2s.is.sr')} {v('v2s.is.sr_ci')} | {v('v2s.oos.sr')} {v('v2s.oos.sr_ci')} |
-| Deflated Sharpe | {v('v2.is.dsr')} | {v('v2.oos.dsr')} | {v('v2s.is.dsr')} | {v('v2s.oos.dsr')} |
-| Net ¢ per share | {v('v2.is.c')} {v('v2.is.ci')} | {v('v2.oos.c')} {v('v2.oos.ci')} | {v('v2s.is.c')} {v('v2s.is.ci')} | {v('v2s.oos.c')} {v('v2s.oos.ci')} |
-| Return / volatility, a year | {v('v2.is.ret')} / {v('v2.is.vol')} | {v('v2.oos.ret')} / {v('v2.oos.vol')} | {v('v2s.is.ret')} / {v('v2s.is.vol')} | {v('v2s.oos.ret')} / {v('v2s.oos.vol')} |
-| Max drawdown / worst month | {v('v2.is.dd')} / {v('v2.is.worstmonth')} | {v('v2.oos.dd')} / {v('v2.oos.worstmonth')} | {v('v2s.is.dd')} / {v('v2s.is.worstmonth')} | {v('v2s.oos.dd')} / {v('v2s.oos.worstmonth')} |
-| Turnover (× a year) / skew | {v('v2.is.turnover')} / {v('v2.is.skew')} | {v('v2.oos.turnover')} / {v('v2.oos.skew')} | {v('v2s.is.turnover')} / {v('v2s.is.skew')} | {v('v2s.oos.turnover')} / {v('v2s.oos.skew')} |
+| | IS | OOS (burned) |
+|---|---|---|
+| Net ¢ a share [95% CI] | {v('v2.is.c')} {v('v2.is.ci')} | {v('v2.oos.c')} {v('v2.oos.ci')} |
+| Sharpe [95% CI] | {v('v2.is.sr')} {v('v2.is.sr_ci')} | {v('v2.oos.sr')} {v('v2.oos.sr_ci')} |
+| Deflated Sharpe | {v('v2.is.dsr')} | {v('v2.oos.dsr')} |
+| Annual return / volatility | {v('v2.is.ret')} / {v('v2.is.vol')} | {v('v2.oos.ret')} / {v('v2.oos.vol')} |
+| Max drawdown / worst month | {v('v2.is.dd')} / {v('v2.is.worstmonth')} | {v('v2.oos.dd')} / {v('v2.oos.worstmonth')} |
+| Turnover (× a year) / skew | {v('v2.is.turnover')} / {v('v2.is.skew')} | {v('v2.oos.turnover')} / {v('v2.oos.skew')} |
+| Net ¢, fees ×2 / all costs ×2 | {v('v2.is.fx2.c')} / {v('v2.is.cx2.c')} | {v('v2.oos.fx2.c')} / {v('v2.oos.cx2.c')} |
 
-v2-safe (net cap 50) was fixed after v2's OOS losses were seen, and failed its blind unseen-market test
-({v('v2s.u2.c')}¢ {v('v2s.u2.ci')}).
+## Table 2 of the PDF: the CV strategy at three assumed feed delays
 
-**B. The CV strategy at three assumed feed latencies** (simulated; {CV_LABEL}; {v('cv.seeds')} seeds a cell)
+Simulated ({CV_LABEL}; {v('cv.seeds')} seeds a cell). Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed
+delay {v('cv.pre.be.is')} s IS, {v('cv.pre.be.oos')} s OOS):
 
-Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed delay {v('cv.pre.be.is')} s IS, {v('cv.pre.be.oos')} s OOS):
-
-| Feed latency V | IS $/day | IS Sharpe | IS ¢/share [95% CI] | OOS $/day | OOS Sharpe | OOS ¢/share [95% CI] |
+| Feed delay V | IS $/day | IS Sharpe | IS ¢/share [95% CI] | OOS $/day | OOS Sharpe | OOS ¢/share [95% CI] |
 |---|---|---|---|---|---|---|
 {row3('pre')}
 
-Post hoc stamp-lag estimate {v('cv.cal.lag')} s (assumes courtside humans; break-even {v('cv.cal.be.is')} s IS,
+Post hoc estimate {v('cv.cal.lag')} s (assumes humans at the court; break-even {v('cv.cal.be.is')} s IS,
 {v('cv.cal.be.oos')} s OOS):
 
-| Feed latency V | IS $/day | IS Sharpe | IS ¢/share [95% CI] | OOS $/day | OOS Sharpe | OOS ¢/share [95% CI] |
+| Feed delay V | IS $/day | IS Sharpe | IS ¢/share [95% CI] | OOS $/day | OOS Sharpe | OOS ¢/share [95% CI] |
 |---|---|---|---|---|---|---|
 {row3('cal')}
 
-At 1 s the same post hoc inference read point by point loses ({v('pp.cal.is.usd')} / {v('pp.cal.oos.usd')} a day); with
-no early CV calls the pre-registered cell is {v('cv.pess.is.usd')} / {v('cv.pess.oos.usd')}; with the live causal engine's
-own call table it is {v('cv.eng.pre.is.usd')} / {v('cv.eng.pre.oos.usd')} (pre-registered) and {v('cv.eng.cal.is.usd')} /
-{v('cv.eng.cal.oos.usd')} (post hoc). A replay calling every point on {v('rp.matches')} matches' real books loses in
-{v('rp.cells_neg')} of {v('rp.cells')} settings ({v('rp.v1l2.c')}¢ at 1 s).
+Read per point, the post hoc inference loses ({v('pp.cal.oos.usd')} a day at 1 s). A replay of {v('rp.matches')}
+matches recorded live against their real order books calls every point ex ante and loses in {v('rp.cells_neg')} of
+{v('rp.cells')} settings ({v('rp.v1l2.c')}¢ a share at 1 s).
 
-## Components, pipeline and capacity
+## Speed, capacity and what failed
 
-- **CV, table tennis (real held-out footage):** the live causal engine calls {v('cv.eng.tp')} of {v('cv.eng.nmiss')}
-  misses before contact (median lead {v('cv.eng.lead')} ms), none wrongly;
-  an offline evaluation with a look-ahead feature called {v('cv.tt.tp50')} of {v('cv.tt.called50')} at 50 ms.
-  **Tennis:** simulated physics only; a spin-aware
-  tracker cuts landing error from {v('cv.spin.base200')} to {v('cv.spin.bls200')} cm at 200 ms. **GPU engine:** L4,
-  {v('cv.eng.fps')} fps, call-ready in {v('cv.eng.p50')} ms p50, {v('cv.eng.dropped')} of {v('cv.eng.frames')} frames dropped.
-- **Pipeline (paper; order built, not sent):** frame to unsigned order {v('e2e.ours')} ms p50 on our own footage over
-  WebRTC (video leg {v('webrtc.leg')} ms); with a simulated 1 s feed, {v('e2e.net')} ms network and the 1 s venue hold the
-  order is executable at {v('e2e.total')} ms, under the organiser's 3,000 ms bar.
-- **Capacity:** v2's OOS edge holds up to 1× size ({v('cap.1x.oos.capital')}); 5× loses. The CV book has no capacity at the
-  pre-registered lag (Sharpe {v('capcv.pre.sr0.is')} / {v('capcv.pre.sr0.oos')} at its smallest size); post hoc its Sharpe
-  halves at {v('capcv.half.oos')} (OOS) to {v('capcv.half.is')} (IS) of capital; it trades {v('capcv.share_inplay')} of
-  in-play volume but {v('capcv.share_fast')} of the fast tier's 0–3 s volume. At 1 s it can pay at most
-  {v('cv.cal.oos.maxlic')} a month for data post hoc and {v('cv.pre.oos.maxlic')} pre-registered, against quotes of
-  {v('fin.feed.low')}–{v('fin.feed.high')}. COURTSIDE prices speed; it is not yet a business.
+- **Pipeline (paper; order built, not sent).** On our own footage a video frame becomes a built order in
+  {v('e2e.ours')} ms. With a simulated 1 s feed, {v('e2e.net')} ms of network and the 1 s venue hold, the order can
+  execute {v('e2e.total')} ms after the point ends, inside the organizers' 3,000 ms bar.
+- **CV on real held-out table-tennis footage.** The live causal engine called {v('cv.eng.tp')} of {v('cv.eng.nmiss')}
+  balls that went out early (median lead {v('cv.eng.lead')} ms), none wrongly, at {v('cv.eng.fps')} fps on one L4 GPU.
+  Tennis is simulated physics only.
+- **Capacity.** v2's OOS edge holds up to 1× size ({v('cap.1x.oos.capital')} of capital); 5× loses. The CV book has no
+  capacity at the pre-registered lag; post hoc its Sharpe halves at {v('capcv.half.oos')} (OOS) to {v('capcv.half.is')}
+  (IS) of capital. At 1 s it could pay at most {v('cv.cal.oos.maxlic')} a month for data post hoc and
+  {v('cv.pre.oos.maxlic')} pre-registered, against reported feed prices of {v('fin.feed.low')}–{v('fin.feed.high')}.
+  COURTSIDE prices speed; it is not yet a business.
+- **What failed.** Doubled fees out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets
+  (blind); v2-safe's blind test; the CV rule v3 (blind); the maker book (blind); table-tennis markets (untestable); v2
+  after a central data licence ({v('fin.v2.oos.net_central')} a day); the live-book replay. Blind forward test:
+  {extra_fwd}. We tried {v('var.total')} variants and logged {v('peeks.n')} reads of held-out data (Appendix D of the
+  PDF). Every test is in Appendix B; every formula with a worked example is in Appendix A.
 
-## What failed
-
-Fees ×2 out of sample ({v('v2.oos.fx2.c')}¢); v2 on {v('u2.markets')} never-examined markets (blind, {v('u2.verdict')});
-v2-safe's blind test ({v('v2s.u2.verdict')}); the CV simulation's frozen v3 rule (blind, {v('t3.verdict')}); maker v1 (blind,
-{v('mk.verdict')}, {v('mk.oos.usd')}); table tennis markets (untestable, median spread {v('tt.spread')}¢); v2 out of sample
-after a central feed licence ({v('fin.v2.oos.net_central')}/day); the live-book replay and its ex-ante filter. Blind
-forward test (v2; tier-0 v3 secondary): {v('fwd.cell')} (`HYPOTHESIS_V2.md` A4). The live paper session was stopped and is
-not used. Variants tried: {v('var.total')}. Logged reads of
-held-out data: {v('peeks.n')} (Table A9 of the PDF). Everything we tested, with its best result, is Table A1 of the PDF;
-every formula with a worked example is the appendix "Calculations".
-
-Reproduce: `bash reproduce.sh` (regenerates the result files, every figure and this paper).
+Reproduce: `bash reproduce.sh` (rebuilds the result files, every figure and this paper).
 """
     (ROOT / "docs/NOTE.md").write_text(md, encoding="utf-8")
     try:
