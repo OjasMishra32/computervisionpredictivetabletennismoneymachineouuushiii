@@ -1,0 +1,3354 @@
+{
+ "generated_utc": "2026-10-04T05:41:34Z",
+ "script": "scripts/edge_persistence.py",
+ "git_head": "80e621f",
+ "labels": {
+  "edge": "net 30 s markout per print, c/share, after each match's taker fee (published H6 measure)",
+  "gross": "same, before the fee",
+  "IS": "in sample (matches starting before 2026-08-25 14:15 UTC)",
+  "OOS": "burned OOS months enter only as their published monthly aggregates; no OOS print read here",
+  "t": "months since 2025-12"
+ },
+ "oos_rule": "No held-out print, tape or trade file is opened (HYPOTHESIS_V2.md; results/oos_peeks.log). The OOS months are the rows already published in results/summary.json::oos.h6_walkforward.",
+ "inputs": {
+  "is_rows": "results/summary.json::is.h6_walkforward",
+  "oos_rows": "results/summary.json::oos.h6_walkforward",
+  "is_extras": "data/is_prints.parquet -> src/fasttier.py walk-forward re-run (reproduces results/summary.json::is.h6_walkforward)",
+  "aug_note": "run_all.py lines 110-115 + results/summary.json::(is|oos).h6_walkforward (arithmetic)",
+  "oos_fee": "results/summary.json::oos.h6_shadow.mean_fee_c",
+  "paper_slope": "results/alpha/alpha.json::headline.fast_tier_slope_c_per_month.IS"
+ },
+ "checks": {
+  "is_walkforward_reproduced": {
+   "rows": 9,
+   "rows_published": 9,
+   "max_abs_diff_net30_c": 4.3e-05,
+   "n_wallets_equal": true,
+   "n_prints_equal": true,
+   "max_abs_diff_usd_k": 0.0,
+   "fast_prints_without_30s_mark_dropped_from_extras": 230
+  },
+  "fee_check_is_print_mean_vs_shadow": {
+   "print_mean_fee_c": 0.6534,
+   "shadow_mean_fee_c": 0.6478,
+   "note": "the OOS gross uses the shadow-book mean fee; in IS the two agree to the printed difference"
+  }
+ },
+ "aug_overlap": {
+  "finding": "results/summary.json::oos.h6_walkforward[0] (2026-08) is computed by run_all.py (lines 110-115) on IS and OOS prints together and kept for month >= 2026-08, so it holds ALL of August, including the 18,871 IS August prints in is.h6_walkforward[-1]. Same wallet set (101); 23,635 prints vs 18,871.",
+  "aug_oos_only_n_prints": 4764,
+  "aug_oos_only_net30_c_derived": 0.6528,
+  "oos_print_weighted_net30_c_as_published": 0.7483,
+  "oos_print_weighted_net30_c_oos_prints_only_derived": 0.6734,
+  "oos_n_prints_as_published": 49939,
+  "oos_n_prints_oos_only": 31068,
+  "how": "print-mean decomposition n_all*m_all = n_IS*m_IS + n_only*m_only (identical wallet set and IS prints in both runs). Exact up to prints with no 30 s mark, which n_prints counts but the mean skips (230 of 138,691 IS fast prints); no OOS print was read here",
+  "consequence": "results/alpha/alpha.json::headline.fast_tier_net30_c_print_weighted.OOS (+0.75, paper key ft.c.oos) mixes 38% IS prints; on OOS prints only it is the derived value above"
+ },
+ "series_calendar": [
+  {
+   "month": "2025-12",
+   "t": 0,
+   "n_wallets": 4,
+   "n_prints": 71,
+   "n_matches": 14,
+   "usd_k": 8.8446,
+   "net30_c": 1.969,
+   "others_net30_c": -0.4794,
+   "net_res_c": 2.081,
+   "universe_matches": 17,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 1.969,
+   "fee_c": 0.0,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 363.7357,
+   "net30_ci95_c": [
+    0.2590560172560045,
+    3.677263834774242
+   ],
+   "gross30_ci95_c": [
+    0.1868947615631869,
+    3.663831336357791
+   ],
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 0.0,
+   "proxy_usd": 174.1502
+  },
+  {
+   "month": "2026-01",
+   "t": 1,
+   "n_wallets": 4,
+   "n_prints": 4464,
+   "n_matches": 606,
+   "usd_k": 281.1451,
+   "net30_c": 2.4098,
+   "others_net30_c": -0.5609,
+   "net_res_c": 1.164,
+   "universe_matches": 802,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 2.41,
+   "fee_c": 0.0001,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 6670.3333,
+   "net30_ci95_c": [
+    2.248463508055094,
+    2.5609369490982408
+   ],
+   "gross30_ci95_c": [
+    2.2380585787228022,
+    2.584477852113075
+   ],
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 0.0002,
+   "proxy_usd": 6775.0346
+  },
+  {
+   "month": "2026-02",
+   "t": 2,
+   "n_wallets": 10,
+   "n_prints": 8808,
+   "n_matches": 932,
+   "usd_k": 971.4932,
+   "net30_c": 1.2087,
+   "others_net30_c": -0.6297,
+   "net_res_c": 2.0592,
+   "universe_matches": 1142,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 1.2087,
+   "fee_c": 0.0,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 19507.7102,
+   "net30_ci95_c": [
+    1.0771650171055744,
+    1.3455725147004027
+   ],
+   "gross30_ci95_c": [
+    1.0719577034269991,
+    1.3399631644399945
+   ],
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 0.0,
+   "proxy_usd": 11742.4383
+  },
+  {
+   "month": "2026-03",
+   "t": 3,
+   "n_wallets": 12,
+   "n_prints": 3380,
+   "n_matches": 403,
+   "usd_k": 449.7944,
+   "net30_c": 2.0198,
+   "others_net30_c": -0.4905,
+   "net_res_c": 0.4349,
+   "universe_matches": 490,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 2.1335,
+   "fee_c": 0.1137,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 13059.5775,
+   "net30_ci95_c": [
+    1.7998599467766365,
+    2.2415656067401017
+   ],
+   "gross30_ci95_c": [
+    1.9355041068426786,
+    2.3414889707017355
+   ],
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 0.19,
+   "proxy_usd": 9084.9473
+  },
+  {
+   "month": "2026-04",
+   "t": 4,
+   "n_wallets": 16,
+   "n_prints": 14532,
+   "n_matches": 1359,
+   "usd_k": 1266.607,
+   "net30_c": 1.4256,
+   "others_net30_c": -0.8667,
+   "net_res_c": 1.954,
+   "universe_matches": 1578,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 2.0309,
+   "fee_c": 0.6053,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 26775.2738,
+   "net30_ci95_c": [
+    1.327847308467205,
+    1.5201491098194109
+   ],
+   "gross30_ci95_c": [
+    1.9401546266989997,
+    2.1301540755951804
+   ],
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 18056.7494
+  },
+  {
+   "month": "2026-05",
+   "t": 5,
+   "n_wallets": 30,
+   "n_prints": 35899,
+   "n_matches": 1408,
+   "usd_k": 1499.3107,
+   "net30_c": 0.8029,
+   "others_net30_c": -1.6815,
+   "net_res_c": 1.0575,
+   "universe_matches": 1589,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 1.4149,
+   "fee_c": 0.6119,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 53347.5314,
+   "net30_ci95_c": [
+    0.712825269842194,
+    0.8935833483125949
+   ],
+   "gross30_ci95_c": [
+    1.322395091734541,
+    1.5094543187741913
+   ],
+   "share_delay_1s": 0.5154,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 12037.9656
+  },
+  {
+   "month": "2026-06",
+   "t": 6,
+   "n_wallets": 52,
+   "n_prints": 23760,
+   "n_matches": 1248,
+   "usd_k": 1958.7789,
+   "net30_c": 0.7315,
+   "others_net30_c": -0.8434,
+   "net_res_c": 1.1853,
+   "universe_matches": 1416,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 1.3338,
+   "fee_c": 0.6023,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 34876.1546,
+   "net30_ci95_c": [
+    0.6451299022616717,
+    0.8115999372166317
+   ],
+   "gross30_ci95_c": [
+    1.251113025614471,
+    1.4185868315455188
+   ],
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 0.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 14328.4677
+  },
+  {
+   "month": "2026-07",
+   "t": 7,
+   "n_wallets": 72,
+   "n_prints": 28906,
+   "n_matches": 1399,
+   "usd_k": 2726.4792,
+   "net30_c": 0.601,
+   "others_net30_c": -1.2728,
+   "net_res_c": 1.1093,
+   "universe_matches": 1570,
+   "period": "IS",
+   "partial_month": false,
+   "gross30_c": 1.5141,
+   "fee_c": 0.9132,
+   "gross_kind": "exact (IS prints)",
+   "pnl30_usd": 37420.8433,
+   "net30_ci95_c": [
+    0.5222371816328261,
+    0.6745224706836334
+   ],
+   "gross30_ci95_c": [
+    1.4418493264878318,
+    1.59028629336288
+   ],
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 0.7467,
+   "share_fee_published": 1.0,
+   "proxy_usd": 16386.14
+  },
+  {
+   "month": "2026-08",
+   "t": 8,
+   "n_wallets": 101,
+   "n_prints": 23635,
+   "n_matches": 1533,
+   "usd_k": 2931.3133,
+   "net30_c": 0.8275,
+   "others_net30_c": -1.2035,
+   "net_res_c": 0.8496,
+   "universe_matches": 1758,
+   "period": "IS+OOS (all of August)",
+   "partial_month": false,
+   "gross30_c": 1.8211,
+   "fee_c": 0.9936,
+   "gross_kind": "approx: net + fee, fee = burned-OOS shadow-book mean fee per trade (IS part exact)",
+   "pnl30_usd": null,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 1.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 24256.6176
+  },
+  {
+   "month": "2026-09",
+   "t": 9,
+   "n_wallets": 122,
+   "n_prints": 24207,
+   "n_matches": 1683,
+   "usd_k": 3115.1425,
+   "net30_c": 0.6973,
+   "others_net30_c": -1.2203,
+   "net_res_c": 0.703,
+   "universe_matches": 2024,
+   "period": "burned OOS",
+   "partial_month": false,
+   "gross30_c": 1.6865,
+   "fee_c": 0.9892,
+   "gross_kind": "approx: net + fee, fee = burned-OOS shadow-book mean fee per trade",
+   "pnl30_usd": null,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 1.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 21721.8887
+  },
+  {
+   "month": "2026-10",
+   "t": 10,
+   "n_wallets": 131,
+   "n_prints": 2097,
+   "n_matches": 133,
+   "usd_k": 304.9322,
+   "net30_c": 0.4447,
+   "others_net30_c": -1.8569,
+   "net_res_c": -0.5351,
+   "universe_matches": 143,
+   "period": "burned OOS",
+   "partial_month": true,
+   "gross30_c": 1.4339,
+   "fee_c": 0.9892,
+   "gross_kind": "approx: net + fee, fee = burned-OOS shadow-book mean fee per trade",
+   "pnl30_usd": null,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 1.0,
+   "share_fee_published": 1.0,
+   "proxy_usd": 1356.0335
+  }
+ ],
+ "series_is_months": {
+  "2025-12": {
+   "net30_c": 1.969,
+   "net30_ci95_c": [
+    0.2590560172560045,
+    3.677263834774242
+   ],
+   "gross30_c": 1.969,
+   "gross30_ci95_c": [
+    0.1868947615631869,
+    3.663831336357791
+   ],
+   "fee_c": 0.0,
+   "net30_share_weighted_c": 2.5349,
+   "pnl30_usd": 363.7357,
+   "pnl_to_resolution_usd": -696.8633,
+   "shares": 14349.1165,
+   "usd": 8844.6131,
+   "active_wallets": 2,
+   "share_fee_published": 0.0,
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 71,
+    "gross30_c": 1.969,
+    "net30_c": 1.969,
+    "n_wallets_active": 2
+   },
+   "entrants": {
+    "n_prints": 0,
+    "gross30_c": null,
+    "net30_c": null,
+    "n_wallets_active": 0
+   },
+   "first4": {
+    "n_prints": 71,
+    "gross30_c": 1.969,
+    "net30_c": 1.969
+   }
+  },
+  "2026-01": {
+   "net30_c": 2.4098,
+   "net30_ci95_c": [
+    2.248463508055094,
+    2.5609369490982408
+   ],
+   "gross30_c": 2.41,
+   "gross30_ci95_c": [
+    2.2380585787228022,
+    2.584477852113075
+   ],
+   "fee_c": 0.0001,
+   "net30_share_weighted_c": 1.2639,
+   "pnl30_usd": 6670.3333,
+   "pnl_to_resolution_usd": 3049.0658,
+   "shares": 527770.3425,
+   "usd": 279510.3092,
+   "active_wallets": 3,
+   "share_fee_published": 0.0002,
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 4453,
+    "gross30_c": 2.41,
+    "net30_c": 2.4098,
+    "n_wallets_active": 3
+   },
+   "entrants": {
+    "n_prints": 0,
+    "gross30_c": null,
+    "net30_c": null,
+    "n_wallets_active": 0
+   },
+   "first4": {
+    "n_prints": 4453,
+    "gross30_c": 2.41,
+    "net30_c": 2.4098
+   }
+  },
+  "2026-02": {
+   "net30_c": 1.2087,
+   "net30_ci95_c": [
+    1.0771650171055744,
+    1.3455725147004027
+   ],
+   "gross30_c": 1.2087,
+   "gross30_ci95_c": [
+    1.0719577034269991,
+    1.3399631644399945
+   ],
+   "fee_c": 0.0,
+   "net30_share_weighted_c": 1.1066,
+   "pnl30_usd": 19507.7102,
+   "pnl_to_resolution_usd": 42098.3889,
+   "shares": 1762890.3883,
+   "usd": 951751.6001,
+   "active_wallets": 9,
+   "share_fee_published": 0.0,
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 8781,
+    "gross30_c": 1.2087,
+    "net30_c": 1.2087,
+    "n_wallets_active": 9
+   },
+   "entrants": {
+    "n_prints": 0,
+    "gross30_c": null,
+    "net30_c": null,
+    "n_wallets_active": 0
+   },
+   "first4": {
+    "n_prints": 4097,
+    "gross30_c": 1.6295,
+    "net30_c": 1.6295
+   }
+  },
+  "2026-03": {
+   "net30_c": 2.0198,
+   "net30_ci95_c": [
+    1.7998599467766365,
+    2.2415656067401017
+   ],
+   "gross30_c": 2.1335,
+   "gross30_ci95_c": [
+    1.9355041068426786,
+    2.3414889707017355
+   ],
+   "fee_c": 0.1137,
+   "net30_share_weighted_c": 1.637,
+   "pnl30_usd": 13059.5775,
+   "pnl_to_resolution_usd": -20476.7455,
+   "shares": 797792.5393,
+   "usd": 437099.2168,
+   "active_wallets": 11,
+   "share_fee_published": 0.19,
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 3363,
+    "gross30_c": 2.1335,
+    "net30_c": 2.0198,
+    "n_wallets_active": 11
+   },
+   "entrants": {
+    "n_prints": 0,
+    "gross30_c": null,
+    "net30_c": null,
+    "n_wallets_active": 0
+   },
+   "first4": {
+    "n_prints": 1521,
+    "gross30_c": 1.6678,
+    "net30_c": 1.5536
+   }
+  },
+  "2026-04": {
+   "net30_c": 1.4256,
+   "net30_ci95_c": [
+    1.327847308467205,
+    1.5201491098194109
+   ],
+   "gross30_c": 2.0309,
+   "gross30_ci95_c": [
+    1.9401546266989997,
+    2.1301540755951804
+   ],
+   "fee_c": 0.6053,
+   "net30_share_weighted_c": 1.0403,
+   "pnl30_usd": 26775.2738,
+   "pnl_to_resolution_usd": 23125.9565,
+   "shares": 2573793.7926,
+   "usd": 1255397.4966,
+   "active_wallets": 13,
+   "share_fee_published": 1.0,
+   "share_delay_1s": 0.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 14525,
+    "gross30_c": 2.0309,
+    "net30_c": 1.4256,
+    "n_wallets_active": 13
+   },
+   "entrants": {
+    "n_prints": 0,
+    "gross30_c": null,
+    "net30_c": null,
+    "n_wallets_active": 0
+   },
+   "first4": {
+    "n_prints": 2679,
+    "gross30_c": 1.9601,
+    "net30_c": 1.3812
+   }
+  },
+  "2026-05": {
+   "net30_c": 0.8029,
+   "net30_ci95_c": [
+    0.712825269842194,
+    0.8935833483125949
+   ],
+   "gross30_c": 1.4149,
+   "gross30_ci95_c": [
+    1.322395091734541,
+    1.5094543187741913
+   ],
+   "fee_c": 0.6119,
+   "net30_share_weighted_c": 1.7111,
+   "pnl30_usd": 53347.5314,
+   "pnl_to_resolution_usd": 39963.7036,
+   "shares": 3117694.2289,
+   "usd": 1499310.6807,
+   "active_wallets": 20,
+   "share_fee_published": 1.0,
+   "share_delay_1s": 0.5154,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 10218,
+    "gross30_c": 2.5513,
+    "net30_c": 1.9553,
+    "n_wallets_active": 7
+   },
+   "entrants": {
+    "n_prints": 25681,
+    "gross30_c": 0.9627,
+    "net30_c": 0.3444,
+    "n_wallets_active": 13
+   },
+   "first4": {
+    "n_prints": 2989,
+    "gross30_c": 2.153,
+    "net30_c": 1.5691
+   }
+  },
+  "2026-06": {
+   "net30_c": 0.7315,
+   "net30_ci95_c": [
+    0.6451299022616717,
+    0.8115999372166317
+   ],
+   "gross30_c": 1.3338,
+   "gross30_ci95_c": [
+    1.251113025614471,
+    1.4185868315455188
+   ],
+   "fee_c": 0.6023,
+   "net30_share_weighted_c": 0.8795,
+   "pnl30_usd": 34876.1546,
+   "pnl_to_resolution_usd": 150467.8216,
+   "shares": 3965501.0722,
+   "usd": 1947965.6154,
+   "active_wallets": 34,
+   "share_fee_published": 1.0,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 0.0,
+   "incumbents": {
+    "n_prints": 8302,
+    "gross30_c": 2.1431,
+    "net30_c": 1.5484,
+    "n_wallets_active": 6
+   },
+   "entrants": {
+    "n_prints": 15433,
+    "gross30_c": 0.8984,
+    "net30_c": 0.2921,
+    "n_wallets_active": 28
+   },
+   "first4": {
+    "n_prints": 3660,
+    "gross30_c": 1.5566,
+    "net30_c": 0.9671
+   }
+  },
+  "2026-07": {
+   "net30_c": 0.601,
+   "net30_ci95_c": [
+    0.5222371816328261,
+    0.6745224706836334
+   ],
+   "gross30_c": 1.5141,
+   "gross30_ci95_c": [
+    1.4418493264878318,
+    1.59028629336288
+   ],
+   "fee_c": 0.9132,
+   "net30_share_weighted_c": 0.6993,
+   "pnl30_usd": 37420.8433,
+   "pnl_to_resolution_usd": 189491.9363,
+   "shares": 5351442.0952,
+   "usd": 2697877.2532,
+   "active_wallets": 49,
+   "share_fee_published": 1.0,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 0.7467,
+   "incumbents": {
+    "n_prints": 6478,
+    "gross30_c": 2.1687,
+    "net30_c": 1.2882,
+    "n_wallets_active": 5
+   },
+   "entrants": {
+    "n_prints": 22360,
+    "gross30_c": 1.3245,
+    "net30_c": 0.4019,
+    "n_wallets_active": 44
+   },
+   "first4": {
+    "n_prints": 3028,
+    "gross30_c": 1.6197,
+    "net30_c": 0.7778
+   }
+  },
+  "2026-08": {
+   "net30_c": 0.8716,
+   "net30_ci95_c": [
+    0.7832505605183295,
+    0.9627665041200066
+   ],
+   "gross30_c": 1.8663,
+   "gross30_ci95_c": [
+    1.7708694330348405,
+    1.9512990720222732
+   ],
+   "fee_c": 0.9947,
+   "net30_share_weighted_c": 0.8336,
+   "pnl30_usd": 39103.345,
+   "pnl_to_resolution_usd": 58760.0103,
+   "shares": 4690858.7065,
+   "usd": 2324926.923,
+   "active_wallets": 72,
+   "share_fee_published": 1.0,
+   "share_delay_1s": 1.0,
+   "share_fee_5pct": 1.0,
+   "incumbents": {
+    "n_prints": 3981,
+    "gross30_c": 2.1963,
+    "net30_c": 1.208,
+    "n_wallets_active": 5
+   },
+   "entrants": {
+    "n_prints": 14815,
+    "gross30_c": 1.7776,
+    "net30_c": 0.7811,
+    "n_wallets_active": 67
+   },
+   "first4": {
+    "n_prints": 1858,
+    "gross30_c": 1.7543,
+    "net30_c": 0.7803
+   }
+  }
+ },
+ "fits": {
+  "linear_ols_is9_paper": {
+   "label": "OLS, 9 IS rows (reproduces alpha.json headline slope)",
+   "n": 9,
+   "dof": 7,
+   "aicc": -13.284,
+   "durbin_watson": 2.852,
+   "intercept": {
+    "coef": 2.1369,
+    "se": 0.2387,
+    "t": 8.951,
+    "p": 0.0,
+    "ci95": [
+     1.5724,
+     2.7014
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.1998,
+    "se": 0.0501,
+    "t": -3.984,
+    "p": 0.0053,
+    "ci95": [
+     -0.3184,
+     -0.0812
+    ]
+   },
+   "published_slope": -0.1998,
+   "published_t": -3.98
+  },
+  "linear_ols_cal11": {
+   "label": "OLS, 11 calendar months",
+   "n": 11,
+   "dof": 9,
+   "aicc": -19.408,
+   "durbin_watson": 2.592,
+   "intercept": {
+    "coef": 2.0647,
+    "se": 0.201,
+    "t": 10.271,
+    "p": 0.0,
+    "ci95": [
+     1.6099,
+     2.5194
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.1741,
+    "se": 0.034,
+    "t": -5.123,
+    "p": 0.0006,
+    "ci95": [
+     -0.2509,
+     -0.0972
+    ]
+   }
+  },
+  "linear_wls_cal11": {
+   "label": "WLS (weights = matches traded), 11 calendar months  [primary]",
+   "n": 11,
+   "dof": 9,
+   "aicc": -21.068,
+   "durbin_watson": 2.401,
+   "intercept": {
+    "coef": 1.903,
+    "se": 0.2543,
+    "t": 7.484,
+    "p": 0.0,
+    "ci95": [
+     1.3277,
+     2.4782
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.1551,
+    "se": 0.0403,
+    "t": -3.846,
+    "p": 0.0039,
+    "ci95": [
+     -0.2463,
+     -0.0639
+    ]
+   }
+  },
+  "linear_wls_full10": {
+   "label": "WLS, 10 full months (drops Oct 2026, 3 days)",
+   "n": 10,
+   "dof": 8,
+   "aicc": -18.327,
+   "durbin_watson": 2.417,
+   "intercept": {
+    "coef": 1.9066,
+    "se": 0.2719,
+    "t": 7.011,
+    "p": 0.0001,
+    "ci95": [
+     1.2795,
+     2.5337
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.1559,
+    "se": 0.0435,
+    "t": -3.581,
+    "p": 0.0072,
+    "ci95": [
+     -0.2564,
+     -0.0555
+    ]
+   }
+  },
+  "log_wls_cal11": {
+   "label": "WLS of ln(net edge) on t",
+   "n": 11,
+   "dof": 9,
+   "aicc": -26.888,
+   "durbin_watson": 2.213,
+   "intercept": {
+    "coef": 0.6812,
+    "se": 0.1952,
+    "t": 3.49,
+    "p": 0.0068,
+    "ci95": [
+     0.2397,
+     1.1228
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": -0.1324,
+    "se": 0.031,
+    "t": -4.278,
+    "p": 0.0021,
+    "ci95": [
+     -0.2024,
+     -0.0624
+    ]
+   },
+   "monthly_change_pct": -12.4,
+   "monthly_change_pct_ci95": [
+    -18.33,
+    -6.05
+   ],
+   "half_life_months": 5.23,
+   "half_life_months_ci95": [
+    3.42,
+    11.11
+   ]
+  },
+  "elasticity_edge_wrt_wallets": {
+   "label": "WLS of ln(net edge) on ln(fast wallets): % change in edge per 1% more fast wallets",
+   "n": 11,
+   "dof": 9,
+   "aicc": -30.53,
+   "durbin_watson": 2.176,
+   "intercept": {
+    "coef": 1.1716,
+    "se": 0.2425,
+    "t": 4.832,
+    "p": 0.0009,
+    "ci95": [
+     0.6231,
+     1.7201
+    ]
+   },
+   "elasticity": {
+    "coef": -0.3434,
+    "se": 0.0637,
+    "t": -5.387,
+    "p": 0.0004,
+    "ci95": [
+     -0.4876,
+     -0.1992
+    ]
+   },
+   "corr_ln_wallets_with_t": 0.987,
+   "caveat": "wallets grow almost log-linearly in time, so this elasticity cannot be told apart from a time trend in 11 points"
+  },
+  "elasticity_with_trend": {
+   "label": "WLS of ln(net edge) on ln(wallets) and t together",
+   "n": 11,
+   "dof": 8,
+   "aicc": -30.518,
+   "durbin_watson": 1.497,
+   "intercept": {
+    "coef": 1.9633,
+    "se": 0.479,
+    "t": 4.098,
+    "p": 0.0034,
+    "ci95": [
+     0.8586,
+     3.0679
+    ]
+   },
+   "elasticity": {
+    "coef": -0.9787,
+    "se": 0.3481,
+    "t": -2.812,
+    "p": 0.0228,
+    "ci95": [
+     -1.7814,
+     -0.176
+    ]
+   },
+   "trend_log_per_month": {
+    "coef": 0.265,
+    "se": 0.1432,
+    "t": 1.85,
+    "p": 0.1015,
+    "ci95": [
+     -0.0653,
+     0.5953
+    ]
+   }
+  },
+  "gross_linear_wls_cal11": {
+   "label": "WLS of GROSS 30 s markout (before fee) on t; OOS gross approximate",
+   "n": 11,
+   "dof": 9,
+   "aicc": -19.869,
+   "durbin_watson": 2.448,
+   "intercept": {
+    "coef": 1.8001,
+    "se": 0.2685,
+    "t": 6.704,
+    "p": 0.0001,
+    "ci95": [
+     1.1927,
+     2.4076
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.0235,
+    "se": 0.0426,
+    "t": -0.553,
+    "p": 0.5939,
+    "ci95": [
+     -0.1199,
+     0.0728
+    ]
+   }
+  },
+  "gross_linear_wls_is9_exact": {
+   "label": "WLS of GROSS markout on t, 9 IS months only (Aug = IS part): every value exact from IS prints",
+   "n": 9,
+   "dof": 7,
+   "aicc": -12.913,
+   "durbin_watson": 2.543,
+   "intercept": {
+    "coef": 1.8645,
+    "se": 0.3377,
+    "t": 5.521,
+    "p": 0.0009,
+    "ci95": [
+     1.0659,
+     2.663
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.0405,
+    "se": 0.0621,
+    "t": -0.652,
+    "p": 0.535,
+    "ci95": [
+     -0.1873,
+     0.1063
+    ]
+   }
+  },
+  "elasticity_gross_wrt_wallets": {
+   "label": "WLS of ln(GROSS edge) on ln(fast wallets): competition elasticity of the pre-fee edge (OOS gross approximate)",
+   "n": 11,
+   "dof": 9,
+   "aicc": -31.735,
+   "durbin_watson": 2.488,
+   "intercept": {
+    "coef": 0.6356,
+    "se": 0.2296,
+    "t": 2.769,
+    "p": 0.0218,
+    "ci95": [
+     0.1163,
+     1.1548
+    ]
+   },
+   "elasticity": {
+    "coef": -0.0394,
+    "se": 0.0603,
+    "t": -0.654,
+    "p": 0.5297,
+    "ci95": [
+     -0.176,
+     0.0971
+    ]
+   }
+  },
+  "fee_linear_wls_cal11": {
+   "label": "WLS of fee per share on t",
+   "n": 11,
+   "dof": 9,
+   "aicc": -42.843,
+   "durbin_watson": 1.49,
+   "intercept": {
+    "coef": -0.1028,
+    "se": 0.0945,
+    "t": -1.088,
+    "p": 0.3048,
+    "ci95": [
+     -0.3166,
+     0.111
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": 0.1316,
+    "se": 0.015,
+    "t": 8.778,
+    "p": 0.0,
+    "ci95": [
+     0.0977,
+     0.1655
+    ]
+   }
+  },
+  "gap_fast_minus_others_wls": {
+   "label": "WLS of (fast - other takers) net 30 s markout on t",
+   "n": 11,
+   "dof": 9,
+   "aicc": -20.492,
+   "durbin_watson": 2.53,
+   "intercept": {
+    "coef": 2.4997,
+    "se": 0.261,
+    "t": 9.576,
+    "p": 0.0,
+    "ci95": [
+     1.9092,
+     3.0902
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.0705,
+    "se": 0.0414,
+    "t": -1.704,
+    "p": 0.1226,
+    "ci95": [
+     -0.1642,
+     0.0231
+    ]
+   }
+  },
+  "others_wls": {
+   "label": "WLS of other takers' net 30 s markout on t",
+   "n": 11,
+   "dof": 9,
+   "aicc": -22.268,
+   "durbin_watson": 2.216,
+   "intercept": {
+    "coef": -0.5968,
+    "se": 0.2408,
+    "t": -2.478,
+    "p": 0.0351,
+    "ci95": [
+     -1.1415,
+     -0.0521
+    ]
+   },
+   "slope_c_per_month": {
+    "coef": -0.0846,
+    "se": 0.0382,
+    "t": -2.215,
+    "p": 0.054,
+    "ci95": [
+     -0.171,
+     0.0018
+    ]
+   }
+  }
+ },
+ "regime": {
+  "source": "src.tape.universe() (data/raw/events_tennis_2025-07-01_2026-10-03.parquet): start, secondsDelay, feeSchedule.rate per match; metadata only",
+  "matches_by_month_and_regime": {
+   "2025-10": {
+    "3 s / 0%": 439
+   },
+   "2025-11": {
+    "3 s / 0%": 116
+   },
+   "2025-12": {
+    "3 s / 0%": 17
+   },
+   "2026-01": {
+    "3 s / 0%": 801,
+    "3 s / 3%": 1
+   },
+   "2026-02": {
+    "3 s / 0%": 1141,
+    "3 s / 3%": 1
+   },
+   "2026-03": {
+    "3 s / 0%": 375,
+    "3 s / 3%": 115
+   },
+   "2026-04": {
+    "3 s / 3%": 1578
+   },
+   "2026-05": {
+    "1 s / 3%": 844,
+    "3 s / 3%": 745
+   },
+   "2026-06": {
+    "1 s / 3%": 1416
+   },
+   "2026-07": {
+    "1 s / 3%": 360,
+    "1 s / 5%": 1210
+   },
+   "2026-08": {
+    "1 s / 5%": 1758
+   },
+   "2026-09": {
+    "1 s / 5%": 2024
+   },
+   "2026-10": {
+    "1 s / 5%": 143
+   }
+  },
+  "regime_first_last": {
+   "1 s / 3%": {
+    "first_match_start": "2026-05-15 08:30:00+00:00",
+    "last_match_start": "2026-07-10 20:30:00+00:00",
+    "matches": 2620
+   },
+   "1 s / 5%": {
+    "first_match_start": "2026-07-11 08:00:00+00:00",
+    "last_match_start": "2026-10-03 07:10:00+00:00",
+    "matches": 5135
+   },
+   "3 s / 0%": {
+    "first_match_start": "2025-10-08 02:00:00+00:00",
+    "last_match_start": "2026-03-31 07:05:00+00:00",
+    "matches": 2889
+   },
+   "3 s / 3%": {
+    "first_match_start": "2026-01-18 00:00:00+00:00",
+    "last_match_start": "2026-05-14 20:05:00+00:00",
+    "matches": 2440
+   }
+  },
+  "events": [
+   {
+    "what": "taker fee published (0% -> 3%)",
+    "first_full_month": "2026-04",
+    "first_match_start": "2026-01-18 00:00:00+00:00",
+    "note": "the '0%' months are matches with no published fee schedule, charged 0 in every backtest (results/v2/note_metrics.json::data_gaps.no_fee_schedule_matches); if the venue charged a fee then, the early net edge is overstated and the decline is smaller"
+   },
+   {
+    "what": "taker order delay 3 s -> 1 s",
+    "first_full_month": "2026-06",
+    "first_match_start": "2026-05-15 08:30:00+00:00"
+   },
+   {
+    "what": "taker fee 3% -> 5%",
+    "first_full_month": "2026-08",
+    "first_match_start": "2026-07-11 08:00:00+00:00"
+   }
+  ],
+  "burned_oos_months_regime": "every match from 2026-08 on is 1 s / 5% (metadata), so OOS rows carry one regime",
+  "breaks": {
+   "net30_c": {
+    "1 s delay": {
+     "shift_only": {
+      "label": "level shift at the 1 s delay (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -22.413,
+      "durbin_watson": 2.075,
+      "intercept": {
+       "coef": 1.5576,
+       "se": 0.1612,
+       "t": 9.665,
+       "p": 0.0,
+       "ci95": [
+        1.193,
+        1.9221
+       ]
+      },
+      "shift_c": {
+       "coef": -0.8841,
+       "se": 0.209,
+       "t": -4.229,
+       "p": 0.0022,
+       "ci95": [
+        -1.357,
+        -0.4112
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -19.035,
+      "durbin_watson": 2.429,
+      "intercept": {
+       "coef": 1.7117,
+       "se": 0.2925,
+       "t": 5.852,
+       "p": 0.0004,
+       "ci95": [
+        1.0372,
+        2.3861
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": -0.0571,
+       "se": 0.089,
+       "t": -0.641,
+       "p": 0.5393,
+       "ci95": [
+        -0.2624,
+        0.1482
+       ]
+      },
+      "shift_c": {
+       "coef": -0.6018,
+       "se": 0.4906,
+       "t": -1.227,
+       "p": 0.2548,
+       "ci95": [
+        -1.733,
+        0.5295
+       ]
+      }
+     },
+     "aicc_trend_only": -21.068,
+     "aicc_shift_only": -22.413,
+     "aicc_trend_plus_shift": -19.035
+    },
+    "5% fee": {
+     "shift_only": {
+      "label": "level shift at the 5% fee (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -13.945,
+      "durbin_watson": 1.054,
+      "intercept": {
+       "coef": 1.2282,
+       "se": 0.1834,
+       "t": 6.696,
+       "p": 0.0001,
+       "ci95": [
+        0.8132,
+        1.6431
+       ]
+      },
+      "shift_c": {
+       "coef": -0.5491,
+       "se": 0.2955,
+       "t": -1.858,
+       "p": 0.0961,
+       "ci95": [
+        -1.2176,
+        0.1195
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -19.852,
+      "durbin_watson": 2.937,
+      "intercept": {
+       "coef": 2.2087,
+       "se": 0.314,
+       "t": 7.033,
+       "p": 0.0001,
+       "ci95": [
+        1.4845,
+        2.9329
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": -0.2488,
+       "se": 0.0732,
+       "t": -3.4,
+       "p": 0.0094,
+       "ci95": [
+        -0.4175,
+        -0.0801
+       ]
+      },
+      "shift_c": {
+       "coef": 0.5802,
+       "se": 0.3879,
+       "t": 1.496,
+       "p": 0.1731,
+       "ci95": [
+        -0.3143,
+        1.4747
+       ]
+      }
+     },
+     "aicc_trend_only": -21.068,
+     "aicc_shift_only": -13.945,
+     "aicc_trend_plus_shift": -19.852
+    },
+    "fee published": {
+     "shift_only": {
+      "label": "level shift at the fee published (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -18.282,
+      "durbin_watson": 2.079,
+      "intercept": {
+       "coef": 1.7737,
+       "se": 0.2748,
+       "t": 6.456,
+       "p": 0.0001,
+       "ci95": [
+        1.1521,
+        2.3952
+       ]
+      },
+      "shift_c": {
+       "coef": -0.9343,
+       "se": 0.3036,
+       "t": -3.077,
+       "p": 0.0132,
+       "ci95": [
+        -1.6211,
+        -0.2475
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -18.172,
+      "durbin_watson": 2.771,
+      "intercept": {
+       "coef": 1.9632,
+       "se": 0.2661,
+       "t": 7.376,
+       "p": 0.0001,
+       "ci95": [
+        1.3494,
+        2.5769
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": -0.1134,
+       "se": 0.0623,
+       "t": -1.822,
+       "p": 0.1059,
+       "ci95": [
+        -0.257,
+        0.0301
+       ]
+      },
+      "shift_c": {
+       "coef": -0.3663,
+       "se": 0.4129,
+       "t": -0.887,
+       "p": 0.4009,
+       "ci95": [
+        -1.3184,
+        0.5859
+       ]
+      }
+     },
+     "aicc_trend_only": -21.068,
+     "aicc_shift_only": -18.282,
+     "aicc_trend_plus_shift": -18.172
+    },
+    "unknown_break_scan": {
+     "rows": [
+      {
+       "break_at": "2026-02",
+       "sse_shift_only": 1.2806,
+       "sse_trend_plus_shift": 0.6119,
+       "shift_c": -1.4825,
+       "trend_given_shift": -0.114,
+       "trend_given_shift_ci95": [
+        -0.203,
+        -0.0251
+       ]
+      },
+      {
+       "break_at": "2026-03",
+       "sse_shift_only": 1.7333,
+       "sse_trend_plus_shift": 0.97977,
+       "shift_c": -0.7968,
+       "trend_given_shift": -0.1486,
+       "trend_given_shift_ci95": [
+        -0.2867,
+        -0.0104
+       ]
+      },
+      {
+       "break_at": "2026-04",
+       "sse_shift_only": 1.21575,
+       "sse_trend_plus_shift": 0.86894,
+       "shift_c": -0.918,
+       "trend_given_shift": -0.1085,
+       "trend_given_shift_ci95": [
+        -0.2486,
+        0.0315
+       ]
+      },
+      {
+       "break_at": "2026-05",
+       "sse_shift_only": 0.72978,
+       "sse_trend_plus_shift": 0.66648,
+       "shift_c": -0.8918,
+       "trend_given_shift": -0.0545,
+       "trend_given_shift_ci95": [
+        -0.1986,
+        0.0897
+       ]
+      },
+      {
+       "break_at": "2026-06",
+       "sse_shift_only": 1.39526,
+       "sse_trend_plus_shift": 0.98235,
+       "shift_c": -0.6661,
+       "trend_given_shift": -0.1512,
+       "trend_given_shift_ci95": [
+        -0.3412,
+        0.0389
+       ]
+      },
+      {
+       "break_at": "2026-07",
+       "sse_shift_only": 1.81497,
+       "sse_trend_plus_shift": 0.87902,
+       "shift_c": -0.5372,
+       "trend_given_shift": -0.2149,
+       "trend_given_shift_ci95": [
+        -0.3847,
+        -0.0451
+       ]
+      },
+      {
+       "break_at": "2026-08",
+       "sse_shift_only": 2.26997,
+       "sse_trend_plus_shift": 0.6214,
+       "shift_c": -0.3727,
+       "trend_given_shift": -0.2406,
+       "trend_given_shift_ci95": [
+        -0.361,
+        -0.1202
+       ]
+      },
+      {
+       "break_at": "2026-09",
+       "sse_shift_only": 2.3622,
+       "sse_trend_plus_shift": 0.8654,
+       "shift_c": -0.3905,
+       "trend_given_shift": -0.1863,
+       "trend_given_shift_ci95": [
+        -0.3018,
+        -0.0708
+       ]
+      }
+     ],
+     "best_shift_only": "2026-05",
+     "note": "data-chosen break; its p-value is not valid as a test (search), shown only to see whether it lands on a venue-rule date"
+    }
+   },
+   "gross30_c": {
+    "1 s delay": {
+     "shift_only": {
+      "label": "level shift at the 1 s delay (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -21.007,
+      "durbin_watson": 2.651,
+      "intercept": {
+       "coef": 1.8241,
+       "se": 0.1718,
+       "t": 10.618,
+       "p": 0.0,
+       "ci95": [
+        1.4355,
+        2.2127
+       ]
+      },
+      "shift_c": {
+       "coef": -0.256,
+       "se": 0.2228,
+       "t": -1.149,
+       "p": 0.2803,
+       "ci95": [
+        -0.7601,
+        0.2481
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -18.425,
+      "durbin_watson": 2.152,
+      "intercept": {
+       "coef": 1.5718,
+       "se": 0.3007,
+       "t": 5.227,
+       "p": 0.0008,
+       "ci95": [
+        0.8784,
+        2.2653
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": 0.0935,
+       "se": 0.0915,
+       "t": 1.021,
+       "p": 0.3371,
+       "ci95": [
+        -0.1176,
+        0.3045
+       ]
+      },
+      "shift_c": {
+       "coef": -0.7182,
+       "se": 0.5044,
+       "t": -1.424,
+       "p": 0.1923,
+       "ci95": [
+        -1.8813,
+        0.4449
+       ]
+      }
+     },
+     "aicc_trend_only": -19.869,
+     "aicc_shift_only": -21.007,
+     "aicc_trend_plus_shift": -18.425
+    },
+    "5% fee": {
+     "shift_only": {
+      "label": "level shift at the 5% fee (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -19.539,
+      "durbin_watson": 2.024,
+      "intercept": {
+       "coef": 1.6471,
+       "se": 0.1422,
+       "t": 11.58,
+       "p": 0.0,
+       "ci95": [
+        1.3253,
+        1.9689
+       ]
+      },
+      "shift_c": {
+       "coef": 0.0402,
+       "se": 0.2292,
+       "t": 0.175,
+       "p": 0.8647,
+       "ci95": [
+        -0.4783,
+        0.5586
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -18.075,
+      "durbin_watson": 2.917,
+      "intercept": {
+       "coef": 2.0902,
+       "se": 0.3405,
+       "t": 6.139,
+       "p": 0.0003,
+       "ci95": [
+        1.3051,
+        2.8753
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": -0.1124,
+       "se": 0.0793,
+       "t": -1.417,
+       "p": 0.1941,
+       "ci95": [
+        -0.2954,
+        0.0705
+       ]
+      },
+      "shift_c": {
+       "coef": 0.5505,
+       "se": 0.4205,
+       "t": 1.309,
+       "p": 0.2269,
+       "ci95": [
+        -0.4192,
+        1.5202
+       ]
+      }
+     },
+     "aicc_trend_only": -19.869,
+     "aicc_shift_only": -19.539,
+     "aicc_trend_plus_shift": -18.075
+    },
+    "fee published": {
+     "shift_only": {
+      "label": "level shift at the fee published (regressor = share of the month's fast-tier prints in the new regime)",
+      "n": 11,
+      "dof": 9,
+      "aicc": -19.736,
+      "durbin_watson": 2.391,
+      "intercept": {
+       "coef": 1.7667,
+       "se": 0.2572,
+       "t": 6.869,
+       "p": 0.0001,
+       "ci95": [
+        1.1849,
+        2.3485
+       ]
+      },
+      "shift_c": {
+       "coef": -0.125,
+       "se": 0.2842,
+       "t": -0.44,
+       "p": 0.6703,
+       "ci95": [
+        -0.7679,
+        0.5178
+       ]
+      }
+     },
+     "trend_plus_shift": {
+      "label": "trend + shift",
+      "n": 11,
+      "dof": 8,
+      "aicc": -15.942,
+      "durbin_watson": 2.46,
+      "intercept": {
+       "coef": 1.8029,
+       "se": 0.2945,
+       "t": 6.121,
+       "p": 0.0003,
+       "ci95": [
+        1.1237,
+        2.4821
+       ]
+      },
+      "slope_c_per_month": {
+       "coef": -0.0216,
+       "se": 0.0689,
+       "t": -0.314,
+       "p": 0.7614,
+       "ci95": [
+        -0.1805,
+        0.1372
+       ]
+      },
+      "shift_c": {
+       "coef": -0.0166,
+       "se": 0.4569,
+       "t": -0.036,
+       "p": 0.9719,
+       "ci95": [
+        -1.0703,
+        1.0371
+       ]
+      }
+     },
+     "aicc_trend_only": -19.869,
+     "aicc_shift_only": -19.736,
+     "aicc_trend_plus_shift": -15.942
+    },
+    "unknown_break_scan": {
+     "rows": [
+      {
+       "break_at": "2026-02",
+       "sse_shift_only": 0.76688,
+       "sse_trend_plus_shift": 0.75385,
+       "shift_c": -0.7816,
+       "trend_given_shift": 0.0159,
+       "trend_given_shift_ci95": [
+        -0.0828,
+        0.1146
+       ]
+      },
+      {
+       "break_at": "2026-03",
+       "sse_shift_only": 1.13234,
+       "sse_trend_plus_shift": 1.07363,
+       "shift_c": -0.0246,
+       "trend_given_shift": -0.0415,
+       "trend_given_shift_ci95": [
+        -0.1861,
+        0.1031
+       ]
+      },
+      {
+       "break_at": "2026-04",
+       "sse_shift_only": 1.10151,
+       "sse_trend_plus_shift": 1.09342,
+       "shift_c": -0.1389,
+       "trend_given_shift": -0.0166,
+       "trend_given_shift_ci95": [
+        -0.1737,
+        0.1405
+       ]
+      },
+      {
+       "break_at": "2026-05",
+       "sse_shift_only": 0.89998,
+       "sse_trend_plus_shift": 0.76627,
+       "shift_c": -0.315,
+       "trend_given_shift": 0.0792,
+       "trend_given_shift_ci95": [
+        -0.0754,
+        0.2338
+       ]
+      },
+      {
+       "break_at": "2026-06",
+       "sse_shift_only": 1.07968,
+       "sse_trend_plus_shift": 1.0796,
+       "shift_c": -0.1404,
+       "trend_given_shift": 0.0022,
+       "trend_given_shift_ci95": [
+        -0.1971,
+        0.2014
+       ]
+      },
+      {
+       "break_at": "2026-07",
+       "sse_shift_only": 1.13253,
+       "sse_trend_plus_shift": 0.98084,
+       "shift_c": 0.0153,
+       "trend_given_shift": -0.0865,
+       "trend_given_shift_ci95": [
+        -0.2659,
+        0.0928
+       ]
+      },
+      {
+       "break_at": "2026-08",
+       "sse_shift_only": 1.10539,
+       "sse_trend_plus_shift": 0.86501,
+       "shift_c": 0.1084,
+       "trend_given_shift": -0.0919,
+       "trend_given_shift_ci95": [
+        -0.2339,
+        0.0502
+       ]
+      },
+      {
+       "break_at": "2026-09",
+       "sse_shift_only": 1.13312,
+       "sse_trend_plus_shift": 1.07275,
+       "shift_c": 0.0054,
+       "trend_given_shift": -0.0374,
+       "trend_given_shift_ci95": [
+        -0.166,
+        0.0912
+       ]
+      }
+     ],
+     "best_shift_only": "2026-02",
+     "note": "data-chosen break; its p-value is not valid as a test (search), shown only to see whether it lands on a venue-rule date"
+    }
+   }
+  },
+  "natural_experiments": {
+   "what": "Same month, same qualified wallets, matches under two venue regimes (regime is per match). Net / gross 30 s markout per print, match-clustered bootstrap CI of the difference (b - a). IS prints only.",
+   "fee_published_mar2026": {
+    "month": "2026-03",
+    "a": "3 s / 0%",
+    "b": "3 s / 3%",
+    "n_prints": [
+     2724,
+     639
+    ],
+    "n_matches": [
+     313,
+     90
+    ],
+    "net30": {
+     "a_c": 2.1197,
+     "b_c": 1.594,
+     "b_minus_a_c": -0.5257,
+     "ci95": [
+      -1.077,
+      -0.0157
+     ]
+    },
+    "gross30": {
+     "a_c": 2.1197,
+     "b_c": 2.1923,
+     "b_minus_a_c": 0.0726,
+     "ci95": [
+      -0.4448,
+      0.592
+     ]
+    },
+    "fee": {
+     "a_c": 0.0,
+     "b_c": 0.5983,
+     "b_minus_a_c": 0.5983,
+     "ci95": [
+      0.5789,
+      0.6174
+     ]
+    }
+   },
+   "delay_3s_to_1s_may2026": {
+    "month": "2026-05",
+    "a": "3 s / 3%",
+    "b": "1 s / 3%",
+    "n_prints": [
+     17395,
+     18504
+    ],
+    "n_matches": [
+     655,
+     753
+    ],
+    "net30": {
+     "a_c": 0.7316,
+     "b_c": 0.87,
+     "b_minus_a_c": 0.1384,
+     "ci95": [
+      -0.0413,
+      0.3162
+     ]
+    },
+    "gross30": {
+     "a_c": 1.3429,
+     "b_c": 1.4825,
+     "b_minus_a_c": 0.1397,
+     "ci95": [
+      -0.0476,
+      0.3023
+     ]
+    },
+    "fee": {
+     "a_c": 0.6113,
+     "b_c": 0.6125,
+     "b_minus_a_c": 0.0013,
+     "ci95": [
+      -0.0078,
+      0.0101
+     ]
+    }
+   },
+   "fee_3_to_5_jul2026": {
+    "month": "2026-07",
+    "a": "1 s / 3%",
+    "b": "1 s / 5%",
+    "n_prints": [
+     7306,
+     21532
+    ],
+    "n_matches": [
+     325,
+     1074
+    ],
+    "net30": {
+     "a_c": 0.8187,
+     "b_c": 0.5271,
+     "b_minus_a_c": -0.2916,
+     "ci95": [
+      -0.4652,
+      -0.109
+     ]
+    },
+    "gross30": {
+     "a_c": 1.4296,
+     "b_c": 1.5428,
+     "b_minus_a_c": 0.1133,
+     "ci95": [
+      -0.0624,
+      0.284
+     ]
+    },
+    "fee": {
+     "a_c": 0.6109,
+     "b_c": 1.0157,
+     "b_minus_a_c": 0.4049,
+     "ci95": [
+      0.3933,
+      0.4169
+     ]
+    }
+   }
+  }
+ },
+ "composition": {
+  "what": "Shift-share of the fall in the fast tier's net edge between period A (Dec 2025 - Apr 2026, 3 s delay) and period B (Jun - Aug 2026 IS part, 1 s delay). Incumbents = wallets first qualified for a month up to Apr 2026; entrants = first qualified from May 2026. delta net = fee part + incumbents' gross change + entrant dilution (exact identity, because in A every print is an incumbent's).",
+  "period_A": [
+   "2025-12",
+   "2026-01",
+   "2026-02",
+   "2026-03",
+   "2026-04"
+  ],
+  "period_B": [
+   "2026-06",
+   "2026-07",
+   "2026-08"
+  ],
+  "net_A_c": 1.5703,
+  "net_B_c": 0.7157,
+  "delta_net_c": -0.8547,
+  "fee_part_c": -0.5371,
+  "incumbents_gross_change_c": 0.0785,
+  "entrant_dilution_c": -0.3961,
+  "gross_A_c": 1.8645,
+  "gross_B_c": 1.5469,
+  "gross_inc_A_c": 1.8645,
+  "gross_inc_B_c": 2.1633,
+  "gross_ent_B_c": 1.3271,
+  "entrant_print_share_B": 0.7371,
+  "fee_A_c": 0.2941,
+  "fee_B_c": 0.8312,
+  "ci95": {
+   "net_A_c": [
+    1.5006,
+    1.6385
+   ],
+   "net_B_c": [
+    0.6692,
+    0.7636
+   ],
+   "delta_net_c": [
+    -0.9375,
+    -0.7666
+   ],
+   "fee_part_c": [
+    -0.5543,
+    -0.5198
+   ],
+   "incumbents_gross_change_c": [
+    0.0511,
+    0.107
+   ],
+   "entrant_dilution_c": [
+    -0.4587,
+    -0.3275
+   ],
+   "gross_A_c": [
+    1.7942,
+    1.9326
+   ],
+   "gross_B_c": [
+    1.4987,
+    1.595
+   ],
+   "gross_inc_A_c": [
+    1.7942,
+    1.9326
+   ],
+   "gross_inc_B_c": [
+    2.0848,
+    2.2404
+   ],
+   "gross_ent_B_c": [
+    1.2742,
+    1.3827
+   ],
+   "entrant_print_share_B": [
+    0.7314,
+    0.743
+   ],
+   "fee_A_c": [
+    0.2798,
+    0.3083
+   ],
+   "fee_B_c": [
+    0.8218,
+    0.8407
+   ]
+  },
+  "identity_check_c": 0.0,
+  "incumbents_gross_trend_jan_aug": {
+   "month_level_primary": {
+    "slope_c_per_month": 0.065,
+    "ci95": [
+     -0.0967,
+     0.2266
+    ],
+    "n_months": 8,
+    "months": [
+     "2026-01",
+     "2026-02",
+     "2026-03",
+     "2026-04",
+     "2026-05",
+     "2026-06",
+     "2026-07",
+     "2026-08"
+    ],
+    "monthly_mean_c": [
+     2.41,
+     1.2087,
+     2.1335,
+     2.0309,
+     2.5513,
+     2.1431,
+     2.1687,
+     2.1963
+    ]
+   },
+   "print_level_match_clustered": {
+    "slope_c_per_month": 0.0879,
+    "ci95": [
+     0.0638,
+     0.112
+    ],
+    "n_prints": 60101,
+    "n_matches": 7903
+   }
+  },
+  "first4_gross_trend_jan_aug": {
+   "month_level_primary": {
+    "slope_c_per_month": -0.0568,
+    "ci95": [
+     -0.1693,
+     0.0556
+    ],
+    "n_months": 8,
+    "months": [
+     "2026-01",
+     "2026-02",
+     "2026-03",
+     "2026-04",
+     "2026-05",
+     "2026-06",
+     "2026-07",
+     "2026-08"
+    ],
+    "monthly_mean_c": [
+     2.41,
+     1.6295,
+     1.6678,
+     1.9601,
+     2.153,
+     1.5566,
+     1.6197,
+     1.7543
+    ]
+   },
+   "print_level_match_clustered": {
+    "slope_c_per_month": -0.0722,
+    "ci95": [
+     -0.1053,
+     -0.0405
+    ],
+    "n_prints": 24285,
+    "n_matches": 5830
+   }
+  },
+  "all_gross_trend_jan_aug": {
+   "month_level_primary": {
+    "slope_c_per_month": -0.0402,
+    "ci95": [
+     -0.205,
+     0.1246
+    ],
+    "n_months": 8,
+    "months": [
+     "2026-01",
+     "2026-02",
+     "2026-03",
+     "2026-04",
+     "2026-05",
+     "2026-06",
+     "2026-07",
+     "2026-08"
+    ],
+    "monthly_mean_c": [
+     2.41,
+     1.2087,
+     2.1335,
+     2.0309,
+     1.4149,
+     1.3338,
+     1.5141,
+     1.8663
+    ]
+   },
+   "print_level_match_clustered": {
+    "slope_c_per_month": -0.0202,
+    "ci95": [
+     -0.0401,
+     -0.0006
+    ],
+    "n_prints": 138390,
+    "n_matches": 8497
+   }
+  },
+  "incumbents_net_trend_jan_aug": {
+   "month_level_primary": {
+    "slope_c_per_month": -0.0827,
+    "ci95": [
+     -0.235,
+     0.0695
+    ],
+    "n_months": 8,
+    "months": [
+     "2026-01",
+     "2026-02",
+     "2026-03",
+     "2026-04",
+     "2026-05",
+     "2026-06",
+     "2026-07",
+     "2026-08"
+    ],
+    "monthly_mean_c": [
+     2.4098,
+     1.2087,
+     2.0198,
+     1.4256,
+     1.9553,
+     1.5484,
+     1.2882,
+     1.208
+    ]
+   },
+   "print_level_match_clustered": {
+    "slope_c_per_month": -0.0618,
+    "ci95": [
+     -0.0854,
+     -0.0384
+    ],
+    "n_prints": 60101,
+    "n_matches": 7903
+   }
+  },
+  "definitions": {
+   "incumbents": "wallets first qualified (walk-forward) for a month up to Apr 2026",
+   "first4": "the 4 wallets qualified for Dec 2025 (the paper's 'fast tier grew from 4')",
+   "entrants": "wallets first qualified from May 2026 on",
+   "survivorship": "a wallet that stops trading simply drops out of a month; no wallet is picked on the months it is scored on (walk-forward)"
+  },
+  "entrants_may2026": {
+   "new_wallets": 14,
+   "share_of_may_prints": 0.7154,
+   "gross30_c": 0.9627,
+   "net30_c": 0.3444
+  },
+  "by_month": {
+   "2025-12": {
+    "incumbents": {
+     "n_prints": 71,
+     "gross30_c": 1.969,
+     "net30_c": 1.969,
+     "n_wallets_active": 2
+    },
+    "entrants": {
+     "n_prints": 0,
+     "gross30_c": null,
+     "net30_c": null,
+     "n_wallets_active": 0
+    },
+    "first4": {
+     "n_prints": 71,
+     "gross30_c": 1.969,
+     "net30_c": 1.969
+    }
+   },
+   "2026-01": {
+    "incumbents": {
+     "n_prints": 4453,
+     "gross30_c": 2.41,
+     "net30_c": 2.4098,
+     "n_wallets_active": 3
+    },
+    "entrants": {
+     "n_prints": 0,
+     "gross30_c": null,
+     "net30_c": null,
+     "n_wallets_active": 0
+    },
+    "first4": {
+     "n_prints": 4453,
+     "gross30_c": 2.41,
+     "net30_c": 2.4098
+    }
+   },
+   "2026-02": {
+    "incumbents": {
+     "n_prints": 8781,
+     "gross30_c": 1.2087,
+     "net30_c": 1.2087,
+     "n_wallets_active": 9
+    },
+    "entrants": {
+     "n_prints": 0,
+     "gross30_c": null,
+     "net30_c": null,
+     "n_wallets_active": 0
+    },
+    "first4": {
+     "n_prints": 4097,
+     "gross30_c": 1.6295,
+     "net30_c": 1.6295
+    }
+   },
+   "2026-03": {
+    "incumbents": {
+     "n_prints": 3363,
+     "gross30_c": 2.1335,
+     "net30_c": 2.0198,
+     "n_wallets_active": 11
+    },
+    "entrants": {
+     "n_prints": 0,
+     "gross30_c": null,
+     "net30_c": null,
+     "n_wallets_active": 0
+    },
+    "first4": {
+     "n_prints": 1521,
+     "gross30_c": 1.6678,
+     "net30_c": 1.5536
+    }
+   },
+   "2026-04": {
+    "incumbents": {
+     "n_prints": 14525,
+     "gross30_c": 2.0309,
+     "net30_c": 1.4256,
+     "n_wallets_active": 13
+    },
+    "entrants": {
+     "n_prints": 0,
+     "gross30_c": null,
+     "net30_c": null,
+     "n_wallets_active": 0
+    },
+    "first4": {
+     "n_prints": 2679,
+     "gross30_c": 1.9601,
+     "net30_c": 1.3812
+    }
+   },
+   "2026-05": {
+    "incumbents": {
+     "n_prints": 10218,
+     "gross30_c": 2.5513,
+     "net30_c": 1.9553,
+     "n_wallets_active": 7
+    },
+    "entrants": {
+     "n_prints": 25681,
+     "gross30_c": 0.9627,
+     "net30_c": 0.3444,
+     "n_wallets_active": 13
+    },
+    "first4": {
+     "n_prints": 2989,
+     "gross30_c": 2.153,
+     "net30_c": 1.5691
+    }
+   },
+   "2026-06": {
+    "incumbents": {
+     "n_prints": 8302,
+     "gross30_c": 2.1431,
+     "net30_c": 1.5484,
+     "n_wallets_active": 6
+    },
+    "entrants": {
+     "n_prints": 15433,
+     "gross30_c": 0.8984,
+     "net30_c": 0.2921,
+     "n_wallets_active": 28
+    },
+    "first4": {
+     "n_prints": 3660,
+     "gross30_c": 1.5566,
+     "net30_c": 0.9671
+    }
+   },
+   "2026-07": {
+    "incumbents": {
+     "n_prints": 6478,
+     "gross30_c": 2.1687,
+     "net30_c": 1.2882,
+     "n_wallets_active": 5
+    },
+    "entrants": {
+     "n_prints": 22360,
+     "gross30_c": 1.3245,
+     "net30_c": 0.4019,
+     "n_wallets_active": 44
+    },
+    "first4": {
+     "n_prints": 3028,
+     "gross30_c": 1.6197,
+     "net30_c": 0.7778
+    }
+   },
+   "2026-08": {
+    "incumbents": {
+     "n_prints": 3981,
+     "gross30_c": 2.1963,
+     "net30_c": 1.208,
+     "n_wallets_active": 5
+    },
+    "entrants": {
+     "n_prints": 14815,
+     "gross30_c": 1.7776,
+     "net30_c": 0.7811,
+     "n_wallets_active": 67
+    },
+    "first4": {
+     "n_prints": 1858,
+     "gross30_c": 1.7543,
+     "net30_c": 0.7803
+    }
+   }
+  },
+  "by_cohort": [
+   {
+    "cohort": "2025-12",
+    "month": "2025-12",
+    "n_prints": 71,
+    "gross30_c": 1.969,
+    "net30_c": 1.969
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-01",
+    "n_prints": 4453,
+    "gross30_c": 2.41,
+    "net30_c": 2.4098
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-02",
+    "n_prints": 4097,
+    "gross30_c": 1.6295,
+    "net30_c": 1.6295
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-03",
+    "n_prints": 1521,
+    "gross30_c": 1.6678,
+    "net30_c": 1.5536
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-04",
+    "n_prints": 2679,
+    "gross30_c": 1.9601,
+    "net30_c": 1.3812
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-05",
+    "n_prints": 2989,
+    "gross30_c": 2.153,
+    "net30_c": 1.5691
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-06",
+    "n_prints": 3660,
+    "gross30_c": 1.5566,
+    "net30_c": 0.9671
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-07",
+    "n_prints": 3028,
+    "gross30_c": 1.6197,
+    "net30_c": 0.7778
+   },
+   {
+    "cohort": "2025-12",
+    "month": "2026-08",
+    "n_prints": 1858,
+    "gross30_c": 1.7543,
+    "net30_c": 0.7803
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-02",
+    "n_prints": 4684,
+    "gross30_c": 0.8407,
+    "net30_c": 0.8407
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-03",
+    "n_prints": 534,
+    "gross30_c": 2.029,
+    "net30_c": 1.8993
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-04",
+    "n_prints": 4028,
+    "gross30_c": 1.2915,
+    "net30_c": 0.6807
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-05",
+    "n_prints": 966,
+    "gross30_c": 2.2844,
+    "net30_c": 1.6869
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-06",
+    "n_prints": 965,
+    "gross30_c": 2.6102,
+    "net30_c": 1.995
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-07",
+    "n_prints": 1038,
+    "gross30_c": 2.0024,
+    "net30_c": 1.0515
+   },
+   {
+    "cohort": "2026-02",
+    "month": "2026-08",
+    "n_prints": 422,
+    "gross30_c": 1.9694,
+    "net30_c": 0.941
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-03",
+    "n_prints": 1308,
+    "gross30_c": 2.7177,
+    "net30_c": 2.6111
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-04",
+    "n_prints": 3061,
+    "gross30_c": 2.9024,
+    "net30_c": 2.2902
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-05",
+    "n_prints": 2762,
+    "gross30_c": 3.1938,
+    "net30_c": 2.5839
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-06",
+    "n_prints": 1737,
+    "gross30_c": 3.1436,
+    "net30_c": 2.5422
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-07",
+    "n_prints": 1520,
+    "gross30_c": 2.9157,
+    "net30_c": 2.0001
+   },
+   {
+    "cohort": "2026-03",
+    "month": "2026-08",
+    "n_prints": 810,
+    "gross30_c": 2.9424,
+    "net30_c": 1.9294
+   },
+   {
+    "cohort": "2026-04",
+    "month": "2026-04",
+    "n_prints": 4757,
+    "gross30_c": 2.1361,
+    "net30_c": 1.5249
+   },
+   {
+    "cohort": "2026-04",
+    "month": "2026-05",
+    "n_prints": 3501,
+    "gross30_c": 2.4581,
+    "net30_c": 1.8632
+   },
+   {
+    "cohort": "2026-04",
+    "month": "2026-06",
+    "n_prints": 1940,
+    "gross30_c": 2.1217,
+    "net30_c": 1.5332
+   },
+   {
+    "cohort": "2026-04",
+    "month": "2026-07",
+    "n_prints": 892,
+    "gross30_c": 2.9533,
+    "net30_c": 2.0826
+   },
+   {
+    "cohort": "2026-04",
+    "month": "2026-08",
+    "n_prints": 891,
+    "gross30_c": 2.5472,
+    "net30_c": 1.5708
+   },
+   {
+    "cohort": "2026-05",
+    "month": "2026-05",
+    "n_prints": 25681,
+    "gross30_c": 0.9627,
+    "net30_c": 0.3444
+   },
+   {
+    "cohort": "2026-05",
+    "month": "2026-06",
+    "n_prints": 10223,
+    "gross30_c": 0.4859,
+    "net30_c": -0.1203
+   },
+   {
+    "cohort": "2026-05",
+    "month": "2026-07",
+    "n_prints": 9239,
+    "gross30_c": 0.4286,
+    "net30_c": -0.5099
+   },
+   {
+    "cohort": "2026-05",
+    "month": "2026-08",
+    "n_prints": 3075,
+    "gross30_c": 0.4991,
+    "net30_c": -0.5064
+   },
+   {
+    "cohort": "2026-06",
+    "month": "2026-06",
+    "n_prints": 5210,
+    "gross30_c": 1.7079,
+    "net30_c": 1.1013
+   },
+   {
+    "cohort": "2026-06",
+    "month": "2026-07",
+    "n_prints": 4632,
+    "gross30_c": 1.7666,
+    "net30_c": 0.8581
+   },
+   {
+    "cohort": "2026-06",
+    "month": "2026-08",
+    "n_prints": 2680,
+    "gross30_c": 1.725,
+    "net30_c": 0.7311
+   },
+   {
+    "cohort": "2026-07",
+    "month": "2026-07",
+    "n_prints": 8489,
+    "gross30_c": 2.0583,
+    "net30_c": 1.1452
+   },
+   {
+    "cohort": "2026-07",
+    "month": "2026-08",
+    "n_prints": 5349,
+    "gross30_c": 2.2332,
+    "net30_c": 1.2247
+   },
+   {
+    "cohort": "2026-08",
+    "month": "2026-08",
+    "n_prints": 3711,
+    "gross30_c": 2.2182,
+    "net30_c": 1.2448
+   }
+  ]
+ },
+ "profit": {
+  "what": "Fast-tier $ P&L per month at the 30 s mark after fees (sum of shares x net markout), IS prints. Dec 2025 is left out of the fits (17 catalogue matches that month, a coverage artefact).",
+  "by_month_is": [
+   {
+    "month": "2025-12",
+    "t": 0,
+    "pnl30_usd": 363.74,
+    "pnl_res_usd": -696.86,
+    "usd": 8844.61,
+    "net30_c": 1.97,
+    "shares": 14349.12,
+    "n_wallets": 4,
+    "n_matches": 14,
+    "universe_matches": 17,
+    "proxy_usd": 174.15,
+    "kappa": 2.09,
+    "pnl30_per_wallet": 90.93,
+    "pnl30_per_universe_match": 21.4
+   },
+   {
+    "month": "2026-01",
+    "t": 1,
+    "pnl30_usd": 6670.33,
+    "pnl_res_usd": 3049.07,
+    "usd": 279510.31,
+    "net30_c": 2.41,
+    "shares": 527770.34,
+    "n_wallets": 4,
+    "n_matches": 606,
+    "universe_matches": 802,
+    "proxy_usd": 6735.76,
+    "kappa": 0.99,
+    "pnl30_per_wallet": 1667.58,
+    "pnl30_per_universe_match": 8.32
+   },
+   {
+    "month": "2026-02",
+    "t": 2,
+    "pnl30_usd": 19507.71,
+    "pnl_res_usd": 42098.39,
+    "usd": 951751.6,
+    "net30_c": 1.21,
+    "shares": 1762890.39,
+    "n_wallets": 10,
+    "n_matches": 932,
+    "universe_matches": 1142,
+    "proxy_usd": 11503.79,
+    "kappa": 1.7,
+    "pnl30_per_wallet": 1950.77,
+    "pnl30_per_universe_match": 17.08
+   },
+   {
+    "month": "2026-03",
+    "t": 3,
+    "pnl30_usd": 13059.58,
+    "pnl_res_usd": -20476.75,
+    "usd": 437099.22,
+    "net30_c": 2.02,
+    "shares": 797792.54,
+    "n_wallets": 12,
+    "n_matches": 403,
+    "universe_matches": 490,
+    "proxy_usd": 8828.53,
+    "kappa": 1.48,
+    "pnl30_per_wallet": 1088.3,
+    "pnl30_per_universe_match": 26.65
+   },
+   {
+    "month": "2026-04",
+    "t": 4,
+    "pnl30_usd": 26775.27,
+    "pnl_res_usd": 23125.96,
+    "usd": 1255397.5,
+    "net30_c": 1.43,
+    "shares": 2573793.79,
+    "n_wallets": 16,
+    "n_matches": 1359,
+    "universe_matches": 1578,
+    "proxy_usd": 17896.63,
+    "kappa": 1.5,
+    "pnl30_per_wallet": 1673.45,
+    "pnl30_per_universe_match": 16.97
+   },
+   {
+    "month": "2026-05",
+    "t": 5,
+    "pnl30_usd": 53347.53,
+    "pnl_res_usd": 39963.7,
+    "usd": 1499310.68,
+    "net30_c": 0.8,
+    "shares": 3117694.23,
+    "n_wallets": 30,
+    "n_matches": 1408,
+    "universe_matches": 1589,
+    "proxy_usd": 12038.56,
+    "kappa": 4.43,
+    "pnl30_per_wallet": 1778.25,
+    "pnl30_per_universe_match": 33.57
+   },
+   {
+    "month": "2026-06",
+    "t": 6,
+    "pnl30_usd": 34876.15,
+    "pnl_res_usd": 150467.82,
+    "usd": 1947965.62,
+    "net30_c": 0.73,
+    "shares": 3965501.07,
+    "n_wallets": 52,
+    "n_matches": 1248,
+    "universe_matches": 1416,
+    "proxy_usd": 14250.19,
+    "kappa": 2.45,
+    "pnl30_per_wallet": 670.7,
+    "pnl30_per_universe_match": 24.63
+   },
+   {
+    "month": "2026-07",
+    "t": 7,
+    "pnl30_usd": 37420.84,
+    "pnl_res_usd": 189491.94,
+    "usd": 2697877.25,
+    "net30_c": 0.6,
+    "shares": 5351442.1,
+    "n_wallets": 72,
+    "n_matches": 1399,
+    "universe_matches": 1570,
+    "proxy_usd": 16213.15,
+    "kappa": 2.31,
+    "pnl30_per_wallet": 519.73,
+    "pnl30_per_universe_match": 23.83
+   },
+   {
+    "month": "2026-08",
+    "t": 8,
+    "pnl30_usd": 39103.34,
+    "pnl_res_usd": 58760.01,
+    "usd": 2324926.92,
+    "net30_c": 0.87,
+    "shares": 4690858.71,
+    "n_wallets": 101,
+    "n_matches": 1154,
+    "universe_matches": 1308,
+    "proxy_usd": 20263.12,
+    "kappa": 1.93,
+    "pnl30_per_wallet": 387.16,
+    "pnl30_per_universe_match": 29.9
+   }
+  ],
+  "kappa_note": "kappa = exact $ P&L / (print-mean edge x $ volume). It is ~2 because a dollar buys ~2 shares at ~50c and larger prints earn more per share; it moves month to month, so the proxy is a rough guide for the OOS months only.",
+  "total_log_trend": {
+   "label": "OLS of ln(pnl30_usd) on t, Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -9.73,
+   "durbin_watson": 1.923,
+   "intercept": {
+    "coef": 9.0681,
+    "se": 0.3283,
+    "t": 27.621,
+    "p": 0.0,
+    "ci95": [
+     8.2648,
+     9.8714
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": 0.2294,
+    "se": 0.065,
+    "t": 3.529,
+    "p": 0.0124,
+    "ci95": [
+     0.0704,
+     0.3885
+    ]
+   },
+   "monthly_change_pct": 25.79,
+   "monthly_change_pct_ci95": [
+    7.29,
+    47.48
+   ]
+  },
+  "total_elasticity_wrt_wallets": {
+   "label": "OLS of ln(pnl30_usd) on ln(fast wallets), Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -11.172,
+   "durbin_watson": 1.779,
+   "intercept": {
+    "coef": 8.4354,
+    "se": 0.4368,
+    "t": 19.313,
+    "p": 0.0,
+    "ci95": [
+     7.3667,
+     9.5042
+    ]
+   },
+   "elasticity": {
+    "coef": 0.5288,
+    "se": 0.1318,
+    "t": 4.012,
+    "p": 0.007,
+    "ci95": [
+     0.2063,
+     0.8513
+    ]
+   }
+  },
+  "per_wallet_log_trend": {
+   "label": "OLS of ln(pnl30_per_wallet) on t, Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -11.951,
+   "durbin_watson": 1.676,
+   "intercept": {
+    "coef": 7.9282,
+    "se": 0.2858,
+    "t": 27.744,
+    "p": 0.0,
+    "ci95": [
+     7.229,
+     8.6274
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": -0.217,
+    "se": 0.0566,
+    "t": -3.834,
+    "p": 0.0086,
+    "ci95": [
+     -0.3555,
+     -0.0785
+    ]
+   },
+   "monthly_change_pct": -19.51,
+   "monthly_change_pct_ci95": [
+    -29.91,
+    -7.55
+   ]
+  },
+  "per_wallet_elasticity_wrt_wallets": {
+   "label": "OLS of ln(pnl30_per_wallet) on ln(fast wallets), Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -11.172,
+   "durbin_watson": 1.779,
+   "intercept": {
+    "coef": 8.4354,
+    "se": 0.4368,
+    "t": 19.313,
+    "p": 0.0,
+    "ci95": [
+     7.3667,
+     9.5042
+    ]
+   },
+   "elasticity": {
+    "coef": -0.4712,
+    "se": 0.1318,
+    "t": -3.575,
+    "p": 0.0117,
+    "ci95": [
+     -0.7937,
+     -0.1487
+    ]
+   }
+  },
+  "per_catalogue_match_log_trend": {
+   "label": "OLS of ln(pnl30_per_universe_match) on t, Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -13.559,
+   "durbin_watson": 1.997,
+   "intercept": {
+    "coef": 2.4518,
+    "se": 0.2584,
+    "t": 9.487,
+    "p": 0.0001,
+    "ci95": [
+     1.8194,
+     3.0841
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": 0.1318,
+    "se": 0.0512,
+    "t": 2.574,
+    "p": 0.0421,
+    "ci95": [
+     0.0065,
+     0.257
+    ]
+   },
+   "monthly_change_pct": 14.08,
+   "monthly_change_pct_ci95": [
+    0.65,
+    29.3
+   ]
+  },
+  "per_catalogue_match_elasticity_wrt_wallets": {
+   "label": "OLS of ln(pnl30_per_universe_match) on ln(fast wallets), Jan-Aug 2026 IS",
+   "n": 8,
+   "dof": 6,
+   "aicc": -14.665,
+   "durbin_watson": 1.974,
+   "intercept": {
+    "coef": 2.072,
+    "se": 0.3511,
+    "t": 5.901,
+    "p": 0.0011,
+    "ci95": [
+     1.2129,
+     2.9311
+    ]
+   },
+   "elasticity": {
+    "coef": 0.3089,
+    "se": 0.1059,
+    "t": 2.915,
+    "p": 0.0268,
+    "ci95": [
+     0.0496,
+     0.5681
+    ]
+   }
+  },
+  "is_may_aug_mean_pnl30_usd_per_month": 41187.0,
+  "is_may_aug_cv_pnl30": 0.201,
+  "kappa_jun_aug_is": 2.196,
+  "kappa_range_jan_aug_is": [
+   0.99,
+   4.431
+  ],
+  "calendar_proxy": [
+   {
+    "month": "2025-12",
+    "n_wallets": 4,
+    "proxy_usd": 174.0,
+    "proxy_x_kappa_usd": 382.0,
+    "per_wallet_proxy_x_kappa_usd": 96.0,
+    "pnl30_usd_exact": 364.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-01",
+    "n_wallets": 4,
+    "proxy_usd": 6775.0,
+    "proxy_x_kappa_usd": 14879.0,
+    "per_wallet_proxy_x_kappa_usd": 3720.0,
+    "pnl30_usd_exact": 6670.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-02",
+    "n_wallets": 10,
+    "proxy_usd": 11742.0,
+    "proxy_x_kappa_usd": 25788.0,
+    "per_wallet_proxy_x_kappa_usd": 2579.0,
+    "pnl30_usd_exact": 19508.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-03",
+    "n_wallets": 12,
+    "proxy_usd": 9085.0,
+    "proxy_x_kappa_usd": 19951.0,
+    "per_wallet_proxy_x_kappa_usd": 1663.0,
+    "pnl30_usd_exact": 13060.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-04",
+    "n_wallets": 16,
+    "proxy_usd": 18057.0,
+    "proxy_x_kappa_usd": 39654.0,
+    "per_wallet_proxy_x_kappa_usd": 2478.0,
+    "pnl30_usd_exact": 26775.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-05",
+    "n_wallets": 30,
+    "proxy_usd": 12038.0,
+    "proxy_x_kappa_usd": 26437.0,
+    "per_wallet_proxy_x_kappa_usd": 881.0,
+    "pnl30_usd_exact": 53348.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-06",
+    "n_wallets": 52,
+    "proxy_usd": 14328.0,
+    "proxy_x_kappa_usd": 31467.0,
+    "per_wallet_proxy_x_kappa_usd": 605.0,
+    "pnl30_usd_exact": 34876.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-07",
+    "n_wallets": 72,
+    "proxy_usd": 16386.0,
+    "proxy_x_kappa_usd": 35986.0,
+    "per_wallet_proxy_x_kappa_usd": 500.0,
+    "pnl30_usd_exact": 37421.0,
+    "partial_month": false
+   },
+   {
+    "month": "2026-08",
+    "n_wallets": 101,
+    "proxy_usd": 24257.0,
+    "proxy_x_kappa_usd": 53270.0,
+    "per_wallet_proxy_x_kappa_usd": 527.0,
+    "pnl30_usd_exact": null,
+    "partial_month": false
+   },
+   {
+    "month": "2026-09",
+    "n_wallets": 122,
+    "proxy_usd": 21722.0,
+    "proxy_x_kappa_usd": 47703.0,
+    "per_wallet_proxy_x_kappa_usd": 391.0,
+    "pnl30_usd_exact": null,
+    "partial_month": false
+   },
+   {
+    "month": "2026-10",
+    "n_wallets": 131,
+    "proxy_usd": 1356.0,
+    "proxy_x_kappa_usd": 2978.0,
+    "per_wallet_proxy_x_kappa_usd": 23.0,
+    "pnl30_usd_exact": null,
+    "partial_month": true
+   }
+  ],
+  "proxy_total_log_trend_jan_sep": {
+   "label": "OLS of ln(edge x $ volume) on t, Jan-Sep 2026 (OOS rows proxy)",
+   "n": 9,
+   "dof": 7,
+   "aicc": -23.429,
+   "durbin_watson": 3.073,
+   "intercept": {
+    "coef": 8.8913,
+    "se": 0.1606,
+    "t": 55.363,
+    "p": 0.0,
+    "ci95": [
+     8.5115,
+     9.271
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": 0.1298,
+    "se": 0.0285,
+    "t": 4.546,
+    "p": 0.0026,
+    "ci95": [
+     0.0623,
+     0.1972
+    ]
+   },
+   "monthly_change_pct": 13.85,
+   "monthly_change_pct_ci95": [
+    6.42,
+    21.8
+   ]
+  },
+  "proxy_per_wallet_log_trend_jan_sep": {
+   "label": "OLS of ln(edge x $ volume / wallets) on t, Jan-Sep 2026",
+   "n": 9,
+   "dof": 7,
+   "aicc": -19.583,
+   "durbin_watson": 2.274,
+   "intercept": {
+    "coef": 7.6727,
+    "se": 0.1989,
+    "t": 38.583,
+    "p": 0.0,
+    "ci95": [
+     7.2025,
+     8.143
+    ]
+   },
+   "slope_log_per_month": {
+    "coef": -0.2931,
+    "se": 0.0353,
+    "t": -8.294,
+    "p": 0.0001,
+    "ci95": [
+     -0.3767,
+     -0.2095
+    ]
+   },
+   "monthly_change_pct": -25.4,
+   "monthly_change_pct_ci95": [
+    -31.38,
+    -18.9
+   ]
+  },
+  "sep2026_proxy_x_kappa_usd": 47703.0,
+  "sep2026_per_wallet_proxy_x_kappa_usd": 391.0
+ },
+ "projections": {
+  "from_month": "2026-09",
+  "note": "months after Sep 2026 (last full month) until the fitted line hits 0; Fieller 95% interval from each fit's own covariance. A straight line through a series that dropped Feb-May and then went flat is the pessimistic reading; the log fit never reaches zero.",
+  "linear_wls_cal11": {
+   "months_to_zero": 3.27,
+   "ci95": [
+    0.6,
+    12.77
+   ],
+   "zero_month": "2027-01"
+  },
+  "linear_ols_cal11": {
+   "months_to_zero": 2.86,
+   "ci95": [
+    0.45,
+    8.6
+   ],
+   "zero_month": "2026-12"
+  },
+  "linear_wls_full10": {
+   "months_to_zero": 3.23,
+   "ci95": [
+    0.4,
+    15.23
+   ],
+   "zero_month": "2027-01"
+  },
+  "linear_ols_is9_paper": {
+   "months_to_zero": 1.7,
+   "ci95": [
+    -1.09,
+    11.76
+   ],
+   "zero_month": "2026-11"
+  },
+  "post_break_jun_oct": {
+   "fit": {
+    "label": "WLS on Jun-Oct 2026 only (1 s / fee regime era)",
+    "n": 5,
+    "dof": 3,
+    "aicc": -14.139,
+    "durbin_watson": 1.536,
+    "intercept": {
+     "coef": 0.7037,
+     "se": 0.3476,
+     "t": 2.024,
+     "p": 0.1361,
+     "ci95": [
+      -0.4026,
+      1.81
+     ]
+    },
+    "slope_c_per_month": {
+     "coef": 0.0008,
+     "se": 0.0448,
+     "t": 0.017,
+     "p": 0.9873,
+     "ci95": [
+      -0.1418,
+      0.1433
+     ]
+    }
+   },
+   "months_to_zero": -918.17,
+   "ci95": "unbounded"
+  },
+  "log_half_life_months": 5.23,
+  "log_half_life_ci95": [
+   3.42,
+   11.11
+  ],
+  "breakeven_fee_rate_pct": {
+   "is_1s_5pct_prints": 8.42,
+   "ci95": [
+    8.09,
+    8.75
+   ],
+   "burned_oos_approx": 8.4,
+   "how": "5% x gross / fee at 5% (fee is linear in the rate). IS = Jul-Aug 2026 prints in the 1 s / 5% regime, match-clustered CI; OOS approx = 5% x (OOS-only print-weighted net + OOS mean fee) / OOS mean fee",
+   "today_pct": 5.0
+  },
+  "step_model_may2026": {
+   "label": "WLS of net edge on a May-2026 step (weights = matches); compares with the straight line on AICc",
+   "level_before_c": 1.6191,
+   "level_before_ci95": [
+    1.2698,
+    1.9684
+   ],
+   "level_after_c": 0.7274,
+   "level_after_ci95": [
+    0.4937,
+    0.9611
+   ],
+   "step_c": -0.8918,
+   "step_ci95": [
+    -1.312,
+    -0.4715
+   ],
+   "aicc_step": -24.342,
+   "aicc_linear": -21.068,
+   "trend_given_step_c_per_month": -0.0545,
+   "trend_given_step_ci95": [
+    -0.1986,
+    0.0897
+   ],
+   "reading": "the step fits at least as well as the line (lower AICc); with the step in, no trend is left, so on this reading the edge is not heading to zero at any measurable pace"
+  }
+ },
+ "reading": {
+  "who_pays": "The fast tier hits resting quotes that still show the pre-point price, so the maker on the other side loses the gross markout (about 1.5c a share in Jun-Aug 2026). The venue keeps the taker fee (1.02c a share on 1 s / 5% prints in Jul 2026), and other takers trading in the same 0-3 s lose 0.5-1.9c a share.",
+  "what_the_decline_is": "The net edge fell 0.16c a month (WLS, 11 calendar months, CI -0.25 to -0.06). Over the same months the fee rose +0.13c a month while the gross edge moved -0.02c a month (CI -0.12 to +0.07; IS-only exact -0.04, CI -0.19 to +0.11). From Dec-Apr to Jun-Aug the net edge fell 0.85c: 0.54c is the fee, 0.40c is weaker wallets joining, and the early wallets' own gross edge moved +0.08c.",
+  "venue_rules": "Within May 2026, the same wallets earned +0.14c (CI -0.04 to +0.32) more on 1 s-hold matches than on 3 s ones, so the shorter hold did not hurt them. Within Jul 2026, 5%-fee matches paid -0.29c (CI -0.47 to -0.11) net with the same gross (difference +0.11c, CI -0.06 to +0.28): the fee is passed straight through. The best single break in the net series is May 2026; a step there (AICc -24.3) fits at least as well as a straight line (-21.1) and leaves a trend of -0.05c a month (CI -0.20 to +0.09).",
+  "why_it_can_persist": "Someone always sees the point before the book reprices (court, broadcast and data-feed delays are physical) and the 1 s hold only narrows that window. Wallets already fast by Apr 2026 kept their gross edge (+0.07c a month, CI -0.10 to +0.23) while the field grew from 4 to 131 wallets; the first four slipped 0.06c a month (CI -0.17 to +0.06, not significant).",
+  "what_kills_it": "(1) A higher fee: the fast tier's gross edge covers a taker fee of up to 8.4% (today 5%). (2) A longer taker hold or makers on a faster official feed, which would remove the stale quotes. (3) More entrants: the monthly pool grew with wallets at elasticity 0.53 (CI 0.21 to 0.85), so each wallet's share fell at -0.47 (CI -0.79 to -0.15) per 1% more wallets, from about $1.7k a month in Jan-May 2026 to about $0.4k in Aug.",
+  "for_an_entrant": "The number that matters is the pool and one wallet's share of it, not the average edge per share. The pool has been flat since May 2026 while wallets kept arriving.",
+  "projection": "A straight line says zero in 3.3 months after Sep 2026 (Fieller CI 0.6 to 12.8); a constant % decline says 12% less a month (half-life 5.2 months, CI 3.4 to 11.1); the step model says flat at 0.73c. The data cannot tell these apart, and only the line reaches zero."
+ },
+ "paper_keys": {
+  "pers.slope.net": {
+   "value": "\u22120.16",
+   "source": "results/economics/persistence.json::fits.linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.slope.net.ci": {
+   "value": "[\u22120.25, \u22120.06]",
+   "source": "results/economics/persistence.json::fits.linear_wls_cal11.slope_c_per_month.ci95"
+  },
+  "pers.slope.gross": {
+   "value": "\u22120.02",
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.slope.gross.ci": {
+   "value": "[\u22120.12, 0.07]",
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_cal11.slope_c_per_month.ci95"
+  },
+  "pers.slope.gross.is": {
+   "value": "\u22120.04",
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_is9_exact.slope_c_per_month.coef"
+  },
+  "pers.slope.gross.is.ci": {
+   "value": "[\u22120.19, 0.11]",
+   "source": "results/economics/persistence.json::fits.gross_linear_wls_is9_exact.slope_c_per_month.ci95"
+  },
+  "pers.slope.fee": {
+   "value": "+0.13",
+   "source": "results/economics/persistence.json::fits.fee_linear_wls_cal11.slope_c_per_month.coef"
+  },
+  "pers.logdecay.pct": {
+   "value": "\u221212.4",
+   "source": "results/economics/persistence.json::fits.log_wls_cal11.monthly_change_pct"
+  },
+  "pers.halflife": {
+   "value": "5.2",
+   "source": "results/economics/persistence.json::fits.log_wls_cal11.half_life_months"
+  },
+  "pers.halflife.ci": {
+   "value": "[3.4, 11.1]",
+   "source": "results/economics/persistence.json::fits.log_wls_cal11.half_life_months_ci95"
+  },
+  "pers.elast": {
+   "value": "\u22120.34",
+   "source": "results/economics/persistence.json::fits.elasticity_edge_wrt_wallets.elasticity.coef"
+  },
+  "pers.elast.ci": {
+   "value": "[\u22120.49, \u22120.20]",
+   "source": "results/economics/persistence.json::fits.elasticity_edge_wrt_wallets.elasticity.ci95"
+  },
+  "pers.elast.gross": {
+   "value": "\u22120.04",
+   "source": "results/economics/persistence.json::fits.elasticity_gross_wrt_wallets.elasticity.coef"
+  },
+  "pers.elast.gross.ci": {
+   "value": "[\u22120.18, 0.10]",
+   "source": "results/economics/persistence.json::fits.elasticity_gross_wrt_wallets.elasticity.ci95"
+  },
+  "pers.zero.months": {
+   "value": "3.3",
+   "source": "results/economics/persistence.json::projections.linear_wls_cal11.months_to_zero"
+  },
+  "pers.zero.ci": {
+   "value": "[0.6, 12.8]",
+   "source": "results/economics/persistence.json::projections.linear_wls_cal11.ci95"
+  },
+  "pers.step.after": {
+   "value": "0.73",
+   "source": "results/economics/persistence.json::projections.step_model_may2026.level_after_c"
+  },
+  "pers.step.trend": {
+   "value": "\u22120.05",
+   "source": "results/economics/persistence.json::projections.step_model_may2026.trend_given_step_c_per_month"
+  },
+  "pers.step.trend.ci": {
+   "value": "[\u22120.20, 0.09]",
+   "source": "results/economics/persistence.json::projections.step_model_may2026.trend_given_step_ci95"
+  },
+  "pers.dnet": {
+   "value": "\u22120.85",
+   "source": "results/economics/persistence.json::composition.delta_net_c"
+  },
+  "pers.dfee": {
+   "value": "\u22120.54",
+   "source": "results/economics/persistence.json::composition.fee_part_c"
+  },
+  "pers.ddilution": {
+   "value": "\u22120.40",
+   "source": "results/economics/persistence.json::composition.entrant_dilution_c"
+  },
+  "pers.dincumbent": {
+   "value": "+0.08",
+   "source": "results/economics/persistence.json::composition.incumbents_gross_change_c"
+  },
+  "pers.inc.trend": {
+   "value": "+0.07",
+   "source": "results/economics/persistence.json::composition.incumbents_gross_trend_jan_aug.month_level_primary.slope_c_per_month"
+  },
+  "pers.inc.trend.ci": {
+   "value": "[\u22120.10, 0.23]",
+   "source": "results/economics/persistence.json::composition.incumbents_gross_trend_jan_aug.month_level_primary.ci95"
+  },
+  "pers.befee": {
+   "value": "8.4%",
+   "source": "results/economics/persistence.json::projections.breakeven_fee_rate_pct.is_1s_5pct_prints"
+  },
+  "pers.pool.mayaug": {
+   "value": "$41k",
+   "source": "results/economics/persistence.json::profit.is_may_aug_mean_pnl30_usd_per_month"
+  },
+  "pers.pool.elast": {
+   "value": "0.53",
+   "source": "results/economics/persistence.json::profit.total_elasticity_wrt_wallets.elasticity.coef"
+  },
+  "pers.pool.perwallet.elast": {
+   "value": "\u22120.47",
+   "source": "results/economics/persistence.json::profit.per_wallet_elasticity_wrt_wallets.elasticity.coef"
+  },
+  "pers.delay.may": {
+   "value": "+0.14",
+   "source": "results/economics/persistence.json::regime.natural_experiments.delay_3s_to_1s_may2026.net30.b_minus_a_c"
+  },
+  "pers.delay.may.ci": {
+   "value": "[\u22120.04, 0.32]",
+   "source": "results/economics/persistence.json::regime.natural_experiments.delay_3s_to_1s_may2026.net30.ci95"
+  },
+  "pers.fee35.jul": {
+   "value": "\u22120.29",
+   "source": "results/economics/persistence.json::regime.natural_experiments.fee_3_to_5_jul2026.net30.b_minus_a_c"
+  },
+  "pers.fee35.jul.ci": {
+   "value": "[\u22120.47, \u22120.11]",
+   "source": "results/economics/persistence.json::regime.natural_experiments.fee_3_to_5_jul2026.net30.ci95"
+  },
+  "ft.c.oos.only": {
+   "value": "+0.67",
+   "source": "results/economics/persistence.json::aug_overlap.oos_print_weighted_net30_c_oos_prints_only_derived"
+  }
+ },
+ "runtime_s": 17.1
+}
