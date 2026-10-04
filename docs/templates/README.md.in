@@ -7,17 +7,22 @@
 >
 > | Command | What it does | Time |
 > |---|---|---|
-> | `bash run.sh setup` | makes `.venv`, installs `requirements.txt` | ~1 min |
+> | `bash run.sh setup` | makes `.venv`, installs `requirements-repro.txt` (`requirements.txt` plus duckdb, paramiko, tabulate and OpenCV, which `reproduce` needs; `--locked` installs the exact versions in `requirements.lock`) and finds the paper compiler (tectonic 0.17.0 from `PATH`, `TECTONIC=/path`, or `INSTALL_TECTONIC=1` for the official release binary) | ~1–2 min |
 > | `bash run.sh replay` | 10 min of recorded live Polymarket books (`tests/fixtures/live_sample.jsonl.gz`, public data) through the paper trader and the engine's order books; no network. Like every replay it appends one line to the tracked `results/oos_peeks.log` (`git checkout results/oos_peeks.log` undoes it) | ~15 s |
 > | `bash run.sh redteam` | the checks we ran against ourselves: stamp-lag robustness, every derived number from its results file, claim checks on the paper, deck, docs and the final video's script and subtitles (`results/redteam/`); no network, no held-out read. Expected: 0 FAIL; KNOWN = a gap in the final video (not re-rendered); NOT RUN = the forward test (`HYPOTHESIS_V2.md` A5) | ~10 s |
 > | `bash run.sh tests` | unit tests (vision tests too after `bash run.sh setup --full`) | ~2–7 min |
 > | `bash run.sh docs` | rebuilds this README, `docs/DEVPOST.md` and `docs/COMPLIANCE.md` from `results/paper/numbers.json` and the paper's label map (`results/paper/labels.json` on a clone); writes nothing if any placeholder does not resolve | ~1 s |
 >
-> **Full reproduction, one command:** `bash run.sh all` (setup, the public Polymarket crawl, then `reproduce.sh`:
-> every result file, every figure, the paper and these docs). About 1.5–2.5 h: the crawl takes ~1–2 h (no keys,
-> resumable) and `reproduce.sh` ~15–20 min. The same steps one at a time: `bash run.sh setup`, `bash run.sh data`,
-> `bash run.sh reproduce`. The chain was last run end to end on the authors' machine, not on a clean clone
-> ([`research/compliance/CLEAN_CLONE.md`](research/compliance/CLEAN_CLONE.md)).
+> **Reproduce the submitted snapshot, one command:** `bash run.sh all` (setup, the public Polymarket crawl, then
+> `reproduce.sh`). The crawl took 35 min on 16 CPUs (no keys, resumable); `reproduce.sh` takes about 1–1.5 h and
+> peaks near 12 GB of memory. `reproduce.sh` first checks the crawled inputs against
+> [`results/provenance/inputs_manifest.json`](results/provenance/inputs_manifest.json) (universe, 80/20 split, OOS
+> start, the sha256 of every trade tape, the frozen call model) and stops on a mismatch; it then reruns every step
+> offline, fails on the first error, and writes `results/repro/run_manifest.json`. Paper numbers it does not
+> recompute (HiPerGator jobs, recorded live books, blind tests evaluated once) are listed file by file, with
+> producer, sha256 and reason, in [`results/paper/committed_artifacts.json`](results/paper/committed_artifacts.json).
+> `bash run.sh fresh-fetch` is the separate, mutable path: it fetches a new holdout from today's listing into its own
+> directory. Clean-clone status: [`research/compliance/CLEAN_CLONE.md`](research/compliance/CLEAN_CLONE.md).
 >
 > **Check any number:** all {{meta:n_numbers}} numbers in the paper are in `results/paper/numbers.json`, each with
 > the results file and key it came from. Every number below is read from that file when this README is built.
@@ -26,9 +31,9 @@
 >   match video: the CV strategy is simulated at an **assumed** feed latency (licensed feed not purchased); its
 >   parameters are measured. Free public score pages (ESPN, WTA) were recorded only to time their lag.
 > - A fresh clone has no market data (`data/` is gitignored): `bash run.sh data` comes before `reproduce` or `money`.
-> - The CV point-end calls use `models/vision/frozen_call_model.pkl` (12 MB, committed). Without it, `bash run.sh cv`
->   still detects and tracks the ball on the held-out clip, with calls off; `sbatch hpg/engine_vision.sbatch`
->   (HiPerGator) rebuilds the model.
+> - The CV point-end calls use `models/vision/frozen_call_model.pkl` (12 MB, committed). `bash run.sh cv` checks its
+>   sha256 against the input manifest and stops if it is missing or different; `sbatch hpg/engine_vision.sbatch`
+>   (HiPerGator) rebuilt it.
 > - Footage: the table-tennis clips are OpenTTGames (OSAI) footage, adapted (overlays added), CC BY-NC-SA 4.0. The
 >   video's real tennis rally is {{meta:tennis_credit}}, shown with the tracked ball trail (public TrackNet detector, our linking) and no line calls; it is
 >   not a match we traded. The video's narration and music bed are AI-generated with {{meta:voice}}.
@@ -104,40 +109,60 @@ not used (`research/v2/maker/DEVIATIONS_LIVE.md` L15).
 ## Reproduce
 
 ```bash
-bash run.sh all          # = the four lines below; ~1.5-2.5 h, no keys
-bash run.sh setup        # .venv + requirements.txt (Python 3.12+)                      ~1 min
-bash run.sh data         # public Polymarket APIs, no keys; resumable, cached in data/   ~1-2 h
-bash run.sh reproduce    # bash reproduce.sh: results/, every figure, docs/NOTE.pdf, these docs   ~15-20 min
-bash run.sh docs         # README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from results/paper/numbers.json  ~1 s
+bash run.sh all            # = setup, data, reproduce; no keys
+bash run.sh setup          # .venv + requirements-repro.txt (--locked: requirements.lock) + tectonic   ~1-2 min
+bash run.sh data           # public Polymarket APIs, no keys; resumable, cached in data/; ends with verify-inputs  ~35-120 min
+bash run.sh verify-inputs  # data/ against results/provenance/inputs_manifest.json; exit 0 = the snapshot's inputs  ~1 min
+bash run.sh reproduce      # bash reproduce.sh: the submitted snapshot, offline, fail-fast        ~1-1.5 h
+bash run.sh fresh-fetch    # a NEW holdout from today's listing -> results/fresh_holdout_new/<utc>/ (network)
+bash run.sh docs           # README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from results/paper/numbers.json  ~1 s
 ```
 
-`reproduce.sh` runs, in order:
+Python 3.14 made `requirements.lock`; a clean run on HiPerGator used Python 3.12.5 (`module load python/3.12`; the
+system `python3` there is 3.9). Every run records its Python, `pip freeze` and tectonic version in
+`results/repro/run_manifest.json`.
 
-| Step | Produces |
+`reproduce.sh` runs these stages; every step goes through `scripts/repro/run_step.py` (log in
+`results/repro/logs/<step>.log`; a nonzero exit, or a declared output the step did not rewrite, stops the run):
+
+| Stage | What runs |
 |---|---|
-| `run_all.py --oos` | H1–H6, calibration, tiers, walk-forward fast tier, v1 → `results/summary.json` |
-| `scripts/v2_causal.py` | v2 on IS and the OOS, with ½- and 1-tick slippage → `results/v2/causal.json` |
-| `scripts/v2_cost_stress.py` | v2 with fees doubled and all costs doubled → `results/v2/cost_stress.json` |
-| `scripts/note_metrics.py` | annualised return and volatility, turnover, skew, worst month, bps, holdout share, data gaps → `results/v2/note_metrics.json` |
-| `scripts/v2_figures.py`, `scripts/factor_regression.py`, `scripts/leverage_stats.py` | v2 figures, the factor regression, Markov leverage |
-| `scripts/paper_figures.py`, `scripts/build_paper.py` | every paper figure (`results/paper/v2/`), `results/paper/numbers.json` (each number with its source), the LaTeX paper `docs/NOTE.pdf` via tectonic (needs `jinja2`, in `requirements.txt`); fails, keeping the committed PDF, on a missing compiler, > 5 main pages, < 11 pt text, the honesty grep or a fact check (registry counts and labels as printed, executable results first) |
-| `scripts/build_docs.py` | this README, `docs/DEVPOST.md`, `docs/COMPLIANCE.md`, and the paper's label map `results/paper/labels.json` |
+| s00 inputs | `scripts/freeze_universe.py --check`, `scripts/repro/manifest.py verify` (universe, split, OOS start, every tape, archived inputs, frozen model), restore of the archived fresh-holdout window and factor files (`results/repro/inputs/`) |
+| s01–s02 | `run_all.py --oos` (prints, H1–H6, calibration, tiers, fast tier → `results/summary.json`); `scripts/reproduce_inputs.py` (IS jump table and lowloss feature tables, rebuilt when their code or inputs changed) |
+| s03 | v2: `scripts/v2_causal.py` (IS and OOS, with ½- and 1-tick slippage), `scripts/v2_cost_stress.py`, `scripts/note_metrics.py` |
+| s04 | figures and descriptive tables: `v2_figures.py`, `factor_regression.py`, `leverage_stats.py`, `paper_figures.py`, `rally_gate_eval.py`, `data_coverage.py` |
+| s05 | risk and capacity: `v2_wallet_cap.py --is` / `--oos --repro`, `impact_model.py` (only when the live recordings in `data/live` exist; otherwise a recorded skip and the committed `results/liquidity/impact.json`), `edge_persistence.py` |
+| s06 | `psr_mintrl.py` (PSR, MinTRL, copier fill stress), `cv_cost_turnover.py` |
+| s07 | `sponsor_evidence.py` (fails unless the DuckDB SQL recheck and the Vultr unit tests ran), `cv_teaser_fig.py` |
+| s08 | the fresh holdout rerun on its archived inputs with the network disabled (`scripts/repro/holdout_inputs.py run-fixed`), `firm_scenario_fig.py` |
+| s09 | `redteam_stamp_lag.py`, `redteam_derived.py` |
+| s10 | `build_paper.py` (exits nonzero, leaving `docs/NOTE.pdf` unreplaced, on a missing compiler, > 5 main pages, < 11 pt text, the honesty grep or a fact check: registry counts and labels as printed, executable results first), `build_docs.py` |
+| s11 | `scripts/repro/artifacts.py check`: every source of `results/paper/numbers.json` was rewritten in this run or is a listed committed artifact with an unchanged sha256; `results/repro/run_manifest.json` |
 
 Things to know before running it:
-- **Peek log.** Scripts that read held-out data append a line to `results/oos_peeks.log` each time they run (on a
-  fresh clone, building the locked out-of-sample prints adds the first). Those lines record your run, not new
-  decisions; `git checkout results/oos_peeks.log` removes them.
+- **Snapshot, not a refetch.** Python steps run with `COURTSIDE_OFFLINE=1`: a connection to any non-local host fails
+  the step. Tape drift from a later crawl stops the run; `ALLOW_INPUT_DRIFT=1` runs anyway and the run manifest says
+  the inputs are not the snapshot's. The fresh holdout fetched on 2026-10-04 at 05:44 UTC (22 matches) is archived
+  with its window listing; a refetch lists different matches and is a new evaluation (`bash run.sh fresh-fetch`).
+- **Held-out re-reads.** Steps that re-read the OOS period log a line before reading. Under `reproduce.sh` those lines
+  go to `results/repro/reads.log` (untracked), and the committed `results/oos_peeks.log` is left unchanged. Run
+  outside `reproduce.sh`, such scripts append to `results/oos_peeks.log` (`git checkout results/oos_peeks.log`
+  removes the lines); those lines record your run, not new decisions. The paper's counts of evaluations and of
+  choices made after an OOS look come from `results/provenance/experiments.json`, not from the log's length.
 - **Frozen universe.** Polymarket's public event list keeps growing (a crawl late on 2026-10-03 also returns matches
-  that started that day after ours: 13,109 instead of {{univ.matches}}). `bash run.sh data` and `bash run.sh reproduce`
-  run `scripts/freeze_universe.py`, which pins the cached event list to the {{univ.matches}} condition ids in
-  `results/universe_conds.txt.gz`, so the 80/20 split is the paper's (the pinned code in `src/` is unchanged).
-- **Not regenerated by `reproduce.sh`** (outputs are committed): the rigor pack (`scripts/rigor_pack.py`, ~25 s), the
-  latency sweep and capacity study (`scripts/tier0_latency_sweep.py`, `scripts/capacity_study.py`), the six v2 lenses
-  and their verifiers (`research/v2/<lens>/`), the blind out-of-universe tests (`scripts/expand_test.py`,
-  `scripts/lowloss_test.py`), the end-to-end pipeline run (`scripts/e2e_proof.sh`) and ball tracking on HiPerGator.
+  that started that day after ours). `bash run.sh data` runs `scripts/freeze_universe.py`, which pins the cached
+  event list to the {{univ.matches}} condition ids in `results/universe_conds.txt.gz`; `reproduce.sh` checks it.
+- **Committed artifacts.** `results/paper/committed_artifacts.json` lists every paper source `reproduce.sh` does not
+  recompute, with its producer, sha256 and why (HiPerGator jobs such as the latency sweep and ball tracking, the
+  capacity grid, the blind out-of-universe tests evaluated once, recordings of live books). A reproduction fails if
+  one of them changed without its producer running.
 - **Live recordings cannot be re-downloaded.** The order-book and score-feed recordings of 2026-10-03 behind the
   latency, depth and replay numbers were made with `src/live_recorder.py` and live in `data/live*` (gitignored); the
   derived numbers are committed in `results/` and `research/v2/{latency,livefill,blocklag}/`.
+- **Checking the numbers.** A run that finishes shows the steps ran; it does not show the numbers match. Compare
+  against a reference captured outside the checkout:
+  `.venv/bin/python scripts/check_paper_reproduction.py --reference <reference.json> --report <report.json>`
+  (every printed value exact, raw values to 1e-8 absolute / 1e-10 relative, frozen assets and PDF provenance).
 - **The blind forward test was not run** (`HYPOTHESIS_V2.md` A5: pre-registered, not run within the hackathon window;
   `results/forward_peeks.log` has no START line). `scripts/forward_test.py` is a one-shot that logs every run; if
   `results/v2/forward.json` ever exists, `bash run.sh reproduce` fills the one slot in the paper, this README and the
@@ -149,7 +174,7 @@ Things to know before running it:
 |---|---|
 | `bash run.sh setup --full` | also installs `requirements-extra.txt`: tracking (torch, OpenCV, ONNX Runtime) and the deck |
 | `bash run.sh engine` | the paper-only COURTSIDE engine: order books on the committed sample, then 60 s of live public books |
-| `bash run.sh cv` | the ball-tracking call engine on the held-out OpenTTGames clip (calls need the frozen model; see the box) |
+| `bash run.sh cv` | the ball-tracking call engine on the held-out OpenTTGames clip (checks the frozen call model's sha256 first) |
 | `bash run.sh money` | terminal replay of the v2 in-sample backtest with a paper-money counter (after `reproduce`) |
 | `bash run.sh dashboard` | read-only dashboard at http://localhost:8765 |
 | `bash run.sh live` | the paper trader on live public books, read-only (a tool; the pre-registered live session was stopped and is not used) |
