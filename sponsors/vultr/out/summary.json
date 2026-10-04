@@ -1,0 +1,174 @@
+{
+  "experiment": "COURTSIDE London",
+  "paper_trading_only": true,
+  "observed_probe_start_skew_ms": 38.263,
+  "sites": {
+    "london": {
+      "site": "london",
+      "source": "probe_london.jsonl",
+      "started_at": "2026-10-04T04:17:07.317723+00:00",
+      "ended_at": "2026-10-04T04:47:08.137713+00:00",
+      "token_count": 370,
+      "clock_start": {
+        "source": "chronyc",
+        "local_minus_ntp_ms": 0.000126,
+        "raw": "Reference ID    : 8B8F051F (ntpsvr2.npl.co.uk)\nStratum         : 2\nRef time (UTC)  : Sun Oct 04 04:16:49 2026\nSystem time     : 0.000000126 seconds fast of NTP time\nLast offset     : -0.000093009 seconds\nRMS offset      : 0.000093009 seconds\nFrequency       : 0.000 ppm slow\nResidual freq   : +51.877 ppm\nSkew            : 1000000.000 ppm\nRoot delay      : 0.003407773 seconds\nRoot dispersion : 16.776502609 seconds\nUpdate interval : 1.0 seconds\nLeap status     : Normal"
+      },
+      "clock_end": {
+        "source": "chronyc",
+        "local_minus_ntp_ms": 0.016602000000000002,
+        "raw": "Reference ID    : 8B8F051F (ntpsvr2.npl.co.uk)\nStratum         : 2\nRef time (UTC)  : Sun Oct 04 04:43:48 2026\nSystem time     : 0.000016602 seconds fast of NTP time\nLast offset     : +0.000007091 seconds\nRMS offset      : 0.000060087 seconds\nFrequency       : 3.616 ppm fast\nResidual freq   : +0.002 ppm\nSkew            : 0.288 ppm\nRoot delay      : 0.002288348 seconds\nRoot dispersion : 0.000390233 seconds\nUpdate interval : 129.9 seconds\nLeap status     : Normal"
+      },
+      "feed_messages": 349053,
+      "rest_samples": 900,
+      "feed_latency_ms": {
+        "p50": 4.234,
+        "p90": 7.354,
+        "p99": 96.344
+      },
+      "rest_rtt_ms": {
+        "p50": 69.663,
+        "p90": 78.265,
+        "p99": 107.742
+      },
+      "errors": 0
+    },
+    "florida": {
+      "site": "florida",
+      "source": "probe_florida.jsonl",
+      "started_at": "2026-10-04T04:17:07.355986+00:00",
+      "ended_at": "2026-10-04T04:47:08.852322+00:00",
+      "token_count": 370,
+      "clock_start": {
+        "source": "sntp",
+        "local_minus_ntp_ms": -36.355,
+        "uncertainty_ms": 30.265,
+        "raw": "+0.036355 +/- 0.030265 time.cloudflare.com 162.159.200.1"
+      },
+      "clock_end": {
+        "source": "sntp",
+        "local_minus_ntp_ms": 3.263,
+        "uncertainty_ms": 30.134999999999998,
+        "raw": "-0.003263 +/- 0.030135 time.cloudflare.com 162.159.200.123"
+      },
+      "feed_messages": 348926,
+      "rest_samples": 900,
+      "feed_latency_ms": {
+        "p50": 75.334,
+        "p90": 184.395,
+        "p99": 4905.064
+      },
+      "rest_rtt_ms": {
+        "p50": 184.38,
+        "p90": 251.683,
+        "p99": 440.69
+      },
+      "errors": 0
+    }
+  },
+  "paired_arrivals": {
+    "matched_events": 287577,
+    "london_first_percent": 99.74,
+    "london_arrival_advantage_ms": {
+      "p50": 70.189,
+      "p90": 162.154,
+      "p99": 4577.67
+    },
+    "deterministic_sample": [
+      {
+        "server_ts_ms": 1791072000131.0,
+        "event_type": "book",
+        "asset_id": "77824439314153030478018932754217389033543643820129609509930622091715877207013",
+        "london_delay_ms": 15427425.98,
+        "florida_delay_ms": 15428334.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072000131.0,
+        "event_type": "book",
+        "asset_id": "98240482645807138527668874110807660597486430069815196215087780243022724650302",
+        "london_delay_ms": 15427425.98,
+        "florida_delay_ms": 15428334.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072000218.0,
+        "event_type": "book",
+        "asset_id": "65806985128543375006478549251976378485887101679272373002279285350207546111382",
+        "london_delay_ms": 15427338.98,
+        "florida_delay_ms": 15428247.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072000218.0,
+        "event_type": "book",
+        "asset_id": "92912398815643042933861617126180771539947768594486006903788171166564983456286",
+        "london_delay_ms": 15427338.98,
+        "florida_delay_ms": 15428247.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072000221.0,
+        "event_type": "book",
+        "asset_id": "11439075627489786599943595319346913251768380901425915810324195356063590629328",
+        "london_delay_ms": 15427335.98,
+        "florida_delay_ms": 15428244.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072000221.0,
+        "event_type": "book",
+        "asset_id": "13862816633624693108330375756019655070677326659345720452438653438468051245894",
+        "london_delay_ms": 15427335.98,
+        "florida_delay_ms": 15428244.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072001273.0,
+        "event_type": "book",
+        "asset_id": "58923218401534289012334348599631746383892961765166820445327230781991331523904",
+        "london_delay_ms": 15426283.98,
+        "florida_delay_ms": 15427192.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072001273.0,
+        "event_type": "book",
+        "asset_id": "59926500804696105092422045188282687821829673424551849576095271752478137010832",
+        "london_delay_ms": 15426283.98,
+        "florida_delay_ms": 15427192.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072001403.0,
+        "event_type": "book",
+        "asset_id": "38872167706290405272120252626738872865929051624991642424618304744799982087486",
+        "london_delay_ms": 15426153.98,
+        "florida_delay_ms": 15427062.505,
+        "london_advantage_ms": 908.525
+      },
+      {
+        "server_ts_ms": 1791072001403.0,
+        "event_type": "book",
+        "asset_id": "89128991410382915880942207513163382325103131780589801305060014561455184277940",
+        "london_delay_ms": 15426153.98,
+        "florida_delay_ms": 15427062.505,
+        "london_advantage_ms": 908.525
+      }
+    ],
+    "combined_clock_uncertainty_ms": 30.265,
+    "conservative_median_lower_bound_ms": 39.924
+  },
+  "london_improvement_ms": {
+    "feed_latency_ms": {
+      "p50": 71.1,
+      "p90": 177.041,
+      "p99": 4808.72
+    },
+    "rest_rtt_ms": {
+      "p50": 114.717,
+      "p90": 173.418,
+      "p99": 332.948
+    }
+  }
+}

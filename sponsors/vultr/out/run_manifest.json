@@ -1,0 +1,14 @@
+{
+  "experiment": "COURTSIDE London",
+  "region": "lhr",
+  "plan": "vc2-1c-1gb",
+  "minutes": 30.0,
+  "started_at": "2026-10-04T04:15:06.777510+00:00",
+  "instance_deleted": true,
+  "instance_id": "9c0a9adb-8fbb-466d-93dc-179eac3d02b9",
+  "public_ip": "209.250.228.44",
+  "remote_pid": 2416,
+  "observed_probe_start_skew_ms": 38.263,
+  "completed_at": "2026-10-04T04:47:30.680489+00:00",
+  "deleted_at": "2026-10-04T04:47:31.285342+00:00"
+}
