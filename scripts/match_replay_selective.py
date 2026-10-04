@@ -258,6 +258,24 @@ def run(cache: str | None) -> dict:
           f"({int(bad_w.D.notna().sum())} with a recorded book; book move in m1's direction there: "
           f"{np.round(bad_w.D.dropna().to_numpy() * 100, 1).tolist()} c)")
     bad_keys = set(zip(bad_w.slug, bad_w.n))
+    # call direction from the official score (diagnostic for the m1 `winner` issue; the replay keeps m1's)
+    w_score = np.where(S.score_winner.notna(), S.score_winner, P.winner).astype(float)
+    P_sd = P.assign(winner=w_score)
+    # look-ahead margin measured on the recorded reprices (m1 t_book / t_book_first: receive clock -> server)
+    own_rp = (P.t_book.to_numpy() - l_recv - t_pre) / 1000
+    own_rp1 = (P.t_book_first.to_numpy() - l_recv - t_pre) / 1000
+    prev_rp = P.groupby("key", sort=False).t_book.shift(1).to_numpy() - l_recv
+    from_mid = (S.source == "pre-point mid").to_numpy()
+    stale = from_mid & np.isfinite(prev_rp) & (prev_rp > t_pre)
+    timing = {"own_reprice_minus_pre_instant_s_min": float(np.nanmin(own_rp)),
+              "own_first_reprice_minus_pre_instant_s_min": float(np.nanmin(own_rp1)),
+              "points_with_own_reprice": int(np.isfinite(own_rp).sum()),
+              "calibrated_points_with_previous_reprice": int((from_mid & np.isfinite(prev_rp)).sum()),
+              "calibrated_points_previous_reprice_after_pre_instant": int(stale.sum())}
+    print(f"  look-ahead margin: the point's own reprice is >= {timing['own_reprice_minus_pre_instant_s_min']:g} s "
+          f"after the pre-point instant; previous point's reprice after it on "
+          f"{timing['calibrated_points_previous_reprice_after_pre_instant']} of "
+          f"{timing['calibrated_points_with_previous_reprice']} calibrated points")
     swing = S.swing.to_numpy()
     elig = {None: np.ones(len(P), bool)}
     for T in THRESHOLDS:
@@ -285,6 +303,11 @@ def run(cache: str | None) -> dict:
                                                                "pnl_hold_usd": float(Fb.pnl_hold.sum())},
                                  "move_traded_vs_not": None,
                                  "by_match": {m: MR.stats(g, ci=False) for m, g in D.groupby("slug", sort=False)}}
+                Dsd = MR.simulate(P_sd[mask].reset_index(drop=True), M, snaps, sub(tm, mask), sub(dr, mask),
+                                  lead[mask], winners, l_recv, {"T": tname(T), "lag": lag, "V": V}, outages)
+                ssd = MR.stats(Dsd, ci=False)
+                res_cells[nm]["score_direction_diag"] = {k: ssd[k] for k in (
+                    "fills", "fills_wrong", "pnl_mark_usd", "pnl_hold_usd", "per_share_mark_c", "per_share_hold_c")}
             seed_rows.append({"T": tname(T), "lag": lag, "V": V, "seed": seed, **{k: s[k] for k in (
                 "calls", "orders", "fills", "fills_wrong", "calls_beat_book", "calls_with_reprice",
                 "share_calls_beat_book", "shares", "pnl_hold_usd", "pnl_mark_usd", "per_share_hold_c",
@@ -360,6 +383,7 @@ def run(cache: str | None) -> dict:
         S[["t_pre_ms", "source", "state", "p_server0", "mid_pre", "pa", "pb", "v_now", "v_if_a", "v_if_b", "swing",
            "score_ok", "score_winner"]])
     pts = pts.rename(columns={"D": "realised_move_D", "ga": "score_after_a", "gb": "score_after_b"})
+    pts["T_ms"] = pts.T_ms.astype(np.int64)        # full ms precision (float_format would round it to 6 digits)
     pts["replayable_lag2_V1"] = rp.to_numpy()
     for T in THRESHOLDS:
         pts[f"eligible_{tname(T)}"] = elig[T]
@@ -388,6 +412,7 @@ def run(cache: str | None) -> dict:
         "unchanged_from": "scripts/match_replay.py (imported: simulate, stats, cluster_ci, draws, leads, cell_times, "
                           "capture, outage rule D1)",
         "pre_point_instant_margin_s": gap_min - max(LAGS) - PRE_AFTER_PREV_MS / 1000,
+        "pre_point_instant_vs_recorded_reprices": timing,
         "score_reconstruction_mismatches": n_bad,
         "m1_winner_vs_official_score": wcheck,
         "swing_source_counts": S.source.value_counts().to_dict(),
@@ -549,6 +574,7 @@ def write_doc(res) -> None:
     q = sd["swing_c_quantiles"]
     repro_ok = all(v["identical"] for v in res["reproduces_all_points_replay"].values())
     src = res["swing_source_counts"]
+    tm_ = res["pre_point_instant_vs_recorded_reprices"]
     txt = f"""# Match replay, selective variant: trade only points with a large ex-ante swing
 
 > **{LABEL}.**
@@ -611,6 +637,13 @@ swing. Swing quantiles (p10 / p25 / median / p75 / p90): {q['10']:.1f} / {q['25'
 * **No look-ahead in the filter:** the pre-point instant is ≥ {res['pre_point_instant_margin_s']:g} s before the
   earliest assumed bounce of the point (smallest gap between consecutive stamps minus 3 s lag minus 2 s); the score and
   the server belief use only earlier points; the replay's own reference price is read later, at the bounce, as before.
+  Measured on the recorded book: the point's own matched reprice (`m1_points.t_book`) comes ≥
+  {tm_['own_reprice_minus_pre_instant_s_min']:.1f} s after the pre-point instant on all {tm_['points_with_own_reprice']}
+  points that have one (its first reprice ≥ {tm_['own_first_reprice_minus_pre_instant_s_min']:.1f} s after). The other
+  way round, on {tm_['calibrated_points_previous_reprice_after_pre_instant']} of the
+  {tm_['calibrated_points_with_previous_reprice']} calibrated points with a matched previous reprice, that reprice came
+  after the pre-point instant, so the swing there was fitted to a mid that had not yet absorbed the previous point (no
+  look-ahead; a noisier swing).
 * **Where the swing's price came from** (all 994 points): {', '.join(f'{k}: {v}' for k, v in src.items())}.
 * **m1's `winner` column vs the official score:** on {res['m1_winner_vs_official_score']['n_points_m1_winner_disagrees_with_score']}
   of 994 points the `winner` column of `m1_points.csv` (the replay's call direction) disagrees with the change in
@@ -624,6 +657,7 @@ swing. Swing quantiles (p10 / p25 / median / p75 / p90): {q['10']:.1f} / {q['25'
   {res['cells']['all|lag2|V1']['fills_on_m1_winner_errors']['fills']} at the headline cell
   ({usd(res['cells']['all|lag2|V1']['fills_on_m1_winner_errors']['pnl_mark_usd'])} marked), 1-3 in every cell. The
   fix belongs to `research/v2/latency/load.py` (`_derive_pw`) and the replay; it is outside these files.
+  Diagnostic: {sdiag(res)}
 * **Score knowledge is assumed.** The official point-by-point feed reached our poller 1-2 minutes late on this day
   (`m1_points.pbp_delay_s`); a live trader would need the score from the video itself or a faster feed. The
   server is not observed (belief only).
@@ -656,6 +690,23 @@ pre-point state, server belief, pre-point mid, calibrated serve probabilities, e
     DOC.write_text(txt)
 
 
+def sdiag(res) -> str:
+    """Seed-0 cells re-run with the call direction from the official score instead of m1's `winner` column."""
+    sel = [(T, lag, V) for T in THRESHOLDS for lag in LAGS for V in VS]
+    d, flips = [], []
+    for T, lag, V in sel:
+        c = res["cells"][f"{tname(T)}|lag{lag:g}|V{V:g}"]
+        a, b = c["all"]["pnl_mark_usd"], c["score_direction_diag"]["pnl_mark_usd"]
+        d.append(b - a)
+        if (a > 0) != (b > 0):
+            flips.append(f"{tname(T).replace('T', '≥ ')}, lag {lag:g} s, V = {V:g} s: {usd(a)} → {usd(b)}")
+    k = res["cells"][f"T4c|lag{PRIMARY_LAG:g}|V1"]
+    return (f"re-running every seed-0 cell with the call direction taken from the official score changes the 18 "
+            f"selective cells' marked P&L by {min(d):+.0f} to {max(d):+.0f} $ (reference T = 4c, lag 2 s, V = 1 s: "
+            f"{usd(k['all']['pnl_mark_usd'])} → {usd(k['score_direction_diag']['pnl_mark_usd'])}); sign changes: "
+            + ("; ".join(flips) if flips else "none") + ".")
+
+
 def conclusion(res) -> str:
     """Plain conclusion. The wording was written after the results were seen; every number is read from
     selective.json."""
@@ -675,8 +726,9 @@ def conclusion(res) -> str:
     k31 = g(REF_T, 3.0, 1.0)
     w = res["m1_winner_vs_official_score"]
     out = f"""\
-**Plain answer: picking points by their ex-ante Markov swing does not rescue the 1 s video trader. At the primary
-stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly because it trades less.**
+**Plain answer: on these 9 matches, picking points by their ex-ante Markov swing does not rescue the 1 s video
+trader. At the primary stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly because it
+trades less.**
 
 * **Primary stamp lag 2.0 s: {neg2} of {len(sel) * len(VS)} selective cells lose money marked** (seed 0), and no
   selective cell is positive in more than {maxpos2} of 20 seeds. At the headline V = 1 s: all points
@@ -685,23 +737,29 @@ stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly be
   **T = 4c (reference) {g(0.04, 2.0, 1.0)['fills']} fills, {r(0.04, 2.0, 1.0)}{ci(g(0.04, 2.0, 1.0)['per_share_mark_ci95_c'])},
   {usd(g(0.04, 2.0, 1.0)['pnl_mark_usd'])}**; T = 6c {g(0.06, 2.0, 1.0)['fills']} fills, {r(0.06, 2.0, 1.0)}{ci(g(0.06, 2.0, 1.0)['per_share_mark_ci95_c'])},
   {usd(g(0.06, 2.0, 1.0)['pnl_mark_usd'])} (20-seed mean {gs(0.06, 2.0, 1.0)['per_share_mark_c']['mean']:+.2f}c). The
-  smaller dollar losses come from fewer fills; per share, the filter helps at V = 0 (all points {r(None, 2.0, 0.0)},
-  T = 4c {r(0.04, 2.0, 0.0)}, T = 6c {r(0.06, 2.0, 0.0)}) and not at 1 s for T ≤ 4c.
-* **Stamp lag 3.0 s (the optimistic sensitivity): T = 4c makes money at V = 0** ({k30['fills']} fills,
+  smaller dollar losses come from fewer fills; per share, the filtered cells are less negative at V = 0 (all points
+  {r(None, 2.0, 0.0)}, T = 4c {r(0.04, 2.0, 0.0)}, T = 6c {r(0.06, 2.0, 0.0)}; point estimates whose CIs overlap, the
+  difference is not tested) and not at 1 s for T ≤ 4c.
+* **Stamp lag 3.0 s (the optimistic sensitivity): T = 4c is positive at V = 0** ({k30['fills']} fills,
   {f2(k30['per_share_mark_c'])}c{ci(k30['per_share_mark_ci95_c'])}, {usd(k30['pnl_mark_usd'])} marked; positive in
   {pos(0.04, 3.0, 0.0)} of 20 seeds), is about zero at V = 0.5 s ({f2(k35['per_share_mark_c'])}c, {pos(0.04, 3.0, 0.5)} of 20
   seeds positive) and loses at V = 1 s ({f2(k31['per_share_mark_c'])}c{ci(k31['per_share_mark_ci95_c'])}, {pos(0.04, 3.0, 1.0)} of 20).
-  This is the only selective cell whose marked CI excludes zero from above, out of 18 selective cells (3 T × 3 V × 2
+  This is the only selective cell whose marked CI lies above zero, out of 18 selective cells (3 T × 3 V × 2
   lags), and it sits at the stamp lag that gives the trader the most time; at the same lag every T loses at V = 1 s.
-* **The ex-ante swing does find the points the book moves on.** Over the {sd['replayable_points']} replayable points
+  Read it as one post hoc cell, not as an edge: among 18 correlated cells designed after the all-points result, one
+  95 % CI clear of zero is about what chance alone gives; a percentile bootstrap over only
+  {k30['matches_with_fills']} matches with fills tends to give intervals that are too narrow; and the 20 seeds re-draw
+  only the simulated CV lead and wrong calls on the same 9 matches, so "{pos(0.04, 3.0, 0.0)} of 20 seeds" says
+  nothing about other matches or days.
+* **On this day the ex-ante swing does pick the points the book moves on.** Over the {sd['replayable_points']} replayable points
   its Spearman correlation with the size of the realised book move is
   {sd['spearman_swing_vs_abs_realised_move']:+.2f}; T = 4c keeps {b4['realised_ge_4c_that_are_eligible']} of the
   {b4['realised_ge_4c_points']} points whose book moved ≥ 4c, plus as many smaller ones (half of the
   {b4['eligible']} eligible points moved ≥ 4c). So a set close to the sweep's "≥ 4c jumps" can be chosen without
-  hindsight, at about twice the size. On this day the selection is not what sinks the 1 s trader; the feed delay is.
-  The filter amplifies an
-  edge only where the order already beats the reprice often (V = 0 with a 3 s lag: about two thirds of calls); at V = 1 s
-  and lag 2 s only {g(0.04, 2.0, 1.0)['share_calls_beat_book']:.0%} of T = 4c calls beat the book.
+  hindsight, at about twice the size. Even so, no 1 s cell turned positive. The selective cells that are positive
+  are those where most orders execute before the book reprices (V = 0 with a 3 s lag: about two thirds of calls); at
+  V = 1 s and lag 2 s only {g(0.04, 2.0, 1.0)['share_calls_beat_book']:.0%} of T = 4c calls beat the book. With 9
+  matches this describes where the P&L sits; it does not test why.
 * **Traded vs not traded (diagnostic, hindsight):** at T = 4c, V = 1 s, lag 2 s the filled points' realised move has
   median {f2(mv(0.04, 2.0, 1.0)['traded']['median_c'], 1)}c vs {f2(mv(0.04, 2.0, 1.0)['not_traded']['median_c'], 1)}c for
   every other replayable point (≥ 4c: {mv(0.04, 2.0, 1.0)['traded']['share_ge_4c']:.0%} vs
@@ -713,8 +771,7 @@ stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly be
   match result on a ≤ 100-share net position, so it is noise for this question; read the marked figure.
 * **What this is:** {LABEL}. 18 selective cells on one day; the reading above is descriptive, and no T is chosen.
   A separate data issue for the replay's owners (not fixed here): m1's `winner` column disagrees with the official
-  score on {w['n_points_m1_winner_disagrees_with_score']} of 994 points (§5); it moves 1-3 fills per cell and a few
-  dollars marked, so it changes no sign."""
+  score on {w['n_points_m1_winner_disagrees_with_score']} of 994 points (§5). As a diagnostic, {sdiag(res)}"""
     return out
 
 

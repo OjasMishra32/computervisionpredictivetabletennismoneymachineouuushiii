@@ -9,8 +9,9 @@
 
 ## Conclusion
 
-**Plain answer: picking points by their ex-ante Markov swing does not rescue the 1 s video trader. At the primary
-stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly because it trades less.**
+**Plain answer: on these 9 matches, picking points by their ex-ante Markov swing does not rescue the 1 s video
+trader. At the primary stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly because it
+trades less.**
 
 * **Primary stamp lag 2.0 s: 9 of 9 selective cells lose money marked** (seed 0), and no
   selective cell is positive in more than 1 of 20 seeds. At the headline V = 1 s: all points
@@ -19,23 +20,29 @@ stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly be
   **T = 4c (reference) 63 fills, -0.95c [-1.64, -0.40],
   −$89**; T = 6c 33 fills, -0.26c [-1.35, +0.53],
   −$13 (20-seed mean -0.70c). The
-  smaller dollar losses come from fewer fills; per share, the filter helps at V = 0 (all points -0.61c,
-  T = 4c -0.37c, T = 6c -0.36c) and not at 1 s for T ≤ 4c.
-* **Stamp lag 3.0 s (the optimistic sensitivity): T = 4c makes money at V = 0** (130 fills,
+  smaller dollar losses come from fewer fills; per share, the filtered cells are less negative at V = 0 (all points
+  -0.61c, T = 4c -0.37c, T = 6c -0.36c; point estimates whose CIs overlap, the
+  difference is not tested) and not at 1 s for T ≤ 4c.
+* **Stamp lag 3.0 s (the optimistic sensitivity): T = 4c is positive at V = 0** (130 fills,
   +0.55c [+0.09, +1.14], +$102 marked; positive in
   20 of 20 seeds), is about zero at V = 0.5 s (+0.06c, 17 of 20
   seeds positive) and loses at V = 1 s (-0.42c [-0.92, +0.39], 4 of 20).
-  This is the only selective cell whose marked CI excludes zero from above, out of 18 selective cells (3 T × 3 V × 2
+  This is the only selective cell whose marked CI lies above zero, out of 18 selective cells (3 T × 3 V × 2
   lags), and it sits at the stamp lag that gives the trader the most time; at the same lag every T loses at V = 1 s.
-* **The ex-ante swing does find the points the book moves on.** Over the 493 replayable points
+  Read it as one post hoc cell, not as an edge: among 18 correlated cells designed after the all-points result, one
+  95 % CI clear of zero is about what chance alone gives; a percentile bootstrap over only
+  7 matches with fills tends to give intervals that are too narrow; and the 20 seeds re-draw
+  only the simulated CV lead and wrong calls on the same 9 matches, so "20 of 20 seeds" says
+  nothing about other matches or days.
+* **On this day the ex-ante swing does pick the points the book moves on.** Over the 493 replayable points
   its Spearman correlation with the size of the realised book move is
   +0.78; T = 4c keeps 162 of the
   170 points whose book moved ≥ 4c, plus as many smaller ones (half of the
   324 eligible points moved ≥ 4c). So a set close to the sweep's "≥ 4c jumps" can be chosen without
-  hindsight, at about twice the size. On this day the selection is not what sinks the 1 s trader; the feed delay is.
-  The filter amplifies an
-  edge only where the order already beats the reprice often (V = 0 with a 3 s lag: about two thirds of calls); at V = 1 s
-  and lag 2 s only 5% of T = 4c calls beat the book.
+  hindsight, at about twice the size. Even so, no 1 s cell turned positive. The selective cells that are positive
+  are those where most orders execute before the book reprices (V = 0 with a 3 s lag: about two thirds of calls); at
+  V = 1 s and lag 2 s only 5% of T = 4c calls beat the book. With 9
+  matches this describes where the P&L sits; it does not test why.
 * **Traded vs not traded (diagnostic, hindsight):** at T = 4c, V = 1 s, lag 2 s the filled points' realised move has
   median +3.0c vs +3.0c for
   every other replayable point (≥ 4c: 35% vs
@@ -47,8 +54,7 @@ stamp lag (2.0 s) it still loses at every T and every V; it loses less mostly be
   match result on a ≤ 100-share net position, so it is noise for this question; read the marked figure.
 * **What this is:** EXPLORATORY, added after seeing the all-points replay; not pre-registered; one day, 9 matches; backtest replay on real recorded book; assumed feed latency; paper only. 18 selective cells on one day; the reading above is descriptive, and no T is chosen.
   A separate data issue for the replay's owners (not fixed here): m1's `winner` column disagrees with the official
-  score on 27 of 994 points (§5); it moves 1-3 fills per cell and a few
-  dollars marked, so it changes no sign.
+  score on 27 of 994 points (§5). As a diagnostic, re-running every seed-0 cell with the call direction taken from the official score changes the 18 selective cells' marked P&L by -15 to +15 $ (reference T = 4c, lag 2 s, V = 1 s: −$89 → −$90); sign changes: none.
 
 ![selective](../../results/replay/selective/fig_selective.png)
 
@@ -155,6 +161,13 @@ swing. Swing quantiles (p10 / p25 / median / p75 / p90): 2.1 / 3.4 / 5.0 /
 * **No look-ahead in the filter:** the pre-point instant is ≥ 10 s before the
   earliest assumed bounce of the point (smallest gap between consecutive stamps minus 3 s lag minus 2 s); the score and
   the server belief use only earlier points; the replay's own reference price is read later, at the bounce, as before.
+  Measured on the recorded book: the point's own matched reprice (`m1_points.t_book`) comes ≥
+  13.0 s after the pre-point instant on all 482
+  points that have one (its first reprice ≥ 10.0 s after). The other
+  way round, on 14 of the
+  468 calibrated points with a matched previous reprice, that reprice came
+  after the pre-point instant, so the swing there was fitted to a mid that had not yet absorbed the previous point (no
+  look-ahead; a noisier swing).
 * **Where the swing's price came from** (all 994 points): no price yet: 498, pre-point mid: 490, carried from an earlier point: 6.
 * **m1's `winner` column vs the official score:** on 27
   of 994 points the `winner` column of `m1_points.csv` (the replay's call direction) disagrees with the change in
@@ -168,6 +181,7 @@ swing. Swing quantiles (p10 / p25 / median / p75 / p90): 2.1 / 3.4 / 5.0 /
   2 at the headline cell
   (+$5 marked), 1-3 in every cell. The
   fix belongs to `research/v2/latency/load.py` (`_derive_pw`) and the replay; it is outside these files.
+  Diagnostic: re-running every seed-0 cell with the call direction taken from the official score changes the 18 selective cells' marked P&L by -15 to +15 $ (reference T = 4c, lag 2 s, V = 1 s: −$89 → −$90); sign changes: none.
 * **Score knowledge is assumed.** The official point-by-point feed reached our poller 1-2 minutes late on this day
   (`m1_points.pbp_delay_s`); a live trader would need the score from the video itself or a faster feed. The
   server is not observed (belief only).

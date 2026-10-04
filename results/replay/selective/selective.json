@@ -51,6 +51,13 @@
  },
  "unchanged_from": "scripts/match_replay.py (imported: simulate, stats, cluster_ci, draws, leads, cell_times, capture, outage rule D1)",
  "pre_point_instant_margin_s": 10.0,
+ "pre_point_instant_vs_recorded_reprices": {
+  "own_reprice_minus_pre_instant_s_min": 12.998,
+  "own_first_reprice_minus_pre_instant_s_min": 10.025,
+  "points_with_own_reprice": 482,
+  "calibrated_points_with_previous_reprice": 468,
+  "calibrated_points_previous_reprice_after_pre_instant": 14
+ },
  "score_reconstruction_mismatches": 0,
  "m1_winner_vs_official_score": {
   "agreement_by_match": {
@@ -780,6 +787,14 @@
      "pnl_mark_wrong_usd": -11.70761085000002,
      "median_exec_minus_book_s": -0.189
     }
+   },
+   "score_direction_diag": {
+    "fills": 174,
+    "fills_wrong": 24,
+    "pnl_mark_usd": -180.11392520000007,
+    "pnl_hold_usd": -270.17597519999987,
+    "per_share_mark_c": -0.6093056725659767,
+    "per_share_hold_c": -0.9017733176860745
    }
   },
   "T2c|lag2|V0": {
@@ -1100,6 +1115,14 @@
      "pnl_mark_wrong_usd": -3.0057608500000144,
      "median_exec_minus_book_s": -0.104
     }
+   },
+   "score_direction_diag": {
+    "fills": 142,
+    "fills_wrong": 21,
+    "pnl_mark_usd": -126.96417645000005,
+    "pnl_hold_usd": -64.40842644999984,
+    "per_share_mark_c": -0.5484712189518741,
+    "per_share_hold_c": -0.2735111366892659
    }
   },
   "T4c|lag2|V0": {
@@ -1420,6 +1443,14 @@
      "pnl_mark_wrong_usd": 0.9593959499999896,
      "median_exec_minus_book_s": 0.571
     }
+   },
+   "score_direction_diag": {
+    "fills": 90,
+    "fills_wrong": 11,
+    "pnl_mark_usd": -50.86063090000003,
+    "pnl_hold_usd": 20.455887100000147,
+    "per_share_mark_c": -0.3693370598200977,
+    "per_share_hold_c": 0.14847702135566707
    }
   },
   "T6c|lag2|V0": {
@@ -1678,6 +1709,14 @@
      "pnl_mark_wrong_usd": 0.0,
      "median_exec_minus_book_s": 1.082
     }
+   },
+   "score_direction_diag": {
+    "fills": 48,
+    "fills_wrong": 5,
+    "pnl_mark_usd": -29.43760999999997,
+    "pnl_hold_usd": -5.688009999999906,
+    "per_share_mark_c": -0.4315643719378282,
+    "per_share_hold_c": -0.08338796740720622
    }
   },
   "all|lag2|V0.5": {
@@ -2029,6 +2068,14 @@
      "pnl_mark_wrong_usd": -9.226622000000022,
      "median_exec_minus_book_s": 0.311
     }
+   },
+   "score_direction_diag": {
+    "fills": 167,
+    "fills_wrong": 23,
+    "pnl_mark_usd": -185.4286978,
+    "pnl_hold_usd": -284.6539477999999,
+    "per_share_mark_c": -0.7103121741075739,
+    "per_share_hold_c": -1.069916857731785
    }
   },
   "T2c|lag2|V0.5": {
@@ -2349,6 +2396,14 @@
      "pnl_mark_wrong_usd": -2.2766220000000215,
      "median_exec_minus_book_s": 0.396
     }
+   },
+   "score_direction_diag": {
+    "fills": 134,
+    "fills_wrong": 20,
+    "pnl_mark_usd": -133.2263867,
+    "pnl_hold_usd": -80.05963670000023,
+    "per_share_mark_c": -0.6766868956991148,
+    "per_share_hold_c": -0.3965696357843566
    }
   },
   "T4c|lag2|V0.5": {
@@ -2669,6 +2724,14 @@
      "pnl_mark_wrong_usd": 1.3314347999999827,
      "median_exec_minus_book_s": 1.071
     }
+   },
+   "score_direction_diag": {
+    "fills": 80,
+    "fills_wrong": 10,
+    "pnl_mark_usd": -67.34153104999996,
+    "pnl_hold_usd": 88.40008374999994,
+    "per_share_mark_c": -0.618088933852954,
+    "per_share_hold_c": 0.8020527063355747
    }
   },
   "T6c|lag2|V0.5": {
@@ -2927,6 +2990,14 @@
      "pnl_mark_wrong_usd": 0.0,
      "median_exec_minus_book_s": 1.582
     }
+   },
+   "score_direction_diag": {
+    "fills": 46,
+    "fills_wrong": 5,
+    "pnl_mark_usd": -25.34886749999996,
+    "pnl_hold_usd": 7.8521824999999446,
+    "per_share_mark_c": -0.43536203645182064,
+    "per_share_hold_c": 0.1348597590717348
    }
   },
   "all|lag2|V1": {
@@ -3278,6 +3349,14 @@
      "pnl_mark_wrong_usd": -8.587876950000007,
      "median_exec_minus_book_s": 0.811
     }
+   },
+   "score_direction_diag": {
+    "fills": 149,
+    "fills_wrong": 21,
+    "pnl_mark_usd": -224.20510689999992,
+    "pnl_hold_usd": -417.8289568999999,
+    "per_share_mark_c": -0.93818696736506,
+    "per_share_hold_c": -1.7125751890547058
    }
   },
   "T2c|lag2|V1": {
@@ -3598,6 +3677,14 @@
      "pnl_mark_wrong_usd": -3.572876950000007,
      "median_exec_minus_book_s": 0.896
     }
+   },
+   "score_direction_diag": {
+    "fills": 114,
+    "fills_wrong": 18,
+    "pnl_mark_usd": -163.9250438,
+    "pnl_hold_usd": -205.3288937999999,
+    "per_share_mark_c": -0.9216054725668893,
+    "per_share_hold_c": -1.1228195801365999
    }
   },
   "T4c|lag2|V1": {
@@ -3918,6 +4005,14 @@
      "pnl_mark_wrong_usd": 2.3314347999999896,
      "median_exec_minus_book_s": 1.571
     }
+   },
+   "score_direction_diag": {
+    "fills": 63,
+    "fills_wrong": 9,
+    "pnl_mark_usd": -90.00156460000001,
+    "pnl_hold_usd": -79.5016977999999,
+    "per_share_mark_c": -0.9625259299977756,
+    "per_share_hold_c": -0.8413038322423063
    }
   },
   "T6c|lag2|V1": {
@@ -4176,6 +4271,14 @@
      "pnl_mark_wrong_usd": 0.0,
      "median_exec_minus_book_s": 2.082
     }
+   },
+   "score_direction_diag": {
+    "fills": 32,
+    "fills_wrong": 4,
+    "pnl_mark_usd": -11.445831700000003,
+    "pnl_hold_usd": -11.171231699999964,
+    "per_share_mark_c": -0.23172795758137732,
+    "per_share_hold_c": -0.22616851036778118
    }
   },
   "all|lag3|V0": {
@@ -4527,6 +4630,14 @@
      "pnl_mark_wrong_usd": -17.0576043,
      "median_exec_minus_book_s": -1.281
     }
+   },
+   "score_direction_diag": {
+    "fills": 231,
+    "fills_wrong": 21,
+    "pnl_mark_usd": -8.078000799999835,
+    "pnl_hold_usd": -52.47123204999977,
+    "per_share_mark_c": -0.02236018326601428,
+    "per_share_hold_c": -0.1451877145632829
    }
   },
   "T2c|lag3|V0": {
@@ -4847,6 +4958,14 @@
      "pnl_mark_wrong_usd": -6.046604300000001,
      "median_exec_minus_book_s": -1.189
     }
+   },
+   "score_direction_diag": {
+    "fills": 201,
+    "fills_wrong": 19,
+    "pnl_mark_usd": 24.988648400000137,
+    "pnl_hold_usd": 120.09541715000007,
+    "per_share_mark_c": 0.08267072444512714,
+    "per_share_hold_c": 0.39713738385933745
    }
   },
   "T4c|lag3|V0": {
@@ -5167,6 +5286,14 @@
      "pnl_mark_wrong_usd": -3.901147500000002,
      "median_exec_minus_book_s": -0.573
     }
+   },
+   "score_direction_diag": {
+    "fills": 134,
+    "fills_wrong": 8,
+    "pnl_mark_usd": 112.52359990000012,
+    "pnl_hold_usd": 242.9227186500002,
+    "per_share_mark_c": 0.6016564802190111,
+    "per_share_hold_c": 1.297951835743502
    }
   },
   "T6c|lag3|V0": {
@@ -5425,6 +5552,14 @@
      "pnl_mark_wrong_usd": 0.0,
      "median_exec_minus_book_s": 0.076
     }
+   },
+   "score_direction_diag": {
+    "fills": 68,
+    "fills_wrong": 5,
+    "pnl_mark_usd": 39.289363000000016,
+    "pnl_hold_usd": 213.31382245,
+    "per_share_mark_c": 0.5214470023942624,
+    "per_share_hold_c": 2.7530651832741153
    }
   },
   "all|lag3|V0.5": {
@@ -5776,6 +5911,14 @@
      "pnl_mark_wrong_usd": -17.431456800000017,
      "median_exec_minus_book_s": -0.735
     }
+   },
+   "score_direction_diag": {
+    "fills": 208,
+    "fills_wrong": 25,
+    "pnl_mark_usd": -97.68574699999996,
+    "pnl_hold_usd": -165.55857824999993,
+    "per_share_mark_c": -0.30265472498396645,
+    "per_share_hold_c": -0.5095701526784516
    }
   },
   "T2c|lag3|V0.5": {
@@ -6096,6 +6239,14 @@
      "pnl_mark_wrong_usd": -8.420456800000014,
      "median_exec_minus_book_s": -0.6465
     }
+   },
+   "score_direction_diag": {
+    "fills": 178,
+    "fills_wrong": 23,
+    "pnl_mark_usd": -65.76162579999996,
+    "pnl_hold_usd": 7.56734295000026,
+    "per_share_mark_c": -0.2491319836492234,
+    "per_share_hold_c": 0.028438127046940365
    }
   },
   "T4c|lag3|V0.5": {
@@ -6416,6 +6567,14 @@
      "pnl_mark_wrong_usd": -3.1375000000000073,
      "median_exec_minus_book_s": -0.0010000000000000009
     }
+   },
+   "score_direction_diag": {
+    "fills": 119,
+    "fills_wrong": 12,
+    "pnl_mark_usd": 9.876432650000051,
+    "pnl_hold_usd": 131.3178514000001,
+    "per_share_mark_c": 0.06149479253577109,
+    "per_share_hold_c": 0.8169505162014794
    }
   },
   "T6c|lag3|V0.5": {
@@ -6674,6 +6833,14 @@
      "pnl_mark_wrong_usd": -2.2640004,
      "median_exec_minus_book_s": 0.5705
     }
+   },
+   "score_direction_diag": {
+    "fills": 55,
+    "fills_wrong": 8,
+    "pnl_mark_usd": -15.571182399999985,
+    "pnl_hold_usd": 142.23613635000004,
+    "per_share_mark_c": -0.24159646988729436,
+    "per_share_hold_c": 2.2022511809706957
    }
   },
   "all|lag3|V1": {
@@ -7025,6 +7192,14 @@
      "pnl_mark_wrong_usd": -14.568610850000017,
      "median_exec_minus_book_s": -0.23500000000000001
     }
+   },
+   "score_direction_diag": {
+    "fills": 154,
+    "fills_wrong": 24,
+    "pnl_mark_usd": -175.84990160000007,
+    "pnl_hold_usd": -223.33535159999997,
+    "per_share_mark_c": -0.69190621389967,
+    "per_share_hold_c": -0.8718833118357479
    }
   },
   "T2c|lag3|V1": {
@@ -7345,6 +7520,14 @@
      "pnl_mark_wrong_usd": -5.866760850000015,
      "median_exec_minus_book_s": -0.1465
     }
+   },
+   "score_direction_diag": {
+    "fills": 123,
+    "fills_wrong": 22,
+    "pnl_mark_usd": -126.59327535000003,
+    "pnl_hold_usd": -30.95992534999982,
+    "per_share_mark_c": -0.6589631312405718,
+    "per_share_hold_c": -0.15949697207456723
    }
   },
   "T4c|lag3|V1": {
@@ -7665,6 +7848,14 @@
      "pnl_mark_wrong_usd": -1.9016040500000106,
      "median_exec_minus_book_s": 0.499
     }
+   },
+   "score_direction_diag": {
+    "fills": 70,
+    "fills_wrong": 10,
+    "pnl_mark_usd": -50.43447985000001,
+    "pnl_hold_usd": 36.33892015000014,
+    "per_share_mark_c": -0.4927465306612945,
+    "per_share_hold_c": 0.35503244774498005
    }
   },
   "T6c|lag3|V1": {
@@ -7923,6 +8114,14 @@
      "pnl_mark_wrong_usd": 0.0,
      "median_exec_minus_book_s": 1.0705
     }
+   },
+   "score_direction_diag": {
+    "fills": 26,
+    "fills_wrong": 5,
+    "pnl_mark_usd": -21.30603879999997,
+    "pnl_hold_usd": 116.12626120000004,
+    "per_share_mark_c": -0.6825839468440233,
+    "per_share_hold_c": 3.7203500118537334
    }
   }
  },
