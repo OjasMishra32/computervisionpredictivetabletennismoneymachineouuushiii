@@ -224,7 +224,8 @@
     "R_v2safe_u2",
     "R_wcap_oos",
     "R_capacity",
-    "R_v2_strict"
+    "R_v2_strict",
+    "R_v2_x1"
    ],
    "oos_informed": true,
    "decision_class": "1",
@@ -338,7 +339,8 @@
     "R_v2safe_oos",
     "R_v2safe_u2",
     "R_wcap_oos",
-    "R_capacity"
+    "R_capacity",
+    "R_v2_x1"
    ],
    "oos_informed": true,
    "decision_class": "undetermined",
@@ -1755,7 +1757,8 @@
    "oos_log_lines": [],
    "touches": [
     "R_v2_copier",
-    "R_v2_strict"
+    "R_v2_strict",
+    "R_v2_x1"
    ],
    "oos_informed": true,
    "decision_class": "2",
@@ -1882,6 +1885,38 @@
    "class_evidence": "dc95717 pre-registers the licensed 0.5 s feed as the fresh-holdout headline (research/v2/tier0_v3/fresh/PREREG_FRESH.md), and the team lead's latency framing shows 0.5 s first, then 1 s and 3 s. The 0.5 s tier first appears in research/compliance/PAPER_REQUIREMENTS.md (8a5ebd4) as the vendor-stated best case; the sweep's OOS cells, V = 0.5 s included, existed from f5ff9ff. Stated basis: the standard setup a trading firm would buy. A presentation and scenario choice; the trading rule is unchanged.",
    "presentation_choice": true,
    "oos_informed": true
+  },
+  {
+   "id": "E65",
+   "utc": "2026-10-04T10:26:14Z",
+   "utc_end": "2026-10-04T10:30:15Z",
+   "time_source": "log",
+   "commit": "149fb54",
+   "prereg_commit": "163195b",
+   "kind": "f",
+   "decision": false,
+   "family": "v2",
+   "data_state": "untouched",
+   "summary": "X1 out-of-universe check of the frozen corrected v2 copier on the latest 20% by time of never-fetched >= $5k tennis moneylines outside U1/U2 (108 markets: 90 doubles, 18 Davis Cup; not the organizer's OOS test): FAIL, underpowered (central copier +8.80c/share [-34.41, +50.33], 21 trades, 11 matches, 9 trade days). First read of X1. The first invocation stopped in the print build before any evaluation and was restarted once after deviation D1 (5286181). U1 IS and OOS prints were read as wallet-qualification input only.",
+   "evidence": [
+    "results/oos_peeks.log:115-117",
+    "research/v2/external/PREREG_EXTERNAL.md",
+    "research/v2/external/DEVIATIONS.md",
+    "research/v2/external/RESULTS.md",
+    "results/external_validation/results.json",
+    "commit:163195b",
+    "commit:5286181"
+   ],
+   "oos_log_lines": [
+    115,
+    116,
+    117
+   ],
+   "touches": [
+    "R_v2_x1"
+   ],
+   "decision_class": "3",
+   "oos_informed": false
   }
  ],
  "results": [
@@ -2097,6 +2132,25 @@
    ],
    "paper_keys": [
     "v2s.u2*"
+   ]
+  },
+  {
+   "id": "R_v2_x1",
+   "paper": "X1: the frozen corrected v2 copier on never-fetched markets outside the declared universe (results/external_validation/results.json)",
+   "period": "X1",
+   "kind": "executable",
+   "label": "blind",
+   "label_text": "Blind: never-fetched markets outside the declared universe (X1, mostly doubles), pre-registered; same weeks as U1; not the organizer's OOS test",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E60",
+    "E65"
    ]
   },
   {
@@ -2472,6 +2526,11 @@
     "data": "Table-tennis markets",
     "qualifies": false,
     "why": "Different sport and universe; evaluated once (E31)."
+   },
+   {
+    "data": "X1: never-fetched tennis moneylines >= $5k outside U1 and U2 (doubles, Davis Cup), latest 20% of their own history by time",
+    "qualifies": false,
+    "why": "Outside the declared universe and in the same weeks as U1; evaluated once (E65): FAIL, underpowered."
    }
   ],
   "conclusion": "No genuinely untouched calendar-time test inside the declared U1 history has been identified. Preserve the actual first pre-registered E02 evaluation and each other test with its verified label. A reproduction or mechanical defect correction is not by itself evidence of return-driven tuning or a new blind test. Independent external-validation feasibility remains a separate provenance check.",
@@ -2482,7 +2541,8 @@
    "E26",
    "E31",
    "E39",
-   "E54"
+   "E54",
+   "E65"
   ],
   "rule_source": "https://www.gqhacks.com/tracks/systematic-trading",
   "actual_split": "The stored 80th-percentile match-count split starts 2026-08-25 14:15 UTC: 2,617 matches over 38.705 days, 10.745% of calendar history.",
@@ -3172,23 +3232,41 @@
    "raw_ts": "2026-10-04T09:53:06.591803+00:00",
    "utc": "2026-10-04T09:53:06Z",
    "event": "E63"
+  },
+  {
+   "line": 115,
+   "raw_ts": "2026-10-04T10:26:14.831149+00:00",
+   "utc": "2026-10-04T10:26:14Z",
+   "event": "E65"
+  },
+  {
+   "line": 116,
+   "raw_ts": "2026-10-04T10:27:33.309461+00:00",
+   "utc": "2026-10-04T10:27:33Z",
+   "event": "E65"
+  },
+  {
+   "line": 117,
+   "raw_ts": "2026-10-04T10:30:15.472878+00:00",
+   "utc": "2026-10-04T10:30:15Z",
+   "event": "E65"
   }
  ],
  "summary": {
-  "n_events": 66,
+  "n_events": 67,
   "n_events_by_kind": {
    "a": 10,
    "b": 11,
    "c": 19,
    "d": 10,
    "e": 8,
-   "f": 5,
+   "f": 6,
    "protocol": 3
   },
   "n_events_by_class": {
    "1": 3,
    "2": 3,
-   "3": 54,
+   "3": 55,
    "4": 1,
    "undetermined": 1,
    "mixed": 1
@@ -3218,7 +3296,8 @@
      "R_v2safe_u2",
      "R_wcap_oos",
      "R_capacity",
-     "R_v2_strict"
+     "R_v2_strict",
+     "R_v2_x1"
     ],
     "pre_change_reference": "v1 and H1/H2/H5/H6, frozen in 9d61d1b (D6, E01) and evaluated once on clean OOS (E02): R_v1_oos and R_h1_h6_oos. R_v1_oos is a shadow book at the fast tier's onset-aligned fills, an observational event study and never attainable profit."
    },
@@ -3708,6 +3787,12 @@
     "family": "cv",
     "data_state": "partly_read",
     "prereg_commit": "dc95717"
+   },
+   {
+    "id": "E65",
+    "family": "v2",
+    "data_state": "untouched",
+    "prereg_commit": "163195b"
    }
   ],
   "reproductions": [
@@ -3754,7 +3839,7 @@
    "E08",
    "E09"
   ],
-  "log_lines_total": 114,
+  "log_lines_total": 117,
   "log_lines_unmapped": 0,
   "aux_log_lines_total": {
    "results/tracking/test_peeks.log": 2,
@@ -3764,6 +3849,7 @@
    "blind": [
     "R_v2_u2",
     "R_v2safe_u2",
+    "R_v2_x1",
     "R_maker"
    ],
    "burned-non-blind": [

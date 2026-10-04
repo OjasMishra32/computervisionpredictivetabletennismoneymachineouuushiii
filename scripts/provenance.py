@@ -58,7 +58,7 @@ DATA_STATES = ("clean", "burned", "untouched", "partly_read", "forward", "test_u
 OOS_STATES = ("clean", "burned", "untouched", "partly_read", "test_used")
 FAMILIES = ("v1", "v2", "tracking", "forward", "cv", "maker", "capacity", "tt", "replay")
 TIME_SOURCES = ("log", "commit", "mtime", "document")
-PERIODS = ("IS", "OOS", "U2", "fresh", "test", "side_markets", "tt", "forward", "replay", "mixed")
+PERIODS = ("IS", "OOS", "U2", "X1", "fresh", "test", "side_markets", "tt", "forward", "replay", "mixed")
 RESULT_KINDS = ("executable", "sim_upper_bound", "others_fills", "conditional", "event_study",
                 "descriptive", "diagnostic")
 LABELS = ("in-sample", "clean-oos", "blind", "post-freeze", "burned-non-blind", "exploratory", "not-run")
