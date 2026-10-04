@@ -1,0 +1,31 @@
+# First invocation at 163195b (stopped in the print build; DEVIATIONS.md D1)
+START 2026-10-04T10:26:14.831149+00:00
+trades 0/108
+trades 100/108
+fetch {'n_requested': 108, 'n_fetched': 108}
+Traceback (most recent call last):
+  File "research/v2/external/x1_test.py", line 338, in <module>
+    main()
+    ~~~~^^
+  File "research/v2/external/x1_test.py", line 288, in main
+    X, w, build_info = build(w)
+                       ~~~~~^^^
+  File "research/v2/external/x1_test.py", line 158, in build
+    d = tiers.match_prints(SimpleNamespace(**r))
+  File "src/tiers.py", line 80, in match_prints
+    since = np.where(k >= 0, ts - on_t[np.maximum(k, 0)], -1.0)
+                                  ~~~~^^^^^^^^^^^^^^^^^^
+IndexError: index 0 is out of bounds for axis 0 with size 0
+.venv/bin/python research/v2/external/x1_test.py  1.01s user 0.22s system 10% cpu 11.539 total
+exit 1
+
+# Restart at 5286181 (the single evaluation)
+START 2026-10-04T10:27:33.309461+00:00
+fetch {'n_requested': 108, 'n_fetched': 108}
+build {'n_window': 108, 'n_no_tape': 0, 'n_resolution_not_0_half_1': 0, 'n_empty_tape_or_lt20_inplay_prints': 20, 'n_match_prints_raised': 5, 'match_prints_raised_note': 'dropped as in the U1/U2 builders (e.g. >= 20 in-play prints but no jump detection, where src.tiers.match_prints indexes an empty onset array); see research/v2/external/DEVIATIONS.md D1', 'n_matches_with_prints': 83, 'n_print_rows': 10200, 'n_tapes_ge_10000_rows_possibly_truncated': 0, 'tape_rows_total': 14015, 'prints_sha256': 'c8ff1f56dc2806a5261c0de3af3eb7f760213c13dd1416baa8e29efd21fc09fb', 'prints_path': 'data/external_x1/x1_prints.parquet', 'kept_cond_sha256': '5337b0b1d8b20ee8b6c8aee9726245b9171df84afa535c90eecc26f25a48f84e'}
+prints 9,566,754
+labels done
+window trades attempted: 21
+END 2026-10-04T10:30:15.472878+00:00 wrote results/external_validation/results.json
+.venv/bin/python research/v2/external/x1_test.py  88.59s user 15.15s system 63% cpu 2:43.06 total
+exit 0
