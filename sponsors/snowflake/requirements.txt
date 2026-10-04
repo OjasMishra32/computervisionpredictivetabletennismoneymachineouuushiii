@@ -4,3 +4,5 @@ snowflake-connector-python[pandas]==4.8.0
 tabulate==0.10.0
 # offline check of the SQL without a Snowflake account (check.py --offline)
 duckdb==1.5.6
+# check_all.py: reads the paper PDF's text
+pymupdf==1.28.2
