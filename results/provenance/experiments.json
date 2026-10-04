@@ -564,7 +564,7 @@
    "decision": true,
    "family": "cv",
    "data_state": "burned",
-   "direction": "mixed: down (V1, V4, V5), up (V2), neutral (V6)",
+   "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
    "sub_decisions": [
     "V1",
     "V2",
@@ -573,7 +573,7 @@
     "V6"
    ],
    "summary": "Verifier fixes adopted after the verifiers had computed OOS P&L: V1 correct-call fill price from the live book, V2 wrong calls priced from the same book, V4 stale price +0.5c, V5 limit order with no fills at a moved price, V6 coverage ranked across both periods. V7-V9 and T2/T3 are reporting or stress only.",
-   "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed: three lowered P&L, one raised it, one was neutral.",
+   "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little.",
    "evidence": [
     "results/oos_peeks.log:13-14",
     "research/v2/tier0/DEVIATIONS.md:54-158",
@@ -591,7 +591,14 @@
     "R_v3_u2",
     "R_capacity"
    ],
-   "oos_informed": true
+   "oos_informed": true,
+   "sub_directions": {
+    "V1": "down, large (pre-registered fill price credited about 6c gross per stale share; live book 2.3-2.7c)",
+    "V2": "about neutral (one-change stress: OOS +0.59c vs headline +0.58c, $46/day both)",
+    "V4": "about neutral (one-change stress: OOS $47 vs $46/day)",
+    "V5": "down (one-change stress: decay-window fills give OOS $56 vs $46/day)",
+    "V6": "neutral (IS $308 -> $305/day at seed 0, inside Monte Carlo noise)"
+   }
   },
   {
    "id": "E22",
@@ -744,10 +751,11 @@
    "decision": false,
    "family": "maker",
    "data_state": "forward",
-   "summary": "Maker live paper-engine replays of recorded books, test runs and the pre-registered live session (B), stopped by team decision with 0 quotes and 0 fills; not used as evidence",
+   "summary": "Maker live paper-engine replays of recorded books, test runs and the pre-registered live session (B): the first session placed 0 quotes and 0 fills before it was stopped and restarted on fixed code; the restarted session was stopped by team decision at 02:18:17Z, before its pre-registered end. No result from it is used as evidence.",
    "evidence": [
     "results/oos_peeks.log:20-21",
-    "research/v2/maker/DEVIATIONS_LIVE.md:130-136"
+    "research/v2/maker/DEVIATIONS_LIVE.md:228-230",
+    "research/v2/maker/DEVIATIONS_LIVE.md:253-256"
    ],
    "oos_log_lines": [
     20,
@@ -2928,9 +2936,9 @@
     "family": "cv",
     "kind": "e",
     "kind_label": "defect fix after an OOS look",
-    "direction": "mixed: down (V1, V4, V5), up (V2), neutral (V6)",
+    "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
     "oos_selected": false,
-    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed: three lowered P&L, one raised it, one was neutral."
+    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
    },
    {
     "id": "E22",
@@ -3031,8 +3039,8 @@
    {
     "id": "E21",
     "family": "cv",
-    "direction": "mixed: down (V1, V4, V5), up (V2), neutral (V6)",
-    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed: three lowered P&L, one raised it, one was neutral."
+    "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
+    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
    },
    {
     "id": "E43",

@@ -131,6 +131,11 @@ The draft (59 events) was checked event by event against git, the read logs and 
 - **E45:** the earliest evidence of the 1 s base case is e1b5272 (21:27:27 UTC), not 913f5da.
 - **E53, E59:** reclassified from reproduction to diagnostic, because they add new statistics.
   E36 is split into E36 (reproduction) and E36b (selection check and fee stress).
+- **E21:** the draft's directions (V2 up, V4 down) are not supported by the one-change stresses in
+  the tier-0 RESULTS.md (a5769c7). Those stresses show V1 and V5 lowered P&L and V2, V4 and V6 changed
+  it little. The per-fix directions are in `sub_directions`.
+- **E28:** the 0-quote, 0-fill statement covers the first live session only. The restarted session was
+  stopped by team decision, and none of its output is used as evidence.
 - **E05:** moved to its own result, `R_tracking_relabel`. The paper's 11/11 (`R_tracking_test`)
   is the clean pre-specified evaluation.
 - Added `R_v2_copier` (the executable copier stress, E52). Added the table-tennis log mapping and
