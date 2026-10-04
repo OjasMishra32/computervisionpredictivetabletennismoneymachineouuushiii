@@ -53,3 +53,8 @@ window closed)". Do not present any live-session numbers.
 The blind forward test runs once at 11:30 UTC (HYPOTHESIS_V2.md A4). Keep ONE clean slot for it in the results/rigor
 table that fills automatically from results/v2/forward.json (and results/tier0_v3/forward*.json) at build time; until then
 it reads "blind forward test: runs 2026-10-04 11:30 UTC (pre-registered)". The live paper session stays out.
+
+## Addendum (2026-10-04T03:32:34Z): forward test not run (final; supersedes the reinstatement)
+HYPOTHESIS_V2.md A5: no forward slot. One line in the robustness/records part: "Blind forward test: pre-registered but
+not run within the hackathon window (HYPOTHESIS_V2.md A5)." Today's live-market evidence (latency measurement,
+end-to-end timing on live books, replays of 9 live-recorded matches) stays as reported.

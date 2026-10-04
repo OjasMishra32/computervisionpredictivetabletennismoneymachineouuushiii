@@ -109,3 +109,9 @@ Amendment A3 is withdrawn: the team reinstated the forward test before any forwa
 (scripts/forward_test.py, rules as in A1/A2) and the tier-0 v3 forward secondary (scripts/tier0_v3_forward.py,
 research/v2/tier0_v3/PREREG.md) run ONCE at or after 2026-10-04 11:30 UTC, as originally pre-registered, and their results
 are reported whatever they are. The live paper session stays stopped (DEVIATIONS_LIVE.md L15).
+
+## Amendment A5 (2026-10-04T03:32:34Z): forward test not run (final)
+Amendment A4 is withdrawn. The team decided not to run the forward test within the hackathon timing; no forward-window
+data was read for it (results/forward_peeks.log has no START line; results/v2/forward.json does not exist). The paper
+reports it as not run. Evidence from 2026-10-03's live markets that IS reported: the latency measurement (482 official
+points vs the live book), the end-to-end timing proof on live books, and the replays of 9 matches recorded live.
