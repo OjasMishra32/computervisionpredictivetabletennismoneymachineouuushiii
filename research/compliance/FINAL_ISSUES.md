@@ -1,0 +1,87 @@
+# Final issues for the main session (paper and video only)
+
+Written 2026-10-04 ~04:15 UTC by the docs/deck integration pass, against the paper at `e62957a`. Everything that could be fixed outside the paper
+(`docs/NOTE.pdf`, `docs/paper/**`) and the final video (`results/viz/courtside_60.mp4`) was fixed and committed; the
+items below need an edit to one of those two, which this pass may not make. Each item: file, location, old -> new.
+Numbers are the paper's (`results/paper/numbers.json`). `bash run.sh redteam` lists items V1-V3 as KNOWN.
+
+## Video (`results/viz/courtside_60.mp4`, built by `scripts/make_video_60.py`)
+
+**V1 (P0). The profit segment shows "$pendingk–$pendingk" (about 73-86 s).**
+- Cause: `scripts/make_video_60.py:1621-1628` and `:2726-2732` read `results/capacity/capacity.json`
+  `growth['lagcal|cov10|IS']` / `['lagcal|cov10|burned_OOS']` / `['prereg|cov10|…']`, which are null, so
+  `cap_lc_is`, `cap_lc_oos`, `cap_pr_is` and `cap_pr_oos` are None (manifest `values.cap_*`, `pending: true`).
+- Key the paper uses: `answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.capital_usd` = 73,288 and
+  `answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.capital_usd` = 40,245 (numbers.json `capcv.half.is`
+  $73,000, `capcv.half.oos` $40,000). Pre-registered: no capacity (Sharpe 2.7 / 0.8 at the smallest size).
+- On screen, profit rail (`make_video_60.py:3941-3943`):
+  old `"$pendingk–$pendingk"` / `"capital where Sharpe halves (post-hoc); $pendingk–$pendingk pre-registered"`
+  -> new `"$40k–$73k"` / `"capital where Sharpe halves (post hoc, held out – in sample); none pre-registered"`.
+- Also the stats-card variant at `make_video_60.py:1631-1636` (old `"pre-registered: $…k–$…k"` -> new
+  `"pre-registered: none"`; and old `"of capital, calibrated"` -> new `"of capital, post hoc"`).
+- Only this one segment needs re-rendering; the deck, README and Q&A (QA_PREP §7) give the paper's numbers meanwhile.
+
+**V2. The video never says the CV trade set is "selected on outcomes, not ex ante"** (redteam check 3, KNOWN).
+- Location: speed or profit segment (55-86 s), the label line.
+- old: `"simulated 1 s licensed-feed baseline"` -> new: `"simulated 1 s licensed-feed baseline · trades selected on
+  outcomes, not ex ante"`.
+
+**V3. The video does not show the per-point reading of the same clocks** (redteam check 5, KNOWN).
+- Paper: post hoc read per point loses −$17 a day at 1 s (numbers.json `cv.stc.oos.usd` / `pp.pre.oos.usd`).
+- Location: speed segment (55.4-63.4 s), under "every second costs money". Add: `"read per point: −$17 a day at 1 s"`.
+
+**V4. "3,410 variants counted"** (end of the test segment, pill at `make_video_60.py:3856`).
+- Paper: 4,219 variants in all; 3,386 trials in the deflated Sharpe; 3,410 = the DSR set plus the v2-safe grid
+  (`rigor.json::psr_dsr.N.all_plus_v2safe_grid`).
+- old `"3,410 variants counted"` -> new `"3,410 strategy variants (4,219 in all)"`. Reconciled meanwhile in the deck
+  (slide 8), README (Rigour row), Devpost and QA_PREP §7.
+
+**V5. "blind tests: 2 pass · 4 fail"** (pill at `make_video_60.py:3855`).
+- Paper: every blind test of a tradable book failed. The 2 passes are the table-tennis H3 call precision and v2 on
+  unseen markets in the IS period, neither a tradable book.
+- old `"blind tests: 2 pass · 4 fail"` -> new `"blind tests of tradable books: 0 pass · 4 fail"`. Reconciled meanwhile
+  in README, Devpost, deck notes (slide 8) and QA_PREP §7.
+
+**V6. "6.9 ms on an NVIDIA L4"** (pipeline segment, `make_video_60.py:1164`, `:3632`).
+- The paper, deck and README use 4.6 ms = per-frame p50 to call-ready; 6.9 ms = p50 per emitted call, same run
+  (`results/engine/online_vs_offline.json`, `stream.after_startup`).
+- old `"frame to call, p50 (NVIDIA L4)"` -> new `"per emitted call, p50 (NVIDIA L4)"`. Labelled meanwhile everywhere else.
+
+**V7. Narration at 5.2 s: "Our computer vision calls the point before the ball lands"** (strategy segment).
+- True for table tennis (real footage); tennis is simulated. If re-voiced: `"…calls the point before the ball lands
+  (in table tennis today)…"`. The deck's slide 1 now says "table-tennis points"; slide 2 carries the label.
+
+**V8. End card** (`make_video_60.py:1859` END_LINE) credits OpenTTGames, the tennis clip and the AI voice; it does
+not credit the ElevenLabs music bed. old `"Voice: AI (ElevenLabs)"` -> new `"Voice and music: AI (ElevenLabs)"`.
+README, Devpost and the deck now credit both.
+
+## Paper (`docs/paper/note.tex.j2` -> `note.tex`, `docs/NOTE.pdf`)
+
+**P1. Disclosure paragraph omits pre-existing evaluation weights and the video's third-party media.**
+- Location: `note.tex` "Disclosure." paragraph (end of the main text, ~line 284-287).
+- old: `"Open-source parts we did not build: the OpenTTGames dataset and the BlurBall and WASB model weights, cited above."`
+- new: `"Open-source parts we did not build: the OpenTTGames dataset, the BlurBall and WASB model weights, and the
+  TrackNet weights and TennisProject/TennisCourtDetector code (used unmodified, for evaluation only), cited above.
+  The video uses a licensed Pexels stock rally and an AI voice (ElevenLabs)."` (the last sentence only if space allows;
+  README and Devpost carry it).
+
+**P2. Page budget (resolved at `e62957a`; keep it so).** During the final builds `results/paper/checks.json` and
+`docs/paper/note.aux` flipped between 5 and 6 main pages. At `e62957a`: `main_pages` = 5, 13 pages in all, no `fail`,
+`\label{lastmain}` on p. 5. Any later paper edit must keep `checks.json::main_pages` = 5 (`bash run.sh redteam`
+check 7 reads it; COMPLIANCE.md row 2 takes its status from it at build time).
+
+**P3. Peek-log count.** The paper says 77 reads of held-out data. `results/oos_peeks.log` has 77 lines in the working
+tree but 76 at HEAD: line 77 (`2026-10-04T02:02:51Z maker v1 live paper session (B) START …`) is uncommitted. Commit
+it (`git add results/oos_peeks.log`), or a clean clone counts 76 against the paper's 77.
+
+**P4. The forest plot is no longer in the paper** (no `\label{fig:forest}`; `figA4_forest` is not included). The deck's
+slide 8 still shows `results/paper/v2/figA4_forest.png` and now cites it as a repo figure ("the paper lists the same
+tests in Table A1"); if the figure returns with its label, the deck cites the paper figure automatically on rebuild.
+
+## After the paper freezes
+
+Run, in order: `python scripts/build_paper.py` (if not already), `bash run.sh docs` (README, Devpost text, compliance
+map and `results/paper/labels.json` from the frozen labels), `.venv/bin/python docs/deck/build_deck.py`,
+`.venv/bin/python docs/deck/render_thumbs.py`, `bash run.sh redteam`; then commit `README.md docs/DEVPOST.md
+docs/COMPLIANCE.md results/paper/labels.json docs/deck/ results/redteam/acceptance.json`. `bash run.sh docs --check`
+must exit 0 (it also fails if `results/paper/labels.json` is stale).

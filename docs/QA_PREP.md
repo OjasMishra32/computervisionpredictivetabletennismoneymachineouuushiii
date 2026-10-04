@@ -13,6 +13,11 @@ check, plus the organizer's two questions to us (Dom: latency under 3 s, and cap
 questions (Q26–Q28) with the new numbers. Sources: `results/redteam/` (`bash run.sh redteam`), `results/e2e/summary.json`.
 The deck's backup slides Q11–Q14 carry Q4, Q5/Q6, Q1 and Q2/Q12.
 
+**Final update, about 04:00 UTC Oct 4:** the forward test was not run (`HYPOTHESIS_V2.md` A5), the live paper session
+was stopped and is never quoted (DEVIATIONS_LIVE.md L15), and the paper was renumbered (Table 1 = v2, Table 2 = the
+CV feed-delay table, Table A1 = everything we tested, Appendix D = records). §7 has the lines that reconcile the
+video's on-screen numbers with the paper. Q15, Q20, Q23 and Q25 and the §4 table are updated to match.
+
 ---
 
 ## 0. If you only remember one thing (60 seconds, say it like this)
@@ -264,7 +269,7 @@ Evidence: `results/financials/financials.json::cost_assumptions`, `strategies.v2
 We assumed one and found one: onset hindsight (D9). Fixing it cut IS Sharpe from 16.8 to 14.5. What remains is
 about 270 small, near-independent binary bets a day with net exposure capped at 100 shares per match, so a high
 Sharpe goes with tiny dollars ($196/day on $28k). It falls fast with costs: 9.8 at +½ tick, 3.0 with all costs
-doubled, 6.7 OOS. The deflated Sharpe out of sample is 0.075 at N = 3,410, so 40 days cannot rule out luck.
+doubled, 6.7 OOS. The deflated Sharpe out of sample is 0.075 at N = 3,386 trials, so 40 days cannot rule out luck.
 Evidence: `results/v2/note_metrics.json`; `results/rigor/rigor.json`; `research/compliance/JUDGE.md` §5 Q3.
 
 **Q14. "v2 fills at the fast tier's own print. Isn't that lookahead, and someone else's P&L?"**
@@ -277,8 +282,8 @@ Evidence: `research/compliance/JUDGE.md` §5 Q1; `results/alpha/alpha.json::A_so
 **Q15. "You built v2 after v1 lost $36k out of sample. Isn't v2 tuned on OOS?"**
 v1 opened the OOS once, blind, and its −$36,056 is reported. v2's rules were set on in-sample data only, but its
 motivation came from how v1 failed, so we call that window burned and label every v2 number on it non-blind.
-v2's clean tests are the blind U2 test (OOS +1.22¢ [−0.19, 2.65], a fail by our rule) and the forward window, run
-once on Oct 4 (Q23).
+v2's clean test is the blind U2 test (OOS +1.22¢ [−0.19, 2.65], a fail by our rule). The forward test was
+pre-registered but not run within the hackathon window (Q23).
 Evidence: `HYPOTHESIS_V2.md`; `results/expand/results.json`; `results/summary.json::oos.h6_shadow`.
 
 **Q16. "What happens when costs double? What is your cost in bps?"**
@@ -289,7 +294,8 @@ and venue rules are the first risk in §6.
 Evidence: `results/v2/cost_stress.json`; `results/v2/note_metrics.json`.
 
 **Q17. "With thousands of variants, isn't this the luckiest draw? Are your sweep cells counted?"**
-Every strategy configuration is counted: 3,410 in the deflated Sharpe, which is 0.997 IS and 0.075 OOS, so the
+Every strategy configuration is counted: 4,219 variants in all, 3,410 strategy variants (the video's count) and
+3,386 trials in the deflated Sharpe, which is 0.997 IS and 0.075 OOS, so the
 OOS cannot rule out luck and we say so. The 18,880 sweep simulations are sensitivities that chose no rule, but
 showing the 3.14 s reading as a headline was a choice made after looking, so it is listed as one more post hoc
 trial. PBO is 0 % on the 55-policy sizing grid and 15 % on the v2-safe grid.
@@ -314,11 +320,12 @@ drawdown.
 Evidence: `docs/RISK.md`; `engine/risk/`; `research/v2/tier0/RESULTS.md` §3; `alpha.json::headline.top5_wallet_share_of_pnl`.
 
 **Q20. "What failed?"**
-Every blind test of a tradable book failed or is pending, while the speed mechanism held in every test. H1 (follow
+Every blind test of a tradable book failed, while the speed mechanism held in every test. H1 (follow
 the jump) lost. v1 lost $36k OOS. v2 on unseen markets failed OOS (CI spans zero). Maker v1 failed blind
 (−$379). Tier-0 v3 failed all three blind sets. Table tennis is untestable: no wallet qualifies, 27 evaluable
-matches, a median spread of 94¢. The replay loses. All of these are in Table 3, and we count them as evidence.
-Evidence: `docs/paper/PLAN.md` §7 Table 3 sources; `results/tt/results.json`; `results/maker/oos.json`.
+matches, a median spread of 94¢. The replay loses. All of these are in the paper's Table A1, and we count them as
+evidence.
+Evidence: paper Table A1; `results/tt/results.json`; `results/maker/oos.json`.
 
 **Q21. "Is Polymarket allowed here? Isn't this courtsiding?"**
 The track allows "any liquid, publicly traded market". Polymarket has a public order book, public data with no
@@ -336,13 +343,12 @@ blind U2 test on 11,307 smaller markets, where the fast-tier gap holds and v2's 
 Evidence: `research/compliance/JUDGE.md` §5 Q8; `results/expand/results.json`.
 
 **Q23. "Where is the forward test, and what did the live session do?"**
-The forward window opened Oct 3 14:00 UTC and runs once, blind, at 11:30 UTC on Oct 4 (`HYPOTHESIS_V2.md`;
-`scripts/forward_test.py` is sha-pinned). The live paper session (maker v1 plus a taker control, no real money)
-quotes until 11:30 UTC.
-→ **[if `results/v2/forward.json` exists]** "Forward: A ⟨…⟩¢ [lo, hi] PASS/FAIL, B ⟨…⟩¢ [lo, hi] PASS/FAIL, n = ⟨…⟩."
-**[else]** "It runs once at 11:30 UTC; whatever it shows is reported."
-→ live: **[if `results/live/FINAL`]** quote `summary.json::books.B1` **[else]** "quoting stopped 11:30 UTC, ⟨fills⟩ fills,
-settlement pending". At 22:33 UTC on Oct 3 it was still in warm-up with 0 fills.
+"Blind forward test: pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)." It was frozen
+before the window opened (A1, A2); the team decided not to run it in the hackathon timing, and no forward-window data
+was read for it (`results/forward_peeks.log` has no START line). Running it, whatever it says, is the first next step.
+The live paper session was stopped by a team decision and is not used (`research/v2/maker/DEVIATIONS_LIVE.md` L15):
+quote no number from it. What we do report from Oct 3's live markets: the latency measurement (482 official points
+against the live book), the end-to-end timing proof on live books, and the replays of 9 matches recorded live.
 
 **Q24. "Can we run your code and get your numbers?"**
 Yes: `bash run.sh setup`, `bash run.sh data`, `bash run.sh reproduce` regenerates the tables, and `bash run.sh replay`
@@ -352,8 +358,9 @@ distributed yet, so CV calls cannot be regenerated from a clone (CLEAN_CLONE N6)
 Evidence: `research/compliance/CLEAN_CLONE.md`; `results/viz/v2_assets/manifest.json`; `docs/deck/courtside_manifest.json`.
 
 **Q25. "How many times did you look at the held-out data?"**
-Every look is a line in `results/oos_peeks.log`: 68 lines as of 22:30 UTC Oct 3, classed in the paper's Table A6
-as blind first runs, non-blind burned reads, descriptive reads, audits and replays. Rules changed after a look
+Every look is a line in `results/oos_peeks.log`: 77 lines at the paper's build, classed in the paper's Appendix D
+(and listed in `results/paper/peeks.json`) as blind first runs, non-blind burned reads, descriptive reads, audits and
+replays. Rules changed after a look
 twice: v2 itself and the D9 fix. We also flag one audit line that was logged after its run (line 63).
 Evidence: `results/oos_peeks.log`; `DEVIATIONS.md`; `docs/paper/PLAN.md` §12.13.
 
@@ -367,10 +374,10 @@ Evidence: `results/oos_peeks.log`; `DEVIATIONS.md`; `docs/paper/PLAN.md` §12.13
 | Capacity | `results/capacity/capacity.json` (present, verified) | Q2 bracket above: "CV at 1 s (post hoc lag): $28–40k held out before the Sharpe halves; pre-registered: none; v2 $23–34k." | Q2 as written |
 | Ex-ante replay | INTEGRATION_TODO C1 output (replay workflow; an exploratory selective variant was logged 23:01 UTC) | Q4 extra line, labelled post hoc unless run under a PROTOCOL amendment | Q4 as written |
 | Causal-CV cell | `results/redteam/causal_cv.json` (present) | Q10 line above | — |
-| v2-safe forward | `results/v2/forward_safe.json` (`scripts/forward_test_safe.py`, run once after the pinned runs) | "v2-safe, reported not tested: ⟨c⟩¢ [lo, hi] full window; blind sub-window from 18:00 UTC ⟨c⟩¢" | "runs after the pinned forward test" |
-| Forward test | `results/v2/forward.json` | Q23 filled | "runs once 11:30 UTC" |
-| Tier-0 v3 forward | `results/tier0_v3/forward/results.json` | "frozen v3 forward: ⟨c⟩¢ [lo, hi] over ⟨n⟩ matches" | "pending" |
-| Live session | `results/live/FINAL` | B1 fills and P&L | "settlement pending" |
+| v2-safe forward | `results/v2/forward_safe.json` | — | not run (`HYPOTHESIS_V2.md` A5) |
+| Forward test | `results/v2/forward.json` | — | "pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)" (Q23) |
+| Tier-0 v3 forward | `results/tier0_v3/forward/results.json` | — | not run (A5) |
+| Live session | — | — | stopped by a team decision and not used (DEVIATIONS_LIVE.md L15); never quote a number from it |
 
 ---
 
@@ -418,3 +425,28 @@ a whole UTC second, against 10 % if timing were uniform. That looks like delayed
 Our simulation treats the hold as a continuous 1.000 s. If release is batched with time priority the race is unchanged;
 if priority inside a batch is not by send time, the model is conservative for us. We have not measured which.
 Evidence: `results/redteam/stamp_lag.json::whole_second_clock`; `results/tier0/latency_sweep.json::timing_diagnostics`.
+
+---
+
+## 7. The video vs the paper: lines that reconcile them (final video, not re-rendered)
+
+The video is final; where it shows a different statistic from the paper, say both, in one breath.
+
+* **Variants.** "4,219 variants in all; 3,410 strategy variants, which is the video's count; 3,386 of them enter the
+  deflated Sharpe." (The 3,410 adds the 24-cell v2-safe grid to the 3,386; the 4,219 adds sensitivities and other
+  families: paper Appendix D, `results/paper/variants.json`, `results/rigor/rigor.json::psr_dsr.N`.)
+* **Blind tests.** The video's "blind tests: 2 pass · 4 fail" counts every blind test, including two that are not a
+  book we could trade: the table-tennis H3 call precision (passes; recall is low) and v2 on unseen markets in the IS
+  period. "Every blind test of a tradable book failed" is the paper's statement and ours.
+* **GPU latency.** 4.6 ms is the per-frame p50 to call-ready (paper, deck, README); the video's "6.9 ms on an NVIDIA
+  L4" is the p50 per emitted call. Same run (`results/engine/online_vs_offline.json`, `stream.after_startup`).
+* **Drawdown.** The paper's v2 max drawdown is on daily P&L: −2.0% IS, −2.1% OOS (−$469 OOS). The money counter
+  (deck slide 7, `bash run.sh money`) measures it trade by trade, which is deeper: −$1,067.11 IS, −$875.62 OOS.
+* **Capacity in the video.** The profit scene's capacity line renders as "$pendingk–$pendingk" (a rendering bug: the
+  value was read from a null key). The paper's numbers: post hoc, the CV book's Sharpe halves at $40,000 held out and
+  $73,000 in sample; pre-registered, it has no capacity. If asked, say that and point to paper §7.
+* **Footage and voice.** Table-tennis clips: OpenTTGames (CC BY-NC-SA 4.0). The real tennis rally: "Tennis Players
+  Playing Match" by Gelato Prod, Pexels (Pexels License), with only our tracker's ball trail, no calls, not a match we
+  traded. Narration and music: AI-generated with ElevenLabs.
+* **"Calls the point before the ball lands."** True for table tennis on real held-out footage. For tennis it is
+  simulated physics; the trading P&L is a simulation at an assumed feed latency.

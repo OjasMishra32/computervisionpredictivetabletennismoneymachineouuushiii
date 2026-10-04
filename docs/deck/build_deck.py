@@ -20,8 +20,11 @@ Where the numbers come from
 * results/viz/v60_assets/manifest.json (the final video's own value table) for the few numbers only the video shows
   (the 325 ms cold-open call, the reprice band, the stale depth), so the deck and the video say the same thing.
 * scripts/money_counter.py --speed 50, run non-interactively; its SCORECARD is parsed and must agree with the paper.
+* Paper locations (Table 1, Fig. A1, Appendix D) from the paper's label map at build time (scripts/paper_refs.py:
+  docs/paper/note.aux, or the committed results/paper/labels.json on a clone), never typed by hand.
 * The ONE forward-test slot (slide 8) fills from results/v2/forward.json (and results/tier0_v3/forward*/results.json)
-  when those exist; otherwise it reads "blind forward test: runs 2026-10-04 11:30 UTC (pre-registered)".
+  when those exist; otherwise it follows the last HYPOTHESIS_V2.md amendment on the forward test. A5 (final): "Blind
+  forward test: pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)".
 
 Honesty rules the build enforces (run_checks)
 ---------------------------------------------
@@ -101,6 +104,38 @@ def _json(rel):
 NUM = _json(F_NUM)["numbers"]
 VID = _json(F_VID)["values"]
 VID_FINAL = _json(F_VID)["final"]
+VID_LABELS = _json(F_VID).get("labels", {})
+sys.path.insert(0, str(ROOT))
+from scripts.paper_refs import forward_amendment, load as load_refs  # noqa: E402
+REFS = load_refs()
+F_REFS = REFS.get("from", "docs/paper/note.aux")
+F_TENNIS_LIC = "results/viz/v60_assets/tennis_real/LICENSE.md"
+
+
+def PR(label: str) -> str:
+    """The paper's number for a LaTeX label (Table 'A1', Fig. '2', Section '7'), read at build time."""
+    if label not in REFS["labels"]:
+        raise Missing(f"the paper has no label '{label}' ({F_REFS}): rebuild the paper or fix the deck's label")
+    v = REFS["labels"][label][0]
+    MANIFEST.append({"slide": _SLIDE[0], "shown": v, "key": f"label:{label}", "from": F_REFS, "source": F_REFS})
+    return v
+
+
+def APPX(title: str) -> str:
+    """The letter of the paper's appendix with this title (e.g. 'Records' -> 'D')."""
+    if title not in REFS["appendix"]:
+        raise Missing(f"the paper has no appendix titled '{title}' ({F_REFS})")
+    v = REFS["appendix"][title]
+    MANIFEST.append({"slide": _SLIDE[0], "shown": v, "key": f"appendix:{title}", "from": F_REFS, "source": F_REFS})
+    return v
+
+
+def tennis_credit() -> str:
+    t = (ROOT / F_TENNIS_LIC).read_text() if (ROOT / F_TENNIS_LIC).exists() else ""
+    m = re.search(r'Tennis footage: "([^"]+)" by ([^,]+), Pexels \(Pexels License\)', t)
+    if not m:
+        raise Missing(f"{F_TENNIS_LIC}: no attribution line")
+    return rec(f"tennis rally: “{m.group(1)}” by {m.group(2)}, Pexels (Pexels License)", F_TENNIS_LIC)
 
 
 def N(key: str) -> str:
@@ -170,13 +205,19 @@ def forward_slot() -> tuple[str, str]:
                 pass
             break
         return "blind forward test (pre-registered, run once): " + (" · ".join(parts) or f"see {F_FWD}"), src
-    cell = NUM.get("fwd.cell", {}).get("value", "")
-    if not cell.startswith("runs"):
-        a4 = re.search(r"^## Amendment A4 \(([^)]+)\): forward test reinstated", (ROOT / F_HYP2).read_text(), re.M)
-        if not a4:
-            raise Missing("no forward.json, no fwd.cell and no HYPOTHESIS_V2 A4: cannot word the forward slot")
+    am = forward_amendment((ROOT / F_HYP2).read_text())
+    if am is None:
+        raise Missing("no forward.json and no HYPOTHESIS_V2 amendment on the forward test: cannot word the forward slot")
+    a, _, what = am
+    if what.startswith("reinstated"):
         cell = "runs 2026-10-04 11:30 UTC (pre-registered)"
-    return f"blind forward test: {cell}", "HYPOTHESIS_V2.md A4 ; results/paper/numbers.json::fwd.cell (results/v2/forward.json absent)"
+    else:
+        cell = f"pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md {a})"
+    return f"blind forward test: {cell}", f"HYPOTHESIS_V2.md {a} (forward test {what}); results/v2/forward.json absent"
+
+
+def forward_ran() -> bool:
+    return (ROOT / F_FWD).exists()
 
 
 # ------------------------------------------------------------------------------------------------ money counter
@@ -545,9 +586,9 @@ def s01_title(prs):
     names = team()
     rec(", ".join(names), F_TEAM)
     set_title(s, "COURTSIDE", True, y=1.9, size=80, h=1.4)
-    text(s, M, 3.35, 10.5, 1.1, [
-        P(R("Computer vision calls the tennis point before the ball lands.", 26, WHITE)),
-        P(R("We measured what that speed is worth on Polymarket.", 26, GREY_D))], name="Tagline")
+    text(s, M, 3.35, CW, 1.1, [
+        P(R("Computer vision calls table-tennis points before the ball lands.", 24, WHITE)),
+        P(R("We priced that speed for Polymarket tennis, in simulation.", 24, GREY_D))], name="Tagline")
     hline(s, M, 4.75, 1.2, ORANGE, 2.5, name="Accent rule")
     text(s, M, 4.95, 11, 0.4, P(R("   ·   ".join(names), 17, WHITE, bold=True)), name="Team")
     text(s, M, 5.38, 11, 0.35, P(R("University of Florida  ·  Gator Quant Hacks 2026  ·  Systematic Trading", 14, GREY_D)),
@@ -555,8 +596,8 @@ def s01_title(prs):
     text(s, M, 6.62, CW, 0.3, P(R("Paper trading only. No real money. CV strategy results are simulated at an assumed feed "
                                   "latency (licensed feed not purchased).", 10.5, GREY_D)), name="Disclosure")
     SCRIPTS[1] = ("We're COURTSIDE, four of us from the University of Florida. Polymarket reprices live tennis about a second "
-                  "after every point. We built computer vision that knows the point is over before the ball lands, and we "
-                  "priced what that speed is worth.")
+                  "after every point. Our computer vision calls table-tennis points before the ball lands; in simulation, we "
+                  "priced that speed for tennis.")
     notes(s, window(0), SCRIPTS[1], "Click: slide 2 (the strategy in one sentence).")
     return s
 
@@ -569,7 +610,7 @@ def race_axis_x(t, x0, w, lo=0.02, hi=60.0):
 def s02_strategy(prs):
     _SLIDE[0] = "2 strategy + race"
     s = new_slide(prs, dark=True)
-    chrome(s, 2, "The strategy", True, label="measured on public Polymarket books; stamp lag after the point not measured")
+    chrome(s, 2, "The strategy", True, label="public Polymarket books · stamp lag not measured · CV calls: table tennis (tennis simulated)")
     set_title(s, "Whoever learns the point first takes the stale price", True)
     text(s, M, 1.62, CW, 0.95, P(
         R("Our computer vision calls the point ", 24, WHITE), R("before the ball lands", 24, ORANGE, bold=True),
@@ -643,9 +684,9 @@ def s03_edge(prs):
     s = new_slide(prs, dark=False)
     chrome(s, 3, "The edge exists", False, label="Polymarket public tapes · wallets' own fills, not our trades")
     set_title(s, "The edge exists, and it is speed", False)
-    fit_picture(s, ROOT / "results/paper/v2/fig2_edge.png", M - 0.05, 1.65, 8.45, 4.4, name="Fig: edge (paper Fig. 2)", align="l")
+    fit_picture(s, ROOT / "results/paper/v2/fig2_edge.png", M - 0.05, 1.65, 8.45, 4.4, name=f"Fig: edge (paper Fig. {PR('fig:edge')})", align="l")
     text(s, M, 6.15, 8.3, 0.7, P(R("Net 30 s markout after taker fees, ¢ per share; fast tier = walk-forward wallets trading "
-                                   "within 3 s of a score move. Right: v2 at the fast tier's own fills. Source: paper Fig. 2.",
+                                   f"within 3 s of a score move. Right: v2 at the fast tier's own fills. Source: paper Fig. {PR('fig:edge')}.",
                                    10, GREY_L), line=1.1), name="Fig caption")
     xr, wr = M + 8.75, CW - 8.75
     mi, mo = N("ft.months.is"), N("ft.months.oos")
@@ -670,7 +711,7 @@ def s04_models(prs):
     _SLIDE[0] = "4 CV models"
     s = new_slide(prs, dark=True)
     chrome(s, 4, "The CV models", True, label="OpenTTGames held-out games (CC BY-NC-SA 4.0) · tennis: simulated physics")
-    set_title(s, "It calls the point before the ball lands", True)
+    set_title(s, "It calls table-tennis points before the ball lands", True)
     clip, poster, dur, src = cv_clip()
     rec(f"{dur:.1f} s clip", src)
     vw = 7.35
@@ -680,8 +721,9 @@ def s04_models(prs):
     pic.name = "Video: CV models (from the final video, muted, loops)"
     autoplay_video(s, pic, int(round(dur * 1000)), loop=True, mute=True)
     text(s, M, 1.75 + vh + 0.08, vw, 0.5, P(R(f"From our 90 s video (segment {dur:.0f} s, muted, loops): engine calls on real "
-                                              "held-out table tennis, our tracker on a licensed tennis rally, the spin model in "
-                                              "simulated physics.", 10, GREY_D), line=1.1), name="Video caption")
+                                              "held-out table tennis, our tracker on a licensed tennis rally (no calls), the spin "
+                                              f"model in simulated physics. {tennis_credit()[0].upper() + tennis_credit()[1:]}.",
+                                              9.5, GREY_D), line=1.05), name="Video caption")
     xr, wr = M + vw + 0.4, CW - vw - 0.4
     tp, nm = N("cv.eng.tp"), N("cv.eng.nmiss")
     blocks = [
@@ -693,7 +735,8 @@ def s04_models(prs):
          f"OUT precision {float(N('spin.out.prec200')):.0%}, recall {float(N('spin.out.rec200')):.0%}"),
         ("GPU engine · NVIDIA L4",
          f"{N('cv.eng.p50')} ms", f"per frame p50 ({N('cv.eng.p99')} ms p99) at {N('cv.eng.fps')} fps; "
-         f"{N('cv.eng.dropped')} of {N('cv.eng.frames')} frames dropped"),
+         f"{N('cv.eng.dropped')} of {N('cv.eng.frames')} frames dropped; the video's {VV('pf_lat')} ms is the p50 per "
+         f"emitted call"),
     ]
     y = 1.72
     for i, (head, big, cap) in enumerate(blocks):
@@ -718,18 +761,19 @@ def s05_pipeline(prs):
     chrome(s, 5, "Frame to trade", False, label="paper: order built, never signed or sent · 1 s feed simulated")
     total = N("e2e.total")
     set_title(s, f"Frame to executable order in {float(total.replace(',', '')) / 1000:.1f} s, inside the 3 s bar", False)
-    fit_picture(s, ROOT / "results/paper/v2/fig4_frame_to_trade.png", M - 0.05, 1.7, 8.6, 3.7, name="Fig: frame to trade (paper Fig. 4)",
+    fit_picture(s, ROOT / "results/paper/v2/fig4_frame_to_trade.png", M - 0.05, 1.7, 8.6, 3.7, name=f"Fig: frame to trade (paper Fig. {PR('fig:f2t')})",
                 align="l")
     text(s, M, 5.5, 8.4, 0.6, P(R(f"Stage means of {N('e2e.n')} traces: our footage over WebRTC into the CV engine on a laptop, "
                                   "a simulated 1 s licensed feed, the measured network and the venue's 1 s hold. Shaded: when "
-                                  "the book reprices. Source: paper Fig. 4, results/e2e/summary.json.", 10, GREY_L), line=1.1),
+                                  f"the book reprices. Source: paper Fig. {PR('fig:f2t')}, results/e2e/summary.json.", 10, GREY_L), line=1.1),
          name="Fig caption")
     xr, wr = M + 8.9, CW - 8.9
     stat(s, xr, 1.65, wr, f"{N('e2e.ours')} ms", "our part, frame to order ready (p50)", False, color=ORANGE, big_size=38,
          name="Ours")
     stat(s, xr, 2.95, wr, f"{total} ms", f"total with a 1 s feed, {N('e2e.net')} ms network and the 1 s venue hold; "
          f"{N('e2e.margin')} ms to spare, every trace under the bar", False, big_size=30, cap_h=0.85, name="Total")
-    stat(s, xr, 4.45, wr, f"{N('cv.eng.p50')} ms", f"vision on an L4 GPU (WebRTC frame to call {N('cv.webrtc')})",
+    stat(s, xr, 4.45, wr, f"{N('cv.eng.p50')} ms", f"vision per frame on an L4 GPU, p50 ({VV('pf_lat')} ms per emitted "
+         f"call; WebRTC frame to call {N('cv.webrtc')})",
          False, big_size=30, cap_h=0.7, name="GPU")
     box(s, M, 6.18, CW, 0.66, fill=CARD_L, radius=0.08, name="Bar card")
     text(s, M + 0.25, 6.18, CW - 0.5, 0.66, P(
@@ -751,10 +795,11 @@ def s06_speed(prs):
     chrome(s, 6, "What speed is worth", False,
            label="simulated: assumed feed latency (licensed feed not purchased); parameters measured")
     set_title(s, "Every second of feed delay costs the edge", False)
-    fit_picture(s, ROOT / "results/paper/v2/fig3_speed_value.png", M - 0.05, 1.65, 5.95, 2.75, name="Fig: speed value (paper Fig. 3)",
+    fit_picture(s, ROOT / "results/paper/v2/fig3_speed_value.png", M - 0.05, 1.65, 5.95, 2.75, name=f"Fig: speed value (paper Fig. {PR('fig:speed')})",
                 align="l")
     text(s, M, 4.45, 5.8, 0.6, P(R("Net $ per day against the assumed feed delay; solid IS, dashed held out. Source: paper "
-                                    "Fig. 3, results/tier0/latency_sweep.json.", 10, GREY_L), line=1.1), name="Fig caption")
+                                    f"Fig. {PR('fig:speed')}, results/tier0/latency_sweep.json.", 10, GREY_L), line=1.1),
+         name="Fig caption")
     # scenario table: pre-registered first, then post hoc
     xt = M + 6.1
     hdr_pre = f"Pre-registered, L = {N('cv.pre.lag')} s"
@@ -782,7 +827,7 @@ def s06_speed(prs):
     rows.append([[P(R("Read per point, 1 s", 13, INK))],
                  [P(R(f"{N('pp.pre.is.usd')} · {N('pp.pre.oos.usd')}", 13, INK), align="r")],
                  [P(R(f"{N('pp.cal.is.usd')} · {N('pp.cal.oos.usd')}", 13, INK), align="r")]])
-    table(s, xt, 1.62, [1.95, 1.95, 1.93], [0.55, 0.56, 0.56, 0.56, 0.4, 0.4], rows, "Latency scenarios (paper Table 1B)")
+    table(s, xt, 1.62, [1.95, 1.95, 1.93], [0.55, 0.56, 0.56, 0.56, 0.4, 0.4], rows, f"Latency scenarios (paper Table {PR('tab:lat')})")
     text(s, xt, 4.7, CW - 6.1, 0.4, P(R("$/day held out (OOS) is a burned, non-blind window; 20 seeds a cell.", 10, GREY_L)),
          name="Table note")
     # the three takeaways
@@ -860,10 +905,11 @@ def s07_backtest(prs, mc):
             P(R(f"win {r['win']}% · days up {r['pdays']}% · Sharpe {r['sharpe']} · max DD {r['mdd']}", 10, WHITE, font=MONO))],
              name=f"Scorecard {k}: details")
         y += 1.62
-    text(s, xr + 0.3, 5.78, wr - 0.6, 0.48, P(R(
-        f"Paper money, every v2 fill replayed. Its Sharpe counts trading days ({mc['rows']['is']['days']} / "
-        f"{mc['rows']['oos']['days']}); the paper zero-fills calendar days ({N('v2.is.days')} / {N('v2.oos.days')}): "
-        f"{N('v2.is.sr')} / {N('v2.oos.sr')}.", 9.5, GREY_D), line=1.1),
+    text(s, xr + 0.3, 5.74, wr - 0.6, 0.56, P(R(
+        f"Paper money, every v2 fill replayed: Sharpe over trading days ({mc['rows']['is']['days']} / "
+        f"{mc['rows']['oos']['days']}), max DD trade by trade. The paper uses calendar days ({N('v2.is.days')} / "
+        f"{N('v2.oos.days')}) and daily P&L: Sharpe {N('v2.is.sr')} / {N('v2.oos.sr')}, max DD {N('v2.is.dd')} / "
+        f"{N('v2.oos.dd')}.", 9, GREY_D), line=1.05),
          name="Scorecard note")
     text(s, xr, 6.42, wr, 0.4, P(R(f"Fees ×2 held out: {N('v2.oos.fx2.c')}¢ a share; the edge does not survive doubled costs.",
                                    10.5, WHITE)), name="Cost note")
@@ -881,9 +927,14 @@ def s08_robust(prs, fwd_text, fwd_src):
     s = new_slide(prs, dark=False)
     chrome(s, 8, "Robustness · what we tested", False, label="IS = in sample · OOS = held out · net ¢ per share, 95% CI")
     set_title(s, "We tried to break it: only v2 clears zero", False)
-    fit_picture(s, ROOT / "results/paper/v2/figA4_forest.png", M - 0.05, 1.6, 5.95, 4.65, name="Fig: every test (paper Fig. A4)",
+    # the forest plot is in the paper only while it carries \label{fig:forest}; otherwise it is cited as a repo figure
+    forest = (f"paper Fig. {PR('fig:forest')}" if "fig:forest" in REFS["labels"] else
+              rec("results/paper/v2/figA4_forest.png", "results/paper/v2/figA4_forest.png") +
+              f" (repo figure; the paper lists the same tests in Table {PR('tab:A-all')})")
+    fit_picture(s, ROOT / "results/paper/v2/figA4_forest.png", M - 0.05, 1.6, 5.95, 4.65, name=f"Fig: every test ({forest})",
                 align="l")
-    text(s, M, 6.38, 5.8, 0.5, P(R("Every test on one axis; hollow = a held-out test. Source: paper Fig. A4.", 10, GREY_L)),
+    text(s, M, 6.38, 5.8, 0.5, P(R(f"Every test on one axis; hollow = a held-out test. Source: {forest}.",
+                                   10, GREY_L)),
          name="Fig caption")
     xt = M + 6.1
     rows = [["Test", "IS", "OOS / blind", "Verdict"],
@@ -894,26 +945,30 @@ def s08_robust(prs, fwd_text, fwd_src):
             ["CV v3 rule, unseen markets", N("t3.is.c"), N("t3.oos.c"), "fail (blind)"],
             ["CV replay, 9 real books, 1 s", "", N("rp.v1l2.c"), "loses"],
             ["v2 after fixed costs, $/day", N("fin.v2.is.net_central"), N("fin.v2.oos.net_central"), "fail OOS"],
-            ["PBO · bootstrap P(SR ≤ 0)", N("rig.pbo.lowloss"), N("rig.boot.p"), "pass"]]
-    table(s, xt, 1.62, [2.4, 1.15, 1.25, 1.03], [0.36] + [0.4] * (len(rows) - 1), rows, "Robustness (paper Table 2)",
-          size=11, header_size=10)
+            ["PBO · bootstrap P(SR ≤ 0) · deflated Sharpe OOS", f"{N('rig.pbo.lowloss')} · {N('rig.boot.p')}",
+             N("v2.oos.dsr"), "luck not ruled out OOS"]]
+    table(s, xt, 1.62, [2.4, 1.15, 1.25, 1.03], [0.36] + [0.38] * (len(rows) - 2) + [0.62], rows,
+          f"Robustness (paper Table {PR('tab:A-all')})", size=11, header_size=10)
     # the ONE forward-test slot
     rec(fwd_text, fwd_src)
-    box(s, xt, 5.33, CW - 6.1, 0.5, fill=CARD_L, radius=0.08, name="Forward slot card")
-    text(s, xt + 0.18, 5.33, CW - 6.1 - 0.36, 0.5, P(R(fwd_text[0].upper() + fwd_text[1:], 12, INK, bold=True)), anchor="m",
-         name="Forward test slot")
-    text(s, xt, 5.95, CW - 6.1, 0.95, [
-        P(R(f"{N('var.total')} variants tried; held-out data read {N('peeks.n')} times, every look logged; rules changed "
-            f"after a look: {N('peeks.rule_changes')} for v2.", 11, INK), after=3, line=1.1),
+    box(s, xt, 5.32, CW - 6.1, 0.54, fill=CARD_L, radius=0.08, name="Forward slot card")
+    text(s, xt + 0.18, 5.32, CW - 6.1 - 0.36, 0.54, P(R(fwd_text[0].upper() + fwd_text[1:], 11.5, INK, bold=True), line=1.05),
+         anchor="m", name="Forward test slot")
+    text(s, xt, 5.94, CW - 6.1, 0.98, [
+        P(R(f"{N('var.total')} variants in all; {VV('n_trials')} strategy variants (the video's count); {N('rig.N3386')} in "
+            f"the deflated Sharpe. Held-out data read {N('peeks.n')} times, every look logged; rules changed after a look: "
+            f"{N('peeks.rule_changes')} for v2.", 10.5, INK), after=3, line=1.05),
         P(R(f"Also tested: chasing the move ({N('h1.oos.c')}¢ OOS), table tennis (no wallet qualifies; {N('tt.matches')} "
-            f"matches, {N('tt.spread')}¢ median spread). The live paper session was stopped and is not used.", 10.5, GREY_L),
-          line=1.1)], name="Rigor tally")
-    SCRIPTS[8] = (f"We tried to break it. {N('var.total')} variants, and every look at held-out data is logged. Every blind test "
-                  f"of a tradable book failed: unseen markets, the maker book, the v3 rule, and a replay on nine real order "
-                  f"books. Doubling fees erases v2 out of sample. One pre-registered blind test is left, and its result "
-                  f"fills that box automatically when it runs.")
-    notes(s, window(7), SCRIPTS[8], "The forward-test box reads results/v2/forward.json at build time; rebuild the deck after "
-          "the one run (backup Q12 covers reproduction).")
+            f"matches, {N('tt.spread')}¢ median spread). The live paper session was stopped and is not used.", 10, GREY_L),
+          line=1.05)], name="Rigor tally")
+    SCRIPTS[8] = (f"We tried to break it: {N('var.total')} variants, every held-out look logged. Every blind test of a "
+                  f"tradable book failed: unseen markets, the maker book, the v3 rule, a replay on nine real books. "
+                  f"Doubled fees erase v2 held out; luck is not ruled out. " +
+                  ("The forward test ran once: see the box." if forward_ran() else
+                   "Our pre-registered forward test was not run in time, and the box says so."))
+    notes(s, window(7), SCRIPTS[8], f"The forward-test box follows {fwd_src} at build time. The video's 'blind tests: "
+          f"{VV('blind_pass')} pass · {VV('blind_fail')} fail' also counts two blind tests that are not tradable books "
+          "(table-tennis H3 precision; v2's unseen markets in sample): every blind test of a tradable book failed.")
 
 
 def s09_risk(prs):
@@ -1002,7 +1057,9 @@ def s10_next(prs):
     ], name="Repo")
     rec(REPO, "git remote (README.md)")
     text(s, xr, 5.6, wr, 1.2, P(R("Paper trading only. CV strategy simulated at an assumed feed latency (licensed feed not "
-                                  "purchased). Footage: OpenTTGames, CC BY-NC-SA 4.0.", 11, GREY_D), line=1.15), name="Close label")
+                                  f"purchased). Footage: OpenTTGames, CC BY-NC-SA 4.0; {tennis_credit()}. Video voice: AI "
+                                  f"({re.search(r'Voice: AI [(]([^)]+)[)]', VID_LABELS.get('end_card', '')).group(1)}).",
+                                  10.5, GREY_D), line=1.1), name="Close label")
     SCRIPTS[10] = ("To deploy it, we'd license a low-latency feed and run one session to measure the umpire's lag, the one "
                    "number that sets the sign. Everything here reproduces from the repo with one command. Paper trading "
                    "only. Thank you.")
@@ -1030,14 +1087,16 @@ def backups(prs):
     qs.append(("Can you really trade inside 3 s, frame to order?", [
         f"Yes: {N('e2e.total')} ms with a simulated 1 s feed, {N('e2e.margin')} ms under the 3 s bar, every one of "
         f"{N('e2e.n')} traces.",
-        f"Our part is {N('e2e.ours')} ms on a laptop (vision {N('cv.eng.p50')} ms p50 on an L4 GPU at {N('cv.eng.fps')} fps, "
+        f"Our part is {N('e2e.ours')} ms on a laptop (vision {N('cv.eng.p50')} ms p50 per frame on an L4 GPU at "
+        f"{N('cv.eng.fps')} fps, {VV('pf_lat')} ms per emitted call as in the video; "
         f"{N('cv.eng.dropped')} of {N('cv.eng.frames')} frames dropped). WebRTC frame to call: {N('cv.webrtc')}. Network: "
         f"{N('lat.net_fl')} ms from Florida, {N('lat.net_ldn')} ms from London; then the venue holds every taker order "
         f"{N('venue.delay')} s.",
         f"Under 3 s is necessary, not sufficient: pre-registered, the call must reach the venue {N('cv.call_before_stamp')} s "
         f"before the umpire's stamp, and every reading loses by a 3 s feed. Orders sent: {N('e2e.sent')} (unsigned, timing "
         "probes; table-tennis calls mapped onto a tennis market for timing only)."],
-        "results/e2e/summary.json; results/engine/online_vs_offline.json; results/webrtc/latency.json; paper Fig. 4", None))
+        "results/e2e/summary.json; results/engine/online_vs_offline.json; results/webrtc/latency.json; "
+        f"paper Fig. {PR('fig:f2t')}", None))
     qs.append(("How much capital can this run?", [
         f"Not much. v2's held-out edge holds only at 1× size ({N('cap.1x.oos.capital')}, {N('cap.1x.oos.c')}¢ "
         f"{N('cap.1x.oos.ci')}); 2× spans zero ({N('cap.2x.oos.c')}¢) and 5× loses ({N('cap.5x.oos.usd')} a day).",
@@ -1046,7 +1105,8 @@ def backups(prs):
         f"at {N('capcv.pmax.oos.day')} on {N('capcv.pmax.oos')} (Sharpe {N('capcv.pmax.oos.sr')}).",
         f"The binding limit is the stale depth on each point: we would be {N('capcv.share_inplay')} of in-play volume but "
         f"{N('capcv.share_fast')} of the fast tier's first 3 s."],
-        "results/capacity/capacity.json; results/alpha/alpha.json::H_capacity; paper Section 7, Fig. A8",
+        "results/capacity/capacity.json; results/alpha/alpha.json::H_capacity; "
+        f"paper Section {PR('sec:liq')}, Fig. {PR('fig:capacity')}",
         "results/paper/v2/figA8_capacity.png"))
     qs.append(("Where does a sub-second tennis feed come from?", [
         "Today, nowhere we can reach, and we say so. We bought no feed and have no match video.",
@@ -1055,7 +1115,8 @@ def backups(prs):
         "to licensed sportsbooks. A spectator camera breaches ITF rules and ticket terms.",
         "A venue-side route exists: Polymarket already buys official data. The deck's numbers at 0.5, 1 and 3 s are "
         "scenarios, not a feed we have."],
-        "results/home_stream/sub_second_routes.json; results/tier0/latency_sweep.json::sources; paper Table A-ladder", None))
+        "results/home_stream/sub_second_routes.json; results/tier0/latency_sweep.json::sources; "
+        f"paper Fig. {PR('fig:race')}a, Appendix {APPX('Records')}", None))
     qs.append(("Trading only points that later moved ≥4¢: look-ahead?", [
         "Yes for the sweep's trade set, and we label it: selected on outcomes, not ex ante. It prices speed given a point "
         "worth trading; it is not yet a deployable rule.",
@@ -1063,7 +1124,8 @@ def backups(prs):
         f"{N('rp.v1l2.ci')} at a 1 s feed; {N('rp.cells_neg')} of {N('rp.cells')} settings lose. An ex-ante Markov swing "
         f"filter (exploratory): {N('rp.sel.t4.c')}¢ {N('rp.sel.t4.ci')}.",
         f"Widening the sweep to all {N('cv.pool.all')} points: {N('cv.pool482.oos')}¢ held out at a zero-delay feed."],
-        "results/replay/replay.json; research/v2/tier0/RESULTS.md §8; paper Table 2, Fig. A7", None))
+        "results/replay/replay.json; research/v2/tier0/RESULTS.md §8; "
+        f"paper Table {PR('tab:A-all')}, Fig. {PR('fig:replay')}", None))
     qs.append(("Isn't the 3.14 s stamp lag tuning on the held-out window?".replace("3.14", N("cv.cal.lag")), [
         f"The pre-registered reading (L = {N('cv.pre.lag')} s) is our result: break-even at a "
         f"{N('cv.pre.be.range')} s feed, {N('cv.pre.oos.usd')} a day held out, {N('cv.pre.oos.c')}¢ {N('cv.pre.oos.c_ci')}.",
@@ -1091,14 +1153,15 @@ def backups(prs):
         f"at ½ tick worse entry, {N('v2.oos.fx2.c')}¢ with fees doubled.",
         f"Deflated at {N('rig.N3386')} trials: {N('v2.is.dsr')} in sample, {N('v2.oos.dsr')} held out. Forty days cannot "
         "rule out luck."],
-        "results/v2/note_metrics.json; results/rigor/rigor.json; results/v2/cost_stress.json; paper Table 1", None))
+        "results/v2/note_metrics.json; results/rigor/rigor.json; results/v2/cost_stress.json; "
+        f"paper Table {PR('tab:head')}", None))
     qs.append(("What happens when costs double?", [
         f"In sample it survives; held out it does not. Fees ×2: {N('v2.is.fx2.c')}¢ ({N('v2.is.fx2.mpos')} months) in "
         f"sample, {N('v2.oos.fx2.c')}¢ {N('v2.oos.fx2.ci')} ({N('v2.oos.fx2.mpos')} months) held out.",
         f"All costs ×2: {N('v2.is.cx2.c')}¢ in sample, {N('v2.oos.cx2.c')}¢ held out. Fees are each match's own rate × "
         f"q(1−q): {N('v2.is.fee_bps')} bps of notional in sample, {N('v2.oos.fee_bps')} held out.",
         "Venue fee and delay rules are therefore the first risk, and a fee change is a kill switch."],
-        "results/v2/cost_stress.json; results/v2/note_metrics.json; paper Table 2", None))
+        f"results/v2/cost_stress.json; results/v2/note_metrics.json; paper Table {PR('tab:head')}", None))
     qs.append(("After paying for data, what do you make?", [
         f"Today, less than the data costs. The cheapest data stack is {N('fin.fixed.low')} a day, central "
         f"{N('fin.fixed.central')}, high {N('fin.fixed.high')} (licence quotes {N('fin.feed.low')}–{N('fin.feed.high')} a "
@@ -1107,7 +1170,7 @@ def backups(prs):
         f"CV book at 1 s {N('cv.cal.oos.net_central')} post hoc and {N('cv.pre.oos.net_central')} pre-registered (held out).",
         f"At 1 s the CV book could pay at most {N('cv.cal.oos.maxlic')} a month for data post hoc and "
         f"{N('cv.pre.oos.maxlic')} pre-registered. COURTSIDE prices speed; it is not yet a business."],
-        "results/financials/financials.json; paper Section 7, Table A-costs", None))
+        f"results/financials/financials.json; paper Section {PR('sec:liq')}, Fig. {PR('fig:cap')}, Appendix {APPX('Records')}", None))
     qs.append(("What kills it?", [
         "In order of size: (1) the unmeasured stamp lag, which flips the CV sign; (2) our queue position against the fast "
         "tier; (3) fees: doubling them erases v2 held out; (4) a longer venue hold.",
@@ -1115,7 +1178,7 @@ def backups(prs):
         f"wallets carry {N('conc.top5.is')} of v2's in-sample P&L and {N('conc.top5.oos')} held out.",
         f"Kill switches in code: {N('risk.daily_stop')} daily stop, stale feed > {N('risk.feed_stale')} s, stale vision > "
         f"{N('risk.vision_stale')} s, latency above its rolling p95; stop at a {N('pol.dd_stop')} drawdown."],
-        "docs/RISK.md; engine/risk/; results/alpha/alpha.json::headline; paper Section 6, Fig. A5", None))
+        f"docs/RISK.md; engine/risk/; results/alpha/alpha.json::headline; paper Section {PR('sec:risk')}", None))
     qs.append(("Is this allowed? Isn't it courtsiding?", [
         f"The track allows any liquid, publicly traded market. Polymarket has a public book and public data with no keys; "
         f"{N('univ.volume')} traded across our {N('univ.matches')} matches.",
@@ -1232,6 +1295,10 @@ def run_checks(prs, n_main, mc, fwd_text):
     # 9 forward.json present but the paper's numbers.json still says 'runs': the paper needs a rebuild
     if (ROOT / F_FWD).exists() and str(NUM.get("fwd.cell", {}).get("value", "")).startswith("runs"):
         warns.append("results/v2/forward.json exists but numbers.json still has the 'runs …' slot: rebuild the paper too")
+    pc = str(NUM.get("fwd.cell", {}).get("value", ""))
+    if not (ROOT / F_FWD).exists() and pc and pc.lower() not in fwd_text.lower():
+        warns.append(f"forward slot says '{fwd_text}' but the paper's numbers.json fwd.cell is '{pc}': the paper must be "
+                     "rebuilt after the last HYPOTHESIS_V2.md amendment (research/compliance/FINAL_ISSUES.md)")
     return fails, warns
 
 

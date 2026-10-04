@@ -3,67 +3,66 @@
  "checks": [
   {
    "check": "1 forbidden phrases (calibrated from the data / goes live / stricter readings)",
-   "status": "FAIL",
-   "detail": "4 hit(s)",
-   "where": [
-    "docs/video_script_v2.md:180: > At one second? Calibrated from the data: Sharpe {lc_is_sh} in sample, {lc_oos_sh} held out... about {lc_is_day} and {lc_oos_day} dollars a",
-    "docs/video_script_v2.md:261: > License a feed, measure that one number, and this goes live.",
-    "docs/video_script_v2.md:181: > Pre-registered and conservative: {t_is_sh} and {t_oos_sh}. Stricter readings lose.",
-    "docs/video_script_v2.md:196: | stricter_lose | true | - | `... video_own120.stamp[\"1\"]` and `tournament_lag1[\"1\"]`: `usd_per_day < 0` in IS and burned_OOS | false: drop "
-   ]
+   "status": "PASS",
+   "detail": "0 hit(s)",
+   "where": []
   },
   {
    "check": "2 pre-registered before post hoc (paper: docs/paper/note.tex)",
-   "status": "WARN",
-   "detail": "first pre-registered line 27, first post hoc $ line 26 (heuristic)",
+   "status": "PASS",
+   "detail": "first pre-registered line 32, first post hoc $ line 32 (heuristic)",
    "where": []
   },
   {
    "check": "2 pre-registered before post hoc (paper: docs/paper/numbers.tex)",
-   "status": "WARN",
-   "detail": "first pre-registered line None, first post hoc $ line 163 (heuristic)",
+   "status": "PASS",
+   "detail": "first pre-registered line 2, first post hoc $ line 193 (heuristic)",
    "where": []
   },
   {
    "check": "2 pre-registered before post hoc (paper: docs/NOTE.md)",
-   "status": "WARN",
-   "detail": "first pre-registered line 21, first post hoc $ line 20 (heuristic)",
+   "status": "PASS",
+   "detail": "first pre-registered line 21, first post hoc $ line 21 (heuristic)",
    "where": []
   },
   {
-   "check": "2 pre-registered before post hoc (video: docs/video_script_v2.md)",
+   "check": "2 pre-registered before post hoc (video: docs/video_script_60.md)",
    "status": "PASS",
-   "detail": "first pre-registered line 173, first post hoc $ line 173 (heuristic)",
+   "detail": "first pre-registered line 54, first post hoc $ line 54 (heuristic)",
    "where": []
   },
   {
    "check": "2 pre-registered before post hoc (deck: docs/deck/build_deck.py)",
    "status": "PASS",
-   "detail": "first pre-registered line 1845, first post hoc $ line 2066 (heuristic)",
+   "detail": "first pre-registered line 31, first post hoc $ line 839 (heuristic)",
    "where": []
   },
   {
    "check": "2 pre-registered before post hoc (readme/devpost: README.md)",
    "status": "PASS",
-   "detail": "first pre-registered line 41, first post hoc $ line 41 (heuristic)",
+   "detail": "first pre-registered line 64, first post hoc $ line 80 (heuristic)",
    "where": []
   },
   {
    "check": "2 pre-registered before post hoc (readme/devpost: docs/DEVPOST.md)",
    "status": "PASS",
-   "detail": "first pre-registered line 38, first post hoc $ line 40 (heuristic)",
+   "detail": "first pre-registered line 40, first post hoc $ line 44 (heuristic)",
    "where": []
   },
   {
    "check": "3 trade-set disclosure (paper)",
-   "status": "FAIL",
-   "detail": "0 line(s) say 'not ex ante' or 'selected on outcomes'",
-   "where": []
+   "status": "PASS",
+   "detail": "3 line(s) say 'not ex ante' or 'selected on outcomes'",
+   "where": [
+    "docs/paper/note.tex:117: 4\u00a2, so they are \\emph{selected on outcomes, not ex ante}.",
+    "docs/paper/note.tex:205: price later moved \\(\\geq\\)4\u00a2, selected on outcomes, not ex ante. Call rates are the offline rule's",
+    "docs/paper/numbers.tex:2: % CV readings: cv.pre.* = the pre-registered stamp-lag reading (listed first), cv.cal.* = the post hoc estimate; the CV trade set is selecte"
+   ]
   },
   {
    "check": "3 trade-set disclosure (video)",
-   "status": "FAIL",
-   "detail": "0 line(s) say 'not ex ante' or 'selected on outcomes'",
+   "status": "KNOWN",
+   "detail": "0 line(s) say 'not ex ante' or 'selected on outcomes' (final video, not re-rendered: listed in research/compliance/FINAL_ISSUES.md)",
    "where": []
   },
   {
@@ -71,70 +70,81 @@
    "status": "PASS",
    "detail": "4 line(s) say 'not ex ante' or 'selected on outcomes'",
    "where": [
-    "docs/deck/build_deck.py:150: \"that later moved \u2265 4\u00a2 (selected on outcomes, not ex ante)\")",
-    "docs/deck/build_deck.py:526: if not (\"SIMULATED\" in TIER0_LABEL and \"not ex ante\" in TIER0_LABEL and \"not purchased\" in TIER0_LABEL):",
-    "docs/deck/build_deck.py:527: fail(f\"TIER0_LABEL lost a marker (SIMULATED / not ex ante / not purchased): {TIER0_LABEL!r}\")"
+    "docs/deck/build_deck.py:34: later repriced >= 4c, selected on outcomes (not ex ante). Tennis is simulated physics. No real money, no match video,",
+    "docs/deck/build_deck.py:840: (\"Both readings\", f\"lose by 3 s. Trades are points that later repriced \u22654\u00a2: selected on outcomes, not ex ante; \"",
+    "docs/deck/build_deck.py:1121: \"Yes for the sweep's trade set, and we label it: selected on outcomes, not ex ante. It prices speed given a point \""
    ]
   },
   {
    "check": "4 '11/11', '11 of 11', '408 ms' only with 'offline'",
-   "status": "FAIL",
-   "detail": "3 line(s) without 'offline' (same line; check context by hand)",
-   "where": [
-    "docs/paper/note.tex:101: \\para{CV strategy} Our tracker gets 11 of 11 out-calls right 50\\,ms before",
-    "docs/video_script_v2.md:55: visual: CV showcase reel on real held-out table-tennis footage, game test_2, flight 2819 (`results/viz/cv_showcase.mp4` and `results/viz/sti",
-    "docs/video_script_v2.md:276: | S01 | 408 ms (longest; median 25 ms, 8 of 41 misses called early) |"
-   ]
-  },
-  {
-   "check": "5 per-point reading shown (paper)",
-   "status": "FAIL",
-   "detail": "0 line(s)",
+   "status": "PASS",
+   "detail": "0 line(s) without 'offline' (same line; check context by hand)",
    "where": []
   },
   {
+   "check": "5 per-point reading shown (paper)",
+   "status": "PASS",
+   "detail": "7 line(s)",
+   "where": [
+    "docs/paper/note.tex:222: Read per point, the post hoc inference loses (\u2212\\$17 a day at 1\\,s). Every reading loses at 3\\,s,",
+    "docs/paper/numbers.tex:239: \\expandafter\\def\\csname cs@cv.stc.is.usd\\endcsname{\u2212\\$17}",
+    "docs/paper/numbers.tex:240: \\expandafter\\def\\csname cs@cv.stc.is.v0\\endcsname{+\\$199}"
+   ]
+  },
+  {
    "check": "5 per-point reading shown (video)",
-   "status": "FAIL",
-   "detail": "0 line(s)",
+   "status": "KNOWN",
+   "detail": "0 line(s) (final video, not re-rendered: listed in research/compliance/FINAL_ISSUES.md)",
    "where": []
   },
   {
    "check": "5 per-point reading shown (deck)",
    "status": "PASS",
-   "detail": "10 line(s)",
+   "detail": "3 line(s)",
    "where": [
-    "docs/deck/build_deck.py:1743: stc_is, stc_os = cell(\"stamp_calibrated\", \"IS\", \"usd_per_day\", day), cell(\"stamp_calibrated\", \"burned_OOS\", \"usd_per_day\", day)",
-    "docs/deck/build_deck.py:1744: stc_be_is = V(F_SWEEP, *be, \"stamp_calibrated\", \"IS\", \"breakeven_V_s_seed_mean_curve\", f=su)",
-    "docs/deck/build_deck.py:1745: stc_be_os = V(F_SWEEP, *be, \"stamp_calibrated\", \"burned_OOS\", \"breakeven_V_s_seed_mean_curve\", f=su)"
+    "docs/deck/build_deck.py:854: f\"point by point the same data loses {N('cv.stc.oos.usd').replace(MINUS, '')} a day. By three seconds \"",
+    "docs/deck/build_deck.py:1135: f\"Read per point, the same inference loses {N('cv.stc.oos.usd')} a day (break-even {N('cv.stc.be.oos')}\u2013\"",
+    "docs/deck/build_deck.py:1136: f\"{N('cv.stc.be.is')} s). The tier-0 PREREG was written {N('t0.prereg.written')} UTC, before the first P&L.\"],"
    ]
   },
   {
    "check": "6 Dom: latency proof + capacity (paper)",
-   "status": "FAIL",
-   "detail": "e2e lines 0, capacity lines 5",
+   "status": "PASS",
+   "detail": "e2e lines 11, capacity lines 11",
    "where": [
-    "docs/paper/note.tex:264: \\section{Liquidity and capacity}\\label{sec:liq}",
-    "docs/paper/note.tex:302: \\includegraphics{../../results/paper/figA1_capacity.pdf}"
+    "docs/paper/note.tex:128: is simulated; order built, not sent. Shaded: when the book reprices. Source: \\texttt{results/e2e}.}",
+    "docs/paper/numbers.tex:280: \\expandafter\\def\\csname cs@e2e.ours\\endcsname{54}",
+    "docs/paper/note.tex:254: \\section{Liquidity and capacity}\\label{sec:liq}",
+    "docs/paper/note.tex:257: CV book has no capacity at the pre-registered lag (Sharpe 2.7 IS, 0.8"
    ]
   },
   {
    "check": "6 Dom: latency proof + capacity (video)",
-   "status": "FAIL",
-   "detail": "e2e lines 0, capacity lines 6",
+   "status": "PASS",
+   "detail": "e2e lines 2, capacity lines 1",
    "where": [
-    "docs/video_script_v2.md:231: visual: Scoreboard: pre-registrations (`HYPOTHESIS*.md`, `research/**/PREREG.md`, `research/replay/PROTOCOL.md`); blind tests with PASS / FA",
-    "docs/video_script_v2.md:232: label: Paper trading only. Stress, capacity and deflated-Sharpe rows: v2 at the fast tier's own fills"
+    "docs/video_script_60.md:30: | 5 | 0:45-0:55 | the pipeline | Here's the whole pipeline in milliseconds: our part, about fifty. Add a one-second feed and Polymarket's on",
+    "results/viz/courtside_60.srt:63: Here's the whole pipeline in milliseconds:",
+    "docs/video_script_60.md:56: | the profit | hero numbers: $94 a day counts up from the first word and lands as Liam says it, then Sharpe 12 (in sample, post-hoc estimate"
    ]
   },
   {
    "check": "6 Dom: latency proof + capacity (deck)",
    "status": "PASS",
-   "detail": "e2e lines 5, capacity lines 9",
+   "detail": "e2e lines 18, capacity lines 13",
    "where": [
-    "docs/deck/build_deck.py:141: F_E2E = \"results/e2e/summary.json\"",
-    "docs/deck/build_deck.py:1948: e_n = opt(F_E2E, \"our_pipeline_frame_to_order_ready_ms\", \"n\")",
-    "docs/deck/build_deck.py:12: docs/QA_PREP.md, two of them the organizers' own: latency under 3 s and capital capacity), each with its",
-    "docs/deck/build_deck.py:142: F_CAP = \"results/capacity/capacity.json\""
+    "docs/deck/build_deck.py:628: ours = N(\"e2e.ours\")",
+    "docs/deck/build_deck.py:762: total = N(\"e2e.total\")",
+    "docs/deck/build_deck.py:975: _SLIDE[0] = \"9 risk capacity financials\"",
+    "docs/deck/build_deck.py:977: chrome(s, 9, \"Risk \u00b7 capacity \u00b7 financials\", False, label=\"feed-licence prices are quotes (assumptions); paper trading only\")"
+   ]
+  },
+  {
+   "check": "6b capacity number on screen (video)",
+   "status": "KNOWN",
+   "detail": "cap_lc_is, cap_lc_oos rendered null (on screen as '$pendingk'); final video, not re-rendered: listed in research/compliance/FINAL_ISSUES.md",
+   "where": [
+    "results/viz/v60_assets/manifest.json::values"
    ]
   },
   {
@@ -153,28 +163,28 @@
   },
   {
    "check": "C8 capacity present (Dom 2)",
-   "status": "WARN",
-   "detail": "paragraph leads with the pre-registered reading: False; 'calibrated' without 'post hoc': True",
+   "status": "PASS",
+   "detail": "paragraph leads with the pre-registered reading: True; 'calibrated' without 'post hoc': False",
    "where": [
     "results/capacity/capacity.json::paragraph"
    ]
   },
   {
    "check": "input: forward test (v2)",
-   "status": "PENDING",
-   "detail": "results/v2/forward.json",
+   "status": "NOT RUN",
+   "detail": "pre-registered, not run within the hackathon window (HYPOTHESIS_V2.md A5); results/v2/forward.json absent by design",
    "where": []
   },
   {
    "check": "input: v2-safe forward (C9)",
-   "status": "PENDING",
-   "detail": "results/v2/forward_safe.json",
+   "status": "NOT RUN",
+   "detail": "pre-registered, not run within the hackathon window (HYPOTHESIS_V2.md A5); results/v2/forward_safe.json absent by design",
    "where": []
   },
   {
    "check": "input: tier-0 v3 forward",
-   "status": "PENDING",
-   "detail": "results/tier0_v3/forward/results.json",
+   "status": "NOT RUN",
+   "detail": "pre-registered, not run within the hackathon window (HYPOTHESIS_V2.md A5); results/tier0_v3/forward/results.json absent by design",
    "where": []
   },
   {
@@ -185,20 +195,20 @@
   },
   {
    "check": "input: ex-ante replay filter (C1)",
-   "status": "PENDING",
-   "detail": "results/replay/exante.json",
+   "status": "PASS",
+   "detail": "results/replay/selective/selective.json",
    "where": []
   },
   {
    "check": "input: live paper session",
-   "status": "PENDING",
-   "detail": "status 'warm-up: waiting for trades (3 seen)', now '2026-10-03T23:27:10.087Z'",
+   "status": "PASS",
+   "detail": "status 'final', now '2026-10-04T02:18:17.256Z'",
    "where": []
   },
   {
    "check": "peek log line count (quote this number)",
    "status": "PASS",
-   "detail": "73 lines in results/oos_peeks.log",
+   "detail": "77 lines in results/oos_peeks.log",
    "where": []
   },
   {

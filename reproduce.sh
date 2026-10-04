@@ -7,10 +7,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 PY=${PY:-.venv/bin/python}
-$PY run_all.py --oos            # H1-H6, calibration, tiers, fast tier (v1)               -> Table 3, Fig. 2a
-$PY scripts/v2_causal.py        # v2 (causal window) on IS + burned OOS, slippage stress  -> Table 1
-$PY scripts/v2_cost_stress.py   # v2 with fees / all costs doubled                        -> Table 1, Fig. 2b
-$PY scripts/note_metrics.py     # ann. return, vol, turnover, skew, bps, holdout, gaps    -> Table 1, sections 3-4
+$PY run_all.py --oos            # H1-H6, calibration, tiers, fast tier (v1)               -> paper \label{tab:A-all}, {fig:edge}a
+$PY scripts/v2_causal.py        # v2 (causal window) on IS + burned OOS, slippage stress  -> paper \label{tab:head}
+$PY scripts/v2_cost_stress.py   # v2 with fees / all costs doubled                        -> paper \label{tab:head}, {fig:edge}b
+$PY scripts/note_metrics.py     # ann. return, vol, turnover, skew, bps, holdout, gaps    -> paper \label{tab:head}, sec:data, sec:method
 $PY scripts/v2_figures.py       # results/figures (earlier note figure, kept for the deck)
 $PY scripts/factor_regression.py
 $PY scripts/leverage_stats.py
@@ -19,3 +19,4 @@ $PY scripts/build_paper.py      # the paper's figures (results/paper/v2, scripts
                                 # LaTeX via tectonic -> docs/NOTE.pdf (+ NOTE.md); fails on > 5 main pages, < 11 pt
                                 # text, margins, honesty grep; keeps the committed PDF (exit 0) if tectonic is missing
 $PY scripts/build_docs.py       # README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from results/paper/numbers.json
+                                # and the paper's labels (also kept in results/paper/labels.json)

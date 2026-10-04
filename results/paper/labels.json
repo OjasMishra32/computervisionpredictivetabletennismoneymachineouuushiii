@@ -1,0 +1,110 @@
+{
+ "labels": {
+  "sec:summary": [
+   "1",
+   "1"
+  ],
+  "sec:hyp": [
+   "2",
+   "1"
+  ],
+  "sec:data": [
+   "3",
+   "2"
+  ],
+  "sec:method": [
+   "4",
+   "2"
+  ],
+  "eq:budget": [
+   "1",
+   "2"
+  ],
+  "tab:head": [
+   "1",
+   "3"
+  ],
+  "sec:results": [
+   "5",
+   "3"
+  ],
+  "fig:f2t": [
+   "1",
+   "3"
+  ],
+  "fig:edge": [
+   "2",
+   "4"
+  ],
+  "tab:lat": [
+   "2",
+   "4"
+  ],
+  "sec:risk": [
+   "6",
+   "4"
+  ],
+  "fig:speed": [
+   "3",
+   "5"
+  ],
+  "sec:liq": [
+   "7",
+   "5"
+  ],
+  "sec:limits": [
+   "8",
+   "5"
+  ],
+  "lastmain": [
+   "8",
+   "5"
+  ],
+  "tab:A-all": [
+   "A1",
+   "9"
+  ],
+  "fig:regime": [
+   "A1",
+   "11"
+  ],
+  "fig:replay": [
+   "A2",
+   "11"
+  ],
+  "fig:race": [
+   "A3",
+   "12"
+  ],
+  "fig:capacity": [
+   "A4",
+   "12"
+  ],
+  "fig:cap": [
+   "A5",
+   "13"
+  ]
+ },
+ "appendix": {
+  "Calculations": "A",
+  "Everything we tested": "B",
+  "Robustness and extra figures": "C",
+  "Records": "D"
+ },
+ "calc": {
+  "Sharpe ratio": "A1",
+  "Sortino ratio": "A2",
+  "Maximum drawdown": "A3",
+  "Probabilistic Sharpe": "A4",
+  "Deflated Sharpe": "A5",
+  "Probability of backtest overfitting": "A6",
+  "Stationary block bootstrap": "A7",
+  "Factor regression": "A8",
+  "Taker fee": "A9",
+  "Point swing": "A10",
+  "Latency budget": "A11",
+  "Capital and return on capital": "A12",
+  "Capacity and volume share": "A13"
+ },
+ "source": "docs/paper/note.aux (labels) and docs/paper/note.tex (appendix letters, calculation ids)"
+}

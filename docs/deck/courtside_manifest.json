@@ -2,7 +2,7 @@
  "deck": "docs/deck/courtside.pptx",
  "builder": "docs/deck/build_deck.py",
  "numbers_file": "results/paper/numbers.json",
- "numbers_generated_utc": "2026-10-04T03:06:58+00:00",
+ "numbers_generated_utc": "2026-10-04T04:02:28+00:00",
  "video": "results/viz/courtside_60.mp4",
  "talk_seconds": 285,
  "slides": [
@@ -30,7 +30,7 @@
   {
    "n": 4,
    "kind": "main",
-   "title": "It calls the point before the ball lands",
+   "title": "It calls table-tennis points before the ball lands",
    "seconds": 40,
    "window": "1:15–1:55 · 40 s"
   },
@@ -162,8 +162,8 @@
   }
  ],
  "forward_slot": {
-  "text": "blind forward test: runs 2026-10-04 11:30 UTC (pre-registered)",
-  "source": "HYPOTHESIS_V2.md A4 ; results/paper/numbers.json::fwd.cell (results/v2/forward.json absent)"
+  "text": "blind forward test: pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)",
+  "source": "HYPOTHESIS_V2.md A5 (forward test not run); results/v2/forward.json absent"
  },
  "money_counter": {
   "fresh_run": true,
@@ -293,6 +293,20 @@
   },
   {
    "slide": "3 edge",
+   "shown": "2",
+   "key": "label:fig:edge",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "3 edge",
+   "shown": "2",
+   "key": "label:fig:edge",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "3 edge",
    "shown": "9/9",
    "key": "ft.months.is",
    "from": "results/paper/numbers.json",
@@ -419,6 +433,20 @@
   },
   {
    "slide": "4 CV models",
+   "shown": "tennis rally: “Tennis Players Playing Match” by Gelato Prod, Pexels (Pexels License)",
+   "key": null,
+   "from": "results/viz/v60_assets/tennis_real/LICENSE.md",
+   "source": "results/viz/v60_assets/tennis_real/LICENSE.md"
+  },
+  {
+   "slide": "4 CV models",
+   "shown": "tennis rally: “Tennis Players Playing Match” by Gelato Prod, Pexels (Pexels License)",
+   "key": null,
+   "from": "results/viz/v60_assets/tennis_real/LICENSE.md",
+   "source": "results/viz/v60_assets/tennis_real/LICENSE.md"
+  },
+  {
+   "slide": "4 CV models",
    "shown": "4",
    "key": "cv.eng.tp",
    "from": "results/paper/numbers.json",
@@ -517,6 +545,13 @@
   },
   {
    "slide": "4 CV models",
+   "shown": "6.9",
+   "key": "pf_lat",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "results/engine/online_vs_offline.json :: headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.emitted_call_latency_ms.p50"
+  },
+  {
+   "slide": "4 CV models",
    "shown": "162",
    "key": "cv.eng.lead",
    "from": "results/paper/numbers.json",
@@ -566,10 +601,24 @@
   },
   {
    "slide": "5 frame to trade",
+   "shown": "1",
+   "key": "label:fig:f2t",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "5 frame to trade",
    "shown": "24",
    "key": "e2e.n",
    "from": "results/paper/numbers.json",
    "source": "results/e2e/summary.json::counts.complete_order_traces"
+  },
+  {
+   "slide": "5 frame to trade",
+   "shown": "1",
+   "key": "label:fig:f2t",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "5 frame to trade",
@@ -598,6 +647,13 @@
    "key": "cv.eng.p50",
    "from": "results/paper/numbers.json",
    "source": "…stream.after_startup.call_ready_ms.p50"
+  },
+  {
+   "slide": "5 frame to trade",
+   "shown": "6.9",
+   "key": "pf_lat",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "results/engine/online_vs_offline.json :: headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.emitted_call_latency_ms.p50"
   },
   {
    "slide": "5 frame to trade",
@@ -647,6 +703,20 @@
    "key": "e2e.n",
    "from": "results/paper/numbers.json",
    "source": "results/e2e/summary.json::counts.complete_order_traces"
+  },
+  {
+   "slide": "6 speed",
+   "shown": "3",
+   "key": "label:fig:speed",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "6 speed",
+   "shown": "3",
+   "key": "label:fig:speed",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "6 speed",
@@ -885,6 +955,13 @@
    "key": "pp.cal.oos.usd",
    "from": "results/paper/numbers.json",
    "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.1.burned_OOS.usd_per_day"
+  },
+  {
+   "slide": "6 speed",
+   "shown": "2",
+   "key": "label:tab:lat",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "6 speed",
@@ -1392,6 +1469,20 @@
   },
   {
    "slide": "7 backtest",
+   "shown": "−2.0%",
+   "key": "v2.is.dd",
+   "from": "results/paper/numbers.json",
+   "source": "results/v2/note_metrics.json::is.max_dd_pct"
+  },
+  {
+   "slide": "7 backtest",
+   "shown": "−2.1%",
+   "key": "v2.oos.dd",
+   "from": "results/paper/numbers.json",
+   "source": "results/v2/note_metrics.json::burned_oos.max_dd_pct"
+  },
+  {
+   "slide": "7 backtest",
    "shown": "−0.34",
    "key": "v2.oos.fx2.c",
    "from": "results/paper/numbers.json",
@@ -1438,6 +1529,20 @@
    "key": "v2.oos.dsr",
    "from": "results/paper/numbers.json",
    "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].dsr_min_N3386 (min over the three variance sources)"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "results/paper/v2/figA4_forest.png",
+   "key": null,
+   "from": "results/paper/v2/figA4_forest.png",
+   "source": "results/paper/v2/figA4_forest.png"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "A1",
+   "key": "label:tab:A-all",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "8 robustness",
@@ -1581,10 +1686,24 @@
   },
   {
    "slide": "8 robustness",
-   "shown": "blind forward test: runs 2026-10-04 11:30 UTC (pre-registered)",
+   "shown": "0.075",
+   "key": "v2.oos.dsr",
+   "from": "results/paper/numbers.json",
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].dsr_min_N3386 (min over the three variance sources)"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "A1",
+   "key": "label:tab:A-all",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "blind forward test: pre-registered but not run within the hackathon window (HYPOTHESIS_V2.md A5)",
    "key": null,
-   "from": "HYPOTHESIS_V2.md A4 ; results/paper/numbers.json::fwd.cell (results/v2/forward.json absent)",
-   "source": "HYPOTHESIS_V2.md A4 ; results/paper/numbers.json::fwd.cell (results/v2/forward.json absent)"
+   "from": "HYPOTHESIS_V2.md A5 (forward test not run); results/v2/forward.json absent",
+   "source": "HYPOTHESIS_V2.md A5 (forward test not run); results/v2/forward.json absent"
   },
   {
    "slide": "8 robustness",
@@ -1592,6 +1711,20 @@
    "key": "var.total",
    "from": "results/paper/numbers.json",
    "source": "results/paper/variants.json (sum of families)"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "3,410",
+   "key": "n_trials",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "results/rigor/rigor.json :: psr_dsr.N.all_plus_v2safe_grid"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "3,386",
+   "key": "rig.N3386",
+   "from": "results/paper/numbers.json",
+   "source": "results/rigor/rigor.json::psr_dsr.N.all_NOTE_s8"
   },
   {
    "slide": "8 robustness",
@@ -1634,6 +1767,20 @@
    "key": "var.total",
    "from": "results/paper/numbers.json",
    "source": "results/paper/variants.json (sum of families)"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "2",
+   "key": "blind_pass",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "several :: blind_rows verdict == PASS"
+  },
+  {
+   "slide": "8 robustness",
+   "shown": "4",
+   "key": "blind_fail",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "several :: blind_rows verdict == FAIL"
   },
   {
    "slide": "9 risk capacity financials",
@@ -1917,6 +2064,13 @@
   },
   {
    "slide": "10 path to deployment",
+   "shown": "tennis rally: “Tennis Players Playing Match” by Gelato Prod, Pexels (Pexels License)",
+   "key": null,
+   "from": "results/viz/v60_assets/tennis_real/LICENSE.md",
+   "source": "results/viz/v60_assets/tennis_real/LICENSE.md"
+  },
+  {
+   "slide": "10 path to deployment",
    "shown": "2,119",
    "key": "e2e.total",
    "from": "results/paper/numbers.json",
@@ -1956,6 +2110,13 @@
    "key": "cv.eng.fps",
    "from": "results/paper/numbers.json",
    "source": "results/engine/online_vs_offline.json::headline.fp16_cl_fuse_compile_b1_realtime.stream.fps"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "6.9",
+   "key": "pf_lat",
+   "from": "results/viz/v60_assets/manifest.json",
+   "source": "results/engine/online_vs_offline.json :: headline.fp16_cl_fuse_compile_b1_realtime.stream.after_startup.emitted_call_latency_ms.p50"
   },
   {
    "slide": "10 path to deployment",
@@ -2012,6 +2173,13 @@
    "key": "e2e.sent",
    "from": "results/paper/numbers.json",
    "source": "results/e2e/summary.json::counts.orders_sent"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "1",
+   "key": "label:fig:f2t",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "10 path to deployment",
@@ -2113,6 +2281,20 @@
   },
   {
    "slide": "10 path to deployment",
+   "shown": "7",
+   "key": "label:sec:liq",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "A4",
+   "key": "label:fig:capacity",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
    "shown": "12.2",
    "key": "lat.webrtc_public",
    "from": "results/paper/numbers.json",
@@ -2138,6 +2320,20 @@
    "key": "lat.video_band",
    "from": "results/paper/numbers.json",
    "source": "results/tier0/latency_sweep.json::sources[betting_video].band_s"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "A3",
+   "key": "label:fig:race",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "D",
+   "key": "appendix:Records",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "10 path to deployment",
@@ -2194,6 +2390,20 @@
    "key": "cv.pool482.oos",
    "from": "results/paper/numbers.json",
    "source": "results/redteam/derived.json::keys.cv.pool482.oos.c <- results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_c (V = 0) ; results/redteam/derived.json::keys.cv.pool482.oos.ci <- results/tier0/results.json::stresses_corrected[\"live pool = all 482 points\"].burned_OOS.mean.per_share_ci95_c_*"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "A1",
+   "key": "label:tab:A-all",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "A2",
+   "key": "label:fig:replay",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "10 path to deployment",
@@ -2456,6 +2666,13 @@
   },
   {
    "slide": "10 path to deployment",
+   "shown": "1",
+   "key": "label:tab:head",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
    "shown": "+0.77",
    "key": "v2.is.fx2.c",
    "from": "results/paper/numbers.json",
@@ -2516,6 +2733,13 @@
    "key": "v2.oos.fee_bps",
    "from": "results/paper/numbers.json",
    "source": "results/v2/note_metrics.json::burned_oos.fee_bps_of_notional"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "1",
+   "key": "label:tab:head",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "10 path to deployment",
@@ -2596,6 +2820,27 @@
   },
   {
    "slide": "10 path to deployment",
+   "shown": "7",
+   "key": "label:sec:liq",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "A5",
+   "key": "label:fig:cap",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "D",
+   "key": "appendix:Records",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
+  },
+  {
+   "slide": "10 path to deployment",
    "shown": "0.20",
    "key": "ft.slope",
    "from": "results/paper/numbers.json",
@@ -2649,6 +2894,13 @@
    "key": "pol.dd_stop",
    "from": "results/paper/numbers.json",
    "source": "results/paper/policy.json::drawdown_stop_pct <- docs/RISK.md:82"
+  },
+  {
+   "slide": "10 path to deployment",
+   "shown": "6",
+   "key": "label:sec:risk",
+   "from": "docs/paper/note.aux",
+   "source": "docs/paper/note.aux"
   },
   {
    "slide": "10 path to deployment",

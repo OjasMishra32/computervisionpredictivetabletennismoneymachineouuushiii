@@ -94,4 +94,4 @@ def test_acceptance_checker_runs_read_only(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["redteam_acceptance.py"])
     assert m.main() == 0
     checks = json.loads((tmp_path / "acceptance.json").read_text())["checks"]
-    assert checks and all(c["status"] in ("PASS", "FAIL", "WARN", "PENDING") for c in checks)
+    assert checks and all(c["status"] in ("PASS", "FAIL", "WARN", "PENDING", "KNOWN", "NOT RUN") for c in checks)

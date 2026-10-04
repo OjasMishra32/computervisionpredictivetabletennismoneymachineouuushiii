@@ -3,8 +3,8 @@
 <!-- Devpost form checklist (not part of the pasted text): track = Systematic Trading; upload docs/NOTE.pdf as a FILE;
 paste the repo URL; add the video file results/viz/courtside_60.mp4 (or its upload link); list all four team members;
 paste "Pre-existing components" into the form; submit before Sun Oct 4, 11:00 AM EDT (15:00 UTC). Every number below is
-filled from results/paper/numbers.json by scripts/build_docs.py; after the blind forward test runs (11:30 UTC), rebuild
-the paper and run `bash run.sh docs`, then paste again. -->
+filled from results/paper/numbers.json by scripts/build_docs.py; if the paper is rebuilt, run `bash run.sh docs` and
+paste again. The blind forward test was not run (HYPOTHESIS_V2.md A5). -->
 
 **Project name:** COURTSIDE
 
@@ -49,12 +49,13 @@ trail by tens of seconds. That makes it a natural lab for pricing speed.
 - **Proves the pipeline is fast enough.** Our own path, video frame to unsigned paper order, takes {{e2e.ours}} ms
   (p50 of {{e2e.n}} traces). With a simulated 1 s feed, {{e2e.net}} ms of network and Polymarket's 1 s order hold, the
   order is executable at {{e2e.total}} ms, under the organisers' 3 s bar. No order was sent.
-- **Calls the point before the ball lands.** On real held-out table-tennis footage, our live causal vision engine
-  called {{cv.eng.tp}} of {{cv.eng.nmiss}} misses before contact, none wrong (median lead {{cv.eng.lead}} ms), at
-  {{cv.eng.fps}} fps on one L4 GPU with call-ready in {{cv.eng.p50}} ms and {{cv.eng.dropped}} frames dropped. (The
-  offline evaluation's {{cv.tt.tp50}} of {{cv.tt.called50}} used a look-ahead feature, so we lead with the live engine.)
-  For tennis, a spin-aware tracker cuts landing error from {{cv.spin.base200}} to {{cv.spin.bls200}} cm at 200 ms before
-  the bounce in simulated physics.
+- **Calls table-tennis points before the ball lands.** On real held-out table-tennis footage, our live causal vision
+  engine called {{cv.eng.tp}} of {{cv.eng.nmiss}} misses before contact, none wrong (median lead {{cv.eng.lead}} ms), at
+  {{cv.eng.fps}} fps on one L4 GPU, {{cv.eng.p50}} ms p50 per frame to call-ready (the video's {{video:pf_lat}} ms is the
+  p50 per emitted call), {{cv.eng.dropped}} frames dropped. (The offline evaluation's {{cv.tt.tp50}} of
+  {{cv.tt.called50}} used a look-ahead feature, so we lead with the live engine.) For tennis, a spin-aware tracker cuts
+  landing error from {{cv.spin.base200}} to {{cv.spin.bls200}} cm at 200 ms before the bounce in simulated physics; our
+  tennis calls are simulated, and the video's real rally (licensed stock footage) shows only our tracker's ball trail.
 - **Measures latency live.** The book reprices {{lat.book_vs_stamp}} s before the official point stamp; ESPN,
   Polymarket's own sports feed and the WTA API trail the book by {{lat.espn}}–{{lat.wta}} s.
 
@@ -74,15 +75,17 @@ draft (an onset look-ahead); fixing it cut in-sample Sharpe from {{v2.onset.is.s
 numbers came from an offline evaluation with a look-ahead feature; the live causal engine calls fewer misses, and that
 is the number we report. The stamp lag, the one number that decides the CV P&L, cannot be measured without a licensed
 feed, so we show both readings and lead with the pre-registered one. Every blind or ex-ante test of a tradable book
-failed, and all of them are in the paper.
+failed, and all of them are in the paper. (The video's "{{video:blind_pass}} pass · {{video:blind_fail}} fail" also
+counts two blind tests that are not tradable books: the table-tennis call precision and v2's unseen markets in sample.)
 
 ## Accomplishments that we're proud of
 - A wallet-level map of the latency tier in a live prediction market, and a dollar price on each second of feed delay.
 - A frame-to-order pipeline measured stage by stage: {{e2e.ours}} ms of our own time against a 3 s budget.
 - A vision engine that calls misses before contact on footage it never saw, at {{cv.eng.fps}} fps.
-- Discipline: hypotheses committed before results, {{var.total}} variants counted, {{peeks.n}} reads of held-out data
-  logged and listed, deflated Sharpe, PBO, block bootstrap, blind tests on {{u2.markets}} unseen markets, and every
-  failure reported.
+- Discipline: hypotheses committed before results, {{var.total}} variants counted in all ({{video:n_trials}} strategy
+  variants, the video's count; {{rig.N3386}} in the deflated Sharpe), {{peeks.n}} reads of held-out data logged and
+  classified, deflated Sharpe, PBO, block bootstrap, blind tests on {{u2.markets}} unseen markets, and every failure
+  reported.
 
 ## What we learned
 In today's regime (1 s order hold, {{fee.rate}} fee, ~{{ft.wallets.last}} competing fast wallets) the edge is real but, out
@@ -93,7 +96,8 @@ stamp, and capacity, which is small: v2's held-out edge holds only up to 1× siz
 book's post hoc Sharpe halves at {{capcv.half.oos}} of capital held out.
 
 ## What's next for COURTSIDE
-- Read the pre-registered blind forward test, whatever it says.
+- Run the pre-registered blind forward test, which we did not run within the hackathon window, and report it
+  whatever it says.
 - One session with a licensed low-latency feed and test orders to measure the stamp lag and whether delayed orders are
   released on a 1 s clock. That single number moves the break-even one for one.
 - Evaluate the coded rally-state gate against phantom calls outside play, and move the vision engine to tennis video.
@@ -110,13 +114,16 @@ latex (tectonic) · polymarket-clob-gamma-data-apis · kalshi-api · hipergator 
 - TrackNet ball-detector weights and TennisProject / TennisCourtDetector code (yastrebksv; no licence file), used
   unmodified for evaluation and not redistributed.
 - Public datasets: OpenTTGames (CC BY-NC-SA 4.0), the TrackNet tennis dataset, the Kenneth R. French Data Library factors.
+- In the video: a licensed stock tennis clip, {{meta:tennis_credit}}, shown with our tracker's ball trail (not a
+  match we traded); narration and music bed generated with {{meta:voice}} (AI voice).
 - Open-source Python libraries listed in `requirements.txt` and `requirements-extra.txt`.
 
 ## Integrity
 `HYPOTHESIS.md` was committed before any result (`{{prereg.hyp.commit}}`, {{prereg.hyp.time}}). The out-of-sample
 window was opened once, blind, for v1; every later read is logged in `results/oos_peeks.log` and listed in the paper.
-v2 and its forward test were pre-registered before the forward window opened (`HYPOTHESIS_V2.md`). The live paper
-session was stopped by a team decision and is not used. No real money; no order was ever sent.
+v2 and its forward test were pre-registered before the forward window opened (`HYPOTHESIS_V2.md`); the forward test
+was then not run within the hackathon window (A5). The live paper session was stopped by a team decision and is not
+used. No real money; no order was ever sent.
 
 ## Links
 - Repo: https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii

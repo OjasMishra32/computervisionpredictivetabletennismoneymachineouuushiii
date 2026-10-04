@@ -17,9 +17,30 @@ Times are the measured ones below (Linux clean clone / the authors' Mac); every 
 Changes in the final pass: `reproduce.sh` now runs `scripts/build_paper.py` with figures on (it had `--no-figures`, so
 the paper's own figures in `results/paper/v2/` were not redrawn) and ends with `scripts/build_docs.py`; `run.sh` gained
 `all` and `docs`; `run.sh preflight` no longer expects the live paper session (stopped by a team decision,
-`research/v2/maker/DEVIATIONS_LIVE.md` L15) and checks that the docs match `numbers.json`. The blind forward test
-(`HYPOTHESIS_V2.md` A4) has one slot in the paper, README and Devpost text; it fills from `results/v2/forward.json`
-when `scripts/build_paper.py` and `bash run.sh docs` are re-run after the 11:30 UTC run.
+`research/v2/maker/DEVIATIONS_LIVE.md` L15) and checks that the docs match `numbers.json`. The blind forward test was
+pre-registered but not run within the hackathon window (`HYPOTHESIS_V2.md` A5, which withdraws A4); its one slot in
+the paper, README, Devpost text and deck says so, and would fill from `results/v2/forward.json` if that file existed.
+
+## Clean-clone rerun (2026-10-04, ~03:45 UTC, local) and fixes
+
+HiPerGator was not reachable non-interactively (the `~/.ssh/cm-hpg` control socket was closed and a batch login is
+refused without Duo), so the same protocol ran locally: `git clone` of local HEAD `1545370`, fresh `.venv`, Python 3.14
+on macOS. To rerun it on HiPerGator, open the socket first:
+`ssh -fNM -S ~/.ssh/cm-hpg -o ControlPersist=12h ojasvamishra@hpg.rc.ufl.edu`.
+
+| step | result on the clone | fix (this commit) |
+|---|---|---|
+| `bash run.sh help` | ok, 0 s | — |
+| `bash run.sh setup` | ok, 44 s | — |
+| `REPLAY_PAUSE=0 bash run.sh replay --no-dashboard` | ok (140,801 messages), 5 s; appends one line to the tracked `results/oos_peeks.log` | by design (every replay is logged); now stated in README, `run.sh help` and here. `git checkout results/oos_peeks.log` undoes it |
+| `bash run.sh redteam` | exit 0 but "5 FAIL, 2 WARN, 6 PENDING": the video checks read the obsolete `docs/video_script_v2.md`, and the forward inputs showed as pending | `scripts/redteam_acceptance.py` reads the final video's script and subtitles (`docs/video_script_60.md`, `results/viz/courtside_60.srt`); a final-video gap is KNOWN (listed in `FINAL_ISSUES.md`), the forward inputs are NOT RUN (A5), the replay filter input is `results/replay/selective/selective.json`; the page check falls back to `results/paper/labels.json`. Now 0 FAIL from the docs, deck and video; the paper's own page check is the paper workflow's |
+| `bash run.sh docs --check` | fails: unresolved `{{ref:...}}` | `docs/paper/note.aux` is gitignored (`docs/paper/.gitignore`, a paper file we do not edit). `scripts/paper_refs.py` reads labels from `note.aux` and appendix letters and calculation ids from `note.tex`, and keeps the map in the committed `results/paper/labels.json`, which a clone reads |
+| `bash run.sh docs` | exit 1 and overwrote README.md and COMPLIANCE.md with `⟨ref:fig:edge⟩` placeholders | `scripts/build_docs.py` writes nothing if any placeholder does not resolve ("NOT WRITTEN … the docs on disk are unchanged"); tested by hiding both `note.aux` and `labels.json` |
+| (working tree) 47 references to labels the renumbered paper no longer has | — | templates use the new labels (`tab:head` = Table 1, `tab:lat` = Table 2, `tab:A-all` = Table A1, `{{app:Records}}` = Appendix D, `{{calc:Taker fee}}` = A9); the deck reads every paper location from the same map (`PR()`, `APPX()` in `docs/deck/build_deck.py`) |
+| `bash run.sh tests` (core install) | 107 passed, 1 skipped, 183 s | — |
+| `bash run.sh engine books` | ok, 1 s | — |
+| `bash run.sh data --smoke 2026-01-15` | ok (38 tapes), but the universe came out at 13,109 matches, not 13,084 | the public event list had grown (matches that started or resolved on 2026-10-03 after our crawl). `scripts/freeze_universe.py` (run by `bash run.sh data`, `--smoke` and `reproduce`) drops from the cached event list only the universe rows not in `results/universe_conds.txt.gz` (the paper's 13,084 ids); on the clone's event list it gives 13,084 matches, 2,617 OOS, cut 2026-08-25 14:15 UTC, as in the paper. `src/` (sha-pinned in the PREREGs) is unchanged |
+| `python scripts/build_paper.py` (reproduce step) | fails: `ModuleNotFoundError: No module named 'jinja2'` | `jinja2==3.1.6` added to `requirements.txt`. With it (`--no-figures`): 0 of 670 numbers changed, main text 5 pages; `bash run.sh docs` then differed only in timestamps |
 
 ## Original test (2026-10-03)
 

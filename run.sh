@@ -21,6 +21,7 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
   tests               unit tests (pytest: tests/, engine/vision/tests/)          ~2-7 min (393 s on a loaded laptop)
   replay              10 min of recorded live Polymarket books (tests/fixtures/live_sample.jsonl.gz)
                       through the live paper trader and the engine's order books  ~15 s, no network
+                      (like every replay it appends one line to results/oos_peeks.log; git checkout undoes it)
   live [args]         the paper trader on live public Polymarket data, read-only, until Ctrl-C (a tool:
                       scripts/live_paper.py --test; the pre-registered live session was stopped by a team decision
                       and is not used, DEVIATIONS_LIVE.md L15). Quoting starts after a warm-up of 50 public trades,
@@ -30,11 +31,15 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
                       public Polymarket crawl into data/ (scripts/fetch_polymarket.py), no keys.
                       ETA ~1-2 h for ~13k tapes; resumable: every read is cached in data/raw, rerun to continue.
                       --smoke DAY: event list + tapes of the matches starting on DAY (default 2026-01-15, 38 in-sample matches), ~1-3 min
+                      Both pin the event list to the paper's 13,084 matches (scripts/freeze_universe.py,
+                      results/universe_conds.txt.gz): a later crawl also returns matches resolved after ours
   reproduce           bash reproduce.sh: every result file and figure, results/paper/numbers.json, docs/NOTE.pdf
                       and the docs (needs the full `data` crawl first; one smoke day is not enough for the
                       walk-forward tables)                                                   ~15-20 min
-  docs [--check]      README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from docs/templates/ and
-                      results/paper/numbers.json (scripts/build_docs.py); --check: exit 1 if stale     ~1 s
+  docs [--check]      README.md, docs/DEVPOST.md, docs/COMPLIANCE.md from docs/templates/,
+                      results/paper/numbers.json and the paper's label map (docs/paper/note.aux, or
+                      results/paper/labels.json on a clone); writes nothing if a placeholder does not resolve;
+                      --check: exit 1 if stale                                                   ~1 s
   engine [demo|books|live]
                       COURTSIDE engine, paper only. demo: vision calls -> paper decisions on a recorded book
                       (needs data/live, data/vision, models/); books: engine order books on the committed
@@ -49,8 +54,9 @@ One-command reproduction (~1.5-2.5 h, no keys):          all  (= setup, data, re
                       (needs `data` then `reproduce`: reads data/v2_trades_is_oos.parquet; scripts/money_counter.py)
   redteam             the checks we ran against ourselves (results/redteam/): stamp-lag robustness, every
                       derived Q&A number from its results file, claim/acceptance checks on the public text.
-                      No network, no held-out read, nothing re-simulated                            ~10 s
-  preflight           read-only readiness check before the one-shot forward runs (owner use, macOS):
+                      No network, no held-out read, nothing re-simulated. Expected: 0 FAIL; KNOWN = a gap in the
+                      final video (not re-rendered); NOT RUN = the forward test (HYPOTHESIS_V2.md A5)   ~10 s
+  preflight           read-only readiness check (owner use, macOS; the forward test was not run, A5):
                       clock, disk, swap, power, heavy jobs, pinned forward code unmodified, forward outputs,
                       v2-safe plan, docs up to date, untracked results, local commits not yet pushed
 EOF
@@ -120,6 +126,7 @@ case "$cmd" in
     done
     if [ -n "$smoke" ]; then
       echo "smoke fetch: the full event list (~30 s, cached) and the trade tapes of singles starting on $smoke"
+      "$PY" scripts/freeze_universe.py
       "$PY" - "$smoke" <<'EOF'
 import sys, time
 sys.path.insert(0, ".")
@@ -156,6 +163,7 @@ print(f"[data] {n}/{need} tapes cached, {rate * 60:.0f}/min, ETA {eta:.0f} min",
 EOF
       done
     }
+    "$PY" scripts/freeze_universe.py   # event list first (cached), pinned to the paper's 13,084 matches
     progress & PROG=$!
     trap 'kill $PROG 2>/dev/null || true' EXIT
     if [ -n "$parallel" ]; then
@@ -181,6 +189,7 @@ EOF
       echo "found $(ls data/raw/trades 2>/dev/null | wc -l | tr -d ' ') trade tapes in data/raw/trades; the walk-forward tables need the whole year."
       [ "${FORCE:-0}" = 1 ] || { echo "(set FORCE=1 to run anyway)"; exit 1; }
     fi
+    "$PY" scripts/freeze_universe.py || [ "${FORCE:-0}" = 1 ] || { echo "the event list lacks some of the paper's matches (set FORCE=1 to run anyway)"; exit 1; }
     PY="$PY" bash reproduce.sh "$@"
     ;;
 
@@ -268,7 +277,7 @@ EOF
     need_venv
     ok() { printf '  ok    %s\n' "$1"; }
     bad() { printf '  CHECK %s\n' "$1"; }
-    now=$(date -u +%H:%M); echo "preflight at $now UTC (forward runs: 11:30 UTC; hard stop 15:00 UTC)"
+    now=$(date -u +%H:%M); echo "preflight at $now UTC (forward test not run: HYPOTHESIS_V2.md A5; hard stop 15:00 UTC)"
     free_g=$(df -g . | awk 'NR==2 {print $4}')
     [ "${free_g:-0}" -ge 15 ] && ok "disk: ${free_g} GB free" || bad "disk: ${free_g} GB free (< 15 GB; the forward run loads ~12 GB of prints; gzip data/live/*.jsonl first)"
     if command -v sysctl >/dev/null && sysctl -n vm.swapusage >/dev/null 2>&1; then
@@ -286,8 +295,8 @@ EOF
     pinned="scripts/forward_test.py scripts/tier0_v3_forward.py src/v2.py src/tiers.py src/fasttier.py src/tape.py src/polymarket.py research/v2/sizing/engine.py"
     # shellcheck disable=SC2086
     [ -z "$(git status --porcelain -- $pinned)" ] && ok "pinned forward pipeline unmodified vs HEAD" || bad "pinned forward files modified: $(git status --porcelain -- $pinned | tr '\n' ' ')"
-    [ -f results/v2/forward.json ] && echo "  info  results/v2/forward.json exists (forward test already ran)" || ok "results/v2/forward.json absent (forward test not run yet)"
-    [ -f results/tier0_v3/forward/results.json ] && echo "  info  tier-0 v3 forward result exists" || ok "tier-0 v3 forward result absent (not run yet)"
+    [ -f results/v2/forward.json ] && echo "  info  results/v2/forward.json exists (forward test already ran)" || ok "results/v2/forward.json absent (forward test not run: HYPOTHESIS_V2.md A5)"
+    [ -f results/tier0_v3/forward/results.json ] && echo "  info  tier-0 v3 forward result exists" || ok "tier-0 v3 forward result absent (not run: A5)"
     "$PY" scripts/forward_test_safe.py --plan | "$PY" -c "import json,sys; d=json.load(sys.stdin); print('  info  v2-safe (C9) ready for its one run:', d['real_run_ready'], '|', '; '.join(d['problems']) or 'no problems')"
     "$PY" scripts/build_docs.py --check >/dev/null 2>&1 && ok "README/DEVPOST/COMPLIANCE up to date with numbers.json" || bad "docs stale or a docs check failed: bash run.sh docs"
     unt=$(git status --porcelain --untracked-files=all -- results/live results/e2e results/capacity results/redteam results/v2 2>/dev/null | wc -l | tr -d ' ')
