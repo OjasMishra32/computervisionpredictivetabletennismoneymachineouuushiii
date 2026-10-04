@@ -1,0 +1,184 @@
+{
+  "polymarket_backtest_universe": {
+    "label": "ATP/WTA singles match markets with in-play trades (real prices, fills, fees, taker delays)",
+    "n_matches": 13084,
+    "by_series": {
+      "atp": 8554,
+      "wta": 4530
+    },
+    "first_start": "2025-10-08 02:00:00+00:00",
+    "last_start": "2026-10-03 07:10:00+00:00",
+    "grand_slam": {
+      "australian_open": {
+        "all": 415,
+        "main_draw": 415,
+        "qualifying": 0
+      },
+      "roland_garros": {
+        "all": 412,
+        "main_draw": 255,
+        "qualifying": 157
+      },
+      "us_open": {
+        "all": 483,
+        "main_draw": 258,
+        "qualifying": 225
+      },
+      "wimbledon": {
+        "all": 0,
+        "main_draw": 0,
+        "qualifying": 0
+      },
+      "total": {
+        "all": 1310,
+        "main_draw": 928,
+        "qualifying": 382
+      }
+    },
+    "top_events": {
+      "Madrid Open": 194,
+      "Internazionali BNL d'Italia": 194,
+      "Cincinnati Open": 192,
+      "National Bank Open": 173,
+      "US Open ATP": 130,
+      "Roland Garros ATP": 128,
+      "US Open WTA": 128,
+      "Roland Garros WTA": 127,
+      "US Open, Qualification WTA": 113,
+      "US Open, Qualification ATP": 112,
+      "Roland Garros, Qualification ATP": 80,
+      "China Open": 79
+    }
+  },
+  "tier0_pool_1s_delay": {
+    "label": "matches in the 1 s taker-delay regime (the Tier-0 CV counterfactual's pool)",
+    "n_matches": 7755,
+    "by_series": {
+      "atp": 5247,
+      "wta": 2508
+    },
+    "first_start": "2026-05-15 08:30:00+00:00",
+    "last_start": "2026-10-03 07:10:00+00:00",
+    "grand_slam": {
+      "australian_open": {
+        "all": 0,
+        "main_draw": 0,
+        "qualifying": 0
+      },
+      "roland_garros": {
+        "all": 412,
+        "main_draw": 255,
+        "qualifying": 157
+      },
+      "us_open": {
+        "all": 483,
+        "main_draw": 258,
+        "qualifying": 225
+      },
+      "wimbledon": {
+        "all": 0,
+        "main_draw": 0,
+        "qualifying": 0
+      },
+      "total": {
+        "all": 895,
+        "main_draw": 513,
+        "qualifying": 382
+      }
+    },
+    "top_events": {
+      "Cincinnati Open": 192,
+      "National Bank Open": 173,
+      "US Open ATP": 130,
+      "Roland Garros ATP": 128,
+      "US Open WTA": 128,
+      "Roland Garros WTA": 127,
+      "US Open, Qualification WTA": 113,
+      "US Open, Qualification ATP": 112,
+      "Roland Garros, Qualification ATP": 80,
+      "China Open": 79,
+      "Roland Garros, Qualification WTA": 77,
+      "Porto": 76
+    }
+  },
+  "tier0_traded_matches": {
+    "IS_mean": 680.55,
+    "burned_OOS_mean": 245.65,
+    "note": "mean over seeds of matches with at least one simulated CV trade (stitched IS; burned OOS primary)"
+  },
+  "v2_backtest_matches": {
+    "IS": 7639,
+    "burned_OOS": 2003,
+    "note": "matches with at least one copied fast-tier fill (results/v2/causal.json)"
+  },
+  "match_charting_project": {
+    "source": "Jeff Sackmann, Match Charting Project (https://github.com/JeffSackmann/tennis_MatchChartingProject), charting-{m,w}-points-2020s.csv, CC BY-NC-SA 4.0. Crowd-charted, mostly tour-level and Grand Slam matches.",
+    "men": {
+      "n_matches": 3337,
+      "n_points": 547478,
+      "years": [
+        2020,
+        2026
+      ]
+    },
+    "women": {
+      "n_matches": 2552,
+      "n_points": 353755,
+      "years": [
+        2020,
+        2026
+      ]
+    },
+    "n_matches": 5889,
+    "n_points": 901233
+  },
+  "tracknet_broadcast_tennis": {
+    "source": "TrackNet tennis dataset (Huang et al. 2019, NCTU)",
+    "matches": 10,
+    "clips": 95,
+    "frames_labelled": 19835,
+    "split": {
+      "train_tuning": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "test_once": [
+        8,
+        9,
+        10
+      ]
+    },
+    "bounces_evaluated": {
+      "train": 267,
+      "test": 132
+    },
+    "outs": {
+      "train": 7,
+      "test": 11
+    },
+    "note": "ball detector = pretrained TrackNet weights (yastrebksv); landing predictors and call thresholds tuned by us on games 1-7, tested once on 8-10"
+  },
+  "real_rally_clip": {
+    "source": "Pexels video 10378830 (licence in results/viz/v60_assets/tennis_real/LICENSE.md)",
+    "files": "results/viz/v60_assets/tennis_real/"
+  },
+  "polymarket_listing_raw": {
+    "file": "events_tennis_2025-07-01_2026-10-03.parquet",
+    "n_events": 39276,
+    "by_series": {
+      "itf": 19926,
+      "atp": 9761,
+      "wta": 5176,
+      "atp-doubles": 2152,
+      "wta-doubles": 883,
+      "wimbledon": 801,
+      "daviscup-games": 27
+    },
+    "note": "Wimbledon is listed under its own series and is outside the ATP/WTA backtest universe."
+  }
+}
