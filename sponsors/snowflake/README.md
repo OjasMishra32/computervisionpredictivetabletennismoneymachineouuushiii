@@ -14,6 +14,40 @@ capital where Sharpe halves, pipeline latency percentiles), 42 looked up from st
 This folder is optional and separate from the paper's pipeline: nothing in `reproduce.sh`, `run_all.py`, `src/`,
 `scripts/` or `tests/` uses it, it has its own requirements, and it writes only to `sponsors/snowflake/out/`.
 
+## Independent re-derivation from row-level files (`sql/`, `rederive.py`)
+
+The paper's headline numbers recomputed in SQL straight from row-level files in git, without the team's Python:
+v2's daily P&L (`results/rigor/psr_daily.csv`), the CV trader's 20 per-seed sweep cells and daily paths
+(`results/tier0/latency_sweep_seeds.csv`), the frozen CV rule v3's blind trades (`results/tier0_v3/u2/*.parquet`), the
+fresh holdout's per-seed daily paths and showcase trades (`results/fresh_holdout/`), and the capacity grid's per-seed
+cells (`results/capacity/cv_seeds.parquet`). Each `sql/*.sql` states its definitions in its header and runs on its own
+from the repo root (`duckdb -c ".read sponsors/snowflake/sql/01_v2_daily.sql"`); `rederive.py` only runs them and
+compares each value with the printed text:
+
+```bash
+sponsors/snowflake/.venv/bin/python sponsors/snowflake/rederive.py
+```
+
+Output: [`out/independent_rederivation.md`](out/independent_rederivation.md) (paper key, printed, SQL value, ✓/✗,
+SQL file, definition; every ✗ explained).
+
+## Every number in the paper (`check_all.py`)
+
+`check_all.py` checks all of the paper's printed numbers, not just the 62 above. It reads
+`results/note_numbers.json` (else `results/paper/numbers.json`), resolves each entry's `source` from the committed
+files (JSON paths, CSV rows through DuckDB, derived formulas, code lines, git history), formats the value the way the
+paper prints it and compares it with the printed text. Where row-level data is committed it recomputes instead of
+reading a stored summary (v2's Sharpe from `results/lowloss/daily.csv`). It also lists numbers on PDF pages 1-5 that
+the numbers file doesn't contain, and digits typed straight into `docs/paper/note.tex.j2` that equal a printed result.
+No account needed:
+
+```bash
+sponsors/snowflake/.venv/bin/python sponsors/snowflake/check_all.py              # or --root <checkout> --pdf <file>
+```
+
+Output: [`out/check_all.md`](out/check_all.md) (summary line, every mismatch, every unresolvable source, matches that
+needed a looser rule such as a x100 percent scale, PDF and template scans).
+
 ## Run it (Python 3.11+, own venv, your own Snowflake account)
 
 ```bash
