@@ -1,7 +1,7 @@
 {
- "n": 76,
+ "n": 77,
  "counts": {
-  "live": 21,
+  "live": 22,
   "audit": 25,
   "descriptive": 5,
   "non-blind": 16,
@@ -410,6 +410,11 @@
    "utc": "2026-10-04T00:36:34.986584+00:00",
    "class": "audit",
    "line": "capacity study: burned OOS size/cap/coverage grid (non-blind, no parameter chosen) [scripts/capacity_study.py --grid --resume on Ojasvas-MacBook-Air-3.local, re-run with the capacity verifier's fixes (depth cap, extrapolation, pro-rata bracket, lock to close); logged before the run]"
+  },
+  {
+   "utc": "2026-10-04T02:02:51.803623+00:00",
+   "class": "live",
+   "line": "maker v1 live paper session (B) START: run=20261003T204812Z commit=c655981f378a6a5567eef4470c2bef19b1e4f9e7 until=2026-10-04T11:30:00.000Z (PREREG research/v2/maker/PREREG.md section 3; paper only, public data)"
   }
  ]
 }

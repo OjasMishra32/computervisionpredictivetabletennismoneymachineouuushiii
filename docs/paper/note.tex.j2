@@ -3,34 +3,35 @@
    Jinja delimiters: double angle brackets for values, angle-percent for blocks, angle-hash for comments.
    Order rule (research/compliance/PAPER_REQUIREMENTS.md, addendum after the red team): the pre-registered stamp-lag
    reading comes first, then the post hoc estimate with its interval; the CV trade set is labelled "selected on
-   outcomes, not ex ante"; the offline 11-of-11 call table is labelled as an offline evaluation with a look-ahead
-   feature. #>
+   outcomes, not ex ante"; the offline call table is labelled as an offline evaluation with a look-ahead feature.
+   Figures: results/paper/v2 (scripts/paper_figures_v2.py, house style docs/paper/figstyle.py, 11-12 pt type). #>
 \documentclass[11pt,letterpaper]{article}
 \usepackage{courtside}
 \input{numbers.tex}
 \hypersetup{pdftitle={COURTSIDE: Pricing the Value of Speed in In-Play Tennis Prediction Markets},
-  pdfauthor={[Author names: team to fill], University of Florida},
+  pdfauthor={<< X['authors'] >>, University of Florida},
   pdfkeywords={prediction markets; latency arbitrage; in-play betting; tennis; computer vision; market microstructure}}
 
 \begin{document}
 
 \cstitle{COURTSIDE: Pricing the Value of Speed\\in In-Play Tennis Prediction Markets}
-  {[Author names: team to fill] \textperiodcentered{} University of Florida \textperiodcentered{} [emails: team to fill]}
-  {Gator Quant Hacks 2026 \textperiodcentered{} Systematic Trading Track \textperiodcentered{} University of Florida}
+  {<< X['authors'] >> \textperiodcentered{} University of Florida}
+  {Gator Quant Hacks 2026 \textperiodcentered{} Systematic Trading Track}
   {October 4, 2026}{}
-\unmarkedfootnote{Reproduce: \texttt{bash reproduce.sh}
-(\url{https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii}). Paper only; no
-licensed feed, match footage or court camera is held.}
+\unmarkedfootnote{Reproduce: \texttt{bash reproduce.sh}; paper: \texttt{python scripts/build\_paper.py}
+(\url{https://github.com/OjasMishra32/computervisionpredictivetabletennismoneymachineouuushiii}). Paper only: no
+real money, no licensed feed, no match footage and no court camera.}
 
 \begin{csabstract}
-In-play tennis prediction markets are priced by whoever learns the point first. We measure who that is, what they earn
-and what each second is worth, from public trade tapes of << V('univ.matches') >> Polymarket tennis matches. A walk-forward fast tier of wallets trading within 3\,s of a score move earns
-<< V('ft.c.is') >>¢ per share after fees in sample and << V('ft.c.oos') >>¢ in its single out-of-sample run; other
-takers lose. At its own fills a frozen book earns << V('v2.oos.c') >>¢ on a burned (non-blind) hold-out, but not with
-fees doubled. Simulated at a 1\,s licensed-feed baseline (<< CV_LABEL >>), a computer-vision (CV) trader earns
-<< V('cv.pre.oos.usd') >> a day on that hold-out at the pre-registered stamp lag, where each second of feed delay costs
-<< V('cv.pre.persec.range') >> a day, and << V('cv.cal.oos.usd') >> at a post hoc estimate, on trades selected on
-outcomes; a replay on real books loses. Real money: none.
+We study who profits from speed in Polymarket's in-play tennis moneylines (<< V('univ.matches') >> matches, public
+tapes). A walk-forward fast tier of wallets trading within 3\,s of a score move earns after fees in every in-sample
+and held-out month; other takers lose, and copying them 3\,s later loses. At the fast tier's own fills a
+frozen book (v2) has a Sharpe ratio of << V('v2.is.sr') >> in sample and << V('v2.oos.sr') >> on a burned hold-out,
+but turns negative when fees double. We then price the speed a computer-vision (CV) trader needs (simulated;
+<< CV_LABEL >>). Pre-registered, it breaks even at a << V('cv.pre.be.range') >>\,s feed delay and earns
+<< V('sc.pre.oos.v05.usd') >>, << V('sc.pre.oos.v1.usd') >> and << V('sc.pre.oos.v3.usd') >> a day held out at 0.5, 1
+and 3\,s; a post hoc stamp-lag inference gives << V('sc.cal.oos.v1.usd') >> at 1\,s. A replay on real books loses.
+Real money: none.
 
 \vspace{2pt}\noindent\textbf{JEL:} G14, G12, C58.\enspace \textbf{Keywords:} prediction markets; latency arbitrage;
 in-play betting; tennis; computer vision; market microstructure.
@@ -38,19 +39,63 @@ in-play betting; tennis; computer vision; market microstructure.
 
 % ======================================================================================== 1 Summary
 \section{Summary}\label{sec:summary}
-Our CV calls the point before the ball lands; we price the feed it needs.
 \begin{keybox}
-\item \textbf{Strategy and edge.} Call the point with CV; lift the stale resting quote inside the << V('venue.delay') >>\,s
-taker delay. The book reprices << V('lat.book_vs_stamp') >>\,s \emph{before} the official stamp; the fast tier earns
-<< V('ft.c.is') >>\,/\,<< V('ft.c.oos') >>¢ a share after fees (IS\,/\,OOS) every month; other takers lose.
-\item \textbf{Headline, burned OOS.} v2 at fast-tier fills: << V('v2.oos.c') >>¢ << V('v2.oos.ci') >>, Sharpe
-<< V('v2.oos.sr') >>. CV at the 1\,s baseline (<< CV_LABEL >>): << V('cv.pre.oos.usd') >>/day (Sharpe << V('cv.pre.oos.sr') >>) at the pre-registered \(L = << V('cv.pre.lag') >>\)\,s,
-<< V('cv.cal.oos.usd') >>/day (Sharpe << V('cv.cal.oos.sr') >>) at the post hoc \(L = << V('cv.cal.lag') >>\)\,s
-[<< V('cv.cal.lag_ci') >>]; trades selected on outcomes, not ex ante.
-\item \textbf{Failed; decision.} Fees \(\times\)2 OOS (<< V('v2.oos.fx2.c') >>¢); every blind test of a tradable book;
-the replay on real books; table tennis. Go only on a measured stamp lag \(L \geq << V('cv.L_go') >>\)\,s, which pays
-for the cheapest data stack. Real money: none.
+\item \textbf{Strategy and edge.} Call the point with CV and lift the stale resting quote inside the venue's
+<< V('venue.delay') >>\,s taker delay. The book reprices << V('lat.book_vs_stamp') >>\,s \emph{before} the official
+stamp; the fast tier earns << V('ft.c.is') >>\,/\,<< V('ft.c.oos') >>¢ a share after fees (IS\,/\,OOS) in
+<< V('ft.months.is') >> and << V('ft.months.oos') >> months; other takers lose.
+\item \textbf{Headline, burned OOS} (Table~\ref{tab:head}). v2 at fast-tier fills: Sharpe << V('v2.oos.sr') >>
+<< V('v2.oos.sr_ci') >>, << V('v2.oos.c') >>¢ << V('v2.oos.ci') >>. CV at a 1\,s feed, pre-registered:
+<< V('sc.pre.oos.v1.usd') >>/day, << V('sc.pre.oos.v1.c') >>¢ << V('sc.pre.oos.v1.cci') >>: break-even (the call
+must reach the venue << V('cv.call_before_stamp') >>\,s before the umpire's stamp). Post hoc (stamp lag
+<< V('cv.cal.lag') >>\,s; trades selected on outcomes, not ex ante): << V('sc.cal.oos.v1.usd') >>/day. Real books:
+<< V('rp.v1l2.c') >>¢. Our pipeline, frame to order on own footage: << V('e2e.ours') >>\,ms.
+\item \textbf{What failed.} Fees \(\times\)2 OOS (<< V('v2.oos.fx2.c') >>¢); the blind unseen-market, maker and v3
+tests; table tennis; v2 OOS net of a central feed licence (<< V('fin.v2.oos.net_central') >>/day). Real money: none.
 \end{keybox}
+
+\begin{table}[t]
+\caption{\emph{Headline metrics. (A)~v2 at the fast tier's own fills. (B)~The CV strategy at three assumed feed
+latencies: pre-registered, it breaks even near 1\,s; the sign turns on one unmeasured number, the stamp lag \(L\).}}
+\label{tab:head}
+\tabnums\setlength\tabcolsep{4pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+\textbf{A. Fast-tier fills} & \multicolumn{2}{c}{\textbf{v2} (frozen)} & \multicolumn{2}{c}{v2-safe (net cap 50)} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+ & IS & OOS & IS & OOS \\
+\midrule
+Sharpe & << V('v2.is.sr') >> & << V('v2.oos.sr') >> & << V('v2s.is.sr') >> & << V('v2s.oos.sr') >> \\
+\quad 95\% CI & << V('v2.is.sr_ci') >> & << V('v2.oos.sr_ci') >> & << V('v2s.is.sr_ci') >> & << V('v2s.oos.sr_ci') >> \\
+Deflated Sharpe & << V('v2.is.dsr') >> & << V('v2.oos.dsr') >> & << V('v2s.is.dsr') >> & << V('v2s.oos.dsr') >> \\
+Net ¢ per share & << V('v2.is.c') >> & << V('v2.oos.c') >> & << V('v2s.is.c') >> & << V('v2s.oos.c') >> \\
+Return\,/\,vol, a year & << V('v2.is.ret') >>\,/\,<< V('v2.is.vol') >> & << V('v2.oos.ret') >>\,/\,<< V('v2.oos.vol') >> & << V('v2s.is.ret') >>\,/\,<< V('v2s.is.vol') >> & << V('v2s.oos.ret') >>\,/\,<< V('v2s.oos.vol') >> \\
+Max DD\,/\,worst month & << V('v2.is.dd') >>\,/\,<< V('v2.is.worstmonth') >> & << V('v2.oos.dd') >>\,/\,<< V('v2.oos.worstmonth') >> & << V('v2s.is.dd') >>\,/\,<< V('v2s.is.worstmonth') >> & << V('v2s.oos.dd') >>\,/\,<< V('v2s.oos.worstmonth') >> \\
+Turnover (\(\times\)/yr)\,/\,skew & << V('v2.is.turnover') >>\,/\,<< V('v2.is.skew') >> & << V('v2.oos.turnover') >>\,/\,<< V('v2.oos.skew') >> & << V('v2s.is.turnover') >>\,/\,<< V('v2s.is.skew') >> & << V('v2s.oos.turnover') >>\,/\,<< V('v2s.oos.skew') >> \\
+\midrule
+\textbf{B. CV strategy} (simulated) & \multicolumn{2}{c}{\textbf{Pre-registered \(L = << V('cv.pre.lag') >>\)\,s}} & \multicolumn{2}{c}{Post hoc \(L = << V('cv.cal.lag') >>\)\,s} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Feed latency \(V\) (assumed) & IS & OOS & IS & OOS \\
+\midrule
+<% for vk, lab in [('v05', '0.5\\,s best case'), ('v1', '1\\,s base case'), ('v3', '3\\,s requirement')] %>
+\textbf{<< lab >>}: \$/day & << V('sc.pre.is.' ~ vk ~ '.usd') >> & << V('sc.pre.oos.' ~ vk ~ '.usd') >> & << V('sc.cal.is.' ~ vk ~ '.usd') >> & << V('sc.cal.oos.' ~ vk ~ '.usd') >> \\
+\quad \textbf{Sharpe}\,/\,net ¢ per share & \textbf{<< V('sc.pre.is.' ~ vk ~ '.sr') >>}\,/\,<< V('sc.pre.is.' ~ vk ~ '.c') >> & \textbf{<< V('sc.pre.oos.' ~ vk ~ '.sr') >>}\,/\,<< V('sc.pre.oos.' ~ vk ~ '.c') >> & \textbf{<< V('sc.cal.is.' ~ vk ~ '.sr') >>}\,/\,<< V('sc.cal.is.' ~ vk ~ '.c') >> & \textbf{<< V('sc.cal.oos.' ~ vk ~ '.sr') >>}\,/\,<< V('sc.cal.oos.' ~ vk ~ '.c') >> \\
+\quad ¢, 95\% CI & << V('sc.pre.is.' ~ vk ~ '.cci') >> & << V('sc.pre.oos.' ~ vk ~ '.cci') >> & << V('sc.cal.is.' ~ vk ~ '.cci') >> & << V('sc.cal.oos.' ~ vk ~ '.cci') >> \\
+<% endfor %>
+Break-even feed delay \(V\), s & << V('cv.pre.be.is') >> & << V('cv.pre.be.oos') >> & << V('cv.cal.be.is') >> & << V('cv.cal.be.oos') >> \\
+At 1\,s: clocks read per point, \$/day & << V('pp.pre.is.usd') >> & << V('pp.pre.oos.usd') >> & << V('pp.cal.is.usd') >> & << V('pp.cal.oos.usd') >> \\
+\quad no early CV calls, \$/day & << V('cv.pess.is.usd') >> & << V('cv.pess.oos.usd') >> & << V('pess.cal.is.usd') >> & << V('pess.cal.oos.usd') >> \\
+\quad live engine's calls, \$/day & << V('cv.eng.pre.is.usd') >> & << V('cv.eng.pre.oos.usd') >> & << V('cv.eng.cal.is.usd') >> & << V('cv.eng.cal.oos.usd') >> \\
+\bottomrule
+\end{tabular*}
+\tabnotes{\emph{Notes:} Sharpe: daily P\&L, zero-filled calendar days, \(\times\sqrt{365}\); CI: stationary
+bootstrap; deflated Sharpe at << V('rig.N3386') >> trials (<< V('rig.N') >> for v2-safe), lowest of three variance
+sources. OOS: burned, non-blind; v2-safe was fixed after v2's OOS losses and failed blind. B:
+<< CV_LABEL >>; << V('cv.seeds') >> seeds a cell; trades are points that later repriced \(\geq\)4¢, selected on
+outcomes (not ex ante); timing per tournament, adopted after the first P\&L (V3); the post hoc lag assumes courtside
+humans, 95\% CI << V('cv.cal.lag_ci') >>\,s; per point, no correct call fills at 1\,s; CV recall is the offline rule's
+(look-ahead feature). \texttt{PREREG.md} was written << V('t0.prereg.written') >> UTC, before the first P\&L.}
+\end{table}
 
 % ======================================================================================== 2 Hypothesis
 \section{Economic hypothesis}\label{sec:hyp}
@@ -58,178 +103,103 @@ Win probability is a known function of the score. The leverage of point \(k\),
 \begin{equation}\label{eq:lev}
   \Delta(k) = \Pr(\text{win}\mid \text{point } k \text{ won}) - \Pr(\text{win}\mid \text{point } k \text{ lost}),
 \end{equation}
-follows from the exact point-level Markov chain \citep{klaassen2001}, with mean \(|\Delta(k)|\) of << V('markov.lev') >>
-over the << V('markov.points') >> points of a simulated ATP best-of-three. Each point moves fair value by a known amount
-at a known instant, and the news reaches traders in tiers (Fig.~\ref{fig:ladder}a): in-venue tracking; the official
-stamp (unmeasured, << V('lat.stamp_band') >>\,s later); licensed video (<< V('lat.video_band') >>\,s, vendor-stated);
-public streams (\(\geq\)<< V('lat.webrtc_public') >>\,s); score feeds (<< V('lat.espn') >>--<< V('lat.wta') >>\,s after
-the book, which reprices a median << V('lat.book_vs_stamp') >>\,s \emph{before} the stamp, \(n = << V('lat.n_points') >>\)).
-Makers whose quotes are stale when a point ends are picked off by whoever learns it first: the adverse selection of
-\citet{glosten1985}, the stale-quote sniping of \citet{budish2015} and \citet{aquilina2022}, the toxic arbitrage of
-\citet{foucault2017}.
+follows from the point-level Markov chain \citep{klaassen2001}; mean \(|\Delta|\) is << V('markov.lev') >>. Each point
+moves fair value by a known amount at a known instant, and the news reaches traders in tiers (Fig.~\ref{fig:race}a);
+stale makers are picked off by whoever learns first \citep{glosten1985,budish2015,aquilina2022}. The rent is being
+competed away: the fast tier grew from << V('ft.wallets.first') >> to << V('ft.wallets.last') >> wallets as its edge
+fell << V('ft.slope') >>¢ a month (\(t = << V('ft.slope.t') >>\)). In-play mispricing is known
+\citep{croxson2014,brown2012}; new here: a wallet-level map of the latency tier and a price on each second.
 \begin{hypbox}
 \textbf{H6.} \emph{Universe:} Polymarket ATP/WTA/Challenger moneylines. \emph{Behaviour:} wallets trading 0--3\,s
 after a score move. \emph{Horizon:} 30\,s markout. \emph{Counterparty:} the resting maker who has not yet cancelled a
 stale quote. \emph{Persistence:} physics and data licences decide who learns first; the 1\,s taker delay lets makers
-cancel, so only news that leads the reprice by over a second pays (a barrier to entry; the cost \(D\) in
-Eq.~\ref{eq:budget}). \emph{Prediction:} fast wallets chosen on past months keep a positive net markout each month and
-out of sample. \emph{Falsifier:} \(\leq 0\) in over a third of months, or out of sample. \emph{Trail:} H1--H4 committed
-before any result (\texttt{<< V('prereg.hyp.commit') >>}); H6 frozen before the OOS opened; changes in
-\texttt{DEVIATIONS.md}.
+cancel (the cost \(D\) in Eq.~\ref{eq:budget}). \emph{Prediction:} fast wallets chosen on past months keep a positive
+net markout each month and out of sample. \emph{Falsifier:} \(\leq 0\) in over a third of months, or out of sample.
+\emph{Trail:} H1--H4 committed before any result (\texttt{<< V('prereg.hyp.commit') >>}); H6 frozen before the OOS opened.
 \end{hypbox}
-The rent tracks the structure (v2: << V('v2.reg.3s0') >>, << V('v2.reg.3s3') >>, << V('v2.reg.1s3') >>,
-<< V('v2.reg.1s5') >>¢ in the 3\,s/0\%, 3\,s/3\%, 1\,s/3\%, 1\,s/5\% delay/fee regimes) and is being competed away: the
-fast tier grew from << V('ft.wallets.first') >> to << V('ft.wallets.last') >> wallets as its edge fell
-<< V('ft.slope') >>¢ a month (\(t = << V('ft.slope.t') >>\)); five wallets carry << V('conc.top5.is') >>\,/\,<< V('conc.top5.oos') >>
-of v2's P\&L; the venue now buys official data and streams the ATP itself \citep{gi2026,prn2026}. In-play mispricing
-is known \citep{croxson2014,brown2012,brown2014}; new here: a wallet-level map of the latency tier, a timing of every
-public source, a price on each second.
 
 % ======================================================================================== 3 Data
 \section{Data and universe}\label{sec:data}
 << V('univ.matches') >> resolved ATP/WTA/Challenger singles moneylines with \(\geq\)<< V('univ.minvol') >> volume,
-<< V('univ.first') >> to << V('univ.last') >>, on a public order book. IS: the first 80\% of matches by start time; OOS: the last << V('univ.oos') >> from << V('univ.oosstart') >> (<< V('univ.oos_vol') >> of
-volume; burned for v2 and CV). A blind test on << V('u2.markets') >> smaller markets checks survivorship.
-<< V('data.offsetcap') >> tapes may be truncated, << V('data.nofee') >> early matches pay no fee, << V('data.res5050') >>
-settle 50/50 (all kept); tape stamps lag << V('data.blocklag') >>\,s. Sources: Polymarket APIs and sports websocket
-\citep{pmapi}; ESPN and WTA, latency only \citep{espn,wtaapi}; Kalshi \citep{kalshiapi}; \citet{french}; OpenTTGames
-\citep{voeikov2020}; BlurBall and WASB-SBDT weights \citep{gossard2026,tarashima2023}.
+<< V('univ.first') >> to << V('univ.last') >>, public books and tapes \citep{pmapi}. IS: the first 80\% of matches by
+start; OOS: the last << V('univ.oos') >> from << V('univ.oosstart') >> (burned for v2 and the CV simulation). A blind
+test on << V('u2.markets') >> smaller markets checks survivorship; << V('data.offsetcap') >> tapes may be truncated,
+<< V('data.nofee') >> early matches pay no fee, << V('data.res5050') >> settle 50/50 (kept), and tape stamps lag
+<< V('data.blocklag') >>\,s. Timing: ESPN, WTA \citep{espn,wtaapi}; vision: OpenTTGames
+\citep{voeikov2020}, BlurBall and WASB weights \citep{gossard2026,tarashima2023}.
 
 % ======================================================================================== 4 Methodology
 \section{Methodology}\label{sec:method}
 \para{Fast tier and v2} A detector fires on a \(\geq\)<< V('pol.det_c') >>¢ move of the 10\,s VWAP against the prior
 60\,s. Each month a wallet qualifies on past months only (\(\geq\)<< V('pol.q_prints') >> prints 0--3\,s after a
-detection, \(\geq\)<< V('pol.q_matches') >> matches, \(t > << V('pol.q_t') >>\) on its 30\,s markout). The frozen book
-v2 copies qualifying prints, sized \(\propto 1/\sqrt{q(1-q)}\), at most << V('risk.order_usd') >> per order and
-<< V('risk.netcap') >> shares net per match, held to resolution, at the fast tier's own prices: \emph{the opportunity at
-their speed, not our execution}.
+detection, \(\geq\)<< V('pol.q_matches') >> matches, \(t > << V('pol.q_t') >>\)). The frozen book v2 copies their
+prints, sized by resolution risk, at most << V('risk.order_usd') >> an order and << V('risk.netcap') >> shares net per
+match, held to resolution, at the fast tier's own prices: \emph{the opportunity at their speed, not our execution}
+(components: Table~\ref{tab:comp}).
 
-\para{CV strategy} Streamed causally on held-out 120\,fps table-tennis video, our live engine calls
-<< V('cv.eng.tp') >> of << V('cv.eng.nmiss') >> misses before contact, none wrongly (Wilson lower bound
-<< V('cv.eng.wil_lo') >>; median lead << V('cv.eng.lead') >>\,ms);
-an offline evaluation with a look-ahead feature called << V('cv.tt.tp50') >> of << V('cv.tt.called50') >> at 50\,ms (Fig.~\ref{fig:ladder}b). Frame to order-ready over
-WebRTC takes << V('e2e.ours') >>\,ms; with a simulated 1\,s feed, network and venue hold, << V('e2e.total') >>\,ms, under
-the organiser's 3\,s bar (\texttt{results/e2e}, paper). With the bounce at time zero an order wins only if
+\para{CV and the latency budget} Frame to unsigned order takes << V('e2e.ours') >>\,ms; with a simulated 1\,s feed,
+<< V('e2e.net') >>\,ms network and the 1\,s venue hold an order is executable at << V('e2e.total') >>\,ms, inside the
+organiser's 3\,s bar (Fig.~\ref{fig:f2t}; paper, no order sent). It wins only if
 \begin{equation}\label{eq:budget}
   V + \delta + D - \ell \;<\; L + R \quad\Longleftrightarrow\quad V \;<\; L + R - D - \delta + \ell ,
 \end{equation}
-where \(V\) is the feed delay, \(\delta\) the inference (<< V('cv.inf') >>\,ms), network and gateway, \(D\) the
-<< V('venue.delay') >>\,s taker delay, \(\ell\) the call lead, \(L\) the stamp lag and \(R\) the reprice relative to the
-stamp, measured on << V('lat.n_points') >> live points (fills draw on the << V('cv.pool.d3') >> whose book moved
-\(\geq\)3¢); \(V\) runs 0--60\,s, << V('cv.seeds') >> seeds a cell. The trade set is every historical point the market
-later repriced \(\geq\)<< V('pol.det_c') >>¢: \emph{selected on outcomes, not ex ante}. \(L\) is unmeasured:
-pre-registered << V('cv.pre.lag') >>\,s, or a post hoc estimate of << V('cv.cal.lag') >>\,s (95\% CI
-<< V('cv.cal.lag_ci') >>\,s; two modes, as the stamp has 1\,s resolution) that assumes the first informed prints are
-courtside humans reacting in << V('cv.cal.react') >>\,s (who would also queue ahead of a 1\,s-feed order). Free of \(L\), the call must land
-\(\geq\)<< V('cv.call_before_stamp') >>\,s before the umpire's stamp; \(V = 1\)\,s at \(L = << V('cv.cal.lag') >>\)\,s
-equals a camera << V('cv.cal.shift') >>\,s \emph{ahead} of the bounce at \(L = << V('cv.pre.lag') >>\)\,s. Its
-pre-registration set no pass/fail rule; the blind test of the frozen v3 rule did, and failed (Table~\ref{tab:fail}).
+where \(V\) is the feed delay, \(\delta\) our pipeline and network, \(D\) the << V('venue.delay') >>\,s taker delay,
+\(\ell\) the call lead, \(L\) the stamp lag and \(R\) the reprice relative to the stamp (measured, \(n =
+<< V('lat.n_points') >>\)). The trade set is the historical \(\geq\)<< V('pol.det_c') >>¢ detector set,
+\emph{selected on outcomes, not ex ante}; the replay calls every point. \(L\) is unmeasured; Table~\ref{tab:head} shows
+every reading. Only \(L + R\) enters, so \(V = 1\)\,s at the post hoc \(L = << V('cv.cal.lag') >>\)\,s equals a camera
+<< V('cv.cal.shift') >>\,s ahead of the point at \(L = << V('cv.pre.lag') >>\)\,s.
 
-\para{Costs} Each match's own taker fee,
-\begin{equation}\label{eq:fee}
-  f(q) = r\,q\,(1-q)\ \text{per share} \;=\; 10{,}000\,r\,(1-q)\ \text{bps of notional},
-\end{equation}
-with \(r = << V('fee.rate') >>\) today (<< V('fee.bps_q05') >>\,bps at \(q = 0.5\)): << V('v2.is.fee_bps') >>\,/\,<< V('v2.oos.fee_bps') >>\,bps
-on v2's trades (IS\,/\,OOS). Spreads are paid as traded. Stresses: ½ and 1 tick worse entry, fees \(\times\)2,
-all costs \(\times\)2 (\(\approx\)+<< V('v2.is.hs_bps') >>\,bps more). \para{Validation} Walk-forward inside IS; the fee in force;
-the onset look-ahead fixed (D9); every read of held-out data logged.
+\para{Costs} Each match's own taker fee, \(f(q) = r\,q\,(1-q)\) per share \(= 10{,}000\,r\,(1-q)\) bps of notional,
+\(r = << V('fee.rate') >>\) today; spreads are paid as traded; Table~\ref{tab:fail} doubles them. \para{Validation} Walk-forward inside IS; the fee in force; every read of held-out data logged.
 
 % ---------------------------------------------------------------------------------------- floats
+\begin{table}[t]
+\caption{\emph{The best version of each component, its best honest result, and how it was chosen.}}
+\label{tab:comp}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{1.0in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{1.95in}@{}}
+\toprule
+Component & Best version: best honest result & Selection \\
+\midrule
+v2 sizing & \texttt{<< V('sel.sizing.pick') >>}: Sharpe << V('v2.is.sr') >>\,/\,<< V('v2.oos.sr') >> & walk-forward, << V('sel.sizing.n') >> policies \\
+CV, table tennis & live causal engine: << V('cv.eng.tp') >>\,/\,<< V('cv.eng.nmiss') >> misses called early (median << V('cv.eng.lead') >>\,ms), 0 wrong & tested once; spin model not adopted \\
+CV, tennis & spin-aware tracker: landing error << V('cv.spin.bls200') >>\,cm vs << V('cv.spin.base200') >>\,cm at 200\,ms & simulated physics; no tennis video \\
+Engine, pipeline & L4 GPU: << V('cv.eng.fps') >>\,fps, call-ready in << V('cv.eng.p50') >>\,ms p50; frame to order << V('e2e.ours') >>\,ms & fastest backend that keeps up \\
+CV rule & frozen v3: << V('t3.oos.c') >>¢ blind & << V('var.tier0v3') >> IS variants \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \begin{figure}[t]
-\includegraphics{../../results/paper/fig2_speed_edge.pdf}
-\caption{\emph{Speed is the edge.} (a)~Monthly net 30\,s markout after fees; filled = IS, hollow = OOS. (b)~v2 net
-P\&L at the fast tier's own fills, base and costs doubled; solid =
-IS, dashed = burned OOS; labels: IS\,|\,OOS totals. Source: \texttt{results/\{alpha,lowloss,v2\}}.}
+\includegraphics{../../results/paper/v2/fig2_edge.pdf}
+\caption{\emph{The edge exists at the fast tier's fills.} (a)~Monthly net 30\,s markout (copying 3\,s later: held to
+resolution). (b)~v2 net P\&L. Filled\,/\,solid = IS, hollow\,/\,dashed = burned OOS.}
 \label{fig:edge}
 \end{figure}
 
-\begin{table}[t]
-\caption{\emph{v2 earns in both periods at the fast tier's own fills; its OOS edge does not survive doubled fees.}}
-\label{tab:v2}
-\tabnums
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrr@{}}
-\toprule
- & In sample & Burned OOS (non-blind) \\
- & << V('v2.is.start') >>--<< V('v2.is.end') >>, << V('v2.is.days') >>\,d & << V('v2.oos.start') >>--<< V('v2.oos.end') >>, << V('v2.oos.days') >>\,d \\
-\midrule
-Net ¢ per share [95\% CI] & << V('v2.is.c') >> << V('v2.is.ci') >> & << V('v2.oos.c') >> << V('v2.oos.ci') >> \\
-Annualised return\,/\,volatility & << V('v2.is.ret') >>\,/\,<< V('v2.is.vol') >> & << V('v2.oos.ret') >>\,/\,<< V('v2.oos.vol') >> \\
-Sharpe, annualised [bootstrap 95\% CI] & << V('v2.is.sr') >> << V('v2.is.sr_ci') >> & << V('v2.oos.sr') >> << V('v2.oos.sr_ci') >> \\
-Max drawdown\,/\,worst day, \% of capital & << V('v2.is.dd') >>\,/\,<< V('v2.is.worstday') >> & << V('v2.oos.dd') >>\,/\,<< V('v2.oos.worstday') >> \\
-Skew\,/\,worst month & << V('v2.is.skew') >>\,/\,<< V('v2.is.worstmonth') >> & << V('v2.oos.skew') >>\,/\,<< V('v2.oos.worstmonth') >> \\
-Turnover (\(\times\) capital a year)\,/\,months positive & << V('v2.is.turnover') >>\,/\,<< V('v2.is.mpos') >> & << V('v2.oos.turnover') >>\,/\,<< V('v2.oos.mpos') >> \\
-\textbf{Costs stressed:} ½\,/\,1 tick worse entry & << V('v2.is.slip05') >>\,/\,<< V('v2.is.slip10') >> & << V('v2.oos.slip05') >>\,/\,<< V('v2.oos.slip10') >> \\
-\quad Fees \(\times\)2 [CI] (months positive) & << V('v2.is.fx2.c') >> << V('v2.is.fx2.ci') >> (<< V('v2.is.fx2.mpos') >>) & << V('v2.oos.fx2.c') >> << V('v2.oos.fx2.ci') >> (<< V('v2.oos.fx2.mpos') >>) \\
-\quad All costs \(\times\)2 [CI] & << V('v2.is.cx2.c') >> << V('v2.is.cx2.ci') >> & << V('v2.oos.cx2.c') >> << V('v2.oos.cx2.ci') >> \\
-\bottomrule
-\end{tabular*}
-\tabnotes{\emph{Notes:} << V('v2.is.trades') >>\,/\,<< V('v2.oos.trades') >> trades in
-<< V('v2.is.matches') >>\,/\,<< V('v2.oos.matches') >> matches, held to resolution, net of fees and spreads (net edge << V('v2.is.net_bps') >>\,/\,<< V('v2.oos.net_bps') >>\,bps
-of notional); capital 3\(\times\) peak locked (<< V('v2.is.cap') >>\,/\,<< V('v2.oos.cap') >>); CIs by match (by wallet,
-OOS: << V('v2.oos.ci_wallet') >>). \emph{Source:} \texttt{results/v2/}.}
-\end{table}
-
 % ======================================================================================== 5 Results
 \section{Results}\label{sec:results}
-The fast tier beats other takers every month and copying it 3\,s later loses (Fig.~\ref{fig:edge}a). At its fills v2
-earns in both periods (Table~\ref{tab:v2}, Fig.~\ref{fig:edge}b); out of sample the edge is gone at ½ tick
-worse entry (<< V('v2.oos.slip05') >>¢) and negative with fees doubled (<< V('v2.oos.fx2.c') >>¢,
-<< V('v2.oos.fx2.mpos') >> months positive).
+The fast tier beats other takers every month and copying it 3\,s later loses (Fig.~\ref{fig:edge}a). v2 earns in
+both periods (Table~\ref{tab:head}, Fig.~\ref{fig:edge}b); out of sample the edge is gone at ½ tick worse entry
+(<< V('v2.oos.slip05') >>¢) and negative with fees doubled (<< V('v2.oos.fx2.c') >>¢).
 \para{Sharpe above 3} We assumed a bug and found one: fixing the onset look-ahead (D9) cut IS Sharpe from
 << V('v2.onset.is.sr') >> to << V('v2.is.sr') >>. The rest is about << V('v2.trades_per_day') >> small, nearly
-independent bets a day (same-day correlation << V('risk.corr_sameday') >>). The deflated Sharpe \citep{bailey2014} is
-<< V('rig.dsr.is') >> IS at \(N = << V('rig.N3386') >>\) but << V('rig.dsr.oos') >> OOS: 40 days cannot rule out luck.
-The CV Sharpe is a seed mean over trades selected on outcomes.
-\para{The 1\,s baseline} At the pre-registered lag the CV trader makes << V('cv.pre.is.usd') >>\,/\,<< V('cv.pre.oos.usd') >>
-a day (IS\,/\,OOS; Sharpe << V('cv.pre.is.sr') >>\,/\,<< V('cv.pre.oos.sr') >>); at the post hoc estimate
-<< V('cv.cal.is.usd') >>\,/\,<< V('cv.cal.oos.usd') >> (Sharpe << V('cv.cal.is.sr') >>\,/\,<< V('cv.cal.oos.sr') >>;
-Table~\ref{tab:cv}, Fig.~\ref{fig:decay}). That figure is fragile: at its interval's low end it is about
-<< V('cv.at_lo.is.usd') >>\,/\,<< V('cv.at_lo.oos.usd') >>, and the same inference read per point falls to
-<< V('cv.stc.oos.usd') >> (break-even << V('cv.stc.be.is') >>\,/\,<< V('cv.stc.be.oos') >>\,s). The live engine's own
-calls barely move the cells. Two biases flatter the sweep: trades chosen on outcomes, and a reprice timed
-<< V('rp.recv_ms') >>\,ms late. The tests free of them lose: a replay of << V('rp.matches') >> matches
-recorded live on 2026-10-03 on their real books loses in << V('rp.cells_neg') >> of << V('rp.cells') >> settings
-(<< V('rp.v1l2.c') >>¢ at \(V = 1\)\,s; Fig.~\ref{fig:replay}), and an ex-ante Markov-swing filter (exploratory) in
-<< V('rp.sel.neg2') >> cells (Table~\ref{tab:A-sel}), so the feed delay, not the selection, sinks the 1\,s trader; the
-frozen v3 rule failed blind (Table~\ref{tab:fail}).
+independent bets a day. The deflated Sharpe \citep{bailey2014} is << V('v2.is.dsr') >> IS but << V('v2.oos.dsr') >>
+OOS: 40 days cannot rule out luck.
+\para{Latency scenarios} Pre-registered, the CV trader makes << V('sc.pre.oos.v05.usd') >>, << V('sc.pre.oos.v1.usd') >>
+and << V('sc.pre.oos.v3.usd') >> a day held out at 0.5, 1 and 3\,s (Table~\ref{tab:head}B, Fig.~\ref{fig:speed}); post
+hoc, << V('sc.cal.oos.v05.usd') >>, << V('sc.cal.oos.v1.usd') >> and << V('sc.cal.oos.v3.usd') >>, but at its
+interval's low end only << V('cv.at_lo.oos.usd') >>. The replay calls every point ex ante and loses in
+<< V('rp.cells_neg') >> of << V('rp.cells') >> settings (Fig.~\ref{fig:replay}b): the gap is the value of knowing in
+advance which points matter, which no tested rule supplies yet.
 
 \begin{figure}[t]
-\includegraphics{../../results/paper/fig3_signal_decay.pdf}
-\caption{\emph{Signal decay: each second of feed latency costs the edge.} (a)~\$/day and (b)~Sharpe against feed
-delay \(V\) at the pre-registered (black) and post hoc (orange) stamp lag; solid = IS, dashed = burned OOS; bands:
-<< V('cv.seeds') >> seeds; circles: break-even; shading: venue, licensed video, score feeds; dotted: 1\,s, public stream. (c)~Net markout by seconds since the move. Simulated: << CV_LABEL >>; trades selected on outcomes. Source: \texttt{results/\{tier0,decay\}}.}
-\label{fig:decay}
+\includegraphics{../../results/paper/v2/fig3_speed_value.pdf}
+\caption{\emph{Each second of feed delay costs the edge.} CV strategy, (a)~IS and (b)~burned OOS, by stamp-lag
+reading; dots: the scenarios of Table~\ref{tab:head}B; grey bar: licensed video (vendor-stated). Simulated:
+<< CV_LABEL >>.}
+\label{fig:speed}
 \end{figure}
-
-\begin{table}[t]
-\caption{\emph{Main result: the CV trader simulated at a 1\,s licensed-feed baseline; << CV_LABEL >>; trade set:
-historical points the market later repriced \(\geq\)<< V('pol.det_c') >>¢ (selected on outcomes, not ex ante).}}
-\label{tab:cv}
-\tabnums
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
-\toprule
- & \multicolumn{2}{c}{Pre-registered \(L = << V('cv.pre.lag') >>\)\,s} & \multicolumn{2}{c}{Post hoc estimate \(L = << V('cv.cal.lag') >>\)\,s} \\
-\cmidrule(lr){2-3}\cmidrule(l){4-5}
-At \(V = 1\)\,s & IS & OOS & IS & OOS \\
-\midrule
-Net \$ per day [seed 95\%] & << V('cv.pre.is.usd') >> << V('cv.pre.is.usd_ci') >> & << V('cv.pre.oos.usd') >> << V('cv.pre.oos.usd_ci') >> & << V('cv.cal.is.usd') >> << V('cv.cal.is.usd_ci') >> & << V('cv.cal.oos.usd') >> << V('cv.cal.oos.usd_ci') >> \\
-Net ¢ per share & << V('cv.pre.is.c') >> & << V('cv.pre.oos.c') >> & << V('cv.cal.is.c') >> & << V('cv.cal.oos.c') >> \\
-\quad 95\% CI & << V('cv.pre.is.c_ci') >> & << V('cv.pre.oos.c_ci') >> & << V('cv.cal.is.c_ci') >> & << V('cv.cal.oos.c_ci') >> \\
-Return\,/\,vol, \% a year\,/\,Sharpe & << V('cv.pre.is.ret') >>\,/\,<< V('cv.pre.is.vol') >>\,/\,<< V('cv.pre.is.sr') >> & << V('cv.pre.oos.ret') >>\,/\,<< V('cv.pre.oos.vol') >>\,/\,<< V('cv.pre.oos.sr') >> & << V('cv.cal.is.ret') >>\,/\,<< V('cv.cal.is.vol') >>\,/\,<< V('cv.cal.is.sr') >> & << V('cv.cal.oos.ret') >>\,/\,<< V('cv.cal.oos.vol') >>\,/\,<< V('cv.cal.oos.sr') >> \\
-Max DD \%\,/\,worst day & << V('cv.pre.is.dd') >>\,/\,<< V('cv.pre.is.worstday') >> & << V('cv.pre.oos.dd') >>\,/\,<< V('cv.pre.oos.worstday') >> & << V('cv.cal.is.dd') >>\,/\,<< V('cv.cal.is.worstday') >> & << V('cv.cal.oos.dd') >>\,/\,<< V('cv.cal.oos.worstday') >> \\
-Wrong calls: share\,/\,P\&L & << V('cv.pre.is.wrong') >>\,/\,<< V('cv.pre.is.wrong_usd') >> & << V('cv.pre.oos.wrong') >>\,/\,<< V('cv.pre.oos.wrong_usd') >> & << V('cv.cal.is.wrong') >>\,/\,<< V('cv.cal.is.wrong_usd') >> & << V('cv.cal.oos.wrong') >>\,/\,<< V('cv.cal.oos.wrong_usd') >> \\
-Break-even feed delay \(V\), s & << V('cv.pre.be.is') >> & << V('cv.pre.be.oos') >> & << V('cv.cal.be.is') >> & << V('cv.cal.be.oos') >> \\
-\$/day, live engine's calls & << V('cv.eng.pre.is.usd') >> & << V('cv.eng.pre.oos.usd') >> & << V('cv.eng.cal.is.usd') >> & << V('cv.eng.cal.oos.usd') >> \\
-\$/day gained, \(V\): 1\,s \(\to\) 0 & << V('cv.pre.is.persec') >> & << V('cv.pre.oos.persec') >> & << V('cv.cal.is.persec') >> & << V('cv.cal.oos.persec') >> \\
-\bottomrule
-\end{tabular*}
-\tabnotes{\emph{Notes:} << V('cv.seeds') >> draws; 10 matches a day; IS << V('cv.pre.is.days') >>\,d, OOS
-<< V('cv.pre.oos.days') >>\,d (burned); << V('cv.pre.oos.tpd') >>--<< V('cv.cal.is.tpd') >> trades a
-day; no daily path (equity curve: v2). Post hoc \(L\): 95\% CI << V('cv.cal.lag_ci') >>\,s. At \(L = 1\)\,s:
-<< V('cv.lag1.is.usd') >>\,/\,<< V('cv.lag1.oos.usd') >> a day. \emph{Pre-registered:} \texttt{PREREG.md}, written
-<< V('t0.prereg.written') >> UTC before the first P\&L, committed with the results (\texttt{<< V('t0.prereg.commit') >>},
-<< V('t0.prereg.time') >>); timing per tournament from V3.}
-\end{table}
 
 \begin{table}[t]
 \caption{\emph{Robustness: every blind or ex-ante test of a tradable book failed.}}
@@ -237,124 +207,235 @@ day; no daily path (equity curve: v2). Post hoc \(L\): 95\% CI << V('cv.cal.lag_
 \tabnums
 \begin{tabularx}{\textwidth}{@{}Xrrl@{}}
 \toprule
-Test, ¢ per share & IS & OOS or blind & Verdict \\
+Test, net ¢ per share & IS & OOS or blind & Verdict \\
 \midrule
-H1\,\textperiodcentered\,H2\,\textperiodcentered\,H5 (post hoc) & << V('h1.is.c') >>\,\textperiodcentered\,<< V('h2.is.c') >>\,\textperiodcentered\,<< V('h5.is.c') >> & << V('h1.oos.c') >>\,\textperiodcentered\,<< V('h2.oos.c') >>\,\textperiodcentered\,<< V('h5.oos.c') >> & fail\,\textperiodcentered\,none\,\textperiodcentered\,n.s. \\
-v1 copy fast tier (OOS opened once) & << V('v1.is.c') >> & << V('v1.oos.c') >> (<< V('v1.oos.usd') >>) & fail \\
+v2, ½\,/\,1 tick worse entry & << V('v2.is.slip05') >>\,/\,<< V('v2.is.slip10') >> & << V('v2.oos.slip05') >>\,/\,<< V('v2.oos.slip10') >> & \(\approx\)0 at ½ tick \\
+v2, fees \(\times\)2\,/\,all costs \(\times\)2 & << V('v2.is.fx2.c') >>\,/\,<< V('v2.is.cx2.c') >> & << V('v2.oos.fx2.c') >>\,/\,<< V('v2.oos.cx2.c') >> & fail OOS \\
 v2, << V('u2.markets') >> unseen markets (blind) & << V('u2.is.c') >> & << V('u2.oos.c') >> << V('u2.oos.ci') >> & fail \\
+v2-safe, unseen markets (blind) & << V('v2s.u2.is.c') >> & << V('v2s.u2.c') >> << V('v2s.u2.ci') >> & fail \\
+v1 copy fast tier (OOS opened once) & << V('v1.is.c') >> & << V('v1.oos.c') >> (<< V('v1.oos.usd') >>) & fail \\
+Maker v1 (blind), per fill & << V('mk.is.c') >> & << V('mk.oos.c') >> << V('mk.oos.ci') >> & fail \\
 CV v3 rule, unseen markets (blind) & << V('t3.is.c') >> & << V('t3.oos.c') >> & fail \\
-Maker v1 (blind), per fill & << V('mk.is.c') >> & << V('mk.oos.c') >> << V('mk.oos.ci') >> & fail, << V('mk.oos.usd') >> \\
-v2 after fixed costs, \$ a day & << V('fin.v2.is.net_central') >> & << V('fin.v2.oos.net_central') >> & fail OOS \\
-Table tennis TT1--TT5, << V('tt.matches') >> matches & \multicolumn{2}{r}{no fast wallet qualifies} & untestable \\
-CV replay on live books, \(V = 1\)\,s & & << V('rp.v1l2.c') >> << V('rp.v1l2.ci') >> & loses \\
+CV replay on 9 real books, \(V = 1\)\,s & & << V('rp.v1l2.c') >> << V('rp.v1l2.ci') >> & loses \\
 \quad ex-ante swing \(\geq\)4¢ (exploratory) & & << V('rp.sel.t4.c') >> << V('rp.sel.t4.ci') >> & loses \\
+v2 after fixed costs, \$/day & << V('fin.v2.is.net_central') >> & << V('fin.v2.oos.net_central') >> & fail OOS \\
+PBO\,/\,bootstrap \(P(\text{SR} \leq 0)\) & << V('rig.pbo.lowloss') >> & << V('rig.boot.p') >> & pass \\
+\multicolumn{4}{@{}l}{Forward test and live paper session: << V('fwd.notrun') >>} \\
 \bottomrule
 \end{tabularx}
-\tabnotes{\emph{Notes:} \textbf{<< V('var.total') >> variants tried} (Table~\ref{tab:A-var}). Fast minus others,
-unseen markets: << V('u2.fmo.is') >>\,/\,<< V('u2.fmo.oos') >>¢. Held-out data read << V('peeks.n') >> times
-(<< V('peeks.blind') >> blind first runs, << V('peeks.nonblind') >> non-blind, << V('peeks.desc') >> descriptive,
-<< V('peeks.audit') >> audits, << V('peeks.live') >> replay/live, << V('peeks.other') >> other; Table~\ref{tab:A-peeks});
-rules changed after a look: << V('peeks.rule_changes') >> for v2, << V('t0.dev.n') >> for the CV simulation
-(<< V('t0.dev.span') >>).}
+\tabnotes{\emph{Notes:} \textbf{<< V('var.total') >> variants tried}; held-out data read << V('peeks.n') >> times;
+rules changed after a look: << V('peeks.rule_changes') >> for v2, << V('t0.dev.n') >> for the CV simulation. The
+headline stamp-lag reading and \(V = 1\)\,s were chosen after looking (Table~\ref{tab:A-var}).}
 \end{table}
 
 % ======================================================================================== 6 Risk
 \section{Risk management}\label{sec:risk}
 \begin{itemize}
-\item \textbf{Limits, in code} (\texttt{engine/risk/}). << V('risk.order_usd') >> per order, << V('risk.netcap') >>
-shares net per match, zone << V('risk.zone') >>: one match can lose at most << V('risk.maxloss') >> plus fees. Capital
-3\(\times\) peak locked (v2 << V('v2.is.cap') >>; CV << V('cv.pre.oos.cap') >>--<< V('cv.cal.is.cap') >>). Kill
-switches: stale feed \(>\)<< V('risk.feed_stale') >>\,s, vision \(>\)<< V('risk.vision_stale') >>\,s, latency above its
-rolling p95, manual; the << V('risk.daily_stop') >> daily stop (<< V('risk.daily_stop_sigma') >>\,\(\sigma\) of v2's
-daily P\&L) is a disaster stop.
-\item \textbf{CV model risk.} Wrong calls always fill (Table~\ref{tab:cv}). MISS calls trade only at confidence
-\(\geq\)0.95 and positive edge after the fee (code); live use needs 73 audited correct calls in a row, and a confirmed
-false call halts the day (policy). Phantom calls outside play (about << V('cv.phantom.hr') >> an hour) erase the
-1\,s OOS P\&L at << V('cv.phantom.pre') >> (pre-registered) or << V('cv.phantom.cal') >> (post hoc) a day, so the
-rally-state gate (coded, off, unevaluated) must be on. Betting video at 25--50\,fps without early calls gives
-<< V('cv.pess.is.usd') >>\,/\,<< V('cv.pess.oos.usd') >> a day (pre-registered).
-\item \textbf{De-risking, set in advance} (policy, not code; it never fired in sample, so it is untested on a decline).
-Halve size if the trailing 30-day edge is below << V('pol.trail_half') >>¢ (IS minimum << V('risk.trail_min') >>¢);
-stop at \(\leq 0\), a << V('pol.dd_stop') >> drawdown, or a fee or delay change. At the fast tier's decay, v2's OOS
-<< V('v2.oos.c') >>¢ halves size in << V('risk.months_half') >> months and stops in << V('risk.months_zero') >>. The CV
-book starts only on a measured \(L \geq << V('cv.L_go') >>\)\,s.
-\item \textbf{Tail, venue, legal.} Fees \(\times\)2 erase v2's OOS edge; kurtosis
-<< V('v2.is.kurt') >>\,/\,<< V('v2.oos.kurt') >>. The UMA oracle settles (disputes: 4--6 days); collateral is pUSD,
-so only working capital sits on the venue \citep{pmuma}; US persons are close-only \citep{pmgeoblock}; courtsiding
-breaches ticket terms \citep{itf2026}. Factors \citep{fama1993,carhart1997}: \(\alpha\) \(t = << V('fac.alpha_t') >>\),
-max \(|t| = << V('fac.max_t') >>\), R² << V('fac.r2') >> (IS; Table~\ref{tab:A-factor}).
+\item \textbf{Limits, in code; de-risking, set in advance.} << V('risk.order_usd') >> per order,
+<< V('risk.netcap') >> shares net per match, zone << V('risk.zone') >>: one match can lose at most
+<< V('risk.maxloss') >> plus fees. Kill switches: stale feed \(>\)<< V('risk.feed_stale') >>\,s, vision
+\(>\)<< V('risk.vision_stale') >>\,s, latency above its rolling p95; a << V('risk.daily_stop') >> daily stop. Halve
+size if the trailing 30-day edge is below << V('pol.trail_half') >>¢; stop at \(\leq 0\), a << V('pol.dd_stop') >>
+drawdown, or a fee or delay change.
+\item \textbf{CV model risk.} Wrong calls always fill; MISS calls trade only at confidence \(\geq\)0.95, and a
+confirmed false call halts the day. Phantom calls outside play (about << V('cv.phantom.hr') >> an hour) would erase the
+1\,s OOS P\&L at << V('cv.phantom.pre') >> (pre-registered) or << V('cv.phantom.cal') >> (post hoc) a day; a
+rally-state gate is coded but not yet evaluated.
+\item \textbf{Tail, venue, legal.} The UMA oracle settles
+\citep{pmuma}; US persons are close-only \citep{pmgeoblock}; courtsiding breaches ticket terms \citep{itf2026}.
+Factors \citep{fama1993,carhart1997}: \(\alpha\) \(t = << V('fac.alpha_t') >>\), max \(|t| = << V('fac.max_t') >>\).
 \end{itemize}
+
+\begin{figure}[t]
+\includegraphics{../../results/paper/v2/fig4_frame_to_trade.pdf}
+\caption{\emph{We can trade inside 3\,s.} Stage means of << V('e2e.n') >> traces: own footage over WebRTC into the CV
+engine on a laptop (on an L4 GPU: << V('cv.eng.p50') >>\,ms; WebRTC video leg alone << V('webrtc.leg') >>\,ms), a simulated
+1\,s feed, the measured network and the 1\,s venue hold; order built, not sent. Shaded: when the book reprices.}
+\label{fig:f2t}
+\end{figure}
 
 % ======================================================================================== 7 Liquidity
 \section{Liquidity and capacity}\label{sec:liq}
 v2 trades << V('v2.is.notional_day') >> a day, << V('v2.is.share_vol') >> of match volume; its OOS CI excludes zero
-only up to 1\(\times\) size (<< V('cap.1x.oos.capital') >>) and 5\(\times\) loses (Fig.~\ref{fig:cap}a). Median stale
-depth before a reprice: << V('liq.stale_pre') >>\,/\,<< V('liq.stale_1s') >>\,/\,<< V('liq.stale_2s') >> at
-0\,/\,1\,/\,2\,s; spread << V('liq.spread') >>¢. The CV book (Table~\ref{tab:cv}: 10 matches a day, half the stale
-depth) at the post hoc estimate halves its Sharpe at << V('capcv.half.oos') >> of capital OOS
-(<< V('capcv.half.oos.day') >>/day) and << V('capcv.half.is') >> IS (<< V('capcv.half.is.day') >>/day), or
-<< V('capcv.halfall.oos') >>\,/\,<< V('capcv.halfall.is') >> covering every match; at the pre-registered lag its Sharpe
-is << V('capcv.pre.sr0.is') >>\,/\,<< V('capcv.pre.sr0.oos') >> at the smallest size: no capacity. Its notional is
-<< V('capcv.share_inplay') >> of in-play volume but << V('capcv.share_fast') >> of the fast tier's 0--3\,s volume: the
-seconds after each point bind. Fixed costs decide: the book can pay at most << V('cv.cal.oos.maxlic') >> a month for
-data OOS (post hoc) or << V('cv.pre.oos.maxlic') >> (pre-registered), against an assumed licence of
-<< V('fin.feed.low') >>--<< V('fin.feed.high') >>; the central << V('fin.fixed.central') >>-a-day stack is covered at no
-\(L \leq << V('cv.L_central') >>\)\,s, the cheapest (<< V('fin.fixed.low') >>) only at \(L \geq\) << V('cv.L_go.range') >>\,s.
-Covering every match, the camera-free stack (<< V('capcv.cf.is.cost') >>--<< V('capcv.cf.oos.cost') >> a day) breaks
-even from about << V('capcv.cf.is') >> (IS) and << V('capcv.cf.oos') >> (OOS) of capital (\texttt{results/capacity}); v2's
-OOS break-even fee is << V('fin.be_fee.before') >> (Fig.~\ref{fig:cap}b).
+only up to 1\(\times\) size (<< V('cap.1x.oos.capital') >>) and 5\(\times\) loses. The CV book at the pre-registered lag
+has Sharpe << V('capcv.pre.sr0.is') >>\,/\,<< V('capcv.pre.sr0.oos') >> (IS\,/\,OOS) at its smallest size: no capacity.
+Post hoc, its Sharpe halves at << V('capcv.half.oos') >> of capital OOS and << V('capcv.half.is') >> IS
+(Fig.~\ref{fig:capacity}); \$/day peaks at << V('capcv.pmax.oos.day') >> on << V('capcv.pmax.oos') >> OOS (Sharpe
+<< V('capcv.pmax.oos.sr') >>). It trades << V('capcv.share_inplay') >> of in-play volume but << V('capcv.share_fast') >>
+of the fast tier's 0--3\,s volume: the seconds after each point bind. The cheapest data
+stack (<< V('fin.fixed.low') >> a day) needs << V('capcv.low.oos') >>--<< V('capcv.low.is') >> of capital post hoc; at
+1\,s the book can pay at most << V('cv.cal.oos.maxlic') >> a month for data post hoc and << V('cv.pre.oos.maxlic') >>
+pre-registered, against quotes of << V('fin.feed.low') >>--<< V('fin.feed.high') >>. At today's fee COURTSIDE prices
+speed; it is not yet a business.
 
 % ======================================================================================== 8 Limitations
 \section{Limitations and next steps}\label{sec:limits}
-We hold a cheap real option on one number, the stamp lag \(L\), which moves the break-even one for one
-(Eq.~\ref{eq:budget}). A live session with a licensed low-latency feed and small test orders measures it, and whether
-delayed orders are released on a 1\,s clock (<< V('venue.batch') >> of reprices land just after a whole second); go if
-\(L \geq << V('cv.L_go') >>\)\,s. Licensing turns the simulation into deployment (Polymarket itself buys official data;
-\citealp{gi2026}); a faster feed moves left on the curve (Fig.~\ref{fig:decay}a). CV accuracy is from table tennis
-(illiquid: spread << V('tt.spread') >>¢); tennis is simulated (Fig.~\ref{fig:spin}). Forward test: << V('fwd.cell') >>;
-live paper session: << V('live.cell') >>.\label{lastmain}
+One number, the stamp lag \(L\), moves the break-even one for one (Eq.~\ref{eq:budget}); its post hoc value assumes
+human reaction, but the 1\,s hold dominates (\(L \geq << V('cv.L_bot') >>\)\,s even for a 20\,ms bot). One session with
+a licensed feed and test orders measures \(L\) and whether delayed orders are released on a 1\,s clock. Licensing that
+feed is a purchase decision, not yet a deployment: sub-second video is sold to licensed sportsbooks, and at 1\,s the
+book covers the cheapest data quote only if \(L \geq << V('cv.L_go') >>\)\,s. CV accuracy is from table tennis; tennis
+is simulated; no order was ever sent.\label{lastmain}
 
 % ======================================================================================== References
 \clearpage
 \renewcommand\refname{References}
 \bibliographystyle{apalike}
 {\setlength\bibsep{2pt}\bibliography{refs}}
-\nocite{harvey2016,politis1994,bailey2017,harvey2017,huang2019,statsperform,nextio,sportradar,ably,regen2026,glsystemhaus,ispreview,thedesk,itia2026}
+\nocite{harvey2016,politis1994,bailey2017,harvey2017,huang2019,statsperform,nextio,sportradar,ably,regen2026,glsystemhaus,ispreview,thedesk,itia2026,brown2014,gi2026,prn2026,kalshiapi,french,newey1987}
 
 \vspace{6pt}\noindent\textbf{Disclosure.} No real money was used. Simulated components are labelled. The authors hold no
-licensed data feed, no match footage and no court access. University of Florida students; [team to confirm any other
-disclosures].
+licensed data feed, no match footage and no court access. Authors: << X['authors'] >> (University of Florida).
 
 % ======================================================================================== Appendix
 \clearpage
 \csappendix
 \section*{Appendix}
 \addcontentsline{toc}{section}{Appendix}
-Everything a judge needs for scoring is in the five main pages; this appendix gives the full grids, logs and tallies
-behind them. Every appendix float repeats its label.
+Everything needed for scoring is in the five main pages; this appendix gives the remaining figures, the full grids,
+every formula with a worked example, everything we tested, and the logs. Every appendix float repeats its label.
 
 \begin{figure}[!htbp]
-\includegraphics{../../results/paper/fig1_latency_cv.pdf}
-\caption{\emph{The race is decided inside the venue's 1\,s taker delay; only in-venue information beats the book.}
-(a)~Delay after the bounce (log): orange = ours (WebRTC: our own clip, loopback, << V('cv.webrtc') >>); hatched =
-vendor-stated or model range. (b)~Early out-calls on held-out 120\,fps table-tennis video (<< V('cv.tt.n_miss') >> out,
-<< V('cv.tt.n_bounce') >> in): the live causal engine (orange; << V('cv.eng.tp') >> of << V('cv.eng.nmiss') >> misses
-called, no false call) against the offline evaluation with a look-ahead feature (grey; band: Wilson 95\%). Source:
-Polymarket and WTA feeds; \texttt{results/\{tracking,engine,webrtc\}}.}
-\label{fig:ladder}
+\includegraphics{../../results/paper/v2/fig1_race.pdf}
+\caption{\emph{Who sees the point first.} (a)~Delay after the point ends (log): our pipeline (frame to order-ready,
+own clip over WebRTC on a laptop; p50 dot, p99 whisker); official stamp (dashed: the pre-registered 2.0\,s to the post
+hoc 3.14\,s; grey: the cited 1--3\,s band); vendor-stated and published ranges; measured public stream and score feeds
+(ESPN << V('lat.espn') >>\,s, Polymarket sports << V('lat.pmsports') >>\,s, WTA << V('lat.wta') >>\,s behind the
+book). Shaded: when the book reprices. (b)~Early out-calls on << V('cv.tt.n_miss') >> held-out 120\,fps table-tennis
+misses: the live causal engine (orange; labels: right\,/\,called) and the offline evaluation, which used a
+look-ahead feature (a whole-flight median) and kept deciding after a far-side bounce (grey; precision 1.0 up to
+100\,ms). The causal engine is the deployable number (\texttt{engine/README.md}). Source:
+\texttt{results/\{e2e,webrtc,tracking,engine\}}, \texttt{research/v2/latency}.}
+\label{fig:race}
 \end{figure}
 
 \begin{figure}[!htbp]
-\includegraphics{../../results/paper/figA1_capacity.pdf}
-\caption{\emph{Capacity is small and costs bind.} (a)~v2 net edge by size (caps scaled; optimistic at large size); filled
-= IS, hollow = OOS. (b)~\$/day: gross, net of fees, after fixed costs (low--high); CV pre\,/\,post: the 1\,s baseline, burned OOS, at
-the pre-registered\,/\,post hoc stamp lag; << CV_LABEL >>. Source: \texttt{results/financials}.}
+\includegraphics{../../results/paper/v2/fig5_cv_still.pdf}
+\caption{\emph{Our tracker on real held-out footage.} OpenTTGames test\_2 (CC BY-NC-SA 4.0), the frame at the
+offline rule's call (look-ahead feature); the live causal engine called the same flight later. Tracked path:
+detections; arc, cone and landing band: physics fit, display only. This is table tennis, not a match feed.}
+\label{fig:still}
+\end{figure}
+
+<% set ev = X['everything'] %>
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{1.1in}>{\raggedright\arraybackslash}p{1.9in}>{\raggedright\arraybackslash}p{2.1in}>{\raggedright\arraybackslash}p{0.9in}@{}}
+\caption{\emph{Everything we tested: each lens, what it was, its best result and the verdict.} IS = in sample;
+OOS = held out; ¢ = net cents per share.}\label{tab:A-all}\\
+\toprule
+Lens & What it was & Best result & Verdict \\
+\midrule
+\endfirsthead
+\toprule
+Lens & What it was & Best result & Verdict \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+<% for r in ev %>
+<< r[0] >> & << r[1] >> & << r[2] >> & << r[3] >> \\
+<% endfor %>
+\end{longtable}
+
+\section*{Calculations}\label{sec:calc}
+Every statistic in the paper, its formula and one worked example with our numbers (source keys in
+\texttt{results/paper/numbers.json}).
+
+\para{C1. Annualised Sharpe} \(\text{SR} = \sqrt{365}\,\bar d / s_d\), where \(d_t\) is the daily net P\&L on every
+calendar day of the period (zero on days without trades) and \(s_d\) its standard deviation (\(n-1\)). v2 IS:
+\(\bar d = << V('calc.is.mean') >>\), \(s_d = << V('calc.is.sd') >>\), \(T = << V('calc.is.T') >>\) days, so
+\(\text{SR}_\text{d} = << V('calc.is.srd') >>\) and \(\text{SR} = << V('calc.is.srd') >> \times << V('calc.sqrt365') >> =
+<< V('calc.is.sr') >>\). OOS: \(<< V('calc.oos.mean') >> / << V('calc.oos.sd') >> \times << V('calc.sqrt365') >> =
+<< V('calc.oos.sr') >>\).
+
+\para{C2. Sortino} \(\sqrt{365}\,\bar d / \text{DD}\), \(\text{DD} = \sqrt{\tfrac1T\sum_t \min(d_t,0)^2}\). v2 OOS:
+\(\text{DD} = << V('calc.so.dd') >>\), so \(\sqrt{365}\times << V('calc.oos.mean') >> / << V('calc.so.dd') >> =
+<< V('calc.so') >>\).
+
+\para{C3. Maximum drawdown} \(\text{MDD} = \min_t \big(E_t - \max_{s\le t} E_s\big)\), \(E_t = \sum_{u\le t} d_u\),
+reported as a share of capital. v2 OOS: \(<< V('calc.mdd') >> / << V('calc.oos.cap') >> = << V('calc.mdd.pct') >>\).
+
+\para{C4. Probabilistic Sharpe} \(\text{PSR}(\text{SR}^*) = \Phi\!\Big((\widehat{\text{SR}}-\text{SR}^*)\sqrt{T-1}\,\big/\sqrt{1-\gamma_3\widehat{\text{SR}}+\tfrac{\gamma_4-1}{4}\widehat{\text{SR}}^2}\Big)\)
+on daily SR, skew \(\gamma_3\) and kurtosis \(\gamma_4\) \citep{bailey2014}. v2 OOS: \(\widehat{\text{SR}} =
+<< V('calc.oos.srd') >>\), \(T = << V('calc.oos.T') >>\), \(\gamma_3 = << V('calc.oos.skew') >>\), \(\gamma_4 =
+<< V('calc.oos.kurt') >>\): \(\text{PSR}(0) = << V('calc.psr0') >>\).
+
+\para{C5. Deflated Sharpe} \(\text{DSR} = \text{PSR}(\text{SR}_0)\) with \(\text{SR}_0 = \sqrt{V}\big((1-\gamma)\Phi^{-1}(1-\tfrac1N) + \gamma\,\Phi^{-1}(1-\tfrac{1}{Ne})\big)\),
+\(\gamma\) the Euler--Mascheroni constant and \(N\) the trial count. v2 OOS, \(N = << V('rig.N3386') >>\), null
+variance \(V = 1/(T-1)\): \(\Phi^{-1}\) terms << V('calc.z1') >> and << V('calc.z2') >>, \(\text{SR}_0 = << V('calc.sr0d') >>\)
+daily (<< V('calc.sr0a') >> annualised), DSR \(= << V('calc.dsr') >>\). Table~\ref{tab:head} reports the lowest DSR
+over three variance sources.
+
+\para{C6. Probability of backtest overfitting} CSCV \citep{bailey2017}: split the daily P\&L of \(<< V('rig.pbo.n') >>\)
+variants into \(S = << V('rig.pbo.S') >>\) blocks; for each of the \(\binom{16}{8} = << V('rig.pbo.splits') >>\)
+halvings pick the IS-best variant and take the logit \(\lambda = \ln\frac{\omega}{1-\omega}\) of its OOS rank
+\(\omega\); PBO \(= \Pr(\lambda \le 0)\). v2-safe grid: PBO \(= << V('rig.pbo.lowloss') >>\) (median \(\lambda =
+<< V('rig.pbo.logit_med') >>\)).
+
+\para{C7. Stationary block bootstrap} \citep{politis1994}: resample the daily series in blocks of geometric length
+(mean 5 days), 10,000 draws; percentile CI. v2 OOS Sharpe: << V('v2.oos.sr_ci') >>, standard error
+<< V('calc.boot.se') >>, \(P(\text{SR}\le 0) = << V('rig.boot.p') >>\).
+
+\para{C8. Factor regression} \(r_t = \alpha + \beta_M\,\text{MktRF}_t + \beta_S\,\text{SMB}_t + \beta_H\,\text{HML}_t +
+\beta_U\,\text{Mom}_t + \varepsilon_t\) on daily return on capital, Newey--West (5 lags) \citep{fama1993,carhart1997,newey1987}.
+v2 IS (<< V('fac.n') >> days): \(\alpha = << V('calc.ff.alpha') >>\) a day (\(t = << V('fac.alpha_t') >>\)); \(\beta_M =
+<< V('calc.ff.MktRF') >>\) (\(t = << V('calc.ff.MktRF.t') >>\)), \(\beta_S = << V('calc.ff.SMB') >>\), \(\beta_H =
+<< V('calc.ff.HML') >>\), \(\beta_U = << V('calc.ff.Mom') >>\); \(R^2 = << V('fac.r2') >>\).
+
+\para{C9. Taker fee} \(f(q) = r\,q(1-q)\) per share at price \(q\); per dollar of notional \(f/q = r(1-q)\), i.e.
+\(10{,}000\,r(1-q)\) bps. At \(r = << V('fee.rate') >>\): \(q = 0.5\) pays << V('calc.fee.q50.c') >>¢ a share
+(<< V('calc.fee.q50.bps') >>\,bps); \(q = 0.8\) pays << V('calc.fee.q80.c') >>¢ (<< V('calc.fee.q80.bps') >>\,bps).
+
+\para{C10. Markov point leverage} Eq.~\ref{eq:lev}, with the match won probability computed exactly by recursion
+over points, games, tiebreaks and sets (\texttt{src/markov.py}). Two even players who win << V('calc.mk.ps') >> of
+service points: at the first point \(\Pr(\text{win}) = << V('calc.mk.start.p') >>\), moving to
+<< V('calc.mk.start.up') >> or << V('calc.mk.start.dn') >>, so \(\Delta = << V('calc.mk.start.lev') >>\); serving at
+5--5, 30--40 in the deciding set, \(\Pr(\text{win}) = << V('calc.mk.bp.p') >>\), moving to << V('calc.mk.bp.up') >>
+or << V('calc.mk.bp.dn') >>: \(\Delta = << V('calc.mk.bp.lev') >>\). Mean \(|\Delta|\) over a match:
+<< V('markov.lev') >>.
+
+\para{C11. Latency budget} Eq.~\ref{eq:budget}. With the pre-registered \(L = << V('cv.pre.lag') >>\)\,s, \(D =
+<< V('venue.delay') >>\)\,s and our measured \(\delta = << V('e2e.delta_s') >>\)\,s (pipeline plus network), a point
+whose book reprices at the median \(R = << V('lat.book_vs_stamp_signed') >>\)\,s needs \(V < << V('calc.vmax.med') >>
++ \ell\): no feed wins it without an early call. At the 90th percentile \(R = << V('calc.R.p90') >>\)\,s, \(V <
+<< V('calc.vmax.p90') >>\)\,s; the sweep's break-even (<< V('cv.pre.be.is') >>\,s IS) comes from such late reprices.
+
+\para{C12. Capital and return on capital} Capital \(= 3\times\) the peak dollars locked in open positions (each
+locked 4\,h, or until resolution). v2 IS: peak << V('calc.peak') >>, capital << V('v2.is.cap') >>; return \(= 365\,\bar
+d/\text{capital} = 365 \times << V('calc.is.mean') >> / << V('v2.is.cap') >> = << V('calc.roc') >>\) a year.
+
+\para{C13. Capacity and volume share} Capacity is the capital at which the seed-mean Sharpe falls to half its
+smallest-size value along the size path; share \(=\) our notional per day \(/\) market volume per day. CV, post hoc,
+IS, just below the half-Sharpe size: << V('capcv.notional') >> a day against << V('cap.inplay') >> of in-play volume
+(<< V('capcv.share_inplay') >>) and << V('cap.fastq') >> traded by the fast tier 0--3\,s after a point
+(<< V('capcv.share_fast') >>).
+
+\begin{figure}[!htbp]
+\includegraphics{../../results/paper/v2/figA1_capacity_costs.pdf}
+\caption{\emph{Capacity is small and costs bind.} (a)~v2 net edge by size (caps scaled; optimistic at large size: no
+impact model); filled = IS, hollow = OOS. (b)~\$/day: gross, net of fees, after central fixed costs (bar: low--high);
+CV rows: the 1\,s baseline, burned OOS, pre-registered first; << CV_LABEL >>. Source: \texttt{results/financials}.}
 \label{fig:cap}
 \end{figure}
 
+\begin{figure}[!htbp]
+\includegraphics{../../results/paper/v2/figA8_capacity.pdf}
+\caption{\emph{Capital capacity of the CV strategy at the 1\,s base case.} (a)~Sharpe and (b)~net \$/day against
+capital along the size path (net cap 50--5,000 shares, \$250 orders, 10 matches a day, half the stale depth); circles:
+where the post hoc Sharpe halves; dotted: the cheapest data stack. Solid = IS, dashed = burned OOS. Simulated:
+<< CV_LABEL >>. Source: \texttt{results/capacity}.}
+\label{fig:capacity}
+\end{figure}
+
+\begin{figure}[!htbp]
+\includegraphics{../../results/paper/v2/figA2_sweep_lags.pdf}
+\caption{\emph{The break-even shifts one for one with the stamp lag.} Net \$/day against feed delay for every
+stamp-lag reading, (a)~IS and (b)~burned OOS; dotted: the three scenarios. Simulated: << CV_LABEL >>. Source:
+\texttt{results/tier0/latency\_sweep.csv}.}
+\end{figure}
+
 <% set sw = X['sweep']['video_own120'] %>
-<% set vs = ['0', '0.5', '1', '2', '5', '10', '60'] %>
-<% set rd = [('tournament', 'pre-registered 2.0 s'), ('tournament_lagcal', 'post hoc estimate 3.14 s'), ('tournament_lag1', 'stress 1.0 s'), ('tournament_lag3', 'lag 3.0 s'), ('stamp', 'per point, 2.0 s'), ('stamp_calibrated', 'per point, post hoc')] %>
+<% set vs = ['0', '0.5', '1', '2', '3', '10', '60'] %>
+<% set rd = [('tournament', 'pre-registered 2.0 s'), ('tournament_lagcal', 'post hoc 3.14 s'), ('tournament_lag1', 'stress 1.0 s'), ('tournament_lag3', 'lag 3.0 s'), ('stamp', 'per point, 2.0 s'), ('stamp_calibrated', 'per point, post hoc')] %>
 <% for metric, lab, tl in [('usd_per_day', 'Net \\$ per day', 'tab:A-usd'), ('sharpe_ann', 'Annualised Sharpe', 'tab:A-sr')] %>
 \begin{table}[!htbp]
 \caption{\emph{Latency sweep, every reading: << lab >> against feed delay \(V\) (s), IS and burned OOS.} Simulated:
@@ -374,10 +455,11 @@ Stamp lag reading & & <% for v in vs %><< v >><% if not loop.last %> & <% endif 
 \bottomrule
 \end{tabular*}
 \tabnotes{\emph{Notes:} seed means over << V('cv.seeds') >> draws per cell (<< V('cv.runs') >> runs in all); trade
-set selected on outcomes, not ex ante. The per-point readings treat the spread of the reprice time as umpire-stamp
-noise, so the reprice comes a fixed time after the bounce: at the pre-registered lag, and at the post hoc inference
-applied point by point (which wins only below << V('cv.stc.be.is') >>\,s). \emph{Source:}
-\texttt{results/tier0/latency\_sweep.json::video\_own120}.}
+set selected on outcomes, not ex ante. The per-point readings treat the spread of the reprice time as stamp noise,
+at the pre-registered lag and at the post hoc inference applied point by point. At stamp lag 1.0\,s the 1\,s cell is
+<< V('cv.lag1.is.usd') >>\,/\,<< V('cv.lag1.oos.usd') >> a day; \(V = 0\) reproduces the published tier-0 headline
+(<< V('cv.v0.check') >>). The model treats the venue hold as a continuous 1.000\,s; release on a whole-second clock is
+not modelled. \emph{Source:} \texttt{results/tier0/latency\_sweep.json::video\_own120}.}
 \end{table}
 <% endfor %>
 
@@ -385,7 +467,8 @@ applied point by point (which wins only below << V('cv.stc.be.is') >>\,s). \emph
 \begin{table}[!htbp]
 \caption{\emph{Replay on 9 matches' real books (2026-10-03): calling every point or only an ex-ante Markov swing
 \(\geq T\) loses at every \(V\) at the pre-registered lag.} Net ¢ per share marked at +30\,s [match-clustered 95\%
-CI] (fills). Exploratory: the selective variant was added after the all-points replay; one day; assumed feed latency.}
+CI] (fills). Exploratory: the selective variant was added after the all-points replay; one day; assumed feed
+latency.}
 \label{tab:A-sel}
 \tabnums\setlength\tabcolsep{4pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrr@{}}
@@ -404,46 +487,39 @@ Lag & Points traded & \(V = 0\) & \(V = 0.5\)\,s & \(V = 1\)\,s \\
 \end{table}
 
 \begin{figure}[!htbp]
-\centering
-\includegraphics{../../results/paper/figA_replay.pdf}
-\caption{\emph{Replayed on 9 matches' real order books (recorded 2026-10-03), the 1\,s trader loses at every stamp
-lag and feed delay.} Every point called; net ¢ per share marked at +30\,s, match-clustered 95\% CI; \(\times\): the
-sweep's OOS curve. One day; assumed feed latency (licensed feed not purchased); paper only. Source:
-\texttt{results/replay/replay.json}.}
+\includegraphics{../../results/paper/v2/figA7_decay_replay.pdf}
+\caption{\emph{The fast tier leads at every horizon; trading every point on real books loses.} (a)~Net 30\,s markout
+by seconds since the score move; filled = IS, hollow = OOS. (b)~Replay of << V('rp.matches') >> matches recorded live
+on 2026-10-03 on their real order books, every point called (model leads, Florida network); net ¢ per share marked at
++30\,s, match-clustered 95\% CI; \(\times\): the sweep's OOS cell. One day; assumed feed latency (licensed feed not
+purchased); paper only. Source: \texttt{results/\{decay,replay\}}.}
 \label{fig:replay}
 \end{figure}
 
 \begin{figure}[!htbp]
-\includegraphics{../../results/paper/figA2_sweep_lags.pdf}
-\caption{\emph{The break-even shifts one for one with the stamp lag.} Net \$/day against feed delay for every stamp-lag
-reading, (a)~IS and (b)~burned OOS. Simulated: << CV_LABEL >>. Source: \texttt{results/tier0/latency\_sweep.csv}.}
+\includegraphics{../../results/paper/v2/figA3_regime_month.pdf}
+\caption{\emph{v2's edge falls as the venue's protection falls, and stays positive in every regime.} (a)~Net ¢ per
+share by venue regime (taker delay\,/\,fee), 95\% CIs; (b)~net P\&L by month. Measured at the fast tier's own fills.
+Source: \texttt{results/risk/risk\_stats.json}.}
 \end{figure}
 
 \begin{figure}[!htbp]
-\includegraphics{../../results/paper/figA3_regime_month.pdf}
-\caption{\emph{v2's edge falls as the venue's protection falls, and stays positive in every in-sample regime.}
-(a)~Net ¢ per share by venue regime (taker delay\,/\,fee) with 95\% CIs; (b)~net P\&L by month. Measured at the fast
-tier's own fills: the opportunity at their speed, not our execution. Source: \texttt{results/risk/risk\_stats.json}.}
+\includegraphics{../../results/paper/v2/figA4_forest.pdf}
+\caption{\emph{Every test on one axis.} Point estimates and 95\% CIs, net ¢ per share; hollow = an OOS test; a CI above
+zero is set in semibold; arrowheads: the CI runs past the axis. Source: as Table~\ref{tab:fail}.}
 \end{figure}
 
 \begin{figure}[!htbp]
-\includegraphics{../../results/paper/figA4_forest.pdf}
-\caption{\emph{Every test on one axis.} Point estimates and 95\% CIs, net ¢ per share; orange = CI above zero, hollow = the test failed or has no edge. Source: as Table~\ref{tab:fail}.}
-\end{figure}
-
-\begin{figure}[!htbp]
-\includegraphics{../../results/paper/figA5_concentration.pdf}
+\includegraphics{../../results/paper/v2/figA5_concentration.pdf}
 \caption{\emph{v2 P\&L is concentrated in a few copied wallets.} Share of v2 P\&L carried by the top 1, 5 and 10
 wallets, matches and days (above 100\% means the rest lost money). Source: \texttt{results/alpha/alpha.json}.}
 \end{figure}
 
 \begin{figure}[!htbp]
-\centering
-\includegraphics{../../results/paper/figA6_spin_sim.pdf}
-\caption{\emph{Simulation: a spin-aware tennis filter cuts landing error.} Landing-point error against lead before the
-bounce for a 340\,fps, 3.6\,mm-noise ball tracker (simulation; no tennis video was used). At 200\,ms:
-<< V('cv.spin.base200') >>\,cm without spin, << V('cv.spin.bls200') >>\,cm with it. Source:
-\texttt{results/spin/tennis/key\_numbers.json}.}
+\includegraphics{../../results/paper/v2/figA6_spin_sim.pdf}
+\caption{\emph{Simulation: a spin-aware tennis filter cuts landing error.} Landing-point error and OUT-call accuracy
+against lead before the bounce for a 340\,fps, 3.6\,mm-noise ball tracker (simulation; no tennis video was used).
+Source: \texttt{results/spin/tennis/key\_numbers.json}.}
 \label{fig:spin}
 \end{figure}
 
@@ -483,6 +559,7 @@ Family & Count & What it chose \\
 <% for k, v in var['sensitivities_none_chosen'].items() %>
 \emph{Sensitivity, chose nothing:} << T(k) >> & << intc(v) >> & none \\
 <% endfor %>
+Post hoc presentation choices: headline stamp-lag reading (<< V('cv.cal.lag') >>\,s) and the 1\,s baseline, fixed after the sweep's burned-OOS cells were computed (peek lines 43, 50, 61--64; replay protocol \texttt{0e083ed}) & 2 & post hoc \\
 \bottomrule
 \end{tabularx}
 \tabnotes{\emph{Source:} \texttt{results/paper/variants.json} (each count's source file is listed there).}
@@ -510,33 +587,34 @@ reported figures (bases and URLs in the source file). \emph{Source:}
 \end{table}
 
 \begin{table}[!htbp]
-\caption{\emph{The latency ladder: method and source of every row of Fig.~\ref{fig:ladder}a.}}
+\caption{\emph{The latency ladder: method and source of every row of Fig.~\ref{fig:race}a.}}
 \label{tab:A-ladder}
 \begin{tabularx}{\textwidth}{@{}lrX@{}}
 \toprule
 Source & Delay & Method and citation \\
 \midrule
+Our pipeline, frame to order-ready & << V('e2e.ours') >>\,ms & measured p50, own footage over WebRTC, laptop, order not sent (\texttt{results/e2e}) \\
+Our WebRTC \(\to\) CV call & << V('cv.webrtc') >> & measured: own clip over loopback (<< V('cv.webrtc.n') >> calls; engine fed below real time so it keeps up); video leg << V('webrtc.leg') >>\,ms \\
 Our CV engine, call-ready (p50--p99) & << V('cv.eng.p50') >>--<< V('cv.eng.p99') >>\,ms & measured, one L4 GPU, 120\,fps held-out video \\
-Our WebRTC \(\to\) CV pipeline & << V('cv.webrtc') >> & measured: our own clip over loopback, frame send to call (<< V('cv.webrtc.n') >> calls; engine fed below real time so it keeps up); not a match feed \\
-Network, Florida \(\to\) venue gateway & << V('lat.net_fl') >>\,ms & measured (live feed p50 << V('lat.feed_p50') >>\,ms) \\
-In-venue camera & \(\leq\)0.15\,s & physical bound; not available to us \\
+Network, Florida \(\to\) venue gateway & << V('e2e.net') >>\,ms & measured RTT/2 at the e2e orders (live feed p50 << V('lat.feed_p50') >>\,ms) \\
 Venue taker order delay & << V('venue.delay') >>\,s & venue rule \citep{pmapi} \\
-Official umpire stamp after the bounce & << V('lat.stamp_band') >>\,s & unmeasured model grid \citep{regen2026,statsperform} \\
+Official umpire stamp after the point & << V('lat.stamp_band') >>\,s & unmeasured model grid \citep{regen2026,statsperform} \\
 Book reprice vs official stamp & \(-\)<< V('lat.book_vs_stamp') >>\,s & measured median, \(n = << V('lat.n_points') >>\) \\
 Licensed betting video & << V('lat.video_band') >>\,s & vendor claims, unverified, none for tennis \citep{statsperform,nextio,sportradar,ably} \\
-Fastest public stream of a listed match & << V('lat.webrtc_public') >>\,s & measured, preliminary (no YouTube-derived figure used) \\
+Fastest public stream of a listed match & << V('lat.webrtc_public') >>\,s & measured, preliminary \\
 ESPN\,/\,PM sports\,/\,WTA vs book & << V('lat.espn') >>\,/\,<< V('lat.pmsports') >>\,/\,<< V('lat.wta') >>\,s & measured medians, 2026-10-03 \citep{espn,wtaapi} \\
 TV and public streams, general & 0.9--60\,s & published comparisons \citep{ispreview,glsystemhaus,thedesk} \\
 \bottomrule
 \end{tabularx}
 \tabnotes{\emph{Source:} \texttt{research/v2/latency/results.json}, \texttt{results/tier0/latency\_sweep.json::sources},
-\texttt{results/home\_stream/sub\_second\_routes.json}, \texttt{results/engine/online\_vs\_offline.json}.}
+\texttt{results/home\_stream/sub\_second\_routes.json}, \texttt{results/engine/online\_vs\_offline.json},
+\texttt{results/\{e2e,webrtc\}}.}
 \end{table}
 
 \clearpage
 \begin{longtable}{@{}p{0.85in}p{0.95in}p{4.35in}@{}}
 \caption{\emph{Every logged read of held-out data (<< V('peeks.n') >> lines of \texttt{results/oos\_peeks.log} at build
-time), with its class.}}\label{tab:A-peeks}\\
+time), with its class; a line logged after its run is set in bold.}}\label{tab:A-peeks}\\
 \toprule
 UTC & Class & What was read (truncated) \\
 \midrule
@@ -548,7 +626,8 @@ UTC & Class & What was read (truncated) \\
 \bottomrule
 \endfoot
 <% for p in X['peeks']['lines'] %>
-<< T(p['utc'][5:16].replace('T', ' ')) >> & << T(p['class']) >> & << TB(p['line'][:150]) >><% if p['line']|length > 150 %>\ldots<% endif %> \\
+<% set late = ('logged after' in p['line']|lower) %>
+<% if late %>\bfseries <% endif %><< T(p['utc'][5:16].replace('T', ' ')) >> & <% if late %>\bfseries <% endif %><< T(p['class']) >> & <% if late %>\bfseries <% endif %><< TB(p['line'][:150]) >><% if p['line']|length > 150 %>\ldots<% endif %><% if late %> (LOGGED AFTER THE RUN)<% endif %> \\
 <% endfor %>
 \end{longtable}
 
@@ -564,6 +643,7 @@ Commit & UTC & Subject \\
 \endhead
 \bottomrule
 \endfoot
+\texttt{<< V('t0.prereg.commit') >>} & << V('t0.prereg.time') >> (Oct 3) & tier-0 PREREG: its text says written << V('t0.prereg.written') >> UTC; committed with its results; OOS grid first run << V('t0.oos_first') >> UTC (peek log) \\
 <% for t in X['trail'] %>
 \texttt{<< T(t['commit']) >>} & << T(t['time'][:16].replace('T', ' ')) >> & << TB(t['subject']) >> \\
 <% endfor %>

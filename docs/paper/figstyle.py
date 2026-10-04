@@ -2,8 +2,9 @@
 
 House style, after the research notes of AQR, Man AHL and J.P. Morgan:
 
-* Source Sans 3 (the paper's body face, docs/paper/fonts) at 8.5-9.5 pt at final print size; figures are drawn at
-  their printed size (6.5 in wide), so a 9 pt glyph in matplotlib is a 9 pt glyph on the page.
+* Source Sans 3 (the paper's body face, docs/paper/fonts) at 11-12 pt at final print size (the track's 11 pt
+  minimum holds for figure text too: every glyph on the five main pages is >= 11 pt); figures are drawn at their
+  printed size (6.5 in wide), so an 11 pt glyph in matplotlib is an 11 pt glyph on the page.
 * Palette with fixed meanings: orange #E8601C = our CV strategy / our pipeline; near-black #222 = v2 or the
   pre-registered reading; mid grey #8C8C8C = others / everyone else; light grey shading = OOS periods and source
   bands; red only for losses if a panel needs it. No hatching.
@@ -55,9 +56,9 @@ RED = "#C0392B"           # losses only, if needed
 WHITE = "#FFFFFF"
 
 # ------------------------------------------------------------------------------------------------ type
-FS = 9.0          # axis labels, tick labels, direct labels
-FS_SMALL = 8.5    # annotations, value labels
-FS_TITLE = 9.5    # panel letter and takeaway title
+FS = 11.0         # axis labels, tick labels, direct labels (the track's 11 pt minimum applies to figure text)
+FS_SMALL = 11.0   # annotations, value labels: never below 11 pt
+FS_TITLE = 12.0   # panel letter and takeaway title
 FIG_W = 6.5       # text width, inches
 
 LW = 1.6          # primary lines
@@ -429,7 +430,7 @@ def layout_problems(fig, tol_px: float = 0.5) -> list[str]:
         boxes.append((txt, bb.from_extents(bb.x0, bb.y0 + shrink, bb.x1, bb.y1 - shrink)))
     W, H = fig.canvas.get_width_height()
     probs = []
-    for t in fig.findobj(Text):  # the house range is 8.5-9.5 pt at print size
+    for t in fig.findobj(Text):  # the house range is 11-12 pt at print size
         if t.get_visible() and t.get_text().strip() and not (FS_SMALL - 1e-6 <= t.get_fontsize() <= FS_TITLE + 1e-6):
             probs.append(f"font {t.get_fontsize():g} pt: {t.get_text()!r}")
     for txt, bb in boxes:

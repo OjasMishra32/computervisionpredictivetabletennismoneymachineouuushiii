@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-04T00:53:35+00:00",
+ "generated_utc": "2026-10-04T03:03:59+00:00",
  "script": "scripts/build_paper.py",
  "label_cv": "assumed feed latency (licensed feed not purchased); parameters measured",
  "numbers": {
@@ -1533,83 +1533,83 @@
    "source": "results/e2e/summary.json::counts.orders_sent"
   },
   "capcv.half.is": {
-   "value": "$74,000",
-   "raw": 73892.0,
+   "value": "$73,000",
+   "raw": 73288.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.capital_usd"
   },
   "capcv.half.is.day": {
-   "value": "$181",
-   "raw": 180.6,
+   "value": "$183",
+   "raw": 183.4,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.pnl_per_day_usd"
   },
   "capcv.halfall.is": {
-   "value": "$164,000",
-   "raw": 164216.0,
+   "value": "$165,000",
+   "raw": 164685.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.capital_usd"
   },
   "capcv.halfall.is.day": {
-   "value": "$481",
-   "raw": 480.8,
+   "value": "$517",
+   "raw": 517.2,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.at_half_sharpe.pnl_per_day_usd"
   },
   "capcv.pre.sr0.is": {
    "value": "2.7",
-   "raw": 2.745,
+   "raw": 2.724,
    "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|IS.sharpe_ref_smallest_size"
   },
   "capcv.cf.is": {
-   "value": "$52,000",
-   "raw": 51548.0,
+   "value": "$65,000",
+   "raw": 65358.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.fixed_costs.camera_free_central.capital_needed_usd"
   },
   "capcv.cf.is.cost": {
-   "value": "$242",
-   "raw": 241.6,
+   "value": "$291",
+   "raw": 290.96,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|IS.fixed_costs.camera_free_central.cost_usd_per_day"
   },
   "capcv.half.oos": {
-   "value": "$41,000",
-   "raw": 41105.0,
+   "value": "$40,000",
+   "raw": 40245.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.capital_usd"
   },
   "capcv.half.oos.day": {
-   "value": "$66",
-   "raw": 66.5,
+   "value": "$68",
+   "raw": 67.5,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
   },
   "capcv.halfall.oos": {
-   "value": "$96,000",
-   "raw": 95790.0,
+   "value": "$97,000",
+   "raw": 96926.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.capital_usd"
   },
   "capcv.halfall.oos.day": {
-   "value": "$251",
-   "raw": 251.4,
+   "value": "$278",
+   "raw": 277.8,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.at_half_sharpe.pnl_per_day_usd"
   },
   "capcv.pre.sr0.oos": {
-   "value": "0.9",
-   "raw": 0.909,
+   "value": "0.8",
+   "raw": 0.85,
    "source": "results/capacity/capacity.json::answers.cv.prereg|phi0.5|cov10|g1|burned_OOS.sharpe_ref_smallest_size"
   },
   "capcv.cf.oos": {
-   "value": "$99,000",
-   "raw": 99419.0,
+   "value": "$117,000",
+   "raw": 116977.0,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.fixed_costs.camera_free_central.capital_needed_usd"
   },
   "capcv.cf.oos.cost": {
-   "value": "$256",
-   "raw": 256.15,
+   "value": "$315",
+   "raw": 315.14,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|covall|g1|burned_OOS.fixed_costs.camera_free_central.cost_usd_per_day"
   },
   "capcv.share_inplay": {
-   "value": "0.15%",
-   "raw": 0.1494,
+   "value": "0.22%",
+   "raw": 0.2214,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above.share_of_inplay_volume_pct"
   },
   "capcv.share_fast": {
-   "value": "6%",
-   "raw": 6.013,
+   "value": "9%",
+   "raw": 8.909,
    "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above.share_of_fasttier_03s_volume_pct"
   },
   "t0.prereg.written": {
@@ -2496,8 +2496,8 @@
    "source": "results/tier0/latency_sweep.csv rows"
   },
   "peeks.n": {
-   "value": "76",
-   "raw": 76,
+   "value": "77",
+   "raw": 77,
    "source": "results/oos_peeks.log (lines at build time)"
   },
   "peeks.blind": {
@@ -2521,14 +2521,19 @@
    "source": "D: keyword class 'audit' over results/oos_peeks.log"
   },
   "peeks.live": {
-   "value": "21",
-   "raw": 21,
+   "value": "22",
+   "raw": 22,
    "source": "D: keyword class 'live' over results/oos_peeks.log"
   },
   "peeks.other": {
    "value": "2",
    "raw": 2,
    "source": "D: keyword class 'other' over results/oos_peeks.log"
+  },
+  "fwd.notrun": {
+   "value": "not run (submitted before the forward window closed)",
+   "raw": "2026-10-04T02:18:17Z",
+   "source": "HYPOTHESIS_V2.md::Amendment A3; research/v2/maker/DEVIATIONS_LIVE.md L15"
   },
   "fwd.cell": {
    "value": "pending (runs once, Oct 4)",
@@ -2541,14 +2546,1178 @@
    "source": "results/v2/forward.json (absent at build time)"
   },
   "live.cell": {
-   "value": "pending (paper; 0 fills so far)",
-   "raw": 0,
-   "source": "results/live/summary.json::books.B1.fills (FINAL absent)"
+   "value": "stopped by a team decision after 0 fills; not used",
+   "raw": {
+    "label": "primary (pre-registered)",
+    "fills": 0,
+    "matches": 0,
+    "usd_filled": 0.0,
+    "shares": 0.0,
+    "realised": 0.0,
+    "unrealised": 0.0,
+    "pnl": 0.0,
+    "rebate": 0.0,
+    "fees": 0.0,
+    "equity": 10000.0,
+    "open_quotes": 0,
+    "open_fills": 0,
+    "resolved_fills": 0,
+    "placed": 39,
+    "cancels": 39,
+    "rejects": 0,
+    "taker_misses": 0,
+    "gap_cancels": 0,
+    "taker_voids": 0,
+    "net_c_per_share": null,
+    "net_c_share_w": null,
+    "ci95_c": null
+   },
+   "source": "results/live/STOPPED_TEAM_DECISION; results/live/summary.json::books.B1.fills"
   },
   "live.status": {
-   "value": "pending",
-   "raw": null,
-   "source": "results/live/FINAL (absent at build time)"
+   "value": "stopped",
+   "raw": "stopped",
+   "source": "results/live/STOPPED_TEAM_DECISION"
+  },
+  "sc.pre.is.v05.usd": {
+   "value": "+$28",
+   "raw": 28.43,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.usd_per_day"
+  },
+  "sc.pre.is.v05.uci": {
+   "value": "[−1, 59]",
+   "raw": [
+    -0.98,
+    59.48
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.is.v05.sr": {
+   "value": "4.0",
+   "raw": 4.0,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.sharpe_ann"
+  },
+  "sc.pre.is.v05.c": {
+   "value": "+0.61",
+   "raw": 0.613,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.net_c_per_share"
+  },
+  "sc.pre.is.v05.cci": {
+   "value": "[0.08, 1.14]",
+   "raw": [
+    0.077,
+    1.138
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.IS.net_c_per_share_ci95"
+  },
+  "sc.pre.is.v1.usd": {
+   "value": "+$15",
+   "raw": 14.78,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day"
+  },
+  "sc.pre.is.v1.uci": {
+   "value": "[−9, 43]",
+   "raw": [
+    -8.76,
+    43.15
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.is.v1.sr": {
+   "value": "2.1",
+   "raw": 2.15,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.sharpe_ann"
+  },
+  "sc.pre.is.v1.c": {
+   "value": "+0.40",
+   "raw": 0.401,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share"
+  },
+  "sc.pre.is.v1.cci": {
+   "value": "[−0.32, 1.08]",
+   "raw": [
+    -0.324,
+    1.078
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.IS.net_c_per_share_ci95"
+  },
+  "sc.pre.is.v3.usd": {
+   "value": "−$13",
+   "raw": -12.68,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.usd_per_day"
+  },
+  "sc.pre.is.v3.uci": {
+   "value": "[−24, 19]",
+   "raw": [
+    -24.23,
+    18.78
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.is.v3.sr": {
+   "value": "−2.6",
+   "raw": -2.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.sharpe_ann"
+  },
+  "sc.pre.is.v3.c": {
+   "value": "−1.35",
+   "raw": -1.349,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.net_c_per_share"
+  },
+  "sc.pre.is.v3.cci": {
+   "value": "[−3.15, 0.37]",
+   "raw": [
+    -3.147,
+    0.367
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.IS.net_c_per_share_ci95"
+  },
+  "sc.pre.oos.v05.usd": {
+   "value": "+$15",
+   "raw": 15.16,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.usd_per_day"
+  },
+  "sc.pre.oos.v05.uci": {
+   "value": "[−30, 81]",
+   "raw": [
+    -29.72,
+    81.23
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.oos.v05.sr": {
+   "value": "2.1",
+   "raw": 2.14,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.sharpe_ann"
+  },
+  "sc.pre.oos.v05.c": {
+   "value": "−0.02",
+   "raw": -0.018,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.net_c_per_share"
+  },
+  "sc.pre.oos.v05.cci": {
+   "value": "[−1.22, 1.09]",
+   "raw": [
+    -1.221,
+    1.086
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.5.burned_OOS.net_c_per_share_ci95"
+  },
+  "sc.pre.oos.v1.usd": {
+   "value": "+$4",
+   "raw": 4.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day"
+  },
+  "sc.pre.oos.v1.uci": {
+   "value": "[−36, 62]",
+   "raw": [
+    -36.42,
+    62.49
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.oos.v1.sr": {
+   "value": "0.3",
+   "raw": 0.34,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.sharpe_ann"
+  },
+  "sc.pre.oos.v1.c": {
+   "value": "−0.38",
+   "raw": -0.383,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share"
+  },
+  "sc.pre.oos.v1.cci": {
+   "value": "[−2.08, 1.21]",
+   "raw": [
+    -2.083,
+    1.205
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.1.burned_OOS.net_c_per_share_ci95"
+  },
+  "sc.pre.oos.v3.usd": {
+   "value": "−$13",
+   "raw": -12.67,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.usd_per_day"
+  },
+  "sc.pre.oos.v3.uci": {
+   "value": "[−41, 34]",
+   "raw": [
+    -41.01,
+    34.04
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.pre.oos.v3.sr": {
+   "value": "−2.6",
+   "raw": -2.58,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.sharpe_ann"
+  },
+  "sc.pre.oos.v3.c": {
+   "value": "−1.69",
+   "raw": -1.69,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.net_c_per_share"
+  },
+  "sc.pre.oos.v3.cci": {
+   "value": "[−4.85, 1.32]",
+   "raw": [
+    -4.846,
+    1.324
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.3.burned_OOS.net_c_per_share_ci95"
+  },
+  "sc.cal.is.v05.usd": {
+   "value": "+$133",
+   "raw": 133.26,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.usd_per_day"
+  },
+  "sc.cal.is.v05.uci": {
+   "value": "[80, 168]",
+   "raw": [
+    79.92,
+    167.56
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.is.v05.sr": {
+   "value": "15.5",
+   "raw": 15.5,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.sharpe_ann"
+  },
+  "sc.cal.is.v05.c": {
+   "value": "+1.21",
+   "raw": 1.211,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.net_c_per_share"
+  },
+  "sc.cal.is.v05.cci": {
+   "value": "[1.00, 1.42]",
+   "raw": [
+    1.002,
+    1.421
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.IS.net_c_per_share_ci95"
+  },
+  "sc.cal.is.v1.usd": {
+   "value": "+$94",
+   "raw": 94.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day"
+  },
+  "sc.cal.is.v1.uci": {
+   "value": "[51, 125]",
+   "raw": [
+    51.3,
+    125.01
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.is.v1.sr": {
+   "value": "11.9",
+   "raw": 11.95,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.sharpe_ann"
+  },
+  "sc.cal.is.v1.c": {
+   "value": "+1.11",
+   "raw": 1.113,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share"
+  },
+  "sc.cal.is.v1.cci": {
+   "value": "[0.85, 1.38]",
+   "raw": [
+    0.849,
+    1.375
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.IS.net_c_per_share_ci95"
+  },
+  "sc.cal.is.v3.usd": {
+   "value": "−$6",
+   "raw": -5.92,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.usd_per_day"
+  },
+  "sc.cal.is.v3.uci": {
+   "value": "[−24, 34]",
+   "raw": [
+    -23.98,
+    34.24
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.is.v3.sr": {
+   "value": "−1.4",
+   "raw": -1.38,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.sharpe_ann"
+  },
+  "sc.cal.is.v3.c": {
+   "value": "−0.79",
+   "raw": -0.789,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.net_c_per_share"
+  },
+  "sc.cal.is.v3.cci": {
+   "value": "[−2.26, 0.60]",
+   "raw": [
+    -2.26,
+    0.597
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.IS.net_c_per_share_ci95"
+  },
+  "sc.cal.oos.v05.usd": {
+   "value": "+$81",
+   "raw": 81.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.usd_per_day"
+  },
+  "sc.cal.oos.v05.uci": {
+   "value": "[15, 157]",
+   "raw": [
+    15.46,
+    156.96
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.oos.v05.sr": {
+   "value": "12.2",
+   "raw": 12.16,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.sharpe_ann"
+  },
+  "sc.cal.oos.v05.c": {
+   "value": "+0.82",
+   "raw": 0.817,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.net_c_per_share"
+  },
+  "sc.cal.oos.v05.cci": {
+   "value": "[0.39, 1.25]",
+   "raw": [
+    0.387,
+    1.249
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.0.5.burned_OOS.net_c_per_share_ci95"
+  },
+  "sc.cal.oos.v1.usd": {
+   "value": "+$57",
+   "raw": 56.59,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day"
+  },
+  "sc.cal.oos.v1.uci": {
+   "value": "[1, 130]",
+   "raw": [
+    0.65,
+    129.52
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.oos.v1.sr": {
+   "value": "8.8",
+   "raw": 8.85,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.sharpe_ann"
+  },
+  "sc.cal.oos.v1.c": {
+   "value": "+0.66",
+   "raw": 0.655,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share"
+  },
+  "sc.cal.oos.v1.cci": {
+   "value": "[0.10, 1.19]",
+   "raw": [
+    0.098,
+    1.189
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.1.burned_OOS.net_c_per_share_ci95"
+  },
+  "sc.cal.oos.v3.usd": {
+   "value": "−$11",
+   "raw": -11.38,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.usd_per_day"
+  },
+  "sc.cal.oos.v3.uci": {
+   "value": "[−41, 37]",
+   "raw": [
+    -41.01,
+    37.0
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.usd_per_day_seed_ci95"
+  },
+  "sc.cal.oos.v3.sr": {
+   "value": "−2.4",
+   "raw": -2.35,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.sharpe_ann"
+  },
+  "sc.cal.oos.v3.c": {
+   "value": "−1.47",
+   "raw": -1.466,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.net_c_per_share"
+  },
+  "sc.cal.oos.v3.cci": {
+   "value": "[−4.45, 1.34]",
+   "raw": [
+    -4.448,
+    1.344
+   ],
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament_lagcal.3.burned_OOS.net_c_per_share_ci95"
+  },
+  "pp.pre.is.usd": {
+   "value": "−$17",
+   "raw": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp.1.IS.usd_per_day"
+  },
+  "pp.pre.is.be": {
+   "value": "none",
+   "raw": "none: P&L <= 0 already at V = 0 (the venue camera)",
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "pp.pre.oos.usd": {
+   "value": "−$17",
+   "raw": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp.1.burned_OOS.usd_per_day"
+  },
+  "pp.pre.oos.be": {
+   "value": "none",
+   "raw": "none: P&L <= 0 already at V = 0 (the venue camera)",
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "pp.cal.is.usd": {
+   "value": "−$17",
+   "raw": -17.25,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.1.IS.usd_per_day"
+  },
+  "pp.cal.is.be": {
+   "value": "0.34",
+   "raw": 0.338,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.IS.breakeven_V_s_seed_mean_curve"
+  },
+  "pp.cal.oos.usd": {
+   "value": "−$17",
+   "raw": -16.84,
+   "source": "results/tier0/latency_sweep.json::video_own120.stamp_calibrated.1.burned_OOS.usd_per_day"
+  },
+  "pp.cal.oos.be": {
+   "value": "0.29",
+   "raw": 0.295,
+   "source": "results/tier0/latency_sweep.json::breakeven_video_delay.stamp_calibrated.burned_OOS.breakeven_V_s_seed_mean_curve"
+  },
+  "pess.cal.is.usd": {
+   "value": "+$88",
+   "raw": 87.75,
+   "source": "results/redteam/causal_cv.json::pessimistic_lagcal.V1.IS.usd_per_day"
+  },
+  "pess.cal.oos.usd": {
+   "value": "+$49",
+   "raw": 48.97,
+   "source": "results/redteam/causal_cv.json::pessimistic_lagcal.V1.burned_OOS.usd_per_day"
+  },
+  "v2.is.dsr": {
+   "value": "0.997",
+   "raw": 0.9969107512828559,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_is].dsr_min_N3386 (min over the three variance sources)"
+  },
+  "v2.oos.dsr": {
+   "value": "0.075",
+   "raw": 0.07488192490720423,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].dsr_min_N3386 (min over the three variance sources)"
+  },
+  "v2.oos.psr": {
+   "value": "0.987",
+   "raw": 0.9871278503183615,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].psr_vs_0"
+  },
+  "v2s.is.sr": {
+   "value": "15.7",
+   "raw": 15.695873058769767,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2safe_is.sharpe_ann"
+  },
+  "v2s.is.sr_ci": {
+   "value": "[13.1, 18.6]",
+   "raw": [
+    13.107902973545867,
+    18.587712026974483
+   ],
+   "source": "results/rigor/rigor.json::bootstrap.v2safe_is.sharpe_ann_ci95"
+  },
+  "v2s.is.dsr": {
+   "value": "1.000",
+   "raw": 0.9999083966545518,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2safe_is].dsr_min_N3410 (N includes the v2-safe grid)"
+  },
+  "v2s.is.c": {
+   "value": "+1.33",
+   "raw": 1.3328961476025758,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.per_share_c"
+  },
+  "v2s.is.ci": {
+   "value": "[1.16, 1.52]",
+   "raw": [
+    1.155146199387172,
+    1.5176686335632352
+   ],
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.per_share_ci_c"
+  },
+  "v2s.is.ret": {
+   "value": "239%",
+   "raw": 239.14998530021234,
+   "source": "D: results/rigor/rigor.json::sharpe_moments.v2safe_is.mean_daily_ret_pct x 365"
+  },
+  "v2s.is.vol": {
+   "value": "15.2%",
+   "raw": 15.236488241512111,
+   "source": "D: results/rigor/rigor.json::sharpe_moments.v2safe_is.sd_daily_usd / capital_usd x sqrt(365)"
+  },
+  "v2s.is.dd": {
+   "value": "−1.6%",
+   "raw": -1.6071751019680214,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.max_dd_pct_cap"
+  },
+  "v2s.is.worstmonth": {
+   "value": "+$1,499",
+   "raw": 1499.1338324668723,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.worst_month_usd"
+  },
+  "v2s.is.turnover": {
+   "value": "90",
+   "raw": 90.48916364982459,
+   "source": "D: results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.usd_traded / capital_usd / calendar_days x 365"
+  },
+  "v2s.is.skew": {
+   "value": "+0.61",
+   "raw": 0.6086410964208809,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2safe_is.skew"
+  },
+  "v2s.is.cap": {
+   "value": "$17,681",
+   "raw": 17680.604395182603,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2_safe.capital_usd"
+  },
+  "v2s.oos.sr": {
+   "value": "9.3",
+   "raw": 9.272747859573087,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2safe_oos.sharpe_ann"
+  },
+  "v2s.oos.sr_ci": {
+   "value": "[4.5, 15.6]",
+   "raw": [
+    4.519605191542704,
+    15.637812006810398
+   ],
+   "source": "results/rigor/rigor.json::bootstrap.v2safe_oos.sharpe_ann_ci95"
+  },
+  "v2s.oos.dsr": {
+   "value": "0.290",
+   "raw": 0.2897865116764607,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2safe_oos].dsr_min_N3410 (N includes the v2-safe grid)"
+  },
+  "v2s.oos.c": {
+   "value": "+0.69",
+   "raw": 0.6860339640787971,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.per_share_c"
+  },
+  "v2s.oos.ci": {
+   "value": "[0.24, 1.15]",
+   "raw": [
+    0.24261209337899814,
+    1.1528888996078328
+   ],
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.per_share_ci_c"
+  },
+  "v2s.oos.ret": {
+   "value": "170%",
+   "raw": 170.18019777924016,
+   "source": "D: results/rigor/rigor.json::sharpe_moments.v2safe_oos.mean_daily_ret_pct x 365"
+  },
+  "v2s.oos.vol": {
+   "value": "18.4%",
+   "raw": 18.352725681368327,
+   "source": "D: results/rigor/rigor.json::sharpe_moments.v2safe_oos.sd_daily_usd / capital_usd x sqrt(365)"
+  },
+  "v2s.oos.dd": {
+   "value": "−1.9%",
+   "raw": -1.8600391019565652,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.max_dd_pct_cap"
+  },
+  "v2s.oos.worstmonth": {
+   "value": "−$187",
+   "raw": -187.33503601007595,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.worst_month_usd"
+  },
+  "v2s.oos.turnover": {
+   "value": "129",
+   "raw": 129.07862558395897,
+   "source": "D: results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.usd_traded / capital_usd / calendar_days x 365"
+  },
+  "v2s.oos.skew": {
+   "value": "+0.17",
+   "raw": 0.17198929073305574,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2safe_oos.skew"
+  },
+  "v2s.oos.cap": {
+   "value": "$13,584",
+   "raw": 13584.425972042536,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2_safe.capital_usd"
+  },
+  "v2s.u2.c": {
+   "value": "+1.21",
+   "raw": 1.2057787207785529,
+   "source": "results/lowloss/results.json::runs.b_u2_blind.books.u2_oos.v2_safe.per_share_c"
+  },
+  "v2s.u2.ci": {
+   "value": "[−0.02, 2.43]",
+   "raw": [
+    -0.024487393891254337,
+    2.428511478231625
+   ],
+   "source": "results/lowloss/results.json::runs.b_u2_blind.books.u2_oos.v2_safe.per_share_ci_c"
+  },
+  "v2s.u2.is.c": {
+   "value": "+2.11",
+   "raw": 2.1111572104154144,
+   "source": "results/lowloss/results.json::runs.b_u2_blind.books.u2_is.v2_safe.per_share_c"
+  },
+  "v2s.u2.verdict": {
+   "value": "FAIL",
+   "raw": "FAIL",
+   "source": "results/lowloss/results.json::runs.b_u2_blind.primary.verdict"
+  },
+  "sel.sizing.n": {
+   "value": "55",
+   "raw": 55,
+   "source": "research/v2/sizing/results.json::variant_count.policies"
+  },
+  "sel.sizing.pick": {
+   "value": "G_50pct_net100",
+   "raw": "G_50pct_net100",
+   "source": "research/v2/sizing/results.json::recommended_policy"
+  },
+  "rig.pbo.n": {
+   "value": "24",
+   "raw": 24,
+   "source": "results/rigor/rigor.json::pbo_cscv.lowloss_24_sharpe.N_variants"
+  },
+  "rig.pbo.splits": {
+   "value": "12,870",
+   "raw": 12870,
+   "source": "results/rigor/rigor.json::pbo_cscv.lowloss_24_sharpe.n_splits"
+  },
+  "rig.pbo.S": {
+   "value": "16",
+   "raw": 16,
+   "source": "results/rigor/rigor.json::pbo_cscv.lowloss_24_sharpe.S_blocks"
+  },
+  "rig.pbo.logit_med": {
+   "value": "1.27",
+   "raw": 1.265666373331276,
+   "source": "results/rigor/rigor.json::pbo_cscv.lowloss_24_sharpe.logit.median"
+  },
+  "spin.tt.tp50": {
+   "value": "10",
+   "raw": 10,
+   "source": "results/spin/tt/test/report_numbers.json::snapshot_spin.50ms.tp"
+  },
+  "spin.tt.calls50": {
+   "value": "12",
+   "raw": 12,
+   "source": "results/spin/tt/test/report_numbers.json::snapshot_spin.50ms.calls"
+  },
+  "spin.out.prec200": {
+   "value": "1",
+   "raw": 1.0,
+   "source": "results/spin/tennis/key_numbers.json::bls.pout95_precision.200"
+  },
+  "spin.out.rec200": {
+   "value": "0.98",
+   "raw": 0.983,
+   "source": "results/spin/tennis/key_numbers.json::bls.pout95_recall.200"
+  },
+  "spin.rpm200": {
+   "value": "6.8",
+   "raw": 6.8,
+   "source": "results/spin/tennis/key_numbers.json::bls.rpm_err_med_abs.200"
+  },
+  "spin.ratio200": {
+   "value": "10",
+   "raw": 10.105263157894738,
+   "source": "D: key_numbers.json baseline.sd_cm.200 / bls.sd_cm.200"
+  },
+  "e2e.net": {
+   "value": "65",
+   "raw": 64.506,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.network_one_way_ms.p50"
+  },
+  "e2e.margin": {
+   "value": "881",
+   "raw": 881.406,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.margin_to_requirement_ms.p50"
+  },
+  "e2e.req": {
+   "value": "3,000",
+   "raw": 3000.0,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.requirement_ms"
+  },
+  "e2e.p99": {
+   "value": "2,218",
+   "raw": 2218.466,
+   "source": "results/e2e/summary.json::budget_with_1s_simulated_feed.total_ms.p99"
+  },
+  "e2e.delta": {
+   "value": "119",
+   "raw": 118.636,
+   "source": "D: e2e.ours + e2e.net (p50, ms)"
+  },
+  "e2e.delta_s": {
+   "value": "0.119",
+   "raw": 0.11863599999999999,
+   "source": "D: (e2e.ours + e2e.net) / 1000"
+  },
+  "webrtc.leg": {
+   "value": "4–8",
+   "raw": [
+    7.59,
+    4.87,
+    4.0
+   ],
+   "source": "results/webrtc/latency.json::settings[*].transport_only.video_leg_ms.p50 (min-max over settings)"
+  },
+  "capcv.pmax.is": {
+   "value": "$219,000",
+   "raw": 219200.8,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.capital_usd"
+  },
+  "capcv.pmax.is.day": {
+   "value": "$339",
+   "raw": 339.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.pnl_per_day_usd"
+  },
+  "capcv.pmax.is.sr": {
+   "value": "2.0",
+   "raw": 1.9853,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.pnl_max.sharpe_ann"
+  },
+  "capcv.low.is": {
+   "value": "$16,000",
+   "raw": 15613.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.fixed_costs.licence_low.capital_needed_usd"
+  },
+  "capcv.central.is": {
+   "value": "$65,000",
+   "raw": 64888.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.fixed_costs.licence_central.capital_needed_usd"
+  },
+  "capcv.sr0.is": {
+   "value": "13.6",
+   "raw": 13.634,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.sharpe_ref_smallest_size"
+  },
+  "capcv.pmax.oos": {
+   "value": "$83,000",
+   "raw": 83047.2,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.capital_usd"
+  },
+  "capcv.pmax.oos.day": {
+   "value": "$177",
+   "raw": 176.9,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.pnl_per_day_usd"
+  },
+  "capcv.pmax.oos.sr": {
+   "value": "1.3",
+   "raw": 1.2892,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.pnl_max.sharpe_ann"
+  },
+  "capcv.low.oos": {
+   "value": "$14,000",
+   "raw": 14404.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.fixed_costs.licence_low.capital_needed_usd"
+  },
+  "capcv.central.oos": {
+   "value": "$77,000",
+   "raw": 77316.0,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.fixed_costs.licence_central.capital_needed_usd"
+  },
+  "capcv.sr0.oos": {
+   "value": "10.6",
+   "raw": 10.591,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|burned_OOS.sharpe_ref_smallest_size"
+  },
+  "capcv.notional": {
+   "value": "$10,428",
+   "raw": 10427.7,
+   "source": "results/capacity/capacity.json::answers.cv.lagcal|phi0.5|cov10|g1|IS.at_half_sharpe.last_cell_above.notional_usd_per_day"
+  },
+  "cap.inplay": {
+   "value": "$4.71M",
+   "raw": 4709336.388349514,
+   "source": "results/capacity/capacity.json::market_denominators.cv_periods.IS.inplay_usd"
+  },
+  "cap.fastq": {
+   "value": "$117,047",
+   "raw": 117046.7932038835,
+   "source": "results/capacity/capacity.json::market_denominators.cv_periods.IS.fasttier_q_usd"
+  },
+  "calc.is.mean": {
+   "value": "$196.24",
+   "raw": 196.24135529941367,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.mean_daily_usd"
+  },
+  "calc.is.sd": {
+   "value": "$258.87",
+   "raw": 258.86529601389145,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.sd_daily_usd"
+  },
+  "calc.is.T": {
+   "value": "206",
+   "raw": 206,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.T_days"
+  },
+  "calc.is.srd": {
+   "value": "0.758",
+   "raw": 0.7580829038160557,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.sharpe_daily"
+  },
+  "calc.is.sr": {
+   "value": "14.48",
+   "raw": 14.483153541485253,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.sharpe_ann"
+  },
+  "calc.is.skew": {
+   "value": "0.535",
+   "raw": 0.5345103599734671,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.skew"
+  },
+  "calc.is.kurt": {
+   "value": "4.30",
+   "raw": 4.295491038665969,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.kurtosis"
+  },
+  "calc.is.cap": {
+   "value": "$28,302",
+   "raw": 28302.367701375268,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_is.capital_usd"
+  },
+  "calc.oos.mean": {
+   "value": "$92.19",
+   "raw": 92.18839800484172,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.mean_daily_usd"
+  },
+  "calc.oos.sd": {
+   "value": "$264.15",
+   "raw": 264.15345631588593,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.sd_daily_usd"
+  },
+  "calc.oos.T": {
+   "value": "40",
+   "raw": 40,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.T_days"
+  },
+  "calc.oos.srd": {
+   "value": "0.349",
+   "raw": 0.34899561524040373,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.sharpe_daily"
+  },
+  "calc.oos.sr": {
+   "value": "6.67",
+   "raw": 6.667551867200974,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.sharpe_ann"
+  },
+  "calc.oos.skew": {
+   "value": "0.326",
+   "raw": 0.3256376673081488,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.skew"
+  },
+  "calc.oos.kurt": {
+   "value": "3.26",
+   "raw": 3.259698998705011,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.kurtosis"
+  },
+  "calc.oos.cap": {
+   "value": "$22,754",
+   "raw": 22754.046251146858,
+   "source": "results/rigor/rigor.json::sharpe_moments.v2_oos.capital_usd"
+  },
+  "calc.sqrt365": {
+   "value": "19.105",
+   "raw": 19.1049731745428,
+   "source": "D: sqrt(365)"
+  },
+  "calc.so.dd": {
+   "value": "$125.64",
+   "raw": 125.63795902590192,
+   "source": "D: results/lowloss/daily.csv[a,u1_oos,v2] sqrt(mean(min(d,0)^2)), zero-filled calendar days"
+  },
+  "calc.so": {
+   "value": "14.0",
+   "raw": 14.018509091853916,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2.sortino_ann"
+  },
+  "calc.mdd": {
+   "value": "−$469",
+   "raw": -469.4297898304612,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_oos.v2.max_dd_usd"
+  },
+  "calc.mdd.pct": {
+   "value": "−2.06%",
+   "raw": -0.020630607174176804,
+   "source": "D: calc.mdd / capital"
+  },
+  "calc.z1": {
+   "value": "3.436",
+   "raw": 3.4358639753251885,
+   "source": "D: Phi^-1(1 - 1/N), N = rig.N3386"
+  },
+  "calc.z2": {
+   "value": "3.698",
+   "raw": 3.698012240707926,
+   "source": "D: Phi^-1(1 - 1/(N e))"
+  },
+  "calc.sr0d": {
+   "value": "0.574",
+   "raw": 0.5744085204752415,
+   "source": "D: sqrt(1/(T-1)) ((1-gamma) z1 + gamma z2)"
+  },
+  "calc.sr0a": {
+   "value": "10.97",
+   "raw": 10.974059374908308,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].dsr.N3386/null.sr0_ann"
+  },
+  "calc.psr0": {
+   "value": "0.987",
+   "raw": 0.9871278503183615,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].psr_vs_0"
+  },
+  "calc.dsr": {
+   "value": "0.075",
+   "raw": 0.07488192490720423,
+   "source": "results/rigor/rigor.json::psr_dsr.rows[v2_oos].dsr.N3386/null.dsr"
+  },
+  "calc.boot.se": {
+   "value": "2.65",
+   "raw": 2.6465398827548117,
+   "source": "results/rigor/rigor.json::bootstrap.v2_oos.sharpe_ann_boot_se"
+  },
+  "calc.ff.alpha": {
+   "value": "0.801%",
+   "raw": 0.801,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.alpha_pct_per_day"
+  },
+  "calc.ff.MktRF": {
+   "value": "0.173",
+   "raw": 0.172591,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas.MktRF"
+  },
+  "calc.ff.MktRF.t": {
+   "value": "1.36",
+   "raw": 1.364,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas_t.MktRF"
+  },
+  "calc.ff.SMB": {
+   "value": "0.085",
+   "raw": 0.084617,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas.SMB"
+  },
+  "calc.ff.SMB.t": {
+   "value": "0.46",
+   "raw": 0.4632,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas_t.SMB"
+  },
+  "calc.ff.HML": {
+   "value": "0.044",
+   "raw": 0.044241,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas.HML"
+  },
+  "calc.ff.HML.t": {
+   "value": "0.39",
+   "raw": 0.3948,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas_t.HML"
+  },
+  "calc.ff.Mom": {
+   "value": "0.028",
+   "raw": 0.027542,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas.Mom"
+  },
+  "calc.ff.Mom.t": {
+   "value": "0.39",
+   "raw": 0.3912,
+   "source": "results/alpha/alpha.json::C_factor_neutral.IS_committed_spec.betas_t.Mom"
+  },
+  "calc.fee.q50.c": {
+   "value": "1.25",
+   "raw": 1.25,
+   "source": "D: r q (1-q) x 100 cents, r = fee.rate"
+  },
+  "calc.fee.q50.bps": {
+   "value": "250",
+   "raw": 250.0,
+   "source": "D: 10,000 r (1-q)"
+  },
+  "calc.fee.q80.c": {
+   "value": "0.80",
+   "raw": 0.8,
+   "source": "D: r q (1-q) x 100 cents, r = fee.rate"
+  },
+  "calc.fee.q80.bps": {
+   "value": "100",
+   "raw": 99.99999999999997,
+   "source": "D: 10,000 r (1-q)"
+  },
+  "calc.mk.start.p": {
+   "value": "50.0%",
+   "raw": 0.5000000000000001,
+   "source": "D: src/markov.py TennisModel.win_prob"
+  },
+  "calc.mk.start.up": {
+   "value": "51.2%",
+   "raw": 0.5120811085483213,
+   "source": "D: src/markov.py win_prob after the point is won"
+  },
+  "calc.mk.start.dn": {
+   "value": "47.8%",
+   "raw": 0.47804981686290937,
+   "source": "D: src/markov.py win_prob after the point is lost"
+  },
+  "calc.mk.start.lev": {
+   "value": "3.4%",
+   "raw": 0.03403129168541197,
+   "source": "D: src/markov.py TennisModel.leverage"
+  },
+  "calc.mk.bp.p": {
+   "value": "33.7%",
+   "raw": 0.33689760164901134,
+   "source": "D: src/markov.py TennisModel.win_prob"
+  },
+  "calc.mk.bp.up": {
+   "value": "47.3%",
+   "raw": 0.4731293837724317,
+   "source": "D: src/markov.py win_prob after the point is won"
+  },
+  "calc.mk.bp.dn": {
+   "value": "8.9%",
+   "raw": 0.08937788483321937,
+   "source": "D: src/markov.py win_prob after the point is lost"
+  },
+  "calc.mk.bp.lev": {
+   "value": "38.4%",
+   "raw": 0.38375149893921234,
+   "source": "D: src/markov.py TennisModel.leverage"
+  },
+  "calc.mk.ps": {
+   "value": "0.645",
+   "raw": 0.645,
+   "source": "src/markov.py::TOUR_SERVE['atp']"
+  },
+  "calc.R.p90": {
+   "value": "0.08",
+   "raw": 0.08,
+   "source": "research/v2/latency/results.json::summary.m1.book_vs_official_T_s.p90"
+  },
+  "calc.vmax.med": {
+   "value": "−0.28",
+   "raw": -0.2786359999999999,
+   "source": "D: L + R_median - D - delta (pre-registered L)"
+  },
+  "calc.vmax.p90": {
+   "value": "0.96",
+   "raw": 0.9613640000000001,
+   "source": "D: L + R_p90 - D - delta (pre-registered L)"
+  },
+  "calc.peak": {
+   "value": "$9,434",
+   "raw": 9434.122567125089,
+   "source": "results/lowloss/results.json::runs.a_burned_oos_nonblind.books.u1_is.v2.peak_locked_usd"
+  },
+  "calc.roc": {
+   "value": "253%",
+   "raw": 253.08163415884613,
+   "source": "D: mean daily $ x 365 / capital (v2 IS)"
+  },
+  "ev.livefill.fill30": {
+   "value": "27%",
+   "raw": 0.2672,
+   "source": "research/v2/livefill/results.json::by_mode[inside].fill_30s"
+  },
+  "ev.livefill.post": {
+   "value": "+5.6",
+   "raw": 5.6285,
+   "source": "research/v2/livefill/results.json::by_mode[inside].post_fill_30s_c (sign: mid move against the seller)"
+  },
+  "ev.exit.c": {
+   "value": "+0.53",
+   "raw": 0.5343816750584114,
+   "source": "research/v2/exit/results.json::recommended.regime_1s5pct_per_share_c"
+  },
+  "ev.exit.ci": {
+   "value": "[0.42, 0.64]",
+   "raw": [
+    0.42446442678546886,
+    0.6373567380414064
+   ],
+   "source": "research/v2/exit/results.json::recommended.regime_1s5pct_ci_c"
+  },
+  "ev.exit.n": {
+   "value": "902",
+   "raw": 902,
+   "source": "research/v2/exit/results.json::n_variants"
+  },
+  "ev.sel.c": {
+   "value": "+1.76",
+   "raw": 1.75869,
+   "source": "research/v2/selection/results.json::series.nested.all.net_res_c"
+  },
+  "ev.sel.ci": {
+   "value": "[1.36, 2.16]",
+   "raw": [
+    1.36417,
+    2.16029
+   ],
+   "source": "research/v2/selection/results.json::series.nested.all.net_res_ci_c"
+  },
+  "ev.sel.base": {
+   "value": "+1.16",
+   "raw": 1.15742,
+   "source": "research/v2/selection/results.json::series.baseline.all.net_res_c"
+  },
+  "ev.sel.n": {
+   "value": "341",
+   "raw": 341,
+   "source": "research/v2/selection/results.json::variant_count.total"
+  },
+  "ev.cm.c": {
+   "value": "+2.73",
+   "raw": 2.72515891883029,
+   "source": "research/v2/crossmarket/analysis.json::lean_maker.wf.mean_pnl_per_share_c"
+  },
+  "ev.cm.ci": {
+   "value": "[1.73, 3.70]",
+   "raw": [
+    1.7306352370349454,
+    3.700135428910939
+   ],
+   "source": "research/v2/crossmarket/analysis.json::lean_maker.wf.ci95_pnl_per_share_c"
+  },
+  "ev.cm.n": {
+   "value": "68",
+   "raw": 68,
+   "source": "research/v2/crossmarket/analysis.json::n_variants"
+  },
+  "ev.kalshi.first": {
+   "value": "68.9%",
+   "raw": 0.6889428004551139,
+   "source": "research/v2/kalshi/out/leadlag_summary.json::lead_all.p_kalshi_first"
+  },
+  "ev.kalshi.lead": {
+   "value": "5",
+   "raw": 5.0,
+   "source": "research/v2/kalshi/out/leadlag_summary.json::lead_all.median_lead_s"
+  },
+  "ev.kalshi.n": {
+   "value": "106,347",
+   "raw": 106347,
+   "source": "research/v2/kalshi/out/leadlag_summary.json::events_both_moved"
+  },
+  "ev.t0.v0.is": {
+   "value": "+$89",
+   "raw": 88.79,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.IS.usd_per_day"
+  },
+  "ev.t0.v0.oos": {
+   "value": "+$46",
+   "raw": 46.43,
+   "source": "results/tier0/latency_sweep.json::video_own120.tournament.0.burned_OOS.usd_per_day"
+  },
+  "ev.blocklag": {
+   "value": "1.98",
+   "raw": 1.9760000705718994,
+   "source": "research/v2/blocklag/results.json::median_lag_s"
   }
  }
 }
