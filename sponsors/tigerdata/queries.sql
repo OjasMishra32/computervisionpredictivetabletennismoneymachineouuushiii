@@ -45,7 +45,10 @@ FROM fast_tier LIMIT 10;
 -- Rebuild the full order book at any instant (book_at): the biggest point, 10 s before, at detection and
 -- 10 s after. Shows the book emptying and refilling around a point.
 SET search_path = courtside, public;
-WITH j AS (SELECT asset_id, detected_at FROM jump_events ORDER BY abs(move_cents) DESC LIMIT 1)
+WITH j AS (SELECT e.asset_id, e.detected_at FROM jump_events e
+           WHERE e.detected_at - interval '10 seconds' >= (SELECT min(ts) FROM book_updates b
+                                                           WHERE b.asset_id = e.asset_id AND b.kind = 'snapshot')
+           ORDER BY abs(e.move_cents) DESC, e.detected_at DESC LIMIT 1)
 SELECT v.moment, v.at,
        max(b.price) FILTER (WHERE b.side = 'bid') AS best_bid,
        min(b.price) FILTER (WHERE b.side = 'ask') AS best_ask,
