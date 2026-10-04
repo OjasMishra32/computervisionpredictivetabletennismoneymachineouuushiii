@@ -1,4 +1,6 @@
-# Core: everything reproduce.sh, the tests and the note's page/font check need (tested on Python 3.14).
+# Core: the tests, the judge quick path and the note's page/font check (tested on Python 3.14).
+# reproduce.sh also needs duckdb, paramiko, tabulate and opencv-python-headless: requirements-repro.txt
+# (= this file + those pins) is what `bash run.sh setup` installs.
 matplotlib==3.11.2
 numpy==2.5.3
 pandas==3.0.6

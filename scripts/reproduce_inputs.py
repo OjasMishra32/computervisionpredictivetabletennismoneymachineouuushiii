@@ -90,6 +90,28 @@ def seal(sidecar: Path, st: dict) -> None:
     sidecar.write_text(json.dumps(st, indent=1, sort_keys=True) + "\n")
 
 
+# The builders also write a walk-forward CSV next to committed results (research/v2/lowloss/out/fasttier_wf_is.csv,
+# results/lowloss/fasttier_wf_u1.csv). Building a cache must not touch committed results, so the builder's OUT is
+# pointed at an untracked side directory and the side file is compared with the committed one.
+SIDE = ROOT / "results/repro/side_outputs"
+
+
+def side_out(mod, name: str) -> Path:
+    committed = Path(mod.OUT)
+    side = SIDE / name
+    side.mkdir(parents=True, exist_ok=True)
+    mod.OUT = side
+    return committed
+
+
+def compare_side(committed: Path, side: Path, fname: str) -> None:
+    a, b = committed / fname, side / fname
+    if b.exists():
+        same = a.exists() and a.read_bytes() == b.read_bytes()
+        log(f"{b.relative_to(ROOT)} {'identical to' if same else 'DIFFERS from'} committed {a.relative_to(ROOT)}"
+            " (committed file not touched)")
+
+
 def jumps_is() -> None:
     out = ROOT / "data/derived/jumps_is.parquet"
     out.parent.mkdir(parents=True, exist_ok=True)   # src/tier0 caches its tables here too
@@ -125,8 +147,10 @@ def lowloss_is() -> None:
             log(f"{o.relative_to(ROOT)} exists without a matching sidecar: moved to {o.name}.stale, rebuilding")
             o.replace(o.with_name(o.name + ".stale"))
     from scripts import lowloss_select
+    committed = side_out(lowloss_select, "lowloss_is")
     t0 = time.time()
     f, wh = lowloss_select.build()
+    compare_side(committed, lowloss_select.OUT, "fasttier_wf_is.csv")
     if not all(o.exists() for o in outs):
         raise SystemExit("lowloss_select.build() did not write data/v2_lowloss/{features,whist}_is.parquet")
     seal(side, st)
@@ -136,6 +160,7 @@ def lowloss_is() -> None:
 def lowloss_u1() -> None:
     from scripts import lowloss_test
     from src.tape import universe
+    committed = side_out(lowloss_test, "lowloss_u1")
     t0 = time.time()
     u1 = universe()
     assert (u1.oos == (u1.start >= lowloss_test.CUT)).all(), "U1 oos flag must equal start >= cutoff"
@@ -147,6 +172,7 @@ def lowloss_u1() -> None:
     # build() also checks its own json (prints only); the sidecar adds the builder code, so new code rebuilds
     rebuild = not fresh(side, st, outs)
     f, wh = lowloss_test.build("u1", [PRINTS["is"], PRINTS["oos"]], ends1, rebuild)
+    compare_side(committed, lowloss_test.OUT, "fasttier_wf_u1.csv")
     seal(side, st)
     log(f"data/v2_lowloss/{{features,whist}}_u1.parquet {'rebuilt' if rebuild else 'up to date'}: {len(f):,} "
         f"feature rows, {time.time() - t0:.0f} s")

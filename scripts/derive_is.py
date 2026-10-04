@@ -25,6 +25,7 @@ def jumps(r):
 
 
 if __name__ == "__main__":
+    OUT.mkdir(parents=True, exist_ok=True)   # a clean clone has no data/derived
     u = universe()
     u_is = u[~u.oos]
     u_is[["cond", "slug", "title", "series", "league", "start", "end", "res0", "volume", "other_volume",
