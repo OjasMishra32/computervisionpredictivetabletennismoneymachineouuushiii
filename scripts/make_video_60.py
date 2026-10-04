@@ -3981,14 +3981,28 @@ class SegEnd(SegR):
         m = re.search(r'Tennis footage: "([^"]+)" by ([^,]+), Pexels \(Pexels License\)', lic)
         self.credit = f"Tennis footage: “{m.group(1)}” by {m.group(2)}, Pexels (Pexels License)" if m else ""
         self.still_t = 2.0
+        self.logo = None
+        lp = Path("docs/brand/gqh_wallie.png")
+        if lp.exists():  # event mark on a small white rounded tile (the navy gator would vanish on black)
+            from PIL import Image, ImageDraw
+            g = Image.open(lp).convert("RGBA")
+            side = 132
+            g.thumbnail((side - 26, side - 26), Image.LANCZOS)
+            tile = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+            ImageDraw.Draw(tile).rounded_rectangle([0, 0, side - 1, side - 1], radius=30, fill=(255, 255, 255, 255))
+            tile.alpha_composite(g, ((side - g.width) // 2, (side - g.height) // 2))
+            self.logo = spr_from_rgba(np.asarray(tile))
 
     def frame(self, t):
         cv = canvas()
         k = appear(t, 0.05, 0.7)
-        blit(cv, ktext("COURTSIDE", 120, 600, KWH, track=12), W / 2, 470, "ms", k, 0.96 + 0.04 * k)
+        if self.logo is not None:
+            blit(cv, self.logo, W / 2, 288, "mm", k)
+            blit(cv, ktext("Gator Quant Hacks 2026 · Systematic Trading Track", 18, 500, KGREY), W / 2, 384, "ms", k)
+        blit(cv, ktext("COURTSIDE", 120, 600, KWH, track=12), W / 2, 500, "ms", k, 0.96 + 0.04 * k)
         k2 = appear(t, 0.35, 0.6)
-        blit(cv, ktext(TEAM, 22, 400, (210, 210, 215)), W / 2, 540, "ms", k2)
-        blit(cv, ktext(self.D["repo"], 22, 500, KWH), W / 2, 590, "ms", k2)
+        blit(cv, ktext(TEAM, 22, 400, (210, 210, 215)), W / 2, 565, "ms", k2)
+        blit(cv, ktext(self.D["repo"], 22, 500, KWH), W / 2, 612, "ms", k2)
         k3 = appear(t, 0.6, 0.6)
         blit(cv, ktext(END_LINE, 17, 400, KGREY), W / 2, 700, "ms", k3)
         if self.credit:

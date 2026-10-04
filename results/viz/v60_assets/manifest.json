@@ -271,8 +271,8 @@
   "for MISS flights the labelled outcome T_ref is the ball passing the end line (or the net); the stamps read 'n ms early' and the timeline names the outcome instead of 'contact'.",
   "capacity: results/capacity/capacity.json growth[...][1.0].capital_where_sharpe_halves_usd (10 covered matches a day), both readings"
  ],
- "generated_utc": "2026-10-04T01:09:12+00:00",
- "git": "0d2f4b6",
+ "generated_utc": "2026-10-04T03:31:28+00:00",
+ "git": "1545370",
  "spec": "research/compliance/VIDEO_REQUIREMENTS.md (75-90 s table)",
  "labels": {
   "footage": "OpenTTGames held-out games (CC BY-NC-SA 4.0)",
@@ -4835,7 +4835,7 @@
    "shown": "0.997"
   },
   "peeks": {
-   "value": 76,
+   "value": 77,
    "file": "results/oos_peeks.log",
    "key": "count(non-empty lines) at render time",
    "pending": false,
@@ -4843,7 +4843,7 @@
    "used_in": [
     "test"
    ],
-   "shown": "76"
+   "shown": "77"
   },
   "prereg_files": {
    "value": [
@@ -5593,48 +5593,48 @@
    "shown": "15"
   },
   "cap_lc_is": {
-   "value": 73.892,
+   "value": null,
    "file": "results/capacity/capacity.json",
    "key": "growth['lagcal|cov10|IS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
-   "pending": false,
+   "pending": true,
    "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
    "used_in": [
     "profit"
    ],
-   "shown": "74"
+   "shown": null
   },
   "cap_lc_oos": {
-   "value": 41.105,
+   "value": null,
    "file": "results/capacity/capacity.json",
    "key": "growth['lagcal|cov10|burned_OOS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
-   "pending": false,
+   "pending": true,
    "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
    "used_in": [
     "profit"
    ],
-   "shown": "41"
+   "shown": null
   },
   "cap_pr_is": {
-   "value": 29.319,
+   "value": null,
    "file": "results/capacity/capacity.json",
    "key": "growth['prereg|cov10|IS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
-   "pending": false,
+   "pending": true,
    "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
    "used_in": [
     "profit"
    ],
-   "shown": "29"
+   "shown": null
   },
   "cap_pr_oos": {
-   "value": 12.246,
+   "value": null,
    "file": "results/capacity/capacity.json",
    "key": "growth['prereg|cov10|burned_OOS'][growth=1.0].capital_where_sharpe_halves_usd / 1000",
-   "pending": false,
+   "pending": true,
    "note": "capital where the seed-mean Sharpe halves along the size path; 10 covered matches a day",
    "used_in": [
     "profit"
    ],
-   "shown": "12"
+   "shown": null
   },
   "lc_is_c": {
    "value": 1.113,
@@ -5712,11 +5712,11 @@
  "input_files": {
   "research/v2/latency/results.json": "042768ff8992a18af663932cabd64d847dc1e2bf41254ef555bec6295885d5dd",
   "results/alpha/alpha.json": "8077619a88fc87ec5940fc929c6e83d3038d1461c274a89f5831056d2031bc23",
-  "results/capacity/capacity.json": "f4dd6914db0268177b7f3394031035747a35063dc6922c1aebacf5022fd1af2a",
-  "results/e2e/summary.json": "a0f6092acbdb2973d559dad0d779ae0007ad30e9d27b38b6091f3ddc15ca4301",
+  "results/capacity/capacity.json": "b45a81b262f31f215b945ab1a50fa33b297aba667913c6508496805167749029",
+  "results/e2e/summary.json": "b4f572d42b457135b91d66a549f9208c57cedb0f6da1f40dcc0433c8c9f4ef64",
   "results/engine/online_vs_offline.json": "3dab6c6c72b3e6b5688234e93209e2cab3088eaebf26db7f63dad7c425cbfb1e",
   "results/home_stream/sub_second_routes.json": "57d66a53806dcc2ea0cc7059b6cbfaf1546b223824a4b6485ede5527862b8ae5",
-  "results/oos_peeks.log": "385116f3ca5ab5da11f596e3e93fff5845556019ad1e7ba7c8e84dad141b00f2",
+  "results/oos_peeks.log": "4c29d8f8ef7046dc5ce776bfe675fe762e69b5c1929dc996d344174a0f84c3ef",
   "results/rigor/rigor.json": "0d3e358b5c9556a603307712970da5cfb414c4161534fb66d70e59ec0258b324",
   "results/spin/tennis/key_numbers.json": "1337f86801e1de2db70f41898ebe8865fb8ea2f1359e48a8addd37841ebea15e",
   "results/tier0/latency_sweep.csv": "e0ccca7b02a097fa7d6870253f01a5d3815a6c2b4c64672033f1a70a72d74fb6",
@@ -5731,9 +5731,9 @@
  "final": {
   "file": "results/viz/courtside_60.mp4",
   "srt": "results/viz/courtside_60.srt",
-  "sha256": "f800008e08ad843e36d3905dc6ee86893ef271c4e2cf7d09a090b858bb98cbc0",
+  "sha256": "024e967bc0b74c4e2e563fab490493daa2a7fb2c7abe4771012e71260bb202f9",
   "duration_s": 89.533333,
-  "size_mb": 13.56,
+  "size_mb": 13.54,
   "streams": [
    {
     "codec_name": "h264",
@@ -5746,7 +5746,7 @@
     "r_frame_rate": "0/0"
    }
   ],
-  "rendered_utc": "2026-10-04T01:07:55+00:00",
+  "rendered_utc": "2026-10-04T03:30:04+00:00",
   "spec": "research/compliance/VIDEO_REQUIREMENTS.md: the 75-90 s table, DESIGN, stats rail, red-team addendum",
   "script_doc": "docs/video_script_60.md",
   "timeline": [
@@ -6088,21 +6088,21 @@
    "srt": "results/viz/courtside_60.srt"
   },
   "renders": {
+   "coldopen": {
+    "arc_frames_drawn": 17
+   },
+   "tennis": {},
    "edge": {},
    "profit": {},
    "pipeline": {},
    "test": {},
    "strategy": {},
-   "speed": {},
-   "tennis": {},
-   "coldopen": {
-    "arc_frames_drawn": 17
-   },
-   "endcard": {},
-   "tennis_real": {},
    "tt": {
     "arc_frames_drawn": 62
-   }
+   },
+   "speed": {},
+   "endcard": {},
+   "tennis_real": {}
   },
   "tennis_sim": {
    "file": "results/viz/v60_assets/tennis_sim/shot.json",
