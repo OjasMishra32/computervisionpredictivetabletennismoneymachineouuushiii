@@ -41,6 +41,30 @@ def db_url() -> str:
     return url
 
 
+def statements(sql: str) -> list[str]:
+    """Split a SQL file on semicolons, keeping $$ function bodies whole and dropping comment-only parts.
+
+    Statements run one at a time because TimescaleDB refuses to create a continuous aggregate inside the
+    implicit transaction of a multi-statement query."""
+    out, buf, in_body = [], [], False
+    for line in sql.splitlines():
+        if line.strip().startswith("--") and not in_body:
+            continue
+        buf.append(line)
+        in_body ^= line.count("$$") % 2 == 1
+        if not in_body and line.split("--")[0].rstrip().endswith(";"):
+            out.append("\n".join(buf).strip())
+            buf = []
+    if "\n".join(buf).strip():
+        out.append("\n".join(buf).strip())
+    return out
+
+
+def apply_schema(conn) -> None:
+    for st in statements((HERE / "schema.sql").read_text()):
+        conn.execute(st)
+
+
 def utc(ms: float) -> datetime:
     return datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
 
@@ -54,7 +78,7 @@ def parse_fixture(path: Path = FIXTURE):
         for v in tok.values():
             start = datetime.fromisoformat(v["start"].replace("Z", "+00:00")) if v.get("start") else None
             markets[v["tok"]] = [v["tok"], v["cond"], v.get("slug"), v.get("title"), v.get("outcome"),
-                                 v.get("smt"), start, None]
+                                 v.get("smt"), start, None, "live_sample"]
         for line in fh:
             d = json.loads(line)
             e = d.get("e")
@@ -121,7 +145,7 @@ def parse_trace(path: Path = TRACE):
 
 
 COLS = {
-    "markets": "asset_id, market, slug, title, outcome, market_type, start_ts, winner",
+    "markets": "asset_id, market, slug, title, outcome, market_type, start_ts, winner, source",
     "book_updates": "ts, rt, asset_id, market, side, price, size, kind, best_bid, best_ask",
     "trades": "ts, rt, asset_id, market, price, size, side, source",
     "cv_calls": "ts, call, p_miss, lead_ms, source",
@@ -145,7 +169,7 @@ def main(reset: bool):
     print(f"parsed in {time.perf_counter() - t0:.1f} s")
     with psycopg.connect(db_url(), autocommit=True) as conn:
         if reset:
-            conn.execute((HERE / "schema.sql").read_text())
+            apply_schema(conn)
             print("schema created")
         total_rows, total_s = 0, 0.0
         with conn.cursor() as cur:
@@ -157,7 +181,9 @@ def main(reset: bool):
         print(f"{'total':16s} {total_rows:>9,} rows  {total_s:6.2f} s  {total_rows / total_s:>10,.0f} rows/s")
         for v in ("mid_1s", "trades_1s"):
             conn.execute(f"CALL refresh_continuous_aggregate('courtside.{v}', NULL, NULL)")
-        print("continuous aggregates refreshed")
+        conn.execute("CALL courtside.detect_jumps()")
+        n_j = conn.execute("SELECT count(*) FROM courtside.jump_events").fetchone()[0]
+        print(f"continuous aggregates refreshed; {n_j} jumps detected")
         for h in ("book_updates", "trades"):
             conn.execute(f"SELECT compress_chunk(c, if_not_compressed => true) FROM show_chunks('courtside.{h}') c")
             b, a = conn.execute(f"SELECT sum(before_compression_total_bytes), sum(after_compression_total_bytes) "
