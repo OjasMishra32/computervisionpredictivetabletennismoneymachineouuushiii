@@ -1,0 +1,3251 @@
+{
+ "schema": "courtside.provenance.experiments/1",
+ "time_basis": "UTC, to the second. Commit times are git committer times (git log --format=%cI) converted to UTC. Log times are the first field of results/oos_peeks.log, results/tracking/test_peeks.log and results/tt/peeks.log, converted to UTC. time_source says where an event's utc comes from: log (its earliest own log line), commit, mtime (local file modification times quoted in a committed document or read on the authors' machine), document (a time stated in a committed document). utc is the start of the event; utc_end, when present, its last log line or last known action.",
+ "kinds": {
+  "a": "pre-registered single evaluation: the rule was frozen in prereg_commit before the read. data_state says whether the data were clean or had been read before.",
+  "b": "reproduction of an already-reported number; no decision and no new statistic",
+  "c": "replay, diagnostic, sensitivity or descriptive read; no rule chosen (may add new statistics)",
+  "d": "design, selection or headline decision taken after an OOS (or held-out) look",
+  "e": "defect fix adopted after an OOS look; direction = its effect on the reported number",
+  "f": "blind or post-freeze evaluation on data that no analysis of this rule had used (new universe, new market type, newer matches); prereg_commit froze the rule before the read",
+  "protocol": "change to a pre-registered protocol that read no data"
+ },
+ "kind_labels": {
+  "a": "pre-registered evaluation",
+  "b": "reproduction",
+  "c": "replay-diagnostic",
+  "d": "design/headline choice after an OOS look",
+  "e": "defect fix after an OOS look",
+  "f": "blind or post-freeze evaluation",
+  "protocol": "protocol change (no data read)"
+ },
+ "data_states": {
+  "clean": "never read by any analysis before this event",
+  "burned": "machine code, never printed: U1 OOS (match start >= 2026-08-25 14:15 UTC) after its first evaluation at 2026-10-03 10:42:28Z",
+  "untouched": "no strategy had been computed on these data and the rule was frozen before their first read (U2 before 17:31:29Z, OOS side-market tapes, newer matches)",
+  "partly_read": "new for this rule, but the same data (or raw books of some of its matches) had been read earlier for another purpose before the rule was frozen",
+  "forward": "live recordings of 2026-10-03 (data/live, data/live_v2, data/live_maker); the 9 replay matches also built the CV model's measured inputs",
+  "test_used": "a held-out set after its single evaluation (tracking test_1..7, U2, OOS side markets, table-tennis OOS, the fresh window)"
+ },
+ "label_rules": [
+  "Labels are derived by scripts/provenance.py derive_label in this order; label codes are not printed (label_text is).",
+  "in-sample: the result's period is IS (flags say whether its rule was shaped by OOS looks)",
+  "not-run: none of the result's events read data (only protocol or d events)",
+  "blind: the result has a kind f event, every f event read untouched data, and its prereg_commit precedes the read",
+  "post-freeze: the result has a kind f event that read partly_read data or whose pre-registration was committed after the read",
+  "clean-oos: a kind a event read clean data and no kind d or e event touches the result",
+  "burned-non-blind (printed as 'non-blind'): any OOS-informed d or e event touches the result, or any of its events read burned or test_used data",
+  "exploratory: everything else (no pre-registered P&L test; forward recordings only)",
+  "Required flags, checked: oos_selected (a d or e event picked the reported variant after seeing its OOS value), oos_informed_design (a d event after an OOS look), defect_fix_after_oos (an e event after an OOS look), prereg_committed_after_run (an a or f event whose pre-registration was committed after the read)"
+ ],
+ "result_kinds": {
+  "executable": "trades we could have placed at our own latency, priced from the book we would have hit",
+  "sim_upper_bound": "simulated fills with an optimistic fill rule",
+  "others_fills": "fills that other (faster) traders obtained, re-timed causally",
+  "conditional": "trade set conditional on realised outcomes (for example realised >= 4c jumps); not tradable as stated",
+  "event_study": "ex-post study of what fast traders earned around events, or a shadow book built from their fills; not attainable copier profit",
+  "descriptive": "a measurement that is not a trading result (classifier precision, a status)",
+  "diagnostic": "a check that supports another result"
+ },
+ "events": [
+  {
+   "id": "E00",
+   "utc": "2026-10-03T09:50:47Z",
+   "time_source": "commit",
+   "commit": "7232986",
+   "kind": "protocol",
+   "decision": false,
+   "family": "v1",
+   "summary": "HYPOTHESIS.md (H1-H4 and the OOS rule) committed before any result",
+   "evidence": [
+    "HYPOTHESIS.md:64-67",
+    "commit:7232986"
+   ],
+   "oos_log_lines": [],
+   "touches": []
+  },
+  {
+   "id": "E01",
+   "utc": "2026-10-03T10:32:36Z",
+   "time_source": "commit",
+   "commit": "9d61d1b",
+   "kind": "protocol",
+   "decision": false,
+   "family": "v1",
+   "summary": "D6: H1/H2/H5/H6 settings and the v1 shadow-book sizing frozen before the OOS read",
+   "evidence": [
+    "DEVIATIONS.md:60-71",
+    "commit:9d61d1b"
+   ],
+   "oos_log_lines": [],
+   "touches": []
+  },
+  {
+   "id": "E02",
+   "utc": "2026-10-03T10:42:28Z",
+   "time_source": "log",
+   "commit": "69a675f",
+   "prereg_commit": "9d61d1b",
+   "kind": "a",
+   "decision": false,
+   "family": "v1",
+   "data_state": "clean",
+   "summary": "Single OOS evaluation of H1/H2/H5/H6 and v1 (run_all.py --oos). Log line 1 is written by src/prints.py when the OOS prints are built. The OOS subtree of results/summary.json is identical at 69a675f, 052e896 and HEAD.",
+   "evidence": [
+    "results/oos_peeks.log:1",
+    "src/prints.py:25-33",
+    "DEVIATIONS.md:73-79",
+    "git:69a675f:results/summary.json",
+    "local:run_oos.log"
+   ],
+   "oos_log_lines": [
+    1
+   ],
+   "touches": [
+    "R_h1_h6_oos",
+    "R_v1_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E03",
+   "utc": "2026-10-03T10:48:27Z",
+   "time_source": "commit",
+   "commit": "69a675f",
+   "kind": "c",
+   "decision": false,
+   "family": "v1",
+   "data_state": "burned",
+   "logged": false,
+   "summary": "D7 post-OOS diagnostics (scripts/diagnostics.py) and walk-forward figure fix; reported numbers unchanged; not in the peeks log",
+   "evidence": [
+    "DEVIATIONS.md:73-79",
+    "scripts/diagnostics.py"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v1_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E04",
+   "utc": "2026-10-03T10:57:29Z",
+   "time_source": "log",
+   "commit": "be64ea4",
+   "prereg_commit": "69a675f",
+   "kind": "a",
+   "decision": false,
+   "family": "tracking",
+   "data_state": "clean",
+   "summary": "H3 single test evaluation on test_1..7 (HGB, gate 0.10 s, chosen by leave-one-game-out CV on game_1..5; early_call.py last changed in 69a675f before the read): precision 11/11 at 50 ms",
+   "evidence": [
+    "results/tracking/test_peeks.log:1",
+    "DEVIATIONS.md:81-152"
+   ],
+   "oos_log_lines": [],
+   "aux_log_lines": {
+    "results/tracking/test_peeks.log": [
+     1
+    ]
+   },
+   "touches": [
+    "R_tracking_test",
+    "R_tracking_relabel"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E05",
+   "utc": "2026-10-03T12:00:26Z",
+   "time_source": "commit (audit time not recorded; commit is the upper bound)",
+   "commit": "be64ea4",
+   "kind": "e",
+   "decision": true,
+   "family": "tracking",
+   "data_state": "test_used",
+   "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
+   "summary": "H3-D10 post hoc label audit after the single test read: 20 of 41 test MISS flights relabelled; the frozen model (no refit, same threshold) scores 8/8; the pre-specified 11/11 stays the result of record",
+   "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11.",
+   "evidence": [
+    "DEVIATIONS.md:139-152",
+    "results/tracking/label_audit.json"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_tracking_relabel"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E06",
+   "utc": "2026-10-03T13:23:07Z",
+   "time_source": "commit",
+   "commit": "1f229bc",
+   "kind": "d",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "direction": "n/a (new rule fitted in sample only)",
+   "summary": "v2 (risk-parity sizing, fee-aware wallet filter, 100-share net cap) designed after v1 lost money out of sample with big tickets held to resolution; fitted on in-sample data only and frozen in HYPOTHESIS_V2.md",
+   "printed_text": "v2 was designed after v1's OOS loss was known; its parameters were fitted on in-sample data only.",
+   "evidence": [
+    "HYPOTHESIS_V2.md:5-9",
+    "research/v2/sizing/RESULTS.md:15-19",
+    "DEVIATIONS.md:154-163"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2_is",
+    "R_v2_oos",
+    "R_v2_stress",
+    "R_v2_copier",
+    "R_v2_u2",
+    "R_v2safe_oos",
+    "R_v2safe_u2",
+    "R_wcap_oos",
+    "R_capacity"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E07",
+   "utc": "2026-10-03T13:24:37Z",
+   "time_source": "log",
+   "commit": "962371f",
+   "prereg_commit": "1f229bc",
+   "kind": "a",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Frozen v2 (onset-aligned window) evaluated on the already-read OOS: +0.75c/share; superseded by the causal fix (E10)",
+   "evidence": [
+    "results/oos_peeks.log:2",
+    "scripts/v2_burned_oos.py",
+    "results/v2/burned_oos.json"
+   ],
+   "oos_log_lines": [
+    2
+   ],
+   "touches": [
+    "R_v2_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E08",
+   "utc": "2026-10-03T13:35:01Z",
+   "utc_end": "2026-10-03T13:48:38Z",
+   "time_source": "mtime (local outputs: isoos_trades.parquet 13:35:01, leakage_jumps_oos.parquet 13:38:51, leakage_check.json 13:48:38)",
+   "commit": "845666f",
+   "kind": "c",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "logged": false,
+   "summary": "Unlogged: the v2 verifiers (research/v2/verify_v2/rebuild.py, leakage_check.py) ran on the already-read OOS, including seven alternative causal variants T3b-T3h and a forward-test dry run on 2026-09-01..03. No peeks-log line between 13:24:37 and 13:53:01.",
+   "evidence": [
+    "research/v2/verify_v2/out/rebuild_report.json",
+    "research/v2/verify_v2/out/leakage_check.json",
+    "research/v2/verify_v2/leakage_check.py:1-30",
+    "local:research/v2/verify_v2/out/leakage_check.log"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E09",
+   "utc": "2026-10-03T13:47:51Z",
+   "time_source": "commit",
+   "commit": "052e896",
+   "kind": "b",
+   "decision": false,
+   "family": "v1",
+   "data_state": "burned",
+   "logged": false,
+   "summary": "Full reproduction run (run_all.py --oos on cached OOS prints); the OOS subtree of results/summary.json is identical to 69a675f",
+   "evidence": [
+    "commit:052e896",
+    "git:052e896:results/summary.json",
+    "local:reproduce.log"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_h1_h6_oos",
+    "R_v1_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E10",
+   "utc": "2026-10-03T13:53:01Z",
+   "time_source": "log",
+   "commit": "845666f",
+   "kind": "e",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "oos_selected": true,
+   "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
+   "summary": "D9 causal fix adopted as variant T3e after the unlogged verifier run (E08) had computed seven causal variants on the already-read OOS: T3b +0.34, T3c -0.35, T3d +0.34, T3e +0.59 [0.07, 1.14], T3f +0.77 [-1.14, 2.65], T3g +0.05, T3h +0.15 c/share. T3e is the only variant whose OOS CI excludes 0. In sample it ranks fifth of seven (T3g 1.77, T3h 1.65, T3b 1.51, T3d 1.51, T3e 1.38, T3c 0.96, T3f 0.33 c/share); of the three fully re-derived variants (T3e, T3f, T3h), T3h ranks higher in sample.",
+   "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero.",
+   "evidence": [
+    "results/oos_peeks.log:3",
+    "DEVIATIONS.md:165-172",
+    "HYPOTHESIS_V2.md:40-48",
+    "research/v2/verify_v2/out/leakage_check.json",
+    "src/tiers.py"
+   ],
+   "oos_log_lines": [
+    3
+   ],
+   "touches": [
+    "R_v2_is",
+    "R_v2_oos",
+    "R_v2_stress",
+    "R_v2_copier",
+    "R_v2_u2",
+    "R_v2safe_oos",
+    "R_v2safe_u2",
+    "R_wcap_oos",
+    "R_capacity"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E11",
+   "utc": "2026-10-03T13:55:43Z",
+   "time_source": "commit",
+   "commit": "845666f",
+   "kind": "e",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "direction": "none on per-share P&L and Sharpe (leakage_check T7); return on capital changes",
+   "summary": "Amendment A1.3: each position locks capital for 4 h ex ante instead of until the realised match end",
+   "printed_text": "Capital lock-up was set to an ex-ante 4 hours after an OOS look; per-share P&L and Sharpe did not change.",
+   "evidence": [
+    "HYPOTHESIS_V2.md:51",
+    "research/v2/verify_v2/out/leakage_check.json"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2_is",
+    "R_v2_oos"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E12",
+   "utc": "2026-10-03T13:55:43Z",
+   "time_source": "commit",
+   "commit": "845666f",
+   "kind": "d",
+   "decision": true,
+   "family": "forward",
+   "data_state": "burned",
+   "direction": "n/a (the forward test was never run)",
+   "summary": "Amendment A1.5: forward-test primaries redefined after a dry run on an already-read OOS window showed the v2-book metric underpowered",
+   "printed_text": "Forward-test primary metrics were redefined after a dry run on OOS days; the forward test was never run.",
+   "evidence": [
+    "HYPOTHESIS_V2.md:54-60"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_forward"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E13",
+   "utc": "2026-10-03T17:23:41Z",
+   "utc_end": "2026-10-03T17:29:29Z",
+   "time_source": "log",
+   "commit": "a5769c7",
+   "prereg_commit": "a5769c7",
+   "prereg_commit_after_run": true,
+   "kind": "a",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Tier-0 CV counterfactual: first primary P&L on IS and the already-read OOS. PREREG.md says it was written at 17:25 UTC (file mtime 17:25:41) but it was committed with the results at 19:24 UTC, so the pre-registration rests on file mtimes; the OOS jump table (log line 4) was built at 17:23:41, before that stated time. First P&L ran 17:28:43-17:29:12 by file mtimes.",
+   "evidence": [
+    "results/oos_peeks.log:4-5",
+    "research/v2/tier0/PREREG.md:3-5",
+    "research/v2/tier0/DEVIATIONS.md:14-17"
+   ],
+   "oos_log_lines": [
+    4,
+    5
+   ],
+   "touches": [
+    "R_cv_prereg_record"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E14",
+   "utc": "2026-10-03T17:29:12Z",
+   "utc_end": "2026-10-03T17:30:27Z",
+   "time_source": "mtime (DEVIATIONS.md 17:29:12, grid.csv 17:30:27)",
+   "commit": "a5769c7",
+   "kind": "e",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)",
+   "summary": "T1: camera coverage ranked over every universe match instead of only matches that later had a jump (look-ahead fix), made after the first primary P&L and before the full grid; superseded by V6",
+   "printed_text": "A look-ahead in CV camera coverage was fixed after the first CV P&L, including OOS, existed; the fix lowered coverage.",
+   "evidence": [
+    "research/v2/tier0/DEVIATIONS.md:31-38"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_fresh"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E15",
+   "utc": "2026-10-03T17:31:29Z",
+   "time_source": "log",
+   "commit": "169208c",
+   "prereg_commit": "337bf7c",
+   "kind": "f",
+   "decision": false,
+   "family": "v2",
+   "data_state": "untouched",
+   "summary": "U2 out-of-universe test of the frozen causal v2 (11,307 markets): FAIL (U2-OOS +1.22c [-0.19, 2.65]). First read of U2; the runner script was committed after the run.",
+   "evidence": [
+    "results/oos_peeks.log:6",
+    "research/v2/expand/PREREG.md:1-8",
+    "research/v2/expand/RESULTS.md:11-17",
+    "research/v2/expand/RUN_LOG"
+   ],
+   "oos_log_lines": [
+    6
+   ],
+   "touches": [
+    "R_v2_u2"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E16",
+   "utc": "2026-10-03T17:30:44Z",
+   "time_source": "commit",
+   "commit": "342d515",
+   "kind": "d",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "direction": "n/a (new variant; selection in sample only)",
+   "summary": "v2-safe grid declared to cut v2's losing days; v2's OOS loss profile (60% profitable days, worst day -$469) was known before the grid",
+   "printed_text": "The v2-safe variant was designed after v2's OOS losing days were known; it was selected on in-sample data only.",
+   "evidence": [
+    "research/v2/lowloss/GRID.md:1-6",
+    "research/v2/lowloss/PREREG.md:8-11"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_v2safe_oos",
+    "R_v2safe_u2"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E17",
+   "utc": "2026-10-03T17:37:16Z",
+   "time_source": "log",
+   "commit": "defe897",
+   "prereg_commit": "342d515",
+   "kind": "a",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "v2-safe evaluated once on the already-read OOS; runner committed after the run",
+   "evidence": [
+    "results/oos_peeks.log:7",
+    "research/v2/lowloss/RUN_LOG"
+   ],
+   "oos_log_lines": [
+    7
+   ],
+   "touches": [
+    "R_v2safe_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E18",
+   "utc": "2026-10-03T17:37:47Z",
+   "time_source": "log",
+   "commit": "defe897",
+   "prereg_commit": "342d515",
+   "kind": "f",
+   "decision": false,
+   "family": "v2",
+   "data_state": "untouched",
+   "summary": "v2-safe U2 test: FAIL. v2-safe was frozen (342d515, 17:30:44) before U2's first read (E15, 17:31:29).",
+   "evidence": [
+    "results/oos_peeks.log:8",
+    "research/v2/lowloss/DEVIATIONS.md:1-26"
+   ],
+   "oos_log_lines": [
+    8
+   ],
+   "touches": [
+    "R_v2safe_u2"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E19",
+   "utc": "2026-10-03T17:43:41Z",
+   "utc_end": "2026-10-03T17:48:08Z",
+   "time_source": "log",
+   "commit": "a5769c7",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Tier-0 verifiers (skeptic and independent rebuild) re-read OOS prints and compute P&L of the pre-registered model and several alternatives on the already-read OOS (input to E21)",
+   "evidence": [
+    "results/oos_peeks.log:9-11",
+    "research/v2/tier0/DEVIATIONS.md:6-10",
+    "research/v2/tier0/rebuild.py",
+    "research/v2/tier0/verify_realism.py"
+   ],
+   "oos_log_lines": [
+    9,
+    10,
+    11
+   ],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E20",
+   "utc": "2026-10-03T18:00:45Z",
+   "time_source": "log",
+   "commit": "4ba8e88",
+   "kind": "c",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "v2 cost stress: fees and costs doubled, book held fixed",
+   "evidence": [
+    "results/oos_peeks.log:12",
+    "scripts/v2_cost_stress.py"
+   ],
+   "oos_log_lines": [
+    12
+   ],
+   "touches": [
+    "R_v2_stress"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E21",
+   "utc": "2026-10-03T18:06:59Z",
+   "utc_end": "2026-10-03T18:13:42Z",
+   "time_source": "log",
+   "commit": "a5769c7",
+   "kind": "e",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
+   "sub_decisions": [
+    "V1",
+    "V2",
+    "V4",
+    "V5",
+    "V6"
+   ],
+   "summary": "Verifier fixes adopted after the verifiers had computed OOS P&L: V1 correct-call fill price from the live book, V2 wrong calls priced from the same book, V4 stale price +0.5c, V5 limit order with no fills at a moved price, V6 coverage ranked across both periods. V7-V9 and T2/T3 are reporting or stress only.",
+   "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little.",
+   "evidence": [
+    "results/oos_peeks.log:13-14",
+    "research/v2/tier0/DEVIATIONS.md:54-158",
+    "git:a5769c7:research/v2/tier0/RESULTS.md"
+   ],
+   "oos_log_lines": [
+    13,
+    14
+   ],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_fresh",
+    "R_v3_oos",
+    "R_v3_u2",
+    "R_capacity"
+   ],
+   "oos_informed": true,
+   "sub_directions": {
+    "V1": "down, large (pre-registered fill price credited about 6c gross per stale share; live book 2.3-2.7c)",
+    "V2": "about neutral (one-change stress: OOS +0.59c vs headline +0.58c, $46/day both)",
+    "V4": "about neutral (one-change stress: OOS $47 vs $46/day)",
+    "V5": "down (one-change stress: decay-window fills give OOS $56 vs $46/day)",
+    "V6": "neutral (IS $308 -> $305/day at seed 0, inside Monte Carlo noise)"
+   }
+  },
+  {
+   "id": "E22",
+   "utc": "2026-10-03T18:13:42Z",
+   "time_source": "log (line 14, mapped to E21: the corrected run that computed every reading)",
+   "commit": "a5769c7",
+   "kind": "d",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "oos_selected": true,
+   "direction": "up vs the pre-registered per-point timing at stamp lag 2.0 s (IS $66 -> $89/day, OOS $20 -> $46/day)",
+   "summary": "V3: 'R drawn per tournament' designated the headline timing reading in a commit made after OOS P&L under the per-point, per-tournament and stamp readings existed; the stated reason is model-based (the timing regime persists within a tournament)",
+   "printed_text": "The per-tournament CV timing reading was made the headline after OOS results existed; it raised OOS P&L over the pre-registered per-point reading.",
+   "evidence": [
+    "research/v2/tier0/DEVIATIONS.md:89-107",
+    "git:a5769c7:research/v2/tier0/RESULTS.md"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_fresh",
+    "R_v3_oos",
+    "R_v3_u2",
+    "R_capacity"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E23",
+   "utc": "2026-10-03T18:13:42Z",
+   "time_source": "log (line 14, mapped to E21)",
+   "commit": "a5769c7",
+   "kind": "d",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "direction": "down (the pre-registered headline overstated the corrected one about 3x in sample and 5x out of sample)",
+   "summary": "V10: headline switched from the pre-registered PRIMARY model to CORRECTED; PRIMARY kept as prereg_record",
+   "printed_text": "The CV headline was switched from the pre-registered model to the corrected model after OOS results existed; this lowered it about 3-5x.",
+   "evidence": [
+    "research/v2/tier0/DEVIATIONS.md:152-158",
+    "git:a5769c7:research/v2/tier0/RESULTS.md"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_cv_prereg_record"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E24",
+   "utc": "2026-10-03T18:27:17Z",
+   "utc_end": "2026-10-03T18:47:03Z",
+   "time_source": "log",
+   "commit": "b4e7426",
+   "kind": "c",
+   "decision": false,
+   "family": "maker",
+   "data_state": "forward",
+   "summary": "Maker venue rules and live-engine message ordering read from live recordings (descriptive; no strategy, no P&L)",
+   "evidence": [
+    "results/oos_peeks.log:15",
+    "results/oos_peeks.log:17"
+   ],
+   "oos_log_lines": [
+    15,
+    17
+   ],
+   "touches": [],
+   "oos_informed": false
+  },
+  {
+   "id": "E25",
+   "utc": "2026-10-03T18:42:50Z",
+   "time_source": "log",
+   "commit": "5111a25",
+   "kind": "c",
+   "decision": false,
+   "family": "capacity",
+   "data_state": "burned",
+   "summary": "Financials: v2 and v2-safe size-scaled variants (0.5x, 2x, 5x, all prints) on the already-read OOS (capacity curve only)",
+   "evidence": [
+    "results/oos_peeks.log:16",
+    "scripts/financials.py"
+   ],
+   "oos_log_lines": [
+    16
+   ],
+   "touches": [
+    "R_capacity"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E26",
+   "utc": "2026-10-03T18:49:10Z",
+   "time_source": "log",
+   "commit": "a4cce70",
+   "prereg_commit": "c29734b",
+   "kind": "f",
+   "decision": false,
+   "family": "maker",
+   "data_state": "untouched",
+   "summary": "Maker v1 blind OOS (A): first use of the OOS side-market tapes (the already-read OOS moneyline tapes are the signal input only); FAIL +1.87c [-0.14, 3.86]",
+   "evidence": [
+    "results/oos_peeks.log:18",
+    "research/v2/maker/PREREG.md:1-30",
+    "research/v2/maker/DEVIATIONS.md:1-5"
+   ],
+   "oos_log_lines": [
+    18
+   ],
+   "touches": [
+    "R_maker"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E27",
+   "utc": "2026-10-03T18:49:54Z",
+   "time_source": "log",
+   "commit": "a4cce70",
+   "kind": "b",
+   "decision": false,
+   "family": "maker",
+   "data_state": "test_used",
+   "summary": "Maker v1 OOS reproduction (recomputes the committed results.json)",
+   "evidence": [
+    "results/oos_peeks.log:19"
+   ],
+   "oos_log_lines": [
+    19
+   ],
+   "touches": [
+    "R_maker"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E28",
+   "utc": "2026-10-03T19:00:28Z",
+   "utc_end": "2026-10-04T02:02:51Z",
+   "time_source": "log",
+   "commit": "12260cd",
+   "kind": "c",
+   "decision": false,
+   "family": "maker",
+   "data_state": "forward",
+   "summary": "Maker live paper-engine replays of recorded books, test runs and the pre-registered live session (B): the first session placed 0 quotes and 0 fills before it was stopped and restarted on fixed code; the restarted session was stopped by team decision at 02:18:17Z, before its pre-registered end. No result from it is used as evidence.",
+   "evidence": [
+    "results/oos_peeks.log:20-21",
+    "research/v2/maker/DEVIATIONS_LIVE.md:228-230",
+    "research/v2/maker/DEVIATIONS_LIVE.md:253-256"
+   ],
+   "oos_log_lines": [
+    20,
+    21,
+    23,
+    28,
+    29,
+    36,
+    37,
+    39,
+    40,
+    41,
+    42,
+    48,
+    49,
+    56,
+    58,
+    59,
+    77
+   ],
+   "touches": [],
+   "oos_informed": false
+  },
+  {
+   "id": "E29",
+   "utc": "2026-10-03T19:15:03Z",
+   "time_source": "log (written by hand, .000000)",
+   "commit": "50f0a64",
+   "subject_commit": "56a9c8f",
+   "kind": "b",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "P17 clean-clone reproduce.sh of 56a9c8f: v2_causal, v2_cost_stress, note_metrics, factor_regression and v2_figures reproduced the committed outputs with 0 differences; run_all.py --oos did not finish stage 1 in 18 min at 1 worker, so the H1-H6 and v1 OOS numbers were not reproduced in this run",
+   "evidence": [
+    "results/oos_peeks.log:22",
+    "commit:50f0a64"
+   ],
+   "oos_log_lines": [
+    22
+   ],
+   "touches": [
+    "R_v2_oos",
+    "R_v2_stress"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E30",
+   "utc": "2026-10-03T19:20:24Z",
+   "time_source": "log",
+   "commit": "50f0a64",
+   "kind": "c",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "PM review P07: wallet-clustered bootstrap CI of the frozen causal v2 book on the already-read OOS ([-0.45, 2.38]; the note's earlier [-0.60, 2.11] did not reproduce)",
+   "evidence": [
+    "results/oos_peeks.log:24",
+    "scripts/pm_compute.py",
+    "results/financials/pm_compute.json"
+   ],
+   "oos_log_lines": [
+    24
+   ],
+   "touches": [
+    "R_v2_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E31",
+   "utc": "2026-10-03T19:23:14Z",
+   "time_source": "log",
+   "commit": "2195e86",
+   "prereg_commit": "0f01362",
+   "kind": "a",
+   "decision": false,
+   "family": "tt",
+   "data_state": "clean",
+   "summary": "Table tennis TT1-TT4, single pre-registered run (pre-run decisions and script in eb0e692, 19:23:07): all FAIL or untestable",
+   "evidence": [
+    "results/oos_peeks.log:25",
+    "results/tt/peeks.log:1",
+    "HYPOTHESIS_TT.md:1-4",
+    "commit:eb0e692"
+   ],
+   "oos_log_lines": [
+    25
+   ],
+   "aux_log_lines": {
+    "results/tt/peeks.log": [
+     1
+    ]
+   },
+   "touches": [
+    "R_tt"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E32",
+   "utc": "2026-10-03T19:25:45Z",
+   "time_source": "log",
+   "commit": "114c722",
+   "prereg_commit": "0f01362",
+   "kind": "a",
+   "decision": false,
+   "family": "tt",
+   "data_state": "clean",
+   "summary": "TT5 signal decay: first look at UTT OOS prints (the tennis part re-reads the already-read OOS); research/decay/PRERUN.md was committed after the run, in 114c722",
+   "evidence": [
+    "results/oos_peeks.log:26",
+    "results/tt/peeks.log:2",
+    "research/decay/PRERUN.md"
+   ],
+   "oos_log_lines": [
+    26
+   ],
+   "aux_log_lines": {
+    "results/tt/peeks.log": [
+     2
+    ]
+   },
+   "touches": [
+    "R_tt"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E33",
+   "utc": "2026-10-03T19:28:49Z",
+   "utc_end": "2026-10-03T20:22:03Z",
+   "time_source": "log",
+   "commit": "9085051",
+   "kind": "c",
+   "decision": false,
+   "family": "tt",
+   "data_state": "test_used",
+   "summary": "Table-tennis post hoc diagnostics, audits and the TT2/TT3 label corrections (no verdict change)",
+   "evidence": [
+    "results/oos_peeks.log:27",
+    "results/tt/peeks.log:3-10",
+    "research/tt/DEVIATIONS.md"
+   ],
+   "oos_log_lines": [
+    27,
+    30,
+    31,
+    33,
+    34,
+    44
+   ],
+   "aux_log_lines": {
+    "results/tt/peeks.log": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "touches": [
+    "R_tt"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E34",
+   "utc": "2026-10-03T20:04:26Z",
+   "time_source": "log",
+   "commit": "d007946",
+   "kind": "b",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Financials/risk audit re-reads the frozen v2 OOS trades and the maker blind-OOS fills to reproduce published numbers",
+   "evidence": [
+    "results/oos_peeks.log:32",
+    "scripts/financials_audit.py"
+   ],
+   "oos_log_lines": [
+    32
+   ],
+   "touches": [
+    "R_v2_oos",
+    "R_maker"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E35",
+   "utc": "2026-10-03T20:09:04Z",
+   "utc_end": "2026-10-03T21:05:50Z",
+   "time_source": "log",
+   "commit": "f5c2e77",
+   "kind": "c",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Alpha breakdown: descriptive splits of existing v2 trades incl. OOS (including the wallet concentration later used by E50); line 60 is a re-run during the alpha-page audit (4ca0dca)",
+   "evidence": [
+    "results/oos_peeks.log:35",
+    "results/oos_peeks.log:60",
+    "scripts/alpha_pack.py"
+   ],
+   "oos_log_lines": [
+    35,
+    60
+   ],
+   "touches": [
+    "R_v2_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E36",
+   "utc": "2026-10-03T20:11:37Z",
+   "utc_end": "2026-10-03T20:22:27Z",
+   "time_source": "log",
+   "commit": "00d1d02",
+   "kind": "b",
+   "decision": false,
+   "family": "maker",
+   "data_state": "test_used",
+   "summary": "Maker v1 audit: independent recompute of the blind OOS result (matches exactly) and a provenance spot-check that re-downloads 8 cached side tapes",
+   "evidence": [
+    "results/oos_peeks.log:38",
+    "results/oos_peeks.log:47",
+    "research/v2/maker/DEVIATIONS.md:93-109"
+   ],
+   "oos_log_lines": [
+    38,
+    47
+   ],
+   "touches": [
+    "R_maker"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E36b",
+   "utc": "2026-10-03T20:18:15Z",
+   "utc_end": "2026-10-03T20:21:44Z",
+   "time_source": "log",
+   "commit": "00d1d02",
+   "kind": "c",
+   "decision": false,
+   "family": "maker",
+   "data_state": "test_used",
+   "summary": "Maker v1 audit: selection check on trade counts and notional of 60 excluded side markets (no prices) and an alternative fee reading as a labelled stress; no verdict change",
+   "evidence": [
+    "results/oos_peeks.log:45-46",
+    "research/v2/maker/DEVIATIONS.md:93-109"
+   ],
+   "oos_log_lines": [
+    45,
+    46
+   ],
+   "touches": [
+    "R_maker"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E37",
+   "utc": "2026-10-03T20:16:07Z",
+   "utc_end": "2026-10-03T20:36:47Z",
+   "time_source": "log",
+   "commit": "f5ff9ff",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Latency sweep of the corrected CV model: video delay V x readings {tournament, stamp, stamp_calibrated} on IS and the already-read OOS, on HiPerGator (jobs 44606812, 44608194); lines 61-62 are the cluster-side lines, synced later",
+   "evidence": [
+    "results/oos_peeks.log:43",
+    "results/oos_peeks.log:50",
+    "results/oos_peeks.log:61-62",
+    "git:f5ff9ff:results/tier0/latency_sweep.json",
+    "scripts/tier0_latency_sweep.py"
+   ],
+   "oos_log_lines": [
+    43,
+    50,
+    61,
+    62
+   ],
+   "touches": [
+    "R_cv_table2_pre"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E38",
+   "utc": "2026-10-03T20:25:01Z",
+   "utc_end": "2026-10-03T20:29:22Z",
+   "time_source": "log",
+   "commit": "11d1016",
+   "prereg_commit": "ba0c3d4",
+   "kind": "a",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Frozen tier-0 v3 (chosen on IS only) on the already-read OOS (pre-registered, non-blind): FAIL",
+   "evidence": [
+    "results/oos_peeks.log:51",
+    "results/oos_peeks.log:53-54",
+    "research/v2/tier0_v3/PREREG.md:9-21"
+   ],
+   "oos_log_lines": [
+    51,
+    53,
+    54
+   ],
+   "touches": [
+    "R_v3_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E39",
+   "utc": "2026-10-03T20:26:40Z",
+   "time_source": "log",
+   "commit": "11d1016",
+   "prereg_commit": "ba0c3d4",
+   "kind": "f",
+   "decision": false,
+   "family": "cv",
+   "data_state": "partly_read",
+   "summary": "Frozen tier-0 v3 on U2 (first tier-0 table on U2): FAIL in both periods. U2 prints and outcomes had already been read by the v2 and v2-safe U2 tests (E15, E18) before v3 was frozen (ba0c3d4, 20:16), so this is post-freeze, not blind.",
+   "evidence": [
+    "results/oos_peeks.log:52",
+    "research/v2/tier0_v3/PREREG.md"
+   ],
+   "oos_log_lines": [
+    52
+   ],
+   "touches": [
+    "R_v3_u2"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E40",
+   "utc": "2026-10-03T20:37:28Z",
+   "utc_end": "2026-10-03T20:45:51Z",
+   "time_source": "log",
+   "commit": "11d1016",
+   "kind": "b",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Tier-0 v3 adversarial audit and independent rebuild (re-read OOS and U2 outputs and tables)",
+   "evidence": [
+    "results/oos_peeks.log:55",
+    "results/oos_peeks.log:57"
+   ],
+   "oos_log_lines": [
+    55,
+    57
+   ],
+   "touches": [
+    "R_v3_oos",
+    "R_v3_u2"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E41",
+   "utc": "2026-10-03T20:53:15Z",
+   "utc_end": "2026-10-03T20:59:19Z",
+   "time_source": "log",
+   "commit": "84c3898",
+   "kind": "d",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "oos_selected": true,
+   "direction": "up (V = 1 s OOS: +$4/day at stamp lag 2.0 s -> +$57/day at 3.14 s)",
+   "summary": "The latency-sweep audit added readings tournament_lag1/lag3/lagcal after f5ff9ff's OOS cells existed; tournament_lagcal (stamp lag 3.14 s) became the post hoc CV trader. The value 3.14 s predates any P&L: it is the live-day calibration listed as a grid level in tier0/PREREG.md (mtime 17:25:41), and a5769c7 already reported its tournament-reading cell with the own-camera model (OOS $129/day). Line 63 was logged after its run.",
+   "printed_text": "The calibrated 3.14 s stamp-lag reading was made the post hoc CV headline after OOS sweep cells existed; it raised OOS P&L.",
+   "evidence": [
+    "results/oos_peeks.log:63-64",
+    "git:f5ff9ff:results/tier0/latency_sweep.json",
+    "git:84c3898:results/tier0/latency_sweep.json",
+    "research/v2/tier0/PREREG.md:45-52"
+   ],
+   "oos_log_lines": [
+    63,
+    64
+   ],
+   "touches": [
+    "R_cv_table2_post",
+    "R_fresh",
+    "R_capacity"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E42",
+   "utc": "2026-10-03T21:14:49Z",
+   "utc_end": "2026-10-03T22:24:32Z",
+   "time_source": "log",
+   "commit": "c6c728d",
+   "prereg_commit": "0e083ed",
+   "kind": "c",
+   "decision": false,
+   "family": "replay",
+   "data_state": "forward",
+   "summary": "Match replay of 9 matches recorded live on 2026-10-03, each point priced against the recorded book (protocol committed before any P&L); exploratory; the same 9 matches built the CV model's measured inputs; audit and recorder-outage fix in 69b0be2",
+   "evidence": [
+    "results/oos_peeks.log:65-66",
+    "results/oos_peeks.log:68",
+    "research/replay/PROTOCOL.md",
+    "commit:69b0be2"
+   ],
+   "oos_log_lines": [
+    65,
+    66,
+    68
+   ],
+   "touches": [
+    "R_replay"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E43",
+   "utc": "2026-10-03T22:18:13Z",
+   "utc_end": "2026-10-04T00:36:34Z",
+   "time_source": "log",
+   "commit": "6ecc04d",
+   "kind": "e",
+   "decision": true,
+   "family": "capacity",
+   "data_state": "burned",
+   "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
+   "summary": "Capacity grid on the already-read OOS, then re-run with the capacity verifier's fixes (depth cap, extrapolation, pro-rata bracket, lock to close)",
+   "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly.",
+   "evidence": [
+    "results/oos_peeks.log:67",
+    "results/oos_peeks.log:70",
+    "results/oos_peeks.log:74-76",
+    "git:f9d8f94:research/capacity/CAPACITY.md",
+    "git:6ecc04d:research/capacity/CAPACITY.md"
+   ],
+   "oos_log_lines": [
+    67,
+    70,
+    74,
+    75,
+    76
+   ],
+   "touches": [
+    "R_capacity"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E44",
+   "utc": "2026-10-03T23:01:16Z",
+   "utc_end": "2026-10-03T23:24:07Z",
+   "time_source": "log",
+   "commit": "b20a4e4",
+   "prereg_commit": "62a273a",
+   "prereg_commit_after_run": true,
+   "kind": "d",
+   "decision": true,
+   "family": "replay",
+   "data_state": "forward",
+   "direction": "n/a (exploratory)",
+   "summary": "Selective replay variant (ex-ante swing filter T in {2c, 4c, 6c}) added after seeing the all-points replay; exploratory. The log line says T was declared before running; the declaring commit 62a273a is 4 min after that line.",
+   "printed_text": "A selective replay variant was added after the all-points replay had been seen; it is exploratory.",
+   "evidence": [
+    "results/oos_peeks.log:69",
+    "results/oos_peeks.log:73",
+    "commit:62a273a"
+   ],
+   "oos_log_lines": [
+    69,
+    73
+   ],
+   "touches": [
+    "R_replay"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E45",
+   "utc": "2026-10-03T21:27:27Z",
+   "time_source": "commit",
+   "commit": "e1b5272",
+   "kind": "d",
+   "decision": true,
+   "family": "cv",
+   "data_state": "burned",
+   "oos_selected": true,
+   "direction": "down vs V = 0.5 s (V = 1 s shows lower P&L)",
+   "summary": "The 1 s feed delay was fixed as the paper's base case (paper style guide, e1b5272) after the sweep's OOS cells had been computed (f5ff9ff, 20:43 UTC); INTEGRATION_TODO.md (29dd531) records the headline reading and the 1 s baseline as post hoc presentation choices",
+   "printed_text": "The 1 s feed-delay base case was fixed after the latency sweep's OOS cells had been computed.",
+   "evidence": [
+    "commit:e1b5272",
+    "research/compliance/INTEGRATION_TODO.md:198-201",
+    "docs/paper/note.tex:581"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E46",
+   "utc": "2026-10-03T23:18:38Z",
+   "time_source": "log",
+   "commit": "2353c2a",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Red-team causal-CV cell (sensitivity; scripts/redteam_causal_cv.py)",
+   "evidence": [
+    "results/oos_peeks.log:71",
+    "scripts/redteam_causal_cv.py"
+   ],
+   "oos_log_lines": [
+    71
+   ],
+   "touches": [
+    "R_cv_table2_pre"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E47",
+   "utc": "2026-10-03T23:08:55Z",
+   "time_source": "commit (the read happened before this commit; the log line was added later)",
+   "commit": "5b2d057",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Backtest example match for the video (selection rule committed first, e71d62e at 23:04 UTC): read OOS prints for per-match P&L; the peek line was added at 23:23:44 (01f227b), after the run, without saying so",
+   "evidence": [
+    "results/oos_peeks.log:72",
+    "commit:e71d62e",
+    "scripts/backtest_example_match.py"
+   ],
+   "oos_log_lines": [
+    72
+   ],
+   "logged_after_lines": [
+    72
+   ],
+   "touches": [],
+   "oos_informed": false
+  },
+  {
+   "id": "E48",
+   "utc": "2026-10-04T02:18:17Z",
+   "utc_end": "2026-10-04T03:32:34Z",
+   "time_source": "document (HYPOTHESIS_V2.md A3-A5)",
+   "commit": "01c959c",
+   "kind": "protocol",
+   "decision": false,
+   "family": "forward",
+   "summary": "Forward test dropped (A3, 12260cd), reinstated (A4, 8156177), finally not run (A5, 01c959c); no forward-window data read for it",
+   "evidence": [
+    "HYPOTHESIS_V2.md:100-117",
+    "commit:12260cd",
+    "commit:8156177"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_forward"
+   ]
+  },
+  {
+   "id": "E49",
+   "utc": "2026-10-03T21:36:58Z",
+   "time_source": "log",
+   "commit": "c3ab631",
+   "prereg_commit": "62a5b07",
+   "kind": "a",
+   "decision": false,
+   "family": "tracking",
+   "data_state": "test_used",
+   "summary": "Second model (hgb_spin, code committed in 62a5b07) evaluated on the already-used test_1..7: 10/12 at 50 ms; not adopted",
+   "evidence": [
+    "results/tracking/test_peeks.log:2",
+    "commit:62a5b07"
+   ],
+   "oos_log_lines": [],
+   "aux_log_lines": {
+    "results/tracking/test_peeks.log": [
+     2
+    ]
+   },
+   "touches": [
+    "R_tracking_spin"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E50",
+   "utc": "2026-10-04T05:28:28Z",
+   "time_source": "commit",
+   "commit": "f35131a",
+   "kind": "d",
+   "decision": true,
+   "family": "v2",
+   "data_state": "burned",
+   "direction": "n/a (new rule; selection in sample only)",
+   "summary": "Per-wallet cap grid declared because the OOS showed the top 5 of 86 copied wallets carried 142% of v2's OOS P&L",
+   "printed_text": "The per-wallet cap was designed because the OOS showed five wallets carried 142% of v2's OOS P&L; it was selected in sample.",
+   "evidence": [
+    "research/v2/risk/GRID_wallet_cap.md:3-14",
+    "research/v2/risk/PREREG_wallet_cap.md:12-17"
+   ],
+   "oos_log_lines": [],
+   "touches": [
+    "R_wcap_oos"
+   ],
+   "oos_informed": true
+  },
+  {
+   "id": "E51",
+   "utc": "2026-10-04T05:34:59Z",
+   "time_source": "log",
+   "commit": "d089e4f",
+   "prereg_commit": "4a5a19d",
+   "kind": "a",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Per-wallet cap W1000_Ron evaluated once on the already-read OOS: pass on its pre-registered rule (not a test: the rule exists because of this OOS)",
+   "evidence": [
+    "results/oos_peeks.log:78",
+    "research/v2/risk/PREREG_wallet_cap.md"
+   ],
+   "oos_log_lines": [
+    78
+   ],
+   "touches": [
+    "R_wcap_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E52",
+   "utc": "2026-10-04T05:27:51Z",
+   "utc_end": "2026-10-04T05:49:43Z",
+   "time_source": "log",
+   "commit": "80e621f",
+   "kind": "c",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Rigor E: PSR/MinTRL/HLZ on existing daily P&L (re-runs published sweep cells to recover daily series) plus a new copier fill stress of the frozen v2 book at venue delay + measured block lag; six restarts logged separately; line 102 is its adversarial verifier",
+   "evidence": [
+    "results/oos_peeks.log:89-95",
+    "results/oos_peeks.log:102",
+    "scripts/psr_mintrl.py",
+    "results/rigor/psr.json"
+   ],
+   "oos_log_lines": [
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    102
+   ],
+   "touches": [
+    "R_v2_stress",
+    "R_v2_copier",
+    "R_cv_table2_pre",
+    "R_cv_table2_post"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E53",
+   "utc": "2026-10-04T05:42:24Z",
+   "utc_end": "2026-10-04T05:43:40Z",
+   "time_source": "log",
+   "commit": "1505c9b",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "Fresh-holdout gates before the fresh read: G1 code reproduction plus IS and OOS history cells (S1 frozen v3 at V > 0 are new cells on already-read data) and G2 pipeline equivalence on 2026-10-02 U1 matches; both gates passed",
+   "evidence": [
+    "results/oos_peeks.log:79-80",
+    "research/v2/tier0_v3/fresh/DEVIATIONS_FRESH.md:8-12"
+   ],
+   "oos_log_lines": [
+    79,
+    80
+   ],
+   "touches": [
+    "R_fresh"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E54",
+   "utc": "2026-10-04T05:44:23Z",
+   "utc_end": "2026-10-04T05:45:09Z",
+   "time_source": "log",
+   "commit": "1505c9b",
+   "prereg_commit": "dc95717",
+   "kind": "f",
+   "decision": false,
+   "family": "cv",
+   "data_state": "partly_read",
+   "summary": "Fresh holdout: first fetch and first simulation (22 eligible / 16 covered matches starting after 2026-10-03 07:10 UTC, about 2 days); the 9 matches whose books built model inputs were excluded in advance. Live books of some window matches had been read earlier for maker engine replays (E28) and venue rules (E24), with no tier-0 quantity computed.",
+   "evidence": [
+    "results/oos_peeks.log:81-83",
+    "research/v2/tier0_v3/fresh/PREREG_FRESH.md:8-34",
+    "research/v2/tier0_v3/fresh/DEVIATIONS_FRESH.md:6-12"
+   ],
+   "oos_log_lines": [
+    81,
+    82,
+    83
+   ],
+   "touches": [
+    "R_fresh"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E55",
+   "utc": "2026-10-04T05:47:19Z",
+   "utc_end": "2026-10-04T05:55:06Z",
+   "time_source": "log",
+   "commit": "c299cd0",
+   "kind": "b",
+   "decision": false,
+   "family": "cv",
+   "data_state": "test_used",
+   "summary": "Fresh holdout re-run (A4) and per-seed daily paths; identical cells",
+   "evidence": [
+    "results/oos_peeks.log:84-87",
+    "research/v2/tier0_v3/fresh/DEVIATIONS_FRESH.md:27-28"
+   ],
+   "oos_log_lines": [
+    84,
+    85,
+    86,
+    87
+   ],
+   "touches": [
+    "R_fresh"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E56",
+   "utc": "2026-10-04T05:35:00Z",
+   "utc_end": "2026-10-04T06:32:02Z",
+   "time_source": "document (line 106: development runs at about 05:35 UTC, logged after the read)",
+   "commit": "c7fc421",
+   "kind": "c",
+   "decision": false,
+   "family": "capacity",
+   "data_state": "burned",
+   "summary": "Impact model: OOS order tables, refits, v2 and CV capacity re-runs (incl. development runs logged after the read) and its verifier (line 108, which read fresh-window tapes before 14:00 UTC only)",
+   "evidence": [
+    "results/oos_peeks.log:96-101",
+    "results/oos_peeks.log:104-108",
+    "scripts/impact_model.py"
+   ],
+   "oos_log_lines": [
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    104,
+    105,
+    106,
+    107,
+    108
+   ],
+   "touches": [
+    "R_capacity"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E57",
+   "utc": "2026-10-04T05:50:00Z",
+   "time_source": "log",
+   "commit": "51dff68",
+   "subject_commit": "d089e4f",
+   "kind": "b",
+   "decision": false,
+   "family": "v2",
+   "data_state": "burned",
+   "summary": "Wallet-cap adversarial verifier: independent re-derivation of W1000_Ron on the already-read OOS",
+   "evidence": [
+    "results/oos_peeks.log:103"
+   ],
+   "oos_log_lines": [
+    103
+   ],
+   "touches": [
+    "R_wcap_oos"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E58",
+   "utc": "2026-10-04T06:32:02Z",
+   "time_source": "log (written after the run; run time not recorded)",
+   "commit": "51dff68",
+   "subject_commit": "c299cd0",
+   "kind": "b",
+   "decision": false,
+   "family": "cv",
+   "data_state": "test_used",
+   "summary": "Fresh-holdout adversarial verifier re-downloaded 2 fresh-window tapes and re-ran all 24 fresh cells with independent code; no number changed",
+   "evidence": [
+    "results/oos_peeks.log:109"
+   ],
+   "oos_log_lines": [
+    109
+   ],
+   "touches": [
+    "R_fresh"
+   ],
+   "oos_informed": false
+  },
+  {
+   "id": "E59",
+   "utc": "2026-10-04T06:31:33Z",
+   "utc_end": "2026-10-04T06:34:01Z",
+   "time_source": "log",
+   "commit": "51dff68",
+   "kind": "c",
+   "decision": false,
+   "family": "cv",
+   "data_state": "burned",
+   "summary": "CV cost and turnover: re-runs the 12 published Table-2 cells (reproduction asserted) to add dollars traded, fees and the fees-doubled P&L; two re-runs, the first after its final check failed on 2-decimal rounding (tolerance widened to 0.005 after every per-seed reproduction had passed)",
+   "evidence": [
+    "results/oos_peeks.log:88",
+    "results/oos_peeks.log:110-111",
+    "scripts/cv_cost_turnover.py"
+   ],
+   "oos_log_lines": [
+    88,
+    110,
+    111
+   ],
+   "touches": [
+    "R_cv_table2_pre",
+    "R_cv_table2_post"
+   ],
+   "oos_informed": false
+  }
+ ],
+ "results": [
+  {
+   "id": "R_h1_h6_oos",
+   "paper": "Appendix B rows H1, H2, H5, H6",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "clean-oos",
+   "label_text": "OOS, single pre-registered evaluation (ex-post event study)",
+   "events": [
+    "E02",
+    "E09"
+   ],
+   "paper_keys": [
+    "h1.oos*",
+    "h2.oos*",
+    "h5.oos*"
+   ]
+  },
+  {
+   "id": "R_v1_oos",
+   "paper": "Appendix B row v1",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "clean-oos",
+   "label_text": "OOS, single pre-registered evaluation",
+   "events": [
+    "E02",
+    "E03",
+    "E09"
+   ],
+   "paper_keys": [
+    "v1.oos*"
+   ]
+  },
+  {
+   "id": "R_v2_is",
+   "paper": "v2 in-sample rows (Table 1, abstract)",
+   "period": "IS",
+   "kind": "event_study",
+   "label": "in-sample",
+   "label_text": "In sample (rule designed after the v1 OOS result; causal variant adopted after an OOS look)",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E11"
+   ],
+   "paper_keys": [
+    "v2.is*",
+    "tab.v2.is*",
+    "rig2.v2is*"
+   ]
+  },
+  {
+   "id": "R_v2_oos",
+   "paper": "v2 OOS rows (Table 1, abstract)",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind (period read before this design; variant chosen after an OOS look)",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E07",
+    "E08",
+    "E10",
+    "E11",
+    "E29",
+    "E30",
+    "E34",
+    "E35"
+   ],
+   "paper_keys": [
+    "v2.oos*",
+    "tab.v2.oos*",
+    "conc.*"
+   ]
+  },
+  {
+   "id": "R_v2_stress",
+   "paper": "v2 fees x2 / cost stress / PSR entries",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; cost stress of the v2 book",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E20",
+    "E29",
+    "E52"
+   ],
+   "paper_keys": [
+    "rig2.v2oos*"
+   ]
+  },
+  {
+   "id": "R_v2_copier",
+   "paper": "v2 copier at our latency (copier stress)",
+   "period": "OOS",
+   "kind": "executable",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; copier entering after the fast tier at our latency",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E52"
+   ],
+   "paper_keys": [
+    "copier.*"
+   ]
+  },
+  {
+   "id": "R_v2_u2",
+   "paper": "Blind tests: v2 on unseen markets",
+   "period": "U2",
+   "kind": "event_study",
+   "label": "blind",
+   "label_text": "Blind: unseen markets (U2), pre-registered; rule shaped by earlier OOS looks",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E15"
+   ],
+   "paper_keys": [
+    "u2.*"
+   ]
+  },
+  {
+   "id": "R_v2safe_oos",
+   "paper": "Appendix B v2-safe",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind (variant designed after v2's OOS losing days were known)",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E16",
+    "E17"
+   ],
+   "paper_keys": [
+    "v2s.oos*"
+   ]
+  },
+  {
+   "id": "R_v2safe_u2",
+   "paper": "Appendix B v2-safe blind",
+   "period": "U2",
+   "kind": "event_study",
+   "label": "blind",
+   "label_text": "Blind: unseen markets (U2), pre-registered; variant motivated by OOS losing days",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E16",
+    "E18"
+   ],
+   "paper_keys": [
+    "v2s.u2*"
+   ]
+  },
+  {
+   "id": "R_wcap_oos",
+   "paper": "Per-wallet cap (risk section, Appendix B)",
+   "period": "OOS",
+   "kind": "event_study",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind (rule designed because of this OOS result; not a test)",
+   "flags": [
+    "oos_informed_design",
+    "oos_selected",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E50",
+    "E51",
+    "E57"
+   ],
+   "paper_keys": [
+    "wcap.*"
+   ]
+  },
+  {
+   "id": "R_cv_prereg_record",
+   "paper": "Tier-0 pre-registration record (Appendix)",
+   "period": "OOS",
+   "kind": "conditional",
+   "label": "burned-non-blind",
+   "label_text": "Pre-registered record (pre-registration committed after the first run); conditional on realised jumps",
+   "flags": [
+    "prereg_committed_after_run",
+    "oos_informed_design"
+   ],
+   "events": [
+    "E13",
+    "E23"
+   ],
+   "paper_keys": [
+    "t0.prereg*"
+   ]
+  },
+  {
+   "id": "R_cv_table2_pre",
+   "paper": "CV trader at the pre-registered stamp lag 2.0 s (latency table)",
+   "period": "OOS",
+   "kind": "conditional",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; conditional on realised jumps of at least 4c; stamp lag 2.0 s pre-registered, timing reading chosen after an OOS look",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E14",
+    "E19",
+    "E21",
+    "E22",
+    "E23",
+    "E37",
+    "E45",
+    "E46",
+    "E52",
+    "E59"
+   ],
+   "paper_keys": [
+    "cv.pre*",
+    "pp.pre*",
+    "sc.pre*"
+   ]
+  },
+  {
+   "id": "R_cv_table2_post",
+   "paper": "CV trader at the post hoc stamp lag 3.14 s (latency table)",
+   "period": "OOS",
+   "kind": "conditional",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; conditional on realised jumps of at least 4c; post hoc stamp lag 3.14 s",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E14",
+    "E19",
+    "E21",
+    "E22",
+    "E23",
+    "E41",
+    "E45",
+    "E52",
+    "E59"
+   ],
+   "paper_keys": [
+    "cv.cal*",
+    "pp.cal*",
+    "sc.cal*"
+   ]
+  },
+  {
+   "id": "R_fresh",
+   "paper": "Fresh holdout (firm box, scenario figure)",
+   "period": "fresh",
+   "kind": "conditional",
+   "label": "post-freeze",
+   "label_text": "Post-freeze newer matches (anecdotal: about 2 days, 16 covered matches); conditional on realised jumps",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos",
+    "anecdotal (2 days)",
+    "window books partly read earlier (E24, E28)"
+   ],
+   "events": [
+    "E14",
+    "E21",
+    "E22",
+    "E41",
+    "E53",
+    "E54",
+    "E55",
+    "E58"
+   ],
+   "paper_keys": [
+    "fresh.*"
+   ]
+  },
+  {
+   "id": "R_v3_oos",
+   "paper": "Appendix B CV rule v3",
+   "period": "OOS",
+   "kind": "conditional",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; pre-registered v3 (conditional on realised jumps)",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E21",
+    "E22",
+    "E38",
+    "E40"
+   ],
+   "paper_keys": [
+    "t3.oos*",
+    "t3.verdict"
+   ]
+  },
+  {
+   "id": "R_v3_u2",
+   "paper": "Appendix B CV rule v3 on unseen markets",
+   "period": "U2",
+   "kind": "conditional",
+   "label": "post-freeze",
+   "label_text": "Post-freeze: unseen markets (U2) already read by the v2 tests before v3 was frozen",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos",
+    "U2 read by E15 and E18 before the v3 freeze"
+   ],
+   "events": [
+    "E21",
+    "E22",
+    "E39",
+    "E40"
+   ]
+  },
+  {
+   "id": "R_maker",
+   "paper": "Appendix B maker v1",
+   "period": "side_markets",
+   "kind": "sim_upper_bound",
+   "label": "blind",
+   "label_text": "Blind: OOS side markets, pre-registered (fill rule: every opposite print reaches our quote)",
+   "flags": [
+    "signal input = already-read OOS moneyline tapes"
+   ],
+   "events": [
+    "E26",
+    "E27",
+    "E34",
+    "E36",
+    "E36b"
+   ],
+   "paper_keys": [
+    "mk.*"
+   ]
+  },
+  {
+   "id": "R_tt",
+   "paper": "Appendix B table-tennis rows",
+   "period": "tt",
+   "kind": "event_study",
+   "label": "clean-oos",
+   "label_text": "Table tennis, single pre-registered run",
+   "events": [
+    "E31",
+    "E32",
+    "E33"
+   ],
+   "paper_keys": [
+    "tt.*"
+   ]
+  },
+  {
+   "id": "R_replay",
+   "paper": "What speed is worth: replay of 9 recorded matches",
+   "period": "replay",
+   "kind": "executable",
+   "label": "exploratory",
+   "label_text": "Exploratory replay on recorded books (the same matches built the model's inputs)",
+   "flags": [
+    "forward recordings; the 9 matches built the model inputs"
+   ],
+   "events": [
+    "E42",
+    "E44"
+   ],
+   "paper_keys": [
+    "rp.*"
+   ]
+  },
+  {
+   "id": "R_capacity",
+   "paper": "Capacity section",
+   "period": "OOS",
+   "kind": "conditional",
+   "label": "burned-non-blind",
+   "label_text": "OOS, non-blind; capacity study on the v2 book and the CV jump set",
+   "flags": [
+    "oos_selected",
+    "oos_informed_design",
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E06",
+    "E10",
+    "E21",
+    "E22",
+    "E25",
+    "E41",
+    "E43",
+    "E56"
+   ],
+   "paper_keys": [
+    "cap.*",
+    "capcv.*"
+   ]
+  },
+  {
+   "id": "R_tracking_test",
+   "paper": "Table-tennis early call, held-out test (11/11)",
+   "period": "test",
+   "kind": "descriptive",
+   "label": "clean-oos",
+   "label_text": "Held-out test videos, single pre-specified evaluation",
+   "events": [
+    "E04"
+   ]
+  },
+  {
+   "id": "R_tracking_relabel",
+   "paper": "Table-tennis early call after the label audit (8/8)",
+   "period": "test",
+   "kind": "descriptive",
+   "label": "burned-non-blind",
+   "label_text": "Held-out test videos after a post hoc label audit",
+   "flags": [
+    "defect_fix_after_oos"
+   ],
+   "events": [
+    "E04",
+    "E05"
+   ]
+  },
+  {
+   "id": "R_tracking_spin",
+   "paper": "Spin-aware early call (10/12, not adopted)",
+   "period": "test",
+   "kind": "descriptive",
+   "label": "burned-non-blind",
+   "label_text": "Second model evaluated on the already-used test videos",
+   "events": [
+    "E49"
+   ],
+   "paper_keys": [
+    "spin.tt*"
+   ]
+  },
+  {
+   "id": "R_forward",
+   "paper": "Forward test",
+   "period": "forward",
+   "kind": "descriptive",
+   "label": "not-run",
+   "label_text": "Not run",
+   "flags": [
+    "oos_informed_design"
+   ],
+   "events": [
+    "E12",
+    "E48"
+   ],
+   "paper_keys": [
+    "fwd.*"
+   ]
+  }
+ ],
+ "unlogged_reads_not_in_oos_peeks_log": [
+  "E03 post-OOS diagnostics (69a675f)",
+  "E08 v2 verifiers 13:35-13:48Z: seven causal variants computed on the already-read OOS",
+  "E09 reproduction run (052e896)",
+  "Scripts that read OOS trade tables or OOS results to draw figures or statistics without writing the peeks log: scripts/rigor_pack.py, scripts/factor_regression.py, scripts/v2_figures.py, scripts/paper_figures.py, scripts/paper_figures_v2.py, scripts/export_viz.py, scripts/money_counter.py"
+ ],
+ "test_eligibility": {
+  "method": "Metadata and provenance only (universe catalogue counts and dates, read logs, commits). No candidate test profit was read to reach this conclusion.",
+  "rule": "Organizer rule: the latest 20% of history by calendar time or the latest two years, whichever is shorter, evaluated once at the end.",
+  "declared_universe": "U1: ATP/WTA/Challenger singles moneylines with volume >= $5k; 13,084 matches, first start 2025-10-08 02:00 UTC, last start 2026-10-03 07:10 UTC. The 360.215-day history is under two years; its calendar-time 20% window is 72.043 days.",
+  "qualifying_window": "U1 matches starting at or after 2026-07-23 06:08 UTC, through 2026-10-03 07:10 UTC: 4,386 matches over 72.043 days.",
+  "qualifying_window_status": "The July 23 to August 25 portion was included in training for later policies; the August 25 to October 3 portion was subsequently evaluated and used in later design. No untouched qualifying window inside U1 has been identified. This is a conclusion about U1, not every independent external history.",
+  "candidates": [
+   {
+    "data": "Fresh window: U1-rule matches starting after 2026-10-03 07:10 UTC",
+    "qualifies": false,
+    "why": "22 eligible matches, already evaluated (E54); the window is too short for the 72.043-day calendar-time requirement for the existing U1 history."
+   },
+   {
+    "data": "U2: ITF and $1k-5k ATP/WTA markets outside U1",
+    "qualifies": false,
+    "why": "Outside the declared universe; already used by the blind tests E15, E18 and E39."
+   },
+   {
+    "data": "OOS side markets (maker v1)",
+    "qualifies": false,
+    "why": "Different market type; evaluated once (E26)."
+   },
+   {
+    "data": "Table-tennis markets",
+    "qualifies": false,
+    "why": "Different sport and universe; evaluated once (E31)."
+   }
+  ],
+  "conclusion": "No genuinely untouched calendar-time test inside the declared U1 history has been identified. Preserve the actual first pre-registered E02 evaluation and each other test with its verified label. A reproduction or mechanical defect correction is not by itself evidence of return-driven tuning or a new blind test. Independent external-validation feasibility remains a separate provenance check.",
+  "events": [
+   "E02",
+   "E15",
+   "E18",
+   "E26",
+   "E31",
+   "E39",
+   "E54"
+  ],
+  "rule_source": "https://www.gqhacks.com/tracks/systematic-trading",
+  "actual_split": "The stored 80th-percentile match-count split starts 2026-08-25 14:15 UTC: 2,617 matches over 38.705 days, 10.745% of calendar history.",
+  "actual_split_status": "E02 is the first pre-registered evaluation of frozen v1 rules on the stored match-count split, at 2026-10-03 10:42 UTC. That first-look record does not establish compliance with the calendar-time window. Later strategy-design decisions and mechanical corrections are classified separately in the registry."
+ },
+ "log_lines": [
+  {
+   "line": 1,
+   "raw_ts": "2026-10-03T10:42:28.967743+00:00",
+   "utc": "2026-10-03T10:42:28Z",
+   "event": "E02"
+  },
+  {
+   "line": 2,
+   "raw_ts": "2026-10-03T13:24:37.297968+00:00",
+   "utc": "2026-10-03T13:24:37Z",
+   "event": "E07"
+  },
+  {
+   "line": 3,
+   "raw_ts": "2026-10-03T13:53:01.186962+00:00",
+   "utc": "2026-10-03T13:53:01Z",
+   "event": "E10"
+  },
+  {
+   "line": 4,
+   "raw_ts": "2026-10-03T17:23:41.710383+00:00",
+   "utc": "2026-10-03T17:23:41Z",
+   "event": "E13"
+  },
+  {
+   "line": 5,
+   "raw_ts": "2026-10-03T17:29:29.198786+00:00",
+   "utc": "2026-10-03T17:29:29Z",
+   "event": "E13"
+  },
+  {
+   "line": 6,
+   "raw_ts": "2026-10-03T17:31:29.130682+00:00",
+   "utc": "2026-10-03T17:31:29Z",
+   "event": "E15"
+  },
+  {
+   "line": 7,
+   "raw_ts": "2026-10-03T17:37:16.448743+00:00",
+   "utc": "2026-10-03T17:37:16Z",
+   "event": "E17"
+  },
+  {
+   "line": 8,
+   "raw_ts": "2026-10-03T17:37:47.784154+00:00",
+   "utc": "2026-10-03T17:37:47Z",
+   "event": "E18"
+  },
+  {
+   "line": 9,
+   "raw_ts": "2026-10-03T17:43:41.266161+00:00",
+   "utc": "2026-10-03T17:43:41Z",
+   "event": "E19"
+  },
+  {
+   "line": 10,
+   "raw_ts": "2026-10-03T17:45:17.819645+00:00",
+   "utc": "2026-10-03T17:45:17Z",
+   "event": "E19"
+  },
+  {
+   "line": 11,
+   "raw_ts": "2026-10-03T17:48:08.518292+00:00",
+   "utc": "2026-10-03T17:48:08Z",
+   "event": "E19"
+  },
+  {
+   "line": 12,
+   "raw_ts": "2026-10-03T18:00:45.264394+00:00",
+   "utc": "2026-10-03T18:00:45Z",
+   "event": "E20"
+  },
+  {
+   "line": 13,
+   "raw_ts": "2026-10-03T18:06:59.609644+00:00",
+   "utc": "2026-10-03T18:06:59Z",
+   "event": "E21"
+  },
+  {
+   "line": 14,
+   "raw_ts": "2026-10-03T18:13:42.037708+00:00",
+   "utc": "2026-10-03T18:13:42Z",
+   "event": "E21"
+  },
+  {
+   "line": 15,
+   "raw_ts": "2026-10-03T18:27:17.849636+00:00",
+   "utc": "2026-10-03T18:27:17Z",
+   "event": "E24"
+  },
+  {
+   "line": 16,
+   "raw_ts": "2026-10-03T18:42:50.878006+00:00",
+   "utc": "2026-10-03T18:42:50Z",
+   "event": "E25"
+  },
+  {
+   "line": 17,
+   "raw_ts": "2026-10-03T18:47:03.904091+00:00",
+   "utc": "2026-10-03T18:47:03Z",
+   "event": "E24"
+  },
+  {
+   "line": 18,
+   "raw_ts": "2026-10-03T18:49:10.064212+00:00",
+   "utc": "2026-10-03T18:49:10Z",
+   "event": "E26"
+  },
+  {
+   "line": 19,
+   "raw_ts": "2026-10-03T18:49:54.369676+00:00",
+   "utc": "2026-10-03T18:49:54Z",
+   "event": "E27"
+  },
+  {
+   "line": 20,
+   "raw_ts": "2026-10-03T19:00:28.572831+00:00",
+   "utc": "2026-10-03T19:00:28Z",
+   "event": "E28"
+  },
+  {
+   "line": 21,
+   "raw_ts": "2026-10-03T19:13:55.009272+00:00",
+   "utc": "2026-10-03T19:13:55Z",
+   "event": "E28"
+  },
+  {
+   "line": 22,
+   "raw_ts": "2026-10-03T19:15:03.000000+00:00",
+   "utc": "2026-10-03T19:15:03Z",
+   "event": "E29"
+  },
+  {
+   "line": 23,
+   "raw_ts": "2026-10-03T19:19:14.670497+00:00",
+   "utc": "2026-10-03T19:19:14Z",
+   "event": "E28"
+  },
+  {
+   "line": 24,
+   "raw_ts": "2026-10-03T19:20:24.912939+00:00",
+   "utc": "2026-10-03T19:20:24Z",
+   "event": "E30"
+  },
+  {
+   "line": 25,
+   "raw_ts": "2026-10-03T19:23:14.155322+00:00",
+   "utc": "2026-10-03T19:23:14Z",
+   "event": "E31"
+  },
+  {
+   "line": 26,
+   "raw_ts": "2026-10-03T19:25:45.920153+00:00",
+   "utc": "2026-10-03T19:25:45Z",
+   "event": "E32"
+  },
+  {
+   "line": 27,
+   "raw_ts": "2026-10-03T19:28:49.781129+00:00",
+   "utc": "2026-10-03T19:28:49Z",
+   "event": "E33"
+  },
+  {
+   "line": 28,
+   "raw_ts": "2026-10-03T19:28:52.264503+00:00",
+   "utc": "2026-10-03T19:28:52Z",
+   "event": "E28"
+  },
+  {
+   "line": 29,
+   "raw_ts": "2026-10-03T19:58:42.794323+00:00",
+   "utc": "2026-10-03T19:58:42Z",
+   "event": "E28"
+  },
+  {
+   "line": 30,
+   "raw_ts": "2026-10-03T20:02:07.854548+00:00",
+   "utc": "2026-10-03T20:02:07Z",
+   "event": "E33"
+  },
+  {
+   "line": 31,
+   "raw_ts": "2026-10-03T20:03:19.605207+00:00",
+   "utc": "2026-10-03T20:03:19Z",
+   "event": "E33"
+  },
+  {
+   "line": 32,
+   "raw_ts": "2026-10-03T20:04:26.847261+00:00",
+   "utc": "2026-10-03T20:04:26Z",
+   "event": "E34"
+  },
+  {
+   "line": 33,
+   "raw_ts": "2026-10-03T20:07:08.664182+00:00",
+   "utc": "2026-10-03T20:07:08Z",
+   "event": "E33"
+  },
+  {
+   "line": 34,
+   "raw_ts": "2026-10-03T20:07:45.552503+00:00",
+   "utc": "2026-10-03T20:07:45Z",
+   "event": "E33"
+  },
+  {
+   "line": 35,
+   "raw_ts": "2026-10-03T20:09:04.403069+00:00",
+   "utc": "2026-10-03T20:09:04Z",
+   "event": "E35"
+  },
+  {
+   "line": 36,
+   "raw_ts": "2026-10-03T20:10:45.374718+00:00",
+   "utc": "2026-10-03T20:10:45Z",
+   "event": "E28"
+  },
+  {
+   "line": 37,
+   "raw_ts": "2026-10-03T20:10:47.906614+00:00",
+   "utc": "2026-10-03T20:10:47Z",
+   "event": "E28"
+  },
+  {
+   "line": 38,
+   "raw_ts": "2026-10-03T20:11:37.490460+00:00",
+   "utc": "2026-10-03T20:11:37Z",
+   "event": "E36"
+  },
+  {
+   "line": 39,
+   "raw_ts": "2026-10-03T20:13:17.221878+00:00",
+   "utc": "2026-10-03T20:13:17Z",
+   "event": "E28"
+  },
+  {
+   "line": 40,
+   "raw_ts": "2026-10-03T20:13:43.241104+00:00",
+   "utc": "2026-10-03T20:13:43Z",
+   "event": "E28"
+  },
+  {
+   "line": 41,
+   "raw_ts": "2026-10-03T20:14:29.129584+00:00",
+   "utc": "2026-10-03T20:14:29Z",
+   "event": "E28"
+  },
+  {
+   "line": 42,
+   "raw_ts": "2026-10-03T20:14:37.747932+00:00",
+   "utc": "2026-10-03T20:14:37Z",
+   "event": "E28"
+  },
+  {
+   "line": 43,
+   "raw_ts": "2026-10-03T20:16:07.225280+00:00",
+   "utc": "2026-10-03T20:16:07Z",
+   "event": "E37"
+  },
+  {
+   "line": 44,
+   "raw_ts": "2026-10-03T20:16:36.690575+00:00",
+   "utc": "2026-10-03T20:16:36Z",
+   "event": "E33"
+  },
+  {
+   "line": 45,
+   "raw_ts": "2026-10-03T20:18:15.819704+00:00",
+   "utc": "2026-10-03T20:18:15Z",
+   "event": "E36b"
+  },
+  {
+   "line": 46,
+   "raw_ts": "2026-10-03T20:21:44.005503+00:00",
+   "utc": "2026-10-03T20:21:44Z",
+   "event": "E36b"
+  },
+  {
+   "line": 47,
+   "raw_ts": "2026-10-03T20:22:27.755077+00:00",
+   "utc": "2026-10-03T20:22:27Z",
+   "event": "E36"
+  },
+  {
+   "line": 48,
+   "raw_ts": "2026-10-03T20:22:28.555748+00:00",
+   "utc": "2026-10-03T20:22:28Z",
+   "event": "E28"
+  },
+  {
+   "line": 49,
+   "raw_ts": "2026-10-03T20:22:30.235431+00:00",
+   "utc": "2026-10-03T20:22:30Z",
+   "event": "E28"
+  },
+  {
+   "line": 50,
+   "raw_ts": "2026-10-03T20:24:49.725021+00:00",
+   "utc": "2026-10-03T20:24:49Z",
+   "event": "E37"
+  },
+  {
+   "line": 51,
+   "raw_ts": "2026-10-03T20:25:01.366241+00:00",
+   "utc": "2026-10-03T20:25:01Z",
+   "event": "E38"
+  },
+  {
+   "line": 52,
+   "raw_ts": "2026-10-03T20:26:40.510770+00:00",
+   "utc": "2026-10-03T20:26:40Z",
+   "event": "E39"
+  },
+  {
+   "line": 53,
+   "raw_ts": "2026-10-03T20:28:47.478005+00:00",
+   "utc": "2026-10-03T20:28:47Z",
+   "event": "E38"
+  },
+  {
+   "line": 54,
+   "raw_ts": "2026-10-03T20:29:22.230424+00:00",
+   "utc": "2026-10-03T20:29:22Z",
+   "event": "E38"
+  },
+  {
+   "line": 55,
+   "raw_ts": "2026-10-03T20:37:28.471185+00:00",
+   "utc": "2026-10-03T20:37:28Z",
+   "event": "E40"
+  },
+  {
+   "line": 56,
+   "raw_ts": "2026-10-03T20:40:43.820533+00:00",
+   "utc": "2026-10-03T20:40:43Z",
+   "event": "E28"
+  },
+  {
+   "line": 57,
+   "raw_ts": "2026-10-03T20:45:51+00:00",
+   "utc": "2026-10-03T20:45:51Z",
+   "event": "E40"
+  },
+  {
+   "line": 58,
+   "raw_ts": "2026-10-03T20:46:06.978740+00:00",
+   "utc": "2026-10-03T20:46:06Z",
+   "event": "E28"
+  },
+  {
+   "line": 59,
+   "raw_ts": "2026-10-03T20:52:56.218790+00:00",
+   "utc": "2026-10-03T20:52:56Z",
+   "event": "E28"
+  },
+  {
+   "line": 60,
+   "raw_ts": "2026-10-03T21:05:50.913639+00:00",
+   "utc": "2026-10-03T21:05:50Z",
+   "event": "E35"
+  },
+  {
+   "line": 61,
+   "raw_ts": "2026-10-03T20:17:16.256055+00:00",
+   "utc": "2026-10-03T20:17:16Z",
+   "event": "E37"
+  },
+  {
+   "line": 62,
+   "raw_ts": "2026-10-03T20:36:47.296842+00:00",
+   "utc": "2026-10-03T20:36:47Z",
+   "event": "E37"
+  },
+  {
+   "line": 63,
+   "raw_ts": "2026-10-03T20:53:15+00:00",
+   "utc": "2026-10-03T20:53:15Z",
+   "event": "E41"
+  },
+  {
+   "line": 64,
+   "raw_ts": "2026-10-03T20:59:19.692455+00:00",
+   "utc": "2026-10-03T20:59:19Z",
+   "event": "E41"
+  },
+  {
+   "line": 65,
+   "raw_ts": "2026-10-03T21:14:49+00:00",
+   "utc": "2026-10-03T21:14:49Z",
+   "event": "E42"
+  },
+  {
+   "line": 66,
+   "raw_ts": "2026-10-03T21:56:11+00:00",
+   "utc": "2026-10-03T21:56:11Z",
+   "event": "E42"
+  },
+  {
+   "line": 67,
+   "raw_ts": "2026-10-03T22:18:13+00:00",
+   "utc": "2026-10-03T22:18:13Z",
+   "event": "E43"
+  },
+  {
+   "line": 68,
+   "raw_ts": "2026-10-03T22:24:32+00:00",
+   "utc": "2026-10-03T22:24:32Z",
+   "event": "E42"
+  },
+  {
+   "line": 69,
+   "raw_ts": "2026-10-03T23:01:16+00:00",
+   "utc": "2026-10-03T23:01:16Z",
+   "event": "E44"
+  },
+  {
+   "line": 70,
+   "raw_ts": "2026-10-03T23:17:16+00:00",
+   "utc": "2026-10-03T23:17:16Z",
+   "event": "E43"
+  },
+  {
+   "line": 71,
+   "raw_ts": "2026-10-03T23:18:38.688009+00:00",
+   "utc": "2026-10-03T23:18:38Z",
+   "event": "E46"
+  },
+  {
+   "line": 72,
+   "raw_ts": "2026-10-03T23:23:44+00:00",
+   "utc": "2026-10-03T23:23:44Z",
+   "event": "E47"
+  },
+  {
+   "line": 73,
+   "raw_ts": "2026-10-03T23:24:07+00:00",
+   "utc": "2026-10-03T23:24:07Z",
+   "event": "E44"
+  },
+  {
+   "line": 74,
+   "raw_ts": "2026-10-04T00:28:13+00:00",
+   "utc": "2026-10-04T00:28:13Z",
+   "event": "E43"
+  },
+  {
+   "line": 75,
+   "raw_ts": "2026-10-04T00:28:53.976148+00:00",
+   "utc": "2026-10-04T00:28:53Z",
+   "event": "E43"
+  },
+  {
+   "line": 76,
+   "raw_ts": "2026-10-04T00:36:34.986584+00:00",
+   "utc": "2026-10-04T00:36:34Z",
+   "event": "E43"
+  },
+  {
+   "line": 77,
+   "raw_ts": "2026-10-04T02:02:51.803623+00:00",
+   "utc": "2026-10-04T02:02:51Z",
+   "event": "E28"
+  },
+  {
+   "line": 78,
+   "raw_ts": "2026-10-04T05:34:59.242313+00:00",
+   "utc": "2026-10-04T05:34:59Z",
+   "event": "E51"
+  },
+  {
+   "line": 79,
+   "raw_ts": "2026-10-04T05:42:24.434100+00:00",
+   "utc": "2026-10-04T05:42:24Z",
+   "event": "E53"
+  },
+  {
+   "line": 80,
+   "raw_ts": "2026-10-04T05:43:40.253708+00:00",
+   "utc": "2026-10-04T05:43:40Z",
+   "event": "E53"
+  },
+  {
+   "line": 81,
+   "raw_ts": "2026-10-04T05:44:23.204690+00:00",
+   "utc": "2026-10-04T05:44:23Z",
+   "event": "E54"
+  },
+  {
+   "line": 82,
+   "raw_ts": "2026-10-04T05:44:58.884990+00:00",
+   "utc": "2026-10-04T05:44:58Z",
+   "event": "E54"
+  },
+  {
+   "line": 83,
+   "raw_ts": "2026-10-04T05:45:09.539975+00:00",
+   "utc": "2026-10-04T05:45:09Z",
+   "event": "E54"
+  },
+  {
+   "line": 84,
+   "raw_ts": "2026-10-04T05:47:19.172963+00:00",
+   "utc": "2026-10-04T05:47:19Z",
+   "event": "E55"
+  },
+  {
+   "line": 85,
+   "raw_ts": "2026-10-04T05:47:33.836478+00:00",
+   "utc": "2026-10-04T05:47:33Z",
+   "event": "E55"
+  },
+  {
+   "line": 86,
+   "raw_ts": "2026-10-04T05:54:19.676913+00:00",
+   "utc": "2026-10-04T05:54:19Z",
+   "event": "E55"
+  },
+  {
+   "line": 87,
+   "raw_ts": "2026-10-04T05:55:06.557042+00:00",
+   "utc": "2026-10-04T05:55:06Z",
+   "event": "E55"
+  },
+  {
+   "line": 88,
+   "raw_ts": "2026-10-04T06:31:33.733014+00:00",
+   "utc": "2026-10-04T06:31:33Z",
+   "event": "E59"
+  },
+  {
+   "line": 89,
+   "raw_ts": "2026-10-04T05:27:51+00:00",
+   "utc": "2026-10-04T05:27:51Z",
+   "event": "E52"
+  },
+  {
+   "line": 90,
+   "raw_ts": "2026-10-04T05:31:58.926077+00:00",
+   "utc": "2026-10-04T05:31:58Z",
+   "event": "E52"
+  },
+  {
+   "line": 91,
+   "raw_ts": "2026-10-04T05:33:56.143564+00:00",
+   "utc": "2026-10-04T05:33:56Z",
+   "event": "E52"
+  },
+  {
+   "line": 92,
+   "raw_ts": "2026-10-04T05:35:16.577038+00:00",
+   "utc": "2026-10-04T05:35:16Z",
+   "event": "E52"
+  },
+  {
+   "line": 93,
+   "raw_ts": "2026-10-04T05:37:12.032999+00:00",
+   "utc": "2026-10-04T05:37:12Z",
+   "event": "E52"
+  },
+  {
+   "line": 94,
+   "raw_ts": "2026-10-04T05:38:48.207735+00:00",
+   "utc": "2026-10-04T05:38:48Z",
+   "event": "E52"
+  },
+  {
+   "line": 95,
+   "raw_ts": "2026-10-04T05:40:12.833438+00:00",
+   "utc": "2026-10-04T05:40:12Z",
+   "event": "E52"
+  },
+  {
+   "line": 96,
+   "raw_ts": "2026-10-04T05:41:41.857736+00:00",
+   "utc": "2026-10-04T05:41:41Z",
+   "event": "E56"
+  },
+  {
+   "line": 97,
+   "raw_ts": "2026-10-04T05:43:31.734078+00:00",
+   "utc": "2026-10-04T05:43:31Z",
+   "event": "E56"
+  },
+  {
+   "line": 98,
+   "raw_ts": "2026-10-04T05:47:31.017049+00:00",
+   "utc": "2026-10-04T05:47:31Z",
+   "event": "E56"
+  },
+  {
+   "line": 99,
+   "raw_ts": "2026-10-04T05:48:14.889768+00:00",
+   "utc": "2026-10-04T05:48:14Z",
+   "event": "E56"
+  },
+  {
+   "line": 100,
+   "raw_ts": "2026-10-04T05:48:26.999379+00:00",
+   "utc": "2026-10-04T05:48:26Z",
+   "event": "E56"
+  },
+  {
+   "line": 101,
+   "raw_ts": "2026-10-04T05:49:04.934411+00:00",
+   "utc": "2026-10-04T05:49:04Z",
+   "event": "E56"
+  },
+  {
+   "line": 102,
+   "raw_ts": "2026-10-04T05:49:43+00:00",
+   "utc": "2026-10-04T05:49:43Z",
+   "event": "E52"
+  },
+  {
+   "line": 103,
+   "raw_ts": "2026-10-04T05:50:00+00:00",
+   "utc": "2026-10-04T05:50:00Z",
+   "event": "E57"
+  },
+  {
+   "line": 104,
+   "raw_ts": "2026-10-04T05:55:34.194692+00:00",
+   "utc": "2026-10-04T05:55:34Z",
+   "event": "E56"
+  },
+  {
+   "line": 105,
+   "raw_ts": "2026-10-04T05:56:14.788579+00:00",
+   "utc": "2026-10-04T05:56:14Z",
+   "event": "E56"
+  },
+  {
+   "line": 106,
+   "raw_ts": "2026-10-04T06:02:40.800190+00:00",
+   "utc": "2026-10-04T06:02:40Z",
+   "event": "E56"
+  },
+  {
+   "line": 107,
+   "raw_ts": "2026-10-04T06:02:40.800190+00:00",
+   "utc": "2026-10-04T06:02:40Z",
+   "event": "E56"
+  },
+  {
+   "line": 108,
+   "raw_ts": "2026-10-04T06:32:02.183745+00:00",
+   "utc": "2026-10-04T06:32:02Z",
+   "event": "E56"
+  },
+  {
+   "line": 109,
+   "raw_ts": "2026-10-04T06:32:02.183745+00:00",
+   "utc": "2026-10-04T06:32:02Z",
+   "event": "E58"
+  },
+  {
+   "line": 110,
+   "raw_ts": "2026-10-04T06:32:56.207545+00:00",
+   "utc": "2026-10-04T06:32:56Z",
+   "event": "E59"
+  },
+  {
+   "line": 111,
+   "raw_ts": "2026-10-04T06:34:01.865414+00:00",
+   "utc": "2026-10-04T06:34:01Z",
+   "event": "E59"
+  }
+ ],
+ "summary": {
+  "n_events": 61,
+  "n_events_by_kind": {
+   "a": 10,
+   "b": 9,
+   "c": 19,
+   "d": 9,
+   "e": 6,
+   "f": 5,
+   "protocol": 3
+  },
+  "oos_informed_decisions": [
+   {
+    "id": "E05",
+    "utc": "2026-10-03T12:00:26Z",
+    "family": "tracking",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
+    "oos_selected": false,
+    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11."
+   },
+   {
+    "id": "E06",
+    "utc": "2026-10-03T13:23:07Z",
+    "family": "v2",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "n/a (new rule fitted in sample only)",
+    "oos_selected": false,
+    "printed_text": "v2 was designed after v1's OOS loss was known; its parameters were fitted on in-sample data only."
+   },
+   {
+    "id": "E10",
+    "utc": "2026-10-03T13:53:01Z",
+    "family": "v2",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
+    "oos_selected": true,
+    "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero."
+   },
+   {
+    "id": "E11",
+    "utc": "2026-10-03T13:55:43Z",
+    "family": "v2",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "none on per-share P&L and Sharpe (leakage_check T7); return on capital changes",
+    "oos_selected": false,
+    "printed_text": "Capital lock-up was set to an ex-ante 4 hours after an OOS look; per-share P&L and Sharpe did not change."
+   },
+   {
+    "id": "E12",
+    "utc": "2026-10-03T13:55:43Z",
+    "family": "forward",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "n/a (the forward test was never run)",
+    "oos_selected": false,
+    "printed_text": "Forward-test primary metrics were redefined after a dry run on OOS days; the forward test was never run."
+   },
+   {
+    "id": "E14",
+    "utc": "2026-10-03T17:29:12Z",
+    "family": "cv",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)",
+    "oos_selected": false,
+    "printed_text": "A look-ahead in CV camera coverage was fixed after the first CV P&L, including OOS, existed; the fix lowered coverage."
+   },
+   {
+    "id": "E16",
+    "utc": "2026-10-03T17:30:44Z",
+    "family": "v2",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "n/a (new variant; selection in sample only)",
+    "oos_selected": false,
+    "printed_text": "The v2-safe variant was designed after v2's OOS losing days were known; it was selected on in-sample data only."
+   },
+   {
+    "id": "E21",
+    "utc": "2026-10-03T18:06:59Z",
+    "family": "cv",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
+    "oos_selected": false,
+    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
+   },
+   {
+    "id": "E22",
+    "utc": "2026-10-03T18:13:42Z",
+    "family": "cv",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "up vs the pre-registered per-point timing at stamp lag 2.0 s (IS $66 -> $89/day, OOS $20 -> $46/day)",
+    "oos_selected": true,
+    "printed_text": "The per-tournament CV timing reading was made the headline after OOS results existed; it raised OOS P&L over the pre-registered per-point reading."
+   },
+   {
+    "id": "E23",
+    "utc": "2026-10-03T18:13:42Z",
+    "family": "cv",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "down (the pre-registered headline overstated the corrected one about 3x in sample and 5x out of sample)",
+    "oos_selected": false,
+    "printed_text": "The CV headline was switched from the pre-registered model to the corrected model after OOS results existed; this lowered it about 3-5x."
+   },
+   {
+    "id": "E41",
+    "utc": "2026-10-03T20:53:15Z",
+    "family": "cv",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "up (V = 1 s OOS: +$4/day at stamp lag 2.0 s -> +$57/day at 3.14 s)",
+    "oos_selected": true,
+    "printed_text": "The calibrated 3.14 s stamp-lag reading was made the post hoc CV headline after OOS sweep cells existed; it raised OOS P&L."
+   },
+   {
+    "id": "E45",
+    "utc": "2026-10-03T21:27:27Z",
+    "family": "cv",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "down vs V = 0.5 s (V = 1 s shows lower P&L)",
+    "oos_selected": true,
+    "printed_text": "The 1 s feed-delay base case was fixed after the latency sweep's OOS cells had been computed."
+   },
+   {
+    "id": "E43",
+    "utc": "2026-10-03T22:18:13Z",
+    "family": "capacity",
+    "kind": "e",
+    "kind_label": "defect fix after an OOS look",
+    "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
+    "oos_selected": false,
+    "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly."
+   },
+   {
+    "id": "E50",
+    "utc": "2026-10-04T05:28:28Z",
+    "family": "v2",
+    "kind": "d",
+    "kind_label": "design/headline choice after an OOS look",
+    "direction": "n/a (new rule; selection in sample only)",
+    "oos_selected": false,
+    "printed_text": "The per-wallet cap was designed because the OOS showed five wallets carried 142% of v2's OOS P&L; it was selected in sample."
+   }
+  ],
+  "design_choices_after_oos": [
+   "E06",
+   "E12",
+   "E16",
+   "E22",
+   "E23",
+   "E41",
+   "E45",
+   "E50"
+  ],
+  "defect_fixes_after_oos": [
+   {
+    "id": "E05",
+    "family": "tracking",
+    "direction": "down (11/11 -> 8/8 at 50 ms on corrected labels; verdict unchanged)",
+    "printed_text": "After the single test read, a label audit relabelled 20 of 41 test misses; the frozen model then scores 8/8 instead of 11/11."
+   },
+   {
+    "id": "E10",
+    "family": "v2",
+    "direction": "down vs the onset version (OOS +0.75c -> +0.60c/share; IS Sharpe 16.8 -> 14.5)",
+    "printed_text": "The causal v2 window (T3e) was adopted after seven causal variants had been computed on OOS data; only T3e's OOS interval excluded zero."
+   },
+   {
+    "id": "E11",
+    "family": "v2",
+    "direction": "none on per-share P&L and Sharpe (leakage_check T7); return on capital changes",
+    "printed_text": "Capital lock-up was set to an ex-ante 4 hours after an OOS look; per-share P&L and Sharpe did not change."
+   },
+   {
+    "id": "E14",
+    "family": "cv",
+    "direction": "down (covered IS jumps at N = 10: 25,804 -> 23,069)",
+    "printed_text": "A look-ahead in CV camera coverage was fixed after the first CV P&L, including OOS, existed; the fix lowered coverage."
+   },
+   {
+    "id": "E21",
+    "family": "cv",
+    "direction": "down (V1, large; V5: OOS $56 -> $46/day); about neutral (V2: OOS +0.59 -> +0.58c/share; V4: OOS $47 -> $46/day; V6: inside Monte Carlo noise)",
+    "printed_text": "Five CV model fixes from the verifiers were adopted after OOS P&L existed; two lowered P&L and three changed it little."
+   },
+   {
+    "id": "E43",
+    "family": "capacity",
+    "direction": "down, small (CV in-sample half-Sharpe capital $73,892 -> $73,288)",
+    "printed_text": "Capacity-study defects found by a verifier were fixed after the OOS capacity grid had run; capacity estimates moved down slightly."
+   }
+  ],
+  "decisions_after_non_oos_look": [
+   "E44"
+  ],
+  "preregistered_evaluations": [
+   {
+    "id": "E02",
+    "family": "v1",
+    "data_state": "clean",
+    "prereg_commit": "9d61d1b",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E04",
+    "family": "tracking",
+    "data_state": "clean",
+    "prereg_commit": "69a675f",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E07",
+    "family": "v2",
+    "data_state": "burned",
+    "prereg_commit": "1f229bc",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E13",
+    "family": "cv",
+    "data_state": "burned",
+    "prereg_commit": "a5769c7",
+    "prereg_committed_after_run": true
+   },
+   {
+    "id": "E17",
+    "family": "v2",
+    "data_state": "burned",
+    "prereg_commit": "342d515",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E31",
+    "family": "tt",
+    "data_state": "clean",
+    "prereg_commit": "0f01362",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E32",
+    "family": "tt",
+    "data_state": "clean",
+    "prereg_commit": "0f01362",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E38",
+    "family": "cv",
+    "data_state": "burned",
+    "prereg_commit": "ba0c3d4",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E49",
+    "family": "tracking",
+    "data_state": "test_used",
+    "prereg_commit": "62a5b07",
+    "prereg_committed_after_run": false
+   },
+   {
+    "id": "E51",
+    "family": "v2",
+    "data_state": "burned",
+    "prereg_commit": "4a5a19d",
+    "prereg_committed_after_run": false
+   }
+  ],
+  "blind_or_post_freeze_evaluations": [
+   {
+    "id": "E15",
+    "family": "v2",
+    "data_state": "untouched",
+    "prereg_commit": "337bf7c"
+   },
+   {
+    "id": "E18",
+    "family": "v2",
+    "data_state": "untouched",
+    "prereg_commit": "342d515"
+   },
+   {
+    "id": "E26",
+    "family": "maker",
+    "data_state": "untouched",
+    "prereg_commit": "c29734b"
+   },
+   {
+    "id": "E39",
+    "family": "cv",
+    "data_state": "partly_read",
+    "prereg_commit": "ba0c3d4"
+   },
+   {
+    "id": "E54",
+    "family": "cv",
+    "data_state": "partly_read",
+    "prereg_commit": "dc95717"
+   }
+  ],
+  "reproductions": [
+   "E09",
+   "E27",
+   "E29",
+   "E34",
+   "E36",
+   "E40",
+   "E55",
+   "E57",
+   "E58"
+  ],
+  "diagnostics": [
+   "E03",
+   "E08",
+   "E19",
+   "E20",
+   "E24",
+   "E25",
+   "E28",
+   "E30",
+   "E33",
+   "E35",
+   "E37",
+   "E36b",
+   "E42",
+   "E47",
+   "E46",
+   "E52",
+   "E56",
+   "E53",
+   "E59"
+  ],
+  "protocol_events": [
+   "E00",
+   "E01",
+   "E48"
+  ],
+  "unlogged_reads": [
+   "E03",
+   "E08",
+   "E09"
+  ],
+  "log_lines_total": 111,
+  "log_lines_unmapped": 0,
+  "aux_log_lines_total": {
+   "results/tracking/test_peeks.log": 2,
+   "results/tt/peeks.log": 10
+  },
+  "results_by_label": {
+   "blind": [
+    "R_v2_u2",
+    "R_v2safe_u2",
+    "R_maker"
+   ],
+   "burned-non-blind": [
+    "R_v2_oos",
+    "R_v2_stress",
+    "R_v2_copier",
+    "R_v2safe_oos",
+    "R_wcap_oos",
+    "R_cv_prereg_record",
+    "R_cv_table2_pre",
+    "R_cv_table2_post",
+    "R_v3_oos",
+    "R_capacity",
+    "R_tracking_relabel",
+    "R_tracking_spin"
+   ],
+   "clean-oos": [
+    "R_h1_h6_oos",
+    "R_v1_oos",
+    "R_tt",
+    "R_tracking_test"
+   ],
+   "exploratory": [
+    "R_replay"
+   ],
+   "in-sample": [
+    "R_v2_is"
+   ],
+   "not-run": [
+    "R_forward"
+   ],
+   "post-freeze": [
+    "R_fresh",
+    "R_v3_u2"
+   ]
+  }
+ }
+}
