@@ -1,6 +1,6 @@
 # Handoff: Yoan — ElevenLabs sponsor prizes ("COURTSIDE Voice")
 
-**Owner:** Yoan Exposito · **Deadline:** branch pushed by **9:00 AM EDT Sun Oct 4** (Devpost closes 11:00 AM EDT)
+**Owner:** Yoan Exposito · **Load: light** · **Deadline:** branch pushed by **9:00 AM EDT Sun Oct 4** (Devpost closes 11:00 AM EDT)
 **Prizes targeted (opt in on Devpost when submitting):**
 1. **MLH: Best Use of ElevenLabs** (wireless earbuds) — "Deploy natural, human-sounding audio with ElevenLabs ... give your project a voice."
 2. **ElevenLabs: Best Project Built with ElevenLabs** (earbuds + 3 months ElevenLabs Scale per member).
@@ -35,7 +35,7 @@ Already built (you only READ these):
 
 ## 1. What you build: "COURTSIDE Voice" — the strategy speaks
 
-Make ElevenLabs a working part of the trading system, not just a voiceover. Three pieces, in priority order:
+Make ElevenLabs a working part of the trading system, not just a voiceover. **Scope is deliberately small (about 2-3 hours of agent work):** two pieces, in priority order:
 
 ### 1a. Live call announcer (must have)
 `sponsors/elevenlabs/announcer.py`
@@ -53,19 +53,7 @@ Make ElevenLabs a working part of the trading system, not just a voiceover. Thre
   lines; keep "Liam" for brand consistency). Document which model and why.
 - Playback: `afplay` on macOS or `simpleaudio`/`sounddevice` (add to `sponsors/elevenlabs/requirements.txt`, not the main one).
 
-### 1b. Mission Control voice briefing (should have)
-`sponsors/elevenlabs/briefing.py`
-- Reads `docs/live/status.json` (or the committed result files if the daemon isn't running) and generates a 20–30 s spoken
-  status briefing with ElevenLabs ("COURTSIDE status. Engine at one hundred twenty frames per second, four point six milliseconds
-  per decision. Fast tier up eleven of eleven months..."). Every number must come from the files (print a manifest).
-- Optional: a `--every 300` loop that re-briefs every 5 minutes.
-
-### 1c. 60-second audio summary of the paper (nice to have)
-`sponsors/elevenlabs/paper_audio.py` -> `sponsors/elevenlabs/out/courtside_paper_summary.mp3`
-- A clear 60 s spoken summary written from `docs/NOTE.md` / the abstract (honest: the CV-strategy numbers are simulated at
-  an assumed 1 s licensed feed; post-hoc vs pre-registered readings; paper trading only).
-
-### 1d. Demo video for the prize (must have)
+### 1b. Demo clip for the prize (must have)
 `sponsors/elevenlabs/out/courtside_voice_demo.mp4` (30–60 s): take `results/engine/engine_live_demo.mp4` (or the CV clips in
 `results/viz/v60_assets/clips/` if present) and mux in the announcer's audio at the exact call frames (ffmpeg), plus a short
 title card "COURTSIDE Voice · powered by ElevenLabs". Show the measured event->audio latency on screen.
@@ -101,7 +89,6 @@ echo 'ELEVENLABS_API_KEY=<your key>' >> .env   # never commit
 ## 5. Definition of done
 - [ ] `python sponsors/elevenlabs/announcer.py --replay results/engine/online_events_L4.jsonl --speed 4` speaks the calls in
       sync, prints event->audio latency stats (p50/p90), works with no network after the cache is built.
-- [ ] `python sponsors/elevenlabs/briefing.py` produces a spoken briefing + a manifest of every number it said.
 - [ ] `sponsors/elevenlabs/out/courtside_voice_demo.mp4` (30–60 s) exists and looks/sounds clean.
 - [ ] `sponsors/elevenlabs/README.md`: what, why (latency thesis), how to run, models, measured latency, honesty notes.
 - [ ] No key anywhere in git (`git grep -n sk_` returns nothing).
@@ -111,4 +98,4 @@ echo 'ELEVENLABS_API_KEY=<your key>' >> .env   # never commit
 point before the ball lands, COURTSIDE announces it out loud in ElevenLabs' "Liam" voice — "Miss, called 325 ms early" —
 and narrates paper fills and risk alerts. Because speed is our whole edge, every phrase is pre-generated with ElevenLabs
 (<model>) and cached, so the alert starts <N> ms after the event. ElevenLabs also voices our 90-second demo video (narration
-and music bed), a Mission Control status briefing, and a 60-second audio summary of our paper. Paper trading only.
+and music bed). Paper trading only.

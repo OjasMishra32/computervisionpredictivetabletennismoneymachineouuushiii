@@ -1,6 +1,6 @@
 # Handoff: Ian — Tiger Data sponsor prize ("COURTSIDE Tick Store") + optional Vultr
 
-**Owner:** Ian Hoang · **Deadline:** branch pushed by **9:00 AM EDT Sun Oct 4** (Devpost closes 11:00 AM EDT)
+**Owner:** Ian Hoang · **Load: full** · **Deadline:** branch pushed by **9:00 AM EDT Sun Oct 4** (Devpost closes 11:00 AM EDT)
 **Prize targeted (opt in on Devpost when submitting):** **MLH: Best Use of Tiger Data** (Stream Deck Mini) — Tiger Data
 extends PostgreSQL for real-time data and time-series metrics (hypertables, continuous aggregates, compression).
 **Optional stretch:** **MLH: Best Use of Vultr** (portable screens) — only if you have Vultr credits; see §1d.
