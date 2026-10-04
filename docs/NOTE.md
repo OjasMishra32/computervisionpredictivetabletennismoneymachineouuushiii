@@ -61,8 +61,8 @@ Wimbledon is listed under a separate Polymarket series and is outside our univer
 | Same, fully pre-registered per-point timing | −$136 / −$155 / −$188 | −$190 / −$205 / −$217 |
 | Same, post hoc 3.14 s lag | +$174 / +$67 / −$174 | +$65 / −$45 / −$227 |
 
-The camera policy assumes the frozen classifier's measured table-tennis call statistics, because no footage of the
-Polymarket matches exists (it has made no real calls on them); its fills are priced off the post-point price and the
+The camera policy assumes the frozen classifier's measured table-tennis call statistics, because we have no footage of
+the Polymarket matches (it has made no real calls on them); its fills are priced off the post-point price and the
 measured live book (20-seed means). With fees doubled every camera-policy cell loses; the stated
 $1,000 daily stop is simulated and never fired; the false-call halt is not simulated (a proposed
 control).
@@ -89,7 +89,7 @@ makes +0.33¢ [−0.55, 1.21] IS and +0.76¢ [−1.19, 2.65] OOS.
 | PSR / MinTRL / haircut tests passed (of 6) | 6 | 3 |
 | Net ¢, fees ×2 / all costs ×2 | +0.77 / +0.27 | −0.34 / −0.84 |
 
-## Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table 1, lower rows)
+## Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table A2 of the PDF)
 
 Simulated (assumed feed latency (licensed feed not purchased); parameters measured; 20 seeds a cell); trades only past points the price later moved at least 4¢ on,
 so every cell is an upper bound. Pre-registered stamp lag 2.0 s (break-even feed delay
@@ -110,9 +110,9 @@ Post hoc estimate 3.14 s (assumes humans at the court; break-even 2.23 s IS,
 | 1 s, base case | +$94 | 11.9 | +1.11 [0.85, 1.38] | +$57 | 8.8 | +0.66 [0.10, 1.19] |
 | 3 s, requirement | −$6 | −1.4 | −0.79 [−2.26, 0.60] | −$11 | −2.4 | −1.47 [−4.45, 1.34] |
 
-Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table 1 of the PDF
+Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table A2 of the PDF
 (`results/tier0/cost_turnover.json`); fees run 163–226 bps of notional, and with fees doubled every
-out-of-sample cell loses (best −$13 a day). Read per point, the post hoc inference loses
+out-of-sample cell loses (best −$13 a day). With R drawn per point, the post hoc reading loses
 (−$17 a day at 1 s). A replay of 9
 matches recorded live against their real order books calls every point ex ante and loses in 36 of
 36 settings (−0.94¢ a share at 1 s).

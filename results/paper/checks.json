@@ -9,8 +9,8 @@
  "margin_violations": [],
  "float_pages": {
   "Figure 1": 2,
+  "Figure 2": 3,
   "Table 1": 4,
-  "Figure 2": 4,
   "Figure 3": 5,
   "Table 2": 5
  },
@@ -104,8 +104,8 @@
  ],
  "ok": true,
  "build": {
-  "numbers_sha256": "b94f7abcf66444906720e120c9c9919aca547efb0874802b43d8aba01f3543b1",
-  "pdf_sha256": "163ac6069f1003222226f2535be42c8a881ca085a85c88c9fa979762109ee30e",
+  "numbers_sha256": "0de07aca8d7edb742a8e6b14a7b00a3dac9792922f5943e909c21abf0e1e40d6",
+  "pdf_sha256": "ed3e024d6c0e0ea7be00971760a7199088dea28e830379cbfc5566eecde66cfb",
   "registry_sha256": "1306a0d2ba35bde3435efab99791605c8e72a05b752ebed1fca5f4c166afde74",
   "registry_summary_sha256": "4261f06efbab15307f640e19b7474a7b72c3ada85a1bc3395a2b777f300f35cc"
  }

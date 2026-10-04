@@ -949,7 +949,7 @@ def collect() -> tuple[Registry, dict]:
         ("Factor regression", "Fama--French three factors and momentum",
          f"$\\alpha$ $t = {V('fac.alpha_t')}$; largest factor $|t| = {V('fac.max_t')}$", "no factor exposure"),
         ("Copying the fast tier (v2 and relatives)",),
-        ("v1", "the fast tier's own fills, dollar sizing (event study, not attainable); OOS opened once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
+        ("v1", "the fast tier's own fills, dollar sizing (event study, not attainable); OOS evaluated once", f"IS {V('v1.is.c')}¢; OOS {V('v1.oos.c')}¢, {V('v1.oos.usd')}", "failed"),
         ("Sizing", f"{V('sel.sizing.n')} sizing policies, walk-forward",
          f"\\texttt{{{V('sel.sizing.pick')}}}: Sharpe {V('v2.is.sr')} IS; all {V('plat.sizing.pos')} with IS CI above zero (Sharpe {V('plat.sizing.sr')})",
          "adopted (v2); plateau"),
@@ -982,7 +982,7 @@ def collect() -> tuple[Registry, dict]:
         ("Copier, X1 (blind)", f"frozen copier on {V('x1.markets')} never-fetched markets outside our universe (mostly doubles), pre-registered",
          f"{V('x1.c')}¢ {V('x1.ci')}; {V('x1.n')} trades, {V('x1.matches')} matches, {V('x1.days')} days", "fail; underpowered"),
         ("Maker v1", "pre-registered maker book (blind)", f"{V('mk.oos.c')}¢ {V('mk.oos.ci')} per fill, {V('mk.oos.usd')}", "fail"),
-        ("Rigor pack", "deflated Sharpe, PBO, block bootstrap",
+        ("Overfitting checks", "deflated Sharpe, PBO, block bootstrap",
          f"DSR {V('v2.is.dsr')}\\,/\\,{V('v2.oos.dsr')}; PBO {V('rig.pbo.lowloss')} ({V('plat.pbo')} by block choice); $P(\\text{{SR}}\\leq 0) = {V('rig.boot.p')}$", "luck not ruled out OOS"),
         ("PSR, MinTRL, haircut", f"six tests incl. a Bonferroni haircut over {V('var.total')} variants",
          f"v2 IS 6 of 6 (haircut Sharpe {V('rig2.v2is.hlz_sr')}); v2 OOS {V('rig2.v2oos.pass')} of 6 ($t = {V('rig2.v2oos.t')}$ vs {V('rig2.t_req')}); CV pre-registered 0, post hoc {V('rig2.cvcal.oos.pass')} OOS",
@@ -1011,11 +1011,11 @@ def collect() -> tuple[Registry, dict]:
         ("GPU engine", "streamed causal engine on one L4", f"{V('cv.eng.fps')}\\,fps; {V('cv.eng.p50')}\\,ms p50; {V('cv.eng.dropped')} frames dropped", "measured"),
         ("WebRTC pipeline", "our clip over WebRTC into the engine", f"{V('cv.webrtc')} frame to call; video leg {V('webrtc.leg')}\\,ms", "measured"),
         ("End to end", "video frame to unsigned order on a live book",
-         f"{V('e2e.ours')}\\,ms ours; {V('e2e.total')}\\,ms with a 1\\,s feed vs {V('e2e.req')}\\,ms", "pass (paper)"),
-        ("Courtside camera", "CV trader with a camera at the venue ($V = 0$)", f"{V('ev.t0.v0.is')}\\,/\\,{V('ev.t0.v0.oos')} a day (pre-registered)", "simulated; no camera"),
-        ("Latency sweep", f"$V$ from 0 to 60\\,s, six stamp-lag readings ({V('var.sweep')} cells)",
-         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:head}"),
-        ("CV trader, fees doubled", "each fill pays its fee twice (Table~\\ref{tab:head})",
+         f"{V('e2e.ours')}\\,ms ours; {V('e2e.total')}\\,ms with a 1\\,s feed vs {V('e2e.req')}\\,ms", "pass (order not sent)"),
+        ("Camera at the venue", "CV benchmark (points that later moved) with a camera at the venue ($V = 0$)", f"{V('ev.t0.v0.is')}\\,/\\,{V('ev.t0.v0.oos')} a day (pre-registered)", "simulated; no camera"),
+        ("Latency sweep", f"CV benchmark, $V$ from 0 to 60\\,s, six stamp-lag readings ({V('var.sweep')} cells)",
+         f"pre-registered break-even {V('cv.pre.be.oos')}--{V('cv.pre.be.is')}\\,s", "Table~\\ref{tab:A-cal}"),
+        ("CV benchmark, fees doubled", "each fill pays its fee twice (Table~\\ref{tab:A-cal})",
          f"every OOS cell loses (best {V('cv.fx2.oos.best')} a day); fee {V('cv.fee_bps.range')}\\,bps of notional", "fails OOS"),
         ("Fresh holdout, 0.5\\,s feed", f"CV benchmark (points that later moved) on {V('fresh.covered')} newer matches, pre-registered at \\texttt{{{V('fresh.prereg.commit')}}}",
          f"{V('fresh.s2.pre.v05.usd')} (pre-registered) and {V('fresh.s2.cal.v05.usd')} (post hoc) a day; CIs {V('fresh.s2.pre.v05.ci')}, {V('fresh.s2.cal.v05.ci')}; at 1\\,s {V('fresh.s2.pre.v1.usd')}\\,/\\,{V('fresh.s2.cal.v1.usd')}, at 3\\,s {V('fresh.s2.pre.v3.usd')}\\,/\\,{V('fresh.s2.cal.v3.usd')}",
@@ -2547,8 +2547,8 @@ Wimbledon is listed under a separate Polymarket series and is outside our univer
 | Same, fully pre-registered per-point timing | {v('cvx.pt.is.v05.usd')} / {v('cvx.pt.is.v1.usd')} / {v('cvx.pt.is.v3.usd')} | {v('cvx.pt.oos.v05.usd')} / {v('cvx.pt.oos.v1.usd')} / {v('cvx.pt.oos.v3.usd')} |
 | Same, post hoc {v('cv.cal.lag')} s lag | {v('cvx.ph.is.v05.usd')} / {v('cvx.ph.is.v1.usd')} / {v('cvx.ph.is.v3.usd')} | {v('cvx.ph.oos.v05.usd')} / {v('cvx.ph.oos.v1.usd')} / {v('cvx.ph.oos.v3.usd')} |
 
-The camera policy assumes the frozen classifier's measured table-tennis call statistics, because no footage of the
-Polymarket matches exists (it has made no real calls on them); its fills are priced off the post-point price and the
+The camera policy assumes the frozen classifier's measured table-tennis call statistics, because we have no footage of
+the Polymarket matches (it has made no real calls on them); its fills are priced off the post-point price and the
 measured live book ({v('cvx.seeds')}-seed means). With fees doubled every camera-policy cell loses; the stated
 {v('risk.daily_stop')} daily stop is simulated and never fired; the false-call halt is not simulated (a proposed
 control).
@@ -2575,7 +2575,7 @@ makes {v('v2st.is.c')}¢ {v('v2st.is.ci')} IS and {v('v2st.oos.c')}¢ {v('v2st.o
 | PSR / MinTRL / haircut tests passed (of 6) | 6 | {v('rig2.v2oos.pass')} |
 | Net ¢, fees ×2 / all costs ×2 | {v('v2.is.fx2.c')} / {v('v2.is.cx2.c')} | {v('v2.oos.fx2.c')} / {v('v2.oos.cx2.c')} |
 
-## Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table 1, lower rows)
+## Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table A2 of the PDF)
 
 Simulated ({CV_LABEL}; {v('cv.seeds')} seeds a cell); trades only past points the price later moved at least 4¢ on,
 so every cell is an upper bound. Pre-registered stamp lag {v('cv.pre.lag')} s (break-even feed delay
@@ -2592,9 +2592,9 @@ Post hoc estimate {v('cv.cal.lag')} s (assumes humans at the court; break-even {
 |---|---|---|---|---|---|---|
 {row3('cal')}
 
-Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table 1 of the PDF
+Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table A2 of the PDF
 (`results/tier0/cost_turnover.json`); fees run {v('cv.fee_bps.range')} bps of notional, and with fees doubled every
-out-of-sample cell loses (best {v('cv.fx2.oos.best')} a day). Read per point, the post hoc inference loses
+out-of-sample cell loses (best {v('cv.fx2.oos.best')} a day). With R drawn per point, the post hoc reading loses
 ({v('pp.cal.oos.usd')} a day at 1 s). A replay of {v('rp.matches')}
 matches recorded live against their real order books calls every point ex ante and loses in {v('rp.cells_neg')} of
 {v('rp.cells')} settings ({v('rp.v1l2.c')}¢ a share at 1 s).

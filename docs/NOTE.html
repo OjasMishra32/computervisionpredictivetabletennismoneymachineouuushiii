@@ -140,8 +140,8 @@ meets the organizers' by-time rule.</p>
 </tr>
 </tbody>
 </table>
-<p>The camera policy assumes the frozen classifier's measured table-tennis call statistics, because no footage of the
-Polymarket matches exists (it has made no real calls on them); its fills are priced off the post-point price and the
+<p>The camera policy assumes the frozen classifier's measured table-tennis call statistics, because we have no footage of
+the Polymarket matches (it has made no real calls on them); its fills are priced off the post-point price and the
 measured live book (20-seed means). With fees doubled every camera-policy cell loses; the stated
 $1,000 daily stop is simulated and never fired; the false-call halt is not simulated (a proposed
 control).</p>
@@ -208,7 +208,7 @@ makes +0.33¢ [−0.55, 1.21] IS and +0.76¢ [−1.19, 2.65] OOS.</p>
 </tr>
 </tbody>
 </table>
-<h2>Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table 1, lower rows)</h2>
+<h2>Benchmark: the CV trader on points that later moved, at three assumed feed delays (Table A2 of the PDF)</h2>
 <p>Simulated (assumed feed latency (licensed feed not purchased); parameters measured; 20 seeds a cell); trades only past points the price later moved at least 4¢ on,
 so every cell is an upper bound. Pre-registered stamp lag 2.0 s (break-even feed delay
 1.09 s IS, 1.01 s OOS):</p>
@@ -298,9 +298,9 @@ so every cell is an upper bound. Pre-registered stamp lag 2.0 s (break-even feed
 </tr>
 </tbody>
 </table>
-<p>Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table 1 of the PDF
+<p>Return, volatility, max drawdown, turnover and the fees-doubled result of every cell are in Table A2 of the PDF
 (<code>results/tier0/cost_turnover.json</code>); fees run 163–226 bps of notional, and with fees doubled every
-out-of-sample cell loses (best −$13 a day). Read per point, the post hoc inference loses
+out-of-sample cell loses (best −$13 a day). With R drawn per point, the post hoc reading loses
 (−$17 a day at 1 s). A replay of 9
 matches recorded live against their real order books calls every point ex ante and loses in 36 of
 36 settings (−0.94¢ a share at 1 s).</p>
