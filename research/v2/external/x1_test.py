@@ -153,9 +153,13 @@ def build(w: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     no_tape = [c for c in w.cond if c not in tapes]
     bad_res = sorted(w.loc[w.cond.isin(tapes) & ~w.res0.isin([0.0, 0.5, 1.0]), "cond"])
     rows = w[w.cond.isin(tapes) & w.res0.isin([0.0, 0.5, 1.0])]
-    parts, few = [], []
+    parts, few, raised = [], [], []
     for r in rows[["cond", "start", "end", "res0", "fee_rate", "delay"]].to_dict("records"):
-        d = tiers.match_prints(SimpleNamespace(**r))
+        try:   # as the U1 and U2 builders (src/prints.py::_one, build_u2.py::_one): a market whose build raises is dropped
+            d = tiers.match_prints(SimpleNamespace(**r))
+        except Exception:
+            raised.append(r["cond"])
+            continue
         (parts.append(d) if d is not None else few.append(r["cond"]))
     P = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame()
     X1_PRINTS.parent.mkdir(parents=True, exist_ok=True)
@@ -164,6 +168,10 @@ def build(w: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     info = {"n_window": len(w), "n_no_tape": len(no_tape), "no_tape": no_tape,
             "n_resolution_not_0_half_1": len(bad_res), "resolution_not_0_half_1": bad_res,
             "n_empty_tape_or_lt20_inplay_prints": len(few), "empty_tape_or_lt20_inplay_prints": sorted(few),
+            "n_match_prints_raised": len(raised), "match_prints_raised": sorted(raised),
+            "match_prints_raised_note": "dropped as in the U1/U2 builders (e.g. >= 20 in-play prints but no jump "
+                                        "detection, where src.tiers.match_prints indexes an empty onset array); "
+                                        "see research/v2/external/DEVIATIONS.md D1",
             "n_matches_with_prints": len(kept), "n_print_rows": int(len(P)),
             "n_tapes_ge_10000_rows_possibly_truncated": int(sum(v >= FETCH_CAP_ROWS for v in n_rows.values())),
             "tape_rows_total": int(sum(n_rows.values())),
